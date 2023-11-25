@@ -1,7 +1,10 @@
 import { env } from "@/lib/env";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -13,6 +16,8 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
+  adapter: PrismaAdapter(prisma),
+
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
