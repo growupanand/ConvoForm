@@ -1,31 +1,12 @@
-import { env } from "@/lib/env";
-import NextAuth, { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
+import NextAuth from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
-const prisma = new PrismaClient();
-
-export const authOptions: NextAuthOptions = {
-  session: {
-    strategy: "jwt",
-  },
-  jwt: {
-    secret: env.NEXT_AUTH_SECRET,
-  },
-  pages: {
-    signIn: "/login",
-  },
-  adapter: PrismaAdapter(prisma),
-
-  providers: [
-    GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
-    }),
-    // ...add more providers here
-  ],
-};
+/**
+ * We are storing the authOptions in a separate file to fix below build error. (https://github.com/vercel/next.js/discussions/50511)
+ * 
+ * Type error: Route "src/app/api/auth/[...nextauth]/route.tsx" does not match the required types of a Next.js Route.
+  "authOptions" is not a valid Route export field.
+ */
 
 const handler = NextAuth(authOptions);
 
