@@ -1,10 +1,9 @@
 import { defaultErrorMessage } from "@/lib/constants";
+import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-
-const prisma = new PrismaClient();
 
 const workspaceCreateSchema = z.object({
   name: z.string().min(1).max(255),
@@ -15,7 +14,7 @@ export async function POST(req: Request) {
     const user = await getCurrentUser();
     const requestJson = await req.json();
     const reqPayload = workspaceCreateSchema.parse(requestJson);
-    const newWorkspace = await prisma.workspace.create({
+    const newWorkspace = await db.workspace.create({
       data: {
         name: reqPayload.name,
         userId: user.id,
@@ -36,7 +35,7 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   try {
     const user = await getCurrentUser();
-    const workspaces = await prisma.workspace.findMany({
+    const workspaces = await db.workspace.findMany({
       where: {
         userId: user.id,
       },
