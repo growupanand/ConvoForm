@@ -9,9 +9,6 @@ const prisma = new PrismaClient();
 
 
 export const authOptions: NextAuthOptions = {
-    session: {
-      strategy: "jwt",
-    },
     pages: {
       signIn: "/login",
     },
@@ -24,4 +21,13 @@ export const authOptions: NextAuthOptions = {
       }),
       // ...add more providers here
     ],
+    callbacks: {
+      // Add userId to session
+      async session({  session, user }) {
+        session.user.id = user.id;
+        return session
+      },
+    },
+
+  
   };
