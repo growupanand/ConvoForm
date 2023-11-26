@@ -3,24 +3,30 @@
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { apiClient } from "@/lib/fetch";
+import { Workspace } from "@prisma/client";
 import { Check, Loader2 } from "lucide-react";
 import { useState } from "react";
+
+type Props = {
+  onWorkspaceCreate: (workspace: Workspace) => void;
+};
 
 type State = {
   isLoading: boolean;
 };
 
-export default function CreateWorkspaceButton() {
+export default function CreateWorkspaceButton({ onWorkspaceCreate }: Props) {
   const [state, setState] = useState<State>({ isLoading: false });
   const { isLoading } = state;
 
   const createNewWorkspace = async () => {
     setState({ isLoading: true });
     try {
-      await apiClient("/api/workspaces", {
+      const response = await apiClient("/api/workspaces", {
         method: "POST",
         data: { name: "New workspace" },
       });
+      const workspace = await response.json();
       toast({
         action: (
           <div className="w-full">
@@ -34,6 +40,7 @@ export default function CreateWorkspaceButton() {
         ),
         duration: 1500,
       });
+      onWorkspaceCreate(workspace);
     } catch (error) {
       toast({
         title: "Unable to create workspace",
