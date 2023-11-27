@@ -33,7 +33,7 @@ export function WorkspaceListItem({ workspace, onDeleted }: Props) {
   const deleteWorkspace = async (id: string) => {
     setState((cs) => ({ ...cs, isDeleting: true }));
     try {
-      await apiClient(`/api/workspaces/${workspace.id}`, {
+      await apiClient(`workspaces/${workspace.id}`, {
         method: "DELETE",
       });
       toast({

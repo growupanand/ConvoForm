@@ -13,7 +13,7 @@ export default async function AuthLayout({ children }: Readonly<Props>) {
       <div className="bg-white-300 min-w-[200px] bg-gray-50">
         <AppNavbar user={user} />
       </div>
-      <div className="container py-5">{children}</div>
+      <div className="container py-5 overflow-auto">{children}</div>
     </div>
   );
 }

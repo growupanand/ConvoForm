@@ -22,7 +22,7 @@ export default function CreateWorkspaceButton({ onWorkspaceCreate }: Props) {
   const createNewWorkspace = async () => {
     setState({ isLoading: true });
     try {
-      const response = await apiClient("/api/workspaces", {
+      const response = await apiClient("workspaces", {
         method: "POST",
         data: { name: "New workspace" },
       });

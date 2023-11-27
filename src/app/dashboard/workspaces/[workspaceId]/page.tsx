@@ -31,13 +31,13 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <Link href="/dashboard/workspaces">
-            <Button variant="ghost">Back</Button>
-          </Link>
-          <h1 className="text-2xl font-bold">{workspace.name}</h1>
-        </div>
-        <Button>New form</Button>
+        <Link href="/dashboard/workspaces">
+          <Button variant="ghost">Back</Button>
+        </Link>
+        <h1 className="text-2xl font-bold">{workspace.name}</h1>
+        <Link href={`/dashboard/workspaces/${workspaceId}/editor`}>
+          <Button>New form</Button>
+        </Link>
       </div>
     </div>
   );
