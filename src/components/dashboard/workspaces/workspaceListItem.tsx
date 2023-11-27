@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Check, Loader2, MoreVertical } from "lucide-react";
 import { useState } from "react";
+import { formatDate } from "@/lib/utils";
 
 type Props = {
   workspace: Workspace;
@@ -25,6 +26,8 @@ type State = {
 export function WorkspaceListItem({ workspace, onDeleted }: Props) {
   const [state, setState] = useState<State>({ isDeleting: false });
   const { isDeleting } = state;
+  const createdAt = new Date(workspace.createdAt);
+  const formatedCreatedAt = formatDate(createdAt.toDateString());
 
   const deleteWorkspace = async (id: string) => {
     setState((cs) => ({ ...cs, isDeleting: true }));
@@ -72,7 +75,10 @@ export function WorkspaceListItem({ workspace, onDeleted }: Props) {
 
   return (
     <div className="p-3 flex justify-between items-center">
-      <span> {workspace.name}</span>
+      <div className="grid gap-1">
+        <div>{workspace.name}</div>
+        <p className="text-muted-foreground text-xs">{formatedCreatedAt}</p>
+      </div>
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger disabled={isDeleting}>
