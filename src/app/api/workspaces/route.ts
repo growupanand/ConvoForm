@@ -1,13 +1,10 @@
 import { defaultErrorMessage } from "@/lib/constants";
 import { db } from "@/lib/db";
+import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getCurrentUser } from "@/lib/session";
-import { PrismaClient } from "@prisma/client";
+import { workspaceCreateSchema } from "@/lib/validations/workspace";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-
-const workspaceCreateSchema = z.object({
-  name: z.string().min(1).max(255),
-});
 
 export async function POST(req: Request) {
   try {
@@ -22,13 +19,7 @@ export async function POST(req: Request) {
     });
     return NextResponse.json(newWorkspace, { status: 201 });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(error.issues, { status: 400 });
-    }
-    return NextResponse.json(
-      { nonFieldError: defaultErrorMessage },
-      { status: 500 }
-    );
+    return sendErrorResponse(error);
   }
 }
 
@@ -42,9 +33,6 @@ export async function GET(req: Request) {
     });
     return NextResponse.json(workspaces);
   } catch (error) {
-    return NextResponse.json(
-      { nonFieldError: defaultErrorMessage },
-      { status: 500 }
-    );
+    return sendErrorResponse(error);
   }
 }

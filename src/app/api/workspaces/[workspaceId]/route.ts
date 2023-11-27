@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getCurrentUser } from "@/lib/session";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -25,10 +26,6 @@ export async function DELETE(
     });
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(error.issues, { status: 422 });
-    }
-
-    return NextResponse.json(null, { status: 500 });
+    return sendErrorResponse(error);
   }
 }

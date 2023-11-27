@@ -13,6 +13,7 @@ import {
 import { Check, Loader2, MoreVertical } from "lucide-react";
 import { useState } from "react";
 import { formatDate } from "@/lib/utils";
+import Link from "next/link";
 
 type Props = {
   workspace: Workspace;
@@ -76,7 +77,9 @@ export function WorkspaceListItem({ workspace, onDeleted }: Props) {
   return (
     <div className="p-3 flex justify-between items-center">
       <div className="grid gap-1">
-        <div>{workspace.name}</div>
+        <Link href={`/dashboard/workspaces/${workspace.id}`}>
+          <span className="font-semibold">{workspace.name}</span>
+        </Link>
         <p className="text-muted-foreground text-xs">{formatedCreatedAt}</p>
       </div>
       <div>

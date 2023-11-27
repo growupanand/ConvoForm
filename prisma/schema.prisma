@@ -46,6 +46,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   workspaces    Workspace[]
+  Form          Form[]
 }
 
 model VerificationToken {
@@ -63,4 +64,29 @@ model Workspace {
   updatedAt DateTime @updatedAt
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Form      Form[]
+}
+
+model Form {
+  id                    String    @id @default(cuid())
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  overview              String
+  welcomeScreenTitle    String
+  welcomeScreenMessage  String
+  welcomeScreenCTALabel String
+  journey               Journey[]
+  aboutCompany          String
+
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Journey {
+  id        String @id @default(cuid())
+  fieldName String
+  form      Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId    String
 }
