@@ -90,11 +90,11 @@ export default function FormEditor({ workspaceId, onCreated }: Props) {
     }
   };
   return (
-    <Card>
+    <div className="bg-transparent border-0 shadow-none">
       <CardHeader>
         <h1 className="text-2xl font-bold">Create new Form</h1>
       </CardHeader>
-      <CardContent>
+      <div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -216,7 +216,7 @@ export default function FormEditor({ workspaceId, onCreated }: Props) {
             </Button>
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

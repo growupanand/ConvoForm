@@ -77,7 +77,7 @@ export function WorkspaceListItem({ workspace, onDeleted }: Props) {
   return (
     <div className="p-3 flex justify-between items-center">
       <div className="grid gap-1">
-        <Link href={`/dashboard/workspaces/${workspace.id}`}>
+        <Link href={`/workspaces/${workspace.id}`}>
           <span className="font-semibold">{workspace.name}</span>
         </Link>
         <p className="text-muted-foreground text-xs">{formatedCreatedAt}</p>
