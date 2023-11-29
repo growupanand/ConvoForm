@@ -18,7 +18,7 @@ async function getFormDetails(formId: Form["id"]) {
 export default async function FormViewPage({ params }: FormViewerPageProps) {
   const { formId } = params;
   const formData = await getFormDetails(formId);
-  if (!formData) {
+  if (!formData || !formData.isPublished) {
     notFound();
   }
   return (

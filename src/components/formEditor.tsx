@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formCreateSchema } from "@/lib/validations/form";
+import { formUpdateSchema } from "@/lib/validations/form";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/fetch";
@@ -26,26 +26,30 @@ type Props = {
   onCreated?: (newForm: PrismaForm) => void;
 };
 
-const formSchema = formCreateSchema;
+const formSchema = formUpdateSchema;
 
 type State = {
   isFormBusy: boolean;
+  form: PrismaForm;
 };
 
-export default function FormEditor({ form: prismaForm, onCreated }: Props) {
-  const [state, setState] = useState<State>({ isFormBusy: false });
-  const { isFormBusy } = state;
+export default function FormEditor(props: Props) {
+  const { onCreated } = props;
+  const [state, setState] = useState<State>({
+    isFormBusy: false,
+    form: props.form,
+  });
+  const { isFormBusy, form } = state;
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const formHook = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: form,
   });
 
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control: form.control,
-      name: "journey",
-    }
-  );
+  const { fields, append, remove } = useFieldArray({
+    control: formHook.control,
+    name: "journey",
+  });
 
   useEffect(() => {
     // Append a default "journey" field when the component mounts
@@ -59,14 +63,11 @@ export default function FormEditor({ form: prismaForm, onCreated }: Props) {
   ) => {
     setState((cs) => ({ ...cs, isFormBusy: true }));
     try {
-      const response = await apiClient(
-        `workspaces/${prismaForm.workspaceId}/forms`,
-        {
-          method: "POST",
-          data: formData,
-        }
-      );
-      const newForm = await response.json();
+      const response = await apiClient(`form/${form.id}`, {
+        method: "PUT",
+        data: formData,
+      });
+      const updatedForm = await response.json();
       toast({
         action: (
           <div className="w-full">
@@ -74,17 +75,17 @@ export default function FormEditor({ form: prismaForm, onCreated }: Props) {
               <div className="bg-green-500 rounded-full p-1">
                 <Check className="text-white " />
               </div>
-              <span>Form created successfully</span>
+              <span>Changes saved successfully</span>
             </div>
           </div>
         ),
         duration: 1500,
       });
-      form.reset();
-      onCreated?.(newForm as PrismaForm);
+      setState((cs) => ({ ...cs, form: updatedForm as PrismaForm }));
+      onCreated?.(updatedForm as PrismaForm);
     } catch (error) {
       toast({
-        title: "Unable to create form",
+        title: "Unable to save changes",
         duration: 1500,
       });
     } finally {
@@ -97,10 +98,13 @@ export default function FormEditor({ form: prismaForm, onCreated }: Props) {
         <h1 className="text-2xl font-bold">Create new Form</h1>
       </CardHeader>
       <div>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <Form {...formHook}>
+          <form
+            onSubmit={formHook.handleSubmit(onSubmit)}
+            className="space-y-8"
+          >
             <FormField
-              control={form.control}
+              control={formHook.control}
               name="overview"
               render={({ field }) => (
                 <FormItem>
@@ -116,7 +120,7 @@ export default function FormEditor({ form: prismaForm, onCreated }: Props) {
               )}
             />
             <FormField
-              control={form.control}
+              control={formHook.control}
               name="welcomeScreenTitle"
               render={({ field }) => (
                 <FormItem>
@@ -129,7 +133,7 @@ export default function FormEditor({ form: prismaForm, onCreated }: Props) {
               )}
             />
             <FormField
-              control={form.control}
+              control={formHook.control}
               name="welcomeScreenMessage"
               render={({ field }) => (
                 <FormItem>
@@ -145,7 +149,7 @@ export default function FormEditor({ form: prismaForm, onCreated }: Props) {
               )}
             />
             <FormField
-              control={form.control}
+              control={formHook.control}
               name="welcomeScreenCTALabel"
               render={({ field }) => (
                 <FormItem>
@@ -166,7 +170,7 @@ export default function FormEditor({ form: prismaForm, onCreated }: Props) {
               {fields.map((item, index) => (
                 <FormField
                   key={item.id}
-                  control={form.control}
+                  control={formHook.control}
                   name={`journey.${index}.fieldName`}
                   render={({ field }) => (
                     <FormItem>
@@ -199,7 +203,7 @@ export default function FormEditor({ form: prismaForm, onCreated }: Props) {
               </div>
             </div>
             <FormField
-              control={form.control}
+              control={formHook.control}
               name="aboutCompany"
               render={({ field }) => (
                 <FormItem>
@@ -214,7 +218,7 @@ export default function FormEditor({ form: prismaForm, onCreated }: Props) {
 
             <Button className="w-full" type="submit" disabled={isFormBusy}>
               {isFormBusy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Submit
+              {form.isPublished ? "Save changes" : "Publish"}
             </Button>
           </form>
         </Form>

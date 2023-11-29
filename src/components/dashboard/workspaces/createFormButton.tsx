@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { createFormController } from "@/lib/controllers/form";
 import { formCreateSchema } from "@/lib/validations/form";
-import { Form, Workspace } from "@prisma/client";
+import { Workspace } from "@prisma/client";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   workspace: Workspace;
@@ -19,6 +20,8 @@ type State = {
 export default function CreateFormButton({ workspace }: Props) {
   const [state, setState] = useState<State>({ isLoading: false });
   const { isLoading } = state;
+
+  const router = useRouter();
 
   const createForm = async () => {
     setState((cs) => ({ ...cs, isLoading: true }));
@@ -36,6 +39,7 @@ export default function CreateFormButton({ workspace }: Props) {
         title: "Form created",
         duration: 1500,
       });
+      router.push(`/forms/${createdForm.id}`);
     } catch (err) {
       toast({
         title: "Unable to create form",

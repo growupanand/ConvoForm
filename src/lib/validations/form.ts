@@ -13,7 +13,7 @@ export const formCreateSchema = z.object({
   ),
 });
 
-export const formPublishSchema = z.object({
+export const formUpdateSchema = z.object({
   overview: z.string().min(1).max(255),
   welcomeScreenTitle: z.string().min(1).max(255),
   welcomeScreenMessage: z.string().min(1).max(255),
