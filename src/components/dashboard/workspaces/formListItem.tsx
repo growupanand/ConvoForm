@@ -34,7 +34,7 @@ export function FormListItem({ form, onDeleted, workspaceId }: Props) {
   const deleteForm = async () => {
     setState((cs) => ({ ...cs, isDeleting: true }));
     try {
-      await apiClient(`workspaces/${workspaceId}/forms/${form.id}`, {
+      await apiClient(`form/${form.id}`, {
         method: "DELETE",
       });
       toast({
@@ -57,10 +57,9 @@ export function FormListItem({ form, onDeleted, workspaceId }: Props) {
         duration: 1500,
         action: (
           <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
+            variant="secondary"
             disabled={isDeleting}
+            onClick={deleteForm}
           >
             {isDeleting ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -84,11 +83,17 @@ export function FormListItem({ form, onDeleted, workspaceId }: Props) {
         <p className="text-muted-foreground text-xs">{formatedCreatedAt}</p>
       </div>
       <div className="flex items-center gap-3">
-        <Link href={`/view/${form.id}`} target="_blank">
-          <Button variant="link">
-            View form <ExternalLink className="w-4 h-4 ms-2" />
+        {form.isPublished ? (
+          <Link href={`/view/${form.id}`} target="_blank">
+            <Button variant="link">
+              View form <ExternalLink className="w-4 h-4 ms-2" />
+            </Button>
+          </Link>
+        ) : (
+          <Button variant="link" disabled>
+            Not published
           </Button>
-        </Link>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger disabled={isDeleting}>
             <Button

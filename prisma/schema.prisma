@@ -77,6 +77,8 @@ model Form {
   welcomeScreenCTALabel String
   journey               Journey[]
   aboutCompany          String
+  isPublished           Boolean   @default(false)
+  publishedAt           DateTime?
 
   workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)

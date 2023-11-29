@@ -1,4 +1,5 @@
 import { AppNavbarButton } from "@/components/appNavbar/appNavbarButton";
+import BrandName from "@/components/brandName";
 import FormEditor from "@/components/formEditor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,6 +31,7 @@ export default async function NewFormPage({ params }: FormPageProps) {
       <div className=" w-[400px] bg-gray-50 overflow-auto">
         <div className="flex justify-between items-center sticky top-0 p-3 bg-gray-50">
           <AppNavbarButton />
+          <BrandName />
           <Link href={`/workspaces/${form.workspaceId}`}>
             <Button variant="ghost">Back</Button>
           </Link>

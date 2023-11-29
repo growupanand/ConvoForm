@@ -1,17 +1,17 @@
 import { db } from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getCurrentUser } from "@/lib/session";
-import { formCreateSchema } from "@/lib/validations/form";
+import { formUpdateSchema } from "@/lib/validations/form";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
 const routeContextSchema = z.object({
   params: z.object({
-    workspaceId: z.string(),
+    formId: z.string(),
   }),
 });
 
-export async function POST(
+export async function PUT(
   req: Request,
   context: z.infer<typeof routeContextSchema>
 ) {
@@ -19,28 +19,33 @@ export async function POST(
     const { params } = routeContextSchema.parse(context);
     const user = await getCurrentUser();
     const requestJson = await req.json();
-    const reqPayload = formCreateSchema.parse(requestJson);
+    const reqPayload = formUpdateSchema.parse(requestJson);
     const { journey, ...newFormData } = reqPayload;
-    const newForm = await db.form.create({
+
+    const updatedForm = await db.form.update({
+      where: {
+        id: params.formId,
+        userId: user.id,
+      },
       data: {
         ...newFormData,
-        workspaceId: params.workspaceId,
-        userId: user.id,
         journey: {
+          deleteMany: {},
           create: journey,
         },
+        isPublished: true,
       },
     });
 
     // Fetch the newly created journeys although they are created but we don't have it in newForm.
     const newJourneys = await db.journey.findMany({
       where: {
-        formId: newForm.id,
+        formId: updatedForm.id,
       },
     });
 
     const responseJson = {
-      ...newForm,
+      ...updatedForm,
       journey: newJourneys,
     };
 
@@ -50,21 +55,21 @@ export async function POST(
   }
 }
 
-export async function GET(
+export async function DELETE(
   req: Request,
   context: z.infer<typeof routeContextSchema>
 ) {
   try {
+    // Validate the route params.
     const { params } = routeContextSchema.parse(context);
     const user = await getCurrentUser();
-    const workspaceForms = await db.form.findMany({
+    await db.form.delete({
       where: {
-        workspaceId: params.workspaceId,
+        id: params.formId,
         userId: user.id,
       },
     });
-
-    return NextResponse.json(workspaceForms, { status: 200 });
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     return sendErrorResponse(error);
   }
