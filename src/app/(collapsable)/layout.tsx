@@ -14,7 +14,7 @@ export default async function AuthLayout({ children }: Readonly<Props>) {
     <Sheet modal={false}>
       <SheetContent
         side="left"
-        className=" min-w-[200px] bg-gray-50"
+        className=" min-w-[200px] bg-gray-50 w-full"
         forceMount
       >
         <AppNavbar user={user} />

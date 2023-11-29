@@ -34,11 +34,11 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-10">
         <h1 className="text-2xl font-bold">{workspace.name}</h1>
         <CreateFormButton workspace={workspace} />
       </div>
-      <div className="mt-4">
+      <div>
         <FormList workspaceId={workspace.id} />
       </div>
     </div>
