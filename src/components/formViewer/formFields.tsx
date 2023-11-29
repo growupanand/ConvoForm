@@ -1,5 +1,3 @@
-"use client";
-
 import { ChangeEvent } from "react";
 import { Input } from "../ui/input";
 import { Tally1 } from "lucide-react";

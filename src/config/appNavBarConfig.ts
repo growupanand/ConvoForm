@@ -9,9 +9,5 @@ export const appNavbarConfig = {
       name: "Dashboard",
       href: "/dashboard",
     },
-    {
-      name: "Workspaces",
-      href: "/workspaces",
-    },
   ] as NavbarLink[],
 };

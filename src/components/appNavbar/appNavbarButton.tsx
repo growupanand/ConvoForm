@@ -1,6 +1,6 @@
 import { AlignJustify } from "lucide-react";
-import { Button } from "./ui/button";
-import { SheetTrigger } from "./ui/sheet";
+import { SheetTrigger } from "../ui/sheet";
+import { Button } from "../ui/button";
 
 export const AppNavbarButton = () => {
   return (
