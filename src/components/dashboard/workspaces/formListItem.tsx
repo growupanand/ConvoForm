@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { apiClient } from "@/lib/fetch";
-import { Workspace } from "@prisma/client";
+import { Form } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,24 +16,25 @@ import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 
 type Props = {
-  workspace: Workspace;
-  onDeleted: (workspace: Workspace) => void;
+  form: Form;
+  onDeleted: (form: Form) => void;
+  workspaceId: string;
 };
 
 type State = {
   isDeleting: boolean;
 };
 
-export function WorkspaceListItem({ workspace, onDeleted }: Props) {
+export function FormListItem({ form, onDeleted, workspaceId }: Props) {
   const [state, setState] = useState<State>({ isDeleting: false });
   const { isDeleting } = state;
-  const createdAt = new Date(workspace.createdAt);
+  const createdAt = new Date(form.createdAt);
   const formatedCreatedAt = formatDate(createdAt.toDateString());
 
-  const deleteWorkspace = async (id: string) => {
+  const deleteForm = async () => {
     setState((cs) => ({ ...cs, isDeleting: true }));
     try {
-      await apiClient(`workspaces/${workspace.id}`, {
+      await apiClient(`workspaces/${workspaceId}/forms/${form.id}`, {
         method: "DELETE",
       });
       toast({
@@ -43,16 +44,16 @@ export function WorkspaceListItem({ workspace, onDeleted }: Props) {
               <div className="bg-green-500 rounded-full p-1">
                 <Check className="text-white " />
               </div>
-              <span>Workspace deleted</span>
+              <span>Form deleted</span>
             </div>
           </div>
         ),
         duration: 1500,
       });
-      onDeleted(workspace);
+      onDeleted(form);
     } catch (error) {
       toast({
-        title: "Unable to delete workspace",
+        title: "Unable to delete form",
         duration: 1500,
         action: (
           <Button
@@ -77,8 +78,8 @@ export function WorkspaceListItem({ workspace, onDeleted }: Props) {
   return (
     <div className="p-3 flex justify-between items-center">
       <div className="grid gap-1">
-        <Link href={`/workspaces/${workspace.id}`}>
-          <span className="font-semibold">{workspace.name}</span>
+        <Link href={`/workspaces/${workspaceId}/forms/${form.id}`}>
+          <span className="font-semibold">New form</span>
         </Link>
         <p className="text-muted-foreground text-xs">{formatedCreatedAt}</p>
       </div>
@@ -101,7 +102,7 @@ export function WorkspaceListItem({ workspace, onDeleted }: Props) {
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               className="cursor-pointer text-destructive focus:text-destructive"
-              onClick={() => deleteWorkspace(workspace.id)}
+              onClick={deleteForm}
             >
               Delete
             </DropdownMenuItem>
