@@ -50,3 +50,25 @@ export async function POST(
     return sendErrorResponse(error);
   }
 }
+
+
+export async function GET(
+  req: Request,
+  context: z.infer<typeof routeContextSchema>
+) {
+  try {
+    const { params } = routeContextSchema.parse(context);
+    const user = await getCurrentUser();
+    const workspaceForms = await db.form.findMany({
+      where: {
+        workspaceId: params.workspaceId,
+        userId: user.id,
+      },
+    });
+
+    return NextResponse.json(workspaceForms, {status : 200});
+  } catch (error) {
+    return sendErrorResponse(error);
+  }
+}
+

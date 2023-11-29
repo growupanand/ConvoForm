@@ -1,10 +1,8 @@
-import { defaultErrorMessage } from "@/lib/constants";
 import { db } from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getCurrentUser } from "@/lib/session";
 import { workspaceCreateSchema } from "@/lib/validations/workspace";
 import { NextResponse } from "next/server";
-import { z } from "zod";
 
 export async function POST(req: Request) {
   try {
