@@ -1,13 +1,12 @@
 "use client";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { CardHeader } from "@/components/ui/card";
 import {
   Form,
   FormField,
   FormItem,
   FormLabel,
   FormControl,
-  FormDescription,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -23,7 +22,7 @@ import { toast } from "./ui/use-toast";
 import { Form as PrismaForm } from "@prisma/client";
 
 type Props = {
-  workspaceId: string;
+  form: PrismaForm;
   onCreated?: (newForm: PrismaForm) => void;
 };
 
@@ -33,7 +32,7 @@ type State = {
   isFormBusy: boolean;
 };
 
-export default function FormEditor({ workspaceId, onCreated }: Props) {
+export default function FormEditor({ form: prismaForm, onCreated }: Props) {
   const [state, setState] = useState<State>({ isFormBusy: false });
   const { isFormBusy } = state;
 
@@ -60,10 +59,13 @@ export default function FormEditor({ workspaceId, onCreated }: Props) {
   ) => {
     setState((cs) => ({ ...cs, isFormBusy: true }));
     try {
-      const response = await apiClient(`workspaces/${workspaceId}/forms`, {
-        method: "POST",
-        data: formData,
-      });
+      const response = await apiClient(
+        `workspaces/${prismaForm.workspaceId}/forms`,
+        {
+          method: "POST",
+          data: formData,
+        }
+      );
       const newForm = await response.json();
       toast({
         action: (

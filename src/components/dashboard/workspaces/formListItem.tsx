@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Check, Loader2, MoreVertical } from "lucide-react";
+import { Check, ExternalLink, Loader2, MoreVertical } from "lucide-react";
 import { useState } from "react";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
@@ -78,12 +78,17 @@ export function FormListItem({ form, onDeleted, workspaceId }: Props) {
   return (
     <div className="p-3 flex justify-between items-center">
       <div className="grid gap-1">
-        <Link href={`/workspaces/${workspaceId}/forms/${form.id}`}>
+        <Link href={`/forms/${form.id}`}>
           <span className="font-semibold">New form</span>
         </Link>
         <p className="text-muted-foreground text-xs">{formatedCreatedAt}</p>
       </div>
-      <div>
+      <div className="flex items-center gap-3">
+        <Link href={`/view/${form.id}`} target="_blank">
+          <Button variant="link">
+            View form <ExternalLink className="w-4 h-4 ms-2" />
+          </Button>
+        </Link>
         <DropdownMenu>
           <DropdownMenuTrigger disabled={isDeleting}>
             <Button
