@@ -1,5 +1,5 @@
 "use-client";
-import AppNavbar from "@/components/appNavBar";
+import AppNavbar from "@/components/appNavbar/appNavBar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { getCurrentUser } from "@/lib/session";
 
