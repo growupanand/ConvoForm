@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
+import CreateFormButton from "@/components/dashboard/workspaces/createFormButton";
+import FormList from "@/components/dashboard/workspaces/formList";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { User, Workspace } from "@prisma/client";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 interface WorkspacePageProps {
@@ -18,26 +18,28 @@ async function getWorkspaceForUser(
       id: workspaceId,
       userId: userId,
     },
+    include: {
+      Form: true,
+    },
   });
 }
 
 export default async function WorkspacePage({ params }: WorkspacePageProps) {
-  const workspaceId = params.workspaceId;
+  const { workspaceId } = params;
   const user = await getCurrentUser();
   const workspace = await getWorkspaceForUser(workspaceId, user.id);
   if (!workspace) {
     notFound();
   }
+
   return (
     <div>
       <div className="flex justify-between items-center">
-        <Link href="/workspaces">
-          <Button variant="ghost">Back</Button>
-        </Link>
         <h1 className="text-2xl font-bold">{workspace.name}</h1>
-        <Link href={`/workspaces/${workspaceId}/editor`}>
-          <Button>New form</Button>
-        </Link>
+        <CreateFormButton workspace={workspace} />
+      </div>
+      <div className="mt-4">
+        <FormList workspaceId={workspace.id} />
       </div>
     </div>
   );

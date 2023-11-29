@@ -1,0 +1,55 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
+import { createFormController } from "@/lib/controllers/form";
+import { formCreateSchema } from "@/lib/validations/form";
+import { Form, Workspace } from "@prisma/client";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+
+type Props = {
+  workspace: Workspace;
+};
+
+type State = {
+  isLoading: boolean;
+};
+
+export default function CreateFormButton({ workspace }: Props) {
+  const [state, setState] = useState<State>({ isLoading: false });
+  const { isLoading } = state;
+
+  const createForm = async () => {
+    setState((cs) => ({ ...cs, isLoading: true }));
+    try {
+      const newFormData = formCreateSchema.parse({
+        welcomeScreenTitle: "",
+        welcomeScreenMessage: "",
+        welcomeScreenCTALabel: "",
+        overview: "",
+        aboutCompany: "",
+        journey: [],
+      });
+      const createdForm = await createFormController(workspace.id, newFormData);
+      toast({
+        title: "Form created",
+        duration: 1500,
+      });
+    } catch (err) {
+      toast({
+        title: "Unable to create form",
+        duration: 1500,
+      });
+    } finally {
+      setState((cs) => ({ ...cs, isLoading: false }));
+    }
+  };
+
+  return (
+    <Button disabled={isLoading} onClick={createForm}>
+      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      New Form
+    </Button>
+  );
+}
