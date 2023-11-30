@@ -2,30 +2,29 @@ import { Check, Loader2, Trash } from "lucide-react";
 import { Button } from "../ui/button";
 import { Workspace } from "@prisma/client";
 import { useState } from "react";
-import { deleteWorkspaceController } from "@/lib/controllers/workspace";
 import { toast } from "../ui/use-toast";
+import { useWorkspaceStore } from "@/lib/store/workspaceStore";
 
 type Props = {
   workspace: Workspace;
-  onWorkspaceDelete: (workspace: Workspace) => void;
 };
 
 type State = {
   isDeleting: boolean;
 };
 
-export const DeleteWorkspaceButton = ({
-  onWorkspaceDelete,
-  workspace,
-}: Props) => {
+export const DeleteWorkspaceButton = ({ workspace }: Props) => {
   const [state, setState] = useState<State>({
     isDeleting: false,
   });
   const { isDeleting } = state;
+
+  const workspaceStore = useWorkspaceStore();
+
   const deleteWorkspace = async () => {
     setState((cs) => ({ ...cs, isDeleting: true }));
     try {
-      await deleteWorkspaceController(workspace.id);
+      await workspaceStore.deleteWorkspace(workspace.id);
       toast({
         action: (
           <div className="w-full">
@@ -39,7 +38,6 @@ export const DeleteWorkspaceButton = ({
         ),
         duration: 1500,
       });
-      onWorkspaceDelete(workspace);
     } catch (error) {
       toast({
         title: "Unable to delete workspace",
