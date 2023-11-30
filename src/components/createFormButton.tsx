@@ -32,7 +32,11 @@ export default function CreateFormButton({ workspace }: Props) {
         welcomeScreenCTALabel: "",
         overview: "",
         aboutCompany: "",
-        journey: [],
+        journey: [
+          {
+            fieldName: "",
+          },
+        ],
       });
       const createdForm = await createFormController(workspace.id, newFormData);
       toast({
@@ -41,6 +45,7 @@ export default function CreateFormButton({ workspace }: Props) {
       });
       router.push(`/forms/${createdForm.id}`);
     } catch (err) {
+      console.log({ err });
       toast({
         title: "Unable to create form",
         duration: 1500,

@@ -2,7 +2,7 @@
 
 import { CardHeader } from "@/components/ui/card";
 import {
-  Form,
+  Form as UIForm,
   FormField,
   FormItem,
   FormLabel,
@@ -15,22 +15,24 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formUpdateSchema } from "@/lib/validations/form";
 import { Button } from "./ui/button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { apiClient } from "@/lib/fetch";
 import { Check, Loader2 } from "lucide-react";
 import { toast } from "./ui/use-toast";
-import { Form as PrismaForm } from "@prisma/client";
+import { Journey, Form as PrismaForm } from "@prisma/client";
+
+type Form = PrismaForm & { journey: Journey[] };
 
 type Props = {
-  form: PrismaForm;
-  onCreated?: (newForm: PrismaForm) => void;
+  form: Form;
+  onCreated?: (newForm: Form) => void;
 };
 
 const formSchema = formUpdateSchema;
 
 type State = {
   isFormBusy: boolean;
-  form: PrismaForm;
+  form: Form;
 };
 
 export default function FormEditor(props: Props) {
@@ -51,13 +53,6 @@ export default function FormEditor(props: Props) {
     name: "journey",
   });
 
-  useEffect(() => {
-    // Append a default "journey" field when the component mounts
-    if (fields.length === 0) {
-      append({ fieldName: "" });
-    }
-  }, []);
-
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
     formData: Record<string, any>
   ) => {
@@ -67,7 +62,7 @@ export default function FormEditor(props: Props) {
         method: "PUT",
         data: formData,
       });
-      const updatedForm = await response.json();
+      const updatedForm = (await response.json()) as Form;
       toast({
         action: (
           <div className="w-full">
@@ -81,8 +76,8 @@ export default function FormEditor(props: Props) {
         ),
         duration: 1500,
       });
-      setState((cs) => ({ ...cs, form: updatedForm as PrismaForm }));
-      onCreated?.(updatedForm as PrismaForm);
+      setState((cs) => ({ ...cs, form: updatedForm }));
+      onCreated?.(updatedForm);
     } catch (error) {
       toast({
         title: "Unable to save changes",
@@ -95,10 +90,10 @@ export default function FormEditor(props: Props) {
   return (
     <div className="bg-transparent border-0 shadow-none">
       <CardHeader>
-        <h1 className="text-2xl font-bold">Create new Form</h1>
+        <h1 className="text-2xl font-bold">New Form</h1>
       </CardHeader>
       <div>
-        <Form {...formHook}>
+        <UIForm {...formHook}>
           <form
             onSubmit={formHook.handleSubmit(onSubmit)}
             className="space-y-8"
@@ -221,7 +216,7 @@ export default function FormEditor(props: Props) {
               {form.isPublished ? "Save changes" : "Publish"}
             </Button>
           </form>
-        </Form>
+        </UIForm>
       </div>
     </div>
   );
