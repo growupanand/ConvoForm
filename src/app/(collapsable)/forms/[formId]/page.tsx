@@ -16,6 +16,9 @@ async function getFormDetails(formId: string) {
     where: {
       id: formId,
     },
+    include: {
+      journey: true,
+    },
   });
 }
 
@@ -29,7 +32,7 @@ export default async function NewFormPage({ params }: FormPageProps) {
   return (
     <div className="flex h-screen">
       <div className=" w-[400px] bg-gray-50 overflow-auto">
-        <div className="flex justify-between items-center sticky top-0 p-3 bg-gray-50">
+        <div className="flex justify-between items-center sticky top-0 p-3 bg-gray-50/75 backdrop-blur-md">
           <AppNavbarButton />
           <BrandName />
           <Link href={`/workspaces/${form.workspaceId}`}>

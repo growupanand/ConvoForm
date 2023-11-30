@@ -1,5 +1,5 @@
-import CreateFormButton from "@/components/dashboard/workspaces/createFormButton";
-import FormList from "@/components/dashboard/workspaces/formList";
+import CreateFormButton from "@/components/createFormButton";
+import FormList from "@/components/formList";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { User, Workspace } from "@prisma/client";

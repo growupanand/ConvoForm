@@ -8,7 +8,7 @@ export const formCreateSchema = z.object({
   aboutCompany: z.string().max(255),
   journey: z.array(
     z.object({
-      fieldName: z.string().min(1).max(255),
+      fieldName: z.string().max(255),
     })
   ),
 });
