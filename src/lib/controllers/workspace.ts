@@ -17,3 +17,8 @@ export const deleteWorkspaceController = (workspaceId: string) => {
     method: "DELETE",
   });
 };
+
+export const fetchWorkspacesController = async () => {
+  const response = await apiClient("workspaces", { method: "GET" });
+  return (await response.json()) as Workspace[];
+};

@@ -7,10 +7,9 @@ import { DeleteWorkspaceButton } from "./deleteWorkspaceButton";
 
 type Props = {
   workspaces: Workspace[];
-  onWorkspaceDelete: (workspace: Workspace) => void;
 };
 
-export const WorkspaceList = ({ workspaces, onWorkspaceDelete }: Props) => {
+export const WorkspaceList = ({ workspaces }: Props) => {
   const pathname = usePathname();
 
   return (
@@ -29,10 +28,7 @@ export const WorkspaceList = ({ workspaces, onWorkspaceDelete }: Props) => {
             </Button>
           </Link>
 
-          <DeleteWorkspaceButton
-            workspace={workspace}
-            onWorkspaceDelete={onWorkspaceDelete}
-          />
+          <DeleteWorkspaceButton workspace={workspace} />
         </div>
       ))}
     </>

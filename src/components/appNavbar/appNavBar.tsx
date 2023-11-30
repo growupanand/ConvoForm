@@ -15,14 +15,13 @@ import { toast } from "../ui/use-toast";
 import { createWorkspaceController } from "@/lib/controllers/workspace";
 import { WorkspaceList } from "./workspaceList";
 import { Skeleton } from "../ui/skeleton";
+import { useWorkspaceStore } from "@/lib/store/workspaceStore";
 
 type Props = {
   user: Omit<User, "id">;
 };
 
 type State = {
-  isLoading: boolean;
-  workspaces: Workspace[];
   isBusyInCreatingWorkspace: boolean;
 };
 
@@ -30,29 +29,18 @@ export default function AppNavbar({ user }: Props) {
   const pathname = usePathname();
 
   const [state, setState] = useState<State>({
-    isLoading: true,
-    workspaces: [],
     isBusyInCreatingWorkspace: false,
   });
-  const { isLoading, workspaces, isBusyInCreatingWorkspace } = state;
+  const { isBusyInCreatingWorkspace } = state;
 
-  const fetchWorkspaces = async () => {
-    setState((cs) => ({ ...cs, isLoading: true, workspaces: [] }));
-    try {
-      const res = await fetch("/api/workspaces");
-      const workspaces = await res.json();
-      setState((cs) => ({ ...cs, workspaces }));
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setState((cs) => ({ ...cs, isLoading: false }));
-    }
-  };
+  const workspaceStore = useWorkspaceStore();
+
+  const { workspaces, isLoading } = workspaceStore;
 
   const createNewWorkspace = async () => {
     setState((cs) => ({ ...cs, isBusyInCreatingWorkspace: true }));
     try {
-      const workspace = await createWorkspaceController();
+      await workspaceStore.createWorkspace("New Workspace");
       toast({
         action: (
           <div className="w-full">
@@ -66,10 +54,6 @@ export default function AppNavbar({ user }: Props) {
         ),
         duration: 1500,
       });
-      setState((cs) => ({
-        ...cs,
-        workspaces: [workspace, ...cs.workspaces],
-      }));
     } catch (error) {
       toast({
         title: "Unable to create workspace",
@@ -80,15 +64,15 @@ export default function AppNavbar({ user }: Props) {
     }
   };
 
-  const onWorkspaceDelete = (workspace: Workspace) => {
-    setState((cs) => ({
-      ...cs,
-      workspaces: cs.workspaces.filter((w) => w.id !== workspace.id),
-    }));
-  };
+  // const onWorkspaceDelete = (workspace: Workspace) => {
+  //   setState((cs) => ({
+  //     ...cs,
+  //     workspaces: cs.workspaces.filter((w) => w.id !== workspace.id),
+  //   }));
+  // };
 
   useEffect(() => {
-    fetchWorkspaces();
+    workspaceStore.fetchWorkspaces();
   }, []);
 
   return (
@@ -146,10 +130,7 @@ export default function AppNavbar({ user }: Props) {
                 <span className="text-gray-500">No workspaces</span>
               </div>
             )}
-            <WorkspaceList
-              workspaces={workspaces}
-              onWorkspaceDelete={onWorkspaceDelete}
-            />
+            <WorkspaceList workspaces={workspaces} />
           </div>
         </div>
       </div>
