@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { DeleteWorkspaceButton } from "./deleteWorkspaceButton";
 
 type Props = {
   workspaces: Workspace[];
@@ -27,8 +26,6 @@ export const WorkspaceList = ({ workspaces }: Props) => {
               {workspace.name}
             </Button>
           </Link>
-
-          <DeleteWorkspaceButton workspace={workspace} />
         </div>
       ))}
     </>

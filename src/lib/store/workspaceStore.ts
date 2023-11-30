@@ -8,16 +8,22 @@ import {
 import { toast } from "@/components/ui/use-toast";
 
 type WorkspaceStore = {
+  initializeStore: () => Promise<void>;
   workspaces: Workspace[];
   isLoading: boolean;
   fetchWorkspaces: () => Promise<void>;
-  createWorkspace: (name: string) => Promise<void>;
+  createWorkspace: (name: string) => Promise<Workspace>;
   deleteWorkspace: (workspaceId: string) => Promise<void>;
 };
 
-export const useWorkspaceStore = create<WorkspaceStore>((set) => ({
+export const useWorkspaceStore = create<WorkspaceStore>((set, get) => ({
   workspaces: [],
   isLoading: false,
+
+  initializeStore: async () => {
+    await get().fetchWorkspaces();
+  },
+
   fetchWorkspaces: async () => {
     set({ isLoading: true });
     const workspaces = await fetchWorkspacesController();
@@ -27,6 +33,7 @@ export const useWorkspaceStore = create<WorkspaceStore>((set) => ({
   createWorkspace: async (name: string) => {
     const workspace = await createWorkspaceController(name);
     set((state) => ({ workspaces: [...state.workspaces, workspace] }));
+    return workspace;
   },
 
   deleteWorkspace: async (workspaceId: string) => {

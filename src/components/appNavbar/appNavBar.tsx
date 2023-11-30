@@ -64,17 +64,6 @@ export default function AppNavbar({ user }: Props) {
     }
   };
 
-  // const onWorkspaceDelete = (workspace: Workspace) => {
-  //   setState((cs) => ({
-  //     ...cs,
-  //     workspaces: cs.workspaces.filter((w) => w.id !== workspace.id),
-  //   }));
-  // };
-
-  useEffect(() => {
-    workspaceStore.fetchWorkspaces();
-  }, []);
-
   return (
     <nav className="h-full flex flex-col justify-between p-5">
       <div>

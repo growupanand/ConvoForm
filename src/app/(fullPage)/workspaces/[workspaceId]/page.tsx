@@ -1,5 +1,5 @@
-import CreateFormButton from "@/components/createFormButton";
 import FormList from "@/components/formList";
+import { WorkspaceHeader } from "@/components/workspaceHeader";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { User, Workspace } from "@prisma/client";
@@ -34,10 +34,7 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-10">
-        <h1 className="text-2xl font-bold">{workspace.name}</h1>
-        <CreateFormButton workspace={workspace} />
-      </div>
+      <WorkspaceHeader workspace={workspace} />
       <div>
         <FormList workspaceId={workspace.id} />
       </div>
