@@ -14,6 +14,8 @@ import { Workspace } from "@prisma/client";
 import { useWorkspaceStore } from "@/lib/store/workspaceStore";
 import { toast } from "./ui/use-toast";
 import { useRouter } from "next/navigation";
+import { Input } from "./ui/input";
+import { cn, debounce } from "@/lib/utils";
 
 type Props = {
   workspace: Workspace;
@@ -21,18 +23,25 @@ type Props = {
 
 type State = {
   isDeleting: boolean;
+  isUpdating: boolean;
 };
 
-export const WorkspaceHeader = ({ workspace }: Props) => {
+export const WorkspaceHeader = (props: Props) => {
   const [state, setState] = useState<State>({
     isDeleting: false,
+    isUpdating: false,
   });
-  const { isDeleting } = state;
+  const { isDeleting, isUpdating } = state;
 
   const workspaceStore = useWorkspaceStore();
   const { workspaces } = workspaceStore;
+  const workspace = workspaces.find((i) => i.id === props.workspace.id);
 
   const router = useRouter();
+
+  if (!workspace) {
+    return null;
+  }
 
   const deleteWorkspace = async () => {
     setState((cs) => ({ ...cs, isDeleting: true }));
@@ -52,7 +61,9 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
         duration: 1500,
       });
       if (workspaces.filter((i) => i.id !== workspace.id).length > 0) {
-        router.push(`/workspaces/${workspaces[0].id}`);
+        router.push(
+          `/workspaces/${workspaces.filter((i) => i.id !== workspace.id)[0].id}`
+        );
       } else {
         router.push("/dashboard");
       }
@@ -80,10 +91,47 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
       setState((cs) => ({ ...cs, isDeleting: false }));
     }
   };
+
+  const handleWorkspaceNameInputChange = async (e: any) => {
+    const updatedName = e.target.value as string;
+    e.target.style.width = `${updatedName.length + 1}ch`;
+    debounce(() => updateWorkspace(updatedName), 1000);
+  };
+
+  const updateWorkspace = async (name: string) => {
+    setState((cs) => ({ ...cs, isUpdating: true }));
+    try {
+      await workspaceStore.updateWorkspace(workspace.id, { name });
+    } catch (error) {
+      toast({
+        title: "Unable to update workspace",
+        duration: 1500,
+      });
+    } finally {
+      setState((cs) => ({ ...cs, isUpdating: false }));
+    }
+  };
+
   return (
     <div className="flex justify-between items-center mb-10">
       <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-bold">{workspace.name}</h1>
+        <Input
+          className={cn(
+            "text-2xl font-bold border-0 focus-visible:ring-transparent	 focus-visible:ring-0 max-w-[400px]"
+          )}
+          style={{
+            width: `${workspace.name.length + 1}ch`,
+          }}
+          type="text"
+          defaultValue={workspace.name}
+          onChange={handleWorkspaceNameInputChange}
+        />
+      </div>
+      <div className="flex items-center gap-2">
+        {isUpdating && (
+          <Loader2 className="h-4 w-4 animate-spin text-gray-500 " />
+        )}
+
         <DropdownMenu>
           <DropdownMenuTrigger disabled={isDeleting} asChild>
             <Button
@@ -99,7 +147,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
               )}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
+          <DropdownMenuContent align="end">
             <DropdownMenuItem
               className="cursor-pointer text-destructive focus:text-destructive"
               onClick={deleteWorkspace}
@@ -108,8 +156,8 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <CreateFormButton workspace={workspace} />
       </div>
-      <CreateFormButton workspace={workspace} />
     </div>
   );
 };
