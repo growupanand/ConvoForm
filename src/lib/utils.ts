@@ -13,3 +13,9 @@ export function formatDate(input: string | number): string {
     year: "numeric",
   });
 }
+
+let timeoutId: ReturnType<typeof setTimeout> | undefined;
+export function debounce(callback: () => void, ms?: number | undefined) {
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(callback, ms);
+}

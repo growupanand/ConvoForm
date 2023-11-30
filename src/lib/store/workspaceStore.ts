@@ -4,8 +4,11 @@ import {
   createWorkspaceController,
   deleteWorkspaceController,
   fetchWorkspacesController,
+  updateWorkspaceController,
 } from "../controllers/workspace";
 import { toast } from "@/components/ui/use-toast";
+import { workspaceUpdateSchema } from "@/lib/validations/workspace";
+import { z } from "zod";
 
 type WorkspaceStore = {
   initializeStore: () => Promise<void>;
@@ -14,6 +17,10 @@ type WorkspaceStore = {
   fetchWorkspaces: () => Promise<void>;
   createWorkspace: (name: string) => Promise<Workspace>;
   deleteWorkspace: (workspaceId: string) => Promise<void>;
+  updateWorkspace: (
+    workspaceId: string,
+    payload: z.infer<typeof workspaceUpdateSchema>
+  ) => Promise<Workspace>;
 };
 
 export const useWorkspaceStore = create<WorkspaceStore>((set, get) => ({
@@ -47,5 +54,18 @@ export const useWorkspaceStore = create<WorkspaceStore>((set, get) => ({
         (workspace) => workspace.id !== workspaceId
       ),
     }));
+  },
+
+  updateWorkspace: async (
+    workspaceId: string,
+    payload: z.infer<typeof workspaceUpdateSchema>
+  ) => {
+    const workspace = await updateWorkspaceController(workspaceId, payload);
+    set((state) => ({
+      workspaces: state.workspaces.map((workspace) =>
+        workspace.id === workspaceId ? { ...workspace, ...payload } : workspace
+      ),
+    }));
+    return workspace;
   },
 }));

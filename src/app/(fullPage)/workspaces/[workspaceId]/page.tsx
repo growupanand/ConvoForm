@@ -18,9 +18,6 @@ async function getWorkspaceForUser(
       id: workspaceId,
       userId: userId,
     },
-    include: {
-      Form: true,
-    },
   });
 }
 
