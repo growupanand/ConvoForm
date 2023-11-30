@@ -78,7 +78,7 @@ export function FormListItem({ form, onDeleted, workspaceId }: Props) {
     <div className="p-3 flex justify-between items-center">
       <div className="grid gap-1">
         <Link href={`/forms/${form.id}`}>
-          <span className="font-semibold">New form</span>
+          <span className="font-semibold">{form.name}</span>
         </Link>
         <p className="text-muted-foreground text-xs">{formatedCreatedAt}</p>
       </div>

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const formCreateSchema = z.object({
+  name: z.string().max(255),
   overview: z.string().max(255),
   welcomeScreenTitle: z.string().max(255),
   welcomeScreenMessage: z.string().max(255),
@@ -14,6 +15,7 @@ export const formCreateSchema = z.object({
 });
 
 export const formUpdateSchema = z.object({
+  name: z.string().min(1).max(255),
   overview: z.string().min(1).max(255),
   welcomeScreenTitle: z.string().min(1).max(255),
   welcomeScreenMessage: z.string().min(1).max(255),
