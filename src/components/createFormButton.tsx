@@ -27,6 +27,7 @@ export default function CreateFormButton({ workspace }: Props) {
     setState((cs) => ({ ...cs, isLoading: true }));
     try {
       const newFormData = formCreateSchema.parse({
+        name: "New form",
         welcomeScreenTitle: "",
         welcomeScreenMessage: "",
         welcomeScreenCTALabel: "",
@@ -50,7 +51,6 @@ export default function CreateFormButton({ workspace }: Props) {
         title: "Unable to create form",
         duration: 1500,
       });
-    } finally {
       setState((cs) => ({ ...cs, isLoading: false }));
     }
   };

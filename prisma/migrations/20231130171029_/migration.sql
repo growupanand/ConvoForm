@@ -60,6 +60,7 @@ CREATE TABLE "Form" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "name" TEXT NOT NULL,
     "overview" TEXT NOT NULL,
     "welcomeScreenTitle" TEXT NOT NULL,
     "welcomeScreenMessage" TEXT NOT NULL,

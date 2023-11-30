@@ -1,6 +1,5 @@
 "use client";
 
-import { CardHeader } from "@/components/ui/card";
 import {
   Form as UIForm,
   FormField,
@@ -89,135 +88,140 @@ export default function FormEditor(props: Props) {
   };
   return (
     <div className="bg-transparent border-0 shadow-none">
-      <CardHeader>
-        <h1 className="text-2xl font-bold">New Form</h1>
-      </CardHeader>
-      <div>
-        <UIForm {...formHook}>
-          <form
-            onSubmit={formHook.handleSubmit(onSubmit)}
-            className="space-y-8"
-          >
-            <FormField
-              control={formHook.control}
-              name="overview"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Overview</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Give overview about this form"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={formHook.control}
-              name="welcomeScreenTitle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Welcome Screen Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Give welcome screen title" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={formHook.control}
-              name="welcomeScreenMessage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Welcome Screen Message</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Give welcome screen message"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={formHook.control}
-              name="welcomeScreenCTALabel"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Welcome Screen CTA Label</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Give welcome screen CTA label"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+      <UIForm {...formHook}>
+        <form onSubmit={formHook.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={formHook.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    placeholder="Form name"
+                    className="text-2xl font-bold bg-transparent border-0 shadow-none focus-visible:ring-transparent	 focus-visible:ring-0"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={formHook.control}
+            name="overview"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Overview</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Give overview about this form"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={formHook.control}
+            name="welcomeScreenTitle"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Welcome Screen Title</FormLabel>
+                <FormControl>
+                  <Input placeholder="Give welcome screen title" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={formHook.control}
+            name="welcomeScreenMessage"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Welcome Screen Message</FormLabel>
+                <FormControl>
+                  <Input placeholder="Give welcome screen message" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={formHook.control}
+            name="welcomeScreenCTALabel"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Welcome Screen CTA Label</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Give welcome screen CTA label"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <div className="grid gap-2">
-              <FormLabel className="mb-2">Journey</FormLabel>
-              {fields.map((item, index) => (
-                <FormField
-                  key={item.id}
-                  control={formHook.control}
-                  name={`journey.${index}.fieldName`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <div className="flex w-full max-w-sm items-center space-x-2">
-                          <Input placeholder={`Field name`} {...field} />
-                          <Button
-                            variant="secondary"
-                            disabled={index === 0 && fields.length === 1}
-                            onClick={() => fields.length != 1 && remove(index)}
-                            type="button"
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
-              <div>
-                <Button
-                  variant="secondary"
-                  onClick={() => append({ fieldName: "" })}
-                  type="button"
-                >
-                  Add Journey Field
-                </Button>
-              </div>
+          <div className="grid gap-2">
+            <FormLabel className="mb-2">Journey</FormLabel>
+            {fields.map((item, index) => (
+              <FormField
+                key={item.id}
+                control={formHook.control}
+                name={`journey.${index}.fieldName`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="flex w-full max-w-sm items-center space-x-2">
+                        <Input placeholder={`Field name`} {...field} />
+                        <Button
+                          variant="secondary"
+                          disabled={index === 0 && fields.length === 1}
+                          onClick={() => fields.length != 1 && remove(index)}
+                          type="button"
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+            <div>
+              <Button
+                variant="secondary"
+                onClick={() => append({ fieldName: "" })}
+                type="button"
+              >
+                Add Journey Field
+              </Button>
             </div>
-            <FormField
-              control={formHook.control}
-              name="aboutCompany"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>About Company</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Give about company" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          </div>
+          <FormField
+            control={formHook.control}
+            name="aboutCompany"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>About Company</FormLabel>
+                <FormControl>
+                  <Input placeholder="Give about company" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <Button className="w-full" type="submit" disabled={isFormBusy}>
-              {isFormBusy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {form.isPublished ? "Save changes" : "Publish"}
-            </Button>
-          </form>
-        </UIForm>
-      </div>
+          <Button className="w-full" type="submit" disabled={isFormBusy}>
+            {isFormBusy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {form.isPublished ? "Save changes" : "Publish"}
+          </Button>
+        </form>
+      </UIForm>
     </div>
   );
 }
