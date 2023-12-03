@@ -20,25 +20,23 @@ export const FormFieldsViewer = ({
   currentQuestion,
 }: Props) => {
   return (
-    <div className="max-w-[700px] mx-auto">
-      <form onSubmit={handleFormSubmit}>
-        <div className="w-full min-h-screen flex flex-col items-center justify-center">
-          <h1 className="w-full px-3 text-4xl font-medium mb-10">
-            {!isFormBusy && currentQuestion}
-            {isFormBusy && <Tally1 className="animate-ping" />}
-          </h1>
-          {!isFormBusy && (
-            <Input
-              className="text-2xl border-0 focus-visible:ring-transparent	 focus-visible:ring-0 w-full"
-              onChange={handleInputChange}
-              type="text"
-              placeholder="Type here..."
-              value={input}
-              disabled={isFormBusy}
-            />
-          )}
-        </div>
-      </form>
-    </div>
+    <form onSubmit={handleFormSubmit}>
+      <div className="w-full min-h-full flex flex-col items-center justify-center">
+        <h1 className="w-full px-3 text-4xl font-medium mb-10">
+          {!isFormBusy && currentQuestion}
+          {isFormBusy && <Tally1 className="animate-ping" />}
+        </h1>
+        {!isFormBusy && (
+          <Input
+            className="text-2xl border-0 focus-visible:ring-transparent	 focus-visible:ring-0 w-full"
+            onChange={handleInputChange}
+            type="text"
+            placeholder="Type here..."
+            value={input}
+            disabled={isFormBusy}
+          />
+        )}
+      </div>
+    </form>
   );
 };
