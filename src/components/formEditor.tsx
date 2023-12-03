@@ -23,19 +23,18 @@ import { Journey, Form as PrismaForm } from "@prisma/client";
 type Form = PrismaForm & { journey: Journey[] };
 
 type Props = {
-  form: Form;
-  onCreated?: (newForm: Form) => void;
+  form: Form & { journey: Journey[] };
+  onUpdated?: (newForm: Form) => void;
 };
 
 const formSchema = formUpdateSchema;
 
 type State = {
   isFormBusy: boolean;
-  form: Form;
+  form: Form & { journey: Journey[] };
 };
 
 export default function FormEditor(props: Props) {
-  const { onCreated } = props;
   const [state, setState] = useState<State>({
     isFormBusy: false,
     form: props.form,
@@ -76,7 +75,7 @@ export default function FormEditor(props: Props) {
         duration: 1500,
       });
       setState((cs) => ({ ...cs, form: updatedForm }));
-      onCreated?.(updatedForm);
+      props.onUpdated?.(updatedForm);
     } catch (error) {
       toast({
         title: "Unable to save changes",

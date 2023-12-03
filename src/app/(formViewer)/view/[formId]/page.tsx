@@ -22,7 +22,7 @@ export default async function FormViewPage({ params }: FormViewerPageProps) {
     notFound();
   }
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative flex flex-col grow justify-center items-center">
       <FormViewer form={formData} />
     </div>
   );

@@ -2,12 +2,14 @@
 
 import { Form } from "@prisma/client";
 import { WelcomeScreen } from "./welcomeScreen";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormFieldsViewer } from "./formFields";
 import { useChat } from "ai/react";
 
 type Props = {
   form: Form;
+  refresh?: boolean;
+  isPreview?: boolean;
 };
 
 type State = {
@@ -17,7 +19,7 @@ type State = {
 
 export type FormStage = "welcomeScreen" | "formFields" | "endScreen";
 
-export function FormViewer({ form }: Props) {
+export function FormViewer({ form, refresh, isPreview }: Props) {
   const apiEndpoint = `/api/form/${form.id}/conversation`;
 
   const [state, setState] = useState<State>({
@@ -61,17 +63,27 @@ export function FormViewer({ form }: Props) {
     });
   };
 
-  if (currentStage === "welcomeScreen")
-    return <WelcomeScreen form={form} onCTAClick={handleCTAClick} />;
+  useEffect(() => {
+    if (isPreview) {
+      setState((cs) => ({ ...cs, formStage: "welcomeScreen" }));
+    }
+  }, [refresh]);
 
-  if (currentStage === "formFields")
-    return (
-      <FormFieldsViewer
-        currentQuestion={getCurrentQuestion()}
-        handleFormSubmit={handleFormSubmit}
-        handleInputChange={handleInputChange}
-        input={input}
-        isFormBusy={isFormBusy}
-      />
-    );
+  return (
+    <div className="max-w-[700px] mx-auto container ">
+      {currentStage === "welcomeScreen" && (
+        <WelcomeScreen form={form} onCTAClick={handleCTAClick} />
+      )}
+
+      {currentStage === "formFields" && (
+        <FormFieldsViewer
+          currentQuestion={getCurrentQuestion()}
+          handleFormSubmit={handleFormSubmit}
+          handleInputChange={handleInputChange}
+          input={input}
+          isFormBusy={isFormBusy}
+        />
+      )}
+    </div>
+  );
 }
