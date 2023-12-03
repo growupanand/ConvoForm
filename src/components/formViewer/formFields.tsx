@@ -28,6 +28,7 @@ export const FormFieldsViewer = ({
         </h1>
         {!isFormBusy && (
           <Input
+            autoFocus
             className="text-2xl border-0 focus-visible:ring-transparent	 focus-visible:ring-0 w-full"
             onChange={handleInputChange}
             type="text"
