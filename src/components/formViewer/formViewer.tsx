@@ -1,13 +1,18 @@
 "use client";
 
-import { Form } from "@prisma/client";
+import { Form, Journey } from "@prisma/client";
 import { WelcomeScreen } from "./welcomeScreen";
 import { useEffect, useState } from "react";
 import { FormFieldsViewer } from "./formFields";
 import { useChat } from "ai/react";
+import { Message } from "ai";
+import { EndScreen } from "./endScreen";
+import { toast } from "../ui/use-toast";
+import { Button } from "../ui/button";
+import { apiClient } from "@/lib/fetch";
 
 type Props = {
-  form: Form;
+  form: Form & { journey: Journey[] };
   refresh?: boolean;
   isPreview?: boolean;
 };
@@ -15,6 +20,10 @@ type Props = {
 type State = {
   formStage: FormStage;
   isFormBusy: boolean;
+  // we can use this to show a progress of form filling
+  lastValidAnsweredFieldIndex: number;
+  isFormSubmitted: boolean;
+  currentFieldName: string;
 };
 
 export type FormStage = "welcomeScreen" | "formFields" | "endScreen";
@@ -25,13 +34,104 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
   const [state, setState] = useState<State>({
     formStage: "welcomeScreen",
     isFormBusy: false,
+    lastValidAnsweredFieldIndex: -1,
+    isFormSubmitted: false,
+    currentFieldName: "",
   });
-  const { formStage: currentStage, isFormBusy } = state;
+
+  const {
+    formStage: currentStage,
+    isFormBusy,
+    isFormSubmitted,
+    currentFieldName,
+  } = state;
 
   const { messages, input, handleInputChange, handleSubmit, append } = useChat({
     api: apiEndpoint,
     onResponse: () => setState((s) => ({ ...s, isFormBusy: false })),
+    onFinish: handleOnResponse,
+    body: { isFormSubmitted },
   });
+  console.log({ messages });
+
+  const getFieldIndexFromName = (fieldName: string) => {
+    const fieldNames = form.journey.map((j) => j.fieldName);
+    return fieldNames.indexOf(fieldName);
+  };
+
+  const getFieldNameFromResponse = (message: string) => {
+    // get field name from response string, E.g. "What is your name? [name]" => "name"
+    const match = message.match(/\[([^[\]]*)\]/);
+    return match ? match[1] : null;
+  };
+
+  function handleOnResponse(message: Message) {
+    // change field index
+    const fieldName = getFieldNameFromResponse(message.content);
+    if (!fieldName) {
+      return;
+    }
+    const fieldIndex = getFieldIndexFromName(fieldName);
+
+    setState((s) => ({
+      ...s,
+      lastValidAnsweredFieldIndex: fieldIndex,
+      isFormSubmitted,
+      currentFieldName: fieldName,
+    }));
+  }
+
+  useEffect(() => {
+    const isFormSubmitted = currentFieldName.toLowerCase() === "finish";
+    if (isFormSubmitted) {
+      // console.log({ messages });
+      // console.debug("form submitted");
+      handleFormSubmitted();
+      gotoStage("endScreen");
+    }
+  }, [currentFieldName]);
+
+  async function handleFormSubmitted() {
+    toast({
+      title: "Saving form details...",
+    });
+    try {
+      await apiClient(`form/${form.id}/conversation`, {
+        method: "POST",
+        data: {
+          messages: [
+            ...messages,
+            {
+              content: "finish",
+              role: "user",
+              id: "2",
+            },
+          ],
+          isFormSubmitted: true,
+        },
+      });
+      toast({
+        title: "Form details saved successfully.",
+        duration: 1500,
+      });
+    } catch (e) {
+      toast({
+        title: "Unable to save form details.",
+        duration: 1500,
+        action: (
+          <Button
+            variant="secondary"
+            onClick={(e: any) => {
+              e.target.disabled = true;
+              handleFormSubmitted();
+            }}
+          >
+            Retry
+          </Button>
+        ),
+      });
+    }
+  }
 
   const getCurrentQuestion = () => {
     const assistantMessage = messages.findLast((m) => m.role === "assistant");
@@ -55,12 +155,12 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
 
   const handleCTAClick = () => {
     setState((s) => ({ ...s, isFormBusy: true }));
-    gotoStage("formFields");
     append({
       content: "hello, i want to fill the form",
       role: "user",
       id: "1",
     });
+    gotoStage("formFields");
   };
 
   useEffect(() => {
@@ -84,6 +184,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
           isFormBusy={isFormBusy}
         />
       )}
+      {currentStage === "endScreen" && <EndScreen />}
     </div>
   );
 }

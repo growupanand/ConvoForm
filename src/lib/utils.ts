@@ -19,3 +19,12 @@ export function debounce(callback: () => void, ms?: number | undefined) {
   clearTimeout(timeoutId);
   timeoutId = setTimeout(callback, ms);
 }
+
+export const isValidJSON = (str: string) => {
+  try {
+    JSON.parse(str);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};

@@ -1,8 +1,10 @@
 import { db } from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getSystemPrompt } from "@/lib/prompts";
+import { isValidJSON } from "@/lib/utils";
 import { ConversationPayloadSchema } from "@/lib/validations/conversation";
-import { OpenAIStream, StreamingTextResponse } from "ai";
+import { OpenAIStream, StreamingTextResponse, streamToResponse } from "ai";
+import { NextResponse } from "next/server";
 import {
   ChatCompletionRequestMessage,
   Configuration,
@@ -30,6 +32,7 @@ export async function POST(
     const { params } = routeContextSchema.parse(context);
     const requestJson = await req.json();
     const reqPayload = ConversationPayloadSchema.parse(requestJson);
+    const { isFormSubmitted } = reqPayload;
 
     // generate messages
     const form = await db.form.findUnique({
@@ -37,7 +40,11 @@ export async function POST(
         id: params.formId,
       },
       include: {
-        journey: true,
+        journey: {
+          orderBy: {
+            id: "asc",
+          },
+        },
       },
     });
 
@@ -48,7 +55,12 @@ export async function POST(
     const { overview, aboutCompany, journey } = form;
     const formFields = journey.map((item) => item.fieldName);
 
-    const systemPrompt = getSystemPrompt(overview, aboutCompany, formFields);
+    const systemPrompt = getSystemPrompt(
+      overview,
+      aboutCompany,
+      formFields,
+      isFormSubmitted
+    );
     const systemMessage = {
       role: "system",
       content: systemPrompt,
@@ -56,13 +68,50 @@ export async function POST(
 
     const messages = [systemMessage, ...reqPayload.messages];
 
+    if (!isFormSubmitted) {
+      const openAiResponse = await openai.createChatCompletion({
+        model: "gpt-4",
+        stream: true,
+        messages,
+      });
+
+      const stream = OpenAIStream(openAiResponse);
+
+      return new StreamingTextResponse(stream);
+    }
+
+    // save form data in database
     const openAiResponse = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      stream: true,
+      model: "gpt-4",
+      stream: false,
       messages,
     });
-    const stream = OpenAIStream(openAiResponse);
-    return new StreamingTextResponse(stream);
+    const openAiResponseJson = await openAiResponse.json();
+    const response = openAiResponseJson.choices[0].message.content;
+    if (!isValidJSON(response)) {
+      return NextResponse.json(
+        { success: false },
+        {
+          status: 400,
+        }
+      );
+    }
+    const responseJson = JSON.parse(response);
+
+    await db.formResponse.create({
+      data: {
+        formId: params.formId,
+        fieldsData: responseJson,
+        openAIMessages: messages as Record<string, any>[],
+      },
+    });
+
+    return NextResponse.json(
+      { success: true },
+      {
+        status: 200,
+      }
+    );
   } catch (error) {
     return sendErrorResponse(error);
   }
