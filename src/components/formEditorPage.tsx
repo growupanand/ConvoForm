@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { useState } from "react";
-import { Copy, ExternalLink, Globe, RotateCw } from "lucide-react";
+import { Copy, ExternalLink, RotateCw } from "lucide-react";
 import { toast } from "./ui/use-toast";
 import {
   Tooltip,

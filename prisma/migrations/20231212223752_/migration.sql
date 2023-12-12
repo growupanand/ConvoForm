@@ -83,6 +83,18 @@ CREATE TABLE "Journey" (
     CONSTRAINT "Journey_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "FormResponse" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "fieldsData" JSONB NOT NULL,
+    "openAIMessages" JSONB[],
+    "formId" TEXT NOT NULL,
+
+    CONSTRAINT "FormResponse_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
 
@@ -115,3 +127,6 @@ ALTER TABLE "Form" ADD CONSTRAINT "Form_userId_fkey" FOREIGN KEY ("userId") REFE
 
 -- AddForeignKey
 ALTER TABLE "Journey" ADD CONSTRAINT "Journey_formId_fkey" FOREIGN KEY ("formId") REFERENCES "Form"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "FormResponse" ADD CONSTRAINT "FormResponse_formId_fkey" FOREIGN KEY ("formId") REFERENCES "Form"("id") ON DELETE CASCADE ON UPDATE CASCADE;

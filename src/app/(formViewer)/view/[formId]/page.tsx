@@ -12,6 +12,14 @@ async function getFormDetails(formId: Form["id"]) {
     where: {
       id: formId,
     },
+    include: {
+      // journey sorted by id
+      journey: {
+        orderBy: {
+          id: "asc",
+        },
+      },
+    },
   });
 }
 

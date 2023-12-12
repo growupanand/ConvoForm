@@ -68,9 +68,9 @@ model Workspace {
 }
 
 model Form {
-  id                    String    @id @default(cuid())
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  id                    String         @id @default(cuid())
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
   name                  String
   overview              String
   welcomeScreenTitle    String
@@ -78,8 +78,9 @@ model Form {
   welcomeScreenCTALabel String
   journey               Journey[]
   aboutCompany          String
-  isPublished           Boolean   @default(false)
+  isPublished           Boolean        @default(false)
   publishedAt           DateTime?
+  formResponse          FormResponse[]
 
   workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
@@ -92,4 +93,16 @@ model Journey {
   fieldName String
   form      Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
   formId    String
+}
+
+model FormResponse {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  fieldsData     Json
+  openAIMessages Json[]
+
+  form   Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId String
 }
