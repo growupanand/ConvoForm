@@ -15,16 +15,6 @@ Modern form builder powered by AI
 
 
 
-## Roadmap
-
-- [x] Implement [Basic saas](https://github.com/growupanand/smart-form-wizard/milestone/1)
-- [x] Implement Smart Form Builder
-- [x] Implement Smart Form View Page
-- [ ] Save user filled data and transcript
-
-
-
-
 ## Local Setup
 
 Follow these steps to set up the project locally on your machine.
@@ -43,7 +33,7 @@ Make sure you have the following installed:
 
 ```bash
 git clone https://github.com/growupanand/smart-form-wizard.git
-cd your-project
+cd smart-form-wizard
 ```
 
 
@@ -55,9 +45,9 @@ npm install
 
 ### Configuration
 
- 1. Copy the .env.example file to create a new .env file.
+ 1. Copy the .env.example file to .env file.
 	```bash
-	cp .env.example .env.local
+	cp .env.example .env
 	```
 2. Open the `.env` file and update the necessary environment variables.
 
@@ -73,8 +63,8 @@ Visit [http://localhost:3000](http://localhost:3000/) in your browser to see the
 ```bash
 npm run build
 ```
+or
 
-### Vercel Build
 To build the project for Vercel deployment, run:
 ```bash
 npm run vercel-build
