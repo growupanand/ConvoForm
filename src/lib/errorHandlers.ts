@@ -14,7 +14,7 @@ export const sendErrorResponse = (error: any) => {
   }
 
   return NextResponse.json(
-    { nonFieldError: "something went wrong" },
+    { nonFieldError: "something went wrong", code: error.cause?.code },
     { status: 500 }
   );
 };

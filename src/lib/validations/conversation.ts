@@ -8,4 +8,5 @@ export const ConversationPayloadSchema = z.object({
     })
   ),
   isFormSubmitted: z.boolean(),
+  isPreview: z.boolean().optional(),
 });
