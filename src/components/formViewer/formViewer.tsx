@@ -50,9 +50,8 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
     api: apiEndpoint,
     onResponse: () => setState((s) => ({ ...s, isFormBusy: false })),
     onFinish: handleOnResponse,
-    body: { isFormSubmitted },
+    body: { isFormSubmitted, isPreview },
   });
-  console.log({ messages });
 
   const getFieldIndexFromName = (fieldName: string) => {
     const fieldNames = form.journey.map((j) => j.fieldName);
@@ -108,6 +107,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
             },
           ],
           isFormSubmitted: true,
+          isPreview,
         },
       });
       toast({

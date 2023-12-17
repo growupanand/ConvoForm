@@ -32,7 +32,7 @@ export async function POST(
     const { params } = routeContextSchema.parse(context);
     const requestJson = await req.json();
     const reqPayload = ConversationPayloadSchema.parse(requestJson);
-    const { isFormSubmitted } = reqPayload;
+    const { isFormSubmitted, isPreview } = reqPayload;
 
     // generate messages
     const form = await db.form.findUnique({
@@ -98,13 +98,15 @@ export async function POST(
     }
     const responseJson = JSON.parse(response);
 
-    await db.formResponse.create({
-      data: {
-        formId: params.formId,
-        fieldsData: responseJson,
-        openAIMessages: messages as Record<string, any>[],
-      },
-    });
+    if (!isPreview) {
+      await db.formResponse.create({
+        data: {
+          formId: params.formId,
+          fieldsData: responseJson,
+          openAIMessages: messages as Record<string, any>[],
+        },
+      });
+    }
 
     return NextResponse.json(
       { success: true },
