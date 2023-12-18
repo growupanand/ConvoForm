@@ -1,15 +1,13 @@
 "use client";
 
 import { Form, FormField } from "@prisma/client";
-import { AppNavbarButton } from "@/components/appNavbar/appNavbarButton";
-import BrandName from "@/components/brandName";
 import FormEditor from "@/components/formEditor";
 import { FormViewer } from "@/components/formViewer/formViewer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Copy, ExternalLink, RotateCw } from "lucide-react";
+import { ChevronRight, Copy, ExternalLink, Home, RotateCw } from "lucide-react";
 import { toast } from "./ui/use-toast";
 import {
   Tooltip,
@@ -62,11 +60,15 @@ export const FormEditorPage = (props: Props) => {
   return (
     <div className="flex h-screen">
       <div className=" w-[400px] bg-gray-50 overflow-auto">
-        <div className="flex justify-between items-center sticky top-0 p-3 bg-gray-50/75 backdrop-blur-md">
-          <AppNavbarButton />
-          <BrandName />
+        <div className="flex justify-start items-center sticky top-0 p-3 bg-gray-50/75 backdrop-blur-md">
+          <Link href={"/dashboard"}>
+            <Button variant="link">
+              <Home className="w-4 h-4 mr-2" /> Dashboard
+            </Button>
+          </Link>
+          <ChevronRight className="w-4 h-4" />
           <Link href={`/workspaces/${form.workspaceId}`}>
-            <Button variant="ghost">Back</Button>
+            <Button variant="link">Workspace</Button>
           </Link>
         </div>
         <Card className="bg-transparent border-0 shadow-none">
