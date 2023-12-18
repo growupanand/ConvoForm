@@ -7,7 +7,7 @@ export const formCreateSchema = z.object({
   welcomeScreenMessage: z.string().max(255),
   welcomeScreenCTALabel: z.string().max(255),
   aboutCompany: z.string().max(255),
-  journey: z.array(
+  formField: z.array(
     z.object({
       fieldName: z.string().max(255),
     })
@@ -21,7 +21,7 @@ export const formUpdateSchema = z.object({
   welcomeScreenMessage: z.string().min(1).max(255),
   welcomeScreenCTALabel: z.string().min(1).max(255),
   aboutCompany: z.string().min(1).max(255),
-  journey: z
+  formField: z
     .array(
       z.object({
         fieldName: z.string().min(1).max(255),

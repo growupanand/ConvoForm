@@ -20,20 +20,20 @@ export async function POST(
     const user = await getCurrentUser();
     const requestJson = await req.json();
     const reqPayload = formCreateSchema.parse(requestJson);
-    const { journey, ...newFormData } = reqPayload;
+    const { formField, ...newFormData } = reqPayload;
     const newForm = await db.form.create({
       data: {
         ...newFormData,
         workspaceId: params.workspaceId,
         userId: user.id,
-        journey: {
-          create: journey,
+        formField: {
+          create: formField,
         },
       },
     });
 
-    // Fetch the newly created journeys although they are created but we don't have it in newForm.
-    const newJourneys = await db.journey.findMany({
+    // Fetch the newly created formFields although they are created but we don't have it in newForm.
+    const newFormFields = await db.formField.findMany({
       where: {
         formId: newForm.id,
       },
@@ -41,7 +41,7 @@ export async function POST(
 
     const responseJson = {
       ...newForm,
-      journey: newJourneys,
+      formField: newFormFields,
     };
 
     return NextResponse.json(responseJson, { status: 201 });

@@ -59,28 +59,31 @@ model VerificationToken {
 
 model Workspace {
   id        String   @id @default(cuid())
-  name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Form      Form[]
+
+  name String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Form   Form[]
 }
 
 model Form {
-  id                    String         @id @default(cuid())
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   name                  String
   overview              String
   welcomeScreenTitle    String
   welcomeScreenMessage  String
   welcomeScreenCTALabel String
-  journey               Journey[]
+  formField             FormField[]
   aboutCompany          String
   isPublished           Boolean        @default(false)
   publishedAt           DateTime?
-  formResponse          FormResponse[]
+  conversation          Conversation[]
 
   workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
@@ -88,21 +91,25 @@ model Form {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Journey {
-  id        String @id @default(cuid())
-  fieldName String
-  form      Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
-  formId    String
-}
-
-model FormResponse {
+model FormField {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  fieldsData     Json
-  openAIMessages Json[]
+  fieldName String
 
-  form   Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
   formId String
+  form   Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  formFieldsData Json
+  transcript     Json[]
+
+  formId String
+  form   Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
 }

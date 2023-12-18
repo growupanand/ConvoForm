@@ -18,12 +18,15 @@ import { useState } from "react";
 import { apiClient } from "@/lib/fetch";
 import { Check, Loader2 } from "lucide-react";
 import { toast } from "./ui/use-toast";
-import { Journey, Form as PrismaForm } from "@prisma/client";
+import {
+  FormField as PrismaFormField,
+  Form as PrismaForm,
+} from "@prisma/client";
 
-type Form = PrismaForm & { journey: Journey[] };
+type Form = PrismaForm & { formField: PrismaFormField[] };
 
 type Props = {
-  form: Form & { journey: Journey[] };
+  form: Form & { formField: PrismaFormField[] };
   onUpdated?: (newForm: Form) => void;
 };
 
@@ -31,7 +34,7 @@ const formSchema = formUpdateSchema;
 
 type State = {
   isFormBusy: boolean;
-  form: Form & { journey: Journey[] };
+  form: Form & { formField: PrismaFormField[] };
 };
 
 export default function FormEditor(props: Props) {
@@ -48,7 +51,7 @@ export default function FormEditor(props: Props) {
 
   const { fields, append, remove } = useFieldArray({
     control: formHook.control,
-    name: "journey",
+    name: "formField",
   });
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
@@ -165,12 +168,12 @@ export default function FormEditor(props: Props) {
           />
 
           <div className="grid gap-2">
-            <FormLabel className="mb-2">Journey</FormLabel>
+            <FormLabel className="mb-2">Form Field</FormLabel>
             {fields.map((item, index) => (
               <FormField
                 key={item.id}
                 control={formHook.control}
-                name={`journey.${index}.fieldName`}
+                name={`formField.${index}.fieldName`}
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -197,7 +200,7 @@ export default function FormEditor(props: Props) {
                 onClick={() => append({ fieldName: "" })}
                 type="button"
               >
-                Add Journey Field
+                Add Field
               </Button>
             </div>
           </div>

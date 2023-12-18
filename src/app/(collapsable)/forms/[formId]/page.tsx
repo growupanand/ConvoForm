@@ -12,7 +12,7 @@ async function getFormDetails(formId: string) {
       id: formId,
     },
     include: {
-      journey: true,
+      formField: true,
     },
   });
 }
