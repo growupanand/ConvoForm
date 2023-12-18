@@ -47,9 +47,9 @@ CREATE TABLE "VerificationToken" (
 -- CreateTable
 CREATE TABLE "Workspace" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "name" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "Workspace_pkey" PRIMARY KEY ("id")
@@ -75,24 +75,26 @@ CREATE TABLE "Form" (
 );
 
 -- CreateTable
-CREATE TABLE "Journey" (
-    "id" TEXT NOT NULL,
-    "fieldName" TEXT NOT NULL,
-    "formId" TEXT NOT NULL,
-
-    CONSTRAINT "Journey_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "FormResponse" (
+CREATE TABLE "FormField" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "fieldsData" JSONB NOT NULL,
-    "openAIMessages" JSONB[],
+    "fieldName" TEXT NOT NULL,
     "formId" TEXT NOT NULL,
 
-    CONSTRAINT "FormResponse_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "FormField_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Conversation" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "formFieldsData" JSONB NOT NULL,
+    "transcript" JSONB[],
+    "formId" TEXT NOT NULL,
+
+    CONSTRAINT "Conversation_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -126,7 +128,7 @@ ALTER TABLE "Form" ADD CONSTRAINT "Form_workspaceId_fkey" FOREIGN KEY ("workspac
 ALTER TABLE "Form" ADD CONSTRAINT "Form_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Journey" ADD CONSTRAINT "Journey_formId_fkey" FOREIGN KEY ("formId") REFERENCES "Form"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "FormField" ADD CONSTRAINT "FormField_formId_fkey" FOREIGN KEY ("formId") REFERENCES "Form"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "FormResponse" ADD CONSTRAINT "FormResponse_formId_fkey" FOREIGN KEY ("formId") REFERENCES "Form"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Conversation" ADD CONSTRAINT "Conversation_formId_fkey" FOREIGN KEY ("formId") REFERENCES "Form"("id") ON DELETE CASCADE ON UPDATE CASCADE;
