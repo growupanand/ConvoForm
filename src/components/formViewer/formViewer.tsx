@@ -2,14 +2,13 @@
 
 import { Form, FormField } from "@prisma/client";
 import { WelcomeScreen } from "./welcomeScreen";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FormFieldsViewer } from "./formFields";
 import { useChat } from "ai/react";
 import { Message } from "ai";
 import { EndScreen } from "./endScreen";
 import { toast } from "../ui/use-toast";
 import { Button } from "../ui/button";
-import { apiClient } from "@/lib/fetch";
 
 type Props = {
   form: Form & { formField: FormField[] };
@@ -20,10 +19,7 @@ type Props = {
 type State = {
   formStage: FormStage;
   isFormBusy: boolean;
-  // we can use this to show a progress of form filling
-  lastValidAnsweredFieldIndex: number;
-  isFormSubmitted: boolean;
-  currentFieldName: string;
+  isConversationFinished: boolean;
 };
 
 export type FormStage = "welcomeScreen" | "formFields" | "endScreen";
@@ -34,23 +30,16 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
   const [state, setState] = useState<State>({
     formStage: "welcomeScreen",
     isFormBusy: false,
-    lastValidAnsweredFieldIndex: -1,
-    isFormSubmitted: false,
-    currentFieldName: "",
+    isConversationFinished: false,
   });
 
-  const {
-    formStage: currentStage,
-    isFormBusy,
-    isFormSubmitted,
-    currentFieldName,
-  } = state;
+  const { formStage: currentStage, isFormBusy, isConversationFinished } = state;
 
   const { messages, input, handleInputChange, handleSubmit, append } = useChat({
     api: apiEndpoint,
     onResponse: () => setState((s) => ({ ...s, isFormBusy: false })),
     onFinish: handleOnResponse,
-    body: { isFormSubmitted, isPreview },
+    body: { isConversationFinished, isPreview },
   });
 
   const getFieldIndexFromName = (fieldName: string) => {
@@ -71,42 +60,26 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
       return;
     }
     const fieldIndex = getFieldIndexFromName(fieldName);
+    const isConversationFinished = fieldName.toLowerCase() === "finish";
 
     setState((s) => ({
       ...s,
       lastValidAnsweredFieldIndex: fieldIndex,
-      isFormSubmitted,
+      isConversationFinished,
       currentFieldName: fieldName,
     }));
   }
 
-  useEffect(() => {
-    const isFormSubmitted = currentFieldName.toLowerCase() === "finish";
-    if (isFormSubmitted) {
-      handleFormSubmitted();
-      gotoStage("endScreen");
-    }
-  }, [currentFieldName]);
-
-  async function handleFormSubmitted() {
+  const handleFormSubmitted = async () => {
     toast({
       title: "Saving form details...",
     });
+    gotoStage("endScreen");
+
     try {
-      await apiClient(`form/${form.id}/conversation`, {
-        method: "POST",
-        data: {
-          messages: [
-            ...messages,
-            {
-              content: "finish",
-              role: "user",
-              id: "2",
-            },
-          ],
-          isFormSubmitted: true,
-          isPreview,
-        },
+      await append({
+        content: "finish",
+        role: "user",
       });
       toast({
         title: "Form details saved successfully.",
@@ -129,7 +102,13 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
         ),
       });
     }
-  }
+  };
+
+  useEffect(() => {
+    if (isConversationFinished === true) {
+      handleFormSubmitted();
+    }
+  }, [isConversationFinished]);
 
   const getCurrentQuestion = () => {
     const assistantMessage = messages.findLast((m) => m.role === "assistant");

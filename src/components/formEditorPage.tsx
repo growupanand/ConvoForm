@@ -8,7 +8,7 @@ import { FormViewer } from "@/components/formViewer/formViewer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Copy, ExternalLink, RotateCw } from "lucide-react";
 import { toast } from "./ui/use-toast";
 import {
@@ -37,12 +37,12 @@ export const FormEditorPage = (props: Props) => {
     refresh: false,
   });
   const { form, refresh } = state;
+
   const formViewLink = `${window.location.origin}/view/${form.id}`;
 
   const onUpdateForm = (updatedForm: Form & { formField: FormField[] }) => {
     setState({ ...state, form: updatedForm, refresh: !state.refresh });
   };
-
   const copyLinkToClipboard = () => {
     navigator.clipboard.writeText(formViewLink);
     toast({
@@ -53,6 +53,11 @@ export const FormEditorPage = (props: Props) => {
   const refreshPreview = () => {
     setState({ ...state, refresh: !state.refresh });
   };
+
+  useEffect(() => {
+    if (window) {
+    }
+  }, [form]);
 
   return (
     <div className="flex h-screen">
