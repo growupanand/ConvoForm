@@ -12,14 +12,6 @@ async function getFormDetails(formId: Form["id"]) {
     where: {
       id: formId,
     },
-    include: {
-      // formField sorted by id
-      formField: {
-        orderBy: {
-          id: "asc",
-        },
-      },
-    },
   });
 }
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { Form, FormField } from "@prisma/client";
+import { Form } from "@prisma/client";
 import { WelcomeScreen } from "./welcomeScreen";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FormFieldsViewer } from "./formFields";
 import { useChat } from "ai/react";
 import { Message } from "ai";
@@ -11,7 +11,7 @@ import { toast } from "../ui/use-toast";
 import { Button } from "../ui/button";
 
 type Props = {
-  form: Form & { formField: FormField[] };
+  form: Form;
   refresh?: boolean;
   isPreview?: boolean;
 };
