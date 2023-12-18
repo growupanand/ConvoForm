@@ -22,9 +22,8 @@ export class SystemPromptService {
                  - You will ask only one field question at a time and in sequence.
                  - You will validate every form field value provided by user and on invalid value ask user to confirm this value.
                  - Question should be in one line string format not more than 25 words, because user will be able to see only one line at a time.
-                 - Every Question whether it is asked to confirm a invalid value, must have postfix "[field name]" at the end of question. 
-                 and if all fields are answered then postfix should be "finish". I will use this postfix to identify which field question is asked for.
-                 For example: "What is your name? [name]" or "Just to confirm, is sdaklfjsdklaf@sflkajsdlkf correct?? [email]" or "Thank you for filling the form. [finish]"
+                 - If all fields are answered then message postfix should be "finish". I will use this postfix to identify if conversation is finished.
+                 For example: "Thank you for filling the form. [finish]"
         
     
         Below is form context and fields information.

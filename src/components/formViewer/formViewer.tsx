@@ -20,9 +20,10 @@ type State = {
   formStage: FormStage;
   isFormBusy: boolean;
   isConversationFinished: boolean;
+  endScreenMessage: string;
 };
 
-export type FormStage = "welcomeScreen" | "formFields" | "endScreen";
+export type FormStage = "welcomeScreen" | "conversationFlow" | "endScreen";
 
 export function FormViewer({ form, refresh, isPreview }: Props) {
   const apiEndpoint = `/api/form/${form.id}/conversation`;
@@ -31,9 +32,15 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
     formStage: "welcomeScreen",
     isFormBusy: false,
     isConversationFinished: false,
+    endScreenMessage: "",
   });
 
-  const { formStage: currentStage, isFormBusy, isConversationFinished } = state;
+  const {
+    formStage: currentStage,
+    isFormBusy,
+    isConversationFinished,
+    endScreenMessage,
+  } = state;
 
   const { messages, input, handleInputChange, handleSubmit, append } = useChat({
     api: apiEndpoint,
@@ -42,32 +49,17 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
     body: { isConversationFinished, isPreview },
   });
 
-  const getFieldIndexFromName = (fieldName: string) => {
-    const fieldNames = form.formField.map((j) => j.fieldName);
-    return fieldNames.indexOf(fieldName);
-  };
-
-  const getFieldNameFromResponse = (message: string) => {
-    // get field name from response string, E.g. "What is your name? [name]" => "name"
-    const match = message.match(/\[([^[\]]*)\]/);
-    return match ? match[1] : null;
-  };
-
   function handleOnResponse(message: Message) {
-    // change field index
-    const fieldName = getFieldNameFromResponse(message.content);
-    if (!fieldName) {
-      return;
-    }
-    const fieldIndex = getFieldIndexFromName(fieldName);
-    const isConversationFinished = fieldName.toLowerCase() === "finish";
+    const match = message.content.match(/^(.*?)\s*\[([^\[\]]*)\]/);
+    const isConversationFinished = match && match[2].toLowerCase() === "finish";
 
-    setState((s) => ({
-      ...s,
-      lastValidAnsweredFieldIndex: fieldIndex,
-      isConversationFinished,
-      currentFieldName: fieldName,
-    }));
+    if (isConversationFinished) {
+      setState((s) => ({
+        ...s,
+        isConversationFinished: true,
+        endScreenMessage: match[1],
+      }));
+    }
   }
 
   const handleFormSubmitted = async () => {
@@ -135,9 +127,8 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
     append({
       content: "hello, i want to fill the form",
       role: "user",
-      id: "1",
     });
-    gotoStage("formFields");
+    gotoStage("conversationFlow");
   };
 
   useEffect(() => {
@@ -152,7 +143,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
         <WelcomeScreen form={form} onCTAClick={handleCTAClick} />
       )}
 
-      {currentStage === "formFields" && (
+      {currentStage === "conversationFlow" && (
         <FormFieldsViewer
           currentQuestion={getCurrentQuestion()}
           handleFormSubmit={handleFormSubmit}
@@ -161,7 +152,9 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
           isFormBusy={isFormBusy}
         />
       )}
-      {currentStage === "endScreen" && <EndScreen />}
+      {currentStage === "endScreen" && (
+        <EndScreen endScreenMessage={endScreenMessage} />
+      )}
     </div>
   );
 }
