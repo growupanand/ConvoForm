@@ -20,7 +20,7 @@ export async function PUT(
     const user = await getCurrentUser();
     const requestJson = await req.json();
     const reqPayload = formUpdateSchema.parse(requestJson);
-    const { journey, ...newFormData } = reqPayload;
+    const { formField: formField, ...newFormData } = reqPayload;
 
     const updatedForm = await db.form.update({
       where: {
@@ -29,16 +29,16 @@ export async function PUT(
       },
       data: {
         ...newFormData,
-        journey: {
+        formField: {
           deleteMany: {},
-          create: journey,
+          create: formField,
         },
         isPublished: true,
       },
     });
 
-    // Fetch the newly created journeys although they are created but we don't have it in newForm.
-    const newJourneys = await db.journey.findMany({
+    // Fetch the newly created formFields although they are created but we don't have it in newForm.
+    const newformFields = await db.formField.findMany({
       where: {
         formId: updatedForm.id,
       },
@@ -46,7 +46,7 @@ export async function PUT(
 
     const responseJson = {
       ...updatedForm,
-      journey: newJourneys,
+      formField: newformFields,
     };
 
     return NextResponse.json(responseJson, { status: 201 });

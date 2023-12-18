@@ -1,6 +1,6 @@
 "use client";
 
-import { Form, Journey } from "@prisma/client";
+import { Form, FormField } from "@prisma/client";
 import { WelcomeScreen } from "./welcomeScreen";
 import { useEffect, useState } from "react";
 import { FormFieldsViewer } from "./formFields";
@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 import { apiClient } from "@/lib/fetch";
 
 type Props = {
-  form: Form & { journey: Journey[] };
+  form: Form & { formField: FormField[] };
   refresh?: boolean;
   isPreview?: boolean;
 };
@@ -54,7 +54,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
   });
 
   const getFieldIndexFromName = (fieldName: string) => {
-    const fieldNames = form.journey.map((j) => j.fieldName);
+    const fieldNames = form.formField.map((j) => j.fieldName);
     return fieldNames.indexOf(fieldName);
   };
 
@@ -83,8 +83,6 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
   useEffect(() => {
     const isFormSubmitted = currentFieldName.toLowerCase() === "finish";
     if (isFormSubmitted) {
-      // console.log({ messages });
-      // console.debug("form submitted");
       handleFormSubmitted();
       gotoStage("endScreen");
     }

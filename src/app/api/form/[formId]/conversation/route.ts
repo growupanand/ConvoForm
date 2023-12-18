@@ -40,7 +40,7 @@ export async function POST(
         id: params.formId,
       },
       include: {
-        journey: {
+        formField: {
           orderBy: {
             id: "asc",
           },
@@ -52,8 +52,8 @@ export async function POST(
       throw new Error("Form not found");
     }
 
-    const { overview, aboutCompany, journey } = form;
-    const formFields = journey.map((item) => item.fieldName);
+    const { overview, aboutCompany, formField } = form;
+    const formFields = formField.map((item) => item.fieldName);
 
     const systemPrompt = getSystemPrompt(
       overview,
@@ -99,11 +99,11 @@ export async function POST(
     const responseJson = JSON.parse(response);
 
     if (!isPreview) {
-      await db.formResponse.create({
+      await db.conversation.create({
         data: {
           formId: params.formId,
-          fieldsData: responseJson,
-          openAIMessages: messages as Record<string, any>[],
+          formFieldsData: responseJson,
+          transcript: messages as Record<string, any>[],
         },
       });
     }

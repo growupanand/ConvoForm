@@ -13,8 +13,8 @@ async function getFormDetails(formId: Form["id"]) {
       id: formId,
     },
     include: {
-      // journey sorted by id
-      journey: {
+      // formField sorted by id
+      formField: {
         orderBy: {
           id: "asc",
         },

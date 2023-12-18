@@ -1,6 +1,6 @@
 "use client";
 
-import { Form, Journey } from "@prisma/client";
+import { Form, FormField } from "@prisma/client";
 import { AppNavbarButton } from "@/components/appNavbar/appNavbarButton";
 import BrandName from "@/components/brandName";
 import FormEditor from "@/components/formEditor";
@@ -20,13 +20,13 @@ import {
 
 type Props = {
   form: Form & {
-    journey: Journey[];
+    formField: FormField[];
   };
 };
 
 type State = {
   form: Form & {
-    journey: Journey[];
+    formField: FormField[];
   };
   refresh: boolean;
 };
@@ -39,7 +39,7 @@ export const FormEditorPage = (props: Props) => {
   const { form, refresh } = state;
   const formViewLink = `${window.location.origin}/view/${form.id}`;
 
-  const onUpdateForm = (updatedForm: Form & { journey: Journey[] }) => {
+  const onUpdateForm = (updatedForm: Form & { formField: FormField[] }) => {
     setState({ ...state, form: updatedForm, refresh: !state.refresh });
   };
 
