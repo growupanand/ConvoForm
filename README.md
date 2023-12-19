@@ -76,7 +76,11 @@ Here are some screenshots from the app
 
 ![image](https://github.com/growupanand/smart-form-wizard/assets/29487686/fbe807e7-857f-4b7c-9584-872d13afc08c)
 
-![image](https://github.com/growupanand/smart-form-wizard/assets/29487686/439eb1c4-b02f-485b-95fa-c33200941d1a)
+![image](https://github.com/growupanand/smart-form-wizard/assets/29487686/60e9e41a-395f-4173-9b87-13338023dbd8)
+
+![image](https://github.com/growupanand/smart-form-wizard/assets/29487686/1c3ed609-1925-4d92-b218-1636c12ff01a)
+
+
 
 ![image](https://github.com/growupanand/smart-form-wizard/assets/29487686/9b566ba2-fe0b-4638-8b78-5b40e03dd808)
 
