@@ -90,6 +90,7 @@ CREATE TABLE "Conversation" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "name" TEXT NOT NULL,
     "formFieldsData" JSONB NOT NULL,
     "transcript" JSONB[],
     "formId" TEXT NOT NULL,

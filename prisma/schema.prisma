@@ -107,6 +107,7 @@ model Conversation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  name           String
   formFieldsData Json
   transcript     Json[]
 

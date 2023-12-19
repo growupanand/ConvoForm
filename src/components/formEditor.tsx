@@ -94,22 +94,6 @@ export default function FormEditor(props: Props) {
         <form onSubmit={formHook.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={formHook.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    placeholder="Form name"
-                    className="text-2xl font-bold bg-transparent border-0 shadow-none focus-visible:ring-transparent	 focus-visible:ring-0"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={formHook.control}
             name="overview"
             render={({ field }) => (
               <FormItem>

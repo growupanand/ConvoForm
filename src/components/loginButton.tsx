@@ -29,7 +29,6 @@ export default function LoginButton() {
   useEffect(() => {
     (async () => {
       const providers = await getProviders();
-      console.log({ providers });
       setState({
         isLoading: false,
         providers,

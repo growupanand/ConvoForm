@@ -29,3 +29,20 @@ export const formUpdateSchema = z.object({
     )
     .min(1),
 });
+
+export const formPatchSchema = z.object({
+  name: z.string().min(1).max(255).optional(),
+  overview: z.string().min(1).max(255).optional(),
+  welcomeScreenTitle: z.string().min(1).max(255).optional(),
+  welcomeScreenMessage: z.string().min(1).max(255).optional(),
+  welcomeScreenCTALabel: z.string().min(1).max(255).optional(),
+  aboutCompany: z.string().min(1).max(255).optional(),
+  formField: z
+
+    .array(
+      z.object({
+        fieldName: z.string().min(1).max(255),
+      })
+    )
+    .optional(),
+});

@@ -1,18 +1,10 @@
-import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
-import { FormEditorContextProvider } from "./context";
-import FormSideBar from "@/components/formEditor/formSideBar";
-
-async function getFormDetails(formId: string) {
-  return await db.form.findFirst({
-    where: {
-      id: formId,
-    },
-    include: {
-      formField: true,
-    },
-  });
-}
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ChevronRight, Home } from "lucide-react";
+import NavLinks from "@/components/formEditor/navLinks";
+import { getFormDetails } from "@/lib/dbControllers/form";
+import FormNameInput from "@/components/formEditor/formNameInput";
 
 type Props = {
   children: React.ReactNode;
@@ -29,13 +21,25 @@ export default async function AuthLayout({
     notFound();
   }
   return (
-    <FormEditorContextProvider form={form}>
-      <div className="flex h-screen">
-        <div className=" w-[400px] bg-gray-50 overflow-auto">
-          <FormSideBar />
+    <div className="h-screen flex flex-col ">
+      <div className="flex justify-between items-center sticky top-0 bg-gray-50/75 backdrop-blur-md shadow-sm">
+        <div className="flex items-center">
+          <Link href={"/dashboard"}>
+            <Button variant="link">
+              <Home className="w-4 h-4 mr-2" /> Dashboard
+            </Button>
+          </Link>
+          <ChevronRight className="w-4 h-4" />
+          <Link href={`/workspaces/${form.workspaceId}`}>
+            <Button variant="link">Workspace</Button>
+          </Link>
         </div>
-        <div className="grow flex flex-col">{children}</div>
+        <FormNameInput form={form} />
+        <div className="my-3 flex items-center gap-2 px-3">
+          <NavLinks form={form} />
+        </div>
       </div>
-    </FormEditorContextProvider>
+      {children}
+    </div>
   );
 }

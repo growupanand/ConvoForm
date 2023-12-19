@@ -6,15 +6,18 @@ import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
 import { useState } from "react";
 import { CopyLinkButton } from "../copyLinkButton";
-import { useFormEditorContext } from "@/app/(formEditorPage)/context";
 import Link from "next/link";
+import { Form } from "@prisma/client";
+
+type Props = {
+  form: Form;
+};
 
 type State = {
   refresh: boolean;
 };
 
-export default function FormPreview() {
-  const { form } = useFormEditorContext();
+export default function FormPreview({ form }: Props) {
   const formViewLink = `${window.location.origin}/view/${form.id}`;
 
   const [state, setState] = useState<State>({

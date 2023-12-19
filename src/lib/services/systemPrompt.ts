@@ -1,9 +1,9 @@
 import { ChatCompletionRequestMessage } from "openai-edge";
-import { ConversationForm } from "../types/form";
+import { FormWithFields } from "../types/form";
 
 export class SystemPromptService {
-  form: ConversationForm;
-  constructor(form: ConversationForm) {
+  form: FormWithFields;
+  constructor(form: FormWithFields) {
     this.form = form;
   }
 
@@ -43,7 +43,7 @@ export class SystemPromptService {
     } as ChatCompletionRequestMessage;
   }
 
-  getConversationJSONPrompt() {
+  getFormFieldsDataFromConversationPrompt() {
     return `
     Previously you were a website where user can fill form.
     Now you have all the form data filled by user. You need to create a JSON object from this data.
@@ -77,10 +77,42 @@ export class SystemPromptService {
     `;
   }
 
-  getConversationJSONPromptMessage() {
+  getFormFieldsDataFromConversationPromptMessage() {
     return {
       role: "system",
-      content: this.getConversationJSONPrompt(),
+      content: this.getFormFieldsDataFromConversationPrompt(),
+    } as ChatCompletionRequestMessage;
+  }
+
+  getGenerateConversationNamePrompt(formFieldData: Record<string, string>) {
+    return `
+    Previously you were a website where user can fill form.
+    Now you have all the form data filled by user. You need to generate the short name of this conversation.
+
+      Follow below rules.
+
+      RULES:
+              - Only send the name of the conversation in string format.
+              - Don't send any other data in response and don't send " or '.
+              - If you find user name in form data then return that name only.
+              - Conversation name should not more than one words.
+
+    Below is form context and fields information.
+
+    About the form: ${this.form.overview}
+    
+    About company who have created the form: ${this.form.aboutCompany}
+
+    Form fields with data JSON stringify: [${JSON.stringify(formFieldData)}]
+    `;
+  }
+
+  getGenerateConversationNamePromptMessage(
+    formFieldData: Record<string, string>
+  ) {
+    return {
+      role: "system",
+      content: this.getGenerateConversationNamePrompt(formFieldData),
     } as ChatCompletionRequestMessage;
   }
 }
