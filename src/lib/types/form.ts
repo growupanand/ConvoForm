@@ -1,5 +1,5 @@
 import { Form, FormField } from "@prisma/client";
 
-export type ConversationForm = Form & {
+export type FormWithFields = Form & {
   formField: FormField[];
 };

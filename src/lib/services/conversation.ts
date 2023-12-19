@@ -7,7 +7,8 @@ import {
 import { OPENAI_API_KEY, OPEN_AI_MODEL } from "../constants";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import { db } from "../db";
-import { ConversationForm } from "../types/form";
+import { FormWithFields } from "../types/form";
+import { FormFieldData } from "../types/conversation";
 
 // Create an OpenAI API client (that's edge friendly!)
 const config = new Configuration({
@@ -16,11 +17,22 @@ const config = new Configuration({
 const openai = new OpenAIApi(config);
 
 export class ConversationService extends SystemPromptService {
-  form: ConversationForm;
+  form: FormWithFields;
 
-  constructor(form: ConversationForm) {
+  constructor(form: FormWithFields) {
     super(form);
     this.form = form;
+  }
+
+  public getOpenAIResponse(
+    messages: ChatCompletionRequestMessage[],
+    stream: boolean = true
+  ) {
+    return openai.createChatCompletion({
+      model: OPEN_AI_MODEL,
+      stream,
+      messages,
+    });
   }
 
   public async getNextQuestion(
@@ -28,11 +40,10 @@ export class ConversationService extends SystemPromptService {
     stream: boolean = true
   ) {
     const systemMessage = this.getConversationFlowPromptMessage();
-    const openAiResponse = await openai.createChatCompletion({
-      model: OPEN_AI_MODEL,
-      stream,
-      messages: [systemMessage, ...messages],
-    });
+    const openAiResponse = await this.getOpenAIResponse([
+      systemMessage,
+      ...messages,
+    ]);
     if (stream) {
       const stream = OpenAIStream(openAiResponse);
       return new StreamingTextResponse(stream);
@@ -42,14 +53,13 @@ export class ConversationService extends SystemPromptService {
 
   public async getFormFieldsDataFromConversation(
     messages: ChatCompletionRequestMessage[]
-  ): Promise<Record<string, string>> {
-    const systemMessage = this.getConversationJSONPromptMessage();
+  ): Promise<FormFieldData> {
+    const systemMessage = this.getFormFieldsDataFromConversationPromptMessage();
     try {
-      const openAiResponse = await openai.createChatCompletion({
-        model: OPEN_AI_MODEL,
-        stream: false,
-        messages: [systemMessage, ...messages],
-      });
+      const openAiResponse = await this.getOpenAIResponse(
+        [systemMessage, ...messages],
+        false
+      );
       const openAiResponseJson = await openAiResponse.json();
       const conversationJSONString =
         openAiResponseJson.choices[0].message.content;
@@ -61,16 +71,43 @@ export class ConversationService extends SystemPromptService {
     }
   }
 
+  public async generateConversationName(formFieldData: FormFieldData) {
+    const systemMessage =
+      this.getGenerateConversationNamePromptMessage(formFieldData);
+    try {
+      const openAiResponse = await this.getOpenAIResponse(
+        [systemMessage],
+        false
+      );
+      const openAiResponseJson = await openAiResponse.json();
+      return openAiResponseJson.choices[0].message.content;
+    } catch (error) {
+      const errorMessage = "Unable to generate conversation name";
+      console.error(errorMessage, error);
+      throw new Error(errorMessage);
+    }
+  }
+
   public async saveConversation(messages: ChatCompletionRequestMessage[]) {
-    const formFieldsData = await this.getFormFieldsDataFromConversation(
-      messages
-    );
-    return await db.conversation.create({
-      data: {
-        formId: this.form.id,
-        formFieldsData,
-        transcript: messages as Record<string, any>[],
-      },
-    });
+    try {
+      const formFieldsData = await this.getFormFieldsDataFromConversation(
+        messages
+      );
+      const conversationName = await this.generateConversationName(
+        formFieldsData
+      );
+      return await db.conversation.create({
+        data: {
+          name: conversationName,
+          formId: this.form.id,
+          formFieldsData,
+          transcript: messages as Record<string, any>[],
+        },
+      });
+    } catch (error) {
+      const errorMessage = "Unable to save conversation";
+      console.error(errorMessage, error);
+      throw new Error(errorMessage);
+    }
   }
 }
