@@ -1,14 +1,13 @@
 import ConversationsCard from "@/components/formEditor/conversationsCard";
 import { db } from "@/lib/db";
 import { Form } from "@prisma/client";
-import { redirect } from "next/navigation";
 
 type Props = {
   params: { formId: string; conversationId: string };
   children: React.ReactNode;
 };
 
-export const getFormConversations = async (formId: Form["id"]) => {
+const getFormConversations = async (formId: Form["id"]) => {
   return await db.conversation.findMany({
     where: {
       formId,
