@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { Form } from "@prisma/client";
 
 type Props = {
-  params: { formId: string; conversationId: string };
+  params: { formId: string };
   children: React.ReactNode;
 };
 

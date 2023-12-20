@@ -1,8 +1,10 @@
-import { Conversation, Form } from "@prisma/client";
+"use client";
+import { Conversation } from "@prisma/client";
 import { Button } from "./ui/button";
 import { FileText } from "lucide-react";
-import { formatDate, timeAgo } from "@/lib/utils";
+import { cn, timeAgo } from "@/lib/utils";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 type Props = {
   formId: string;
@@ -11,6 +13,9 @@ type Props = {
 
 export default function ConversationList(props: Props) {
   const { conversations, formId } = props;
+  const params = useParams();
+  const { conversationId } = params;
+
   return (
     <div className="flex flex-col">
       {conversations.map((conversation) => (
@@ -18,7 +23,10 @@ export default function ConversationList(props: Props) {
           <Link href={`/forms/${formId}/conversations/${conversation.id}`}>
             <Button
               variant="link"
-              className="w-full justify-between hover:no-underline text-gray-500 hover:text-gray-800"
+              className={cn(
+                "w-full justify-between hover:no-underline text-gray-500 hover:text-gray-800",
+                conversationId === conversation.id && "text-gray-800"
+              )}
             >
               <div className="flex items-center">
                 <FileText className="w-4 h-4 mr-3" />
