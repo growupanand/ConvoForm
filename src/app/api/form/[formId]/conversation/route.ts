@@ -2,7 +2,6 @@ import { ConversationService } from "@/lib/services/conversation";
 import { db } from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { ConversationPayloadSchema } from "@/lib/validations/conversation";
-import { NextResponse } from "next/server";
 import { z } from "zod";
 
 const routeContextSchema = z.object({
@@ -19,7 +18,7 @@ export async function POST(
     const { params } = routeContextSchema.parse(context);
     const requestJson = await req.json();
     const reqPayload = ConversationPayloadSchema.parse(requestJson);
-    const { isConversationFinished, isPreview } = reqPayload;
+    const { isPreview } = reqPayload;
 
     const form = await db.form.findUnique({
       where: {
@@ -42,22 +41,9 @@ export async function POST(
       });
     }
 
-    const conversation = new ConversationService(form);
+    const conversation = new ConversationService(form, isPreview);
 
-    if (!isConversationFinished) {
-      return conversation.getNextQuestion(reqPayload.messages);
-    }
-
-    if (!isPreview) {
-      await conversation.saveConversation(reqPayload.messages);
-    }
-
-    return NextResponse.json(
-      { success: true },
-      {
-        status: 200,
-      }
-    );
+    return conversation.getNextQuestion(reqPayload.messages);
   } catch (error) {
     return sendErrorResponse(error);
   }
