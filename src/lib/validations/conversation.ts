@@ -7,6 +7,5 @@ export const ConversationPayloadSchema = z.object({
       content: z.string().min(1).max(255),
     })
   ),
-  isConversationFinished: z.boolean(),
   isPreview: z.boolean().optional(),
 });
