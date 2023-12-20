@@ -20,7 +20,7 @@ export default function NavLinks({ form }: Props) {
     {
       label: "Conversations",
       href: `/forms/${form.id}/conversations`,
-      isActive: pathName === `/forms/${form.id}/conversations`,
+      isActive: pathName.includes(`/forms/${form.id}/conversations`),
     },
   ] as NavLink[];
 

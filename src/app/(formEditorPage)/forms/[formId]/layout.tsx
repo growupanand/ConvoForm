@@ -5,6 +5,7 @@ import { ChevronRight, Home } from "lucide-react";
 import NavLinks from "@/components/formEditor/navLinks";
 import { getFormDetails } from "@/lib/dbControllers/form";
 import FormNameInput from "@/components/formEditor/formNameInput";
+import { getCurrentUser } from "@/lib/session";
 
 type Props = {
   children: React.ReactNode;
@@ -16,7 +17,9 @@ export default async function AuthLayout({
   params,
 }: Readonly<Props>) {
   const { formId } = params;
-  const form = await getFormDetails(formId);
+  const user = await getCurrentUser();
+  const form = await getFormDetails(formId, user.id);
+  console.log({ formId });
   if (!form) {
     notFound();
   }
