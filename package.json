@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "vercel-build": "prisma-migrate-deploy && next build",
+    "vercel-build": "npm run prisma-migrate-deploy && next build",
     "reset-db": "prisma migrate reset",
     "prisma-migrate-dev": "prisma migrate dev",
     "prisma-migrate-deploy": "prisma migrate deploy",
