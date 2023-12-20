@@ -19,7 +19,6 @@ export default async function AuthLayout({
   const { formId } = params;
   const user = await getCurrentUser();
   const form = await getFormDetails(formId, user.id);
-  console.log({ formId });
   if (!form) {
     notFound();
   }

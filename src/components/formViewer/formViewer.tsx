@@ -9,6 +9,10 @@ import { Message } from "ai";
 import { EndScreen } from "./endScreen";
 import { toast } from "../ui/use-toast";
 import { Button } from "../ui/button";
+import {
+  CONVERSATION_END_MESSAGE,
+  CONVERSATION_START_MESSAGE,
+} from "@/lib/constants";
 
 type Props = {
   form: Form;
@@ -51,7 +55,8 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
 
   function handleOnResponse(message: Message) {
     const match = message.content.match(/^(.*?)\s*\[([^\[\]]*)\]/);
-    const isConversationFinished = match && match[2].toLowerCase() === "finish";
+    const isConversationFinished =
+      match && match[2].toLowerCase() === CONVERSATION_END_MESSAGE;
 
     if (isConversationFinished) {
       setState((s) => ({
@@ -70,7 +75,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
 
     try {
       await append({
-        content: "finish",
+        content: CONVERSATION_END_MESSAGE,
         role: "user",
       });
       toast({
@@ -125,7 +130,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
   const handleCTAClick = () => {
     setState((s) => ({ ...s, isFormBusy: true }));
     append({
-      content: "hello, i want to fill the form",
+      content: CONVERSATION_START_MESSAGE,
       role: "user",
     });
     gotoStage("conversationFlow");

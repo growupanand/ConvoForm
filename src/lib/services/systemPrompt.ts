@@ -1,5 +1,6 @@
 import { ChatCompletionRequestMessage } from "openai-edge";
 import { FormWithFields } from "../types/form";
+import { CONVERSATION_END_MESSAGE } from "../constants";
 
 export class SystemPromptService {
   form: FormWithFields;
@@ -22,7 +23,7 @@ export class SystemPromptService {
                  - You will ask only one field question at a time and in sequence.
                  - You will validate every form field value provided by user and on invalid value ask user to confirm this value.
                  - Question should be in one line string format not more than 25 words, because user will be able to see only one line at a time.
-                 - If all fields are answered then message postfix should be "finish". I will use this postfix to identify if conversation is finished.
+                 - If all fields are answered then message postfix should be ${CONVERSATION_END_MESSAGE}. I will use this postfix to identify if conversation is finished.
                  For example: "Thank you for filling the form. [finish]"
         
     
