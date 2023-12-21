@@ -32,7 +32,7 @@ export default function ConversationList(props: Props) {
                 <FileText className="w-4 h-4 mr-3" />
                 <span>{conversation.name}</span>
               </div>
-              <span>{timeAgo(conversation.createdAt.toDateString())}</span>
+              <span>{timeAgo(conversation.createdAt)}</span>
             </Button>
           </Link>
         </div>

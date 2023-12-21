@@ -15,7 +15,7 @@ export function formatDate(input: string | number): string {
 }
 
 // get time ago from date
-export function timeAgo(date: string | number) {
+export function timeAgo(date: string | number | Date) {
   const seconds = Math.floor(
     (new Date().getTime() - new Date(date).getTime()) / 1000
   );
