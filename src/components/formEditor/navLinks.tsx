@@ -1,15 +1,15 @@
 "use client";
 import Link from "next/link";
-import { Button } from "../ui/button";
 import { usePathname } from "next/navigation";
 import { NavLink } from "@/lib/types/navLink";
 import { Form } from "@prisma/client";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 
 type Props = {
   form: Form;
 };
 
-export default function NavLinks({ form }: Props) {
+export default function NavLinks({ form }: Readonly<Props>) {
   const pathName = usePathname();
   const navLinks = [
     {
@@ -24,18 +24,19 @@ export default function NavLinks({ form }: Props) {
     },
   ] as NavLink[];
 
+  const activeLinkLabel = navLinks.find((link) => link.isActive)?.label;
+
   return (
-    <>
-      {navLinks.map((link) => (
-        <Link className="flex-1" href={link.href} key={link.href}>
-          <Button
-            className="w-full"
-            variant={link.isActive ? "secondary" : "ghost"}
-          >
-            {link.label}
-          </Button>
-        </Link>
-      ))}
-    </>
+    <Tabs value={activeLinkLabel} className="mx-3">
+      <TabsList>
+        {navLinks.map((link) => (
+          <Link href={link.href} key={link.href}>
+            <TabsTrigger value={link.label} key={link.href}>
+              {link.label}
+            </TabsTrigger>
+          </Link>
+        ))}
+      </TabsList>
+    </Tabs>
   );
 }

@@ -24,3 +24,18 @@ export const getFormDetailsWithFields = async (
     },
   })) as FormWithFields;
 };
+
+export const getFormDetailsWithWorkspace = async (
+  formId: string,
+  userId: string
+) => {
+  return await db.form.findFirst({
+    where: {
+      id: formId,
+      userId,
+    },
+    include: {
+      workspace: true,
+    },
+  });
+};
