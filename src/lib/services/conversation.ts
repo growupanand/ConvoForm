@@ -1,7 +1,4 @@
-import {
-  ChatCompletionFunctions,
-  ChatCompletionRequestMessage,
-} from "openai-edge";
+import { ChatCompletionRequestMessage } from "openai-edge";
 import {
   CreateMessage,
   FunctionCallPayload,
@@ -26,11 +23,12 @@ export class ConversationService extends OpenAIService {
 
   async getNextQuestion(messages: ChatCompletionRequestMessage[]) {
     const systemMessage = this.getConversationFlowPromptMessage();
-    const openAiResponse = await this.getOpenAIResponseStream(
-      [systemMessage, ...messages],
-      this.getOpenAIFunctions()
-    );
+    const openAiResponse = await this.getOpenAIResponseStream([
+      systemMessage,
+      ...messages,
+    ]);
 
+    // We are using experimental_StreamData to send extra custom data in response stream
     const data = new experimental_StreamData();
 
     const stream = OpenAIStream(openAiResponse, {
@@ -75,7 +73,12 @@ export class ConversationService extends OpenAIService {
         return thankYouMessage;
       }
 
-      // Get form field data
+      // To save conversation in database we need three things:
+      //    1. Form field data
+      //    2. Conversation transcript
+      //    3. Conversation name
+
+      // 1. Get form field data
       let formFieldData = {};
       const formFieldDataJSONString = functionCallPayload.arguments
         .formData as string;
@@ -87,8 +90,7 @@ export class ConversationService extends OpenAIService {
         });
       }
 
-      // Get conversation transcript
-
+      // 2. Get conversation transcript
       const transcript = [
         ...messages,
         {
@@ -97,21 +99,23 @@ export class ConversationService extends OpenAIService {
         },
       ];
 
-      // Get conversation name
+      // 3. Get conversation name
       const conversationName = functionCallPayload.arguments
         .conversationName as string;
 
+      // Save conversation in database
       try {
-        // Save conversation in database
         await this.saveConversation(
           formFieldData,
           conversationName,
           transcript
         );
 
-        // Return success message
+        // Append conversationFinished in stream data, so that in client we can show end screen
         data.append("conversationFinished");
-        return thankYouMessage as string;
+
+        // Return success message
+        return thankYouMessage;
       } catch (error) {
         const newMessage = createFunctionCallMessages(
           "unable to save conversation"
@@ -172,6 +176,6 @@ export class ConversationService extends OpenAIService {
           required: ["formData"],
         },
       },
-    ] as ChatCompletionFunctions[];
+    ];
   }
 }
