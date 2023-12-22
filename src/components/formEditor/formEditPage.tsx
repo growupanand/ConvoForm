@@ -25,18 +25,15 @@ export default function FormEditPage(props: Props) {
   };
 
   return (
-    <div className="flex h-full">
-      <div className=" w-[400px] bg-gray-50">
-        <Card className="bg-transparent border-0 shadow-none">
-          <CardHeader>
-            <CardTitle>Editor</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-3">
+    <div className="flex gap-5 px-5 pt-5 h-[calc(100vh-100px)]">
+      <div className=" z-40 rounded-lg overflow-y-scroll min-w-[300px] w-[400px]">
+        <Card className="border-0 shadow-none bg-transparent">
+          <CardContent>
             <FormEditor form={form} onUpdated={onUpdateForm} />
           </CardContent>
         </Card>
       </div>
-      <div className="grow flex flex-col">
+      <div className="grow ">
         <FormPreview form={form} />
       </div>
     </div>

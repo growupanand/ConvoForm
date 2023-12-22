@@ -83,7 +83,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
     if (isPreview) {
       setState((cs) => ({ ...cs, formStage: "welcomeScreen" }));
     }
-  }, [refresh]);
+  }, [form, refresh]);
 
   return (
     <div className="max-w-[700px] mx-auto container ">

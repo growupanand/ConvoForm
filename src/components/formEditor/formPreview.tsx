@@ -8,6 +8,7 @@ import { useState } from "react";
 import { CopyLinkButton } from "../copyLinkButton";
 import Link from "next/link";
 import { Form } from "@prisma/client";
+import BrowserWindow from "../ui/browserWindow";
 
 type Props = {
   form: Form;
@@ -36,21 +37,18 @@ export default function FormPreview({ form }: Readonly<Props>) {
     setState({ ...state, refresh: !state.refresh });
   };
   return (
-    <>
-      <div className="p-3 flex items-center  gap-3">
-        <div className="bg-gray-300 rounded-lg flex items-center gap-1 p-1">
-          <Button variant="ghost" size="icon" onClick={refreshPreview}>
-            <RotateCw className="h-4 w-4" />
+    <BrowserWindow
+      onRefresh={refreshPreview}
+      actionsButton={<CopyLinkButton onClick={copyLinkToClipboard} />}
+      addressBar={
+        <Link href={formViewLink} target="_blank">
+          <Button variant="link" size="sm" className="h-4">
+            {formViewLink} <ExternalLink className="w-4 h-4 ms-2" />
           </Button>
-          <Link href={formViewLink} target="_blank">
-            <Button variant="link">
-              {formViewLink} <ExternalLink className="w-4 h-4 ms-2" />
-            </Button>
-          </Link>
-        </div>
-        <CopyLinkButton onClick={copyLinkToClipboard} />
-      </div>
-      <div className="relative grow flex flex-col justify-center items-center">
+        </Link>
+      }
+    >
+      <div className="flex flex-col justify-center items-center h-full">
         {form.isPublished ? (
           <FormViewer form={form} refresh={refresh} isPreview={true} />
         ) : (
@@ -59,6 +57,6 @@ export default function FormPreview({ form }: Readonly<Props>) {
           </p>
         )}
       </div>
-    </>
+    </BrowserWindow>
   );
 }

@@ -122,7 +122,10 @@ export default function AppNavbar({ user }: Props) {
         </div>
       </div>
       <div className="flex flex-col gap-2 items-center">
-        <div className="text-sm font-semibold">{user.name}</div>
+        <div className="flex flex-col items-start text-sm font-medium text-muted-foreground self-start">
+          <div className="whitespace-nowrap capitalize">{user.name}</div>
+          <div className="whitespace-nowrap text-xs">({user.email})</div>
+        </div>
         <LogOutButton />
       </div>
     </nav>
