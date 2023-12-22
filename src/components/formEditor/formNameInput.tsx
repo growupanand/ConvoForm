@@ -9,6 +9,7 @@ import { toast } from "../ui/use-toast";
 
 type Props = {
   form: Form;
+  className?: string;
 };
 
 type State = {
@@ -18,7 +19,7 @@ type State = {
 
 //TODO: create reusable component for this
 
-export default function FormNameInput({ form }: Props) {
+export default function FormNameInput({ form, className }: Props) {
   const [state, setState] = useState<State>({
     formName: form.name,
     isUpdating: false,
@@ -54,10 +55,11 @@ export default function FormNameInput({ form }: Props) {
       <Input
         disabled={isUpdating}
         className={cn(
-          "text-2xl font-bold border-0 focus-visible:ring-transparent bg-gray-50/75	 focus-visible:ring-0 max-w-[400px]"
+          "text-2xl font-bold border-0 focus-visible:ring-transparent bg-transparent focus-visible:ring-0 max-w-[400px]",
+          className
         )}
         style={{
-          width: `${formName.length + 1}ch`,
+          width: `${formName.length + 2}ch`,
         }}
         type="text"
         defaultValue={formName}

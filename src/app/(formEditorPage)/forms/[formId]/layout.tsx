@@ -2,10 +2,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Home } from "lucide-react";
-import NavLinks from "@/components/formEditor/navLinks";
-import { getFormDetails } from "@/lib/dbControllers/form";
+import { getFormDetailsWithWorkspace } from "@/lib/dbControllers/form";
 import FormNameInput from "@/components/formEditor/formNameInput";
 import { getCurrentUser } from "@/lib/session";
+import NavLinks from "@/components/formEditor/navLinks";
 
 type Props = {
   children: React.ReactNode;
@@ -18,28 +18,28 @@ export default async function AuthLayout({
 }: Readonly<Props>) {
   const { formId } = params;
   const user = await getCurrentUser();
-  const form = await getFormDetails(formId, user.id);
+  const form = await getFormDetailsWithWorkspace(formId, user.id);
   if (!form) {
     notFound();
   }
+
   return (
     <div className="h-screen flex flex-col ">
-      <div className="flex justify-between items-center sticky top-0 bg-gray-50/75 backdrop-blur-md shadow-sm">
-        <div className="flex items-center">
+      <div className="flex justify-between items-center sticky top-0 backdrop-blur-md shadow-sm p-3">
+        <div className="flex items-center ">
           <Link href={"/dashboard"}>
-            <Button variant="link">
-              <Home className="w-4 h-4 mr-2" /> Dashboard
+            <Button variant="link" className="text-sm ">
+              <Home className="w-4 h-4 mr-2 " /> Dashboard
             </Button>
           </Link>
           <ChevronRight className="w-4 h-4" />
           <Link href={`/workspaces/${form.workspaceId}`}>
-            <Button variant="link">Workspace</Button>
+            <Button variant="link">{form.workspace.name}</Button>
           </Link>
+          <ChevronRight className="w-4 h-4" />
+          <FormNameInput form={form} className="text-md font-semibold" />
         </div>
-        <FormNameInput form={form} />
-        <div className="my-3 flex items-center gap-2 px-3">
-          <NavLinks form={form} />
-        </div>
+        <NavLinks form={form} />
       </div>
       {children}
     </div>
