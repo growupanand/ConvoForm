@@ -17,7 +17,7 @@ type State = {
   refresh: boolean;
 };
 
-export default function FormPreview({ form }: Props) {
+export default function FormPreview({ form }: Readonly<Props>) {
   const formViewLink = `${window.location.origin}/view/${form.id}`;
 
   const [state, setState] = useState<State>({
@@ -51,7 +51,13 @@ export default function FormPreview({ form }: Props) {
         <CopyLinkButton onClick={copyLinkToClipboard} />
       </div>
       <div className="relative grow flex flex-col justify-center items-center">
-        <FormViewer form={form} refresh={refresh} isPreview={true} />
+        {form.isPublished ? (
+          <FormViewer form={form} refresh={refresh} isPreview={true} />
+        ) : (
+          <p className="text-muted-foreground">
+            Publish your form to see a preview
+          </p>
+        )}
       </div>
     </>
   );
