@@ -6,6 +6,7 @@ import { getFormDetailsWithWorkspace } from "@/lib/dbControllers/form";
 import FormNameInput from "@/components/formEditor/formNameInput";
 import { getCurrentUser } from "@/lib/session";
 import NavLinks from "@/components/formEditor/navLinks";
+import LogOutButton from "@/components/logoutButton";
 
 type Props = {
   children: React.ReactNode;
@@ -24,8 +25,8 @@ export default async function AuthLayout({
   }
 
   return (
-    <div className="h-screen flex flex-col ">
-      <div className="flex justify-between items-center sticky top-0 backdrop-blur-md shadow-sm p-3">
+    <div className="h-screen relative flex flex-col ">
+      <div className="flex justify-between items-center sticky top-0 backdrop-blur-md shadow-sm p-3 z-10">
         <div className="flex items-center ">
           <Link href={"/dashboard"}>
             <Button variant="link" className="text-sm ">
@@ -40,8 +41,17 @@ export default async function AuthLayout({
           <FormNameInput form={form} className="text-md font-semibold" />
         </div>
         <NavLinks form={form} />
+        <div className="flex gap-2 items-center">
+          <div className="text-sm font-medium text-muted-foreground ">
+            <div className="flex flex-col items-end">
+              <div className="whitespace-nowrap">{user.name}</div>
+              <div className="whitespace-nowrap text-xs">({user.email})</div>
+            </div>
+          </div>
+          <LogOutButton />
+        </div>
       </div>
-      {children}
+      <div className="grow z-0">{children}</div>
     </div>
   );
 }
