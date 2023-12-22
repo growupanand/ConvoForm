@@ -2,7 +2,7 @@
 
 import ConversationList from "../conversationList";
 import { Conversation } from "@prisma/client";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent } from "../ui/card";
 import { redirect, useParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -17,21 +17,16 @@ export default function ConversationsCard(props: Props) {
   const { conversationId } = params;
 
   useEffect(() => {
-    if (!conversationId) {
+    if (!conversationId && conversations.length > 0 && formId) {
       redirect(`/forms/${formId}/conversations/${conversations[0].id}`);
     }
-  }, [conversationId]);
+  }, [conversationId, conversations, formId]);
 
   return (
-    <div className="p-3 h-full">
-      <Card className="bg-transparent border-0 shadow-none">
-        <CardHeader>
-          <CardTitle>Conversations</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ConversationList conversations={conversations} formId={formId} />
-        </CardContent>
-      </Card>
-    </div>
+    <Card className="bg-transparent border-0 shadow-none">
+      <CardContent className="pt-6">
+        <ConversationList conversations={conversations} formId={formId} />
+      </CardContent>
+    </Card>
   );
 }

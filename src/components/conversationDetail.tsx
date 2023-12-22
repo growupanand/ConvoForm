@@ -1,17 +1,10 @@
 import { Conversation } from "@prisma/client";
 import { FileText } from "lucide-react";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "./ui/table";
+import { Table, TableBody, TableCell, TableRow } from "./ui/table";
 import { FormFieldData } from "@/lib/types/conversation";
 import { Transcript } from "@/lib/types/transcript";
 import TranscriptCard from "./transcriptCard";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 type Props = {
   conversation: Conversation;
@@ -24,40 +17,51 @@ export default function ConversationDetail({ conversation }: Props) {
   const transcript = conversation.transcript as Transcript;
 
   return (
-    <div className="container py-10 ">
-      <div className="flex flex-col items-center">
-        <div className="max-w-lg space-y-10">
-          <div className="flex items-center gap-3">
-            <FileText className="w-10 h-10 mr-3" />
-            <h2 className="text-2xl">{conversation.name}</h2>
-          </div>
-          <section className="my-5">
+    <div className="lg:container h-full">
+      <Card className="h-full border-none shadow-none">
+        <CardHeader>
+          <CardTitle>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <FileText className=" " />
+                <h2 className="text-2xl capitalize">{conversation.name}</h2>
+              </div>
+              <span className="text-sm text-muted-foreground font-normal">
+                {conversation.createdAt.toLocaleString()}
+              </span>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="max-w-lg space-y-10">
             {!isFormDataEmpty && (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="">Field name</TableHead>
-                    <TableHead className="">Field value</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {formFieldsDataKeys.map((key) => {
-                    return (
-                      <TableRow key={formFieldsData[key]}>
-                        <TableCell>{key}</TableCell>
-                        <TableCell>{formFieldsData[key]}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
+              <section className="">
+                <h3 className="text-lg mb-3 font-semibold">Form Data</h3>
+                <div className="rounded-md border overflow-hidden">
+                  <Table>
+                    <TableBody>
+                      {formFieldsDataKeys.map((key) => {
+                        return (
+                          <TableRow key={formFieldsData[key]}>
+                            <TableCell className="py-2">{key}</TableCell>
+                            <TableCell className="py-2 font-medium">
+                              {formFieldsData[key]}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </section>
             )}
-          </section>
-          <section className="my-5">
-            <TranscriptCard transcript={transcript} />
-          </section>
-        </div>
-      </div>
+            <section>
+              <h3 className="text-lg mb-3 font-semibold">Transcript</h3>
+              <TranscriptCard transcript={transcript} />
+            </section>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
