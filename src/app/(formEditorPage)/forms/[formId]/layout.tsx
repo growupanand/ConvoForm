@@ -26,7 +26,7 @@ export default async function AuthLayout({
 
   return (
     <div className="h-screen relative flex flex-col ">
-      <div className="flex justify-between items-center sticky top-0 backdrop-blur-md shadow-sm p-3 z-10">
+      <div className="flex justify-between items-center sticky top-0 backdrop-blur-md shadow-sm p-3 z-10 border-b-2">
         <div className="flex items-center ">
           <Link href={"/dashboard"}>
             <Button variant="link" className="text-sm ">

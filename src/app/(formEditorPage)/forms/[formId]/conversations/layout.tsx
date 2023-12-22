@@ -1,4 +1,5 @@
 import ConversationsCard from "@/components/formEditor/conversationsCard";
+import { Separator } from "@/components/ui/separator";
 import { db } from "@/lib/db";
 import { Form } from "@prisma/client";
 
@@ -29,9 +30,10 @@ export default async function Layout(props: Props) {
 
   return (
     <div className="flex h-full">
-      <div className=" w-[400px] bg-gray-50 overflow-auto">
+      <div className=" min-w-[300px] w-[400px]">
         <ConversationsCard conversations={conversations} formId={formId} />
       </div>
+      <Separator orientation="vertical" />
       <div className="grow flex flex-col">{props.children}</div>
     </div>
   );
