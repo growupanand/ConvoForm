@@ -36,8 +36,9 @@ export class OpenAIService extends SystemPromptService {
       stream,
       messages,
     } as CreateChatCompletionRequest;
-    if (functions) {
-      createChatCompletionRequest.functions = functions;
+    const openAIFunctions = functions ?? this.getOpenAIFunctions();
+    if (openAIFunctions.length > 0) {
+      createChatCompletionRequest.functions = openAIFunctions;
       createChatCompletionRequest.function_call = "auto";
     }
     return this.openai.createChatCompletion(createChatCompletionRequest);
@@ -48,5 +49,15 @@ export class OpenAIService extends SystemPromptService {
     functions?: ChatCompletionFunctions[]
   ) {
     return this.getOpenAIResponse(messages, true, functions);
+  }
+
+  /**
+   * Used to define OpenAI functions for calling in the chat.
+   * [OpenAI Function Calling Guide](https://platform.openai.com/docs/guides/function-calling)
+   *
+   * @returns Array of OpenAI functions
+   */
+  getOpenAIFunctions(): ChatCompletionFunctions[] {
+    return [];
   }
 }
