@@ -8,6 +8,9 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
+  session: {
+    strategy: "jwt",
+  },
   adapter: PrismaAdapter(db),
 
   providers: [
@@ -18,9 +21,20 @@ export const authOptions: NextAuthOptions = {
     // ...add more providers here
   ],
   callbacks: {
-    // Add userId to session
-    async session({ session, user }) {
-      session.user.id = user.id;
+    async jwt({ token, user }) {
+      const userId = user?.id;
+      if (userId) {
+        token.id = userId;
+      }
+      return token;
+    },
+
+    async session({ session, user, token }) {
+      // Add userId into session object
+      const userId = token.id as string | undefined;
+      if (userId) {
+        session.user.id = userId;
+      }
       return session;
     },
   },
