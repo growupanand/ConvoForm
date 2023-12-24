@@ -7,50 +7,6 @@ import { EMAIL_SERVER } from "./constants";
 import EmailProvider from "next-auth/providers/email";
 import nodemailer from "nodemailer";
 
-const nextAuthProviders = [];
-
-const googleProvider = GoogleProvider({
-  clientId: env.GOOGLE_CLIENT_ID,
-  clientSecret: env.GOOGLE_CLIENT_SECRET,
-  // To prevent the error 'OAuthAccountNotLinkedThis' we are using this.
-  //
-  // This will allow user to login with same email with multiple providers, If we don't use this
-  // then user will get an error 'OAuthAccountNotLinkedThis' if he tries to login with different provider,
-  //
-  // Example:
-  // - User first logged in with email provider
-  // - then he tries to login with google for the same email,
-  //
-  allowDangerousEmailAccountLinking: true,
-});
-nextAuthProviders.push(googleProvider);
-
-if (EMAIL_SERVER) {
-  const emailProvider = EmailProvider({
-    server: EMAIL_SERVER,
-    async sendVerificationRequest({
-      identifier: email,
-      url,
-      provider: { server, from },
-    }) {
-      const transport = nodemailer.createTransport(server);
-      await transport.sendMail({
-        to: email,
-        from,
-        subject: `Sign in to Smart form wizard`,
-        html: `
-        <p>Hi ${email},</p>
-        <p>Click the link below to sign in to your app. This link is valid for 24 hours.</p>
-        <p><a href="${url}">Sign In</a></p>
-        <p>Thanks,</p>
-        <p>Smart form wizard</p>
-        `,
-      });
-    },
-  });
-  nextAuthProviders.push(emailProvider);
-}
-
 export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
@@ -60,7 +16,48 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: PrismaAdapter(db),
 
-  providers: nextAuthProviders,
+  providers: [
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      // To prevent the error 'OAuthAccountNotLinkedThis' we are using this.
+      //
+      // This will allow user to login with same email with multiple providers, If we don't use this
+      // then user will get an error 'OAuthAccountNotLinkedThis' if he tries to login with different provider,
+      //
+      // Example:
+      // - User first logged in with email provider
+      // - then he tries to login with google for the same email,
+      //
+      allowDangerousEmailAccountLinking: true,
+    }),
+    ...(EMAIL_SERVER
+      ? [
+          EmailProvider({
+            server: EMAIL_SERVER,
+            async sendVerificationRequest({
+              identifier: email,
+              url,
+              provider: { server, from },
+            }) {
+              const transport = nodemailer.createTransport(server);
+              await transport.sendMail({
+                to: email,
+                from,
+                subject: `Sign in to Smart form wizard`,
+                html: `
+            <p>Hi ${email},</p>
+            <p>Click the link below to sign in to your app. This link is valid for 24 hours.</p>
+            <p><a href="${url}">Sign In</a></p>
+            <p>Thanks,</p>
+            <p>Smart form wizard</p>
+            `,
+              });
+            },
+          }),
+        ]
+      : []),
+  ],
   callbacks: {
     async jwt({ token, user, account, profile }) {
       // If user logged in using google, We want to save updated user data in database
