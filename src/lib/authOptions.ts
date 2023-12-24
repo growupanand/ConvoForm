@@ -5,6 +5,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "./db";
 import { EMAIL_SERVER } from "./constants";
 import EmailProvider from "next-auth/providers/email";
+import nodemailer from "nodemailer";
 
 const nextAuthProviders = [];
 
@@ -27,6 +28,25 @@ nextAuthProviders.push(googleProvider);
 if (EMAIL_SERVER) {
   const emailProvider = EmailProvider({
     server: EMAIL_SERVER,
+    async sendVerificationRequest({
+      identifier: email,
+      url,
+      provider: { server, from },
+    }) {
+      const transport = nodemailer.createTransport(server);
+      await transport.sendMail({
+        to: email,
+        from,
+        subject: `Sign in to Smart form wizard`,
+        html: `
+        <p>Hi ${email},</p>
+        <p>Click the link below to sign in to your app. This link is valid for 24 hours.</p>
+        <p><a href="${url}">Sign In</a></p>
+        <p>Thanks,</p>
+        <p>Smart form wizard</p>
+        `,
+      });
+    },
   });
   nextAuthProviders.push(emailProvider);
 }
