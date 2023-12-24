@@ -6,6 +6,7 @@ export const envSchema = z.object({
   NEXTAUTH_SECRET: z.string().min(5),
   DATABASE_URL: z.string().min(1),
   OPEN_AI_MODEL: z.string(),
+  EMAIL_SERVER: z.string().optional(),
 });
 
 // https://bharathvaj-ganesan.medium.com/adding-type-safety-to-environment-variables-in-nextjs-1ffebb4cf07d
@@ -16,4 +17,5 @@ export const env = envSchema.parse({
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   DATABASE_URL: process.env.DATABASE_URL,
   OPEN_AI_MODEL: process.env.OPEN_AI_MODEL,
+  EMAIL_SERVER: process.env.EMAIL_SERVER,
 });
