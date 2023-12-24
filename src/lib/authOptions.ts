@@ -1,35 +1,8 @@
-import { NextAuthOptions, Profile } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import { env } from "./env";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "./db";
-import { EMAIL_SERVER } from "./constants";
-import EmailProvider from "next-auth/providers/email";
-
-const nextAuthProviders = [];
-
-const googleProvider = GoogleProvider({
-  clientId: env.GOOGLE_CLIENT_ID,
-  clientSecret: env.GOOGLE_CLIENT_SECRET,
-  // To prevent the error 'OAuthAccountNotLinkedThis' we are using this.
-  //
-  // This will allow user to login with same email with multiple providers, If we don't use this
-  // then user will get an error 'OAuthAccountNotLinkedThis' if he tries to login with different provider,
-  //
-  // Example:
-  // - User first logged in with email provider
-  // - then he tries to login with google for the same email,
-  //
-  allowDangerousEmailAccountLinking: true,
-});
-nextAuthProviders.push(googleProvider);
-
-if (EMAIL_SERVER) {
-  const emailProvider = EmailProvider({
-    server: EMAIL_SERVER,
-  });
-  nextAuthProviders.push(emailProvider);
-}
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -40,39 +13,15 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: PrismaAdapter(db),
 
-  providers: nextAuthProviders,
+  providers: [
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+    // ...add more providers here
+  ],
   callbacks: {
-    async jwt({ token, user, account, profile }) {
-      // If user logged in using google, We want to save updated user data in database
-      if (account?.provider === "google") {
-        const existUser = await db.user.findFirst({
-          where: {
-            email: user.email,
-          },
-        });
-
-        if (existUser && profile) {
-          const updatedProfile = profile as Profile & {
-            picture?: string;
-          };
-          const updatedData = {
-            name: updatedProfile.name || existUser.name,
-            image: updatedProfile.picture || existUser.image,
-          };
-
-          await db.user.update({
-            where: {
-              id: existUser.id,
-            },
-            data: updatedData,
-          });
-
-          // We also want to use updated user data in sessions
-          token.name = updatedData.name;
-          token.image = updatedData.image;
-        }
-      }
-
+    async jwt({ token, user }) {
       const userId = user?.id;
       if (userId) {
         token.id = userId;
