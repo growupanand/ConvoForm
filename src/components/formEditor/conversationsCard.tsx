@@ -9,6 +9,7 @@ import { Skeleton } from "../ui/skeleton";
 export default function ConversationsListCard() {
   const formStore = useFormStore();
   const { conversations, formId, isLoading } = formStore;
+  const emptyConversations = conversations.length === 0;
 
   useEffect(() => {
     if (formId) {
@@ -24,6 +25,11 @@ export default function ConversationsListCard() {
     <Card className="bg-transparent border-0 shadow-none">
       <CardContent className="pt-6">
         <ConversationList conversations={conversations} formId={formId} />
+        {emptyConversations ? (
+          <div className="flex flex-col items-center justify-center">
+            <p className="text-gray-500 text-sm">No Conversations</p>
+          </div>
+        ) : null}
       </CardContent>
     </Card>
   );

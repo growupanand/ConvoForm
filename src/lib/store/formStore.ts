@@ -27,7 +27,12 @@ export const useFormStore = create<WorkspaceStore>((set, get) => ({
 
   initializeStore: async (currentFormId) => {
     const formId = currentFormId || get().formId;
-    set({ isLoading: true, form: undefined, formId: formId });
+    set({
+      isLoading: true,
+      form: undefined,
+      formId: formId,
+      conversations: [],
+    });
     if (formId) {
       await get().fetchForm();
     }
@@ -38,7 +43,7 @@ export const useFormStore = create<WorkspaceStore>((set, get) => ({
     if (!formId) {
       return;
     }
-    set({ isLoading: true, form: undefined });
+    set({ isLoading: true, form: undefined, conversations: [] });
     const form = await getFormController(formId);
     set({ form, isLoading: false });
   },
