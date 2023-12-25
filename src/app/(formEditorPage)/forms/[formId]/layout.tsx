@@ -7,6 +7,7 @@ import FormNameInput from "@/components/formEditor/formNameInput";
 import { getCurrentUser } from "@/lib/session";
 import NavLinks from "@/components/formEditor/navLinks";
 import LogOutButton from "@/components/logoutButton";
+import ProfileCard from "@/components/profileCard";
 
 type Props = {
   children: React.ReactNode;
@@ -42,12 +43,7 @@ export default async function AuthLayout({
         </div>
         <NavLinks form={form} />
         <div className="flex gap-2 items-center">
-          <div className="text-sm font-medium text-muted-foreground ">
-            <div className="flex flex-col items-end">
-              <div className="whitespace-nowrap">{user.name}</div>
-              <div className="whitespace-nowrap text-xs">({user.email})</div>
-            </div>
-          </div>
+          <ProfileCard user={user} />
           <LogOutButton />
         </div>
       </div>

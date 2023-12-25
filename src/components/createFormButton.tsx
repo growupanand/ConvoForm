@@ -5,7 +5,7 @@ import { toast } from "@/components/ui/use-toast";
 import { createFormController } from "@/lib/controllers/form";
 import { formCreateSchema } from "@/lib/validations/form";
 import { Workspace } from "@prisma/client";
-import { Loader2 } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -55,8 +55,14 @@ export default function CreateFormButton({ workspace }: Props) {
   };
 
   return (
-    <Button disabled={isLoading} onClick={createForm}>
+    <Button
+      variant="secondary"
+      disabled={isLoading}
+      onClick={createForm}
+      className="font-semibold"
+    >
       {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      {!isLoading && <Plus className="mr-2 h-4 w-4" />}
       New Form
     </Button>
   );

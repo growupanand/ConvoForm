@@ -9,11 +9,11 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen container">
-      <nav className="flex justify-between items-center h-20">
+      <nav className="flex justify-between items-center">
         <BrandName />
         <div>
           {isUserLoggedIn ? (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 p-5">
               <Link href="/dashboard">
                 <Button variant="secondary">Go to Dashboard</Button>
               </Link>

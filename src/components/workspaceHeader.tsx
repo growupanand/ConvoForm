@@ -10,43 +10,41 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { useState } from "react";
-import { Workspace } from "@prisma/client";
 import { useWorkspaceStore } from "@/lib/store/workspaceStore";
 import { toast } from "./ui/use-toast";
-import { useRouter } from "next/navigation";
+import {
+  useParams,
+  useRouter,
+  useSelectedLayoutSegments,
+} from "next/navigation";
 import { Input } from "./ui/input";
 import { cn, debounce } from "@/lib/utils";
-
-type Props = {
-  workspace: Workspace;
-};
+import { Skeleton } from "./ui/skeleton";
 
 type State = {
   isDeleting: boolean;
   isUpdating: boolean;
 };
 
-export const WorkspaceHeader = (props: Props) => {
+export const WorkspaceHeader = () => {
   const [state, setState] = useState<State>({
     isDeleting: false,
     isUpdating: false,
   });
   const { isDeleting, isUpdating } = state;
 
+  const params = useParams();
+  const currentWorkspaceId = params.workspaceId as string;
   const workspaceStore = useWorkspaceStore();
-  const { workspaces } = workspaceStore;
-  const workspace = workspaces.find((i) => i.id === props.workspace.id);
+  const { workspaces, isLoading } = workspaceStore;
+  const currentWorkspace = workspaces.find((i) => i.id === currentWorkspaceId);
 
   const router = useRouter();
-
-  if (!workspace) {
-    return null;
-  }
 
   const deleteWorkspace = async () => {
     setState((cs) => ({ ...cs, isDeleting: true }));
     try {
-      await workspaceStore.deleteWorkspace(workspace.id);
+      await workspaceStore.deleteWorkspace(currentWorkspaceId);
       toast({
         action: (
           <div className="w-full">
@@ -60,9 +58,11 @@ export const WorkspaceHeader = (props: Props) => {
         ),
         duration: 1500,
       });
-      if (workspaces.filter((i) => i.id !== workspace.id).length > 0) {
+      if (workspaces.filter((i) => i.id !== currentWorkspaceId).length > 0) {
         router.push(
-          `/workspaces/${workspaces.filter((i) => i.id !== workspace.id)[0].id}`
+          `/workspaces/${
+            workspaces.filter((i) => i.id !== currentWorkspaceId)[0].id
+          }`
         );
       } else {
         router.push("/dashboard");
@@ -77,7 +77,7 @@ export const WorkspaceHeader = (props: Props) => {
             size="icon"
             className="h-8 w-8"
             disabled={isDeleting}
-            onClick={deleteWorkspace}
+            onClick={() => deleteWorkspace()}
           >
             {isDeleting ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -101,7 +101,7 @@ export const WorkspaceHeader = (props: Props) => {
   const updateWorkspace = async (name: string) => {
     setState((cs) => ({ ...cs, isUpdating: true }));
     try {
-      await workspaceStore.updateWorkspace(workspace.id, { name });
+      await workspaceStore.updateWorkspace(currentWorkspaceId, { name });
     } catch (error) {
       toast({
         title: "Unable to update workspace",
@@ -112,51 +112,76 @@ export const WorkspaceHeader = (props: Props) => {
     }
   };
 
-  return (
-    <div className="flex justify-between items-center mb-10">
-      <div className="flex items-center gap-2">
-        <Input
-          className={cn(
-            "text-2xl font-bold border-0 focus-visible:ring-transparent	 focus-visible:ring-0 max-w-[400px]"
-          )}
-          style={{
-            width: `${workspace.name.length + 1}ch`,
-          }}
-          type="text"
-          defaultValue={workspace.name}
-          onChange={handleWorkspaceNameInputChange}
-        />
+  if (isLoading) {
+    return (
+      <div className="mb-5">
+        <div className="flex justify-between items-center mb-10">
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-8 w-40" />
+          </div>
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-8 w-8" />
+          </div>
+        </div>
+        <div>
+          <Skeleton className="h-[40px] w-[125px]" />
+        </div>
       </div>
-      <div className="flex items-center gap-2">
-        {isUpdating && (
-          <Loader2 className="h-4 w-4 animate-spin text-gray-500 " />
-        )}
+    );
+  }
 
-        <DropdownMenu>
-          <DropdownMenuTrigger disabled={isDeleting} asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              disabled={isDeleting}
-            >
-              {isDeleting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <MoreVertical className="h-4 w-4" />
-              )}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              className="cursor-pointer text-destructive focus:text-destructive"
-              onClick={deleteWorkspace}
-            >
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <CreateFormButton workspace={workspace} />
+  if (!isLoading && !currentWorkspace) {
+    return null;
+  }
+
+  return (
+    <div className="mb-5">
+      <div className="flex justify-between items-center mb-10">
+        <div className="flex items-center gap-2">
+          <Input
+            className={cn(
+              "text-2xl font-bold border-0 focus-visible:ring-transparent	 focus-visible:ring-0 max-w-[400px]"
+            )}
+            style={{
+              width: `${currentWorkspace!.name.length + 1}ch`,
+            }}
+            type="text"
+            defaultValue={currentWorkspace!.name}
+            onChange={handleWorkspaceNameInputChange}
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          {isUpdating && (
+            <Loader2 className="h-4 w-4 animate-spin text-gray-500 " />
+          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger disabled={isDeleting} asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <MoreVertical className="h-4 w-4" />
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                className="cursor-pointer text-destructive focus:text-destructive"
+                onClick={deleteWorkspace}
+              >
+                Delete workspace
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+      <div>
+        <CreateFormButton workspace={currentWorkspace!} />
       </div>
     </div>
   );
