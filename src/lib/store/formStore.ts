@@ -5,6 +5,7 @@ import {
 } from "../controllers/form";
 import { create } from "zustand";
 import { FormSubmitDataSchema } from "@/components/formEditor";
+import { timeout } from "../utils";
 
 type WorkspaceStore = {
   formId?: string;
@@ -14,6 +15,7 @@ type WorkspaceStore = {
   fetchForm: () => Promise<void>;
   conversations: Conversation[];
   fetchConversations: () => Promise<void>;
+  isLoadingConversations: boolean;
   updateForm: (
     form: Omit<FormSubmitDataSchema, "formField"> & { formField: FormField[] }
   ) => Promise<void>;
@@ -24,6 +26,7 @@ export const useFormStore = create<WorkspaceStore>((set, get) => ({
   isLoading: true,
   form: undefined,
   conversations: [],
+  isLoadingConversations: true,
 
   initializeStore: async (currentFormId) => {
     const formId = currentFormId || get().formId;
@@ -32,6 +35,7 @@ export const useFormStore = create<WorkspaceStore>((set, get) => ({
       form: undefined,
       formId: formId,
       conversations: [],
+      isLoadingConversations: true,
     });
     if (formId) {
       await get().fetchForm();
@@ -43,20 +47,25 @@ export const useFormStore = create<WorkspaceStore>((set, get) => ({
     if (!formId) {
       return;
     }
-    set({ isLoading: true, form: undefined, conversations: [] });
+    set({
+      isLoading: true,
+      form: undefined,
+      conversations: [],
+      isLoadingConversations: true,
+    });
     const form = await getFormController(formId);
     set({ form, isLoading: false });
   },
 
   fetchConversations: async () => {
     const { formId } = get();
-    console.log({ formId });
     if (!formId) {
       return;
     }
+    set({ isLoadingConversations: true });
     const conversations = await getFormConversationsController(formId);
-    console.log({ conversations });
-    set({ conversations });
+
+    set({ conversations, isLoadingConversations: false });
   },
 
   updateForm: async (updatedForm) => {
