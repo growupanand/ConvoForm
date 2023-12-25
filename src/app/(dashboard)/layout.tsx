@@ -11,7 +11,7 @@ export default async function AuthLayout({ children }: Readonly<Props>) {
   return (
     <StoreInitializer>
       <div className="flex h-screen">
-        <div className="bg-white-300 w-[300px] bg-gray-50">
+        <div className="bg-white-300 min-w-[300px] bg-gray-50">
           <AppNavbar user={user} />
         </div>
         <div className="container py-5 overflow-auto">{children}</div>

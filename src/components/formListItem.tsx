@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Check, ExternalLink, Loader2, MoreVertical } from "lucide-react";
 import { useState } from "react";
-import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 
 type Props = {
@@ -28,8 +27,6 @@ type State = {
 export function FormListItem({ form, onDeleted, workspaceId }: Props) {
   const [state, setState] = useState<State>({ isDeleting: false });
   const { isDeleting } = state;
-  const createdAt = new Date(form.createdAt);
-  const formatedCreatedAt = formatDate(createdAt.toDateString());
 
   const deleteForm = async () => {
     setState((cs) => ({ ...cs, isDeleting: true }));
@@ -75,13 +72,18 @@ export function FormListItem({ form, onDeleted, workspaceId }: Props) {
   };
 
   return (
-    <div className="p-3 flex justify-between items-center">
-      <div className="grid gap-1">
+    <div className="py-1 pe-3 flex justify-between items-center hover:bg-gray-50">
+      <div className="grow">
         <Link href={`/forms/${form.id}`}>
-          <span className="font-semibold">{form.name}</span>
+          <Button
+            variant="link"
+            className="w-full hover:no-underline justify-start font-normal transition-all hover:ps-5"
+          >
+            {form.name}
+          </Button>
         </Link>
-        <p className="text-muted-foreground text-xs">{formatedCreatedAt}</p>
       </div>
+
       <div className="flex items-center gap-3">
         {form.isPublished ? (
           <Link href={`/view/${form.id}`} target="_blank">
@@ -97,9 +99,9 @@ export function FormListItem({ form, onDeleted, workspaceId }: Props) {
         <DropdownMenu>
           <DropdownMenuTrigger disabled={isDeleting}>
             <Button
-              variant="outline"
+              variant="link"
               size="icon"
-              className="h-8 w-8"
+              className="h-8 w-8 hover:no-underline"
               disabled={isDeleting}
             >
               {isDeleting ? (
@@ -114,7 +116,7 @@ export function FormListItem({ form, onDeleted, workspaceId }: Props) {
               className="cursor-pointer text-destructive focus:text-destructive"
               onClick={deleteForm}
             >
-              Delete
+              Delete form
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

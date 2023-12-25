@@ -1,5 +1,4 @@
 "use client";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Form } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { FormListItem } from "./formListItem";
@@ -7,23 +6,24 @@ import { getFormsController } from "@/lib/controllers/form";
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-
-type Props = {
-  workspaceId: string;
-};
+import { useParams } from "next/navigation";
+import FormListLoading from "./formListLoading";
 
 type State = {
   isLoading: boolean;
   forms: Form[];
 };
 
-export default function FormList({ workspaceId }: Props) {
+export default function FormList() {
   const [state, setState] = useState<State>({
     isLoading: true,
     forms: [],
   });
   const { forms, isLoading } = state;
   const emptyForms = forms.length === 0;
+
+  const params = useParams();
+  const workspaceId = params.workspaceId as string;
 
   const fetchForms = async () => {
     setState((cs) => ({
@@ -70,34 +70,23 @@ export default function FormList({ workspaceId }: Props) {
   }, []);
 
   return (
-    <div className="grid divide-y divide-border rounded-md border">
-      {isLoading && (
-        <>
-          <FormsListSkeleton />
-          <FormsListSkeleton />
-          <FormsListSkeleton />
-        </>
-      )}
+    <div>
+      {isLoading && <FormListLoading />}
       {!isLoading && emptyForms && (
-        <div className="p-3 flex justify-between items-center">
-          <span className="text-muted-foreground">No form</span>
+        <p className="text-muted-foreground">No form</p>
+      )}
+      {!isLoading && !emptyForms && (
+        <div className="grid divide-y divide-border ">
+          {forms.map((form) => (
+            <FormListItem
+              key={form.id}
+              form={form}
+              onDeleted={onFormDelete}
+              workspaceId={workspaceId}
+            />
+          ))}
         </div>
       )}
-      {forms.map((form) => (
-        <FormListItem
-          key={form.id}
-          form={form}
-          onDeleted={onFormDelete}
-          workspaceId={workspaceId}
-        />
-      ))}
     </div>
   );
 }
-
-const FormsListSkeleton = () => (
-  <div className="p-3 flex justify-between items-center ">
-    <Skeleton className=" w-[130px] h-[20px] rounded-full" />
-    <Skeleton className=" w-[30px] h-[30px] " />
-  </div>
-);

@@ -1,6 +1,6 @@
-import z from "zod";
+const z = require("zod");
 
-export const envSchema = z.object({
+const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().min(1),
   GOOGLE_CLIENT_SECRET: z.string().min(1),
   NEXTAUTH_SECRET: z.string().min(5),
@@ -11,7 +11,7 @@ export const envSchema = z.object({
 
 // https://bharathvaj-ganesan.medium.com/adding-type-safety-to-environment-variables-in-nextjs-1ffebb4cf07d
 
-export const env = envSchema.parse({
+const env = envSchema.parse({
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
@@ -19,3 +19,5 @@ export const env = envSchema.parse({
   OPEN_AI_MODEL: process.env.OPEN_AI_MODEL,
   EMAIL_SERVER: process.env.EMAIL_SERVER,
 });
+
+module.exports = { env };

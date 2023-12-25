@@ -15,32 +15,40 @@ type WorkspaceStore = {
   workspaces: Workspace[];
   isLoading: boolean;
   fetchWorkspaces: () => Promise<void>;
-  createWorkspace: (name: string) => Promise<Workspace>;
+  createWorkspace: (name: string) => Promise<void>;
   deleteWorkspace: (workspaceId: string) => Promise<void>;
   updateWorkspace: (
     workspaceId: string,
     payload: z.infer<typeof workspaceUpdateSchema>
   ) => Promise<Workspace>;
+  isBusyInCreatingWorkspace: boolean;
 };
 
 export const useWorkspaceStore = create<WorkspaceStore>((set, get) => ({
   workspaces: [],
-  isLoading: false,
+  isLoading: true,
+  isBusyInCreatingWorkspace: false,
 
   initializeStore: async () => {
     await get().fetchWorkspaces();
   },
 
   fetchWorkspaces: async () => {
-    set({ isLoading: true });
+    set({ isLoading: true, workspaces: [] });
     const workspaces = await fetchWorkspacesController();
     set({ workspaces, isLoading: false });
   },
 
   createWorkspace: async (name: string) => {
-    const workspace = await createWorkspaceController(name);
-    set((state) => ({ workspaces: [...state.workspaces, workspace] }));
-    return workspace;
+    set({ isBusyInCreatingWorkspace: true });
+    try {
+      const workspace = await createWorkspaceController(name);
+      set((state) => ({
+        workspaces: [...state.workspaces, workspace],
+      }));
+    } finally {
+      set({ isBusyInCreatingWorkspace: false });
+    }
   },
 
   deleteWorkspace: async (workspaceId: string) => {
