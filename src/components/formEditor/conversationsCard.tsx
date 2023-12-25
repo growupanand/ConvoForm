@@ -8,7 +8,7 @@ import { Skeleton } from "../ui/skeleton";
 
 export default function ConversationsListCard() {
   const formStore = useFormStore();
-  const { conversations, formId, isLoading } = formStore;
+  const { conversations, formId, isLoadingConversations } = formStore;
   const emptyConversations = conversations.length === 0;
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export default function ConversationsListCard() {
     }
   }, [formId]);
 
-  if (isLoading || !formId) {
+  if (isLoadingConversations || !formId) {
     return <LoadingUI />;
   }
 
@@ -39,18 +39,13 @@ const LoadingUI = () => {
   return (
     <Card className="bg-transparent border-0 shadow-none">
       <CardContent className="pt-6">
-        <div className="grid gap-2">
-          <Skeleton className="w-[64px] h-5" />
-          <Skeleton className="w-full h-10" />
-          <Skeleton className="w-[64px] h-5" />
-
-          <Skeleton className="w-full h-10" />
-          <Skeleton className="w-[64px] h-5" />
-
-          <Skeleton className="w-full h-10" />
-          <br />
-          <Skeleton className="w-full h-[40px] bg-primary" />
-        </div>
+        <h3 className="mb-5 px-4 text-lg font-semibold tracking-tight">
+          <Skeleton className="w-20 h-5" />
+        </h3>
+        <nav className="flex flex-col gap-1">
+          <Skeleton className="w-full h-[40px]" />
+          <Skeleton className="w-full h-[40px]" />
+        </nav>
       </CardContent>
     </Card>
   );
