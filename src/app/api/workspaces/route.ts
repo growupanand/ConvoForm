@@ -28,6 +28,9 @@ export async function GET(req: Request) {
       where: {
         userId: user.id,
       },
+      orderBy: {
+        createdAt: "asc",
+      },
     });
     return NextResponse.json(workspaces);
   } catch (error) {

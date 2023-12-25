@@ -1,21 +1,33 @@
 "use client";
 
+import { useFormStore } from "@/lib/store/formStore";
 import { useWorkspaceStore } from "@/lib/store/workspaceStore";
 import { useEffect } from "react";
+
+type Props = {
+  stores: Array<"useFormStore" | "useWorkspaceStore">;
+  children: React.ReactNode;
+};
+
+const storeAccessors = {
+  useFormStore: useFormStore,
+  useWorkspaceStore: useWorkspaceStore,
+};
 
 /**
  * Here we can initialize the store with the initial state.
  */
 
-export const StoreInitializer = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const workspaceStore = useWorkspaceStore();
+export const StoreInitializer = ({ children, stores }: Props) => {
+  const storeAccessorsHooks = {} as Record<string, any>;
+  stores.forEach((store) => {
+    storeAccessorsHooks[store] = storeAccessors[store]?.();
+  });
 
   const initializeStores = () => {
-    workspaceStore.fetchWorkspaces();
+    stores.forEach((store) => {
+      storeAccessorsHooks[store]?.initializeStore?.();
+    });
   };
 
   useEffect(() => {

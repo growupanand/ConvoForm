@@ -1,7 +1,17 @@
-import { Form } from "@prisma/client";
+import { Conversation, Form, FormField, Workspace } from "@prisma/client";
 import { apiClient } from "../fetch";
 import { z } from "zod";
 import { formCreateSchema, formPatchSchema } from "../validations/form";
+
+export const getFormController = async (formId: string) => {
+  const response = await apiClient(`form/${formId}`, {
+    method: "GET",
+  });
+  return (await response.json()) as Form & {
+    workspace: Workspace;
+    formField: FormField[];
+  };
+};
 
 export const getFormsController = async (workspaceId: string) => {
   const response = await apiClient(`workspaces/${workspaceId}/forms`, {
@@ -31,4 +41,11 @@ export const patchFormController = async (
   });
 
   return (await response.json()) as Form;
+};
+
+export const getFormConversationsController = async (formId: string) => {
+  const response = await apiClient(`form/${formId}/conversations`, {
+    method: "GET",
+  });
+  return (await response.json()) as Conversation[];
 };

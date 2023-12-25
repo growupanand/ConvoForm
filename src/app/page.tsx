@@ -9,7 +9,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen container">
-      <nav className="flex justify-between items-center">
+      <nav className="flex justify-between items-center p-3">
         <BrandName />
         <div>
           {isUserLoggedIn ? (

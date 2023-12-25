@@ -12,11 +12,7 @@ import {
 import { useState } from "react";
 import { useWorkspaceStore } from "@/lib/store/workspaceStore";
 import { toast } from "./ui/use-toast";
-import {
-  useParams,
-  useRouter,
-  useSelectedLayoutSegments,
-} from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Input } from "./ui/input";
 import { cn, debounce } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
