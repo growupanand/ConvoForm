@@ -13,5 +13,5 @@ export default function ConversationPage() {
       redirect(`/forms/${form?.id}/conversations/${conversations[0].id}`);
     }
   }, [conversations]);
-  return <ConversationDetailLoading />;
+  return null;
 }
