@@ -11,6 +11,29 @@ const routeContextSchema = z.object({
   }),
 });
 
+export async function GET(
+  req: Request,
+  context: z.infer<typeof routeContextSchema>
+) {
+  try {
+    const { params } = routeContextSchema.parse(context);
+    const user = await getCurrentUser();
+    const form = await db.form.findFirst({
+      where: {
+        id: params.formId,
+        userId: user.id,
+      },
+      include: {
+        formField: true,
+        workspace: true,
+      },
+    });
+    return NextResponse.json(form, { status: 200 });
+  } catch (error) {
+    return sendErrorResponse(error);
+  }
+}
+
 export async function PUT(
   req: Request,
   context: z.infer<typeof routeContextSchema>

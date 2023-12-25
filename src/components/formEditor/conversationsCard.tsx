@@ -1,26 +1,24 @@
 "use client";
 
-import ConversationList from "../conversationList";
-import { Conversation } from "@prisma/client";
-import { Card, CardContent } from "../ui/card";
-import { redirect, useParams } from "next/navigation";
 import { useEffect } from "react";
+import ConversationList from "../conversationList";
+import { Card, CardContent } from "../ui/card";
+import { useFormStore } from "@/lib/store/formStore";
+import { Skeleton } from "../ui/skeleton";
 
-type Props = {
-  formId: string;
-  conversations: Pick<Conversation, "id" | "name" | "createdAt">[];
-};
-
-export default function ConversationsCard(props: Props) {
-  const { conversations, formId } = props;
-  const params = useParams();
-  const { conversationId } = params;
+export default function ConversationsListCard() {
+  const formStore = useFormStore();
+  const { conversations, formId, isLoading } = formStore;
 
   useEffect(() => {
-    if (!conversationId && conversations.length > 0 && formId) {
-      redirect(`/forms/${formId}/conversations/${conversations[0].id}`);
+    if (formId) {
+      formStore.fetchConversations();
     }
-  }, [conversationId, conversations, formId]);
+  }, [formId]);
+
+  if (isLoading || !formId) {
+    return <LoadingUI />;
+  }
 
   return (
     <Card className="bg-transparent border-0 shadow-none">
@@ -30,3 +28,24 @@ export default function ConversationsCard(props: Props) {
     </Card>
   );
 }
+
+const LoadingUI = () => {
+  return (
+    <Card className="bg-transparent border-0 shadow-none">
+      <CardContent className="pt-6">
+        <div className="grid gap-2">
+          <Skeleton className="w-[64px] h-5" />
+          <Skeleton className="w-full h-10" />
+          <Skeleton className="w-[64px] h-5" />
+
+          <Skeleton className="w-full h-10" />
+          <Skeleton className="w-[64px] h-5" />
+
+          <Skeleton className="w-full h-10" />
+          <br />
+          <Skeleton className="w-full h-[40px] bg-primary" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+};

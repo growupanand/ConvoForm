@@ -1,8 +1,6 @@
 "use client";
 
-import { User } from "next-auth";
 import BrandName from "../brandName";
-import LogOutButton from "../logoutButton";
 import { Button } from "../ui/button";
 import { usePathname } from "next/navigation";
 import { Loader2, Plus } from "lucide-react";
@@ -11,14 +9,9 @@ import { WorkspaceList } from "./workspaceList";
 import { useWorkspaceStore } from "@/lib/store/workspaceStore";
 import WorkspaceListLoading from "./workspaceListLoading";
 import AppNavBarLink from "./appNavBarLink";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import ProfileCard from "../profileCard";
 
-type Props = {
-  user: Omit<User, "id">;
-};
-
-export default function AppNavbar({ user }: Props) {
+export default function AppNavbar() {
   const pathname = usePathname();
 
   const workspaceStore = useWorkspaceStore();
@@ -84,8 +77,7 @@ export default function AppNavbar({ user }: Props) {
         </div>
       </div>
       <div className="flex flex-col gap-2 items-start ">
-        <ProfileCard user={user} />
-        <LogOutButton />
+        <ProfileCard />
       </div>
     </nav>
   );

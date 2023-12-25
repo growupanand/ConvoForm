@@ -22,19 +22,25 @@ import {
   FormField as PrismaFormField,
   Form as PrismaForm,
 } from "@prisma/client";
+import { cn } from "@/lib/utils";
 
-type Form = PrismaForm & { formField: PrismaFormField[] };
-
-type Props = {
-  form: Form & { formField: PrismaFormField[] };
-  onUpdated?: (newForm: Form) => void;
-};
+type FormWithFields = PrismaForm & { formField: PrismaFormField[] };
 
 const formSchema = formUpdateSchema;
+export type FormSubmitDataSchema = z.infer<typeof formSchema>;
+
+type Props = {
+  form: FormWithFields & { formField: PrismaFormField[] };
+  onUpdated?: (
+    updatedForm: Omit<FormSubmitDataSchema, "formField"> & {
+      formField: PrismaFormField[];
+    }
+  ) => void;
+};
 
 type State = {
   isFormBusy: boolean;
-  form: Form & { formField: PrismaFormField[] };
+  form: FormWithFields & { formField: PrismaFormField[] };
 };
 
 export default function FormEditor(props: Props) {
@@ -43,19 +49,22 @@ export default function FormEditor(props: Props) {
     form: props.form,
   });
   const { isFormBusy, form } = state;
+  console.log({ form });
 
-  const formHook = useForm<z.infer<typeof formSchema>>({
+  const formHook = useForm<FormSubmitDataSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: form,
   });
+
+  const formFieldErrorMessage = formHook.formState.errors.formField?.message;
 
   const { fields, append, remove } = useFieldArray({
     control: formHook.control,
     name: "formField",
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
-    formData: Record<string, any>
+  const onSubmit: SubmitHandler<FormSubmitDataSchema> = async (
+    formData: FormSubmitDataSchema
   ) => {
     setState((cs) => ({ ...cs, isFormBusy: true }));
     try {
@@ -63,7 +72,7 @@ export default function FormEditor(props: Props) {
         method: "PUT",
         data: formData,
       });
-      const updatedForm = (await response.json()) as Form;
+      const updatedForm = (await response.json()) as FormWithFields;
       toast({
         action: (
           <div className="w-full">
@@ -77,8 +86,12 @@ export default function FormEditor(props: Props) {
         ),
         duration: 1500,
       });
-      setState((cs) => ({ ...cs, form: updatedForm }));
-      props.onUpdated?.(updatedForm);
+      const updatedFormWithFields = {
+        ...formData,
+        formField: updatedForm.formField,
+      };
+
+      props.onUpdated?.(updatedFormWithFields);
     } catch (error) {
       toast({
         title: "Unable to save changes",
@@ -152,7 +165,19 @@ export default function FormEditor(props: Props) {
           />
 
           <div className="grid gap-2">
-            <FormLabel className="mb-2">Form Field</FormLabel>
+            <FormLabel
+              className={cn(
+                "mb-2",
+                formFieldErrorMessage && "text-red-500 mb-0"
+              )}
+            >
+              Form Field
+            </FormLabel>
+            {formFieldErrorMessage && (
+              <div className="text-red-500 text-sm">
+                {formFieldErrorMessage}
+              </div>
+            )}
             {fields.map((item, index) => (
               <FormField
                 key={item.id}

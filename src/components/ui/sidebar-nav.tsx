@@ -25,7 +25,7 @@ export function SidebarNav({
   return (
     <div>
       {heading && (
-        <h3 className="mb-2 px-4 text-lg font-semibold tracking-tight">
+        <h3 className="mb-5 px-4 text-lg font-semibold tracking-tight">
           {heading}
         </h3>
       )}
