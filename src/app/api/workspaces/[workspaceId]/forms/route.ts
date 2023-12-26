@@ -1,6 +1,6 @@
 import prisma from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
-import { getCurrentUser } from "@/lib/session";
+import { getUserId } from "@/lib/getUserId";
 import { formCreateSchema } from "@/lib/validations/form";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -17,7 +17,7 @@ export async function POST(
 ) {
   try {
     const { params } = routeContextSchema.parse(context);
-    const user = await getCurrentUser();
+    const userId = getUserId();
     const requestJson = await req.json();
     const reqPayload = formCreateSchema.parse(requestJson);
     const { formField, ...newFormData } = reqPayload;
@@ -25,7 +25,7 @@ export async function POST(
       data: {
         ...newFormData,
         workspaceId: params.workspaceId,
-        userId: user.id,
+        userId: userId,
         formField: {
           create: formField,
         },
@@ -56,11 +56,11 @@ export async function GET(
 ) {
   try {
     const { params } = routeContextSchema.parse(context);
-    const user = await getCurrentUser();
+    const userId = getUserId();
     const workspaceForms = await prisma.form.findMany({
       where: {
         workspaceId: params.workspaceId,
-        userId: user.id,
+        userId: userId,
       },
     });
 

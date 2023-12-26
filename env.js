@@ -1,23 +1,21 @@
 const z = require("zod");
 
 const envSchema = z.object({
-  GOOGLE_CLIENT_ID: z.string().min(1),
-  GOOGLE_CLIENT_SECRET: z.string().min(1),
-  NEXTAUTH_SECRET: z.string().min(5),
   DATABASE_URL: z.string().min(1),
   OPEN_AI_MODEL: z.string(),
-  EMAIL_SERVER: z.string().optional(),
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
+  CLERK_SECRET_KEY: z.string().min(1),
 });
+
+
 
 // https://bharathvaj-ganesan.medium.com/adding-type-safety-to-environment-variables-in-nextjs-1ffebb4cf07d
 
 const env = envSchema.parse({
-  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-  NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   DATABASE_URL: process.env.DATABASE_URL,
   OPEN_AI_MODEL: process.env.OPEN_AI_MODEL,
-  EMAIL_SERVER: process.env.EMAIL_SERVER,
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+  CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
 });
 
 module.exports = { env };

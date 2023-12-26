@@ -5,9 +5,9 @@ import { Button } from "./ui/button";
 import { ChevronRight, Home } from "lucide-react";
 import FormNameInput from "./formEditor/formNameInput";
 import NavLinks from "./formEditor/navLinks";
-import ProfileCard from "./profileCard";
 import { useFormStore } from "@/lib/store/formStore";
 import { Skeleton } from "./ui/skeleton";
+import { UserButton } from "@clerk/nextjs";
 
 export const FormEditorPageHeader = () => {
   const { form, isLoading } = useFormStore();
@@ -33,7 +33,7 @@ export const FormEditorPageHeader = () => {
       </div>
       <NavLinks form={form} />
       <div className="flex gap-2 items-center">
-        <ProfileCard />
+        <UserButton />
       </div>
     </div>
   );

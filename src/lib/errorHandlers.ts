@@ -6,7 +6,7 @@ export const sendErrorResponse = (error: any) => {
     return NextResponse.json(error.formErrors, { status: 400 });
   }
 
-  if (error.toString().includes("NEXT_REDIRECT")) {
+  if (error.name === "Unauthorized") {
     return NextResponse.json(
       { nonFieldError: "user not logged in" },
       { status: 400 }
