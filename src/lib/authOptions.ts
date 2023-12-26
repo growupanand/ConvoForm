@@ -2,7 +2,7 @@ import { NextAuthOptions, Profile } from "next-auth";
 import { env } from "./env";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { db } from "./db";
+import prisma from "./db";
 import { EMAIL_SERVER } from "./constants";
 import EmailProvider from "next-auth/providers/email";
 import nodemailer from "nodemailer";
@@ -14,7 +14,7 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(prisma),
 
   providers: [
     GoogleProvider({
@@ -62,7 +62,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, account, profile }) {
       // If user logged in using google, We want to save updated user data in database
       if (account?.provider === "google") {
-        const existUser = await db.user.findFirst({
+        const existUser = await prisma.user.findFirst({
           where: {
             email: user.email,
           },
@@ -77,7 +77,7 @@ export const authOptions: NextAuthOptions = {
             image: updatedProfile.picture || existUser.image,
           };
 
-          await db.user.update({
+          await prisma.user.update({
             where: {
               id: existUser.id,
             },

@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import prisma from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getCurrentUser } from "@/lib/session";
 import { formPatchSchema, formUpdateSchema } from "@/lib/validations/form";
@@ -18,7 +18,7 @@ export async function GET(
   try {
     const { params } = routeContextSchema.parse(context);
     const user = await getCurrentUser();
-    const form = await db.form.findFirst({
+    const form = await prisma.form.findFirst({
       where: {
         id: params.formId,
         userId: user.id,
@@ -45,7 +45,7 @@ export async function PUT(
     const reqPayload = formUpdateSchema.parse(requestJson);
     const { formField: formField, ...newFormData } = reqPayload;
 
-    const updatedForm = await db.form.update({
+    const updatedForm = await prisma.form.update({
       where: {
         id: params.formId,
         userId: user.id,
@@ -61,7 +61,7 @@ export async function PUT(
     });
 
     // Fetch the newly created formFields although they are created but we don't have it in newForm.
-    const newformFields = await db.formField.findMany({
+    const newformFields = await prisma.formField.findMany({
       where: {
         formId: updatedForm.id,
       },
@@ -86,7 +86,7 @@ export async function DELETE(
     // Validate the route params.
     const { params } = routeContextSchema.parse(context);
     const user = await getCurrentUser();
-    await db.form.delete({
+    await prisma.form.delete({
       where: {
         id: params.formId,
         userId: user.id,
@@ -120,7 +120,7 @@ export async function PATCH(
       };
     }
 
-    const updatedForm = await db.form.update({
+    const updatedForm = await prisma.form.update({
       where: {
         id: params.formId,
         userId: user.id,
@@ -129,7 +129,7 @@ export async function PATCH(
     });
 
     // Fetch the newly created formFields although they are created but we don't have it in newForm.
-    const newformFields = await db.formField.findMany({
+    const newformFields = await prisma.formField.findMany({
       where: {
         formId: updatedForm.id,
       },

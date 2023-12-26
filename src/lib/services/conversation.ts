@@ -7,7 +7,7 @@ import {
   StreamingTextResponse,
   experimental_StreamData,
 } from "ai";
-import { db } from "../db";
+import prisma from "../db";
 import { FormWithFields } from "../types/form";
 import { OpenAIService } from "./openAI";
 
@@ -135,7 +135,7 @@ export class ConversationService extends OpenAIService {
     transcript: Record<string, any>[]
   ) {
     try {
-      return await db.conversation.create({
+      return await prisma.conversation.create({
         data: {
           formId: this.form.id,
           name: conversationName,

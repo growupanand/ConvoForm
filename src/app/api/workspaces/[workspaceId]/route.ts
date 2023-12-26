@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import prisma from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getCurrentUser } from "@/lib/session";
 import { workspaceUpdateSchema } from "@/lib/validations/workspace";
@@ -19,7 +19,7 @@ export async function DELETE(
     // Validate the route params.
     const { params } = routeContextSchema.parse(context);
     const user = await getCurrentUser();
-    await db.workspace.delete({
+    await prisma.workspace.delete({
       where: {
         id: params.workspaceId,
         userId: user.id,
@@ -41,7 +41,7 @@ export async function PUT(
     const user = await getCurrentUser();
     const reqJson = await req.json();
     const { name } = workspaceUpdateSchema.parse(reqJson);
-    const workspace = await db.workspace.update({
+    const workspace = await prisma.workspace.update({
       where: {
         id: params.workspaceId,
         userId: user.id,

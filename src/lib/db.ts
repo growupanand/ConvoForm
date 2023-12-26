@@ -1,18 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 
+const prismaClientSingleton = () => {
+  return new PrismaClient();
+};
+
 declare global {
-  // eslint-disable-next-line no-var
-  var cachedPrisma: PrismaClient;
+  var prisma: undefined | ReturnType<typeof prismaClientSingleton>;
 }
 
-let prisma: PrismaClient;
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient();
-} else {
-  if (!global.cachedPrisma) {
-    global.cachedPrisma = new PrismaClient();
-  }
-  prisma = global.cachedPrisma;
-}
+const prisma = globalThis.prisma ?? prismaClientSingleton();
 
-export const db = prisma;
+export default prisma;
+
+// This will prevent new connection creation on hot reload
+
+if (process.env.NODE_ENV !== "production") globalThis.prisma = prisma;

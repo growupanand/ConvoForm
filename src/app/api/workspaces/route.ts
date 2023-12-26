@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import prisma from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getCurrentUser } from "@/lib/session";
 import { workspaceCreateSchema } from "@/lib/validations/workspace";
@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     const user = await getCurrentUser();
     const requestJson = await req.json();
     const reqPayload = workspaceCreateSchema.parse(requestJson);
-    const newWorkspace = await db.workspace.create({
+    const newWorkspace = await prisma.workspace.create({
       data: {
         name: reqPayload.name,
         userId: user.id,
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   try {
     const user = await getCurrentUser();
-    const workspaces = await db.workspace.findMany({
+    const workspaces = await prisma.workspace.findMany({
       where: {
         userId: user.id,
       },

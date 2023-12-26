@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import prisma from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getCurrentUser } from "@/lib/session";
 import { formCreateSchema } from "@/lib/validations/form";
@@ -21,7 +21,7 @@ export async function POST(
     const requestJson = await req.json();
     const reqPayload = formCreateSchema.parse(requestJson);
     const { formField, ...newFormData } = reqPayload;
-    const newForm = await db.form.create({
+    const newForm = await prisma.form.create({
       data: {
         ...newFormData,
         workspaceId: params.workspaceId,
@@ -33,7 +33,7 @@ export async function POST(
     });
 
     // Fetch the newly created formFields although they are created but we don't have it in newForm.
-    const newFormFields = await db.formField.findMany({
+    const newFormFields = await prisma.formField.findMany({
       where: {
         formId: newForm.id,
       },
@@ -57,7 +57,7 @@ export async function GET(
   try {
     const { params } = routeContextSchema.parse(context);
     const user = await getCurrentUser();
-    const workspaceForms = await db.form.findMany({
+    const workspaceForms = await prisma.form.findMany({
       where: {
         workspaceId: params.workspaceId,
         userId: user.id,
