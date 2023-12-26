@@ -1,8 +1,8 @@
 import { Form } from "@prisma/client";
-import { db } from "../db";
+import prisma from "../db";
 
 export const getFormConversations = async (formId: Form["id"]) => {
-  return await db.conversation.findMany({
+  return await prisma.conversation.findMany({
     where: {
       formId,
     },
@@ -10,7 +10,7 @@ export const getFormConversations = async (formId: Form["id"]) => {
 };
 
 export const getFormConversation = async (conversationId: string) => {
-  return await db.conversation.findUnique({
+  return await prisma.conversation.findUnique({
     where: {
       id: conversationId,
     },

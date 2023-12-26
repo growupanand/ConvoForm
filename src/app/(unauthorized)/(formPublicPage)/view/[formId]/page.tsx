@@ -1,5 +1,5 @@
 import { FormViewer } from "@/components/formViewer/formViewer";
-import { db } from "@/lib/db";
+import prisma from "@/lib/db";
 import { Form } from "@prisma/client";
 import { notFound } from "next/navigation";
 
@@ -8,7 +8,7 @@ interface FormViewerPageProps {
 }
 
 async function getFormDetails(formId: Form["id"]) {
-  return await db.form.findFirst({
+  return await prisma.form.findFirst({
     where: {
       id: formId,
     },

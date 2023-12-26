@@ -1,8 +1,8 @@
-import { db } from "../db";
+import prisma from "../db";
 import { FormWithFields } from "../types/form";
 
 export const getFormDetails = async (formId: string, userId: string) => {
-  return await db.form.findFirst({
+  return await prisma.form.findFirst({
     where: {
       id: formId,
       userId,
@@ -14,7 +14,7 @@ export const getFormDetailsWithFields = async (
   formId: string,
   userId: string
 ) => {
-  return (await db.form.findFirst({
+  return (await prisma.form.findFirst({
     where: {
       id: formId,
       userId,
@@ -29,7 +29,7 @@ export const getFormDetailsWithWorkspace = async (
   formId: string,
   userId: string
 ) => {
-  return await db.form.findFirst({
+  return await prisma.form.findFirst({
     where: {
       id: formId,
       userId,

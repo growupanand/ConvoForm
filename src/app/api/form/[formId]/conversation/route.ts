@@ -1,5 +1,5 @@
 import { ConversationService } from "@/lib/services/conversation";
-import { db } from "@/lib/db";
+import prisma from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { ConversationPayloadSchema } from "@/lib/validations/conversation";
 import { z } from "zod";
@@ -20,7 +20,7 @@ export async function POST(
     const reqPayload = ConversationPayloadSchema.parse(requestJson);
     const { isPreview } = reqPayload;
 
-    const form = await db.form.findUnique({
+    const form = await prisma.form.findUnique({
       where: {
         id: params.formId,
       },
