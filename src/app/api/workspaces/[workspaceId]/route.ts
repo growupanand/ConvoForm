@@ -1,6 +1,6 @@
 import prisma from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
-import { getCurrentUser } from "@/lib/session";
+import { getUserId } from "@/lib/getUserId";
 import { workspaceUpdateSchema } from "@/lib/validations/workspace";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -18,11 +18,11 @@ export async function DELETE(
   try {
     // Validate the route params.
     const { params } = routeContextSchema.parse(context);
-    const user = await getCurrentUser();
+    const userId = getUserId();
     await prisma.workspace.delete({
       where: {
         id: params.workspaceId,
-        userId: user.id,
+        userId: userId,
       },
     });
     return NextResponse.json({ success: true }, { status: 200 });
@@ -38,13 +38,13 @@ export async function PUT(
   try {
     // Validate the route params.
     const { params } = routeContextSchema.parse(context);
-    const user = await getCurrentUser();
+    const userId = getUserId();
     const reqJson = await req.json();
     const { name } = workspaceUpdateSchema.parse(reqJson);
     const workspace = await prisma.workspace.update({
       where: {
         id: params.workspaceId,
-        userId: user.id,
+        userId: userId,
       },
       data: {
         name,

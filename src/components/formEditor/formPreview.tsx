@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCw, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { FormViewer } from "../formViewer/formViewer";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";

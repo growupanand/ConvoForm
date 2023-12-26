@@ -1,6 +1,5 @@
 import ConversationDetail from "@/components/conversationDetail";
 import { getFormConversation } from "@/lib/dbControllers/conversation";
-import { timeout } from "@/lib/utils";
 
 type Props = {
   params: { conversationId: string };

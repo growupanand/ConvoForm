@@ -9,11 +9,12 @@ import { WorkspaceList } from "./workspaceList";
 import { useWorkspaceStore } from "@/lib/store/workspaceStore";
 import WorkspaceListLoading from "./workspaceListLoading";
 import AppNavBarLink from "./appNavBarLink";
-import ProfileCard from "../profileCard";
+import { UserButton, useUser } from "@clerk/nextjs";
 
 export default function AppNavbar() {
-  const pathname = usePathname();
+  const { user } = useUser();
 
+  const pathname = usePathname();
   const workspaceStore = useWorkspaceStore();
 
   const { workspaces, isLoading, isBusyInCreatingWorkspace } = workspaceStore;
@@ -76,8 +77,22 @@ export default function AppNavbar() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-2 items-start ">
-        <ProfileCard />
+      <div className="flex justify-between gap-2 items-start ps-4">
+        {user ? (
+          <>
+            <div className="flex flex-col  items-start text-sm font-medium text-muted-foreground">
+              <div className="whitespace-nowrap capitalize">
+                {user.fullName}
+              </div>
+              <div className="whitespace-nowrap text-xs">
+                {user.primaryEmailAddress?.toString()}
+              </div>
+            </div>
+            <UserButton />
+          </>
+        ) : (
+          <></>
+        )}
       </div>
     </nav>
   );
