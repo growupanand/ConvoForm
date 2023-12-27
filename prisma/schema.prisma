@@ -17,8 +17,9 @@ model Workspace {
 
   name String
 
-  userId String
-  Form   Form[]
+  userId         String
+  organizationId String
+  Form           Form[]
 }
 
 model Form {
@@ -37,9 +38,10 @@ model Form {
   publishedAt           DateTime?
   conversation          Conversation[]
 
-  workspaceId String
-  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  userId      String
+  workspaceId    String
+  workspace      Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId         String
+  organizationId String
 }
 
 model FormField {
@@ -62,6 +64,7 @@ model Conversation {
   formFieldsData Json
   transcript     Json[]
 
-  formId String
-  form   Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId         String
+  form           Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
+  organizationId String
 }

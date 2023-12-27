@@ -1,4 +1,5 @@
 import AppNavbar from "@/components/appNavbar/appNavBar";
+import { OrganizationProvider } from "@/components/organizationProvider";
 import { StoreInitializer } from "@/components/storeInitializer";
 
 type Props = {
@@ -7,13 +8,15 @@ type Props = {
 
 export default async function AuthLayout({ children }: Readonly<Props>) {
   return (
-    <StoreInitializer stores={["useWorkspaceStore"]}>
-      <div className="flex h-screen">
-        <div className="bg-white-300 min-w-[300px] bg-gray-50">
-          <AppNavbar />
+    <OrganizationProvider>
+      <StoreInitializer stores={["useWorkspaceStore"]}>
+        <div className="flex h-screen">
+          <div className="bg-white-300 min-w-[300px] bg-gray-50">
+            <AppNavbar />
+          </div>
+          <div className="container py-5 overflow-auto">{children}</div>
         </div>
-        <div className="container py-5 overflow-auto">{children}</div>
-      </div>
-    </StoreInitializer>
+      </StoreInitializer>
+    </OrganizationProvider>
   );
 }

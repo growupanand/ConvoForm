@@ -9,7 +9,7 @@ import { WorkspaceList } from "./workspaceList";
 import { useWorkspaceStore } from "@/lib/store/workspaceStore";
 import WorkspaceListLoading from "./workspaceListLoading";
 import AppNavBarLink from "./appNavBarLink";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { OrganizationSwitcher, UserButton, useUser } from "@clerk/nextjs";
 
 export default function AppNavbar() {
   const { user } = useUser();
@@ -42,13 +42,11 @@ export default function AppNavbar() {
           <BrandName />
         </div>
         <div className="grid gap-2">
-          <div className="">
-            <AppNavBarLink
-              name="Dashboard"
-              href="/dashboard"
-              isActive={pathname.includes("dashboard")}
-            />
-          </div>
+          <AppNavBarLink
+            name="Dashboard"
+            href="/dashboard"
+            isActive={pathname.includes("dashboard")}
+          />
           <div className="truncate">
             <div className="flex justify-between items-center ">
               <span className="ps-4 text-muted-foreground font-medium text-sm">
@@ -70,28 +68,24 @@ export default function AppNavbar() {
             {isLoading && <WorkspaceListLoading />}
             {workspaces.length === 0 && !isLoading && (
               <div className="flex justify-between items-center] px-3">
-                <span className="text-gray-500">No workspaces</span>
+                <span className="text-muted-foreground p-2 text-sm">
+                  No workspaces
+                </span>
               </div>
             )}
             <WorkspaceList workspaces={workspaces} />
           </div>
         </div>
       </div>
-      <div className="flex justify-between gap-2 items-start ps-4">
-        {user ? (
-          <>
-            <div className="flex flex-col  items-start text-sm font-medium text-muted-foreground">
-              <div className="whitespace-nowrap capitalize">
-                {user.fullName}
-              </div>
-              <div className="whitespace-nowrap text-xs">
-                {user.primaryEmailAddress?.toString()}
-              </div>
-            </div>
+      <div>
+        {user && (
+          <div className="flex justify-evenly gap-2 items-start ps-4">
+            <OrganizationSwitcher
+              afterSelectOrganizationUrl="/dashboard"
+              hidePersonal
+            />
             <UserButton />
-          </>
-        ) : (
-          <></>
+          </div>
         )}
       </div>
     </nav>

@@ -8,7 +8,7 @@ export const sendErrorResponse = (error: any) => {
 
   if (error.name === "Unauthorized") {
     return NextResponse.json(
-      { nonFieldError: "user not logged in" },
+      { nonFieldError: error.message || "You are not authorized." },
       { status: 400 }
     );
   }
