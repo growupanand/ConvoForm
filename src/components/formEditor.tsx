@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { SubmitHandler, set, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formUpdateSchema } from "@/lib/validations/form";
@@ -40,16 +40,14 @@ type Props = {
 
 type State = {
   isFormBusy: boolean;
-  form: FormWithFields & { formField: PrismaFormField[] };
 };
 
 export default function FormEditor(props: Props) {
+  const { form } = props;
   const [state, setState] = useState<State>({
     isFormBusy: false,
-    form: props.form,
   });
-  const { isFormBusy, form } = state;
-  console.log({ form });
+  const { isFormBusy } = state;
 
   const formHook = useForm<FormSubmitDataSchema>({
     resolver: zodResolver(formSchema),
