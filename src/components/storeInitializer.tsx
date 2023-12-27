@@ -2,6 +2,7 @@
 
 import { useFormStore } from "@/lib/store/formStore";
 import { useWorkspaceStore } from "@/lib/store/workspaceStore";
+import { useAuth } from "@clerk/nextjs";
 import { useEffect } from "react";
 
 type Props = {
@@ -29,9 +30,10 @@ export const StoreInitializer = ({ children, stores }: Props) => {
       storeAccessorsHooks[store]?.initializeStore?.();
     });
   };
+  const { orgId } = useAuth();
 
   useEffect(() => {
     initializeStores();
-  }, []);
+  }, [orgId]);
   return <>{children}</>;
 };

@@ -2,7 +2,7 @@ import prisma from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { z } from "zod";
 import { NextResponse } from "next/server";
-import { getUserId } from "@/lib/getUserId";
+import { getOrganizationId } from "@/lib/getOrganizationId";
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -16,11 +16,11 @@ export async function GET(
 ) {
   try {
     const { params } = routeContextSchema.parse(context);
-    const userId = getUserId();
+    const organizationId = getOrganizationId();
     const form = await prisma.form.findFirst({
       where: {
         id: params.formId,
-        userId: userId,
+        organizationId,
       },
       include: {
         conversation: true,

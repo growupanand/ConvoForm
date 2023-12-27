@@ -141,6 +141,7 @@ export class ConversationService extends OpenAIService {
           name: conversationName,
           formFieldsData,
           transcript,
+          organizationId: this.form.organizationId,
         },
       });
     } catch (error) {

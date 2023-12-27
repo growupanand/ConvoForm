@@ -1,6 +1,6 @@
 import prisma from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
-import { getUserId } from "@/lib/getUserId";
+import { getOrganizationId } from "@/lib/getOrganizationId";
 import { formPatchSchema, formUpdateSchema } from "@/lib/validations/form";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -17,11 +17,11 @@ export async function GET(
 ) {
   try {
     const { params } = routeContextSchema.parse(context);
-    const userId = getUserId();
+    const organizationId = getOrganizationId();
     const form = await prisma.form.findFirst({
       where: {
         id: params.formId,
-        userId: userId,
+        organizationId,
       },
       include: {
         formField: true,
@@ -40,7 +40,7 @@ export async function PUT(
 ) {
   try {
     const { params } = routeContextSchema.parse(context);
-    const userId = getUserId();
+    const organizationId = getOrganizationId();
     const requestJson = await req.json();
     const reqPayload = formUpdateSchema.parse(requestJson);
     const { formField: formField, ...newFormData } = reqPayload;
@@ -48,7 +48,7 @@ export async function PUT(
     const updatedForm = await prisma.form.update({
       where: {
         id: params.formId,
-        userId: userId,
+        organizationId,
       },
       data: {
         ...newFormData,
@@ -85,11 +85,11 @@ export async function DELETE(
   try {
     // Validate the route params.
     const { params } = routeContextSchema.parse(context);
-    const userId = getUserId();
+    const organizationId = getOrganizationId();
     await prisma.form.delete({
       where: {
         id: params.formId,
-        userId: userId,
+        organizationId,
       },
     });
     return NextResponse.json({ success: true }, { status: 200 });
@@ -104,7 +104,7 @@ export async function PATCH(
 ) {
   try {
     const { params } = routeContextSchema.parse(context);
-    const userId = getUserId();
+    const organizationId = getOrganizationId();
     const requestJson = await req.json();
     const reqPayload = formPatchSchema.parse(requestJson);
     const { formField, ...newFormData } = reqPayload;
@@ -123,7 +123,7 @@ export async function PATCH(
     const updatedForm = await prisma.form.update({
       where: {
         id: params.formId,
-        userId: userId,
+        organizationId,
       },
       data: newData,
     });
