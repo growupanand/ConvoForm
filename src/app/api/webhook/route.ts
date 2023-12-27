@@ -1,17 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
+import type { WebhookEvent } from "@clerk/clerk-sdk-node";
 
 export async function POST(req: NextRequest) {
-  const reqJson = req.json();
+  const reqJson = await req.json();
   console.log("Handling webhook event");
 
-  const { type: eventType, data } = reqJson as Record<string, any>;
+  const event = reqJson as WebhookEvent;
 
-  switch (eventType) {
+  switch (event.type) {
     case "user.created":
       console.log("user created event received");
+      const { data } = event;
       try {
-        const email = data.email_addresses?.[0]?.email_address;
+        const email =
+          data.email_addresses.length > 0
+            ? data.email_addresses[0]?.email_address
+            : "";
         const user = {
           email: email,
           firstName: data.first_name,
@@ -27,6 +32,7 @@ export async function POST(req: NextRequest) {
         console.error({
           message: "Unable to create user",
           data: data,
+          errorMessage: e.message,
         });
       }
       break;
