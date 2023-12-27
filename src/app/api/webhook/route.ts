@@ -141,6 +141,11 @@ export async function POST(req: NextRequest) {
             organizationId: orgDeletedData.id,
           },
         });
+        await prisma.organizationMember.deleteMany({
+          where: {
+            organizationId: orgDeletedData.id,
+          },
+        });
         console.log("organization deleted successfully in our database");
       } catch (e: any) {
         console.error({
