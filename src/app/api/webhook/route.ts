@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import type { WebhookEvent } from "@clerk/clerk-sdk-node";
-import { Organization, OrganizationMember } from "@prisma/client";
 
 export async function POST(req: NextRequest) {
   const reqJson = await req.json();
-  console.log("Handling webhook event");
-
   const event = reqJson as WebhookEvent;
 
   switch (event.type) {
@@ -29,7 +26,7 @@ export async function POST(req: NextRequest) {
           data: user,
         });
         console.log("user created successfully in our database");
-      } catch (e) {
+      } catch (e: any) {
         console.error({
           message: "Unable to create user",
           data: data,
@@ -51,7 +48,7 @@ export async function POST(req: NextRequest) {
           },
         });
         console.log("user deleted successfully in our database");
-      } catch (e) {
+      } catch (e: any) {
         console.error({
           message: "Unable to delete user",
           data: userData,
@@ -73,7 +70,7 @@ export async function POST(req: NextRequest) {
           data: org,
         });
         console.log("organization created successfully in our database");
-      } catch (e) {
+      } catch (e: any) {
         console.error({
           message: "Unable to create organization",
           data: orgData,
@@ -97,7 +94,7 @@ export async function POST(req: NextRequest) {
         console.log(
           "organizationMembership created successfully in our database"
         );
-      } catch (e) {
+      } catch (e: any) {
         console.error({
           message: "Unable to create organizationMembership",
           data: orgMembershipData,
@@ -106,8 +103,57 @@ export async function POST(req: NextRequest) {
       }
       break;
 
+    case "organizationMembership.deleted":
+      console.log("organizationMembership deleted event received");
+      const { data: orgMembershipDeletedData } = event;
+      try {
+        if (!orgMembershipDeletedData.id) {
+          console.log("organizationMembership id not found in event data");
+          break;
+        }
+        await prisma.organizationMember.deleteMany({
+          where: {
+            memberId: orgMembershipDeletedData.id,
+          },
+        });
+        console.log(
+          "organizationMembership deleted successfully in our database"
+        );
+      } catch (e: any) {
+        console.error({
+          message: "Unable to delete organizationMembership",
+          data: orgMembershipDeletedData,
+          errorMessage: e.message,
+        });
+      }
+      break;
+
+    case "organization.deleted":
+      console.log("organization deleted event received");
+      const { data: orgDeletedData } = event;
+      try {
+        if (!orgDeletedData.id) {
+          console.log("organization id not found in event data");
+          break;
+        }
+        await prisma.organization.deleteMany({
+          where: {
+            organizationId: orgDeletedData.id,
+          },
+        });
+        console.log("organization deleted successfully in our database");
+      } catch (e: any) {
+        console.error({
+          message: "Unable to delete organization",
+          data: orgDeletedData,
+          errorMessage: e.message,
+        });
+      }
+      break;
+
     default:
-    // Unhandled event type
+      // Unhandled event type
+      break;
   }
 
   return NextResponse.json({ success: true });
