@@ -68,3 +68,40 @@ model Conversation {
   form           Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
   organizationId String
 }
+
+// These tables data are created from clerk webhooks
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email     String @unique
+  firstName String
+  lastName  String
+  imageUrl  String
+  userId    String
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String
+  slug String
+
+  organizationId String
+}
+
+model OrganizationMember {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  role String
+
+  memberId       String
+  userId         String
+  organizationId String
+}
