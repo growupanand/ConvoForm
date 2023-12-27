@@ -9,6 +9,7 @@ export default authMiddleware({
     "/view/(.*)",
     "/api/form/(.*)/conversation",
     "/api/webhook",
+    "/auth/(.*)",
   ],
 });
 
