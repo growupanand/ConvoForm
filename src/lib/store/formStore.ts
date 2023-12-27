@@ -72,6 +72,6 @@ export const useFormStore = create<WorkspaceStore>((set, get) => ({
     if (form === undefined) {
       return;
     }
-    set({ form: { ...form, ...updatedForm } });
+    set({ form: { ...form, ...updatedForm, isPublished: true } });
   },
 }));
