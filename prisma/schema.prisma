@@ -76,7 +76,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email     String  @unique
+  email     String
   firstName String?
   lastName  String?
   imageUrl  String?
@@ -89,7 +89,7 @@ model Organization {
   updatedAt DateTime @updatedAt
 
   name String
-  slug String
+  slug String?
 
   organizationId String
 }
