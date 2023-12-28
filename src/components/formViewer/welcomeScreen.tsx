@@ -9,12 +9,22 @@ type Props = {
 
 export const WelcomeScreen = ({ form, onCTAClick: onClick }: Props) => {
   return (
-    <div className="flex flex-col gap-5 items-center justify-center">
-      <h1 className="text-7xl font-black">{form.welcomeScreenTitle}</h1>
-      <p className="text-3xl font-medium">{form.welcomeScreenMessage}</p>
-      <Button className="font-semibold rounded-xl text-2xl" onClick={onClick}>
-        {form.welcomeScreenCTALabel}
-      </Button>
+    <div className="flex flex-col gap-2 items-center justify-center">
+      <h2 className="text-5xl font-bold text-center">
+        {form.welcomeScreenTitle}
+      </h2>
+      <p className="text-xl font-medium text-gray-800 mb-8">
+        {form.welcomeScreenMessage}
+      </p>
+      <div>
+        <Button
+          size="lg"
+          className="font-semibold rounded-full text-2xl"
+          onClick={onClick}
+        >
+          {form.welcomeScreenCTALabel}
+        </Button>
+      </div>
     </div>
   );
 };

@@ -86,7 +86,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
   }, [form, refresh]);
 
   return (
-    <div className="max-w-[700px] mx-auto container ">
+    <div className="container max-w-[800px]">
       {currentStage === "welcomeScreen" && (
         <WelcomeScreen form={form} onCTAClick={handleCTAClick} />
       )}

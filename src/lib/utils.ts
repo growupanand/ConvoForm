@@ -60,3 +60,8 @@ export const isValidJSON = (str: string) => {
 export const timeout = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
+
+export function numberFormatter(value: number) {
+  const formatter = Intl.NumberFormat("en", { notation: "compact" });
+  return formatter.format(value);
+}

@@ -12,13 +12,14 @@ import BrowserWindow from "../ui/browserWindow";
 
 type Props = {
   form: Form;
+  noToolbar?: boolean;
 };
 
 type State = {
   refresh: boolean;
 };
 
-export default function FormPreview({ form }: Readonly<Props>) {
+export default function FormPreview({ form, noToolbar }: Readonly<Props>) {
   const formViewLink = `${window.location.origin}/view/${form.id}`;
 
   const [state, setState] = useState<State>({
@@ -39,13 +40,17 @@ export default function FormPreview({ form }: Readonly<Props>) {
   return (
     <BrowserWindow
       onRefresh={refreshPreview}
-      actionsButton={<CopyLinkButton onClick={copyLinkToClipboard} />}
+      actionsButton={
+        noToolbar || <CopyLinkButton onClick={copyLinkToClipboard} />
+      }
       addressBar={
-        <Link href={formViewLink} target="_blank">
-          <Button variant="link" size="sm" className="h-4">
-            {formViewLink} <ExternalLink className="w-4 h-4 ms-2" />
-          </Button>
-        </Link>
+        noToolbar || (
+          <Link href={formViewLink} target="_blank">
+            <Button variant="link" size="sm" className="h-4">
+              {formViewLink} <ExternalLink className="w-4 h-4 ms-2" />
+            </Button>
+          </Link>
+        )
       }
     >
       <div className="flex flex-col justify-center items-center h-full">

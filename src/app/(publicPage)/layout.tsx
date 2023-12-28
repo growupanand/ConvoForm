@@ -1,40 +1,24 @@
-import BrandName from "@/components/brandName";
-import { UserButton, auth } from "@clerk/nextjs";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Footer } from "@/components/homepage/footer";
+import { Header } from "@/components/homepage/header";
 
 type Props = {
   children: React.ReactNode;
 };
 
 export default function Layout({ children }: Props) {
-  const { userId } = auth();
-
   return (
-    <main className="min-h-screen container">
-      <nav className="flex justify-between items-center p-3">
-        <BrandName />
-        <div className="flex items-center gap-3">
-          {userId ? (
-            <>
-              <Link href="/dashboard">
-                <Button variant="secondary">Go to Dashboard</Button>
-              </Link>
-              <UserButton />
-            </>
-          ) : (
-            <div className="flex gap-3">
-              <Link href="/auth/register">
-                <Button variant="secondary">Sign Up</Button>
-              </Link>
-              <Link href="/auth/sign-in">
-                <Button>Sign In</Button>
-              </Link>
-            </div>
-          )}
+    <main className="h-screen w-screen  container  ">
+      <div className="flex flex-col h-full justify-between ">
+        <div className="flex flex-col items-center">
+          <div className="sticky top-0 backdrop-blur-md bg-white/80 z-50 w-full flex justify-center ">
+            <Header />
+          </div>
+          <div className="max-w-[900px]">
+            {children}
+            <Footer />
+          </div>
         </div>
-      </nav>
-      {children}
+      </div>
     </main>
   );
 }
