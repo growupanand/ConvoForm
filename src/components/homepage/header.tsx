@@ -13,20 +13,18 @@ export function Header() {
       <BrandName />
       <div className="flex items-center gap-3">
         {user ? (
-          <div>
+          <>
             <Link href="/dashboard">
               <Button variant="secondary">Go to Dashboard</Button>
             </Link>
             <UserButton />
-          </div>
+          </>
         ) : (
-          <div className="flex gap-3">
-            <Link href="/auth/sign-in">
-              <Button variant="secondary" className="rounded-full">
-                Sign In
-              </Button>
-            </Link>
-          </div>
+          <Link href="/auth/sign-in">
+            <Button variant="secondary" className="rounded-full">
+              Sign In
+            </Button>
+          </Link>
         )}
       </div>
     </nav>
