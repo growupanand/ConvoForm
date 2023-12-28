@@ -6,8 +6,8 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   return (
-    <main className="min-h-screen container">
-      <nav className="flex justify-start items-center p-3 mb-10">
+    <main className="container max-w-[900px]">
+      <nav className="flex justify-center items-center p-3 mt-5">
         <BrandName />
       </nav>
       {children}
