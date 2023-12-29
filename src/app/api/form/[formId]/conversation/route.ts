@@ -44,16 +44,18 @@ export async function POST(
       });
     }
 
-    const totalSubmissionsCount = await getUserTotalConversationsCount(
-      form.userId
-    );
+    if (form.id !== "demo") {
+      const totalSubmissionsCount = await getUserTotalConversationsCount(
+        form.userId
+      );
 
-    if (totalSubmissionsCount >= 5) {
-      throw new Error("This form have reached the limit submissions", {
-        cause: {
-          statusCode: 403,
-        },
-      });
+      if (totalSubmissionsCount >= 5) {
+        throw new Error("This form have reached the limit submissions", {
+          cause: {
+            statusCode: 403,
+          },
+        });
+      }
     }
 
     const conversation = new ConversationService(form, isPreview);

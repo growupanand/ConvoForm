@@ -100,8 +100,10 @@ export class ConversationService extends OpenAIService {
       ];
 
       // 3. Get conversation name
-      const conversationName = functionCallPayload.arguments
-        .conversationName as string;
+      const conversationName =
+        typeof functionCallPayload.arguments.conversationName === "string"
+          ? functionCallPayload.arguments.conversationName
+          : "Conversation";
 
       // Save conversation in database
       try {
