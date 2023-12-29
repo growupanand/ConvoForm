@@ -7,6 +7,7 @@ import { FormFieldsViewer } from "./formFields";
 import { useChat } from "ai/react";
 import { EndScreen } from "./endScreen";
 import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
+import { sendErrorResponseToast } from "../ui/use-toast";
 
 type Props = {
   form: Form;
@@ -16,7 +17,6 @@ type Props = {
 
 type State = {
   formStage: FormStage;
-  isFormBusy: boolean;
   endScreenMessage: string;
 };
 
@@ -27,18 +27,31 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
 
   const [state, setState] = useState<State>({
     formStage: "welcomeScreen",
-    isFormBusy: false,
     endScreenMessage: "",
   });
 
-  const { formStage: currentStage, isFormBusy, endScreenMessage } = state;
+  const { formStage: currentStage, endScreenMessage } = state;
 
-  const { messages, input, handleInputChange, handleSubmit, append, data } =
-    useChat({
-      api: apiEndpoint,
-      onFinish: () => setState((s) => ({ ...s, isFormBusy: false })),
-      body: { isPreview },
-    });
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    append,
+    data,
+    setMessages,
+    isLoading,
+  } = useChat({
+    api: apiEndpoint,
+    body: { isPreview },
+    onError(error) {
+      let errorMessage;
+      try {
+        errorMessage = JSON.parse(error.message).nonFieldError;
+      } catch (_) {}
+      sendErrorResponseToast(error, errorMessage);
+    },
+  });
 
   const getCurrentQuestion = () => {
     const lastMessage = messages[messages.length - 1];
@@ -53,7 +66,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
 
   const handleFormSubmit = (event: any) => {
     event.preventDefault();
-    if (!isFormBusy) {
+    if (!isLoading) {
       setState((s) => ({ ...s, isFormBusy: true }));
       handleSubmit(event);
     }
@@ -83,9 +96,8 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
   }, [data]);
 
   useEffect(() => {
-    if (isPreview) {
-      setState((cs) => ({ ...cs, formStage: "welcomeScreen" }));
-    }
+    setState((cs) => ({ ...cs, formStage: "welcomeScreen" }));
+    setMessages([]);
   }, [form, refresh]);
 
   return (
@@ -100,7 +112,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
           handleFormSubmit={handleFormSubmit}
           handleInputChange={handleInputChange}
           input={input}
-          isFormBusy={isFormBusy}
+          isFormBusy={isLoading}
         />
       )}
       {currentStage === "endScreen" && (
