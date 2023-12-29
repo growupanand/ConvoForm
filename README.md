@@ -1,7 +1,7 @@
 
 # Smart form wizard
 
-Modern form builder powered by AI
+Build engaging and interactive forms that are easy to fill and fun to answer.
 
 ## Live Demo
 [convoform.com](https://www.convoform.com)
