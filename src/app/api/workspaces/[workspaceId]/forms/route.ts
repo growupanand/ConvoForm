@@ -23,6 +23,18 @@ export async function POST(
     const requestJson = await req.json();
     const reqPayload = formCreateSchema.parse(requestJson);
     const { formField, ...newFormData } = reqPayload;
+
+    // Limit the number of forms to 3 per user
+    const organizationForms = await prisma.form.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    if (organizationForms.length >= 3) {
+      throw new Error("You can create only 3 forms in free plan.");
+    }
+
     const newForm = await prisma.form.create({
       data: {
         ...newFormData,

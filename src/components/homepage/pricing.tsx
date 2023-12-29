@@ -28,12 +28,16 @@ const freePlan: Plan = {
   price: "$0/month",
   features: [
     {
-      name: "Create forms",
+      name: "Create workspaces",
       featureValue: "Unlimited",
     },
     {
-      name: "See Responses",
-      featureValue: "Unlimited",
+      name: "Create forms",
+      featureValue: "3",
+    },
+    {
+      name: "Collect form submission",
+      featureValue: "5 Total",
     },
   ],
 };
@@ -61,9 +65,9 @@ const FeatureListItem = ({
         <div>
           <CheckCircle color="green" size={15} />
         </div>
-        <div className="text-sm text-gray-700">{featureName}</div>
+        <div className="text-md text-gray-700">{featureName}</div>
       </div>
-      <div className="text-sm text-gray-900 font-medium">{featureValue}</div>
+      <div className="text-md text-gray-900 font-semibold">{featureValue}</div>
     </div>
   );
 };
@@ -83,15 +87,13 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-2 mb-5">
-          <div>
-            {plan.features.map((feature) => (
-              <FeatureListItem
-                key={feature.name}
-                featureName={feature.name}
-                featureValue={feature.featureValue}
-              />
-            ))}
-          </div>
+          {plan.features.map((feature) => (
+            <FeatureListItem
+              key={feature.name}
+              featureName={feature.name}
+              featureValue={feature.featureValue}
+            />
+          ))}
         </div>
       </CardContent>
       <CardFooter>

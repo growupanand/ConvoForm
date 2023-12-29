@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
+import { sendErrorResponseToast, toast } from "@/components/ui/use-toast";
 import { createFormController } from "@/lib/controllers/form";
 import { formCreateSchema } from "@/lib/validations/form";
 import { Workspace } from "@prisma/client";
@@ -45,11 +45,8 @@ export default function CreateFormButton({ workspace }: Props) {
         duration: 1500,
       });
       router.push(`/forms/${createdForm.id}`);
-    } catch (err) {
-      toast({
-        title: "Unable to create form",
-        duration: 1500,
-      });
+    } catch (error: any) {
+      await sendErrorResponseToast(error, "Unable to create form");
       setState((cs) => ({ ...cs, isLoading: false }));
     }
   };
