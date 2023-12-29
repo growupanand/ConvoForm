@@ -35,7 +35,7 @@ export default function FormEditPage() {
           </CardContent>
         </Card>
       </div>
-      <div className="grow pt-5 ">
+      <div className="grow py-5 ">
         <FormPreview form={form} />
       </div>
     </div>
