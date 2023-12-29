@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { brandName } from "@/lib/constants";
 
 export function Footer() {
   return (
@@ -8,7 +9,7 @@ export function Footer() {
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
           <Button variant="link" className="text-lg" asChild>
-            <Link href="/">Smart form wizard</Link>
+            <Link href="/">{brandName}</Link>
           </Button>
           <span className="text-sm text-muted-foreground">
             Created by{" "}

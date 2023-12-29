@@ -10,7 +10,7 @@ export function Header() {
 
   return (
     <nav className="flex justify-between items-center p-3 mt-5 w-full">
-      <BrandName />
+      <BrandName className="text-2xl" />
       <div className="flex items-center gap-3">
         {user ? (
           <>
