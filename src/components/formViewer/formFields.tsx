@@ -21,10 +21,12 @@ export const FormFieldsViewer = ({
 }: Props) => {
   return (
     <form onSubmit={handleFormSubmit}>
-      <div className="w-full min-h-full flex flex-col items-center justify-center">
-        <h1 className="w-full px-3 text-4xl font-medium mb-10">
-          {!isFormBusy && currentQuestion}
-          {isFormBusy && <Tally1 className="animate-ping" />}
+      <div className="w-full min-h-full flex flex-col items-center justify-center px-3 ">
+        <h1 className="text-4xl font-medium mb-10 w-full ">
+          <span>
+            {currentQuestion}
+            {isFormBusy && <Tally1 className="animate-ping inline ml-2" />}
+          </span>
         </h1>
         {!isFormBusy && (
           <Input

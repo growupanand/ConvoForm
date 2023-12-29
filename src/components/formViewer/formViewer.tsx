@@ -41,12 +41,15 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
     });
 
   const getCurrentQuestion = () => {
-    const assistantMessage = messages.findLast((m) => m.role === "assistant");
-    if (!assistantMessage) {
-      return "";
+    const lastMessage = messages[messages.length - 1];
+    const currentQuestion =
+      lastMessage?.role === "assistant" && lastMessage.content;
+    if (currentQuestion && currentQuestion !== "") {
+      return currentQuestion;
     }
-    return assistantMessage.content;
+    return "";
   };
+  const currentQuestion = getCurrentQuestion();
 
   const handleFormSubmit = (event: any) => {
     event.preventDefault();
@@ -93,7 +96,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
 
       {currentStage === "conversationFlow" && (
         <FormFieldsViewer
-          currentQuestion={getCurrentQuestion()}
+          currentQuestion={currentQuestion}
           handleFormSubmit={handleFormSubmit}
           handleInputChange={handleInputChange}
           input={input}
