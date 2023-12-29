@@ -7,3 +7,6 @@ export const CONVERSATION_START_MESSAGE = "Hello, I want to fill the form";
 
 export const planExceedSubmissionMessage =
   "You have reached the limit of 5 submissions";
+
+export const brandName =
+  process.env.NEXT_PUBLIC_BRAND_NAME ?? "Smart form wizard";

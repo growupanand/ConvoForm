@@ -39,7 +39,7 @@ export default function AppNavbar() {
     <nav className="h-full flex flex-col justify-between p-5">
       <div>
         <div className="mb-5 flex justify-start ps-4">
-          <BrandName />
+          <BrandName className="text-xl" />
         </div>
         <div className="grid gap-2">
           <AppNavBarLink

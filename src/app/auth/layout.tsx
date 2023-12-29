@@ -8,7 +8,7 @@ export default function Layout({ children }: Props) {
   return (
     <main className="container max-w-[900px]">
       <nav className="flex justify-center items-center p-3 mt-5">
-        <BrandName />
+        <BrandName className="text-3xl" />
       </nav>
       {children}
     </main>

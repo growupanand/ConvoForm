@@ -1,10 +1,21 @@
+import { brandName } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-export default function BrandName() {
+type Props = {
+  className?: string;
+};
+
+export default function BrandName({ className = "" }: Props) {
   return (
     <Link href="/">
-      <span className="font-bold text-xl text-muted-foreground hover:text-foreground">
-        Smart form wizard
+      <span
+        className={cn(
+          "font-bold  text-muted-foreground hover:text-foreground",
+          className
+        )}
+      >
+        {brandName}
       </span>
     </Link>
   );
