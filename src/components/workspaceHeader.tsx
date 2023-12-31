@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, MoreVertical } from "lucide-react";
+import { Check, MoreVertical, Trash } from "lucide-react";
 import CreateFormButton from "./createFormButton";
 import { Button } from "./ui/button";
 import {
@@ -145,7 +145,7 @@ export const WorkspaceHeader = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8"
+                className="h-8 w-8 focus-visible:ring-transparent"
                 disabled={isDeleting}
               >
                 {isDeleting ? (
@@ -160,6 +160,7 @@ export const WorkspaceHeader = () => {
                 className="cursor-pointer text-destructive focus:text-destructive"
                 onClick={deleteWorkspace}
               >
+                <Trash className="w-4 h-4 mr-2" />
                 Delete workspace
               </DropdownMenuItem>
             </DropdownMenuContent>

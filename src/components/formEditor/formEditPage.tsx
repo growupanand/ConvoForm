@@ -9,6 +9,7 @@ import { FormField } from "@prisma/client";
 import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
+import { Eye } from "lucide-react";
 
 export default function FormEditPage() {
   const formStore = useFormStore();
@@ -37,9 +38,10 @@ export default function FormEditPage() {
             <FormEditorForm form={form} onUpdated={onUpdateForm} />
 
             <div className="lg:hidden py-3">
-              <Drawer snapPoints={[0.9]}>
+              <Drawer snapPoints={[0.9, 1]}>
                 <DrawerTrigger asChild>
                   <Button variant="outline" className="w-full">
+                    <Eye className="w-4 h-4 mr-2" />
                     Show Preview
                   </Button>
                 </DrawerTrigger>

@@ -120,7 +120,7 @@ function Nav({
     <nav className="h-full flex flex-col justify-between lg:p-5">
       <div>
         <div className="mb-5 flex justify-start ps-4">
-          <BrandName className="text-xl" />
+          <BrandName className="text-xl lg:text-2xl" />
         </div>
         <div className="grid gap-2">
           <AppNavBarLink
