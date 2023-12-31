@@ -1,6 +1,7 @@
 import { ChangeEvent } from "react";
 import { Input } from "../ui/input";
-import { Tally1 } from "lucide-react";
+import { CornerDownLeft, Tally1 } from "lucide-react";
+import { Button } from "../ui/button";
 
 type Props = {
   isFormBusy: boolean;
@@ -29,15 +30,34 @@ export const FormFieldsViewer = ({
           </span>
         </h1>
         {!isFormBusy && (
-          <Input
-            autoFocus
-            className="text-2xl border-0 focus-visible:ring-transparent	 focus-visible:ring-0 w-full"
-            onChange={handleInputChange}
-            type="text"
-            placeholder="Type here..."
-            value={input}
-            disabled={isFormBusy}
-          />
+          <div className="w-full">
+            <Input
+              autoFocus
+              className="text-xl border-0 focus-visible:ring-transparent	 focus-visible:ring-0 w-full pb-5 border-b rounded-none"
+              onChange={handleInputChange}
+              type="text"
+              placeholder="Type answer here..."
+              value={input}
+              disabled={isFormBusy}
+            />
+            <div className="py-3 ">
+              <div className="text-sm font-light text-muted-foreground flex items-center max-lg:hidden">
+                press
+                <span className="font-bold flex items-center mx-1">
+                  Enter <CornerDownLeft className="w-4 h-4 " />
+                </span>
+                to submit answer
+              </div>
+              <div className="lg:hidden">
+                <Button
+                  type="submit"
+                  className="font-medium px-6 py-3 rounded-md w-full"
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </form>
