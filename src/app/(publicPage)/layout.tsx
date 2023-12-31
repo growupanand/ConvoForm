@@ -7,16 +7,16 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   return (
-    <main className="h-screen w-screen  container  ">
-      <div className="flex flex-col h-full justify-between ">
-        <div className="flex flex-col items-center">
-          <div className="sticky top-0 backdrop-blur-md bg-white/80 z-50 w-full flex justify-center ">
+    <main className="min-h-screen w-screen">
+      <div className="flex flex-col h-full justify-between item-center">
+        <div className="sticky top-0 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 w-full">
+          <div className="lg:container">
             <Header />
           </div>
-          <div className="max-w-[900px]">
-            {children}
-            <Footer />
-          </div>
+        </div>
+        <div className="max-w-[900px] lg:container">
+          {children}
+          <Footer />
         </div>
       </div>
     </main>

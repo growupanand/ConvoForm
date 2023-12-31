@@ -9,7 +9,7 @@ export function Header() {
   const { user } = useUser();
 
   return (
-    <nav className="flex justify-between items-center p-3 mt-5 w-full">
+    <nav className="flex justify-between items-center p-3 w-full">
       <BrandName className="text-2xl" />
       <div className="flex items-center gap-3">
         {user ? (

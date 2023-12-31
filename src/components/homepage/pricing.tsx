@@ -60,14 +60,16 @@ const FeatureListItem = ({
   featureValue: string;
 }) => {
   return (
-    <div className="flex justify-between items-center space-x-2">
-      <div className="flex items-center gap-2">
-        <div>
+    <div className="flex justify-between items-start space-x-2">
+      <div className="flex items-start gap-2">
+        <div className="mt-1">
           <CheckCircle color="green" size={15} />
         </div>
         <div className="text-md text-gray-700">{featureName}</div>
       </div>
-      <div className="text-md text-gray-900 font-semibold">{featureValue}</div>
+      <div className="text-md text-gray-900 font-semibold whitespace-nowrap">
+        {featureValue}
+      </div>
     </div>
   );
 };
