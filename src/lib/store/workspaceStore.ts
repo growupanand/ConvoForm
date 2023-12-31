@@ -15,7 +15,7 @@ type WorkspaceStore = {
   workspaces: Workspace[];
   isLoading: boolean;
   fetchWorkspaces: () => Promise<void>;
-  createWorkspace: (name: string) => Promise<void>;
+  createWorkspace: (name: string) => Promise<Workspace>;
   deleteWorkspace: (workspaceId: string) => Promise<void>;
   updateWorkspace: (
     workspaceId: string,
@@ -46,6 +46,7 @@ export const useWorkspaceStore = create<WorkspaceStore>((set, get) => ({
       set((state) => ({
         workspaces: [...state.workspaces, workspace],
       }));
+      return workspace;
     } finally {
       set({ isBusyInCreatingWorkspace: false });
     }
