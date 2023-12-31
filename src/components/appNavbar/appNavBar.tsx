@@ -3,29 +3,46 @@
 import BrandName from "../brandName";
 import { Button } from "../ui/button";
 import { usePathname } from "next/navigation";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Menu, Plus } from "lucide-react";
 import { toast } from "../ui/use-toast";
 import { WorkspaceList } from "./workspaceList";
 import { useWorkspaceStore } from "@/lib/store/workspaceStore";
 import WorkspaceListLoading from "./workspaceListLoading";
 import AppNavBarLink from "./appNavBarLink";
 import { OrganizationSwitcher, UserButton, useUser } from "@clerk/nextjs";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ScrollArea } from "../ui/scroll-area";
+
+type State = {
+  open: boolean;
+};
 
 export default function AppNavbar() {
-  const { user } = useUser();
+  const [state, setState] = useState<State>({
+    open: false,
+  });
+  const { open } = state;
 
+  const openSheet = () => setState((cs) => ({ ...cs, open: true }));
+  const closeSheet = () => setState((cs) => ({ ...cs, open: false }));
+
+  const { user } = useUser();
   const pathname = usePathname();
+  const router = useRouter();
   const workspaceStore = useWorkspaceStore();
 
   const { workspaces, isLoading, isBusyInCreatingWorkspace } = workspaceStore;
 
   const createNewWorkspace = async () => {
     try {
-      await workspaceStore.createWorkspace("New Workspace");
+      const { id } = await workspaceStore.createWorkspace("New Workspace");
       toast({
         title: "Workspace created",
         duration: 1500,
       });
+      router.push(`/workspaces/${id}/`);
     } catch (error) {
       toast({
         title: "Unable to create workspace",
@@ -35,8 +52,74 @@ export default function AppNavbar() {
     }
   };
 
+  useEffect(() => {
+    if (open) {
+      closeSheet();
+    }
+  }, [pathname]);
+
   return (
-    <nav className="h-full flex flex-col justify-between p-5">
+    <>
+      {/* Mobile view */}
+      <div className="lg:hidden">
+        <Sheet
+          open={open}
+          onOpenChange={(status) => setState((cs) => ({ ...cs, open: status }))}
+        >
+          <div className="w-full p-3 flex items-center justify-between relative">
+            <BrandName />
+            <Button variant="outline" size="sm" onClick={openSheet}>
+              <Menu />
+            </Button>
+          </div>
+          <SheetContent side="left" className="w-[90%] ">
+            <Nav
+              pathname={pathname}
+              workspaces={workspaces}
+              isLoading={isLoading}
+              isBusyInCreatingWorkspace={isBusyInCreatingWorkspace}
+              createNewWorkspace={createNewWorkspace}
+              user={user}
+              closeSheet={closeSheet}
+            />
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      {/* Desktop View */}
+      <div className="max-lg:hidden bg-white-300 min-w-[300px] bg-gray-50">
+        <Nav
+          pathname={pathname}
+          workspaces={workspaces}
+          isLoading={isLoading}
+          isBusyInCreatingWorkspace={isBusyInCreatingWorkspace}
+          createNewWorkspace={createNewWorkspace}
+          user={user}
+        />
+      </div>
+    </>
+  );
+}
+
+function Nav({
+  pathname,
+  workspaces,
+  isLoading,
+  isBusyInCreatingWorkspace,
+  createNewWorkspace,
+  user,
+  closeSheet,
+}: Readonly<{
+  pathname: string;
+  workspaces: any[];
+  isLoading: boolean;
+  isBusyInCreatingWorkspace: boolean;
+  createNewWorkspace: () => void;
+  user: any;
+  closeSheet?: () => void;
+}>) {
+  return (
+    <nav className="h-full flex flex-col justify-between lg:p-5">
       <div>
         <div className="mb-5 flex justify-start ps-4">
           <BrandName className="text-xl" />
@@ -73,13 +156,15 @@ export default function AppNavbar() {
                 </span>
               </div>
             )}
-            <WorkspaceList workspaces={workspaces} />
+            <ScrollArea className="h-96">
+              <WorkspaceList workspaces={workspaces} />
+            </ScrollArea>
           </div>
         </div>
       </div>
       <div>
         {user && (
-          <div className="flex justify-evenly gap-2 items-start ps-4">
+          <div className="flex justify-between lg:justify-evenly gap-2 items-center">
             <OrganizationSwitcher
               afterSelectOrganizationUrl="/dashboard"
               hidePersonal

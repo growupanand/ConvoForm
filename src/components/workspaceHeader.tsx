@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Loader2, MoreVertical } from "lucide-react";
+import { Check, MoreVertical } from "lucide-react";
 import CreateFormButton from "./createFormButton";
 import { Button } from "./ui/button";
 import {
@@ -16,6 +16,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Input } from "./ui/input";
 import { cn, debounce } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
+import Spinner from "./ui/spinner";
 
 type State = {
   isDeleting: boolean;
@@ -75,11 +76,7 @@ export const WorkspaceHeader = () => {
             disabled={isDeleting}
             onClick={() => deleteWorkspace()}
           >
-            {isDeleting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              "Retry"
-            )}
+            {isDeleting ? <Spinner /> : "Retry"}
           </Button>
         ),
       });
@@ -147,9 +144,7 @@ export const WorkspaceHeader = () => {
           />
         </div>
         <div className="flex items-center gap-2">
-          {isUpdating && (
-            <Loader2 className="h-4 w-4 animate-spin text-gray-500 " />
-          )}
+          {isUpdating && <Spinner />}
           <DropdownMenu>
             <DropdownMenuTrigger disabled={isDeleting} asChild>
               <Button
@@ -159,7 +154,7 @@ export const WorkspaceHeader = () => {
                 disabled={isDeleting}
               >
                 {isDeleting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Spinner />
                 ) : (
                   <MoreVertical className="h-4 w-4" />
                 )}
