@@ -8,6 +8,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Check, ExternalLink, Loader2, MoreVertical } from "lucide-react";
@@ -17,14 +18,13 @@ import Link from "next/link";
 type Props = {
   form: Form;
   onDeleted: (form: Form) => void;
-  workspaceId: string;
 };
 
 type State = {
   isDeleting: boolean;
 };
 
-export function FormListItem({ form, onDeleted, workspaceId }: Props) {
+export function FormListItem({ form, onDeleted }: Readonly<Props>) {
   const [state, setState] = useState<State>({ isDeleting: false });
   const { isDeleting } = state;
 
@@ -72,12 +72,12 @@ export function FormListItem({ form, onDeleted, workspaceId }: Props) {
   };
 
   return (
-    <div className="py-1 pe-3 flex justify-between items-center hover:bg-gray-50">
+    <div className="py-1 flex justify-between items-center hover:bg-gray-50 hover:ps-3 transition-all">
       <div className="grow">
         <Link href={`/forms/${form.id}`}>
           <Button
             variant="link"
-            className="w-full hover:no-underline justify-start font-normal transition-all hover:ps-5"
+            className="w-full hover:no-underline justify-start font-normal  ps-0 "
           >
             {form.name}
           </Button>
@@ -85,17 +85,19 @@ export function FormListItem({ form, onDeleted, workspaceId }: Props) {
       </div>
 
       <div className="flex items-center gap-3">
-        {form.isPublished ? (
-          <Link href={`/view/${form.id}`} target="_blank">
-            <Button variant="link">
-              View form <ExternalLink className="w-4 h-4 ms-2" />
+        <div className="max-lg:hidden">
+          {form.isPublished ? (
+            <Link href={`/view/${form.id}`} target="_blank">
+              <Button variant="link">
+                View form <ExternalLink className="w-4 h-4 ms-2" />
+              </Button>
+            </Link>
+          ) : (
+            <Button variant="link" disabled>
+              Not published
             </Button>
-          </Link>
-        ) : (
-          <Button variant="link" disabled>
-            Not published
-          </Button>
-        )}
+          )}
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger disabled={isDeleting}>
             <Button
@@ -112,6 +114,17 @@ export function FormListItem({ form, onDeleted, workspaceId }: Props) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            {form.isPublished ? (
+              <Link href={`/view/${form.id}`} target="_blank">
+                <DropdownMenuItem className="cursor-pointer lg:hidden">
+                  View form <ExternalLink className="w-4 h-4 ms-2" />
+                </DropdownMenuItem>
+              </Link>
+            ) : (
+              <DropdownMenuLabel className="text-muted-foreground font-normal lg:hidden">
+                Not published
+              </DropdownMenuLabel>
+            )}
             <DropdownMenuItem
               className="cursor-pointer text-destructive focus:text-destructive"
               onClick={deleteForm}
