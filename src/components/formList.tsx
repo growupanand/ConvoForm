@@ -76,14 +76,9 @@ export default function FormList() {
         <p className="text-muted-foreground">No form</p>
       )}
       {!isLoading && !emptyForms && (
-        <div className="grid divide-y divide-border ">
+        <div className="grid divide-y divide-border border-b">
           {forms.map((form) => (
-            <FormListItem
-              key={form.id}
-              form={form}
-              onDeleted={onFormDelete}
-              workspaceId={workspaceId}
-            />
+            <FormListItem key={form.id} form={form} onDeleted={onFormDelete} />
           ))}
         </div>
       )}

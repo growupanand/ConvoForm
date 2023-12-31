@@ -108,7 +108,7 @@ export const WorkspaceHeader = () => {
   if (isLoading) {
     return (
       <div className="mb-5">
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex justify-between items-center  mb-3 lg:mb-10">
           <div className="flex items-center gap-2">
             <Skeleton className="h-8 w-40" />
           </div>
@@ -129,20 +129,15 @@ export const WorkspaceHeader = () => {
 
   return (
     <div className="mb-5">
-      <div className="flex justify-between items-center mb-10">
-        <div className="flex items-center gap-2">
-          <Input
-            className={cn(
-              "text-2xl font-bold border-0 focus-visible:ring-transparent	 focus-visible:ring-0 max-w-[400px]"
-            )}
-            style={{
-              width: `${currentWorkspace!.name.length + 1}ch`,
-            }}
-            type="text"
-            defaultValue={currentWorkspace!.name}
-            onChange={handleWorkspaceNameInputChange}
-          />
-        </div>
+      <div className="flex justify-between items-center mb-3 lg:mb-10">
+        <Input
+          className={cn(
+            "text-xl lg:text-2xl ps-0 font-bold border-transparent hover:border-gray-300 focus-visible:ring-transparent"
+          )}
+          type="text"
+          onChange={handleWorkspaceNameInputChange}
+          defaultValue={currentWorkspace!.name}
+        />
         <div className="flex items-center gap-2">
           {isUpdating && <Spinner />}
           <DropdownMenu>
