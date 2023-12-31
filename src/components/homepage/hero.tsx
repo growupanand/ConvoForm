@@ -34,7 +34,7 @@ export function Hero() {
         <h1
           className={cn(
             "text-foreground font-semibold text-4xl md:text-6xl",
-            "bg-gradient-to-tl from-[hsl(var(--muted))] from-0% to-[hsl(var(--foreground))] to-40% bg-clip-text text-transparent"
+            "bg-gradient-to-tl from-[hsl(var(--muted))] from-0% to-[hsl(var(--foreground))] to-30% bg-clip-text text-transparent"
           )}
         >
           Create your own conversational form
