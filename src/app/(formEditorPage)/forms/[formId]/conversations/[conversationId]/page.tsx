@@ -1,4 +1,4 @@
-import ConversationDetail from "@/components/conversationDetail";
+import ConversationDetail from "@/components/formEditor/conversationDetail";
 import { getFormConversation } from "@/lib/dbControllers/conversation";
 
 type Props = {

@@ -4,7 +4,7 @@ import {
   getFormConversationsController,
 } from "../controllers/form";
 import { create } from "zustand";
-import { FormSubmitDataSchema } from "@/components/formEditor";
+import { FormSubmitDataSchema } from "@/components/formEditor/formEditorForm";
 
 type WorkspaceStore = {
   formId?: string;
