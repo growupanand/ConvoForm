@@ -14,7 +14,7 @@ export default function Layout({ children }: Props) {
             <Header />
           </div>
         </div>
-        <div className="max-w-[900px] lg:container">
+        <div className="lg:max-w-[900px] lg:container">
           {children}
           <Footer />
         </div>
