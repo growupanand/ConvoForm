@@ -1,4 +1,4 @@
-import ConversationsListCard from "@/components/formEditor/conversationsCard";
+import ConversationsSidebar from "@/components/formEditor/conversationsSidebar";
 import { Separator } from "@/components/ui/separator";
 
 type Props = {
@@ -8,11 +8,9 @@ type Props = {
 
 export default async function Layout(props: Props) {
   return (
-    <div className="flex h-full">
-      <div className=" min-w-[400px] w-[400px]">
-        <ConversationsListCard />
-      </div>
-      <Separator orientation="vertical" />
+    <div className="flex max-lg:flex-col h-full">
+      <ConversationsSidebar />
+      <Separator orientation="vertical" className="max-lg:hidden" />
       <div className="grow flex flex-col">{props.children}</div>
     </div>
   );

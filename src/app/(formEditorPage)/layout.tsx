@@ -1,5 +1,5 @@
 import { StoreInitializer } from "@/components/storeInitializer";
-import { FormEditorPageHeader } from "@/components/formEditorPageHeader";
+import { FormEditorPageHeader } from "@/components/formEditor/formEditorPageHeader";
 
 type Props = {
   children: React.ReactNode;

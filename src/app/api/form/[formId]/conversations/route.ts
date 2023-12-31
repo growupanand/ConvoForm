@@ -23,7 +23,11 @@ export async function GET(
         organizationId,
       },
       include: {
-        conversation: true,
+        conversation: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     });
     const conversations = form?.conversation;

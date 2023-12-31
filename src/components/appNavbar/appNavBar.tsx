@@ -25,7 +25,6 @@ export default function AppNavbar() {
   });
   const { open } = state;
 
-  const openSheet = () => setState((cs) => ({ ...cs, open: true }));
   const closeSheet = () => setState((cs) => ({ ...cs, open: false }));
 
   const { user } = useUser();
@@ -68,9 +67,11 @@ export default function AppNavbar() {
         >
           <div className="w-full p-3 flex items-center justify-between relative">
             <BrandName />
-            <Button variant="outline" size="sm" onClick={openSheet}>
-              <Menu />
-            </Button>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Menu />
+              </Button>
+            </SheetTrigger>
           </div>
           <SheetContent side="left" className="w-[90%] ">
             <Nav
@@ -80,7 +81,6 @@ export default function AppNavbar() {
               isBusyInCreatingWorkspace={isBusyInCreatingWorkspace}
               createNewWorkspace={createNewWorkspace}
               user={user}
-              closeSheet={closeSheet}
             />
           </SheetContent>
         </Sheet>
@@ -108,7 +108,6 @@ function Nav({
   isBusyInCreatingWorkspace,
   createNewWorkspace,
   user,
-  closeSheet,
 }: Readonly<{
   pathname: string;
   workspaces: any[];
@@ -116,7 +115,6 @@ function Nav({
   isBusyInCreatingWorkspace: boolean;
   createNewWorkspace: () => void;
   user: any;
-  closeSheet?: () => void;
 }>) {
   return (
     <nav className="h-full flex flex-col justify-between lg:p-5">

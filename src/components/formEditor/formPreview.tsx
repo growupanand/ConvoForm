@@ -34,13 +34,6 @@ export default function FormPreview({ form, noToolbar }: Readonly<Props>) {
   });
   const { refresh } = state;
 
-  const copyLinkToClipboard = () => {
-    navigator.clipboard.writeText(formViewLink);
-    toast({
-      title: "Link copied to clipboard",
-    });
-  };
-
   const refreshPreview = () => {
     setState((cs) => ({ ...cs, refresh: !cs.refresh }));
   };
@@ -69,20 +62,7 @@ export default function FormPreview({ form, noToolbar }: Readonly<Props>) {
   return (
     <BrowserWindow
       onRefresh={refreshPreview}
-      actionsButton={
-        noToolbar || <CopyLinkButton onClick={copyLinkToClipboard} />
-      }
-      addressBar={
-        noToolbar || (
-          <div>
-            <Link href={formViewLink} target="_blank">
-              <Button variant="link" size="sm" className="h-4">
-                {formViewLink} <ExternalLink className="w-4 h-4 ms-2" />
-              </Button>
-            </Link>
-          </div>
-        )
-      }
+      link={noToolbar || !form.isPublished ? undefined : formViewLink}
       toolbar={Toolbar}
     >
       <div className="flex flex-col justify-center items-center h-full">

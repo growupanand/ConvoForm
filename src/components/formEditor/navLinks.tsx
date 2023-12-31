@@ -27,7 +27,7 @@ export default function NavLinks({ form }: Readonly<Props>) {
   const activeLinkLabel = navLinks.find((link) => link.isActive)?.label;
 
   return (
-    <Tabs value={activeLinkLabel} className="mx-3">
+    <Tabs value={activeLinkLabel}>
       <TabsList>
         {navLinks.map((link) => (
           <Link href={link.href} key={link.href}>

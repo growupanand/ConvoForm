@@ -1,5 +1,5 @@
-import { ConversationDetailLoading } from "@/components/conversationDetailLoading";
+import ConversationDetail from "@/components/formEditor/conversationDetail";
 
 export default function Loading() {
-  return <ConversationDetailLoading />;
+  return <ConversationDetail.ConversationDetailSkeleton />;
 }
