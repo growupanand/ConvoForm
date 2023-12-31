@@ -104,7 +104,7 @@ export default function FormEditorForm(props: Props) {
     <div className="bg-transparent border-0 shadow-none">
       <UIForm {...formHook}>
         <form onSubmit={formHook.handleSubmit(onSubmit)}>
-          <div className="space-y-8 mb-6">
+          <div className="space-y-4 mb-8">
             <FormField
               control={formHook.control}
               name="overview"
@@ -113,7 +113,7 @@ export default function FormEditorForm(props: Props) {
                   <FormLabel>Overview</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Give overview about this form"
+                      placeholder="Here type purpose of the form"
                       {...field}
                     />
                   </FormControl>
@@ -126,9 +126,9 @@ export default function FormEditorForm(props: Props) {
               name="welcomeScreenTitle"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Welcome Screen Title</FormLabel>
+                  <FormLabel>Page Heading</FormLabel>
                   <FormControl>
-                    <Input placeholder="Give welcome screen title" {...field} />
+                    <Input placeholder="Here type main heading" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -139,10 +139,10 @@ export default function FormEditorForm(props: Props) {
               name="welcomeScreenMessage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Welcome Screen Message</FormLabel>
+                  <FormLabel>Short message</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Give welcome screen message"
+                      placeholder="Here type short message to display below heading"
                       {...field}
                     />
                   </FormControl>
@@ -155,10 +155,10 @@ export default function FormEditorForm(props: Props) {
               name="welcomeScreenCTALabel"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Welcome Screen CTA Label</FormLabel>
+                  <FormLabel>Button text</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Give welcome screen CTA label"
+                      placeholder="E.g. Fill form, Get started"
                       {...field}
                     />
                   </FormControl>
@@ -174,7 +174,7 @@ export default function FormEditorForm(props: Props) {
                   formFieldErrorMessage && "text-red-500 mb-0"
                 )}
               >
-                Form Field
+                What you want to ask?
               </FormLabel>
               {formFieldErrorMessage && (
                 <div className="text-red-500 text-sm">
@@ -190,7 +190,10 @@ export default function FormEditorForm(props: Props) {
                     <FormItem>
                       <FormControl>
                         <div className="flex w-full max-w-sm items-center space-x-2">
-                          <Input placeholder={`Field name`} {...field} />
+                          <Input
+                            placeholder={`E.g. name, email or anything`}
+                            {...field}
+                          />
                           <Button
                             variant="secondary"
                             disabled={index === 0 && fields.length === 1}
@@ -225,7 +228,10 @@ export default function FormEditorForm(props: Props) {
                 <FormItem>
                   <FormLabel>About Company</FormLabel>
                   <FormControl>
-                    <Input placeholder="Give about company" {...field} />
+                    <Input
+                      placeholder="Here type about your company"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
