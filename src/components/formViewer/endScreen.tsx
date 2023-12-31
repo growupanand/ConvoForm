@@ -1,3 +1,5 @@
+import BrandName from "../brandName";
+
 type Props = {
   endScreenMessage: string;
 };
@@ -10,6 +12,12 @@ export const EndScreen = (props: Props) => {
       <p className="text-center text-muted-foreground">
         You can now close this window.
       </p>
+      <div className="mt-10 flex items-center gap-3">
+        <p className="text-muted-foreground text-sm">
+          This form is created at -
+        </p>
+        <BrandName />
+      </div>
     </div>
   );
 };
