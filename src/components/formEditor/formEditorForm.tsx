@@ -16,7 +16,16 @@ import { formUpdateSchema } from "@/lib/validations/form";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { apiClient } from "@/lib/fetch";
-import { Check, Loader2 } from "lucide-react";
+import {
+  Check,
+  Cross,
+  Loader2,
+  Minus,
+  Plus,
+  Save,
+  Sparkle,
+  X,
+} from "lucide-react";
 import { toast } from "../ui/use-toast";
 import {
   FormField as PrismaFormField,
@@ -100,6 +109,17 @@ export default function FormEditorForm(props: Props) {
       setState((cs) => ({ ...cs, isFormBusy: false }));
     }
   };
+
+  const getFormSubmitIcon = () => {
+    if (isFormBusy) {
+      return <Loader2 className="mr-2 h-4 w-4 animate-spin" />;
+    }
+    if (form.isPublished) {
+      return <Save className="mr-2 h-4 w-4" />;
+    }
+    return <Sparkle className="mr-2 h-4 w-4" />;
+  };
+
   return (
     <div className="bg-transparent border-0 shadow-none">
       <UIForm {...formHook}>
@@ -195,12 +215,13 @@ export default function FormEditorForm(props: Props) {
                             {...field}
                           />
                           <Button
-                            variant="secondary"
+                            variant="ghost"
                             disabled={index === 0 && fields.length === 1}
                             onClick={() => fields.length != 1 && remove(index)}
                             type="button"
+                            size="icon"
                           >
-                            Remove
+                            <X className="w-4 h-4" />
                           </Button>
                         </div>
                       </FormControl>
@@ -210,12 +231,14 @@ export default function FormEditorForm(props: Props) {
                 />
               ))}
 
-              <div>
+              <div className="mt-2">
                 <Button
                   variant="secondary"
                   onClick={() => append({ fieldName: "" })}
                   type="button"
+                  size="sm"
                 >
+                  <Plus className="w-4 h-4 mr-2" />
                   Add Field
                 </Button>
               </div>
@@ -240,7 +263,7 @@ export default function FormEditorForm(props: Props) {
           </div>
 
           <Button className="w-full" type="submit" disabled={isFormBusy}>
-            {isFormBusy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {getFormSubmitIcon()}
             {form.isPublished ? "Save changes" : "Publish"}
           </Button>
         </form>

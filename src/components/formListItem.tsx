@@ -11,7 +11,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Check, ExternalLink, Loader2, MoreVertical } from "lucide-react";
+import {
+  Check,
+  ExternalLink,
+  Loader2,
+  MoreVertical,
+  Trash,
+} from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -117,7 +123,7 @@ export function FormListItem({ form, onDeleted }: Readonly<Props>) {
             {form.isPublished ? (
               <Link href={`/view/${form.id}`} target="_blank">
                 <DropdownMenuItem className="cursor-pointer lg:hidden">
-                  View form <ExternalLink className="w-4 h-4 ms-2" />
+                  <ExternalLink className="w-4 h-4 mr-2" /> View form
                 </DropdownMenuItem>
               </Link>
             ) : (
@@ -129,6 +135,7 @@ export function FormListItem({ form, onDeleted }: Readonly<Props>) {
               className="cursor-pointer text-destructive focus:text-destructive"
               onClick={deleteForm}
             >
+              <Trash className="w-4 h-4 mr-2" />
               Delete form
             </DropdownMenuItem>
           </DropdownMenuContent>
