@@ -2,6 +2,7 @@ import { ChangeEvent } from "react";
 import { Input } from "../ui/input";
 import { CornerDownLeft, Tally1 } from "lucide-react";
 import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
 
 type Props = {
   isFormBusy: boolean;
@@ -31,29 +32,36 @@ export const FormFieldsViewer = ({
         </h1>
         {!isFormBusy && (
           <div className="w-full">
-            <Input
+            <Textarea
               autoFocus
-              className="text-xl border-0 focus-visible:ring-transparent	 focus-visible:ring-0 w-full pb-5 border-b rounded-none"
-              onChange={handleInputChange}
-              type="text"
+              className="text-xl focus-visible:ring-transparent	focus-visible:ring-0 w-full border-0  border-b rounded-none"
               placeholder="Type answer here..."
               value={input}
               disabled={isFormBusy}
+              onChange={(e) => {
+                handleInputChange(e);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleFormSubmit(e);
+                }
+              }}
             />
+            <div className="text-sm font-light text-muted-foreground flex justify-end items-center max-lg:hidden pt-1">
+              Press
+              <span className="font-bold flex items-center mx-1">
+                Shift + Enter <CornerDownLeft className="w-3 h-3 " />
+              </span>
+              for new line
+            </div>
             <div className="py-3 ">
-              <div className="text-sm font-light text-muted-foreground flex items-center max-lg:hidden">
-                press
-                <span className="font-bold flex items-center mx-1">
-                  Enter <CornerDownLeft className="w-4 h-4 " />
-                </span>
-                to submit answer
-              </div>
               <div className="lg:hidden">
                 <Button
                   type="submit"
                   className="font-medium px-6 py-3 rounded-md w-full"
                 >
-                  Submit
+                  Answer
                 </Button>
               </div>
             </div>
