@@ -1,10 +1,8 @@
 
 # Smart form wizard
 
-Build engaging and interactive forms that are easy to fill and fun to answer.
-
-## Live Demo
-[convoform.com](https://www.convoform.com)
+Imagine Google Forms, but supercharged with AI for an improved user experience, Build engaging and interactive forms that are easy to fill and fun to answer.
+You can see live demo here - [convoform.com](https://www.convoform.com/).
 
 ## Features
 
