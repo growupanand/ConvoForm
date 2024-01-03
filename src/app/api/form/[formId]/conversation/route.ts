@@ -4,6 +4,7 @@ import { sendErrorResponse } from "@/lib/errorHandlers";
 import { ConversationPayloadSchema } from "@/lib/validations/conversation";
 import { z } from "zod";
 import { getUserTotalConversationsCount } from "@/lib/dbControllers/form";
+import { freePlan } from "@/lib/config/pricing";
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -49,8 +50,13 @@ export async function POST(
         form.userId
       );
 
-      if (totalSubmissionsCount >= 5) {
-        throw new Error("This form have reached the limit submissions", {
+      const formSubmissionLimit =
+        freePlan.features.find(
+          (feature) => feature.name === "Collect form submission"
+        )?.featureValue ?? 0;
+
+      if (totalSubmissionsCount > formSubmissionLimit) {
+        throw new Error("This form have reached total submissions limit", {
           cause: {
             statusCode: 403,
           },
