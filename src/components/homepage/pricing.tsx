@@ -11,36 +11,8 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs";
-
-type PlanFeature = {
-  name: string;
-  featureValue: string;
-};
-
-type Plan = {
-  name: string;
-  price: string;
-  features: PlanFeature[];
-};
-
-const freePlan: Plan = {
-  name: "Free plan",
-  price: "$0/month",
-  features: [
-    {
-      name: "Create workspaces",
-      featureValue: "Unlimited",
-    },
-    {
-      name: "Create forms",
-      featureValue: "3",
-    },
-    {
-      name: "Collect form submission",
-      featureValue: "5 Total",
-    },
-  ],
-};
+import { freePlan } from "@/lib/config/pricing";
+import { Plan } from "@/lib/types/plan";
 
 export function Pricing() {
   return (
@@ -54,10 +26,10 @@ export function Pricing() {
 
 const FeatureListItem = ({
   featureName,
-  featureValue,
+  featureText,
 }: {
   featureName: string;
-  featureValue: string;
+  featureText: string;
 }) => {
   return (
     <div className="flex justify-between items-start space-x-2">
@@ -68,7 +40,7 @@ const FeatureListItem = ({
         <div className="text-md text-gray-700">{featureName}</div>
       </div>
       <div className="text-md text-gray-900 font-semibold whitespace-nowrap">
-        {featureValue}
+        {featureText}
       </div>
     </div>
   );
@@ -93,7 +65,7 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
             <FeatureListItem
               key={feature.name}
               featureName={feature.name}
-              featureValue={feature.featureValue}
+              featureText={feature.featureText}
             />
           ))}
         </div>

@@ -1,3 +1,4 @@
+import { freePlan } from "@/lib/config/pricing";
 import prisma from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getOrganizationId } from "@/lib/getOrganizationId";
@@ -31,8 +32,14 @@ export async function POST(
       },
     });
 
-    if (organizationForms.length >= 3) {
-      throw new Error("You can create only 3 forms in free plan.");
+    const formCreationLimit =
+      freePlan.features.find((feature) => feature.name === "Create forms")
+        ?.featureValue ?? 0;
+
+    if (organizationForms.length > formCreationLimit) {
+      throw new Error(
+        `You can create only ${formCreationLimit} forms in free plan.`
+      );
     }
 
     const newForm = await prisma.form.create({
