@@ -10,6 +10,8 @@ export default authMiddleware({
     "/api/form/(.*)/conversation",
     "/api/webhook",
     "/auth/(.*)",
+    // Added for sentry
+    "/monitoring(.*)",
   ],
 });
 
