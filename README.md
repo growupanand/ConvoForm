@@ -75,16 +75,13 @@ npm run vercel-build
 
 Here are some screenshots from the app
 
-| Workspace Page             | Form Editor                |
-|----------------------------|----------------------------|
-| ![Workspace Page](https://github.com/growupanand/smart-form-wizard/assets/29487686/624637aa-0541-4e6c-aa2b-9ab54153c607) | ![Form Editor](https://github.com/growupanand/smart-form-wizard/assets/29487686/dca44247-6ca6-4196-9b81-176c77b2fb8a) |
+| Workspace Page                                             | Form Editor                                                                     |
+|------------------------------------------------------------|---------------------------------------------------------------------------------|
+| ![Workspace page](https://github.com/growupanand/smart-form-wizard/assets/29487686/a854d340-afd6-477f-a402-c7ce3e8c9787) | ![Form editor](https://github.com/growupanand/smart-form-wizard/assets/29487686/f7916db9-eb6a-433f-ac64-a76601dc99c6) |
 
-| Form Submit                | View Submission            |
-|----------------------------|----------------------------|
-| ![Form Submit](https://github.com/growupanand/smart-form-wizard/assets/29487686/25e8a856-5ed1-42a7-980d-6c4535e08664) | ![View Submission](https://github.com/growupanand/smart-form-wizard/assets/29487686/5438bc71-aa71-457e-b4e2-3b7b3ba8e662) |
-
-
-
+| Form Submission                                            | View Submissions                                                                |
+|------------------------------------------------------------|---------------------------------------------------------------------------------|
+| ![Form submission](https://github.com/growupanand/smart-form-wizard/assets/29487686/06874d85-0920-408b-a84a-5970eb7c1819) | ![View Submissions](https://github.com/growupanand/smart-form-wizard/assets/29487686/8b09c79c-bc58-4e80-b5cb-bc9e378c017f) |
 
 
 
