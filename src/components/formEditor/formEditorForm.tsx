@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SubmitHandler, set, useFieldArray, useForm } from "react-hook-form";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formUpdateSchema } from "@/lib/validations/form";
@@ -18,9 +18,8 @@ import { useState } from "react";
 import { apiClient } from "@/lib/fetch";
 import {
   Check,
-  Cross,
+  Info,
   Loader2,
-  Minus,
   Plus,
   Save,
   Sparkle,
@@ -32,7 +31,13 @@ import {
   Form as PrismaForm,
 } from "@prisma/client";
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "../ui/scroll-area";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Badge } from "../ui/badge";
 
 type FormWithFields = PrismaForm & { formField: PrismaFormField[] };
 
@@ -64,7 +69,9 @@ export default function FormEditorForm(props: Props) {
     defaultValues: form,
   });
 
-  const formFieldErrorMessage = formHook.formState.errors.formField?.message;
+  const isErrorInRequirementFields = formHook.formState.errors.formField;
+  const isErrorInLandingPageFields = formHook.formState.errors.overview || formHook.formState.errors.welcomeScreenTitle || formHook.formState.errors.welcomeScreenMessage || formHook.formState.errors.welcomeScreenCTALabel;
+  const isErrorInAboutCompany = formHook.formState.errors.aboutCompany;
 
   const { fields, append, remove } = useFieldArray({
     control: formHook.control,
@@ -121,145 +128,198 @@ export default function FormEditorForm(props: Props) {
   };
 
   return (
-    <div className="bg-transparent border-0 shadow-none">
+    <div className="bg-transparent border-0">
       <UIForm {...formHook}>
         <form onSubmit={formHook.handleSubmit(onSubmit)}>
           <div className="space-y-4 mb-8">
-            <FormField
-              control={formHook.control}
-              name="overview"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Overview</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Here type purpose of the form"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={formHook.control}
-              name="welcomeScreenTitle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Page Heading</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Here type main heading" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={formHook.control}
-              name="welcomeScreenMessage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Short message</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Here type short message to display below heading"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={formHook.control}
-              name="welcomeScreenCTALabel"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Button text</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="E.g. Fill form, Get started"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <Accordion type="single" collapsible className="w-full" defaultValue="overview">
+              <AccordionItem value="overview" className="border-b-muted">
+                <AccordionTrigger className={cn(
+                  "hover:no-underline text-muted-foreground hover:text-black data-[state=open]:text-black font-bold group",
+                  isErrorInLandingPageFields && "text-red-500"
+                )}>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="outline" className="text-md group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white">
+                      1
+                    </Badge><span>Overview</span></div>
+                </AccordionTrigger>
 
-            <div className="grid gap-2">
-              <FormLabel
-                className={cn(
-                  "mb-2",
-                  formFieldErrorMessage && "text-red-500 mb-0"
-                )}
-              >
-                What you want to ask?
-              </FormLabel>
-              {formFieldErrorMessage && (
-                <div className="text-red-500 text-sm">
-                  {formFieldErrorMessage}
-                </div>
-              )}
-              {fields.map((item, index) => (
-                <FormField
-                  key={item.id}
-                  control={formHook.control}
-                  name={`formField.${index}.fieldName`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <div className="flex w-full max-w-sm items-center space-x-2">
+                <AccordionContent className="lg:ps-10">
+                  <FormField
+                    control={formHook.control}
+                    name="overview"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
                           <Input
-                            placeholder={`E.g. name, email or anything`}
+                            placeholder="Purpose of this form"
                             {...field}
                           />
-                          <Button
-                            variant="ghost"
-                            disabled={index === 0 && fields.length === 1}
-                            onClick={() => fields.length != 1 && remove(index)}
-                            type="button"
-                            size="icon"
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </AccordionContent>
 
-              <div className="mt-2">
-                <Button
-                  variant="secondary"
-                  onClick={() => append({ fieldName: "" })}
-                  type="button"
-                  size="sm"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Field
-                </Button>
-              </div>
-            </div>
+              </AccordionItem>
 
-            <FormField
-              control={formHook.control}
-              name="aboutCompany"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>About Company</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Here type about your company"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
+              <AccordionItem value="landing-page-fields" className="border-b-muted">
+                <AccordionTrigger className={cn(
+                  "hover:no-underline text-muted-foreground hover:text-black data-[state=open]:text-black font-bold group",
+                  isErrorInLandingPageFields && "text-red-500"
+                )}>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="outline" className="text-md group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white">
+                      2
+                    </Badge> <span>Landing page</span>
+                  </div>
+
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4 lg:ps-10">
+                  <p className="text-muted-foreground flex items-center gap-2"><Info size="15px" /> This will show on first page</p>
+
+                  <FormField
+                    control={formHook.control}
+                    name="welcomeScreenTitle"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="Page Heading" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={formHook.control}
+                    name="welcomeScreenMessage"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="Short message to display below heading"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={formHook.control}
+                    name="welcomeScreenCTALabel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="Button text (E.g. Fill form, Get started)"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="requirement-fields" className="border-b-muted">
+                <AccordionTrigger className={cn(
+                  "hover:no-underline text-muted-foreground hover:text-black  data-[state=open]:text-black font-bold group",
+                  isErrorInRequirementFields && "text-red-500"
+                )}>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="outline" className="text-md  group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white">
+                      3
+                    </Badge> <span>What you want to ask?</span>
+                  </div>
+
+                </AccordionTrigger>
+                <AccordionContent className="lg:ps-10">
+                  <div className="grid gap-2">
+
+                    {fields.map((item, index) => (
+                      <FormField
+                        key={item.id}
+                        control={formHook.control}
+                        name={`formField.${index}.fieldName`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <div className="flex w-full max-w-sm items-center space-x-2">
+                                <Input
+                                  placeholder={`E.g. name, email or anything`}
+                                  {...field}
+                                />
+                                <Button
+                                  variant="ghost"
+                                  disabled={index === 0 && fields.length === 1}
+                                  onClick={() => fields.length != 1 && remove(index)}
+                                  type="button"
+                                  size="icon"
+                                >
+                                  <X className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    ))}
+
+                    <div className="mt-2">
+                      <Button
+                        variant="secondary"
+                        onClick={() => append({ fieldName: "" })}
+                        type="button"
+                        size="sm"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Field
+                      </Button>
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="about-company" className="border-b-muted">
+                <AccordionTrigger className={
+                  cn("hover:no-underline text-muted-foreground hover:text-black  data-[state=open]:text-black font-bold group",
+                    isErrorInAboutCompany && "text-red-500")
+                }>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="outline" className="text-md  group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white">
+                      4
+                    </Badge> <span>About company</span>
+                  </div>
+
+                </AccordionTrigger>
+
+                <AccordionContent className="lg:ps-10">
+                  <FormField
+                    control={formHook.control}
+                    name="aboutCompany"
+                    render={({ field }) => (
+
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="About your company"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+
+                    )}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+
           </div>
 
           <Button className="w-full" type="submit" disabled={isFormBusy}>
