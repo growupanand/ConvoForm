@@ -1,20 +1,23 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/db";
-import type { WebhookEvent } from "@clerk/clerk-sdk-node";
+/* eslint-disable no-case-declarations */
+
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/lib/db';
+import type { WebhookEvent } from '@clerk/clerk-sdk-node';
 
 export async function POST(req: NextRequest) {
   const reqJson = await req.json();
   const event = reqJson as WebhookEvent;
 
   switch (event.type) {
-    case "user.created":
-      console.log("user created event received");
+    case 'user.created':
+      console.log('user created event received');
       const { data } = event;
+
       try {
         const email =
           data.email_addresses.length > 0
             ? data.email_addresses[0]?.email_address
-            : "";
+            : '';
         const user = {
           email: email,
           firstName: data.first_name,
@@ -25,21 +28,21 @@ export async function POST(req: NextRequest) {
         await prisma.user.create({
           data: user,
         });
-        console.log("user created successfully in our database");
+        console.log('user created successfully in our database');
       } catch (e: any) {
         console.error({
-          message: "Unable to create user",
+          message: 'Unable to create user',
           data: data,
           errorMessage: e.message,
         });
       }
       break;
-    case "user.deleted":
-      console.log("user deleted event received");
+    case 'user.deleted':
+      console.log('user deleted event received');
       const { data: userData } = event;
       try {
         if (!userData.id) {
-          console.log("user id not found in event data");
+          console.log('user id not found in event data');
           break;
         }
         await prisma.user.deleteMany({
@@ -47,39 +50,39 @@ export async function POST(req: NextRequest) {
             userId: userData.id,
           },
         });
-        console.log("user deleted successfully in our database");
+        console.log('user deleted successfully in our database');
       } catch (e: any) {
         console.error({
-          message: "Unable to delete user",
+          message: 'Unable to delete user',
           data: userData,
           errorMessage: e.message,
         });
       }
       break;
 
-    case "organization.created":
-      console.log("organization created event received");
+    case 'organization.created':
+      console.log('organization created event received');
       const { data: orgData } = event;
       try {
         const org = {
           name: orgData.name,
           organizationId: orgData.id,
-          slug: orgData.slug || "",
+          slug: orgData.slug || '',
         };
         await prisma.organization.create({
           data: org,
         });
-        console.log("organization created successfully in our database");
+        console.log('organization created successfully in our database');
       } catch (e: any) {
         console.error({
-          message: "Unable to create organization",
+          message: 'Unable to create organization',
           data: orgData,
           errorMessage: e.message,
         });
       }
       break;
-    case "organizationMembership.created":
-      console.log("organizationMembership created event received");
+    case 'organizationMembership.created':
+      console.log('organizationMembership created event received');
       const { data: orgMembershipData } = event;
       try {
         const orgMembership = {
@@ -92,23 +95,23 @@ export async function POST(req: NextRequest) {
           data: orgMembership,
         });
         console.log(
-          "organizationMembership created successfully in our database"
+          'organizationMembership created successfully in our database'
         );
       } catch (e: any) {
         console.error({
-          message: "Unable to create organizationMembership",
+          message: 'Unable to create organizationMembership',
           data: orgMembershipData,
           errorMessage: e.message,
         });
       }
       break;
 
-    case "organizationMembership.deleted":
-      console.log("organizationMembership deleted event received");
+    case 'organizationMembership.deleted':
+      console.log('organizationMembership deleted event received');
       const { data: orgMembershipDeletedData } = event;
       try {
         if (!orgMembershipDeletedData.id) {
-          console.log("organizationMembership id not found in event data");
+          console.log('organizationMembership id not found in event data');
           break;
         }
         await prisma.organizationMember.deleteMany({
@@ -117,23 +120,23 @@ export async function POST(req: NextRequest) {
           },
         });
         console.log(
-          "organizationMembership deleted successfully in our database"
+          'organizationMembership deleted successfully in our database'
         );
       } catch (e: any) {
         console.error({
-          message: "Unable to delete organizationMembership",
+          message: 'Unable to delete organizationMembership',
           data: orgMembershipDeletedData,
           errorMessage: e.message,
         });
       }
       break;
 
-    case "organization.deleted":
-      console.log("organization deleted event received");
+    case 'organization.deleted':
+      console.log('organization deleted event received');
       const { data: orgDeletedData } = event;
       try {
         if (!orgDeletedData.id) {
-          console.log("organization id not found in event data");
+          console.log('organization id not found in event data');
           break;
         }
         await prisma.organization.deleteMany({
@@ -146,10 +149,10 @@ export async function POST(req: NextRequest) {
             organizationId: orgDeletedData.id,
           },
         });
-        console.log("organization deleted successfully in our database");
+        console.log('organization deleted successfully in our database');
       } catch (e: any) {
         console.error({
-          message: "Unable to delete organization",
+          message: 'Unable to delete organization',
           data: orgDeletedData,
           errorMessage: e.message,
         });

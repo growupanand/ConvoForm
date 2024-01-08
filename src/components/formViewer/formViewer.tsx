@@ -48,7 +48,9 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
       let errorMessage;
       try {
         errorMessage = JSON.parse(error.message).nonFieldError;
-      } catch (_) {}
+      } catch (_) {
+        errorMessage = undefined;
+      }
       sendErrorResponseToast(error, errorMessage);
     },
   });
