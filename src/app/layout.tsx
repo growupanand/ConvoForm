@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ClerkProvider } from "@clerk/nextjs";
 import { roboto } from "./fonts";
 import GoogleAnalytics from "@/components/googleAnalytics";
+import { SentryUserInit } from "@/components/sentryUserInit";
 
 export const metadata: Metadata = {
   title: "Convo Form - AI-Powered Conversational Forms",
@@ -44,6 +45,7 @@ export default function RootLayout({
           {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
             <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
           ) : null}
+          <SentryUserInit />
 
           {children}
           <Toaster />
