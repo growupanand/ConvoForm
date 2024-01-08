@@ -3,14 +3,35 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ClerkProvider } from "@clerk/nextjs";
-import { brandName } from "@/lib/constants";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: brandName,
+  title:
+    "Convo Form - Transforming User Experience with AI-Powered Conversational Forms",
   description:
-    "Intelligent and user-friendly form builder alternative to Google Forms. Create dynamic and conversational forms that are secure, responsive and easy to use.",
+    "Imagine Google Forms, but supercharged with AI for an improved user experience, This web application allow you to build engaging and interactive forms that are easy to fill and fun to answer.",
+  applicationName: "Convo Form",
+  authors: [
+    {
+      name: "Utkarsh Anand",
+      url: "https://www.linkedin.com/in/utkarshanand93/",
+    },
+  ],
+  keywords: [
+    "convoform",
+    "convo form",
+    "convoform.com",
+    "nextjs",
+    "openai",
+    "gpt3",
+    "ai",
+    "artificial intelligence",
+    "forms",
+    "form builder",
+    "google forms alternative",
+  ],
+  creator: "Utkarsh Anand",
 };
 
 export default function RootLayout({

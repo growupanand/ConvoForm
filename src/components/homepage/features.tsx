@@ -42,7 +42,9 @@ const FeatureListItem = ({
 }) => (
   <Card className={cn("w-full h-full rounded-none p-2 lg:p-5", className)}>
     <CardHeader>
-      <CardTitle className="text-left lg:text-center">{title}</CardTitle>
+      <CardTitle className="text-2xl font-semibold leading-none tracking-tight text-left lg:text-center">
+        {title}
+      </CardTitle>
     </CardHeader>
     <CardContent>
       <div className="text-left">{description}</div>

@@ -23,7 +23,7 @@ export function Header() {
             <UserButton />
           </>
         ) : (
-          <Link href="/auth/sign-in">
+          <Link href="/auth/sign-in" rel="noopener noreferrer nofollow">
             <Button variant="secondary" className="rounded-full">
               Sign In
             </Button>

@@ -18,7 +18,8 @@ export function Footer() {
           <Link
             href="https://github.com/growupanand/smart-form-wizard"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener noreferrer nofollow"
+            aria-label="Visit Github Repo"
           >
             <Image src="/github.svg" alt="Github logo" width={20} height={20} />
           </Link>
@@ -32,6 +33,7 @@ export function Footer() {
             href="https://www.linkedin.com/in/utkarshanand93/"
             target="_blank"
             aria-label="Visit Utkarsh Anand's Linkedin Profile"
+            rel="noopener noreferrer nofollow"
           >
             <span className="font-medium">Utkarsh Anand</span>
           </Link>

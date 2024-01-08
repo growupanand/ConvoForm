@@ -19,7 +19,7 @@ export function Hero() {
           <Link
             href="https://github.com/growupanand/smart-form-wizard"
             target="_blank"
-            rel="noreferrer"
+            rel="noreferrer nofollow noopener"
             className="flex items-center"
           >
             <span className="mr-2">
@@ -46,7 +46,10 @@ export function Hero() {
       </div>
       <div className="flex justify-center items-center gap-3">
         <Button size="lg" className="rounded-full sm:w-auto" asChild>
-          <Link href={isLoggedin ? "/dashboard" : "/auth/register"}>
+          <Link
+            href={isLoggedin ? "/dashboard" : "/auth/register"}
+            rel="noreferrer nofollow noopener"
+          >
             Get started
           </Link>
         </Button>
