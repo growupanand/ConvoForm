@@ -3,6 +3,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ClerkProvider } from "@clerk/nextjs";
 import { roboto } from "./fonts";
+import GoogleAnalytics from "@/components/googleAnalytics";
 
 export const metadata: Metadata = {
   title: "Convo Form - AI-Powered Conversational Forms",
@@ -40,6 +41,10 @@ export default function RootLayout({
     <ClerkProvider signInUrl="/auth/sign-in" signUpUrl="/auth/register">
       <html lang="en">
         <body className={roboto.className}>
+          {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
+            <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
+          ) : null}
+
           {children}
           <Toaster />
         </body>
