@@ -1,9 +1,9 @@
-import prisma from "@/lib/db";
-import { sendErrorResponse } from "@/lib/errorHandlers";
-import { getOrganizationId } from "@/lib/getOrganizationId";
-import { getUserId } from "@/lib/getUserId";
-import { workspaceCreateSchema } from "@/lib/validations/workspace";
-import { NextResponse } from "next/server";
+import prisma from '@/lib/db';
+import { sendErrorResponse } from '@/lib/errorHandlers';
+import { getOrganizationId } from '@/lib/getOrganizationId';
+import { getUserId } from '@/lib/getUserId';
+import { workspaceCreateSchema } from '@/lib/validations/workspace';
+import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const organizationId = getOrganizationId();
     const workspaces = await prisma.workspace.findMany({
@@ -32,7 +32,7 @@ export async function GET(req: Request) {
         organizationId,
       },
       orderBy: {
-        createdAt: "asc",
+        createdAt: 'asc',
       },
     });
     return NextResponse.json(workspaces);

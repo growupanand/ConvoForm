@@ -1,4 +1,4 @@
-import { ChatCompletionRequestMessage } from "openai-edge";
+import { ChatCompletionRequestMessage } from 'openai-edge';
 import {
   CreateMessage,
   FunctionCallPayload,
@@ -6,10 +6,10 @@ import {
   OpenAIStream,
   StreamingTextResponse,
   experimental_StreamData,
-} from "ai";
-import prisma from "../db";
-import { FormWithFields } from "../types/form";
-import { OpenAIService } from "./openAI";
+} from 'ai';
+import prisma from '../db';
+import { FormWithFields } from '../types/form';
+import { OpenAIService } from './openAI';
 
 export class ConversationService extends OpenAIService {
   form: FormWithFields;
@@ -44,7 +44,7 @@ export class ConversationService extends OpenAIService {
           messages,
           data
         ),
-      onFinal(completion) {
+      onFinal() {
         // IMPORTANT! you must close StreamData manually or the response will never finish.
         data.close();
       },
@@ -62,14 +62,14 @@ export class ConversationService extends OpenAIService {
     data: experimental_StreamData
   ) {
     // Check if function called to save form data
-    if (functionCallPayload.name === "saveConversationFormData") {
+    if (functionCallPayload.name === 'saveConversationFormData') {
       const thankYouMessage =
         (functionCallPayload.arguments.thankYouMessage as string) ||
-        "Thank you for filling the form.";
+        'Thank you for filling the form.';
 
       // Check if conversation is in preview mode, we don't want to save data in preview mode
       if (this.isPreview) {
-        data.append("conversationFinished");
+        data.append('conversationFinished');
         return thankYouMessage;
       }
 
@@ -85,7 +85,7 @@ export class ConversationService extends OpenAIService {
       try {
         formFieldData = JSON.parse(formFieldDataJSONString);
       } catch (error) {
-        console.error("Unable to parse form field data", {
+        console.error('Unable to parse form field data', {
           formFieldDataJSONString,
         });
       }
@@ -94,16 +94,16 @@ export class ConversationService extends OpenAIService {
       const transcript = [
         ...messages,
         {
-          role: "assistant",
+          role: 'assistant',
           content: thankYouMessage,
         },
       ];
 
       // 3. Get conversation name
       const conversationName =
-        typeof functionCallPayload.arguments.conversationName === "string"
+        typeof functionCallPayload.arguments.conversationName === 'string'
           ? functionCallPayload.arguments.conversationName
-          : "Conversation";
+          : 'Conversation';
 
       // Save conversation in database
       try {
@@ -114,13 +114,13 @@ export class ConversationService extends OpenAIService {
         );
 
         // Append conversationFinished in stream data, so that in client we can show end screen
-        data.append("conversationFinished");
+        data.append('conversationFinished');
 
         // Return success message
         return thankYouMessage;
       } catch (error) {
         const newMessage = createFunctionCallMessages(
-          "unable to save conversation"
+          'unable to save conversation'
         ) as ChatCompletionRequestMessage[];
         return await this.getNextQuestion([...messages, ...newMessage]);
       }
@@ -147,7 +147,7 @@ export class ConversationService extends OpenAIService {
         },
       });
     } catch (error) {
-      const errorMessage = "Unable to save conversation";
+      const errorMessage = 'Unable to save conversation';
       console.error(errorMessage, error);
       throw new Error(errorMessage);
     }
@@ -156,27 +156,27 @@ export class ConversationService extends OpenAIService {
   getOpenAIFunctions() {
     return [
       {
-        name: "saveConversationFormData",
-        description: "This function can save form data in to database",
+        name: 'saveConversationFormData',
+        description: 'This function can save form data in to database',
         parameters: {
-          type: "object",
+          type: 'object',
           properties: {
             formData: {
-              type: "string",
+              type: 'string',
               description:
-                "You will create a JSON string from form data submitted by user, in this json key will be field name and value will be field value",
+                'You will create a JSON string from form data submitted by user, in this json key will be field name and value will be field value',
             },
             conversationName: {
-              type: "string",
+              type: 'string',
               description:
-                "You will generate the short conversation name from form data submitted by user, Conversation name should not more than one words. You can use user name also if it is provided in form data.",
+                'You will generate the short conversation name from form data submitted by user, Conversation name should not more than one words. You can use user name also if it is provided in form data.',
             },
             thankYouMessage: {
-              type: "string",
-              description: "Short thank you message for user",
+              type: 'string',
+              description: 'Short thank you message for user',
             },
           },
-          required: ["formData"],
+          required: ['formData'],
         },
       },
     ];

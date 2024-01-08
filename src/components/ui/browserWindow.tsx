@@ -1,4 +1,4 @@
-import { ExternalLink, Globe, RotateCw } from "lucide-react";
+import { ExternalLink, RotateCw } from "lucide-react";
 import { Button } from "./button";
 import { CopyLinkButton } from "../copyLinkButton";
 import Link from "next/link";

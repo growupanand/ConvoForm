@@ -1,12 +1,7 @@
 "use client";
 
-import { ExternalLink } from "lucide-react";
 import { FormViewer } from "../formViewer/formViewer";
-import { Button } from "../ui/button";
-import { toast } from "../ui/use-toast";
 import { useState } from "react";
-import { CopyLinkButton } from "../copyLinkButton";
-import Link from "next/link";
 import { Form } from "@prisma/client";
 import BrowserWindow from "../ui/browserWindow";
 import { Checkbox } from "../ui/checkbox";
