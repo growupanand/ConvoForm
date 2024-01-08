@@ -8,8 +8,8 @@ import { Skeleton } from "../ui/skeleton";
 import { FormField } from "@prisma/client";
 import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
 import { Button } from "../ui/button";
-import { ScrollArea } from "../ui/scroll-area";
 import { Eye } from "lucide-react";
+
 
 export default function FormEditPage() {
   const formStore = useFormStore();
