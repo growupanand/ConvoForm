@@ -12,7 +12,7 @@ export default function BrandName({ className = "" }: Props) {
     <Link href="/">
       <span
         className={cn(
-          "font-bold  text-muted-foreground hover:text-foreground",
+          "font-semibold text-foreground",
           className,
           montserrat.className
         )}

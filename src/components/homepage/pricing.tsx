@@ -56,7 +56,9 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
       <CardHeader>
         <CardTitle>
           <div className="flex items-center justify-between">
-            <span className="text-xl">{plan.name}</span>
+            <span className={cn("text-xl", montserrat.className)}>
+              {plan.name}
+            </span>
             <Badge variant="secondary">{plan.price}</Badge>
           </div>
         </CardTitle>
