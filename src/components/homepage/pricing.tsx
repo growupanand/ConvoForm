@@ -13,6 +13,8 @@ import Link from "next/link";
 import { auth } from "@clerk/nextjs";
 import { freePlan } from "@/lib/config/pricing";
 import { Plan } from "@/lib/types/plan";
+import { cn } from "@/lib/utils";
+import { montserrat } from "@/app/fonts";
 
 export function Pricing() {
   return (
@@ -71,7 +73,10 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="rounded-full w-full" asChild>
+        <Button
+          className={cn("rounded-full w-full", montserrat.className)}
+          asChild
+        >
           <Link href={isLoggedin ? "/dashboard" : "/auth/register"}>
             Sign up now
           </Link>

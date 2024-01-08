@@ -3,16 +3,15 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { brandName } from "@/lib/constants";
 import { Mail } from "lucide-react";
+import { montserrat } from "@/app/fonts";
 
 export function Footer() {
   return (
     <footer className="w-full mb-2 lg:mb-5 mt-10 lg:mt-20 max-lg:px-6">
       <div className="flex flex-col lg:flex-row justify-start items-center gap-2">
-        <Button variant="link" className="text-lg py-0" asChild>
-          <Link href="/" aria-label={`${brandName}`}>
-            {brandName}
-          </Link>
-        </Button>
+        <span aria-label="App name" className={montserrat.className}>
+          {brandName}
+        </span>
 
         <Button variant="link" size="icon" className="" asChild>
           <Link

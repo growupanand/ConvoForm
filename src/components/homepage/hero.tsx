@@ -6,6 +6,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
+import { montserrat } from "@/app/fonts";
 
 export function Hero() {
   const demoFormLink = process.env.DEMO_FORM_LINK;
@@ -37,7 +38,7 @@ export function Hero() {
             "bg-gradient-to-tl from-[hsl(var(--muted))] from-0% to-[hsl(var(--foreground))] to-30% bg-clip-text text-transparent"
           )}
         >
-          Create your own conversational form
+          Create your own AI-Powered conversational form
         </h1>
         <p className="text-muted-foreground mx-auto max-w-md text-lg md:max-w-lg md:text-xl">
           Build engaging and interactive forms that are easy to fill and fun to
@@ -45,7 +46,11 @@ export function Hero() {
         </p>
       </div>
       <div className="flex justify-center items-center gap-3">
-        <Button size="lg" className="rounded-full sm:w-auto" asChild>
+        <Button
+          size="lg"
+          className={cn("rounded-full sm:w-auto", montserrat.className)}
+          asChild
+        >
           <Link
             href={isLoggedin ? "/dashboard" : "/auth/register"}
             rel="noreferrer nofollow noopener"
@@ -57,7 +62,10 @@ export function Hero() {
           <Button
             size="lg"
             variant="outline"
-            className="rounded-full sm:w-auto font-semibold"
+            className={cn(
+              "rounded-full sm:w-auto font-semibold",
+              montserrat.className
+            )}
             asChild
           >
             <Link href={demoFormLink} target="_blank">

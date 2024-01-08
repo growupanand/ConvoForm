@@ -1,3 +1,4 @@
+import { montserrat } from "@/app/fonts";
 import { brandName } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -12,7 +13,8 @@ export default function BrandName({ className = "" }: Props) {
       <span
         className={cn(
           "font-bold  text-muted-foreground hover:text-foreground",
-          className
+          className,
+          montserrat.className
         )}
       >
         {brandName}

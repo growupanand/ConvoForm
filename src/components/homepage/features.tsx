@@ -47,7 +47,7 @@ const FeatureListItem = ({
       </CardTitle>
     </CardHeader>
     <CardContent>
-      <div className="text-left">{description}</div>
+      <p className="text-left">{description}</p>
     </CardContent>
   </Card>
 );
