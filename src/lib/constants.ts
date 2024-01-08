@@ -5,5 +5,4 @@ export const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
 
 export const CONVERSATION_START_MESSAGE = "Hello, I want to fill the form";
 
-export const brandName =
-  process.env.NEXT_PUBLIC_BRAND_NAME ?? "Smart form wizard";
+export const brandName = "Convo Form";
