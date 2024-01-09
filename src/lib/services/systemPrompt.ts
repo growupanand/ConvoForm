@@ -1,47 +1,81 @@
 import { ChatCompletionRequestMessage } from "openai-edge";
-import { FormWithFields } from "../types/form";
+import { FormField, formFieldSchema } from "../validations/form";
+import { z } from "zod";
+
+export const formSchemaSystemPrompt = z.object({
+  overview: z.string().min(1).max(255),
+  aboutCompany: z.string().min(1).max(255),
+  formField: z.array(formFieldSchema).min(1),
+});
+
+export type FormSchemaSystemPrompt = z.infer<typeof formSchemaSystemPrompt>;
 
 export class SystemPromptService {
-  form: FormWithFields;
-  constructor(form: FormWithFields) {
-    this.form = form;
+  constructor() {}
+
+  getFormFieldNames(form: { formField: FormField[] }) {
+    return form.formField.map((item) => item.fieldName);
   }
 
-  getFormFieldNames() {
-    return this.form.formField.map((item) => item.fieldName);
-  }
-
-  getConversationFlowPrompt() {
+  getConversationFlowPrompt(form: FormSchemaSystemPrompt) {
     return `
-        This is a website where user can fill form. You are required to create a conversation flow for the form. You will be provided form details and
-        form fields. In a form field name there could be multiple words separated by space. You will ask questions for each form field.
-    
-    
-        Follow below rules to create conversation flow.
-            RULES:
-                 - Only ask questions for the form fields provided.
-                 - You will validate every form field value provided by user and on invalid value ask user to confirm this value.
-                 - Question should be in one line string format not more than 25 words, because user will be able to see only one line at a time.
-                 - If all fields are answered then you will save the form data into database without asking any question.
-                 - Once form data is saved you will not save any data again.
+        This platform lets users complete forms through conversational flow. Your task is to create a conversation path based on the provided form information and fields.
+        Please note that a form field name might consist of multiple words, separated by spaces.
         
-    
-        Below is form context and fields information.
-    
-        About the form: ${this.form.overview}
-        
-        About company who have created the form: ${this.form.aboutCompany}
-    
-        Form fields:
-            ${this.getFormFieldNames().join("\n")}
+        Please adhere to the following rules while creating a conversational flow:
+
+        RULES:
+            - Only pose questions pertaining to the provided form fields.
+            - Validate each user-provided form field value. If a value appears invalid, ask for user confirmation.
+            - Keep each question concise and clear – not exceeding 25 words – as users can view only one line at a time.
+            - If all fields have been answered correctly, save the form data directly into the database without further questions.
+            - Avoid saving any data after it has been stored.
+
+        Here is some context about the form and the company responsible for its creation, followed by the form fields:
+
+        Form Details: ${form.overview}
+
+        About the Company: ${form.aboutCompany}
+
+        Form Fields:
+            ${this.getFormFieldNames(form).join("\n")}
 
         `;
   }
 
-  getConversationFlowPromptMessage() {
+  getConversationFlowPromptMessage(form: FormSchemaSystemPrompt) {
     return {
       role: "system",
-      content: this.getConversationFlowPrompt(),
+      content: this.getConversationFlowPrompt(form),
+    } as ChatCompletionRequestMessage;
+  }
+
+  getGenerateFormFieldPrompt(form: FormSchemaSystemPrompt) {
+    return `
+        This platform lets users complete forms through conversational flow. Your task is to create one form field based on the provided form information and fields.
+        
+        Here is some context about the form and the company responsible for its creation, followed by the form fields:
+
+        Form Details: ${form.overview}
+
+        About the Company: ${form.aboutCompany}
+
+        Form Fields:
+            ${this.getFormFieldNames(form).join("\n")}
+
+        
+        OUTPUT FORMAT JSON:
+        {
+          filedName: "field name",
+        }
+
+        `;
+  }
+
+  getGenerateFormFieldPromptMessage(form: FormSchemaSystemPrompt) {
+    return {
+      role: "system",
+      content: this.getGenerateFormFieldPrompt(form),
     } as ChatCompletionRequestMessage;
   }
 }
