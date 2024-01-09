@@ -5,9 +5,11 @@ import {
   CreateChatCompletionRequest,
   OpenAIApi,
 } from "openai-edge";
-import { FormWithFields } from "../types/form";
+
+import OpenAI from "openai";
 import { SystemPromptService } from "./systemPrompt";
 import { OPENAI_API_KEY, OPEN_AI_MODEL } from "../constants";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 const openAI = new OpenAIApi(
   new Configuration({
@@ -15,15 +17,17 @@ const openAI = new OpenAIApi(
   })
 );
 
+const openAiOG = new OpenAI({
+  apiKey: OPENAI_API_KEY, // This is the default and can be omitted
+});
+
 export class OpenAIService extends SystemPromptService {
-  form: FormWithFields;
   apiKey: string = OPENAI_API_KEY;
   openai: OpenAIApi = openAI;
   openAIModel: string = OPEN_AI_MODEL;
 
-  constructor(form: FormWithFields) {
-    super(form);
-    this.form = form;
+  constructor() {
+    super();
   }
 
   getOpenAIResponse(
@@ -49,6 +53,16 @@ export class OpenAIService extends SystemPromptService {
     functions?: ChatCompletionFunctions[]
   ) {
     return this.getOpenAIResponse(messages, true, functions);
+  }
+
+  getOpenAIResponseJSON(messages: ChatCompletionMessageParam[]) {
+    return openAiOG.chat.completions.create({
+      model: this.openAIModel,
+      messages,
+      response_format: {
+        type: "json_object",
+      },
+    });
   }
 
   /**

@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+export const formFieldSchema = z.object({
+  fieldName: z.string().min(1).max(255),
+});
+
+export type FormField = z.infer<typeof formFieldSchema>;
+
 export const formCreateSchema = z.object({
   name: z.string().max(255),
   overview: z.string().max(255),
@@ -21,13 +27,7 @@ export const formUpdateSchema = z.object({
   welcomeScreenMessage: z.string().min(1).max(255),
   welcomeScreenCTALabel: z.string().min(1).max(255),
   aboutCompany: z.string().min(1).max(255),
-  formField: z
-    .array(
-      z.object({
-        fieldName: z.string().min(1).max(255),
-      })
-    )
-    .min(1),
+  formField: z.array(formFieldSchema).min(1),
 });
 
 export const formPatchSchema = z.object({
@@ -37,12 +37,5 @@ export const formPatchSchema = z.object({
   welcomeScreenMessage: z.string().min(1).max(255).optional(),
   welcomeScreenCTALabel: z.string().min(1).max(255).optional(),
   aboutCompany: z.string().min(1).max(255).optional(),
-  formField: z
-
-    .array(
-      z.object({
-        fieldName: z.string().min(1).max(255),
-      })
-    )
-    .optional(),
+  formField: z.array(formFieldSchema).optional(),
 });

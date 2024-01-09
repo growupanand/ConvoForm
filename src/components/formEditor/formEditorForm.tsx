@@ -22,9 +22,10 @@ import {
   Plus,
   Save,
   Sparkle,
+  Sparkles,
   X,
 } from "lucide-react";
-import { toast } from "../ui/use-toast";
+import { sendErrorResponseToast, toast } from "../ui/use-toast";
 import {
   FormField as PrismaFormField,
   Form as PrismaForm,
@@ -54,14 +55,16 @@ type Props = {
 
 type State = {
   isFormBusy: boolean;
+  isGeneratingAIField: boolean;
 };
 
 export default function FormEditorForm(props: Props) {
   const { form } = props;
   const [state, setState] = useState<State>({
     isFormBusy: false,
+    isGeneratingAIField: false,
   });
-  const { isFormBusy } = state;
+  const { isFormBusy, isGeneratingAIField } = state;
 
   const formHook = useForm<FormSubmitDataSchema>({
     resolver: zodResolver(formSchema),
@@ -125,6 +128,36 @@ export default function FormEditorForm(props: Props) {
     }
     return <Sparkle className="mr-2 h-4 w-4" />;
   };
+
+  const generateAIField = async () => {
+    const apiEndpoint = `/form/${form.id}/getNextFormField/`;
+    const formData = formHook.getValues();
+    const payload = {
+      overview: formData.overview,
+      aboutCompany: formData.aboutCompany,
+      formField: formData.formField
+    }
+    setState((cs) => ({ ...cs, isGeneratingAIField: true }));
+    formHook.clearErrors();
+    try {
+      const response = await apiClient(apiEndpoint, {
+        method: "POST",
+        data: payload
+      })
+      const responseJson = await response.json();
+      const { fieldName } = responseJson;
+      append({ fieldName })
+    } catch (error: any) {
+      formHook.trigger([
+        "overview",
+        "aboutCompany",
+        "formField",
+      ]);
+      sendErrorResponseToast(error, "Unable to generate field");
+    } finally {
+      setState((cs) => ({ ...cs, isGeneratingAIField: false }));
+    }
+  }
 
   return (
     <div className="bg-transparent border-0">
@@ -269,15 +302,29 @@ export default function FormEditorForm(props: Props) {
                       />
                     ))}
 
-                    <div className="mt-2">
+                    <div className="mt-2 flex justify-start items-center gap-3">
                       <Button
-                        variant="secondary"
+                        variant="outline"
                         onClick={() => append({ fieldName: "" })}
                         type="button"
                         size="sm"
+                        disabled={isGeneratingAIField || isFormBusy}
                       >
                         <Plus className="w-4 h-4 mr-2" />
                         Add Field
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        onClick={generateAIField}
+                        type="button"
+                        size="sm"
+                        disabled={isGeneratingAIField || isFormBusy}
+                      >
+                        <Sparkles className={cn("mr-2 h-4 w-4",
+                          isGeneratingAIField && "animate-ping"
+                        )} />
+
+                        Generate
                       </Button>
                     </div>
                   </div>
