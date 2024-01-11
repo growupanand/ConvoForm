@@ -18,7 +18,7 @@ export function Hero() {
       <div>
         <Badge variant="outline">
           <Link
-            href="https://github.com/growupanand/smart-form-wizard"
+            href="https://github.com/growupanand/convo-form"
             target="_blank"
             rel="noreferrer nofollow noopener"
             className="flex items-center"

@@ -16,7 +16,7 @@ export function Footer() {
 
         <Button variant="link" size="icon" className="" asChild>
           <Link
-            href="https://github.com/growupanand/smart-form-wizard"
+            href="https://github.com/growupanand/convo-form"
             target="_blank"
             rel="noopener noreferrer nofollow"
             aria-label="Visit Github Repo"
