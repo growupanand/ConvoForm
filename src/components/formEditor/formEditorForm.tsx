@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formUpdateSchema } from "@/lib/validations/form";
@@ -16,7 +16,10 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { apiClient } from "@/lib/fetch";
 import {
+  ArrowDownSquare,
+  ArrowUpSquare,
   Check,
+  CornerDownLeft,
   Info,
   Loader2,
   Plus,
@@ -38,6 +41,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Badge } from "../ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
 type FormWithFields = PrismaForm & { formField: PrismaFormField[] };
 
@@ -159,6 +163,26 @@ export default function FormEditorForm(props: Props) {
     }
   }
 
+
+  const handleFormFieldInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, currentFieldItem: FieldArrayWithId) => {
+    // we want to move input focus to next input on press enter
+    if (event.key === "Enter" || event.key === "ArrowDown") {
+      event.preventDefault();
+      const lastFieldIndex = fields.length - 1;
+      const currentFieldIndex = fields.findIndex((item) => item.id === currentFieldItem.id);
+      if (currentFieldIndex !== lastFieldIndex) {
+        formHook.setFocus(`formField.${currentFieldIndex + 1}.fieldName`);
+      }
+    }
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      const currentFieldIndex = fields.findIndex((item) => item.id === currentFieldItem.id);
+      if (currentFieldIndex !== 0) {
+        formHook.setFocus(`formField.${currentFieldIndex - 1}.fieldName`);
+      }
+    }
+  }
+
   return (
     <div className="bg-transparent border-0">
       <UIForm {...formHook}>
@@ -205,12 +229,18 @@ export default function FormEditorForm(props: Props) {
                   <div className="flex items-center gap-3">
                     <Badge variant="outline" className="text-md group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white">
                       2
-                    </Badge> <span>Landing page</span>
+                    </Badge> <span>Landing page </span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild><Info className="w-4 h-4 " /></TooltipTrigger>
+                        <TooltipContent side="bottom" align="start">This will show on first page</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
 
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 lg:ps-10">
-                  <p className="text-muted-foreground flex items-center gap-2"><Info size="15px" /> This will show on first page</p>
+
 
                   <FormField
                     control={formHook.control}
@@ -270,7 +300,11 @@ export default function FormEditorForm(props: Props) {
 
                 </AccordionTrigger>
                 <AccordionContent className="lg:ps-10">
+
                   <div className="grid gap-2">
+                    <div className="text-muted-foreground text-xs mb-2 flex items-center gap-1">
+                      Use Arrow keys <ArrowUpSquare className="w-4 h-4 " /> <ArrowDownSquare className="w-4 h-4 " /> <CornerDownLeft className="w-3 h-3 " /> to navigate between fields
+                    </div>
 
                     {fields.map((item, index) => (
                       <FormField
@@ -283,6 +317,7 @@ export default function FormEditorForm(props: Props) {
                               <div className="flex w-full max-w-sm items-center space-x-2">
                                 <Input
                                   placeholder={`E.g. name, email or anything`}
+                                  onKeyDown={(e) => handleFormFieldInputKeyDown(e, item)}
                                   {...field}
                                 />
                                 <Button
