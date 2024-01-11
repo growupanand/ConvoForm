@@ -6,7 +6,12 @@ import { Eye } from "lucide-react";
 import { useFormStore } from "@/lib/store/formStore";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardTitle } from "../ui/card";
-import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerPortal,
+  DrawerTrigger,
+} from "../ui/drawer";
 import { Skeleton } from "../ui/skeleton";
 import FormEditorForm, { FormSubmitDataSchema } from "./formEditorForm";
 import FormPreview from "./formPreview";
@@ -38,18 +43,20 @@ export default function FormEditPage() {
             <FormEditorForm form={form} onUpdated={onUpdateForm} />
 
             <div className="py-3 lg:hidden">
-              <Drawer snapPoints={[0.9, 1]}>
+              <Drawer snapPoints={[0.95]}>
                 <DrawerTrigger asChild>
                   <Button variant="outline" className="w-full">
                     <Eye className="mr-2 h-4 w-4" />
                     Show Preview
                   </Button>
                 </DrawerTrigger>
-                <DrawerContent className="h-full">
-                  <div className="h-full pt-3">
-                    <FormPreview form={form} />
-                  </div>
-                </DrawerContent>
+                <DrawerPortal>
+                  <DrawerContent className="h-full">
+                    <div className="h-full pt-3">
+                      <FormPreview form={form} />
+                    </div>
+                  </DrawerContent>
+                </DrawerPortal>
               </Drawer>
             </div>
           </CardContent>
