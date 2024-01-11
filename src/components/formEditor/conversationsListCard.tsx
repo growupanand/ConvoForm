@@ -1,9 +1,10 @@
-import { timeAgo } from "@/lib/utils";
-import { SidebarNav } from "../ui/sidebar-nav";
 import { Conversation } from "@prisma/client";
-import { Skeleton } from "../ui/skeleton";
 import { FileText } from "lucide-react";
+
+import { timeAgo } from "@/lib/utils";
 import { Card, CardContent } from "../ui/card";
+import { SidebarNav } from "../ui/sidebar-nav";
+import { Skeleton } from "../ui/skeleton";
 
 interface ConversationsCardProps extends React.HTMLAttributes<HTMLDivElement> {
   conversations: Conversation[];
@@ -17,12 +18,12 @@ export function ConversationsCard({
   const emptyConversations = conversations.length === 0;
 
   return (
-    <Card className="bg-transparent border-0 shadow-none">
+    <Card className="border-0 bg-transparent shadow-none">
       <CardContent className="p-0 lg:pt-6">
         <ConversationList conversations={conversations} formId={formId} />
         {emptyConversations ? (
           <div className="flex flex-col items-center justify-center">
-            <p className="text-gray-500 text-sm">No Conversations</p>
+            <p className="text-sm text-gray-500">No Conversations</p>
           </div>
         ) : null}
       </CardContent>
@@ -31,14 +32,14 @@ export function ConversationsCard({
 }
 
 const ConversationsCardSkelton = () => (
-  <Card className="bg-transparent border-0 shadow-none">
+  <Card className="border-0 bg-transparent shadow-none">
     <CardContent className="pt-6">
       <h3 className="mb-5 px-4 text-lg font-semibold tracking-tight">
-        <Skeleton className="w-20 h-5" />
+        <Skeleton className="h-5 w-20" />
       </h3>
       <nav className="flex flex-col gap-1">
-        <Skeleton className="w-full h-[40px]" />
-        <Skeleton className="w-full h-[40px]" />
+        <Skeleton className="h-[40px] w-full" />
+        <Skeleton className="h-[40px] w-full" />
       </nav>
     </CardContent>
   </Card>
@@ -56,12 +57,12 @@ const ConversationList = ({
   const items = conversations.map((conversation) => ({
     href: `/forms/${formId}/conversations/${conversation.id}`,
     title: (
-      <div className="flex justify-between items-center w-full">
+      <div className="flex w-full items-center justify-between">
         <div className="flex items-center">
-          <FileText className="w-4 h-4 mr-2" />
+          <FileText className="mr-2 h-4 w-4" />
           <span className="capitalize">{conversation.name}</span>
         </div>
-        <span className="text-muted-foreground font-light">
+        <span className="font-light text-muted-foreground">
           {timeAgo(conversation.createdAt)}
         </span>
       </div>

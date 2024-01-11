@@ -1,14 +1,15 @@
 import { Workspace } from "@prisma/client";
+import { z } from "zod";
 import { create } from "zustand";
+
+import { toast } from "@/components/ui/use-toast";
+import { workspaceUpdateSchema } from "@/lib/validations/workspace";
 import {
   createWorkspaceController,
   deleteWorkspaceController,
   fetchWorkspacesController,
   updateWorkspaceController,
 } from "../controllers/workspace";
-import { toast } from "@/components/ui/use-toast";
-import { workspaceUpdateSchema } from "@/lib/validations/workspace";
-import { z } from "zod";
 
 type WorkspaceStore = {
   initializeStore: () => Promise<void>;
@@ -19,7 +20,7 @@ type WorkspaceStore = {
   deleteWorkspace: (workspaceId: string) => Promise<void>;
   updateWorkspace: (
     workspaceId: string,
-    payload: z.infer<typeof workspaceUpdateSchema>
+    payload: z.infer<typeof workspaceUpdateSchema>,
   ) => Promise<Workspace>;
   isBusyInCreatingWorkspace: boolean;
 };
@@ -60,19 +61,19 @@ export const useWorkspaceStore = create<WorkspaceStore>((set, get) => ({
     });
     set((state) => ({
       workspaces: state.workspaces.filter(
-        (workspace) => workspace.id !== workspaceId
+        (workspace) => workspace.id !== workspaceId,
       ),
     }));
   },
 
   updateWorkspace: async (
     workspaceId: string,
-    payload: z.infer<typeof workspaceUpdateSchema>
+    payload: z.infer<typeof workspaceUpdateSchema>,
   ) => {
     const workspace = await updateWorkspaceController(workspaceId, payload);
     set((state) => ({
       workspaces: state.workspaces.map((workspace) =>
-        workspace.id === workspaceId ? { ...workspace, ...payload } : workspace
+        workspace.id === workspaceId ? { ...workspace, ...payload } : workspace,
       ),
     }));
     return workspace;

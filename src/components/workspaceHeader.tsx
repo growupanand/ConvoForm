@@ -1,6 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { Check, MoreVertical, Trash } from "lucide-react";
+
+import { useWorkspaceStore } from "@/lib/store/workspaceStore";
+import { cn, debounce } from "@/lib/utils";
 import CreateFormButton from "./createFormButton";
 import { Button } from "./ui/button";
 import {
@@ -9,14 +14,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { useState } from "react";
-import { useWorkspaceStore } from "@/lib/store/workspaceStore";
-import { toast } from "./ui/use-toast";
-import { useParams, useRouter } from "next/navigation";
 import { Input } from "./ui/input";
-import { cn, debounce } from "@/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 import Spinner from "./ui/spinner";
+import { toast } from "./ui/use-toast";
 
 type State = {
   isDeleting: boolean;
@@ -46,7 +47,7 @@ export const WorkspaceHeader = () => {
         action: (
           <div className="w-full">
             <div className="flex items-center gap-3">
-              <div className="bg-green-500 rounded-full p-1">
+              <div className="rounded-full bg-green-500 p-1">
                 <Check className="text-white " />
               </div>
               <span>Workspace deleted</span>
@@ -59,7 +60,7 @@ export const WorkspaceHeader = () => {
         router.push(
           `/workspaces/${
             workspaces.filter((i) => i.id !== currentWorkspaceId)[0].id
-          }`
+          }`,
         );
       } else {
         router.push("/dashboard");
@@ -108,7 +109,7 @@ export const WorkspaceHeader = () => {
   if (isLoading) {
     return (
       <div className="mb-5">
-        <div className="flex justify-between items-center  mb-3 lg:mb-10">
+        <div className="mb-3 flex items-center  justify-between lg:mb-10">
           <div className="flex items-center gap-2">
             <Skeleton className="h-8 w-40" />
           </div>
@@ -129,10 +130,10 @@ export const WorkspaceHeader = () => {
 
   return (
     <div className="mb-5">
-      <div className="flex justify-between items-center mb-3 lg:mb-10">
+      <div className="mb-3 flex items-center justify-between lg:mb-10">
         <Input
           className={cn(
-            "text-xl lg:text-2xl ps-0 font-bold border-transparent hover:border-gray-300 focus-visible:ring-transparent"
+            "border-transparent ps-0 text-xl font-bold hover:border-gray-300 focus-visible:ring-transparent lg:text-2xl",
           )}
           type="text"
           onChange={handleWorkspaceNameInputChange}
@@ -160,7 +161,7 @@ export const WorkspaceHeader = () => {
                 className="cursor-pointer text-destructive focus:text-destructive"
                 onClick={deleteWorkspace}
               >
-                <Trash className="w-4 h-4 mr-2" />
+                <Trash className="mr-2 h-4 w-4" />
                 Delete workspace
               </DropdownMenuItem>
             </DropdownMenuContent>

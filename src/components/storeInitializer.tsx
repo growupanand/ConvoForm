@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
+import { useAuth } from "@clerk/nextjs";
+
 import { useFormStore } from "@/lib/store/formStore";
 import { useWorkspaceStore } from "@/lib/store/workspaceStore";
-import { useAuth } from "@clerk/nextjs";
-import { useEffect } from "react";
 
 type Props = {
   stores: Array<"useFormStore" | "useWorkspaceStore">;

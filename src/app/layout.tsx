@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
+
 import { ClerkProvider } from "@clerk/nextjs";
-import { roboto } from "./fonts";
+
 import GoogleAnalytics from "@/components/googleAnalytics";
 import { SentryUserInit } from "@/components/sentryUserInit";
+import { Toaster } from "@/components/ui/toaster";
+import { roboto } from "./fonts";
 
 export const metadata: Metadata = {
   title: "Convo Form - AI-Powered Conversational Forms",

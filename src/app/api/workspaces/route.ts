@@ -1,9 +1,10 @@
-import prisma from '@/lib/db';
-import { sendErrorResponse } from '@/lib/errorHandlers';
-import { getOrganizationId } from '@/lib/getOrganizationId';
-import { getUserId } from '@/lib/getUserId';
-import { workspaceCreateSchema } from '@/lib/validations/workspace';
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+
+import prisma from "@/lib/db";
+import { sendErrorResponse } from "@/lib/errorHandlers";
+import { getOrganizationId } from "@/lib/getOrganizationId";
+import { getUserId } from "@/lib/getUserId";
+import { workspaceCreateSchema } from "@/lib/validations/workspace";
 
 export async function POST(req: Request) {
   try {
@@ -32,7 +33,7 @@ export async function GET() {
         organizationId,
       },
       orderBy: {
-        createdAt: 'asc',
+        createdAt: "asc",
       },
     });
     return NextResponse.json(workspaces);

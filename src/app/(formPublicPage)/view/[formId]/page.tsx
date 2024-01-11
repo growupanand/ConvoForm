@@ -1,7 +1,8 @@
+import { notFound } from "next/navigation";
+import { Form } from "@prisma/client";
+
 import { FormViewer } from "@/components/formViewer/formViewer";
 import prisma from "@/lib/db";
-import { Form } from "@prisma/client";
-import { notFound } from "next/navigation";
 
 interface FormViewerPageProps {
   params: { formId: string };
@@ -22,7 +23,7 @@ export default async function FormViewPage({ params }: FormViewerPageProps) {
     notFound();
   }
   return (
-    <div className="min-h-screen relative flex flex-col grow justify-center items-center">
+    <div className="relative flex min-h-screen grow flex-col items-center justify-center">
       <FormViewer form={formData} />
     </div>
   );

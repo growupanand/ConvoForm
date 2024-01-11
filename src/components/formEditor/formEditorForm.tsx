@@ -1,20 +1,11 @@
 "use client";
 
-import {
-  Form as UIForm,
-  FormField,
-  FormItem,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { FieldArrayWithId, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { formUpdateSchema } from "@/lib/validations/form";
-import { Button } from "../ui/button";
 import { useState } from "react";
-import { apiClient } from "@/lib/fetch";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form as PrismaForm,
+  FormField as PrismaFormField,
+} from "@prisma/client";
 import {
   ArrowDownSquare,
   ArrowUpSquare,
@@ -28,20 +19,40 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import { sendErrorResponseToast, toast } from "../ui/use-toast";
 import {
-  FormField as PrismaFormField,
-  Form as PrismaForm,
-} from "@prisma/client";
-import { cn } from "@/lib/utils";
+  FieldArrayWithId,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
+import { z } from "zod";
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+  Form as UIForm,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { apiClient } from "@/lib/fetch";
+import { cn } from "@/lib/utils";
+import { formUpdateSchema } from "@/lib/validations/form";
 import { Badge } from "../ui/badge";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { Button } from "../ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import { sendErrorResponseToast, toast } from "../ui/use-toast";
 
 type FormWithFields = PrismaForm & { formField: PrismaFormField[] };
 
@@ -53,7 +64,7 @@ type Props = {
   onUpdated?: (
     updatedForm: Omit<FormSubmitDataSchema, "formField"> & {
       formField: PrismaFormField[];
-    }
+    },
   ) => void;
 };
 
@@ -76,7 +87,11 @@ export default function FormEditorForm(props: Props) {
   });
 
   const isErrorInRequirementFields = formHook.formState.errors.formField;
-  const isErrorInLandingPageFields = formHook.formState.errors.overview || formHook.formState.errors.welcomeScreenTitle || formHook.formState.errors.welcomeScreenMessage || formHook.formState.errors.welcomeScreenCTALabel;
+  const isErrorInLandingPageFields =
+    formHook.formState.errors.overview ||
+    formHook.formState.errors.welcomeScreenTitle ||
+    formHook.formState.errors.welcomeScreenMessage ||
+    formHook.formState.errors.welcomeScreenCTALabel;
   const isErrorInAboutCompany = formHook.formState.errors.aboutCompany;
 
   const { fields, append, remove } = useFieldArray({
@@ -85,7 +100,7 @@ export default function FormEditorForm(props: Props) {
   });
 
   const onSubmit: SubmitHandler<FormSubmitDataSchema> = async (
-    formData: FormSubmitDataSchema
+    formData: FormSubmitDataSchema,
   ) => {
     setState((cs) => ({ ...cs, isFormBusy: true }));
     try {
@@ -98,7 +113,7 @@ export default function FormEditorForm(props: Props) {
         action: (
           <div className="w-full">
             <div className="flex items-center gap-3">
-              <div className="bg-green-500 rounded-full p-1">
+              <div className="rounded-full bg-green-500 p-1">
                 <Check className="text-white " />
               </div>
               <span>Changes saved successfully</span>
@@ -139,65 +154,79 @@ export default function FormEditorForm(props: Props) {
     const payload = {
       overview: formData.overview,
       aboutCompany: formData.aboutCompany,
-      formField: formData.formField
-    }
+      formField: formData.formField,
+    };
     setState((cs) => ({ ...cs, isGeneratingAIField: true }));
     formHook.clearErrors();
     try {
       const response = await apiClient(apiEndpoint, {
         method: "POST",
-        data: payload
-      })
+        data: payload,
+      });
       const responseJson = await response.json();
       const { fieldName } = responseJson;
-      append({ fieldName })
+      append({ fieldName });
     } catch (error: any) {
-      formHook.trigger([
-        "overview",
-        "aboutCompany",
-        "formField",
-      ]);
+      formHook.trigger(["overview", "aboutCompany", "formField"]);
       sendErrorResponseToast(error, "Unable to generate field");
     } finally {
       setState((cs) => ({ ...cs, isGeneratingAIField: false }));
     }
-  }
+  };
 
-
-  const handleFormFieldInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, currentFieldItem: FieldArrayWithId) => {
+  const handleFormFieldInputKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+    currentFieldItem: FieldArrayWithId,
+  ) => {
     // we want to move input focus to next input on press enter
     if (event.key === "Enter" || event.key === "ArrowDown") {
       event.preventDefault();
       const lastFieldIndex = fields.length - 1;
-      const currentFieldIndex = fields.findIndex((item) => item.id === currentFieldItem.id);
+      const currentFieldIndex = fields.findIndex(
+        (item) => item.id === currentFieldItem.id,
+      );
       if (currentFieldIndex !== lastFieldIndex) {
         formHook.setFocus(`formField.${currentFieldIndex + 1}.fieldName`);
       }
     }
     if (event.key === "ArrowUp") {
       event.preventDefault();
-      const currentFieldIndex = fields.findIndex((item) => item.id === currentFieldItem.id);
+      const currentFieldIndex = fields.findIndex(
+        (item) => item.id === currentFieldItem.id,
+      );
       if (currentFieldIndex !== 0) {
         formHook.setFocus(`formField.${currentFieldIndex - 1}.fieldName`);
       }
     }
-  }
+  };
 
   return (
-    <div className="bg-transparent border-0">
+    <div className="border-0 bg-transparent">
       <UIForm {...formHook}>
         <form onSubmit={formHook.handleSubmit(onSubmit)}>
-          <div className="space-y-4 mb-8">
-            <Accordion type="single" collapsible className="w-full" defaultValue="overview">
+          <div className="mb-8 space-y-4">
+            <Accordion
+              type="single"
+              collapsible
+              className="w-full"
+              defaultValue="overview"
+            >
               <AccordionItem value="overview" className="border-b-muted">
-                <AccordionTrigger className={cn(
-                  "hover:no-underline text-muted-foreground hover:text-black data-[state=open]:text-black font-bold group",
-                  isErrorInLandingPageFields && "text-red-500"
-                )}>
+                <AccordionTrigger
+                  className={cn(
+                    "group font-bold text-muted-foreground hover:text-black hover:no-underline data-[state=open]:text-black",
+                    isErrorInLandingPageFields && "text-red-500",
+                  )}
+                >
                   <div className="flex items-center gap-3">
-                    <Badge variant="outline" className="text-md group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white">
+                    <Badge
+                      variant="outline"
+                      className="text-md group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
+                    >
                       1
-                    </Badge><span>Overview</span></div>
+                    </Badge>
+                    <span>Overview</span>
+                  </div>
                 </AccordionTrigger>
 
                 <AccordionContent className="lg:ps-10">
@@ -217,31 +246,39 @@ export default function FormEditorForm(props: Props) {
                     )}
                   />
                 </AccordionContent>
-
               </AccordionItem>
 
-
-              <AccordionItem value="landing-page-fields" className="border-b-muted">
-                <AccordionTrigger className={cn(
-                  "hover:no-underline text-muted-foreground hover:text-black data-[state=open]:text-black font-bold group",
-                  isErrorInLandingPageFields && "text-red-500"
-                )}>
+              <AccordionItem
+                value="landing-page-fields"
+                className="border-b-muted"
+              >
+                <AccordionTrigger
+                  className={cn(
+                    "group font-bold text-muted-foreground hover:text-black hover:no-underline data-[state=open]:text-black",
+                    isErrorInLandingPageFields && "text-red-500",
+                  )}
+                >
                   <div className="flex items-center gap-3">
-                    <Badge variant="outline" className="text-md group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white">
+                    <Badge
+                      variant="outline"
+                      className="text-md group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
+                    >
                       2
-                    </Badge> <span>Landing page </span>
+                    </Badge>{" "}
+                    <span>Landing page </span>
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger asChild><Info className="w-4 h-4 " /></TooltipTrigger>
-                        <TooltipContent side="bottom" align="start">This will show on first page</TooltipContent>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 " />
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" align="start">
+                          This will show on first page
+                        </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 lg:ps-10">
-
-
                   <FormField
                     control={formHook.control}
                     name="welcomeScreenTitle"
@@ -287,23 +324,33 @@ export default function FormEditorForm(props: Props) {
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="requirement-fields" className="border-b-muted">
-                <AccordionTrigger className={cn(
-                  "hover:no-underline text-muted-foreground hover:text-black  data-[state=open]:text-black font-bold group",
-                  isErrorInRequirementFields && "text-red-500"
-                )}>
+              <AccordionItem
+                value="requirement-fields"
+                className="border-b-muted"
+              >
+                <AccordionTrigger
+                  className={cn(
+                    "group font-bold text-muted-foreground  hover:text-black hover:no-underline data-[state=open]:text-black",
+                    isErrorInRequirementFields && "text-red-500",
+                  )}
+                >
                   <div className="flex items-center gap-3">
-                    <Badge variant="outline" className="text-md  group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white">
+                    <Badge
+                      variant="outline"
+                      className="text-md  group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
+                    >
                       3
-                    </Badge> <span>What you want to ask?</span>
+                    </Badge>{" "}
+                    <span>What you want to ask?</span>
                   </div>
-
                 </AccordionTrigger>
                 <AccordionContent className="lg:ps-10">
-
                   <div className="grid gap-2">
-                    <div className="text-muted-foreground text-xs mb-2 flex items-center gap-1">
-                      Use Arrow keys <ArrowUpSquare className="w-4 h-4 " /> <ArrowDownSquare className="w-4 h-4 " /> <CornerDownLeft className="w-3 h-3 " /> to navigate between fields
+                    <div className="mb-2 flex items-center gap-1 text-xs text-muted-foreground">
+                      Use Arrow keys <ArrowUpSquare className="h-4 w-4 " />{" "}
+                      <ArrowDownSquare className="h-4 w-4 " />{" "}
+                      <CornerDownLeft className="h-3 w-3 " /> to navigate
+                      between fields
                     </div>
 
                     {fields.map((item, index) => (
@@ -317,17 +364,21 @@ export default function FormEditorForm(props: Props) {
                               <div className="flex w-full max-w-sm items-center space-x-2">
                                 <Input
                                   placeholder={`E.g. name, email or anything`}
-                                  onKeyDown={(e) => handleFormFieldInputKeyDown(e, item)}
+                                  onKeyDown={(e) =>
+                                    handleFormFieldInputKeyDown(e, item)
+                                  }
                                   {...field}
                                 />
                                 <Button
                                   variant="ghost"
                                   disabled={index === 0 && fields.length === 1}
-                                  onClick={() => fields.length != 1 && remove(index)}
+                                  onClick={() =>
+                                    fields.length != 1 && remove(index)
+                                  }
                                   type="button"
                                   size="icon"
                                 >
-                                  <X className="w-4 h-4" />
+                                  <X className="h-4 w-4" />
                                 </Button>
                               </div>
                             </FormControl>
@@ -337,7 +388,7 @@ export default function FormEditorForm(props: Props) {
                       />
                     ))}
 
-                    <div className="mt-2 flex justify-start items-center gap-3">
+                    <div className="mt-2 flex items-center justify-start gap-3">
                       <Button
                         variant="outline"
                         onClick={() => append({ fieldName: "" })}
@@ -345,7 +396,7 @@ export default function FormEditorForm(props: Props) {
                         size="sm"
                         disabled={isGeneratingAIField || isFormBusy}
                       >
-                        <Plus className="w-4 h-4 mr-2" />
+                        <Plus className="mr-2 h-4 w-4" />
                         Add Field
                       </Button>
                       <Button
@@ -355,10 +406,12 @@ export default function FormEditorForm(props: Props) {
                         size="sm"
                         disabled={isGeneratingAIField || isFormBusy}
                       >
-                        <Sparkles className={cn("mr-2 h-4 w-4",
-                          isGeneratingAIField && "animate-ping"
-                        )} />
-
+                        <Sparkles
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            isGeneratingAIField && "animate-ping",
+                          )}
+                        />
                         Generate
                       </Button>
                     </div>
@@ -367,16 +420,21 @@ export default function FormEditorForm(props: Props) {
               </AccordionItem>
 
               <AccordionItem value="about-company" className="border-b-muted">
-                <AccordionTrigger className={
-                  cn("hover:no-underline text-muted-foreground hover:text-black  data-[state=open]:text-black font-bold group",
-                    isErrorInAboutCompany && "text-red-500")
-                }>
+                <AccordionTrigger
+                  className={cn(
+                    "group font-bold text-muted-foreground  hover:text-black hover:no-underline data-[state=open]:text-black",
+                    isErrorInAboutCompany && "text-red-500",
+                  )}
+                >
                   <div className="flex items-center gap-3">
-                    <Badge variant="outline" className="text-md  group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white">
+                    <Badge
+                      variant="outline"
+                      className="text-md  group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
+                    >
                       4
-                    </Badge> <span>About company</span>
+                    </Badge>{" "}
+                    <span>About company</span>
                   </div>
-
                 </AccordionTrigger>
 
                 <AccordionContent className="lg:ps-10">
@@ -384,23 +442,17 @@ export default function FormEditorForm(props: Props) {
                     control={formHook.control}
                     name="aboutCompany"
                     render={({ field }) => (
-
                       <FormItem>
                         <FormControl>
-                          <Input
-                            placeholder="About your company"
-                            {...field}
-                          />
+                          <Input placeholder="About your company" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-
                     )}
                   />
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
-
           </div>
 
           <Button className="w-full" type="submit" disabled={isFormBusy}>

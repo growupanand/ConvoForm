@@ -11,7 +11,7 @@ export const OrganizationProvider = ({ children }: Readonly<Props>) => {
 
   if (!orgId) {
     return (
-      <div className="h-screen flex flex-col items-center justify-center">
+      <div className="flex h-screen flex-col items-center justify-center">
         <OrganizationList
           afterSelectOrganizationUrl="/dashboard"
           hidePersonal

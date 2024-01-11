@@ -1,11 +1,12 @@
+import { Copy } from "lucide-react";
+
+import { Button } from "./ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import { Copy } from "lucide-react";
-import { Button } from "./ui/button";
 
 export const CopyLinkButton = ({ onClick }: { onClick: () => void }) => {
   return (

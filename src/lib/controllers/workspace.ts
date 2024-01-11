@@ -1,10 +1,11 @@
 import { Workspace } from "@prisma/client";
-import { apiClient } from "../fetch";
-import { workspaceUpdateSchema } from "@/lib/validations/workspace";
 import { z } from "zod";
 
+import { workspaceUpdateSchema } from "@/lib/validations/workspace";
+import { apiClient } from "../fetch";
+
 export const createWorkspaceController = async (
-  name: string = "New workspace"
+  name: string = "New workspace",
 ) => {
   const response = await apiClient("workspaces", {
     method: "POST",
@@ -27,7 +28,7 @@ export const fetchWorkspacesController = async () => {
 
 export const updateWorkspaceController = async (
   workspaceId: string,
-  payload: z.infer<typeof workspaceUpdateSchema>
+  payload: z.infer<typeof workspaceUpdateSchema>,
 ) => {
   const response = await apiClient(`workspaces/${workspaceId}`, {
     method: "PUT",

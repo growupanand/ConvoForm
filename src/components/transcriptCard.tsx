@@ -29,7 +29,7 @@ export default function TranscriptCard({ transcript }: Props) {
 }
 
 const SystemMessageBox = ({ message }: { message: string }) => (
-  <p className="text-muted-foreground font-light ">{message}</p>
+  <p className="font-light text-muted-foreground ">{message}</p>
 );
 
 const UserMessageBox = ({ message }: { message: string }) => (

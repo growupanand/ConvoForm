@@ -1,12 +1,13 @@
-import { ChatCompletionRequestMessage } from "openai-edge";
 import {
   CreateMessage,
+  experimental_StreamData,
   FunctionCallPayload,
   JSONValue,
   OpenAIStream,
   StreamingTextResponse,
-  experimental_StreamData,
 } from "ai";
+import { ChatCompletionRequestMessage } from "openai-edge";
+
 import prisma from "../db";
 import { FormWithFields } from "../types/form";
 import { OpenAIService } from "./openAI";
@@ -35,14 +36,14 @@ export class ConversationService extends OpenAIService {
       experimental_onFunctionCall: (
         functionCallPayload: FunctionCallPayload,
         createFunctionCallMessages: (
-          functionCallResult: JSONValue
-        ) => CreateMessage[]
+          functionCallResult: JSONValue,
+        ) => CreateMessage[],
       ) =>
         this.handleFunctionCalling(
           functionCallPayload,
           createFunctionCallMessages,
           messages,
-          data
+          data,
         ),
       onFinal() {
         // IMPORTANT! you must close StreamData manually or the response will never finish.
@@ -56,10 +57,10 @@ export class ConversationService extends OpenAIService {
   async handleFunctionCalling(
     functionCallPayload: FunctionCallPayload,
     createFunctionCallMessages: (
-      functionCallResult: JSONValue
+      functionCallResult: JSONValue,
     ) => CreateMessage[],
     messages: ChatCompletionRequestMessage[],
-    data: experimental_StreamData
+    data: experimental_StreamData,
   ) {
     // Check if function called to save form data
     if (functionCallPayload.name === "saveConversationFormData") {
@@ -110,7 +111,7 @@ export class ConversationService extends OpenAIService {
         await this.saveConversation(
           formFieldData,
           conversationName,
-          transcript
+          transcript,
         );
 
         // Append conversationFinished in stream data, so that in client we can show end screen
@@ -120,13 +121,13 @@ export class ConversationService extends OpenAIService {
         return thankYouMessage;
       } catch (error) {
         const newMessage = createFunctionCallMessages(
-          "unable to save conversation"
+          "unable to save conversation",
         ) as ChatCompletionRequestMessage[];
         return await this.getNextQuestion([...messages, ...newMessage]);
       }
     }
     const newMessage = createFunctionCallMessages(
-      "I don't have function which you are calling"
+      "I don't have function which you are calling",
     ) as ChatCompletionRequestMessage[];
     return await this.getNextQuestion([...messages, ...newMessage]);
   }
@@ -134,7 +135,7 @@ export class ConversationService extends OpenAIService {
   async saveConversation(
     formFieldsData: Record<string, any>,
     conversationName: string,
-    transcript: Record<string, any>[]
+    transcript: Record<string, any>[],
   ) {
     try {
       return await prisma.conversation.create({

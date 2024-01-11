@@ -1,7 +1,8 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+
 import prisma from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
-import { z } from "zod";
-import { NextResponse } from "next/server";
 import { getOrganizationId } from "@/lib/getOrganizationId";
 
 const routeContextSchema = z.object({
@@ -12,7 +13,7 @@ const routeContextSchema = z.object({
 
 export async function GET(
   req: Request,
-  context: z.infer<typeof routeContextSchema>
+  context: z.infer<typeof routeContextSchema>,
 ) {
   try {
     const { params } = routeContextSchema.parse(context);

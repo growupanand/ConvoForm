@@ -1,5 +1,5 @@
-import { StoreInitializer } from "@/components/storeInitializer";
 import { FormEditorPageHeader } from "@/components/formEditor/formEditorPageHeader";
+import { StoreInitializer } from "@/components/storeInitializer";
 
 type Props = {
   children: React.ReactNode;
@@ -8,7 +8,7 @@ type Props = {
 export default async function AuthLayout({ children }: Readonly<Props>) {
   return (
     <StoreInitializer stores={["useFormStore"]}>
-      <div className="h-screen relative flex flex-col ">
+      <div className="relative flex h-screen flex-col ">
         <FormEditorPageHeader />
         <div className="grow">{children}</div>
       </div>

@@ -11,8 +11,8 @@ export default function FormListLoading() {
 }
 
 const FormsListSkeleton = () => (
-  <div className="p-3 flex justify-between items-center ">
-    <Skeleton className=" w-[130px] h-[20px] rounded-full" />
-    <Skeleton className=" w-[30px] h-[30px] " />
+  <div className="flex items-center justify-between p-3 ">
+    <Skeleton className=" h-[20px] w-[130px] rounded-full" />
+    <Skeleton className=" h-[30px] w-[30px] " />
   </div>
 );

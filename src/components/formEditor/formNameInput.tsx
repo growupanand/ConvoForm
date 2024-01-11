@@ -1,10 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import { Form } from "@prisma/client";
+
 import { Input } from "@/components/ui/input";
 import { patchFormController } from "@/lib/controllers/form";
 import { cn, debounce } from "@/lib/utils";
-import { Form } from "@prisma/client";
-import { useState } from "react";
 import { toast } from "../ui/use-toast";
 
 type Props = {
@@ -55,8 +56,8 @@ export default function FormNameInput({ form, className }: Props) {
       <Input
         disabled={isUpdating}
         className={cn(
-          "text-2xl font-bold border-0 focus-visible:ring-transparent bg-transparent focus-visible:ring-0 max-w-[400px]",
-          className
+          "max-w-[400px] border-0 bg-transparent text-2xl font-bold focus-visible:ring-0 focus-visible:ring-transparent",
+          className,
         )}
         style={{
           width: `${formName.length + 2}ch`,

@@ -12,7 +12,7 @@ export const getFormDetails = async (formId: string, userId: string) => {
 
 export const getFormDetailsWithFields = async (
   formId: string,
-  userId: string
+  userId: string,
 ) => {
   return (await prisma.form.findFirst({
     where: {
@@ -27,7 +27,7 @@ export const getFormDetailsWithFields = async (
 
 export const getFormDetailsWithWorkspace = async (
   formId: string,
-  userId: string
+  userId: string,
 ) => {
   return await prisma.form.findFirst({
     where: {

@@ -1,8 +1,9 @@
 "use client";
 
-import { useFormStore } from "@/lib/store/formStore";
-import { redirect } from "next/navigation";
 import { useEffect } from "react";
+import { redirect } from "next/navigation";
+
+import { useFormStore } from "@/lib/store/formStore";
 
 export default function ConversationPage() {
   const formStore = useFormStore();

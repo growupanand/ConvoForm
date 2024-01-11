@@ -1,9 +1,10 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+
 import prisma from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getOrganizationId } from "@/lib/getOrganizationId";
 import { formPatchSchema, formUpdateSchema } from "@/lib/validations/form";
-import { NextResponse } from "next/server";
-import { z } from "zod";
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -13,7 +14,7 @@ const routeContextSchema = z.object({
 
 export async function GET(
   req: Request,
-  context: z.infer<typeof routeContextSchema>
+  context: z.infer<typeof routeContextSchema>,
 ) {
   try {
     const { params } = routeContextSchema.parse(context);
@@ -36,7 +37,7 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  context: z.infer<typeof routeContextSchema>
+  context: z.infer<typeof routeContextSchema>,
 ) {
   try {
     const { params } = routeContextSchema.parse(context);
@@ -80,7 +81,7 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  context: z.infer<typeof routeContextSchema>
+  context: z.infer<typeof routeContextSchema>,
 ) {
   try {
     // Validate the route params.
@@ -100,7 +101,7 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  context: z.infer<typeof routeContextSchema>
+  context: z.infer<typeof routeContextSchema>,
 ) {
   try {
     const { params } = routeContextSchema.parse(context);

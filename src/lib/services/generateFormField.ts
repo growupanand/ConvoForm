@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+
 import { OpenAIService } from "./openAI";
 import { FormSchemaSystemPrompt } from "./systemPrompt";
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 export class GenerateFormFieldService extends OpenAIService {
   form: FormSchemaSystemPrompt;
@@ -15,7 +16,7 @@ export class GenerateFormFieldService extends OpenAIService {
     let nextFieldName = "";
 
     const systemMessage = this.getGenerateFormFieldPromptMessage(
-      this.form
+      this.form,
     ) as ChatCompletionMessageParam;
     const message = {
       role: "user",

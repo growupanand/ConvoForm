@@ -1,5 +1,6 @@
-import { Form } from "@prisma/client";
 import React from "react";
+import { Form } from "@prisma/client";
+
 import { Button } from "../ui/button";
 
 type Props = {
@@ -9,17 +10,17 @@ type Props = {
 
 export const WelcomeScreen = ({ form, onCTAClick: onClick }: Props) => {
   return (
-    <div className="flex flex-col gap-2 items-center justify-center">
-      <h2 className="text-5xl font-bold text-center">
+    <div className="flex flex-col items-center justify-center gap-2">
+      <h2 className="text-center text-5xl font-bold">
         {form.welcomeScreenTitle}
       </h2>
-      <p className="text-xl font-medium text-gray-800 mb-8">
+      <p className="mb-8 text-xl font-medium text-gray-800">
         {form.welcomeScreenMessage}
       </p>
       <div>
         <Button
           size="lg"
-          className="font-semibold rounded-full text-2xl"
+          className="rounded-full text-2xl font-semibold"
           onClick={onClick}
         >
           {form.welcomeScreenCTALabel}

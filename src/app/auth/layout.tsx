@@ -1,6 +1,7 @@
+import { ClerkLoading } from "@clerk/nextjs";
+
 import BrandName from "@/components/brandName";
 import Spinner from "@/components/ui/spinner";
-import { ClerkLoading } from "@clerk/nextjs";
 
 type Props = {
   children: React.ReactNode;
@@ -9,11 +10,11 @@ type Props = {
 export default function Layout({ children }: Readonly<Props>) {
   return (
     <main className="container max-w-[900px]">
-      <nav className="flex justify-center items-center p-3 mt-5">
+      <nav className="mt-5 flex items-center justify-center p-3">
         <BrandName className="text-3xl" />
       </nav>
       <ClerkLoading>
-        <div className="w-full flex justify-center">
+        <div className="flex w-full justify-center">
           <Spinner label="Please wait..." />
         </div>
       </ClerkLoading>

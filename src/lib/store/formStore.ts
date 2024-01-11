@@ -1,10 +1,11 @@
 import { Conversation, Form, FormField, Workspace } from "@prisma/client";
+import { create } from "zustand";
+
+import { FormSubmitDataSchema } from "@/components/formEditor/formEditorForm";
 import {
   getFormController,
   getFormConversationsController,
 } from "../controllers/form";
-import { create } from "zustand";
-import { FormSubmitDataSchema } from "@/components/formEditor/formEditorForm";
 
 type WorkspaceStore = {
   formId?: string;
@@ -16,7 +17,7 @@ type WorkspaceStore = {
   fetchConversations: () => Promise<void>;
   isLoadingConversations: boolean;
   updateForm: (
-    form: Omit<FormSubmitDataSchema, "formField"> & { formField: FormField[] }
+    form: Omit<FormSubmitDataSchema, "formField"> & { formField: FormField[] },
   ) => Promise<void>;
 };
 

@@ -1,10 +1,11 @@
-import { ConversationService } from "@/lib/services/conversation";
-import prisma from "@/lib/db";
-import { sendErrorResponse } from "@/lib/errorHandlers";
-import { ConversationPayloadSchema } from "@/lib/validations/conversation";
 import { z } from "zod";
-import { getUserTotalConversationsCount } from "@/lib/dbControllers/form";
+
 import { freePlan } from "@/lib/config/pricing";
+import prisma from "@/lib/db";
+import { getUserTotalConversationsCount } from "@/lib/dbControllers/form";
+import { sendErrorResponse } from "@/lib/errorHandlers";
+import { ConversationService } from "@/lib/services/conversation";
+import { ConversationPayloadSchema } from "@/lib/validations/conversation";
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -14,7 +15,7 @@ const routeContextSchema = z.object({
 
 export async function POST(
   req: Request,
-  context: z.infer<typeof routeContextSchema>
+  context: z.infer<typeof routeContextSchema>,
 ) {
   try {
     const { params } = routeContextSchema.parse(context);
@@ -47,12 +48,12 @@ export async function POST(
 
     if (form.id !== "demo") {
       const totalSubmissionsCount = await getUserTotalConversationsCount(
-        form.userId
+        form.userId,
       );
 
       const formSubmissionLimit =
         freePlan.features.find(
-          (feature) => feature.name === "Collect form submission"
+          (feature) => feature.name === "Collect form submission",
         )?.featureValue ?? 0;
 
       if (totalSubmissionsCount > formSubmissionLimit) {

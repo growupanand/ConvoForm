@@ -1,6 +1,7 @@
 import { Conversation, Form, FormField, Workspace } from "@prisma/client";
-import { apiClient } from "../fetch";
 import { z } from "zod";
+
+import { apiClient } from "../fetch";
 import { formCreateSchema, formPatchSchema } from "../validations/form";
 
 export const getFormController = async (formId: string) => {
@@ -22,7 +23,7 @@ export const getFormsController = async (workspaceId: string) => {
 
 export const createFormController = async (
   workspaceId: string,
-  form: z.infer<typeof formCreateSchema>
+  form: z.infer<typeof formCreateSchema>,
 ) => {
   const response = await apiClient(`workspaces/${workspaceId}/forms`, {
     method: "POST",
@@ -33,7 +34,7 @@ export const createFormController = async (
 
 export const patchFormController = async (
   formId: string,
-  payload: z.infer<typeof formPatchSchema>
+  payload: z.infer<typeof formPatchSchema>,
 ) => {
   const response = await apiClient(`form/${formId}`, {
     method: "PATCH",
