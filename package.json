@@ -14,7 +14,8 @@
     "prisma-generate": "prisma generate",
     "postinstall": "prisma generate",
     "format:all": "prettier --write .",
-    "format:staged": "prettier --write $(git diff --staged --name-only --diff-filter d | xargs)"
+    "format:staged": "prettier --write $(git diff --staged --name-only --diff-filter d | xargs)",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.4",
@@ -64,6 +65,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-unused-imports": "^3.0.0",
+    "husky": "^8.0.3",
     "postcss": "^8",
     "prettier": "^3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.11",
