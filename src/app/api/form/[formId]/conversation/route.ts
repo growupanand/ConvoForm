@@ -53,7 +53,7 @@ export async function POST(
 
       const formSubmissionLimit =
         freePlan.features.find(
-          (feature) => feature.name === "Collect form submission",
+          (feature) => feature.name === "Collect form responses",
         )?.featureValue ?? 0;
 
       if (totalSubmissionsCount > formSubmissionLimit) {
