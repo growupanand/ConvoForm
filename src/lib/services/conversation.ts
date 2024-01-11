@@ -169,14 +169,14 @@ export class ConversationService extends OpenAIService {
             conversationName: {
               type: "string",
               description:
-                "You will generate the short conversation name from form data submitted by user, Conversation name should not more than one words. You can use user name also if it is provided in form data.",
+                "You will generate one word name from data collected from user, E.g. user name or email address etc",
             },
             thankYouMessage: {
               type: "string",
               description: "Short thank you message for user",
             },
           },
-          required: ["formData"],
+          required: ["formData", "conversationName", "thankYouMessage"],
         },
       },
     ];
