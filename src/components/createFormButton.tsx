@@ -33,7 +33,6 @@ export default function CreateFormButton({ workspace }: Props) {
         welcomeScreenMessage: "",
         welcomeScreenCTALabel: "",
         overview: "",
-        aboutCompany: "",
         formField: [
           {
             fieldName: "",

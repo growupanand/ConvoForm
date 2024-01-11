@@ -92,7 +92,6 @@ export default function FormEditorForm(props: Props) {
     formHook.formState.errors.welcomeScreenTitle ||
     formHook.formState.errors.welcomeScreenMessage ||
     formHook.formState.errors.welcomeScreenCTALabel;
-  const isErrorInAboutCompany = formHook.formState.errors.aboutCompany;
 
   const { fields, append, remove } = useFieldArray({
     control: formHook.control,
@@ -153,7 +152,6 @@ export default function FormEditorForm(props: Props) {
     const formData = formHook.getValues();
     const payload = {
       overview: formData.overview,
-      aboutCompany: formData.aboutCompany,
       formField: formData.formField,
     };
     setState((cs) => ({ ...cs, isGeneratingAIField: true }));
@@ -167,7 +165,7 @@ export default function FormEditorForm(props: Props) {
       const { fieldName } = responseJson;
       append({ fieldName });
     } catch (error: any) {
-      formHook.trigger(["overview", "aboutCompany", "formField"]);
+      formHook.trigger(["overview", "formField"]);
       sendErrorResponseToast(error, "Unable to generate field");
     } finally {
       setState((cs) => ({ ...cs, isGeneratingAIField: false }));
@@ -416,40 +414,6 @@ export default function FormEditorForm(props: Props) {
                       </Button>
                     </div>
                   </div>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="about-company" className="border-b-muted">
-                <AccordionTrigger
-                  className={cn(
-                    "group font-bold text-muted-foreground  hover:text-black hover:no-underline data-[state=open]:text-black",
-                    isErrorInAboutCompany && "text-red-500",
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <Badge
-                      variant="outline"
-                      className="text-md  group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
-                    >
-                      4
-                    </Badge>{" "}
-                    <span>About company</span>
-                  </div>
-                </AccordionTrigger>
-
-                <AccordionContent className="lg:ps-10">
-                  <FormField
-                    control={formHook.control}
-                    name="aboutCompany"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input placeholder="About your company" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

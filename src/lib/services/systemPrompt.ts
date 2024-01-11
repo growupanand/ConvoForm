@@ -5,7 +5,6 @@ import { FormField, formFieldSchema } from "../validations/form";
 
 export const formSchemaSystemPrompt = z.object({
   overview: z.string().min(1).max(255),
-  aboutCompany: z.string().min(1).max(255),
   formField: z.array(formFieldSchema).min(1),
 });
 
@@ -34,11 +33,9 @@ export class SystemPromptService {
             - Avoid saving any data after it has been stored.
             - Start first question with greeting message. Do not ask for confirmation from user to start form filling.
 
-        Here is some context about the form and the company responsible for its creation, followed by the form fields:
+        Here is some context about the form responsible for its creation, followed by the form fields:
 
         Form Details: ${form.overview}
-
-        About the Company: ${form.aboutCompany}
 
         Form Fields:
             ${this.getFormFieldNames(form).join("\n")}
@@ -57,11 +54,9 @@ export class SystemPromptService {
     return `
         This platform lets users complete forms through conversational flow. Your task is to create one form field based on the provided form information and fields.
         
-        Here is some context about the form and the company responsible for its creation, followed by the form fields:
+        Here is some context about the form responsible for its creation, followed by the form fields:
 
         Form Details: ${form.overview}
-
-        About the Company: ${form.aboutCompany}
 
         Form Fields:
             ${this.getFormFieldNames(form).join("\n")}

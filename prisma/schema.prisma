@@ -33,7 +33,6 @@ model Form {
   welcomeScreenMessage  String
   welcomeScreenCTALabel String
   formField             FormField[]
-  aboutCompany          String
   isPublished           Boolean        @default(false)
   publishedAt           DateTime?
   conversation          Conversation[]
