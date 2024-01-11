@@ -1,23 +1,24 @@
 "use client";
 
-import { UserButton, useUser } from "@clerk/nextjs";
-import BrandName from "../brandName";
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { LayoutDashboard } from "lucide-react";
+
+import BrandName from "../brandName";
+import { Button } from "../ui/button";
 
 export function Header() {
   const { user } = useUser();
 
   return (
-    <nav className="flex justify-between items-center p-3 w-full">
+    <nav className="flex w-full items-center justify-between p-3">
       <BrandName className="text-xl lg:text-2xl" />
       <div className="flex items-center gap-3">
         {user ? (
           <>
             <Link href="/dashboard">
               <Button variant="secondary">
-                <LayoutDashboard className="w-4 h-4 mr-2" /> Go to Dashboard
+                <LayoutDashboard className="mr-2 h-4 w-4" /> Go to Dashboard
               </Button>
             </Link>
             <UserButton />

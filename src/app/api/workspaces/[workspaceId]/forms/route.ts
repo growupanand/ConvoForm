@@ -1,11 +1,12 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+
 import { freePlan } from "@/lib/config/pricing";
 import prisma from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getOrganizationId } from "@/lib/getOrganizationId";
 import { getUserId } from "@/lib/getUserId";
 import { formCreateSchema } from "@/lib/validations/form";
-import { NextResponse } from "next/server";
-import { z } from "zod";
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -15,7 +16,7 @@ const routeContextSchema = z.object({
 
 export async function POST(
   req: Request,
-  context: z.infer<typeof routeContextSchema>
+  context: z.infer<typeof routeContextSchema>,
 ) {
   try {
     const { params } = routeContextSchema.parse(context);
@@ -38,7 +39,7 @@ export async function POST(
 
     if (organizationForms.length > formCreationLimit) {
       throw new Error(
-        `You can create only ${formCreationLimit} forms in free plan.`
+        `You can create only ${formCreationLimit} forms in free plan.`,
       );
     }
 
@@ -74,7 +75,7 @@ export async function POST(
 
 export async function GET(
   req: Request,
-  context: z.infer<typeof routeContextSchema>
+  context: z.infer<typeof routeContextSchema>,
 ) {
   try {
     const { params } = routeContextSchema.parse(context);

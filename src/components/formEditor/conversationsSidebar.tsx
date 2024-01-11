@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useFormStore } from "@/lib/store/formStore";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
-import { Button } from "../ui/button";
 import { usePathname } from "next/navigation";
+import { Menu } from "lucide-react";
+
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useFormStore } from "@/lib/store/formStore";
+import { Button } from "../ui/button";
 import { ConversationsCard } from "./conversationsListCard";
 
 type State = {
@@ -63,7 +64,7 @@ export default function ConversationsSidebar() {
           </SheetContent>
         </Sheet>
       </div>
-      <div className="max-lg:hidden min-w-[400px] w-[400px] px-3">
+      <div className="w-[400px] min-w-[400px] px-3 max-lg:hidden">
         {isLoadingConversations || !formId ? (
           <ConversationsCard.ConversationsCardSkelton />
         ) : (

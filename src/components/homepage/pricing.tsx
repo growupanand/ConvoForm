@@ -1,4 +1,13 @@
+import Link from "next/link";
+import { auth } from "@clerk/nextjs";
 import { CheckCircle } from "lucide-react";
+
+import { montserrat } from "@/app/fonts";
+import { freePlan } from "@/lib/config/pricing";
+import { Plan } from "@/lib/types/plan";
+import { cn } from "@/lib/utils";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -7,14 +16,6 @@ import {
   CardTitle,
 } from "../ui/card";
 import { SectionCard } from "./sectionCard";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import Link from "next/link";
-import { auth } from "@clerk/nextjs";
-import { freePlan } from "@/lib/config/pricing";
-import { Plan } from "@/lib/types/plan";
-import { cn } from "@/lib/utils";
-import { montserrat } from "@/app/fonts";
 
 export function Pricing() {
   return (
@@ -34,14 +35,14 @@ const FeatureListItem = ({
   featureText: string;
 }) => {
   return (
-    <div className="flex justify-between items-start space-x-2">
+    <div className="flex items-start justify-between space-x-2">
       <div className="flex items-start gap-2">
         <div className="mt-1">
           <CheckCircle color="green" size={15} />
         </div>
         <div className="text-md text-gray-700">{featureName}</div>
       </div>
-      <div className="text-md text-gray-900 font-semibold whitespace-nowrap">
+      <div className="text-md whitespace-nowrap font-semibold text-gray-900">
         {featureText}
       </div>
     </div>
@@ -52,7 +53,7 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
   const { userId } = auth();
   const isLoggedin = !!userId;
   return (
-    <Card className=" rounded-xl shadow-lg w-full">
+    <Card className=" w-full rounded-xl shadow-lg">
       <CardHeader>
         <CardTitle>
           <div className="flex items-center justify-between">
@@ -64,7 +65,7 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2 mb-5">
+        <div className="mb-5 space-y-2">
           {plan.features.map((feature) => (
             <FeatureListItem
               key={feature.name}
@@ -76,7 +77,7 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
       </CardContent>
       <CardFooter>
         <Button
-          className={cn("rounded-full w-full", montserrat.className)}
+          className={cn("w-full rounded-full", montserrat.className)}
           asChild
         >
           <Link href={isLoggedin ? "/dashboard" : "/auth/register"}>

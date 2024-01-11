@@ -1,7 +1,8 @@
 "use client";
 
-import { Workspace } from "@prisma/client";
 import { usePathname } from "next/navigation";
+import { Workspace } from "@prisma/client";
+
 import AppNavBarLink from "./appNavBarLink";
 
 type Props = {

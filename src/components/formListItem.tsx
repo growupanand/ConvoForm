@@ -1,16 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
-import { apiClient } from "@/lib/fetch";
+import { useState } from "react";
+import Link from "next/link";
 import { Form } from "@prisma/client";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Check,
   ExternalLink,
@@ -18,8 +10,17 @@ import {
   MoreVertical,
   Trash,
 } from "lucide-react";
-import { useState } from "react";
-import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "@/components/ui/use-toast";
+import { apiClient } from "@/lib/fetch";
 
 type Props = {
   form: Form;
@@ -44,7 +45,7 @@ export function FormListItem({ form, onDeleted }: Readonly<Props>) {
         action: (
           <div className="w-full">
             <div className="flex items-center gap-3">
-              <div className="bg-green-500 rounded-full p-1">
+              <div className="rounded-full bg-green-500 p-1">
                 <Check className="text-white " />
               </div>
               <span>Form deleted</span>
@@ -78,12 +79,12 @@ export function FormListItem({ form, onDeleted }: Readonly<Props>) {
   };
 
   return (
-    <div className="py-1 flex justify-between items-center hover:bg-gray-50 hover:ps-3 transition-all">
+    <div className="flex items-center justify-between py-1 transition-all hover:bg-gray-50 hover:ps-3">
       <div className="grow">
         <Link href={`/forms/${form.id}`}>
           <Button
             variant="link"
-            className="w-full hover:no-underline justify-start font-normal  ps-0 "
+            className="w-full justify-start ps-0 font-normal  hover:no-underline "
           >
             {form.name}
           </Button>
@@ -95,7 +96,7 @@ export function FormListItem({ form, onDeleted }: Readonly<Props>) {
           {form.isPublished ? (
             <Link href={`/view/${form.id}`} target="_blank">
               <Button variant="link">
-                View form <ExternalLink className="w-4 h-4 ms-2" />
+                View form <ExternalLink className="ms-2 h-4 w-4" />
               </Button>
             </Link>
           ) : (
@@ -123,11 +124,11 @@ export function FormListItem({ form, onDeleted }: Readonly<Props>) {
             {form.isPublished ? (
               <Link href={`/view/${form.id}`} target="_blank">
                 <DropdownMenuItem className="cursor-pointer lg:hidden">
-                  <ExternalLink className="w-4 h-4 mr-2" /> View form
+                  <ExternalLink className="mr-2 h-4 w-4" /> View form
                 </DropdownMenuItem>
               </Link>
             ) : (
-              <DropdownMenuLabel className="text-muted-foreground font-normal lg:hidden">
+              <DropdownMenuLabel className="font-normal text-muted-foreground lg:hidden">
                 Not published
               </DropdownMenuLabel>
             )}
@@ -135,7 +136,7 @@ export function FormListItem({ form, onDeleted }: Readonly<Props>) {
               className="cursor-pointer text-destructive focus:text-destructive"
               onClick={deleteForm}
             >
-              <Trash className="w-4 h-4 mr-2" />
+              <Trash className="mr-2 h-4 w-4" />
               Delete form
             </DropdownMenuItem>
           </DropdownMenuContent>

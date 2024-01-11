@@ -1,5 +1,6 @@
 import { ChangeEvent } from "react";
 import { CornerDownLeft, Tally1 } from "lucide-react";
+
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
@@ -7,7 +8,7 @@ type Props = {
   isFormBusy: boolean;
   handleFormSubmit: (event: any) => void;
   handleInputChange: (
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
   ) => void;
   input: string;
   currentQuestion: string;
@@ -22,18 +23,18 @@ export const FormFieldsViewer = ({
 }: Props) => {
   return (
     <form onSubmit={handleFormSubmit}>
-      <div className="w-full min-h-full flex flex-col items-center justify-center px-3 ">
-        <h1 className="text-4xl font-medium mb-10 w-full ">
+      <div className="flex min-h-full w-full flex-col items-center justify-center px-3 ">
+        <h1 className="mb-10 w-full text-4xl font-medium ">
           <span>
             {currentQuestion}
-            {isFormBusy && <Tally1 className="animate-ping inline ml-2" />}
+            {isFormBusy && <Tally1 className="ml-2 inline animate-ping" />}
           </span>
         </h1>
         {!isFormBusy && (
           <div className="w-full">
             <Textarea
               autoFocus
-              className="text-xl focus-visible:ring-transparent	focus-visible:ring-0 w-full border-0  border-b rounded-none"
+              className="w-full rounded-none	border-0 border-b text-xl  focus-visible:ring-0 focus-visible:ring-transparent"
               placeholder="Type answer here..."
               value={input}
               disabled={isFormBusy}
@@ -47,10 +48,10 @@ export const FormFieldsViewer = ({
                 }
               }}
             />
-            <div className="text-sm font-light text-muted-foreground flex justify-end items-center max-lg:hidden pt-1">
+            <div className="flex items-center justify-end pt-1 text-sm font-light text-muted-foreground max-lg:hidden">
               Press
-              <span className="font-bold flex items-center mx-1">
-                Shift + Enter <CornerDownLeft className="w-3 h-3 " />
+              <span className="mx-1 flex items-center font-bold">
+                Shift + Enter <CornerDownLeft className="h-3 w-3 " />
               </span>
               for new line
             </div>
@@ -58,7 +59,7 @@ export const FormFieldsViewer = ({
               <div className="lg:hidden">
                 <Button
                   type="submit"
-                  className="font-medium px-6 py-3 rounded-md w-full"
+                  className="w-full rounded-md px-6 py-3 font-medium"
                 >
                   Answer
                 </Button>

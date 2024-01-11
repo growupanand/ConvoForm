@@ -16,7 +16,7 @@ export const formCreateSchema = z.object({
   formField: z.array(
     z.object({
       fieldName: z.string().max(255),
-    })
+    }),
   ),
 });
 

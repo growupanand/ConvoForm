@@ -1,6 +1,7 @@
 import { ChatCompletionRequestMessage } from "openai-edge";
-import { FormField, formFieldSchema } from "../validations/form";
 import { z } from "zod";
+
+import { FormField, formFieldSchema } from "../validations/form";
 
 export const formSchemaSystemPrompt = z.object({
   overview: z.string().min(1).max(255),

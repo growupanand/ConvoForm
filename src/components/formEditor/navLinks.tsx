@@ -1,8 +1,10 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { NavLink } from "@/lib/types/navLink";
 import { Form } from "@prisma/client";
+
+import { NavLink } from "@/lib/types/navLink";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 
 type Props = {

@@ -1,8 +1,9 @@
 "use client";
 
-import { FormViewer } from "../formViewer/formViewer";
 import { useState } from "react";
 import { Form } from "@prisma/client";
+
+import { FormViewer } from "../formViewer/formViewer";
 import BrowserWindow from "../ui/browserWindow";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -60,7 +61,7 @@ export default function FormPreview({ form, noToolbar }: Readonly<Props>) {
       link={noToolbar || !form.isPublished ? undefined : formViewLink}
       toolbar={Toolbar}
     >
-      <div className="flex flex-col justify-center items-center h-full">
+      <div className="flex h-full flex-col items-center justify-center">
         {form.isPublished ? (
           <FormViewer form={form} refresh={refresh} isPreview={false} />
         ) : (

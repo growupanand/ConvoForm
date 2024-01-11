@@ -10,9 +10,9 @@ export default async function AuthLayout({ children }: Readonly<Props>) {
   return (
     <OrganizationProvider>
       <StoreInitializer stores={["useWorkspaceStore"]}>
-        <div className="flex flex-col lg:flex-row h-screen">
+        <div className="flex h-screen flex-col lg:flex-row">
           <AppNavbar />
-          <div className="lg:container px-3 lg:py-5 overflow-auto">
+          <div className="overflow-auto px-3 lg:container lg:py-5">
             {children}
           </div>
         </div>

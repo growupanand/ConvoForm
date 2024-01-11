@@ -1,8 +1,9 @@
 "use client";
 
-import { useFormStore } from "@/lib/store/formStore";
-import { useParams } from "next/navigation";
 import { useEffect } from "react";
+import { useParams } from "next/navigation";
+
+import { useFormStore } from "@/lib/store/formStore";
 
 type Props = {
   children: React.ReactNode;

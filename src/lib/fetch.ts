@@ -4,7 +4,7 @@ type ApiClientOptions = RequestInit & {
 
 type ApiClient = (
   url: NodeJS.fetch.RequestInfo,
-  fetchOptions: ApiClientOptions
+  fetchOptions: ApiClientOptions,
 ) => Promise<Response>;
 
 export const apiClient: ApiClient = async (url, fetchOptions) => {

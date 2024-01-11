@@ -1,14 +1,15 @@
-import Link from "next/link";
-import { Button } from "../ui/button";
 import Image from "next/image";
-import { brandName } from "@/lib/constants";
+import Link from "next/link";
 import { Mail } from "lucide-react";
+
 import { montserrat } from "@/app/fonts";
+import { brandName } from "@/lib/constants";
+import { Button } from "../ui/button";
 
 export function Footer() {
   return (
-    <footer className="w-full mb-2 lg:mb-5 mt-10 lg:mt-20 max-lg:px-6">
-      <div className="flex flex-col lg:flex-row justify-start items-center gap-2">
+    <footer className="mb-2 mt-10 w-full max-lg:px-6 lg:mb-5 lg:mt-20">
+      <div className="flex flex-col items-center justify-start gap-2 lg:flex-row">
         <span aria-label="App name" className={montserrat.className}>
           {brandName}
         </span>
@@ -23,8 +24,8 @@ export function Footer() {
             <Image src="/github.svg" alt="Github logo" width={20} height={20} />
           </Link>
         </Button>
-        <p className="text-md text-muted-foreground flex items-center">
-          <Mail className="w-5 h-5 mr-2" /> contact@convoform.com
+        <p className="text-md flex items-center text-muted-foreground">
+          <Mail className="mr-2 h-5 w-5" /> contact@convoform.com
         </p>
         <span className="text-md lg:ml-auto">
           Created by{" "}

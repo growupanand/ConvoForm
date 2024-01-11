@@ -1,4 +1,4 @@
-import { type ClassValue, clsx } from "clsx";
+import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -17,7 +17,7 @@ export function formatDate(input: string | number): string {
 // get time ago from date
 export function timeAgo(date: string | number | Date) {
   const seconds = Math.floor(
-    (new Date().getTime() - new Date(date).getTime()) / 1000
+    (new Date().getTime() - new Date(date).getTime()) / 1000,
   );
   let interval = seconds / 31536000;
   if (interval > 1) {

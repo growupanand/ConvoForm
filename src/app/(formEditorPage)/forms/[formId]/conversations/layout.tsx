@@ -8,10 +8,10 @@ type Props = {
 
 export default async function Layout(props: Props) {
   return (
-    <div className="flex max-lg:flex-col h-full">
+    <div className="flex h-full max-lg:flex-col">
       <ConversationsSidebar />
       <Separator orientation="vertical" className="max-lg:hidden" />
-      <div className="grow flex flex-col">{props.children}</div>
+      <div className="flex grow flex-col">{props.children}</div>
     </div>
   );
 }
