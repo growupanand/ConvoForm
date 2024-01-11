@@ -10,10 +10,9 @@ export function HowToUseSection() {
             1
           </Badge>
           <div className="ml-3">
-            <h3 className="font-bold text-black-500 text-xl">Create a form</h3>
+            <h3 className="font-bold text-black-500 text-xl">Craft Your Form</h3>
             <p className="mt-2 max-w-screen-sm text-md text-gray-500">
-              Create a form by telling form overview and form fields required.
-              Example: Name and Email, Phone Number etc.
+              {`Quickly design a personalized form by including desired fields such as 'Name', 'Email', or 'Phone Number'.`}
             </p>
           </div>
         </div>
@@ -22,10 +21,9 @@ export function HowToUseSection() {
             2
           </Badge>
           <div className="ml-3">
-            <h3 className="font-bold text-black-500 text-xl">Share the form</h3>
+            <h3 className="font-bold text-black-500 text-xl">Share with Ease</h3>
             <p className="mt-2 max-w-screen-sm text-md text-gray-500">
-              Share the form with your friends, colleagues and customers.
-              Example: Share the form link via email, social media etc.
+              Once your form is ready, share it effortlessly with peers, colleagues, or clients through email or social media.
             </p>
           </div>
         </div>
@@ -34,10 +32,9 @@ export function HowToUseSection() {
             3
           </Badge>
           <div className="ml-3">
-            <h3 className="font-bold text-black-500 text-xl">See responses</h3>
+            <h3 className="font-bold text-black-500 text-xl">Check Out the Responses</h3>
             <p className="mt-2 max-w-screen-sm text-md text-gray-500">
-              See there response data along with transcript of conversation.
-            </p>
+              Stay in the loop with the responses. View neatly organized details and transcripts from conversations in a simple, structured table.            </p>
           </div>
         </div>
       </div>

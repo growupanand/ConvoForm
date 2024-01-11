@@ -15,7 +15,7 @@ export const freePlan: Plan = {
       featureText: "Unlimited",
     },
     {
-      name: "Collect form submission",
+      name: "Collect form responses",
       featureValue: 500,
       featureText: "500 Total",
     },
