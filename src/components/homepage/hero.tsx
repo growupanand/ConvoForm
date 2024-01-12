@@ -14,11 +14,11 @@ export function Hero() {
   const isLoggedin = !!userId;
 
   return (
-    <div className="md:my-15 my-10 flex w-full flex-col justify-center gap-1 px-3 py-4 text-center md:p-6">
+    <section className="md:my-15 my-10 flex w-full flex-col justify-center gap-1 px-3 py-4 text-center md:p-6">
       <div>
-        <Badge variant="outline">
+        <Badge variant="outline" className="group text-sm font-normal">
           <Link
-            href="https://github.com/growupanand/convo-form"
+            href="https://github.com/growupanand/ConvoForm"
             target="_blank"
             rel="noreferrer nofollow noopener"
             className="flex items-center"
@@ -27,7 +27,10 @@ export function Hero() {
               <Image src="/github.svg" alt="github" width={15} height={15} />
             </span>
             <span>Proudly Open Source</span>
-            <ChevronRight className="ml-1 h-3 w-3" />
+            <ChevronRight
+              className="ml-1 transition-all group-hover:translate-x-1"
+              size="15px"
+            />
           </Link>
         </Badge>
       </div>
@@ -48,7 +51,7 @@ export function Hero() {
       <div className="flex items-center justify-center gap-3">
         <Button
           size="lg"
-          className={cn("rounded-full sm:w-auto", montserrat.className)}
+          className={cn("rounded-full text-lg sm:w-auto", montserrat.className)}
           asChild
         >
           <Link
@@ -63,7 +66,7 @@ export function Hero() {
             size="lg"
             variant="outline"
             className={cn(
-              "rounded-full font-semibold sm:w-auto",
+              "rounded-full  text-lg sm:w-auto",
               montserrat.className,
             )}
             asChild
@@ -74,6 +77,6 @@ export function Hero() {
           </Button>
         )}
       </div>
-    </div>
+    </section>
   );
 }

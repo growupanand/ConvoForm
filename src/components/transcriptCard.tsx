@@ -14,7 +14,7 @@ export default function TranscriptCard({ transcript }: Props) {
         return (
           <div
             key={`${message.role}-${message.content}`}
-            className="flex flex-col items-start "
+            className="flex flex-col items-start transition-all hover:scale-105"
           >
             {message.role === "user" ? (
               <UserMessageBox message={message.content} />
@@ -29,7 +29,7 @@ export default function TranscriptCard({ transcript }: Props) {
 }
 
 const SystemMessageBox = ({ message }: { message: string }) => (
-  <p className="font-light text-muted-foreground ">{message}</p>
+  <p className="font-light text-muted-foreground">{message}</p>
 );
 
 const UserMessageBox = ({ message }: { message: string }) => (

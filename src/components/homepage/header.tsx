@@ -11,26 +11,28 @@ export function Header() {
   const { user } = useUser();
 
   return (
-    <nav className="flex w-full items-center justify-between p-3">
-      <BrandName className="text-xl lg:text-2xl" />
-      <div className="flex items-center gap-3">
-        {user ? (
-          <>
-            <Link href="/dashboard">
-              <Button variant="secondary">
-                <LayoutDashboard className="mr-2 h-4 w-4" /> Go to Dashboard
+    <header>
+      <div className="flex w-full items-center justify-between p-3">
+        <BrandName className="text-xl lg:text-2xl" />
+        <nav className="flex items-center gap-3">
+          {user ? (
+            <>
+              <Link href="/dashboard">
+                <Button variant="secondary">
+                  <LayoutDashboard className="mr-2 h-4 w-4" /> Go to Dashboard
+                </Button>
+              </Link>
+              <UserButton />
+            </>
+          ) : (
+            <Link href="/auth/sign-in" rel="noopener noreferrer nofollow">
+              <Button variant="secondary" className="rounded-full">
+                Sign In
               </Button>
             </Link>
-            <UserButton />
-          </>
-        ) : (
-          <Link href="/auth/sign-in" rel="noopener noreferrer nofollow">
-            <Button variant="secondary" className="rounded-full">
-              Sign In
-            </Button>
-          </Link>
-        )}
+          )}
+        </nav>
       </div>
-    </nav>
+    </header>
   );
 }

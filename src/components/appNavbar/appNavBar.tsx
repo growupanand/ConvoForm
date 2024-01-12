@@ -87,7 +87,7 @@ export default function AppNavbar() {
       </div>
 
       {/* Desktop View */}
-      <div className="bg-white-300 min-w-[300px] bg-gray-50 max-lg:hidden">
+      <div className="bg-white-300 min-w-[300px]  max-lg:hidden">
         <Nav
           pathname={pathname}
           workspaces={workspaces}

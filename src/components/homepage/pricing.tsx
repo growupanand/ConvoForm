@@ -40,9 +40,14 @@ const FeatureListItem = ({
         <div className="mt-1">
           <CheckCircle color="green" size={15} />
         </div>
-        <div className="text-md text-gray-700">{featureName}</div>
+        <div className="text-md text-gray-500">{featureName}</div>
       </div>
-      <div className="text-md whitespace-nowrap font-semibold text-gray-900">
+      <div
+        className={cn(
+          "text-md whitespace-nowrap font-medium text-black",
+          montserrat.className,
+        )}
+      >
         {featureText}
       </div>
     </div>
@@ -53,14 +58,16 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
   const { userId } = auth();
   const isLoggedin = !!userId;
   return (
-    <Card className=" w-full rounded-xl shadow-lg">
+    <Card className=" w-full rounded-xl border-none shadow-lg shadow-gray-200">
       <CardHeader>
         <CardTitle>
           <div className="flex items-center justify-between">
             <span className={cn("text-xl", montserrat.className)}>
               {plan.name}
             </span>
-            <Badge variant="secondary">{plan.price}</Badge>
+            <Badge variant="secondary" className="text-sm">
+              {plan.price}
+            </Badge>
           </div>
         </CardTitle>
       </CardHeader>
@@ -77,7 +84,7 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
       </CardContent>
       <CardFooter>
         <Button
-          className={cn("w-full rounded-full", montserrat.className)}
+          className={cn("w-full rounded-full font-bold", montserrat.className)}
           asChild
         >
           <Link href={isLoggedin ? "/dashboard" : "/auth/register"}>

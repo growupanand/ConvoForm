@@ -56,7 +56,7 @@ export default function FormNameInput({ form, className }: Props) {
       <Input
         disabled={isUpdating}
         className={cn(
-          "max-w-[400px] border-0 bg-transparent text-2xl font-bold focus-visible:ring-0 focus-visible:ring-transparent",
+          "max-w-[400px] rounded-none border-0 bg-transparent text-2xl font-bold hover:border-b hover:border-gray-300 focus-visible:border-b focus-visible:border-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0",
           className,
         )}
         style={{

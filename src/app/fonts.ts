@@ -1,4 +1,12 @@
-import { Merriweather, Montserrat, Roboto } from "next/font/google";
+import {
+  Marck_Script,
+  Merriweather,
+  Montserrat,
+  Roboto,
+  Sacramento,
+  Source_Code_Pro,
+  WindSong,
+} from "next/font/google";
 
 export const montserrat = Montserrat({
   subsets: ["latin"],
@@ -8,11 +16,37 @@ export const montserrat = Montserrat({
 export const roboto = Roboto({
   subsets: ["latin"],
   display: "swap",
-  weight: "400",
+  weight: ["300", "400", "700", "900"],
 });
 
 export const merriweather = Merriweather({
   subsets: ["latin"],
   display: "swap",
+  weight: ["300", "400", "700", "900"],
+});
+
+// Stylish fonts
+
+export const sacramento = Sacramento({
+  subsets: ["latin"],
+  display: "swap",
   weight: "400",
+});
+
+export const windsong = WindSong({
+  subsets: ["latin"],
+  display: "swap",
+  weight: "400",
+});
+
+export const marck_script = Marck_Script({
+  subsets: ["latin"],
+  display: "swap",
+  weight: "400",
+});
+
+export const source_code_pro = Source_Code_Pro({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["300", "400", "700", "900"],
 });

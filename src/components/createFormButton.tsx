@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import { Workspace } from "@prisma/client";
 import { Loader2, Plus } from "lucide-react";
 
+import { montserrat } from "@/app/fonts";
 import { Button } from "@/components/ui/button";
 import { sendErrorResponseToast, toast } from "@/components/ui/use-toast";
 import { createFormController } from "@/lib/controllers/form";
+import { cn } from "@/lib/utils";
 import { formCreateSchema } from "@/lib/validations/form";
 
 type Props = {
@@ -56,7 +58,7 @@ export default function CreateFormButton({ workspace }: Props) {
       variant="secondary"
       disabled={isLoading}
       onClick={createForm}
-      className="font-semibold"
+      className={cn(montserrat.className, "font-semibold")}
     >
       {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
       {!isLoading && <Plus className="mr-2 h-4 w-4" />}

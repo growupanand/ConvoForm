@@ -15,8 +15,8 @@ const AppNavBarLink = ({ isActive, href, name }: Props) => {
       <Button
         variant="link"
         className={cn(
-          "w-full justify-start py-0 text-base font-normal text-gray-500 hover:font-semibold hover:text-gray-900 hover:no-underline ",
-          isActive && "font-semibold text-gray-900",
+          "w-full justify-start py-0 text-base font-normal text-gray-500 hover:font-medium hover:text-gray-900 hover:no-underline ",
+          isActive && "font-medium text-gray-900",
         )}
       >
         {name}
