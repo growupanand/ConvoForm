@@ -21,7 +21,7 @@ const BrowserWindow = ({
   toolbar,
 }: Props) => {
   return (
-    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 shadow-md ">
+    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 shadow-xl shadow-gray-100 ">
       <div className="flex items-center justify-between bg-gray-200 px-3 py-1 max-lg:hidden">
         <WindowButtons />
         <AddressBar link={link} />

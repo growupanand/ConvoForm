@@ -18,7 +18,7 @@ export const FormEditorPageHeader = () => {
   }
 
   return (
-    <div className="sticky top-0 flex items-center justify-between border-b border-border/40 bg-background/95 p-3 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="sticky top-0 z-50 flex items-center justify-between border-b border-border/40 bg-white p-3 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center max-lg:hidden">
         <Link href={"/dashboard"}>
           <Button variant="link" className="text-sm ">
@@ -30,7 +30,7 @@ export const FormEditorPageHeader = () => {
           <Button variant="link">{form.workspace.name}</Button>
         </Link>
         <ChevronRight className="h-4 w-4" />
-        <FormNameInput form={form} className="text-md font-semibold" />
+        <FormNameInput form={form} className="text-md font-medium" />
       </div>
       <div className="lg:hidden">
         <Link href={`/workspaces/${form.workspaceId}`}>
@@ -50,7 +50,7 @@ export const FormEditorPageHeader = () => {
 
 const LoadingUI = () => {
   return (
-    <div className="sticky top-0 z-10 flex items-center justify-between border-b-2 p-3 shadow-sm backdrop-blur-md">
+    <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/40 bg-white p-3 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center ">
         <Skeleton className="mr-2 h-[40px] w-12" />
         <Skeleton className="mr-2 h-[40px] w-12" />

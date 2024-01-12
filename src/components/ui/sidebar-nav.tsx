@@ -25,7 +25,7 @@ export function SidebarNav({
   return (
     <div>
       {heading && (
-        <h3 className="mb-5 px-4 text-lg font-semibold tracking-tight">
+        <h3 className="mb-5 px-4 text-lg font-medium tracking-tight">
           {heading}
         </h3>
       )}
@@ -34,7 +34,7 @@ export function SidebarNav({
           <Link key={item.href} href={item.href}>
             <Button
               variant={pathname === item.href ? "secondary" : "ghost"}
-              className="w-full justify-start"
+              className={"w-full justify-start font-normal"}
             >
               {item.title}
             </Button>

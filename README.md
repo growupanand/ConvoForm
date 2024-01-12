@@ -1,8 +1,8 @@
-# Convo form
+# ConvoForm
 
 Imagine Google Forms, but supercharged with AI for an improved user experience,
 Build engaging and interactive forms that are easy to fill and fun to answer.
-You can see live demo here - [convoform.com](https://www.convoform.com/).
+You can see live demo here - [ConvoForm.com](https://www.convoform.com/).
 
 ## Features
 
@@ -35,8 +35,8 @@ Make sure you have the following installed:
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/growupanand/convo-form.git
-cd convo-form
+git clone https://github.com/growupanand/ConvoForm.git
+cd ConvoForm
 ```
 
 ### Install Dependencies
@@ -76,19 +76,17 @@ To build the project for Vercel deployment, run:
 npm run vercel-build
 ```
 
-
-
 ## Screenshots
 
 Here are some screenshots from the app
 
-| Workspace Page                                                                                                    | Form Editor                                                                                                           |
-| ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| ![Workspace page](https://github.com/growupanand/convo-form/assets/29487686/a854d340-afd6-477f-a402-c7ce3e8c9787) | ![Form editor](https://github.com/growupanand/convo-form/assets/29487686/31df4942-b403-43fa-a7d5-5b72c453745f) |
+| Workspace Page                                                                                                   | Form Editor                                                                                                   |
+| ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| ![Workspace page](https://github.com/growupanand/ConvoForm/assets/29487686/a854d340-afd6-477f-a402-c7ce3e8c9787) | ![Form editor](https://github.com/growupanand/ConvoForm/assets/29487686/31df4942-b403-43fa-a7d5-5b72c453745f) |
 
-| Form Submission                                                                                                    | View Submissions                                                                                                           |
-| ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| ![Form submission](https://github.com/growupanand/convo-form/assets/29487686/06874d85-0920-408b-a84a-5970eb7c1819) | ![View Submissions](https://github.com/growupanand/convo-form/assets/29487686/8b09c79c-bc58-4e80-b5cb-bc9e378c017f) |
+| Form Submission                                                                                                   | View Submissions                                                                                                   |
+| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| ![Form submission](https://github.com/growupanand/ConvoForm/assets/29487686/06874d85-0920-408b-a84a-5970eb7c1819) | ![View Submissions](https://github.com/growupanand/ConvoForm/assets/29487686/8b09c79c-bc58-4e80-b5cb-bc9e378c017f) |
 
 ## Contributing
 

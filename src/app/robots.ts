@@ -5,7 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: "/private/",
+      disallow: ["/private/", "/auth/"],
     },
+    sitemap: "https://convoform.com/sitemap.xml",
   };
 }

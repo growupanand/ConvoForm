@@ -27,6 +27,7 @@ import {
 } from "react-hook-form";
 import { z } from "zod";
 
+import { montserrat } from "@/app/fonts";
 import {
   Accordion,
   AccordionContent,
@@ -212,14 +213,14 @@ export default function FormEditorForm(props: Props) {
               <AccordionItem value="overview" className="border-b-muted">
                 <AccordionTrigger
                   className={cn(
-                    "group font-bold text-muted-foreground hover:text-black hover:no-underline data-[state=open]:text-black",
+                    "group font-medium text-muted-foreground hover:text-black hover:no-underline data-[state=open]:text-black",
                     isErrorInLandingPageFields && "text-red-500",
                   )}
                 >
                   <div className="flex items-center gap-3">
                     <Badge
                       variant="outline"
-                      className="text-md group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
+                      className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
                     >
                       1
                     </Badge>
@@ -227,7 +228,7 @@ export default function FormEditorForm(props: Props) {
                   </div>
                 </AccordionTrigger>
 
-                <AccordionContent className="lg:ps-10">
+                <AccordionContent className="lg:pe-1 lg:ps-10 lg:pt-1">
                   <FormField
                     control={formHook.control}
                     name="overview"
@@ -252,14 +253,14 @@ export default function FormEditorForm(props: Props) {
               >
                 <AccordionTrigger
                   className={cn(
-                    "group font-bold text-muted-foreground hover:text-black hover:no-underline data-[state=open]:text-black",
+                    "group font-medium text-muted-foreground hover:text-black hover:no-underline data-[state=open]:text-black",
                     isErrorInLandingPageFields && "text-red-500",
                   )}
                 >
                   <div className="flex items-center gap-3">
                     <Badge
                       variant="outline"
-                      className="text-md group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
+                      className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
                     >
                       2
                     </Badge>{" "}
@@ -276,7 +277,7 @@ export default function FormEditorForm(props: Props) {
                     </TooltipProvider>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="space-y-4 lg:ps-10">
+                <AccordionContent className="space-y-4 lg:pe-1 lg:ps-10 lg:pt-1">
                   <FormField
                     control={formHook.control}
                     name="welcomeScreenTitle"
@@ -328,21 +329,21 @@ export default function FormEditorForm(props: Props) {
               >
                 <AccordionTrigger
                   className={cn(
-                    "group font-bold text-muted-foreground  hover:text-black hover:no-underline data-[state=open]:text-black",
+                    "group font-medium text-muted-foreground  hover:text-black hover:no-underline data-[state=open]:text-black",
                     isErrorInRequirementFields && "text-red-500",
                   )}
                 >
                   <div className="flex items-center gap-3">
                     <Badge
                       variant="outline"
-                      className="text-md  group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
+                      className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
                     >
                       3
                     </Badge>{" "}
                     <span>What you want to ask?</span>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="lg:ps-10">
+                <AccordionContent className="lg:pe-1 lg:ps-10 lg:pt-1">
                   <div className="grid gap-2">
                     <div className="mb-2 flex items-center gap-1 text-xs text-muted-foreground">
                       Use Arrow keys <ArrowUpSquare className="h-4 w-4 " />{" "}
@@ -369,7 +370,11 @@ export default function FormEditorForm(props: Props) {
                                 />
                                 <Button
                                   variant="ghost"
-                                  disabled={index === 0 && fields.length === 1}
+                                  disabled={
+                                    (index === 0 && fields.length === 1) ||
+                                    isGeneratingAIField ||
+                                    isFormBusy
+                                  }
                                   onClick={() =>
                                     fields.length != 1 && remove(index)
                                   }
@@ -388,7 +393,7 @@ export default function FormEditorForm(props: Props) {
 
                     <div className="mt-2 flex items-center justify-start gap-3">
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         onClick={() => append({ fieldName: "" })}
                         type="button"
                         size="sm"
@@ -398,7 +403,7 @@ export default function FormEditorForm(props: Props) {
                         Add Field
                       </Button>
                       <Button
-                        variant="secondary"
+                        variant="outline"
                         onClick={generateAIField}
                         type="button"
                         size="sm"
@@ -410,7 +415,7 @@ export default function FormEditorForm(props: Props) {
                             isGeneratingAIField && "animate-ping",
                           )}
                         />
-                        Generate
+                        Auto Generate
                       </Button>
                     </div>
                   </div>
@@ -419,9 +424,16 @@ export default function FormEditorForm(props: Props) {
             </Accordion>
           </div>
 
-          <Button className="w-full" type="submit" disabled={isFormBusy}>
+          <Button
+            className={cn(
+              "w-full transition-all hover:scale-105 active:scale-100",
+              montserrat.className,
+            )}
+            type="submit"
+            disabled={isFormBusy || isGeneratingAIField}
+          >
             {getFormSubmitIcon()}
-            {form.isPublished ? "Save changes" : "Publish"}
+            {form.isPublished ? "Publish changes" : "Publish form"}
           </Button>
         </form>
       </UIForm>

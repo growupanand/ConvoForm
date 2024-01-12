@@ -34,7 +34,7 @@ export const FormFieldsViewer = ({
           <div className="w-full">
             <Textarea
               autoFocus
-              className="w-full rounded-none	border-0 border-b text-xl  focus-visible:ring-0 focus-visible:ring-transparent"
+              className="w-full rounded-none border-0 border-b	bg-transparent text-xl focus-visible:ring-0  focus-visible:ring-transparent focus-visible:ring-offset-0"
               placeholder="Type answer here..."
               value={input}
               disabled={isFormBusy}
@@ -59,7 +59,7 @@ export const FormFieldsViewer = ({
               <div className="lg:hidden">
                 <Button
                   type="submit"
-                  className="w-full rounded-md px-6 py-3 font-medium"
+                  className="w-full rounded-md px-6 py-3 font-medium "
                 >
                   Answer
                 </Button>

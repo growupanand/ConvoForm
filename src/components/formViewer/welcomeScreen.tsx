@@ -1,6 +1,8 @@
 import React from "react";
 import { Form } from "@prisma/client";
 
+import { montserrat, roboto } from "@/app/fonts";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
 type Props = {
@@ -11,16 +13,17 @@ type Props = {
 export const WelcomeScreen = ({ form, onCTAClick: onClick }: Props) => {
   return (
     <div className="flex flex-col items-center justify-center gap-2">
-      <h2 className="text-center text-5xl font-bold">
+      <h2 className={cn("text-center text-5xl font-bold", roboto.className)}>
         {form.welcomeScreenTitle}
       </h2>
-      <p className="mb-8 text-xl font-medium text-gray-800">
-        {form.welcomeScreenMessage}
-      </p>
+      <p className="mb-8 text-2xl font-light ">{form.welcomeScreenMessage}</p>
       <div>
         <Button
           size="lg"
-          className="rounded-full text-2xl font-semibold"
+          className={cn(
+            "rounded-full text-2xl font-semibold uppercase transition-all hover:scale-110 active:scale-100",
+            montserrat.className,
+          )}
           onClick={onClick}
         >
           {form.welcomeScreenCTALabel}

@@ -20,13 +20,13 @@ export default function ConversationDetail({ conversation }: Props) {
 
   return (
     <div className="h-full lg:container">
-      <Card className="h-full border-none shadow-none">
+      <Card className="h-full border-none bg-transparent shadow-none">
         <CardHeader>
           <CardTitle>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FileText className=" " />
-                <h2 className="text-xl capitalize lg:text-2xl">
+                <h2 className="text-xl font-medium capitalize lg:text-2xl">
                   {conversation.name}
                 </h2>
               </div>
@@ -40,9 +40,9 @@ export default function ConversationDetail({ conversation }: Props) {
           <div className="max-w-lg space-y-10">
             {!isFormDataEmpty && (
               <section className="">
-                <h3 className="mb-3 text-lg font-semibold">Form Data</h3>
+                <h3 className="mb-3 text-lg font-medium">Form Data</h3>
                 <div className="overflow-hidden rounded-md border">
-                  <Table>
+                  <Table className="z-40">
                     <TableBody>
                       {formFieldsDataKeys.map((key) => {
                         return (
@@ -60,7 +60,7 @@ export default function ConversationDetail({ conversation }: Props) {
               </section>
             )}
             <section>
-              <h3 className="mb-3 text-lg font-semibold">Transcript</h3>
+              <h3 className="mb-3 text-lg font-medium">Transcript</h3>
               <TranscriptCard transcript={transcript} />
             </section>
           </div>

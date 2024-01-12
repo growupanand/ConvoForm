@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Form } from "@prisma/client";
 
+import { montserrat } from "@/app/fonts";
 import { NavLink } from "@/lib/types/navLink";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 
@@ -33,7 +34,11 @@ export default function NavLinks({ form }: Readonly<Props>) {
       <TabsList>
         {navLinks.map((link) => (
           <Link href={link.href} key={link.href}>
-            <TabsTrigger value={link.label} key={link.href}>
+            <TabsTrigger
+              value={link.label}
+              key={link.href}
+              className={montserrat.className}
+            >
               {link.label}
             </TabsTrigger>
           </Link>

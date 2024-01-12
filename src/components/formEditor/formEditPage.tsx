@@ -3,7 +3,9 @@
 import { FormField } from "@prisma/client";
 import { Eye } from "lucide-react";
 
+import { montserrat } from "@/app/fonts";
 import { useFormStore } from "@/lib/store/formStore";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardTitle } from "../ui/card";
 import {
@@ -36,7 +38,12 @@ export default function FormEditPage() {
     <div className="h-full gap-5 px-3 lg:flex lg:px-5">
       <div className=" rounded-lg pt-5 lg:max-h-[calc(100vh-100px)] lg:w-[400px] lg:min-w-[400px] lg:overflow-auto ">
         <Card className="border-0 bg-transparent shadow-none ">
-          <CardTitle className="mb-5 text-lg font-semibold tracking-tight">
+          <CardTitle
+            className={cn(
+              "mb-5 text-lg font-medium tracking-tight",
+              montserrat.className,
+            )}
+          >
             Form Editor
           </CardTitle>
           <CardContent className="px-3">
@@ -45,7 +52,10 @@ export default function FormEditPage() {
             <div className="py-3 lg:hidden">
               <Drawer snapPoints={[0.95]}>
                 <DrawerTrigger asChild>
-                  <Button variant="outline" className="w-full">
+                  <Button
+                    variant="outline"
+                    className={cn("w-full", montserrat.className)}
+                  >
                     <Eye className="mr-2 h-4 w-4" />
                     Show Preview
                   </Button>

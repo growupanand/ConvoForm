@@ -6,7 +6,7 @@ const schema = z.object({
 
 export async function getGitHubStars() {
   const res = await fetch(
-    "https://api.github.com/repos/growupanand/convo-form",
+    "https://api.github.com/repos/growupanand/ConvoForm",
     { next: { revalidate: 600 } }, // 10min
   );
   const json = await res.json();

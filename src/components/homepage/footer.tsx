@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Mail } from "lucide-react";
+import { Instagram, Mail, Twitter } from "lucide-react";
 
-import { montserrat } from "@/app/fonts";
+import { marck_script, montserrat } from "@/app/fonts";
 import { brandName } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
 export function Footer() {
@@ -13,29 +14,74 @@ export function Footer() {
         <span aria-label="App name" className={montserrat.className}>
           {brandName}
         </span>
-
-        <Button variant="link" size="icon" className="" asChild>
-          <Link
-            href="https://github.com/growupanand/convo-form"
-            target="_blank"
-            rel="noopener noreferrer nofollow"
-            aria-label="Visit Github Repo"
-          >
-            <Image src="/github.svg" alt="Github logo" width={20} height={20} />
-          </Link>
-        </Button>
-        <p className="text-md flex items-center text-muted-foreground">
-          <Mail className="mr-2 h-5 w-5" /> contact@convoform.com
-        </p>
-        <span className="text-md lg:ml-auto">
-          Created by{" "}
+        <div className="flex items-center gap-3">
+          <Button variant="link" className="px-0" asChild>
+            <Link
+              href="https://github.com/growupanand/ConvoForm"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              aria-label="Visit Github Repo"
+            >
+              <Image
+                src="/github.svg"
+                alt="Github logo"
+                width={20}
+                height={20}
+              />
+            </Link>
+          </Button>
+          <Button variant="link" className="px-0" asChild>
+            <Link
+              href="https://www.instagram.com/growupanand"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              aria-label="Visit Instagram page"
+            >
+              <Instagram size="20px" />
+            </Link>
+          </Button>
+          <Button variant="link" className="px-0" asChild>
+            <Link
+              href="https://twitter.com/growupanand"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              aria-label="Visit Twitter page"
+            >
+              <Twitter size="20px" />
+            </Link>
+          </Button>
+          <p className="text-md flex items-center text-muted-foreground">
+            <Button variant="link" className="px-0" asChild>
+              <Link
+                href="mailto:contact@convoform.com"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                aria-label="Send us an email"
+              >
+                <Mail size="20px" className="mr-2" />
+              </Link>
+            </Button>
+            <span>contact@convoform.com</span>
+          </p>
+        </div>
+        <span className="lg:ml-auto">
+          <span className={cn("text-sm font-light", montserrat.className)}>
+            Created by
+          </span>
           <Link
             href="https://www.linkedin.com/in/utkarshanand93/"
             target="_blank"
             aria-label="Visit Utkarsh Anand's Linkedin Profile"
             rel="noopener noreferrer nofollow"
           >
-            <span className="font-medium">Utkarsh Anand</span>
+            <span
+              className={cn(
+                "ml-1 text-2xl font-extrabold",
+                marck_script.className,
+              )}
+            >
+              Utkarsh Anand
+            </span>
           </Link>
         </span>
       </div>

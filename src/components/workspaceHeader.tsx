@@ -88,7 +88,6 @@ export const WorkspaceHeader = () => {
 
   const handleWorkspaceNameInputChange = async (e: any) => {
     const updatedName = e.target.value as string;
-    e.target.style.width = `${updatedName.length + 1}ch`;
     debounce(() => updateWorkspace(updatedName), 1000);
   };
 
@@ -133,7 +132,7 @@ export const WorkspaceHeader = () => {
       <div className="mb-3 flex items-center justify-between lg:mb-10">
         <Input
           className={cn(
-            "border-transparent ps-0 text-xl font-bold hover:border-gray-300 focus-visible:ring-transparent lg:text-2xl",
+            "rounded-none border-0 border-transparent bg-transparent ps-0 text-xl font-medium hover:border-b hover:border-gray-300 focus-visible:border-b focus-visible:border-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 lg:text-2xl",
           )}
           type="text"
           onChange={handleWorkspaceNameInputChange}
