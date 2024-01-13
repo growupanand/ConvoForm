@@ -11,7 +11,10 @@ import { cn } from "@/lib/utils";
 import { roboto } from "./fonts";
 
 export const metadata: Metadata = {
-  title: "Experience The New Magic Of Rich Conversational Forms",
+  title: {
+    default: "ConvoForm | AI Powered Conversational Forms",
+    template: "%s | ConvoForm",
+  },
   description:
     "Transform your standard forms into engaging conversations with ConvoForm. Our easy-to-use, secure, and responsive form builder makes data collection more interactive.",
   applicationName: "ConvoForm",
@@ -39,7 +42,10 @@ export const metadata: Metadata = {
   ],
   creator: "Utkarsh Anand",
   openGraph: {
-    title: "Experience The New Magic Of Rich Conversational Forms",
+    title: {
+      default: "ConvoForm | AI Powered Conversational Forms",
+      template: "%s | ConvoForm",
+    },
     description:
       "Transform your standard forms into engaging conversations with ConvoForm. Our easy-to-use, secure, and responsive form builder makes data collection more interactive.",
     url: "https://www.convoform.com",

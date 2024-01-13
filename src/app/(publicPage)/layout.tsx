@@ -1,8 +1,21 @@
+import { Metadata } from "next";
+
 import { Footer } from "@/components/homepage/footer";
 import { Header } from "@/components/homepage/header";
 
 type Props = {
   children: React.ReactNode;
+};
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "Experience The New Magic Of Rich Conversational Forms",
+  },
+  openGraph: {
+    title: {
+      absolute: "Experience The New Magic Of Rich Conversational Forms",
+    },
+  },
 };
 
 export default function Layout({ children }: Props) {

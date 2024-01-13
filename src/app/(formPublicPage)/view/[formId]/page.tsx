@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Form } from "@prisma/client";
 
@@ -7,6 +8,10 @@ import prisma from "@/lib/db";
 interface FormViewerPageProps {
   params: { formId: string };
 }
+
+export const metadata: Metadata = {
+  title: "Submit Form",
+};
 
 async function getFormDetails(formId: Form["id"]) {
   return await prisma.form.findFirst({
