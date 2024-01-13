@@ -11,10 +11,9 @@ import { cn } from "@/lib/utils";
 import { roboto } from "./fonts";
 
 export const metadata: Metadata = {
-  title:
-    "Bring Your Forms to Life with ConvoForm's Fascinating Conversational Style",
+  title: "Experience The New Magic Of Rich Conversational Forms",
   description:
-    "Transform your standard forms into engaging conversations with ConvoForm. Our easy-to-use, secure, and responsive form builder makes data collection more interactive. Try our free plan for unlimited form creation.",
+    "Transform your standard forms into engaging conversations with ConvoForm. Our easy-to-use, secure, and responsive form builder makes data collection more interactive.",
   applicationName: "ConvoForm",
   authors: [
     {
@@ -40,11 +39,10 @@ export const metadata: Metadata = {
   ],
   creator: "Utkarsh Anand",
   openGraph: {
-    title:
-      "Bring Your Forms to Life with ConvoForm's Fascinating Conversational Style",
+    title: "Experience The New Magic Of Rich Conversational Forms",
     description:
-      "Transform your standard forms into engaging conversations with ConvoForm. Our easy-to-use, secure, and responsive form builder makes data collection more interactive. Try our free plan for unlimited form creation.",
-    url: "https://convoform.com",
+      "Transform your standard forms into engaging conversations with ConvoForm. Our easy-to-use, secure, and responsive form builder makes data collection more interactive.",
+    url: "https://www.convoform.com",
     type: "website",
   },
 };
