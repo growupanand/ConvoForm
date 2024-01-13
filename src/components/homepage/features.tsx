@@ -4,7 +4,7 @@ import { SectionCard } from "./sectionCard";
 
 export function Features() {
   return (
-    <SectionCard title="Features">
+    <SectionCard title="Features" headerClassName="bg-gray-50/60">
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <FeatureListItem
           title="Easy to use"

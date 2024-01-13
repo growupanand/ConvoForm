@@ -3,7 +3,7 @@ import { SectionCard } from "./sectionCard";
 
 export function HowToUseSection() {
   return (
-    <SectionCard title="How to use">
+    <SectionCard title="How to use" headerClassName="bg-gray-50/60">
       <div className="space-y-6 ">
         <div className="flex items-start">
           <Badge variant="outline" className="bg-white text-lg font-extrabold">

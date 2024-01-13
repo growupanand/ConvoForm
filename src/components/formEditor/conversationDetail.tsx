@@ -3,6 +3,7 @@ import { FileText } from "lucide-react";
 
 import { FormFieldData } from "@/lib/types/conversation";
 import { Transcript } from "@/lib/types/transcript";
+import { SectionCard } from "../homepage/sectionCard";
 import TranscriptCard from "../transcriptCard";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
@@ -20,52 +21,42 @@ export default function ConversationDetail({ conversation }: Props) {
 
   return (
     <div className="h-full lg:container">
-      <Card className="h-full border-none bg-transparent shadow-none">
-        <CardHeader>
-          <CardTitle>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FileText className=" " />
-                <h2 className="text-xl font-medium capitalize lg:text-2xl">
-                  {conversation.name}
-                </h2>
-              </div>
-              <span className="text-xs font-normal text-muted-foreground lg:text-sm">
-                {conversation.createdAt.toLocaleString()}
-              </span>
+      <div className="flex items-center justify-between px-3 pt-6">
+        <div className="flex items-center gap-2">
+          <FileText className=" " size={20} />
+          <h2 className="text-xl font-medium capitalize lg:text-2xl">
+            {conversation.name}
+          </h2>
+        </div>
+        <span className="text-xs font-normal text-muted-foreground lg:text-sm">
+          {conversation.createdAt.toLocaleString()}
+        </span>
+      </div>
+      <div className="max-w-lg space-y-10">
+        {!isFormDataEmpty && (
+          <SectionCard title="Form Data">
+            <div className="overflow-hidden rounded-md border">
+              <Table className="">
+                <TableBody>
+                  {formFieldsDataKeys.map((key) => {
+                    return (
+                      <TableRow key={formFieldsData[key]}>
+                        <TableCell className="py-2">{key}</TableCell>
+                        <TableCell className="py-2 font-medium">
+                          {formFieldsData[key]}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
             </div>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="max-w-lg space-y-10">
-            {!isFormDataEmpty && (
-              <section className="">
-                <h3 className="mb-3 text-lg font-medium">Form Data</h3>
-                <div className="overflow-hidden rounded-md border">
-                  <Table className="z-40">
-                    <TableBody>
-                      {formFieldsDataKeys.map((key) => {
-                        return (
-                          <TableRow key={formFieldsData[key]}>
-                            <TableCell className="py-2">{key}</TableCell>
-                            <TableCell className="py-2 font-medium">
-                              {formFieldsData[key]}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </div>
-              </section>
-            )}
-            <section>
-              <h3 className="mb-3 text-lg font-medium">Transcript</h3>
-              <TranscriptCard transcript={transcript} />
-            </section>
-          </div>
-        </CardContent>
-      </Card>
+          </SectionCard>
+        )}
+        <SectionCard title="Transcript">
+          <TranscriptCard transcript={transcript} />
+        </SectionCard>
+      </div>
     </div>
   );
 }

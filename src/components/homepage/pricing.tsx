@@ -19,7 +19,7 @@ import { SectionCard } from "./sectionCard";
 
 export function Pricing() {
   return (
-    <SectionCard title="Pricing">
+    <SectionCard title="Pricing" headerClassName="bg-gray-50/60">
       <div className="grid grid-cols-1">
         <PlanCard plan={freePlan} />
       </div>

@@ -59,7 +59,7 @@ const ConversationList = ({
     title: (
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center">
-          <FileText className="mr-2 h-4 w-4" />
+          <FileText className="mr-2" size={20} />
           <span className="capitalize">{conversation.name}</span>
         </div>
         <span className="font-light text-muted-foreground">
@@ -69,5 +69,5 @@ const ConversationList = ({
     ),
   }));
 
-  return <SidebarNav heading="Conversations" items={items} />;
+  return <SidebarNav items={items} />;
 };

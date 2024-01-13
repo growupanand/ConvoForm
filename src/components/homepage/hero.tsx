@@ -14,7 +14,7 @@ export function Hero() {
   const isLoggedin = !!userId;
 
   return (
-    <section className="md:my-15 my-10 flex w-full flex-col justify-center gap-1 px-3 py-4 text-center md:p-6">
+    <section className="md:my-15 my-10 flex w-full flex-col justify-center gap-1 py-4 text-center">
       <div>
         <Badge variant="outline" className="group text-sm font-normal">
           <Link
@@ -28,22 +28,17 @@ export function Hero() {
             </span>
             <span>Proudly Open Source</span>
             <ChevronRight
-              className="ml-1 transition-all group-hover:translate-x-1"
+              className="ml-1 transition-all group-hover:translate-x-0.5"
               size="15px"
             />
           </Link>
         </Badge>
       </div>
       <div className="mb-3 flex flex-col gap-6">
-        <h1
-          className={cn(
-            "text-4xl font-semibold text-foreground md:text-6xl",
-            "bg-gradient-to-tl from-[hsl(var(--muted))] from-0% to-[hsl(var(--foreground))] to-30% bg-clip-text text-transparent",
-          )}
-        >
+        <h1 className="text-3xl font-semibold text-gray-700 lg:text-6xl ">
           Create your own AI-Powered conversational form
         </h1>
-        <p className="mx-auto max-w-md text-lg text-muted-foreground md:max-w-lg md:text-xl">
+        <p className="mx-auto text-lg text-muted-foreground lg:text-2xl">
           Build engaging and interactive forms that are easy to fill and fun to
           answer.
         </p>
@@ -51,7 +46,7 @@ export function Hero() {
       <div className="flex items-center justify-center gap-3">
         <Button
           size="lg"
-          className={cn("rounded-full text-lg sm:w-auto", montserrat.className)}
+          className={cn("rounded-full lg:text-lg", montserrat.className)}
           asChild
         >
           <Link
@@ -65,10 +60,7 @@ export function Hero() {
           <Button
             size="lg"
             variant="outline"
-            className={cn(
-              "rounded-full  text-lg sm:w-auto",
-              montserrat.className,
-            )}
+            className={cn("rounded-full  lg:text-lg", montserrat.className)}
             asChild
           >
             <Link href={demoFormLink} target="_blank">

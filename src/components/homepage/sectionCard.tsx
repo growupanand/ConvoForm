@@ -5,22 +5,30 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 type Props = {
   children: React.ReactNode;
   title: string;
+  headerClassName?: string;
 };
 
-export function SectionCard({ children, title }: Props) {
+export function SectionCard({ children, title, headerClassName }: Props) {
   return (
-    <Card className="w-full border-none bg-transparent shadow-none">
-      <CardHeader className="sticky top-16 bg-gray-50/60 pb-4 backdrop-blur-md">
-        <h2
+    <section>
+      <Card className="w-full border-none bg-transparent shadow-none">
+        <CardHeader
           className={cn(
-            "text-xl font-semibold tracking-tight",
-            montserrat.className,
+            "sticky top-14 z-30 bg-background/70 pb-4 backdrop-blur ",
+            headerClassName,
           )}
         >
-          {title}
-        </h2>
-      </CardHeader>
-      <CardContent>{children}</CardContent>
-    </Card>
+          <h2
+            className={cn(
+              "text-xl font-semibold tracking-tight",
+              montserrat.className,
+            )}
+          >
+            {title}
+          </h2>
+        </CardHeader>
+        <CardContent className="z-40">{children}</CardContent>
+      </Card>
+    </section>
   );
 }

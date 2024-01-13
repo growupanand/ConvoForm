@@ -72,7 +72,7 @@ export default function FormList() {
   }, []);
 
   return (
-    <div>
+    <div className="h-full">
       {isLoading && <FormListLoading />}
       {!isLoading && emptyForms && (
         <p className="text-muted-foreground">No form</p>

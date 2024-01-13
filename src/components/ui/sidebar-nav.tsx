@@ -34,7 +34,10 @@ export function SidebarNav({
           <Link key={item.href} href={item.href}>
             <Button
               variant={pathname === item.href ? "secondary" : "ghost"}
-              className={"w-full justify-start font-normal"}
+              className={cn(
+                "w-full justify-start font-normal",
+                pathname === item.href && "font-medium",
+              )}
             >
               {item.title}
             </Button>

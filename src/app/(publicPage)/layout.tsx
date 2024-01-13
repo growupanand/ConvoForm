@@ -22,7 +22,7 @@ export default function Layout({ children }: Props) {
   return (
     <main className="min-h-screen w-screen">
       <div className="item-center flex h-full flex-col justify-between">
-        <div className="sticky top-0 z-50 w-full border-b border-border/40 bg-white backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="sticky top-0 z-50 w-full border-b  bg-white/70 shadow-sm backdrop-blur ">
           <div className="lg:container">
             <Header />
           </div>

@@ -5,7 +5,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { OrganizationSwitcher, UserButton, useUser } from "@clerk/nextjs";
 import { Loader2, Menu, Plus } from "lucide-react";
 
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useWorkspaceStore } from "@/lib/store/workspaceStore";
 import BrandName from "../brandName";
 import { Button } from "../ui/button";
@@ -74,6 +79,7 @@ export default function AppNavbar() {
             </SheetTrigger>
           </div>
           <SheetContent side="left" className="w-[90%] ">
+            <SheetClose />
             <Nav
               pathname={pathname}
               workspaces={workspaces}
