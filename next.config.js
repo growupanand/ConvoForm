@@ -31,7 +31,7 @@ module.exports = withSentryConfig(
     // Suppresses source map uploading logs during build
     silent: true,
     org: "growupanand",
-    project: "ConvoForm",
+    project: "convoform",
   },
   {
     // For all available options, see:

@@ -3,7 +3,7 @@ type ApiClientOptions = RequestInit & {
 };
 
 type ApiClient = (
-  url: NodeJS.fetch.RequestInfo,
+  url: RequestInfo,
   fetchOptions: ApiClientOptions,
 ) => Promise<Response>;
 
