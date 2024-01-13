@@ -7,7 +7,7 @@ import { montserrat } from "@/app/fonts";
 import { useFormStore } from "@/lib/store/formStore";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { Card, CardContent, CardTitle } from "../ui/card";
+import { Card, CardContent } from "../ui/card";
 import {
   Drawer,
   DrawerContent,
@@ -17,6 +17,7 @@ import {
 import { Skeleton } from "../ui/skeleton";
 import FormEditorForm, { FormSubmitDataSchema } from "./formEditorForm";
 import FormPreview from "./formPreview";
+import NavLinks from "./navLinks";
 
 export default function FormEditPage() {
   const formStore = useFormStore();
@@ -35,18 +36,11 @@ export default function FormEditPage() {
   }
 
   return (
-    <div className="h-full gap-5 px-3 lg:flex lg:px-5">
-      <div className=" rounded-lg pt-5 lg:max-h-[calc(100vh-100px)] lg:w-[400px] lg:min-w-[400px] lg:overflow-auto ">
-        <Card className="border-0 bg-transparent shadow-none ">
-          <CardTitle
-            className={cn(
-              "mb-5 text-lg font-medium tracking-tight",
-              montserrat.className,
-            )}
-          >
-            Form Editor
-          </CardTitle>
-          <CardContent className="px-3">
+    <div className="h-full lg:flex">
+      <div className="px-3 lg:max-h-[calc(100vh-100px)] lg:w-[400px] lg:min-w-[400px] lg:overflow-auto">
+        <NavLinks />
+        <Card className="border-0 bg-transparent shadow-none">
+          <CardContent className="p-0 lg:pt-6">
             <FormEditorForm form={form} onUpdated={onUpdateForm} />
 
             <div className="py-3 lg:hidden">
@@ -72,8 +66,10 @@ export default function FormEditPage() {
           </CardContent>
         </Card>
       </div>
-      <div className="grow py-5 max-lg:hidden">
-        <FormPreview form={form} />
+      <div className="flex grow items-center justify-center py-3 max-lg:hidden">
+        <div className="h-[100%] w-[90%]">
+          <FormPreview form={form} />
+        </div>
       </div>
     </div>
   );

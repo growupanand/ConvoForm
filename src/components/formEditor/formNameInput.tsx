@@ -47,25 +47,19 @@ export default function FormNameInput({ form, className }: Props) {
 
   const handleFormNameInputChange = async (e: any) => {
     const updatedName = e.target.value as string;
-    e.target.style.width = `${updatedName.length + 1}ch`;
     debounce(() => updateWorkspace(updatedName), 1000);
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <Input
-        disabled={isUpdating}
-        className={cn(
-          "max-w-[400px] rounded-none border-0 bg-transparent text-2xl font-bold hover:border-b hover:border-gray-300 focus-visible:border-b focus-visible:border-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0",
-          className,
-        )}
-        style={{
-          width: `${formName.length + 2}ch`,
-        }}
-        type="text"
-        defaultValue={formName}
-        onChange={handleFormNameInputChange}
-      />
-    </div>
+    <Input
+      disabled={isUpdating}
+      className={cn(
+        "rounded-none border-0 bg-transparent text-2xl font-bold hover:border-b hover:border-gray-300 focus-visible:border-b focus-visible:border-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0",
+        className,
+      )}
+      type="text"
+      defaultValue={formName}
+      onChange={handleFormNameInputChange}
+    />
   );
 }

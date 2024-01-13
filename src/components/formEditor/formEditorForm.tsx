@@ -200,7 +200,7 @@ export default function FormEditorForm(props: Props) {
   };
 
   return (
-    <div className="border-0 bg-transparent">
+    <div className="border-0 bg-transparent px-2">
       <UIForm {...formHook}>
         <form onSubmit={formHook.handleSubmit(onSubmit)}>
           <div className="mb-8 space-y-4">

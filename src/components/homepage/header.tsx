@@ -19,7 +19,7 @@ export function Header() {
             <>
               <Link href="/dashboard">
                 <Button variant="secondary">
-                  <LayoutDashboard className="mr-2 h-4 w-4" /> Go to Dashboard
+                  <LayoutDashboard className="mr-2" size={20} /> Go to Dashboard
                 </Button>
               </Link>
               <UserButton />

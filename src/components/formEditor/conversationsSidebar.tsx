@@ -4,10 +4,16 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useFormStore } from "@/lib/store/formStore";
 import { Button } from "../ui/button";
 import { ConversationsCard } from "./conversationsListCard";
+import NavLinks from "./navLinks";
 
 type State = {
   open: boolean;
@@ -39,8 +45,9 @@ export default function ConversationsSidebar() {
   }, [pathname]);
 
   return (
-    <>
+    <div className="px-3">
       <div className="lg:hidden">
+        <NavLinks />
         <Sheet
           open={open}
           onOpenChange={(status) => setState((cs) => ({ ...cs, open: status }))}
@@ -53,6 +60,7 @@ export default function ConversationsSidebar() {
             </SheetTrigger>
           </div>
           <SheetContent side="left" className="w-[90%] ">
+            <SheetClose />
             {isLoadingConversations || !formId ? (
               <ConversationsCard.ConversationsCardSkelton />
             ) : (
@@ -64,13 +72,14 @@ export default function ConversationsSidebar() {
           </SheetContent>
         </Sheet>
       </div>
-      <div className="w-[400px] min-w-[400px] px-3 max-lg:hidden">
+      <div className="max-lg:hidden">
+        <NavLinks />
         {isLoadingConversations || !formId ? (
           <ConversationsCard.ConversationsCardSkelton />
         ) : (
           <ConversationsCard conversations={conversations} formId={formId} />
         )}
       </div>
-    </>
+    </div>
   );
 }

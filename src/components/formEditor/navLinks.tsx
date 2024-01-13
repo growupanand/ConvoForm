@@ -1,47 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Form } from "@prisma/client";
+import { useParams, usePathname } from "next/navigation";
 
 import { montserrat } from "@/app/fonts";
 import { NavLink } from "@/lib/types/navLink";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 
-type Props = {
-  form: Form;
-};
-
-export default function NavLinks({ form }: Readonly<Props>) {
+export default function NavLinks() {
   const pathName = usePathname();
+  const { formId } = useParams();
   const navLinks = [
     {
       label: "Editor",
-      href: `/forms/${form.id}`,
-      isActive: pathName === `/forms/${form.id}`,
+      href: `/forms/${formId}`,
+      isActive: pathName === `/forms/${formId}`,
     },
     {
       label: "Conversations",
-      href: `/forms/${form.id}/conversations`,
-      isActive: pathName.includes(`/forms/${form.id}/conversations`),
+      href: `/forms/${formId}/conversations`,
+      isActive: pathName.includes(`/forms/${formId}/conversations`),
     },
   ] as NavLink[];
 
   const activeLinkLabel = navLinks.find((link) => link.isActive)?.label;
 
   return (
-    <Tabs value={activeLinkLabel}>
-      <TabsList>
+    <Tabs value={activeLinkLabel} className="w-full py-3">
+      <TabsList className="grid w-full grid-cols-2">
         {navLinks.map((link) => (
-          <Link href={link.href} key={link.href}>
-            <TabsTrigger
-              value={link.label}
-              key={link.href}
-              className={montserrat.className}
-            >
+          <TabsTrigger
+            value={link.label}
+            key={link.href}
+            className={montserrat.className}
+            asChild
+          >
+            <Link href={link.href} key={link.href}>
               {link.label}
-            </TabsTrigger>
-          </Link>
+            </Link>
+          </TabsTrigger>
         ))}
       </TabsList>
     </Tabs>

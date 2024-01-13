@@ -4,11 +4,12 @@ import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { ChevronLeft, ChevronRight, Home } from "lucide-react";
 
+import { montserrat } from "@/app/fonts";
 import { useFormStore } from "@/lib/store/formStore";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import FormNameInput from "./formNameInput";
-import NavLinks from "./navLinks";
 
 export const FormEditorPageHeader = () => {
   const { form, isLoading } = useFormStore();
@@ -18,31 +19,46 @@ export const FormEditorPageHeader = () => {
   }
 
   return (
-    <div className="sticky top-0 z-50 flex items-center justify-between border-b border-border/40 bg-white p-3 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex items-center max-lg:hidden">
-        <Link href={"/dashboard"}>
-          <Button variant="link" className="text-sm ">
-            <Home className="mr-2 h-4 w-4 " /> Dashboard
+    <div className="sticky top-0 z-50 border-b bg-white/70 p-3 shadow-sm backdrop-blur">
+      <div className="flex items-center justify-between ">
+        <div
+          className={cn(
+            "flex w-full items-center overflow-hidden text-xs max-lg:hidden",
+            montserrat.className,
+          )}
+        >
+          <Button size="sm" variant="link" asChild>
+            <Link href={"/dashboard"}>
+              <Home size={20} />
+            </Link>
           </Button>
-        </Link>
-        <ChevronRight className="h-4 w-4" />
-        <Link href={`/workspaces/${form.workspaceId}`}>
-          <Button variant="link">{form.workspace.name}</Button>
-        </Link>
-        <ChevronRight className="h-4 w-4" />
-        <FormNameInput form={form} className="text-md font-medium" />
-      </div>
-      <div className="lg:hidden">
-        <Link href={`/workspaces/${form.workspaceId}`}>
-          <Button size="sm" variant="link" className="px-0 text-sm">
-            <ChevronLeft className="mr-2 h-4 w-4 " />
-            Back
+          <ChevronRight size={20} />
+          <Button size="sm" variant="link" asChild>
+            <Link href={"/dashboard"}>Dashboard</Link>
           </Button>
-        </Link>
-      </div>
-      <NavLinks form={form} />
-      <div className="flex items-center gap-2">
-        <UserButton />
+          <ChevronRight size={20} />
+          <Button size="sm" variant="link" asChild>
+            <Link href={`/workspaces/${form.workspaceId}`}>
+              {form.workspace.name}
+            </Link>
+          </Button>
+          <ChevronRight size={20} />
+          <FormNameInput form={form} className="w-full text-xl font-medium" />
+        </div>
+        <div className="lg:hidden">
+          <Link href={`/workspaces/${form.workspaceId}`}>
+            <Button size="sm" variant="link" className="px-0 text-sm">
+              <ChevronLeft className="mr-2" size={20} />
+              Back
+            </Button>
+          </Link>
+        </div>
+        <div className="overflow-hidden lg:hidden">
+          <FormNameInput form={form} className="text-xl font-medium" />
+        </div>
+        <div className="flex items-center gap-2">
+          <UserButton />
+        </div>
       </div>
     </div>
   );
