@@ -13,9 +13,19 @@ export function NavigationCardContent({ pathname }: Readonly<Props>) {
   return (
     <nav className="flex h-full flex-col justify-between lg:p-5">
       <div>
-        <div className="mb-5 flex justify-start ps-4">
-          <BrandName className="text-xl lg:text-2xl" />
+        <div className="mb-5 flex flex-col gap-3 ps-4">
+          <div>
+            <BrandName className="text-xl lg:text-2xl" />
+          </div>
+          <div className="flex items-center justify-between gap-2 lg:hidden lg:justify-evenly">
+            <OrganizationSwitcher
+              afterSelectOrganizationUrl="/dashboard"
+              hidePersonal
+            />
+            <UserButton />
+          </div>
         </div>
+
         <div className="grid gap-2">
           <NavigationLink
             name="Dashboard"
@@ -25,7 +35,7 @@ export function NavigationCardContent({ pathname }: Readonly<Props>) {
           <WorkspacesNavigation />
         </div>
       </div>
-      <div>
+      <div className="max-lg:hidden">
         <div className="flex items-center justify-between gap-2 lg:justify-evenly">
           <OrganizationSwitcher
             afterSelectOrganizationUrl="/dashboard"
