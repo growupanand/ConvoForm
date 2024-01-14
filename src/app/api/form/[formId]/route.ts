@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import prisma from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getOrganizationId } from "@/lib/getOrganizationId";
 import { formPatchSchema, formUpdateSchema } from "@/lib/validations/form";

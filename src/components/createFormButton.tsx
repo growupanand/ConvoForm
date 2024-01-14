@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 import { Workspace } from "@prisma/client";
 import { Loader2, Plus } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";
 import { Button } from "@/components/ui/button";
 import { sendErrorResponseToast, toast } from "@/components/ui/use-toast";
-import { createFormController } from "@/lib/controllers/form";
+import { createForm } from "@/lib/serverActions/form";
 import { cn } from "@/lib/utils";
 import { formCreateSchema } from "@/lib/validations/form";
 
@@ -24,9 +25,11 @@ export default function CreateFormButton({ workspace }: Props) {
   const [state, setState] = useState<State>({ isLoading: false });
   const { isLoading } = state;
 
+  const { userId } = useAuth();
+
   const router = useRouter();
 
-  const createForm = async () => {
+  const handleCreateForm = async () => {
     setState((cs) => ({ ...cs, isLoading: true }));
     try {
       const newFormData = formCreateSchema.parse({
@@ -41,7 +44,12 @@ export default function CreateFormButton({ workspace }: Props) {
           },
         ],
       });
-      const createdForm = await createFormController(workspace.id, newFormData);
+      const createdForm = await createForm(
+        workspace.organizationId,
+        userId!,
+        workspace.id,
+        newFormData,
+      );
       toast({
         title: "Form created",
         duration: 1500,
@@ -57,7 +65,7 @@ export default function CreateFormButton({ workspace }: Props) {
     <Button
       variant="secondary"
       disabled={isLoading}
-      onClick={createForm}
+      onClick={handleCreateForm}
       className={cn(montserrat.className, "font-semibold")}
     >
       {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

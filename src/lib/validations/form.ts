@@ -19,6 +19,8 @@ export const formCreateSchema = z.object({
   ),
 });
 
+export type FormCreateSchema = z.infer<typeof formCreateSchema>;
+
 export const formUpdateSchema = z.object({
   name: z.string().min(1).max(255),
   overview: z.string().min(1).max(255),

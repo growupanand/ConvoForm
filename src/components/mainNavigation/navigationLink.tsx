@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 
 type Props = {
   isActive?: boolean;
@@ -9,7 +10,7 @@ type Props = {
   name: string;
 };
 
-const AppNavBarLink = ({ isActive, href, name }: Props) => {
+const NavigationLink = ({ isActive, href, name }: Props) => {
   return (
     <Link href={href}>
       <Button
@@ -25,4 +26,14 @@ const AppNavBarLink = ({ isActive, href, name }: Props) => {
   );
 };
 
-export default AppNavBarLink;
+const AppNavBarLinkSkeleton = () => {
+  return (
+    <Button variant="link" className="w-full justify-start py-0">
+      <Skeleton className="h-2 w-20 bg-gray-300" />
+    </Button>
+  );
+};
+
+NavigationLink.Skeleton = AppNavBarLinkSkeleton;
+
+export default NavigationLink;

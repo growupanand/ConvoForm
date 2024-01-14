@@ -1,6 +1,8 @@
+"use server";
+
 import { Form } from "@prisma/client";
 
-import prisma from "../db";
+import { prisma } from "../db";
 
 export const getFormConversations = async (formId: Form["id"]) => {
   return await prisma.conversation.findMany({

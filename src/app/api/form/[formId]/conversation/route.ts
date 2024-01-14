@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 import { freePlan } from "@/lib/config/pricing";
-import prisma from "@/lib/db";
-import { getUserTotalConversationsCount } from "@/lib/dbControllers/form";
+import { prisma } from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
+import { getUserTotalConversationsCount } from "@/lib/serverActions/form";
 import { ConversationService } from "@/lib/services/conversation";
 import { ConversationPayloadSchema } from "@/lib/validations/conversation";
 

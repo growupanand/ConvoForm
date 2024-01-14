@@ -1,5 +1,5 @@
 import ConversationDetail from "@/components/formEditor/conversationDetail";
-import { getFormConversation } from "@/lib/dbControllers/conversation";
+import { getFormConversation } from "@/lib/serverActions/conversation";
 
 type Props = {
   params: { conversationId: string };
