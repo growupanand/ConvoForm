@@ -1,5 +1,10 @@
-import prisma from "../db";
+"use server";
+
+import { revalidatePath } from "next/cache";
+
+import { prisma } from "../db";
 import { FormWithFields } from "../types/form";
+import { FormCreateSchema } from "../validations/form";
 
 export const getFormDetails = async (formId: string, userId: string) => {
   return await prisma.form.findFirst({
@@ -60,3 +65,34 @@ export async function getUserTotalConversationsCount(userId: string) {
     },
   });
 }
+
+export const deleteForm = async (formId: string, organizationId: string) => {
+  revalidatePath("/dashboard", "page");
+  return await prisma.form.delete({
+    where: {
+      id: formId,
+      organizationId,
+    },
+  });
+};
+
+export const createForm = async (
+  organizationId: string,
+  userId: string,
+  workspaceId: string,
+  newForm: FormCreateSchema,
+) => {
+  const { formField, ...restForm } = newForm;
+  revalidatePath("/dashboard", "page");
+  return await prisma.form.create({
+    data: {
+      workspaceId,
+      userId,
+      organizationId,
+      ...restForm,
+      formField: {
+        create: formField,
+      },
+    },
+  });
+};

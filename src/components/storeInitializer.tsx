@@ -4,16 +4,14 @@ import { useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
 
 import { useFormStore } from "@/lib/store/formStore";
-import { useWorkspaceStore } from "@/lib/store/workspaceStore";
 
 type Props = {
-  stores: Array<"useFormStore" | "useWorkspaceStore">;
+  stores: Array<"useFormStore">;
   children: React.ReactNode;
 };
 
 const storeAccessors = {
   useFormStore: useFormStore,
-  useWorkspaceStore: useWorkspaceStore,
 };
 
 /**

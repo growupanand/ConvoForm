@@ -20,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/components/ui/use-toast";
-import { apiClient } from "@/lib/fetch";
+import { deleteForm } from "@/lib/serverActions/form";
 
 type Props = {
   form: Form;
@@ -35,12 +35,10 @@ export function FormListItem({ form, onDeleted }: Readonly<Props>) {
   const [state, setState] = useState<State>({ isDeleting: false });
   const { isDeleting } = state;
 
-  const deleteForm = async () => {
+  const handleDeleteForm = async () => {
     setState((cs) => ({ ...cs, isDeleting: true }));
     try {
-      await apiClient(`form/${form.id}`, {
-        method: "DELETE",
-      });
+      await deleteForm(form.id, form.organizationId);
       toast({
         action: (
           <div className="w-full">
@@ -63,7 +61,7 @@ export function FormListItem({ form, onDeleted }: Readonly<Props>) {
           <Button
             variant="secondary"
             disabled={isDeleting}
-            onClick={deleteForm}
+            onClick={handleDeleteForm}
           >
             {isDeleting ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -134,7 +132,7 @@ export function FormListItem({ form, onDeleted }: Readonly<Props>) {
             )}
             <DropdownMenuItem
               className="cursor-pointer text-destructive focus:text-destructive"
-              onClick={deleteForm}
+              onClick={handleDeleteForm}
             >
               <Trash className="mr-2 h-4 w-4" />
               Delete form

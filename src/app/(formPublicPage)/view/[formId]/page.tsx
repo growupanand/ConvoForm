@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Form } from "@prisma/client";
 
 import { FormViewer } from "@/components/formViewer/formViewer";
-import prisma from "@/lib/db";
+import { prisma } from "@/lib/db";
 
 interface FormViewerPageProps {
   params: { formId: string };

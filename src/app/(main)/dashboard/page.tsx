@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs";
 
 import { DataCard } from "@/components/dashboard/dataCard";
-import prisma from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { timeAgo } from "@/lib/utils";
 
 export const metadata: Metadata = {

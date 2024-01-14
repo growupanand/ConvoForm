@@ -1,10 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { Workspace } from "@prisma/client";
 import { Check, MoreVertical, Trash } from "lucide-react";
 
-import { useWorkspaceStore } from "@/lib/store/workspaceStore";
+import {
+  deleteWorkspace,
+  updateWorkspace,
+} from "@/lib/serverActions/workspace";
 import { cn, debounce } from "@/lib/utils";
 import CreateFormButton from "./createFormButton";
 import { Button } from "./ui/button";
@@ -18,31 +22,38 @@ import { Input } from "./ui/input";
 import { Skeleton } from "./ui/skeleton";
 import Spinner from "./ui/spinner";
 import { toast } from "./ui/use-toast";
+import { useWorkspacesContext } from "./workspacesProvider";
+
+type Props = {
+  workspace: Workspace;
+};
 
 type State = {
   isDeleting: boolean;
   isUpdating: boolean;
 };
 
-export const WorkspaceHeader = () => {
+export const WorkspaceHeader = ({ workspace }: Props) => {
   const [state, setState] = useState<State>({
     isDeleting: false,
     isUpdating: false,
   });
   const { isDeleting, isUpdating } = state;
 
-  const params = useParams();
-  const currentWorkspaceId = params.workspaceId as string;
-  const workspaceStore = useWorkspaceStore();
-  const { workspaces, isLoading } = workspaceStore;
-  const currentWorkspace = workspaces.find((i) => i.id === currentWorkspaceId);
+  const currentWorkspaceId = workspace.id;
+
+  const {
+    updateWorkspace: updateWorkspaceContext,
+    workspaces,
+    setWorkspaces,
+  } = useWorkspacesContext();
 
   const router = useRouter();
 
-  const deleteWorkspace = async () => {
+  const handleDeleteWorkspace = async () => {
     setState((cs) => ({ ...cs, isDeleting: true }));
     try {
-      await workspaceStore.deleteWorkspace(currentWorkspaceId);
+      await deleteWorkspace(currentWorkspaceId, workspace.organizationId);
       toast({
         action: (
           <div className="w-full">
@@ -56,6 +67,7 @@ export const WorkspaceHeader = () => {
         ),
         duration: 1500,
       });
+      setWorkspaces(workspaces.filter((i) => i.id !== currentWorkspaceId));
       if (workspaces.filter((i) => i.id !== currentWorkspaceId).length > 0) {
         router.push(
           `/workspaces/${
@@ -75,7 +87,7 @@ export const WorkspaceHeader = () => {
             size="icon"
             className="h-8 w-8"
             disabled={isDeleting}
-            onClick={() => deleteWorkspace()}
+            onClick={() => handleDeleteWorkspace()}
           >
             {isDeleting ? <Spinner /> : "Retry"}
           </Button>
@@ -88,13 +100,21 @@ export const WorkspaceHeader = () => {
 
   const handleWorkspaceNameInputChange = async (e: any) => {
     const updatedName = e.target.value as string;
-    debounce(() => updateWorkspace(updatedName), 1000);
+    debounce(() => handleUpdateWorkspace(updatedName), 1000);
   };
 
-  const updateWorkspace = async (name: string) => {
+  const handleUpdateWorkspace = async (updatedName: string) => {
     setState((cs) => ({ ...cs, isUpdating: true }));
     try {
-      await workspaceStore.updateWorkspace(currentWorkspaceId, { name });
+      await updateWorkspace(
+        currentWorkspaceId,
+        workspace.organizationId,
+        updatedName,
+      );
+      updateWorkspaceContext({
+        ...workspace,
+        name: updatedName,
+      });
     } catch (error) {
       toast({
         title: "Unable to update workspace",
@@ -105,28 +125,6 @@ export const WorkspaceHeader = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="mb-5">
-        <div className="mb-3 flex items-center  justify-between lg:mb-10">
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-8 w-40" />
-          </div>
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-8 w-8" />
-          </div>
-        </div>
-        <div>
-          <Skeleton className="h-[40px] w-[125px]" />
-        </div>
-      </div>
-    );
-  }
-
-  if (!isLoading && !currentWorkspace) {
-    return null;
-  }
-
   return (
     <div className="mb-5">
       <div className="mb-3 flex items-center justify-between lg:mb-10">
@@ -136,7 +134,7 @@ export const WorkspaceHeader = () => {
           )}
           type="text"
           onChange={handleWorkspaceNameInputChange}
-          defaultValue={currentWorkspace!.name}
+          defaultValue={workspace!.name}
         />
         <div className="flex items-center gap-2">
           {isUpdating && <Spinner />}
@@ -158,7 +156,7 @@ export const WorkspaceHeader = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 className="cursor-pointer text-destructive focus:text-destructive"
-                onClick={deleteWorkspace}
+                onClick={handleDeleteWorkspace}
               >
                 <Trash className="mr-2 h-4 w-4" />
                 Delete workspace
@@ -168,7 +166,25 @@ export const WorkspaceHeader = () => {
         </div>
       </div>
       <div>
-        <CreateFormButton workspace={currentWorkspace!} />
+        <CreateFormButton workspace={workspace!} />
+      </div>
+    </div>
+  );
+};
+
+export const WorkspaceHeaderSkeleton = () => {
+  return (
+    <div className="mb-5">
+      <div className="mb-3 flex items-center  justify-between lg:mb-10">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-8 w-40" />
+        </div>
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-8 w-8" />
+        </div>
+      </div>
+      <div>
+        <Skeleton className="h-[40px] w-[125px]" />
       </div>
     </div>
   );

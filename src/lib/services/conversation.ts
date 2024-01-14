@@ -8,7 +8,7 @@ import {
 } from "ai";
 import { ChatCompletionRequestMessage } from "openai-edge";
 
-import prisma from "../db";
+import { prisma } from "../db";
 import { FormWithFields } from "../types/form";
 import { OpenAIService } from "./openAI";
 
