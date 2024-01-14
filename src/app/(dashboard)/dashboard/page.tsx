@@ -33,12 +33,14 @@ export default async function DashboardPage() {
   }
   const forms = await getForms(orgId);
   const formsCount = forms.length;
-  const lastFormCreatedAt = timeAgo(forms[formsCount - 1].createdAt);
+  const lastFormCreatedAt =
+    formsCount !== 0 ? timeAgo(forms[formsCount - 1].createdAt) : null;
   const conversations = await getConversations(orgId);
   const conversationsCount = conversations.length;
-  const lastConversationCreatedAt = timeAgo(
-    conversations[conversationsCount - 1].createdAt,
-  );
+  const lastConversationCreatedAt =
+    conversationsCount !== 0
+      ? timeAgo(conversations[conversationsCount - 1].createdAt)
+      : null;
 
   return (
     <div>
@@ -47,12 +49,18 @@ export default async function DashboardPage() {
         <DataCard
           title="Forms created"
           mainValue={formsCount.toString()}
-          secondaryValue={`Last ${lastFormCreatedAt}`}
+          secondaryValue={
+            lastFormCreatedAt ? `Last ${lastFormCreatedAt}` : undefined
+          }
         />
         <DataCard
           title="Response collected"
           mainValue={conversationsCount.toString()}
-          secondaryValue={`Last ${lastConversationCreatedAt}`}
+          secondaryValue={
+            lastConversationCreatedAt
+              ? `Last ${lastConversationCreatedAt}`
+              : undefined
+          }
         />
       </div>
     </div>
