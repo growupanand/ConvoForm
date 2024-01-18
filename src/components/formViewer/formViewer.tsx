@@ -56,6 +56,9 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
     },
   });
 
+  const isFirstQuestion =
+    messages.filter((message) => message.role === "assistant").length <= 1;
+
   const getCurrentQuestion = () => {
     const lastMessage = messages[messages.length - 1];
     const currentQuestion =
@@ -88,6 +91,12 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
     gotoStage("conversationFlow");
   };
 
+  const handleShowPreviousQuestion = () => {
+    messages.pop();
+    messages.pop();
+    setMessages(messages);
+  };
+
   useEffect(() => {
     if (data?.includes("conversationFinished")) {
       setState((cs) => ({
@@ -116,6 +125,8 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
           handleInputChange={handleInputChange}
           input={input}
           isFormBusy={isLoading}
+          handleShowPreviousQuestion={handleShowPreviousQuestion}
+          isFirstQuestion={isFirstQuestion}
         />
       )}
       {currentStage === "endScreen" && (

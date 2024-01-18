@@ -1,6 +1,8 @@
 import { ChangeEvent } from "react";
-import { CornerDownLeft, Tally1 } from "lucide-react";
+import { ChevronLeft, CornerDownLeft, Tally1 } from "lucide-react";
 
+import { montserrat } from "@/app/fonts";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
@@ -12,6 +14,8 @@ type Props = {
   ) => void;
   input: string;
   currentQuestion: string;
+  handleShowPreviousQuestion: () => void;
+  isFirstQuestion: boolean;
 };
 
 export const FormFieldsViewer = ({
@@ -20,9 +24,23 @@ export const FormFieldsViewer = ({
   handleInputChange,
   input,
   currentQuestion,
+  handleShowPreviousQuestion,
+  isFirstQuestion,
 }: Props) => {
   return (
     <form onSubmit={handleFormSubmit}>
+      <div className={cn("py-3", isFirstQuestion && "hidden")}>
+        <Button
+          variant="ghost"
+          className={cn("rounded-full", montserrat.className)}
+          size="sm"
+          onClick={handleShowPreviousQuestion}
+          disabled={isFormBusy}
+        >
+          <ChevronLeft className="mr-2" size={20} />
+          <span>Back to Previous</span>
+        </Button>
+      </div>
       <div className="flex min-h-full w-full flex-col items-center justify-center px-3 ">
         <h1 className="mb-10 w-full text-4xl font-medium ">
           <span>
