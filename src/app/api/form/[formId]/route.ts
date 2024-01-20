@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import { prisma } from "@/lib/db";
@@ -13,11 +13,13 @@ const routeContextSchema = z.object({
 });
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   context: z.infer<typeof routeContextSchema>,
 ) {
   try {
     const { params } = routeContextSchema.parse(context);
+    const { searchParams } = req.nextUrl;
+    const includeWorkspace = searchParams.get("includeWorkspace");
     const organizationId = getOrganizationId();
     const form = await prisma.form.findFirst({
       where: {
@@ -25,8 +27,7 @@ export async function GET(
         organizationId,
       },
       include: {
-        formField: true,
-        workspace: true,
+        workspace: !!includeWorkspace,
       },
     });
     return NextResponse.json(form, { status: 200 });
@@ -44,7 +45,7 @@ export async function PUT(
     const organizationId = getOrganizationId();
     const requestJson = await req.json();
     const reqPayload = formUpdateSchema.parse(requestJson);
-    const { formField: formField, ...newFormData } = reqPayload;
+    const { formFields: formField, ...newFormData } = reqPayload;
 
     const updatedForm = await prisma.form.update({
       where: {

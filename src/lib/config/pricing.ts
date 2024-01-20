@@ -1,4 +1,4 @@
-import { Plan } from "../types/plan";
+import { Plan } from "../types/pricing";
 
 export const freePlan: Plan = {
   name: "Free plan",

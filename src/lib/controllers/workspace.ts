@@ -2,7 +2,7 @@ import { Workspace } from "@prisma/client";
 import { z } from "zod";
 
 import { workspaceUpdateSchema } from "@/lib/validations/workspace";
-import { apiClient } from "../fetch";
+import { apiClient } from "../apiClient";
 
 export const createWorkspaceController = async (
   name: string = "New workspace",
@@ -21,8 +21,18 @@ export const deleteWorkspaceController = (workspaceId: string) => {
   });
 };
 
-export const fetchWorkspacesController = async () => {
-  const response = await apiClient("workspaces", { method: "GET" });
+export const getWorkspaceController = async (workspaceId: string) => {
+  const response = await apiClient(`workspaces/${workspaceId}`, {
+    method: "GET",
+  });
+  return (await response.json()) as Workspace;
+};
+
+export const getWorkspacesController = async (orgId: string) => {
+  const response = await apiClient("workspaces", {
+    method: "GET",
+    queryParams: { orgId },
+  });
   return (await response.json()) as Workspace[];
 };
 

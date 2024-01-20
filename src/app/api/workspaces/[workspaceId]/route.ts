@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -26,6 +27,8 @@ export async function DELETE(
         organizationId,
       },
     });
+    revalidatePath("/dashboard");
+
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     return sendErrorResponse(error);
@@ -49,6 +52,28 @@ export async function PUT(
       },
       data: {
         name,
+      },
+    });
+    revalidatePath(`/workspaces/${params.workspaceId}`, "page");
+
+    return NextResponse.json(workspace, { status: 200 });
+  } catch (error) {
+    return sendErrorResponse(error);
+  }
+}
+
+export async function GET(
+  req: Request,
+  context: z.infer<typeof routeContextSchema>,
+) {
+  try {
+    // Validate the route params.
+    const { params } = routeContextSchema.parse(context);
+    const organizationId = getOrganizationId();
+    const workspace = await prisma.workspace.findFirst({
+      where: {
+        id: params.workspaceId,
+        organizationId,
       },
     });
     return NextResponse.json(workspace, { status: 200 });

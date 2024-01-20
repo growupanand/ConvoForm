@@ -66,7 +66,6 @@ export default function RootLayout({
             <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
           ) : null}
           <SentryUserInit />
-
           {children}
           <Toaster />
         </body>
