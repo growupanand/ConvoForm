@@ -167,7 +167,10 @@ function toast({ ...props }: Toast) {
   };
 }
 
-async function sendErrorResponseToast(error: Error, fallbackMessage?: string) {
+async function sendErrorResponseToast(
+  error: unknown,
+  fallbackMessage?: string,
+) {
   let errorMessage;
   if (error instanceof Response) {
     const errorJson = await error.json();
