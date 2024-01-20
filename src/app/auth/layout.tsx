@@ -1,7 +1,7 @@
 import { ClerkLoading } from "@clerk/nextjs";
 
-import BrandName from "@/components/brandName";
-import Spinner from "@/components/ui/spinner";
+import BrandName from "@/components/common/brandName";
+import Spinner from "@/components/common/spinner";
 
 type Props = {
   children: React.ReactNode;

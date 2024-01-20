@@ -27,7 +27,7 @@ export const formUpdateSchema = z.object({
   welcomeScreenTitle: z.string().min(1).max(255),
   welcomeScreenMessage: z.string().min(1).max(255),
   welcomeScreenCTALabel: z.string().min(1).max(255),
-  formField: z.array(formFieldSchema).min(1),
+  formFields: z.array(formFieldSchema).min(1),
 });
 
 export const formPatchSchema = z.object({

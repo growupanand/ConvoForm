@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import { freePlan } from "@/lib/config/pricing";
@@ -67,6 +68,9 @@ export async function POST(
       formField: newFormFields,
     };
 
+    revalidatePath("/api/dashboard");
+    revalidateTag("dashboard");
+
     return NextResponse.json(responseJson, { status: 201 });
   } catch (error) {
     return sendErrorResponse(error);
@@ -74,12 +78,13 @@ export async function POST(
 }
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   context: z.infer<typeof routeContextSchema>,
 ) {
   try {
     const { params } = routeContextSchema.parse(context);
     const organizationId = getOrganizationId();
+
     const workspaceForms = await prisma.form.findMany({
       where: {
         workspaceId: params.workspaceId,
