@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Form } from "@prisma/client";
 import { useChat } from "ai/react";
 
@@ -92,9 +92,18 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
   };
 
   const handleShowPreviousQuestion = () => {
+    // Remove previous question message from messages list
     messages.pop();
-    messages.pop();
+    // Remove previous answer message from messages list
+    const previousAnswerMessage = messages.pop();
     setMessages(messages);
+    // Set previous answer in text input
+    const event = {
+      target: {
+        value: previousAnswerMessage?.content || "",
+      },
+    } as ChangeEvent<HTMLTextAreaElement>;
+    handleInputChange(event);
   };
 
   useEffect(() => {
