@@ -2,6 +2,11 @@
   "name": "ConvoForm",
   "version": "0.1.0",
   "private": true,
+  "author": "Utkarsh Anand",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/growupanand/ConvoForm.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -15,7 +20,14 @@
     "postinstall": "prisma generate",
     "format:all": "prettier --write .",
     "format:staged": "prettier --write $(git diff --staged --name-only --diff-filter d | xargs)",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "release-it",
+    "commit": "git-cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.4",
@@ -53,7 +65,11 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
+    "@commitlint/cz-commitlint": "^18.4.4",
     "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
+    "@release-it/conventional-changelog": "^8.0.1",
     "@swc-jotai/react-refresh": "^0.1.0",
     "@types/node": "^20",
     "@types/react": "^18",
@@ -61,17 +77,39 @@
     "@typescript-eslint/eslint-plugin": "^6.18.0",
     "@typescript-eslint/parser": "^6.18.0",
     "autoprefixer": "^10.0.1",
+    "commitizen": "^4.3.0",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.0.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-unused-imports": "^3.0.0",
     "husky": "^8.0.3",
+    "inquirer": "^8.2.6",
     "postcss": "^8",
     "prettier": "^3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "prisma": "^5.6.0",
+    "release-it": "^17.0.1",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release v${version}"
+    },
+    "github": {
+      "release": true
+    },
+    "npm": {
+      "publish": false
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "infile": "CHANGELOG.md",
+        "preset": {
+          "name": "conventionalcommits"
+        }
+      }
+    }
   }
 }
