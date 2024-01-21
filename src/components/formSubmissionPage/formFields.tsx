@@ -31,6 +31,7 @@ export const FormFieldsViewer = ({
     <form onSubmit={handleFormSubmit}>
       <div className={cn("py-3", isFirstQuestion && "hidden")}>
         <Button
+          type="button"
           variant="ghost"
           className={cn("rounded-full", montserrat.className)}
           size="sm"
