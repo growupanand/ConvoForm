@@ -3,3 +3,4 @@ public/
 .gitignore
 .husky/
 prisma/
+templates/
