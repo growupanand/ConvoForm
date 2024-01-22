@@ -6,15 +6,30 @@ type Props = {
   children: React.ReactNode;
   title: string;
   headerClassName?: string;
+  sectionClassName?: string;
+  stickyHeader?: boolean;
 };
 
-export function SectionCard({ children, title, headerClassName }: Props) {
+export function SectionCard({
+  children,
+  title,
+  headerClassName,
+  sectionClassName,
+  stickyHeader,
+}: Props) {
   return (
     <section>
-      <Card className="w-full border-none bg-transparent shadow-none">
+      <Card
+        className={cn(
+          "w-full border-none bg-transparent shadow-none",
+          sectionClassName,
+        )}
+      >
         <CardHeader
           className={cn(
-            "sticky top-14 z-30 bg-background/70 pb-4 backdrop-blur ",
+            "pb-4 ",
+            stickyHeader &&
+              " sticky top-14 z-30 bg-background/70 backdrop-blur",
             headerClassName,
           )}
         >
