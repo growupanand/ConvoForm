@@ -52,7 +52,7 @@ module.exports = {
     },
   },
   hooks: {
-    "before:init": [
+    "after:release": [
       "npx auto-changelog --stdout --commit-limit false -p --template ./templates/changelog-template.hbs --handlebars-setup ./templates/handlebars-setup.js > ./src/lib/data/changelog.ts",
     ],
   },
