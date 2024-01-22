@@ -14,7 +14,14 @@ export function Hero() {
 
   return (
     <section className="md:my-15 my-10 flex w-full flex-col justify-center gap-1 py-4 text-center">
-      <div className="flex items-center justify-center gap-3">
+      <div className="flex flex-col items-center justify-center gap-3">
+        <Link
+          href="https://github.com/growupanand/ConvoForm"
+          target="_blank"
+          rel="noreferrer nofollow noopener"
+        >
+          <GithubStars />
+        </Link>
         <Badge variant="outline" className="group text-sm font-normal">
           <Link
             href="https://github.com/growupanand/ConvoForm"
@@ -32,13 +39,6 @@ export function Hero() {
             />
           </Link>
         </Badge>
-        <Link
-          href="https://github.com/growupanand/ConvoForm"
-          target="_blank"
-          rel="noreferrer nofollow noopener"
-        >
-          <GithubStars />
-        </Link>
       </div>
       <div className="mb-3 flex flex-col gap-6">
         <h1 className="text-3xl font-semibold text-gray-700 lg:text-6xl ">

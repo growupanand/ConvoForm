@@ -13,7 +13,11 @@ export function Footer() {
         <span aria-label="App name" className={montserrat.className}>
           {brandName}
         </span>
+
         <div className="flex items-center gap-3">
+          <Button variant="link" size="sm" asChild>
+            <Link href="/changelog">Changelog</Link>
+          </Button>
           <Button variant="link" className="px-0" asChild>
             <Link
               href="https://github.com/growupanand/ConvoForm"
@@ -56,6 +60,7 @@ export function Footer() {
             </Link>
           </Button>
         </div>
+
         <span className="lg:ml-auto">
           <span className={cn("text-sm font-light", montserrat.className)}>
             Created by
