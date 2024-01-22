@@ -34,7 +34,7 @@ export default function ConversationDetail({ conversation }: Props) {
       </div>
       <div className="max-w-lg space-y-10">
         {!isFormDataEmpty && (
-          <SectionCard title="Form Data">
+          <SectionCard stickyHeader title="Form Data">
             <div className="overflow-hidden rounded-md border">
               <Table className="">
                 <TableBody>
@@ -53,7 +53,7 @@ export default function ConversationDetail({ conversation }: Props) {
             </div>
           </SectionCard>
         )}
-        <SectionCard title="Transcript">
+        <SectionCard stickyHeader title="Transcript">
           <TranscriptCard transcript={transcript} />
         </SectionCard>
       </div>
