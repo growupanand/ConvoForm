@@ -1,3 +1,14 @@
+## 0.2.0 (2024-01-22)
+
+### Features
+
+- [#153](https://github.com/growupanand/ConvoForm/issues/153) while going to
+  previous question, previous answer should also auto-filled in input
+  ([2ac600d](https://github.com/growupanand/ConvoForm/commit/2ac600d7cab948b2a59050f5ffdb752e271f8d82))
+- 🚀 Added changelog page
+  ([8ff20ea](https://github.com/growupanand/ConvoForm/commit/8ff20ea58bf1b829553244d1b5fb2298e4d9fb55)),
+  closes [#143](https://github.com/growupanand/ConvoForm/issues/143)
+
 ## 0.1.1 (2024-01-21)
 
 ### Reverts
