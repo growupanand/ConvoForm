@@ -1,7 +1,12 @@
+import createMDX from "@next/mdx";
+// Injected content via Sentry wizard below
+
+import { withSentryConfig } from "@sentry/nextjs";
+import remarkGfm from "remark-gfm";
+
+import("./env.js");
+
 /** @type {import('next').NextConfig} */
-
-require("./env.js");
-
 const nextConfig = {
   reactStrictMode: false,
   images: {
@@ -17,16 +22,21 @@ const nextConfig = {
   experimental: {
     swcPlugins: [["@swc-jotai/react-refresh", {}]],
   },
+  // Configure `pageExtensions` to include MDX files
+  pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
 };
 
-module.exports = nextConfig;
+const withMDX = createMDX({
+  // Add markdown plugins here, as desired
+  options: {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [],
+  },
+});
+const defaultExport = withMDX(nextConfig);
 
-// Injected content via Sentry wizard below
-
-const { withSentryConfig } = require("@sentry/nextjs");
-
-module.exports = withSentryConfig(
-  module.exports,
+export default withSentryConfig(
+  defaultExport,
   {
     // For all available options, see:
     // https://github.com/getsentry/sentry-webpack-plugin#options
