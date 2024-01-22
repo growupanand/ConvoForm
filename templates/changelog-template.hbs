@@ -1,0 +1,41 @@
+[ 
+  {{#each releases}}
+  {
+    "title": "{{title}}",
+    "tag": "{{tag}}",
+    "isoDate": "{{isoDate}}",
+    "commits": {
+      "features": [
+          {{#commit-list commits heading="" subject="feat: "}}
+             {
+                "message": "{{jsonSafeString message}}",
+                "shorthash": "{{shorthash}}",
+                "href": "{{href}}"
+             }{{#unless @last}},{{/unless}}
+            
+          {{/commit-list}}
+      ],
+      "improvements": [
+          {{#commit-list commits heading="" subject="(refactor|style|perf): "}}
+             {
+                "message": "{{jsonSafeString message}}",
+                "shorthash": "{{shorthash}}",
+                "href": "{{href}}"
+             }{{#unless @last}},{{/unless}}
+
+          {{/commit-list}}
+      ],
+      "fixes": [
+          {{#commit-list commits heading="" subject="fix: "}}
+              {
+                "message": "{{jsonSafeString message}}",
+                "shorthash": "{{shorthash}}",
+                "href": "{{href}}"
+             }{{#unless @last}},{{/unless}}
+
+          {{/commit-list}}
+      ]
+    }
+  }{{#unless @last}},{{/unless}}
+  {{/each}}
+]
