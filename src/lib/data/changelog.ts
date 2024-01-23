@@ -2,9 +2,29 @@
 
 export const changelog = [ 
 {
-"title": "0.2.0",
+"title": "0.2.1",
 "tag": "",
-"isoDate": "2024-01-22",
+"isoDate": "2024-01-23",
+"commits": {
+"features": [
+],
+"improvements": [
+],
+"fixes": [
+
+{
+"message": "fix: 🐛 wrong domain name on production doployment\n\nAdded NEXT_PUBLIC_APP_URL environment to use on production deployment\n\n✅ Closes: #159",
+"shorthash": "d5dcbd6",
+"href": "https://github.com/growupanand/ConvoForm/commit/d5dcbd687b0a242d9ece628b00ba5de7952f7c0a"
+},
+
+]
+}
+},
+{
+"title": "0.2.0",
+"tag": "0.2.0",
+"isoDate": "2024-01-23",
 "commits": {
 "features": [
 
