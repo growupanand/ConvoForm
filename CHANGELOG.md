@@ -1,3 +1,11 @@
+## [0.2.1](https://github.com/growupanand/ConvoForm/compare/0.2.0...0.2.1) (2024-01-23)
+
+### Bug Fixes
+
+- 🐛 wrong domain name on production doployment
+  ([d5dcbd6](https://github.com/growupanand/ConvoForm/commit/d5dcbd687b0a242d9ece628b00ba5de7952f7c0a)),
+  closes [#159](https://github.com/growupanand/ConvoForm/issues/159)
+
 ## 0.2.0 (2024-01-22)
 
 ### Features
