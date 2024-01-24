@@ -1,35 +1,81 @@
-import React from "react";
+"use client";
 
+import { ReactNode } from "react";
+import dynamic from "next/dynamic";
+
+import Spinner from "@/components/common/spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "../../ui/skeleton";
+
+const BarChart = dynamic(
+  async () => import("@tremor/react").then((mod) => mod.BarChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-full w-full items-center justify-center">
+        <Spinner className="mr-2" /> Loading
+      </div>
+    ),
+  },
+);
 
 type Props = {
   title: string;
   mainValue: string;
   secondaryValue?: string;
-  dataType?: React.ReactNode;
+  dataType?: ReactNode;
+  chartData?: any;
 };
 
-function DataCard({ title, mainValue, secondaryValue, dataType }: Props) {
+function DataCard({
+  title,
+  mainValue,
+  secondaryValue,
+  dataType,
+  chartData,
+}: Props) {
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        {dataType && (
-          <div className="text-xs text-muted-foreground">{dataType}</div>
-        )}
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-semibold lg:text-3xl">{mainValue}</div>
-        {secondaryValue && (
-          <p className="text-xs text-muted-foreground">{secondaryValue}</p>
-        )}
+      <CardContent className="pt-6">
+        <div className="relative flex flex-col-reverse items-stretch gap-3 lg:flex-row">
+          <div className="flex items-stretch justify-between gap-2 lg:flex-col lg:items-start lg:justify-center">
+            <CardTitle className="whitespace-nowrap text-lg font-medium">
+              <span>{title}</span>
+              {secondaryValue && (
+                <p className="text-xs font-normal text-muted-foreground">
+                  {secondaryValue}
+                </p>
+              )}
+            </CardTitle>
+            <div className="flex flex-col items-end lg:items-center">
+              <div className="text-3xl font-semibold lg:text-5xl">
+                {mainValue}
+              </div>
+              {dataType && (
+                <div className="text-md  whitespace-nowrap text-muted-foreground">
+                  {dataType}
+                </div>
+              )}
+            </div>
+          </div>
+          {chartData && (
+            <div className="h-[150px] grow  ">
+              <BarChart
+                className="h-full w-full"
+                data={chartData}
+                index="name"
+                categories={["count"]}
+                yAxisWidth={30}
+              />
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
 }
 
-const DataCardSkeleton = () => {
+export const DataCardSkeleton = () => {
   return (
     <Card className="h-[130px]">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
