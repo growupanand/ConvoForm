@@ -11,7 +11,7 @@ import {
   Trash,
 } from "lucide-react";
 
-import { LinkN } from "@/components/linkN";
+import { LinkN } from "@/components/common/linkN";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

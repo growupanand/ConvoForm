@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs";
 import { CheckCircle } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";
-import { LinkN } from "@/components/linkN";
+import { LinkN } from "@/components/common/linkN";
 import { freePlan } from "@/lib/config/pricing";
 import { Plan } from "@/lib/types/pricing";
 import { cn } from "@/lib/utils";

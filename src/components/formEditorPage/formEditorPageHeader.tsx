@@ -5,7 +5,7 @@ import { Form, Workspace } from "@prisma/client";
 import { ChevronLeft, ChevronRight, Home } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";
-import { LinkN } from "@/components/linkN";
+import { LinkN } from "@/components/common/linkN";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
