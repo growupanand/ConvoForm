@@ -11,6 +11,7 @@ import {
   Trash,
 } from "lucide-react";
 
+import { LinkN } from "@/components/linkN";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -79,14 +80,14 @@ export function FormListItem({ form, onDeleted }: Readonly<Props>) {
   return (
     <div className="flex items-center justify-between py-1 transition-all hover:bg-gray-50 hover:ps-3">
       <div className="grow">
-        <Link href={`/forms/${form.id}`}>
+        <LinkN href={`/forms/${form.id}`}>
           <Button
             variant="link"
             className="w-full justify-start ps-0 font-normal  hover:no-underline "
           >
             {form.name}
           </Button>
-        </Link>
+        </LinkN>
       </div>
 
       <div className="flex items-center gap-3">

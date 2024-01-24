@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { auth } from "@clerk/nextjs";
 import { CheckCircle } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";
+import { LinkN } from "@/components/linkN";
 import { freePlan } from "@/lib/config/pricing";
 import { Plan } from "@/lib/types/pricing";
 import { cn } from "@/lib/utils";
@@ -87,9 +87,9 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
           className={cn("w-full rounded-full font-bold", montserrat.className)}
           asChild
         >
-          <Link href={isLoggedin ? "/dashboard" : "/auth/register"}>
+          <LinkN href={isLoggedin ? "/dashboard" : "/auth/register"}>
             Sign up now
-          </Link>
+          </LinkN>
         </Button>
       </CardFooter>
     </Card>
