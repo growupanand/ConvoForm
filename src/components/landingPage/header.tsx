@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs";
 import { LayoutDashboard } from "lucide-react";
 
-import { LinkN } from "@/components/linkN";
+import { LinkN } from "@/components/common/linkN";
 import BrandName from "../common/brandName";
 import { Button } from "../ui/button";
 

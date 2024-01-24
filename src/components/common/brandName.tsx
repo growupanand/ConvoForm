@@ -1,5 +1,5 @@
 import { montserrat } from "@/app/fonts";
-import { LinkN } from "@/components/linkN";
+import { LinkN } from "@/components/common/linkN";
 import { brandName } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
