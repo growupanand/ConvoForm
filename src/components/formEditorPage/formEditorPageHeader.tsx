@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { Form, Workspace } from "@prisma/client";
 import { ChevronLeft, ChevronRight, Home } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";
+import { LinkN } from "@/components/linkN";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
@@ -28,30 +28,32 @@ function FormEditorPageHeader({ form, workspace }: Props) {
           )}
         >
           <Button size="sm" variant="link" asChild>
-            <Link href={"/dashboard"}>
+            <LinkN href={"/dashboard"}>
               <Home size={20} />
-            </Link>
+            </LinkN>
           </Button>
           <ChevronRight size={20} />
-          <Button size="sm" variant="link" asChild>
-            <Link href={"/dashboard"}>Dashboard</Link>
-          </Button>
+          <LinkN href={"/dashboard"}>
+            <Button size="sm" variant="link">
+              Dashboard
+            </Button>
+          </LinkN>
           <ChevronRight size={20} />
-          <Button size="sm" variant="link" asChild>
-            <Link href={`/workspaces/${form.workspaceId}`}>
+          <LinkN href={`/workspaces/${form.workspaceId}`}>
+            <Button size="sm" variant="link">
               {workspace.name}
-            </Link>
-          </Button>
+            </Button>
+          </LinkN>
           <ChevronRight size={20} />
           <FormNameInput form={form} className="w-full text-xl font-medium" />
         </div>
         <div className="lg:hidden">
-          <Link href={`/workspaces/${form.workspaceId}`}>
+          <LinkN href={`/workspaces/${form.workspaceId}`}>
             <Button size="sm" variant="link" className="px-0 text-sm">
               <ChevronLeft className="mr-2" size={20} />
               Back
             </Button>
-          </Link>
+          </LinkN>
         </div>
         <div className="overflow-hidden lg:hidden">
           <FormNameInput form={form} className="text-xl font-medium" />
