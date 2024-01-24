@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";
-import { LinkN } from "@/components/linkN";
+import { LinkN } from "@/components/common/linkN";
 import { getFrontendBaseUrl } from "@/lib/url";
 import { cn } from "@/lib/utils";
 import { Badge } from "../ui/badge";
