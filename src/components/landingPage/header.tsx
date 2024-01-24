@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { auth } from "@clerk/nextjs";
 import { LayoutDashboard } from "lucide-react";
 
+import { LinkN } from "@/components/linkN";
 import BrandName from "../common/brandName";
 import { Button } from "../ui/button";
 
@@ -14,17 +14,17 @@ export function Header() {
         <BrandName className="text-xl lg:text-2xl" />
         <nav className="flex items-center gap-3">
           {userId ? (
-            <Link href="/dashboard">
+            <LinkN href="/dashboard">
               <Button variant="secondary">
                 <LayoutDashboard className="mr-2" size={20} /> Go to Dashboard
               </Button>
-            </Link>
+            </LinkN>
           ) : (
-            <Link href="/auth/sign-in" rel="noopener noreferrer nofollow">
+            <LinkN href="/auth/sign-in" rel="noopener noreferrer nofollow">
               <Button variant="secondary" className="rounded-full">
                 Sign In
               </Button>
-            </Link>
+            </LinkN>
           )}
         </nav>
       </div>

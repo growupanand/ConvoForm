@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";
+import { LinkN } from "@/components/linkN";
 import { getFrontendBaseUrl } from "@/lib/url";
 import { cn } from "@/lib/utils";
 import { Badge } from "../ui/badge";
@@ -55,9 +56,9 @@ export function Hero() {
           className={cn("rounded-full lg:text-lg", montserrat.className)}
           asChild
         >
-          <Link href="/auth/register" rel="noreferrer nofollow noopener">
+          <LinkN href="/auth/register" rel="noreferrer nofollow noopener">
             Get started
-          </Link>
+          </LinkN>
         </Button>
         <Button
           size="lg"
@@ -65,9 +66,9 @@ export function Hero() {
           className={cn("rounded-full  lg:text-lg", montserrat.className)}
           asChild
         >
-          <Link href={demoFormLink} target="_blank">
+          <LinkN href={demoFormLink} target="_blank">
             Try demo form
-          </Link>
+          </LinkN>
         </Button>
       </div>
     </section>
