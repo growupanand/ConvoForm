@@ -1,6 +1,5 @@
-import Link from "next/link";
-
 import { montserrat } from "@/app/fonts";
+import { LinkN } from "@/components/linkN";
 import { brandName } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +9,7 @@ type Props = {
 
 export default function BrandName({ className = "" }: Props) {
   return (
-    <Link href="/">
+    <LinkN href="/">
       <span
         className={cn(
           "font-semibold text-foreground",
@@ -20,6 +19,6 @@ export default function BrandName({ className = "" }: Props) {
       >
         {brandName}
       </span>
-    </Link>
+    </LinkN>
   );
 }

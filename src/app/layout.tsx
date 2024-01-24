@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import "./globals.css";
+import "nprogress/nprogress.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
 
