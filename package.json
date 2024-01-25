@@ -7,12 +7,16 @@
     "type": "git",
     "url": "git+https://github.com/growupanand/ConvoForm.git"
   },
+  "engines": {
+    "node": ">=18.17",
+    "pnpm": ">=8"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint --fix",
-    "vercel-build": "npm run prisma-migrate-deploy && next build",
+    "vercel-build": "pnpm run prisma-migrate-deploy && next build",
     "reset-db": "prisma migrate reset",
     "prisma-migrate-dev": "prisma migrate dev",
     "prisma-migrate-deploy": "prisma migrate deploy",
