@@ -1,13 +1,11 @@
-import { OrganizationList } from "@clerk/nextjs";
-
-import { getOrganizationId } from "@/lib/getOrganizationId";
+import { auth, OrganizationList } from "@clerk/nextjs";
 
 type Props = {
   children: React.ReactNode;
 };
 
 export const OrganizationRequired = ({ children }: Readonly<Props>) => {
-  const orgId = getOrganizationId();
+  const { orgId } = auth();
 
   if (!orgId) {
     return (
