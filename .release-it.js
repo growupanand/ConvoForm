@@ -53,7 +53,7 @@ module.exports = {
   },
   hooks: {
     "before:release": [
-      "npx auto-changelog --stdout --commit-limit false -p --template ./templates/changelog-template.hbs --handlebars-setup ./templates/handlebars-setup.js > ./src/lib/data/changelog.ts",
+      "npx auto-changelog --stdout --commit-limit false -p --template ./templates/changelog-template.hbs --handlebars-setup ./templates/handlebars-setup.js > ./apps/web/src/lib/data/changelog.ts",
     ],
   },
 };
