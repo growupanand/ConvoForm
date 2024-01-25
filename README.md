@@ -56,7 +56,7 @@ npm install
 ### Run the Development Server
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Visit [http://localhost:3000](http://localhost:3000/) in your browser to see the
@@ -65,7 +65,7 @@ application.
 ### Build for Production
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 or
@@ -73,7 +73,7 @@ or
 To build the project for Vercel deployment, run:
 
 ```bash
-npm run vercel-build
+pnpm run vercel-build
 ```
 
 ## Screenshots
