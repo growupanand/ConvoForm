@@ -19,8 +19,8 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@clerk/clerk-sdk-node": "^4.13.4",
-    "@clerk/nextjs": "^4.29.3",
+    "@clerk/clerk-sdk-node": "^4.13.7",
+    "@clerk/nextjs": "^4.29.5",
     "@headlessui/react": "^1.7.18",
     "@headlessui/tailwindcss": "^0.2.0",
     "@hookform/resolvers": "^3.3.2",
@@ -50,7 +50,7 @@
     "clsx": "^2.0.0",
     "jotai": "^2.6.1",
     "lucide-react": "^0.292.0",
-    "next": "14.0.3",
+    "next": "^14.1.0",
     "nprogress": "^0.2.0",
     "openai": "^4.24.2",
     "openai-edge": "^1.2.2",
@@ -71,10 +71,10 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
+    "eslint-config-custom": "workspace:*",
     "postcss": "^8",
     "prisma": "^5.6.0",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5",
-    "eslint-config-custom": "workspace:*"
+    "typescript": "^5"
   }
 }
