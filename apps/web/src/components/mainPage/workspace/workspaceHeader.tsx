@@ -2,6 +2,16 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@convoform/ui/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@convoform/ui/components/ui/dropdown-menu";
+import { Input } from "@convoform/ui/components/ui/input";
+import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import { toast } from "@convoform/ui/components/ui/use-toast";
 import { Workspace } from "@prisma/client";
 import { useAtom } from "jotai";
 import { Check, Edit, MoreVertical, Trash } from "lucide-react";
@@ -13,16 +23,6 @@ import {
 } from "@/lib/controllers/workspace";
 import { cn, debounce } from "@/lib/utils";
 import Spinner from "../../common/spinner";
-import { Button } from "../../ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
-import { Input } from "../../ui/input";
-import { Skeleton } from "../../ui/skeleton";
-import { toast } from "../../ui/use-toast";
 import CreateFormButton from "./createFormButton";
 
 type Props = {

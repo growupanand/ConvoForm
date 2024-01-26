@@ -11,16 +11,20 @@
   "engines": {
     "node": ">=18"
   },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "build": "turbo run build",
-    "vercel-build": "turbo run vercel-build",
+    "build": "turbo build",
     "dev": "turbo run dev",
     "prepare": "husky install",
     "format:all": "prettier --write .",
     "format:staged": "prettier --write $(git diff --staged --name-only --diff-filter d | xargs)",
     "release": "release-it",
     "commit": "git-cz",
-    "lint": "turbo run lint"
+    "lint": "turbo lint",
+    "ui:add": "pnpm --filter @convoform/ui ui:add"
   },
   "config": {
     "commitizen": {
@@ -36,6 +40,9 @@
     "prettier": "^3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "git-cz": "^4.9.0",
-    "auto-changelog": "^2.4.0"
+    "auto-changelog": "^2.4.0",
+    "@convoform/eslint-config": "workspace:*",
+    "@convoform/tsconfig": "workspace:*",
+    "turbo": "latest"
   }
 }

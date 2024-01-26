@@ -2,10 +2,15 @@
 
 import { ReactNode } from "react";
 import dynamic from "next/dynamic";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@convoform/ui/components/ui/card";
+import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 
 import Spinner from "@/components/common/spinner";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "../../ui/skeleton";
 
 const BarChart = dynamic(
   async () => import("@tremor/react").then((mod) => mod.BarChart),

@@ -1,8 +1,8 @@
 import Link from "next/link";
+import { Button } from "@convoform/ui/components/ui/button";
+import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 
 import { cn } from "@/lib/utils";
-import { Button } from "../../ui/button";
-import { Skeleton } from "../../ui/skeleton";
 
 type Props = {
   isActive?: boolean;

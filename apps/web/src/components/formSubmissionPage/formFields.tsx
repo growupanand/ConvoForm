@@ -1,15 +1,17 @@
 import { ChangeEvent } from "react";
+import { Button } from "@convoform/ui/components/ui/button";
+import { Textarea } from "@convoform/ui/components/ui/textarea";
 import { ChevronLeft, CornerDownLeft, Tally1 } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
-import { Textarea } from "../ui/textarea";
 
 type Props = {
   isFormBusy: boolean;
+  // eslint-disable-next-line no-unused-vars
   handleFormSubmit: (event: any) => void;
   handleInputChange: (
+    // eslint-disable-next-line no-unused-vars
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
   ) => void;
   input: string;
@@ -57,13 +59,11 @@ export const FormFieldsViewer = ({
               placeholder="Type answer here..."
               value={input}
               disabled={isFormBusy}
-              onChange={(e) => {
-                handleInputChange(e);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleFormSubmit(e);
+              onChange={handleInputChange}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault();
+                  handleFormSubmit(event);
                 }
               }}
             />
