@@ -1,12 +1,22 @@
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@convoform/ui/components/ui/card";
+import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+} from "@convoform/ui/components/ui/table";
 import { Conversation } from "@prisma/client";
 import { FileText } from "lucide-react";
 
 import { FormFieldData } from "@/lib/types/conversation";
 import { Transcript } from "@/lib/types/transcript";
 import { SectionCard } from "../../landingPage/sectionCard";
-import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import { Skeleton } from "../../ui/skeleton";
-import { Table, TableBody, TableCell, TableRow } from "../../ui/table";
 import TranscriptCard from "./transcriptCard";
 
 type Props = {

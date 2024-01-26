@@ -1,13 +1,33 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [
+    "**/.env.*local"
+  ],
   "pipeline": {
     "build": {
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": [
         ".next/**",
         "!.next/cache/**"
+      ],
+      "env": [
+        "*",
+        "OPENAI_API_KEY",
+        "OPEN_AI_MODEL",
+        "DATABASE_URL",
+        "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+        "CLERK_SECRET_KEY",
+        "NODE_ENV",
+        "VERCEL_URL"
       ]
     },
-    "lint": {},
+    "lint": {
+      "dependsOn": [
+        "^lint"
+      ]
+    },
     "dev": {
       "cache": false,
       "persistent": true

@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Tabs, TabsList, TabsTrigger } from "@convoform/ui/components/ui/tabs";
 import { useAtom } from "jotai";
 
 import { montserrat } from "@/app/fonts";
 import { currentFormAtom } from "@/lib/atoms/formAtoms";
 import { NavLink } from "@/lib/types/navigation";
-import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 
 export default function NavLinks() {
   const pathName = usePathname();

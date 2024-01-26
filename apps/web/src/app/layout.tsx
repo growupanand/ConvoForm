@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
-import "./globals.css";
+import "@convoform/ui/globals.css";
 import "nprogress/nprogress.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@convoform/ui/components/ui/toaster";
 
 import GoogleAnalytics from "@/components/googleAnalytics";
 import { SentryUserInit } from "@/components/sentryUserInit";
-import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { roboto } from "./fonts";
 

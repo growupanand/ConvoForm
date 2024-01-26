@@ -1,6 +1,11 @@
+import {
+  Card,
+  CardContent,
+  CardHeader,
+} from "@convoform/ui/components/ui/card";
+
 import { montserrat } from "@/app/fonts";
 import { cn } from "@/lib/utils";
-import { Card, CardContent, CardHeader } from "../ui/card";
 
 type Props = {
   children: React.ReactNode;

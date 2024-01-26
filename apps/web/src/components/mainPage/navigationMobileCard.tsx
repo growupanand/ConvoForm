@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu } from "lucide-react";
-
+import { Button } from "@convoform/ui/components/ui/button";
 import {
   Sheet,
   SheetClose,
   SheetContent,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from "@convoform/ui/components/ui/sheet";
+import { Menu } from "lucide-react";
+
 import BrandName from "../common/brandName";
-import { Button } from "../ui/button";
 
 type Props = {
   children: React.ReactNode;

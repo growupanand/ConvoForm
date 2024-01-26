@@ -1,5 +1,6 @@
+import { Badge } from "@convoform/ui/components/ui/badge";
+
 import { Commit, CommitSections } from "@/lib/validations/changeLog";
-import { Badge } from "../ui/badge";
 import { CommitItem } from "./commitItem";
 
 const sectionBadgeVariants = {

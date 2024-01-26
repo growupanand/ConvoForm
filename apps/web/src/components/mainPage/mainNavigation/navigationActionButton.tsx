@@ -1,4 +1,4 @@
-import { Button } from "../../ui/button";
+import { Button } from "@convoform/ui/components/ui/button";
 
 type Props = {
   disabled?: boolean;

@@ -1,6 +1,33 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@convoform/ui/components/ui/accordion";
+import { Badge } from "@convoform/ui/components/ui/badge";
+import { Button } from "@convoform/ui/components/ui/button";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+  Form as UIForm,
+} from "@convoform/ui/components/ui/form";
+import { Input } from "@convoform/ui/components/ui/input";
+import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@convoform/ui/components/ui/tooltip";
+import {
+  sendErrorResponseToast,
+  toast,
+} from "@convoform/ui/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form as PrismaForm,
@@ -30,35 +57,11 @@ import {
 import { z } from "zod";
 
 import { montserrat } from "@/app/fonts";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-  Form as UIForm,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { apiClient } from "@/lib/apiClient";
 import { currentFormAtom, currentFormFieldsAtom } from "@/lib/atoms/formAtoms";
 import { updateFormController } from "@/lib/controllers/form";
 import { cn } from "@/lib/utils";
 import { formUpdateSchema } from "@/lib/validations/form";
-import { Badge } from "../../ui/badge";
-import { Button } from "../../ui/button";
-import { Skeleton } from "../../ui/skeleton";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../../ui/tooltip";
-import { sendErrorResponseToast, toast } from "../../ui/use-toast";
 
 type FormWithFields = PrismaForm & { formFields: PrismaFormField[] };
 

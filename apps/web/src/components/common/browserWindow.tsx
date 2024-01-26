@@ -1,8 +1,8 @@
 import Link from "next/link";
+import { Button } from "@convoform/ui/components/ui/button";
+import { toast } from "@convoform/ui/components/ui/use-toast";
 import { ExternalLink, RotateCw } from "lucide-react";
 
-import { Button } from "../ui/button";
-import { toast } from "../ui/use-toast";
 import { CopyLinkButton } from "./copyLinkButton";
 
 type Props = {
