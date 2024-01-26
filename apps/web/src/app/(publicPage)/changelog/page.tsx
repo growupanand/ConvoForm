@@ -1,8 +1,8 @@
 import { Metadata } from "next";
+import { Badge } from "@convoform/ui/components/ui/badge";
 
 import { ReleaseCard } from "@/components/changeLogPage/releaseCard";
 import BrandName from "@/components/common/brandName";
-import { Badge } from "@/components/ui/badge";
 import { changelog } from "@/lib/data/changelog";
 import { changeLogSchema } from "@/lib/validations/changeLog";
 

@@ -2,12 +2,14 @@ import { auth } from "@clerk/nextjs";
 
 import { getBackendBaseUrl } from "./url";
 
+// eslint-disable-next-line no-undef
 type ApiClientOptions = RequestInit & {
   data?: Record<string, any>;
   queryParams?: Record<string, string>;
 };
 
 type ApiClient = (
+  // eslint-disable-next-line no-undef
   url: RequestInfo,
   fetchOptions: ApiClientOptions,
 ) => Promise<Response>;

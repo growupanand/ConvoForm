@@ -1,7 +1,7 @@
+import { Badge } from "@convoform/ui/components/ui/badge";
 import { Star } from "lucide-react";
 
 import { getGitHubStars } from "@/lib/github";
-import { Badge } from "../ui/badge";
 
 async function GithubStars() {
   const stars = await getGitHubStars();

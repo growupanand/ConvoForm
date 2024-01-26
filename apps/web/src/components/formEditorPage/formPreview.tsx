@@ -1,19 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { Checkbox } from "@convoform/ui/components/ui/checkbox";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@convoform/ui/components/ui/tooltip";
 import { useAtom } from "jotai";
 
 import { currentFormAtom } from "@/lib/atoms/formAtoms";
 import { getFrontendBaseUrl } from "@/lib/url";
 import BrowserWindow from "../common/browserWindow";
 import { FormViewer } from "../formSubmissionPage/formViewer";
-import { Checkbox } from "../ui/checkbox";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
 
 type Props = {
   noToolbar?: boolean;

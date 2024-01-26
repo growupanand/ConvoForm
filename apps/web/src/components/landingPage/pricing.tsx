@@ -1,4 +1,13 @@
 import { auth } from "@clerk/nextjs";
+import { Badge } from "@convoform/ui/components/ui/badge";
+import { Button } from "@convoform/ui/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@convoform/ui/components/ui/card";
 import { CheckCircle } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";
@@ -6,15 +15,6 @@ import { LinkN } from "@/components/common/linkN";
 import { freePlan } from "@/lib/config/pricing";
 import { Plan } from "@/lib/types/pricing";
 import { cn } from "@/lib/utils";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
 import { SectionCard } from "./sectionCard";
 
 export function Pricing() {

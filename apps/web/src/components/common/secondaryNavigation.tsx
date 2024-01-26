@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Button } from "@convoform/ui/components/ui/button";
 
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
   items: {

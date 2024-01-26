@@ -1,10 +1,10 @@
+import { Card, CardContent } from "@convoform/ui/components/ui/card";
+import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { Conversation } from "@prisma/client";
 import { FileText } from "lucide-react";
 
 import { timeAgo } from "@/lib/utils";
 import { SecondaryNavigation } from "../../common/secondaryNavigation";
-import { Card, CardContent } from "../../ui/card";
-import { Skeleton } from "../../ui/skeleton";
 
 interface ConversationsCardProps extends React.HTMLAttributes<HTMLDivElement> {
   conversations: Conversation[];

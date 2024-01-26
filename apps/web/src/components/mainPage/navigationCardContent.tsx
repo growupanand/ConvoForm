@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
+import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useAtom } from "jotai";
 import { Loader2, Plus } from "lucide-react";
 
@@ -10,7 +11,6 @@ import { workspacesAtom } from "@/lib/atoms/workspaceAtoms";
 import { createWorkspaceController } from "@/lib/controllers/workspace";
 import { NavigationConfig } from "@/lib/types/navigation";
 import BrandName from "../common/brandName";
-import { toast } from "../ui/use-toast";
 import { NavigationLinks } from "./mainNavigation/mainNavigation";
 
 type State = {

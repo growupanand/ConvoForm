@@ -1,10 +1,10 @@
 import Link from "next/link";
+import { Button } from "@convoform/ui/components/ui/button";
 import { Github, Instagram, Mail, Twitter } from "lucide-react";
 
 import { marck_script, montserrat } from "@/app/fonts";
 import { brandName } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
 
 export function Footer() {
   return (
