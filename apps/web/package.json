@@ -11,12 +11,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --fix",
-    "vercel-build": "pnpm run prisma-migrate-deploy && next build",
-    "reset-db": "prisma migrate reset",
-    "prisma-migrate-dev": "prisma migrate dev",
-    "prisma-migrate-deploy": "prisma migrate deploy",
-    "prisma-generate": "prisma generate",
-    "postinstall": "prisma generate"
+    "vercel-build": "pnpm run prisma-migrate-deploy && next build"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.7",
@@ -25,7 +20,6 @@
     "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
     "@next/mdx": "^14.1.0",
-    "@prisma/client": "^5.6.0",
     "@sentry/nextjs": "^7.91.0",
     "@tremor/react": "^3.13.3",
     "@types/mdx": "^2.0.10",
@@ -45,7 +39,8 @@
     "tailwind-merge": "^2.0.0",
     "clsx": "^2.0.0",
     "@convoform/api": "workspace:*",
-    "@trpc/server": "^10.43.6"
+    "@trpc/server": "^10.43.6",
+    "@convoform/db": "workspace:*"
   },
   "devDependencies": {
     "@convoform/eslint-config": "workspace:*",
@@ -60,7 +55,6 @@
     "@typescript-eslint/parser": "^6.18.0",
     "eslint-plugin-unused-imports": "^3.0.0",
     "postcss": "^8",
-    "prisma": "^5.6.0",
     "tailwindcss": "^3.3.0",
     "typescript": "^5",
     "eslint-import-resolver-typescript": "^3.6.1"

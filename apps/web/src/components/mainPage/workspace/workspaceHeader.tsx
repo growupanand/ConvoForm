@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Workspace } from "@convoform/db";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +13,6 @@ import {
 import { Input } from "@convoform/ui/components/ui/input";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { toast } from "@convoform/ui/components/ui/use-toast";
-import { Workspace } from "@prisma/client";
 import { useAtom } from "jotai";
 import { Check, Edit, MoreVertical, Trash } from "lucide-react";
 

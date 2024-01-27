@@ -1,6 +1,6 @@
+import { Conversation } from "@convoform/db";
 import { Card, CardContent } from "@convoform/ui/components/ui/card";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
-import { Conversation } from "@prisma/client";
 import { FileText } from "lucide-react";
 
 import { timeAgo } from "@/lib/utils";

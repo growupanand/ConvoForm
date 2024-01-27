@@ -15,6 +15,9 @@
     "apps/*",
     "packages/*"
   ],
+  "prisma": {
+    "schema": "packages/db/prisma/schema.prisma"
+  },
   "scripts": {
     "build": "turbo build",
     "dev": "turbo run dev",
@@ -24,7 +27,8 @@
     "release": "release-it",
     "commit": "git-cz",
     "lint": "turbo lint",
-    "ui:add": "pnpm --filter @convoform/ui ui:add"
+    "ui:add": "pnpm --filter @convoform/ui ui:add",
+    "generate": "turbo run generate"
   },
   "config": {
     "commitizen": {

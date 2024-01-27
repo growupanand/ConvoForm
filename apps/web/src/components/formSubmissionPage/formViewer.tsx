@@ -1,8 +1,8 @@
 "use client";
 
 import { ChangeEvent, useEffect, useState } from "react";
+import { Form } from "@convoform/db";
 import { sendErrorResponseToast } from "@convoform/ui/components/ui/use-toast";
-import { Form } from "@prisma/client";
 import { useChat } from "ai/react";
 
 import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
