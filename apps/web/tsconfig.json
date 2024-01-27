@@ -1,7 +1,7 @@
 {
   "extends": "@convoform/tsconfig/nextjs.json",
   "compilerOptions": {
-    "baseUrl": "",
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
@@ -27,8 +27,8 @@
     "**/*.jsx",
     ".next/types/**/*.ts",
     "**/*.mjs",
-    ".contentlayer/generated"
-, "tailwind.config.js"  ],
+    "tailwind.config.js"
+  ],
   "exclude": ["node_modules"],
   "strictNullChecks": true,
     "strict": true
