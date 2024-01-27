@@ -4,6 +4,7 @@ import "@convoform/ui/globals.css";
 import "nprogress/nprogress.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
+import { TRPCReactProvider } from "@convoform/api/trpc/react";
 import { Toaster } from "@convoform/ui/components/ui/toaster";
 
 import GoogleAnalytics from "@/components/googleAnalytics";
@@ -67,7 +68,7 @@ export default function RootLayout({
             <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
           ) : null}
           <SentryUserInit />
-          {children}
+          <TRPCReactProvider>{children}</TRPCReactProvider>
           <Toaster />
         </body>
       </html>
