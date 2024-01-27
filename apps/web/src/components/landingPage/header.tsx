@@ -1,5 +1,6 @@
-import { auth, UserButton } from "@clerk/nextjs";
+import { auth, ClerkLoading, UserButton } from "@clerk/nextjs";
 import { Button } from "@convoform/ui/components/ui/button";
+import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { LayoutDashboard } from "lucide-react";
 
 import { LinkN } from "@/components/common/linkN";
@@ -20,6 +21,9 @@ export function Header() {
                   <LayoutDashboard className="mr-2" size={20} /> Go to Dashboard
                 </Button>
               </LinkN>
+              <ClerkLoading>
+                <Skeleton className="h-10 w-10 animate-pulse rounded-full" />
+              </ClerkLoading>
               <UserButton />
             </>
           ) : (

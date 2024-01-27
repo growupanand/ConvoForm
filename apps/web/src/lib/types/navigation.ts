@@ -14,7 +14,7 @@ export type NavSection = {
   title: string;
   links: NavLink[] | NavText[];
   action?: {
-    onClick: () => void;
+    onClick: () => Promise<void>;
     disabled?: boolean;
     icon: any;
   };

@@ -32,6 +32,7 @@ export const getWorkspacesController = async (orgId: string) => {
   const response = await apiClient("workspaces", {
     method: "GET",
     queryParams: { orgId },
+    cache: "no-cache",
   });
   return (await response.json()) as Workspace[];
 };
