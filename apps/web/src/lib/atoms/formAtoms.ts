@@ -1,4 +1,4 @@
-import { Conversation, Form, FormField } from "@prisma/client";
+import { Conversation, Form, FormField } from "@convoform/db";
 import { atom } from "jotai";
 
 export const currentFormIdAtom = atom<Form["id"] | null>(null);

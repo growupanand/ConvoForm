@@ -1,3 +1,4 @@
+import { Conversation } from "@convoform/db";
 import {
   Card,
   CardContent,
@@ -11,7 +12,6 @@ import {
   TableCell,
   TableRow,
 } from "@convoform/ui/components/ui/table";
-import { Conversation } from "@prisma/client";
 import { FileText } from "lucide-react";
 
 import { FormFieldData } from "@/lib/types/conversation";

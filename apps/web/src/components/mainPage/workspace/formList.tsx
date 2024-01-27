@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { Form } from "@convoform/db";
 import { Button } from "@convoform/ui/components/ui/button";
 import { toast } from "@convoform/ui/components/ui/use-toast";
-import { Form } from "@prisma/client";
 import { Loader2 } from "lucide-react";
 
 import { getFormsController } from "@/lib/controllers/form";

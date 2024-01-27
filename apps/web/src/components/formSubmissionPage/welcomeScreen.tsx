@@ -1,6 +1,6 @@
 import React from "react";
+import { Form } from "@convoform/db";
 import { Button } from "@convoform/ui/components/ui/button";
-import { Form } from "@prisma/client";
 
 import { montserrat, roboto } from "@/app/fonts";
 import { cn } from "@/lib/utils";

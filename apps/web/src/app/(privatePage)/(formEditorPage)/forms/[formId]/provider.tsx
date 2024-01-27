@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Form, Workspace } from "@prisma/client";
+import { Form, Workspace } from "@convoform/db";
 import { useAtom } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Form } from "@convoform/db";
 import { Input } from "@convoform/ui/components/ui/input";
 import { toast } from "@convoform/ui/components/ui/use-toast";
-import { Form } from "@prisma/client";
 import { useAtom } from "jotai";
 
 import { currentFormAtom } from "@/lib/atoms/formAtoms";
