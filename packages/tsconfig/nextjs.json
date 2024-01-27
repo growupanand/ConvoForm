@@ -23,5 +23,9 @@
             "dom.iterable",
             "esnext"
         ],
-    }
+    },
+    "include": [
+        "src",
+        "next-env.d.ts"
+    ],
 }
