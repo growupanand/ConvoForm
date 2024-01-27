@@ -43,6 +43,9 @@
     "auto-changelog": "^2.4.0",
     "@convoform/eslint-config": "workspace:*",
     "@convoform/tsconfig": "workspace:*",
-    "turbo": "latest"
+    "turbo": "latest",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/parser": "^6.18.0",
+    "eslint-plugin-unused-imports": "^3.0.0"
   }
 }

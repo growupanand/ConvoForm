@@ -1,7 +1,3 @@
-const { resolve } = require("node:path");
-
-const project = resolve(process.cwd(), "tsconfig.json");
-
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   extends: [
@@ -21,13 +17,7 @@ module.exports = {
     es2021: true,
   },
   plugins: ["react", "@typescript-eslint", "unused-imports"],
-  settings: {
-    "import/resolver": {
-      typescript: {
-        project,
-      },
-    },
-  },
+
   ignorePatterns: [
     // Ignore dotfiles
     ".*.js",
