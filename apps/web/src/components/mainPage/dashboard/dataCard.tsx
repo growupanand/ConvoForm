@@ -38,7 +38,7 @@ function DataCard({
   secondaryValue,
   dataType,
   chartData,
-}: Props) {
+}: Readonly<Props>) {
   return (
     <Card>
       <CardContent className="pt-6">

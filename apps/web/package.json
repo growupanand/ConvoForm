@@ -43,7 +43,9 @@
     "zod": "^3.22.4",
     "@hookform/resolvers": "^3.3.2",
     "tailwind-merge": "^2.0.0",
-    "clsx": "^2.0.0"
+    "clsx": "^2.0.0",
+    "@convoform/api": "workspace:*",
+    "@trpc/server": "^10.43.6"
   },
   "devDependencies": {
     "@convoform/eslint-config": "workspace:*",
