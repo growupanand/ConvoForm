@@ -1,4 +1,4 @@
-import { Workspace } from "@prisma/client";
+import { Workspace } from "@convoform/db";
 import { z } from "zod";
 
 import { workspaceUpdateSchema } from "@/lib/validations/workspace";

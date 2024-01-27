@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Workspace } from "@convoform/db";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   sendErrorResponseToast,
   toast,
 } from "@convoform/ui/components/ui/use-toast";
-import { Workspace } from "@prisma/client";
 import { Loader2, Plus } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";

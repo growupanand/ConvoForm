@@ -1,4 +1,4 @@
-import { Workspace } from "@prisma/client";
+import { Workspace } from "@convoform/db";
 import { atom } from "jotai";
 
 export const workspaceAtom = atom<Workspace | null>(null);

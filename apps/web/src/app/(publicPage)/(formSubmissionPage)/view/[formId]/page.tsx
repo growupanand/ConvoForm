@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Form } from "@prisma/client";
+import { Form } from "@convoform/db";
 
 import { FormViewer } from "@/components/formSubmissionPage/formViewer";
 import { prisma } from "@/lib/db";

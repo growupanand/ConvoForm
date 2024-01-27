@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 import {
+  Form as PrismaForm,
+  FormField as PrismaFormField,
+} from "@convoform/db";
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -29,10 +33,6 @@ import {
   toast,
 } from "@convoform/ui/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form as PrismaForm,
-  FormField as PrismaFormField,
-} from "@prisma/client";
 import { useAtom } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import {
