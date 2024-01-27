@@ -29,7 +29,7 @@ const NavigationLinkItem = ({ isActive, href, name }: Props) => {
 const NavigationLinkItemSkeleton = () => {
   return (
     <Button variant="link" className="w-full justify-start py-0">
-      <Skeleton className="h-2 w-20 bg-gray-300" />
+      <Skeleton className="h-2 w-20" />
     </Button>
   );
 };
