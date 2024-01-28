@@ -1,7 +1,10 @@
 import "server-only";
 
 import { cache } from "react";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { NextRequest } from "next/server";
+import { getAuth } from "@clerk/nextjs/server";
+import { prisma } from "@convoform/db";
 import {
   createTRPCProxyClient,
   loggerLink,
@@ -11,20 +14,21 @@ import { callProcedure } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import { type TRPCErrorResponse } from "@trpc/server/rpc";
 
+import { createTRPCContext } from "@/server/api/trpc";
 import { appRouter, type AppRouter } from "../server/api/root";
-import { createTRPCContext } from "../server/api/trpc";
-import { transformer } from "./shared";
+import { getBaseUrl, transformer } from "./shared";
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
  * handling a tRPC call from a React Server Component.
  */
 const createContext = cache(() => {
-  const heads = new Headers(headers());
-  heads.set("x-trpc-source", "rsc");
-
   return createTRPCContext({
-    headers: heads,
+    headers: new Headers({
+      cookie: cookies().toString(),
+      "x-trpc-source": "rsc",
+    }),
+    auth: getAuth(new NextRequest(getBaseUrl(), { headers: headers() })),
   });
 });
 

@@ -16,14 +16,20 @@
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.7",
     "@clerk/nextjs": "^4.29.5",
+    "@convoform/api": "workspace:*",
+    "@convoform/db": "workspace:*",
     "@convoform/ui": "workspace:*",
+    "@hookform/resolvers": "^3.3.2",
     "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
     "@next/mdx": "^14.1.0",
     "@sentry/nextjs": "^7.91.0",
+    "@tanstack/react-query": "^4.36.1",
     "@tremor/react": "^3.13.3",
+    "@trpc/server": "^10.43.6",
     "@types/mdx": "^2.0.10",
     "ai": "^2.2.26",
+    "clsx": "^2.0.0",
     "jotai": "^2.6.1",
     "lucide-react": "^0.292.0",
     "next": "^14.1.0",
@@ -34,13 +40,8 @@
     "react-dom": "^18",
     "react-hook-form": "^7.48.2",
     "remark-gfm": "^4.0.0",
-    "zod": "^3.22.4",
-    "@hookform/resolvers": "^3.3.2",
     "tailwind-merge": "^2.0.0",
-    "clsx": "^2.0.0",
-    "@convoform/api": "workspace:*",
-    "@trpc/server": "^10.43.6",
-    "@convoform/db": "workspace:*"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@convoform/eslint-config": "workspace:*",
@@ -50,13 +51,13 @@
     "@types/nprogress": "^0.2.3",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "autoprefixer": "^10.0.1",
-    "eslint-plugin-import": "^2.25.2",
     "@typescript-eslint/parser": "^6.18.0",
+    "autoprefixer": "^10.0.1",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-unused-imports": "^3.0.0",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5",
-    "eslint-import-resolver-typescript": "^3.6.1"
+    "typescript": "^5"
   }
 }

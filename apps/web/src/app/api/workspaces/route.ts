@@ -24,20 +24,3 @@ export async function POST(req: Request) {
     return sendErrorResponse(error);
   }
 }
-
-export async function GET() {
-  try {
-    const organizationId = getOrganizationId();
-    const workspaces = await prisma.workspace.findMany({
-      where: {
-        organizationId,
-      },
-      orderBy: {
-        createdAt: "asc",
-      },
-    });
-    return NextResponse.json(workspaces);
-  } catch (error) {
-    return sendErrorResponse(error);
-  }
-}

@@ -1,4 +1,5 @@
 import { type NextRequest } from "next/server";
+import { getAuth } from "@clerk/nextjs/server";
 import { appRouter } from "@convoform/api/server/api/root";
 import { createTRPCContext } from "@convoform/api/server/api/trpc";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
@@ -7,9 +8,11 @@ import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
  * handling a HTTP request (e.g. when you make requests from Client Components).
  */
+
 const createContext = async (req: NextRequest) => {
   return createTRPCContext({
     headers: req.headers,
+    auth: getAuth(req),
   });
 };
 

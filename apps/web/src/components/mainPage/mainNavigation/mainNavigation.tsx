@@ -33,7 +33,12 @@ function MainNavigation({
                 <div className="grid">
                   {navLink.links.map((link) =>
                     "text" in link ? (
-                      <NavigationText key={link.text} text={link.text} />
+                      <NavigationText
+                        key={link.text}
+                        text={link.text}
+                        variant={link.variant}
+                        action={link.action}
+                      />
                     ) : (
                       <NavigationLinkItem
                         key={`${link.path}-${link.name}`}
@@ -50,7 +55,14 @@ function MainNavigation({
         }
 
         if ("text" in navLink) {
-          return <NavigationText key={navLink.text} text={navLink.text} />;
+          return (
+            <NavigationText
+              key={navLink.text}
+              text={navLink.text}
+              variant={navLink.variant}
+              action={navLink.action}
+            />
+          );
         }
 
         return (
