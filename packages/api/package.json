@@ -6,7 +6,6 @@
     "lint": "next lint --fix"
   },
   "dependencies": {
-    "@prisma/client": "^5.6.0",
     "@tanstack/react-query": "^4.36.1",
     "@trpc/client": "^10.43.6",
     "@trpc/next": "^10.43.6",
@@ -17,18 +16,20 @@
     "react-dom": "^18",
     "server-only": "^0.0.1",
     "superjson": "^2.2.1",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "@clerk/nextjs": "^4.29.5",
+    "@convoform/db": "workspace:*"
   },
   "devDependencies": {
-    "prisma": "^5.6.0",
+    "@tanstack/react-query-devtools": "^5.17.21",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@typescript-eslint/parser": "^6.18.0",
     "autoprefixer": "^10.0.1",
+    "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-unused-imports": "^3.0.0",
-    "eslint-import-resolver-typescript": "^3.6.1",
     "typescript": "^5"
   }
 }

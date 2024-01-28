@@ -3,7 +3,7 @@ import { Hero } from "@/components/landingPage/hero";
 import { HowToUseSection } from "@/components/landingPage/howToUse";
 import { Pricing } from "@/components/landingPage/pricing";
 
-export default async function Home() {
+export default function Home() {
   return (
     <div className="grid space-y-5 ">
       <Hero />
