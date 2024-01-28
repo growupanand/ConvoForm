@@ -14,8 +14,8 @@ import { callProcedure } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import { type TRPCErrorResponse } from "@trpc/server/rpc";
 
-import { createTRPCContext } from "@/server/api/trpc";
 import { appRouter, type AppRouter } from "../server/api/root";
+import { createTRPCContext } from "../server/api/trpc";
 import { getBaseUrl, transformer } from "./shared";
 
 /**

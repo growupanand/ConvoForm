@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
+import { api } from "@convoform/api/trpc/server";
 
 import { FormEditorPageHeader } from "@/components/formEditorPage/formEditorPageHeader";
 import { getFormController } from "@/lib/controllers/form";
-import { getWorkspaceController } from "@/lib/controllers/workspace";
 import Provider from "./provider";
 
 type Props = {
@@ -18,7 +18,9 @@ export default async function Layout({
   if (!form) {
     notFound();
   }
-  const workspace = await getWorkspaceController(form.workspaceId);
+  const workspace = await api.workspace.getOne.query({
+    id: form.workspaceId,
+  });
   if (!workspace) {
     notFound();
   }

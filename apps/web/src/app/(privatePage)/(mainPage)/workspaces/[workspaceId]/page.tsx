@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { api } from "@convoform/api/trpc/server";
 
 import FormList from "@/components/mainPage/workspace/formList";
 import { WorkspaceHeader } from "@/components/mainPage/workspace/workspaceHeader";
-import { getWorkspaceController } from "@/lib/controllers/workspace";
 
 export const dynamic = "force-dynamic";
 export const dynamicParams = true;
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 export default async function WorkspacePage({
   params: { workspaceId },
 }: Readonly<Props>) {
-  const workspace = await getWorkspaceController(workspaceId);
+  const workspace = await api.workspace.getOne.query({ id: workspaceId });
 
   if (!workspace) {
     notFound();

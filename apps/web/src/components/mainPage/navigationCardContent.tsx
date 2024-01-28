@@ -1,36 +1,56 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ClerkLoading, OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { api } from "@convoform/api/trpc/react";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { toast } from "@convoform/ui/components/ui/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
 
-import { createWorkspaceController } from "@/lib/controllers/workspace";
 import { NavigationConfig } from "@/lib/types/navigation";
 import BrandName from "../common/brandName";
 import { NavigationLinks } from "./mainNavigation/mainNavigation";
-
-type State = {
-  isCreatingWorkspace: boolean;
-};
 
 type Props = {
   orgId: string;
 };
 
 export function NavigationCardContent({ orgId }: Readonly<Props>) {
-  const [state, setState] = useState<State>({
-    isCreatingWorkspace: false,
-  });
-  const { isCreatingWorkspace } = state;
   const { isLoading, data, isError, refetch } = api.workspace.getAll.useQuery({
     organizationId: orgId,
   });
   const isLoadingWorkspaces = isLoading;
   const workspaces = data ?? [];
+  const queryClient = useQueryClient();
+
+  const createWorkspace = api.workspace.create.useMutation({
+    onSuccess: (newWorkspace) => {
+      toast({
+        title: "Workspace created",
+        duration: 1500,
+      });
+      queryClient.invalidateQueries({
+        queryKey: [["workspace", "getAll"]],
+      });
+      router.push(`/workspaces/${newWorkspace.id}/`);
+    },
+    onError: () =>
+      toast({
+        title: "Unable to create workspace",
+        duration: 1500,
+        variant: "destructive",
+      }),
+  });
+  const isCreatingWorkspace = createWorkspace.isLoading;
+
+  const handleCreateWorkspace = useCallback(async () => {
+    await createWorkspace.mutateAsync({
+      organizationId: orgId,
+      name: "New Workspace",
+    });
+  }, [orgId]);
 
   const router = useRouter();
 
@@ -41,29 +61,6 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
   );
 
   const pathname = usePathname();
-
-  const createNewWorkspace = async () => {
-    setState((cs) => ({ ...cs, isCreatingWorkspace: true }));
-    try {
-      const newWorkspace = await createWorkspaceController("New Workspace");
-
-      toast({
-        title: "Workspace created",
-        duration: 1500,
-      });
-      // setWorkspaces([...workspaces, newWorkspace]);
-
-      router.push(`/workspaces/${newWorkspace.id}/`);
-    } catch (error) {
-      toast({
-        title: "Unable to create workspace",
-        duration: 1500,
-        variant: "destructive",
-      });
-    } finally {
-      setState((cs) => ({ ...cs, isCreatingWorkspace: false }));
-    }
-  };
 
   const workspaceLink = {
     text: isError ? "Unable to load workspaces" : "No workspaces",
@@ -96,7 +93,7 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
           title: "Workspaces",
           action: {
             icon: createWorkspaceActionIcon,
-            onClick: createNewWorkspace,
+            onClick: handleCreateWorkspace,
             disabled: isCreatingWorkspace,
           },
           links: isLoadingWorkspaces
