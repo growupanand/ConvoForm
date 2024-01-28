@@ -1,3 +1,7 @@
 {
-  "regions": ["sin1"]
+  "regions": [
+    "sin1"
+  ],
+  "buildCommand": "cd ../.. && pnpm build",
+  "outputDirectory": ".next"
 }
