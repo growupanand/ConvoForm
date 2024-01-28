@@ -1,3 +1,10 @@
+import { NavigationTextVariants } from "@/components/mainPage/mainNavigation/navigationText";
+
+export type NavItemAction = {
+  label: string;
+  onClick: () => Promise<void>;
+};
+
 export type NavLink = {
   path: string;
   name: string;
@@ -8,6 +15,8 @@ export type NavLink = {
 
 export type NavText = {
   text: string;
+  variant?: NavigationTextVariants;
+  action?: NavItemAction;
 };
 
 export type NavSection = {

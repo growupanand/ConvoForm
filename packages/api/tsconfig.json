@@ -5,7 +5,7 @@
     "paths": {
       "@/*": [
         "./*"
-      ]
+      ],
     },
     "plugins": [
       {
@@ -19,6 +19,8 @@
     ],
     "incremental": true,
     "resolveJsonModule": true,
+    "declaration": false,
+    "declarationMap": false,
     
   },
   "include": [
@@ -32,6 +34,6 @@
   ],
   "exclude": ["node_modules"],
   "strictNullChecks": true,
-    "strict": true,
+    "strict": true
 
 }
