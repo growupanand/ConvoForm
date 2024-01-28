@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { api } from "@convoform/api/trpc/react";
 import { Workspace } from "@convoform/db";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
@@ -13,14 +14,9 @@ import {
 import { Input } from "@convoform/ui/components/ui/input";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { toast } from "@convoform/ui/components/ui/use-toast";
-import { useAtom } from "jotai";
+import { useQueryClient } from "@tanstack/react-query";
 import { Check, Edit, MoreVertical, Trash } from "lucide-react";
 
-import { workspacesAtom } from "@/lib/atoms/workspaceAtoms";
-import {
-  deleteWorkspaceController,
-  updateWorkspaceController,
-} from "@/lib/controllers/workspace";
 import { cn, debounce } from "@/lib/utils";
 import Spinner from "../../common/spinner";
 import CreateFormButton from "./createFormButton";
@@ -29,28 +25,13 @@ type Props = {
   workspace: Workspace;
 };
 
-type State = {
-  isDeleting: boolean;
-  isUpdating: boolean;
-};
-
 export const WorkspaceHeader = ({ workspace }: Props) => {
-  const [state, setState] = useState<State>({
-    isDeleting: false,
-    isUpdating: false,
-  });
-  const { isDeleting, isUpdating } = state;
-  const [workspaces, setWorkspaces] = useAtom(workspacesAtom);
-
   const currentWorkspaceId = workspace.id;
   const router = useRouter();
+  const queryClient = useQueryClient();
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleDeleteWorkspace = async () => {
-    setState((cs) => ({ ...cs, isDeleting: true }));
-    try {
-      await deleteWorkspaceController(currentWorkspaceId);
+  const deleteWorkspace = api.workspace.delete.useMutation({
+    onSuccess: () => {
       toast({
         action: (
           <div className="w-full">
@@ -64,61 +45,55 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
         ),
         duration: 1500,
       });
-      setWorkspaces((cs) => cs.filter((i) => i.id !== currentWorkspaceId));
-      if (workspaces.filter((i) => i.id !== currentWorkspaceId).length > 0) {
-        router.push(
-          `/workspaces/${
-            workspaces.filter((i) => i.id !== currentWorkspaceId)[0].id
-          }`,
-        );
-      } else {
-        router.push("/dashboard");
-      }
-    } catch (error) {
+      queryClient.invalidateQueries([["workspace"]]);
+
+      router.push("/dashboard");
+    },
+    onError: () =>
       toast({
         title: "Unable to delete workspace",
         duration: 1500,
-        action: (
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            disabled={isDeleting}
-            onClick={() => handleDeleteWorkspace()}
-          >
-            {isDeleting ? <Spinner /> : "Retry"}
-          </Button>
-        ),
+      }),
+  });
+
+  const handleDeleteWorkspace = useCallback(
+    async () => deleteWorkspace.mutateAsync({ id: currentWorkspaceId }),
+    [currentWorkspaceId],
+  );
+  const isDeleting = deleteWorkspace.isLoading;
+
+  const updateWorkspace = api.workspace.patch.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Workspace updated",
+        duration: 1500,
       });
-    } finally {
-      setState((cs) => ({ ...cs, isDeleting: false }));
-    }
-  };
+      queryClient.invalidateQueries([["workspace"]]);
+    },
+    onError: () =>
+      toast({
+        title: "Unable to update workspace",
+        duration: 1500,
+        variant: "destructive",
+      }),
+  });
+
+  const handleUpdateWorkspace = useCallback(
+    async (name: string) =>
+      await updateWorkspace.mutateAsync({
+        id: currentWorkspaceId,
+        name,
+      }),
+    [currentWorkspaceId],
+  );
+
+  const isUpdating = updateWorkspace.isLoading;
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleWorkspaceNameInputChange = async (e: any) => {
     const updatedName = e.target.value as string;
     debounce(() => handleUpdateWorkspace(updatedName), 1000);
-  };
-
-  const handleUpdateWorkspace = async (updatedName: string) => {
-    setState((cs) => ({ ...cs, isUpdating: true }));
-    try {
-      await updateWorkspaceController(currentWorkspaceId, {
-        name: updatedName,
-      });
-      setWorkspaces((cs) =>
-        cs.map((i) =>
-          i.id === currentWorkspaceId ? { ...i, name: updatedName } : i,
-        ),
-      );
-    } catch (error) {
-      toast({
-        title: "Unable to update workspace",
-        duration: 1500,
-      });
-    } finally {
-      setState((cs) => ({ ...cs, isUpdating: false }));
-    }
   };
 
   const handleFocusInput = () => {
