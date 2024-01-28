@@ -10,8 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --fix",
-    "vercel-build": "pnpm run prisma-migrate-deploy && next build"
+    "lint": "next lint --fix"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.7",
