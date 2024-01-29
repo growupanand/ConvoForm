@@ -1,17 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { api } from "@convoform/api/trpc/react";
 import { Workspace } from "@convoform/db";
 import { Button } from "@convoform/ui/components/ui/button";
-import {
-  sendErrorResponseToast,
-  toast,
-} from "@convoform/ui/components/ui/use-toast";
+import { toast } from "@convoform/ui/components/ui/use-toast";
 import { Loader2, Plus } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";
-import { createFormController } from "@/lib/controllers/form";
 import { cn } from "@/lib/utils";
 import { formCreateSchema } from "@/lib/validations/form";
 
@@ -19,42 +15,43 @@ type Props = {
   workspace: Workspace;
 };
 
-type State = {
-  isLoading: boolean;
-};
+const newFormData = formCreateSchema.parse({
+  name: "New form",
+  welcomeScreenTitle: "",
+  welcomeScreenMessage: "",
+  welcomeScreenCTALabel: "",
+  overview: "",
+  formField: [
+    {
+      fieldName: "",
+    },
+  ],
+});
 
-export default function CreateFormButton({ workspace }: Props) {
-  const [state, setState] = useState<State>({ isLoading: false });
-  const { isLoading } = state;
-
+export default function CreateFormButton({ workspace }: Readonly<Props>) {
   const router = useRouter();
-
-  const handleCreateForm = async () => {
-    setState((cs) => ({ ...cs, isLoading: true }));
-    try {
-      const newFormData = formCreateSchema.parse({
-        name: "New form",
-        welcomeScreenTitle: "",
-        welcomeScreenMessage: "",
-        welcomeScreenCTALabel: "",
-        overview: "",
-        formField: [
-          {
-            fieldName: "",
-          },
-        ],
-      });
-      const createdForm = await createFormController(workspace.id, newFormData);
+  const createForm = api.form.create.useMutation({
+    onSuccess: async (newForm) => {
       toast({
         title: "Form created",
         duration: 1500,
       });
-      router.push(`/forms/${createdForm.id}`);
-    } catch (error: any) {
-      await sendErrorResponseToast(error, "Unable to create form");
-      setState((cs) => ({ ...cs, isLoading: false }));
-    }
-  };
+      router.push(`/forms/${newForm.id}`);
+    },
+    onError: () => {
+      toast({
+        title: "Unable to create form",
+      });
+    },
+  });
+  const { isLoading } = createForm;
+
+  const handleCreateForm = () =>
+    createForm.mutateAsync({
+      ...newFormData,
+      workspaceId: workspace.id,
+      organizationId: workspace.organizationId,
+    });
 
   return (
     <Button

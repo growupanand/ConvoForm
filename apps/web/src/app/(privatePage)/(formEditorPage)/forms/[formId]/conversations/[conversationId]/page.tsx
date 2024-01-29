@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
+import { api } from "@convoform/api/trpc/server";
 
 import ConversationDetail from "@/components/formEditorPage/conversations/conversationDetail";
-import { getFormConversationController } from "@/lib/controllers/form";
 
 type Props = {
   params: { conversationId: string };
@@ -10,7 +10,9 @@ type Props = {
 export default async function ConversationDetailPage(props: Props) {
   const { conversationId } = props.params;
 
-  const conversation = await getFormConversationController(conversationId);
+  const conversation = await api.conversation.getOne.query({
+    id: conversationId,
+  });
 
   if (!conversation) {
     notFound();

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { api } from "@convoform/api/trpc/react";
 import {
   Form as PrismaForm,
   FormField as PrismaFormField,
@@ -33,12 +34,9 @@ import {
   toast,
 } from "@convoform/ui/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAtom } from "jotai";
-import { useHydrateAtoms } from "jotai/utils";
 import {
   ArrowDownSquare,
   ArrowUpSquare,
-  Check,
   CornerDownLeft,
   Info,
   Loader2,
@@ -48,76 +46,32 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import {
-  FieldArrayWithId,
-  SubmitHandler,
-  useFieldArray,
-  useForm,
-} from "react-hook-form";
+import { FieldArrayWithId, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { montserrat } from "@/app/fonts";
 import { apiClient } from "@/lib/apiClient";
-import { currentFormAtom, currentFormFieldsAtom } from "@/lib/atoms/formAtoms";
-import { updateFormController } from "@/lib/controllers/form";
 import { cn } from "@/lib/utils";
 import { formUpdateSchema } from "@/lib/validations/form";
-
-type FormWithFields = PrismaForm & { formFields: PrismaFormField[] };
 
 const formSchema = formUpdateSchema;
 export type FormSubmitDataSchema = z.infer<typeof formSchema>;
 
 type Props = {
-  formFields: PrismaFormField[];
+  form: PrismaForm & { formFields: PrismaFormField[] };
 };
 
 type State = {
-  isFormBusy: boolean;
   isGeneratingAIField: boolean;
 };
 
-function FormEditorCard({ formFields }: Props) {
-  useHydrateAtoms([[currentFormFieldsAtom, formFields]]);
-  const [currentFormFields, setCurrentFormFields] = useAtom(
-    currentFormFieldsAtom,
-  );
-  const [currentForm] = useAtom(currentFormAtom);
-
-  useEffect(() => {
-    setCurrentFormFields(formFields);
-  }, [formFields]);
-
-  if (!currentForm) {
-    return <FormEditorFormSkeleton />;
-  }
-
-  return (
-    <FormEditor
-      formFields={formFields}
-      currentForm={currentForm}
-      currentFormFields={currentFormFields}
-    />
-  );
-}
-
-function FormEditor({
-  currentForm,
-  currentFormFields,
-}: Props & { currentForm: PrismaForm; currentFormFields: PrismaFormField[] }) {
+export function FormEditorCard({ form }: Readonly<Props>) {
   const [state, setState] = useState<State>({
-    isFormBusy: false,
     isGeneratingAIField: false,
   });
-  const { isFormBusy, isGeneratingAIField } = state;
+  const { isGeneratingAIField } = state;
 
-  const [, setCurrentForm] = useAtom(currentFormAtom);
-  const [, setCurrentFormFields] = useAtom(currentFormFieldsAtom);
-
-  const formDefaultValues = {
-    ...currentForm,
-    formFields: currentFormFields,
-  } as FormSubmitDataSchema;
+  const formDefaultValues = form as FormSubmitDataSchema;
 
   const formHook = useForm<FormSubmitDataSchema>({
     resolver: zodResolver(formSchema),
@@ -132,7 +86,7 @@ function FormEditor({
   // This will reset form when another form page is opened, otherwise react-hook-form will keep previous form values
   useEffect(() => {
     formHook.reset(formDefaultValues);
-  }, [currentForm, currentFormFields]);
+  }, [form]);
 
   const isErrorInRequirementFields = formHook.formState.errors.formFields;
   const isErrorInLandingPageFields =
@@ -141,67 +95,34 @@ function FormEditor({
     formHook.formState.errors.welcomeScreenMessage ||
     formHook.formState.errors.welcomeScreenCTALabel;
 
-  const onUpdateForm = (
-    updatedForm: Omit<FormSubmitDataSchema, "formField"> & {
-      formFields: PrismaFormField[];
+  const updateForm = api.form.updateForm.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Changes saved successfully",
+        duration: 1500,
+      });
     },
-  ) => {
-    const { formFields, ...restUpdatedForm } = updatedForm;
-    setCurrentForm({ ...currentForm!, ...restUpdatedForm, isPublished: true });
-    setCurrentFormFields(formFields);
-  };
+  });
+  const isFormBusy = updateForm.isLoading;
 
-  const onSubmit: SubmitHandler<FormSubmitDataSchema> = async (
-    formData: FormSubmitDataSchema,
-  ) => {
-    setState((cs) => ({ ...cs, isFormBusy: true }));
-    try {
-      const responseJson = await updateFormController(currentForm.id, formData);
-      const updatedForm = {
-        ...responseJson,
-        formFields: responseJson.formField,
-      } as FormWithFields;
-      toast({
-        action: (
-          <div className="w-full">
-            <div className="flex items-center gap-3">
-              <div className="rounded-full bg-green-500 p-1">
-                <Check className="text-white " />
-              </div>
-              <span>Changes saved successfully</span>
-            </div>
-          </div>
-        ),
-        duration: 1500,
-      });
-      const updatedFormWithFields = {
-        ...formData,
-        formFields: updatedForm.formFields,
-      };
-
-      onUpdateForm(updatedFormWithFields);
-    } catch (error) {
-      toast({
-        title: "Unable to save changes",
-        duration: 1500,
-      });
-    } finally {
-      setState((cs) => ({ ...cs, isFormBusy: false }));
-    }
-  };
+  const onSubmit = (formData: FormSubmitDataSchema) =>
+    updateForm.mutateAsync({
+      id: form.id,
+      ...formData,
+    });
 
   const getFormSubmitIcon = () => {
     if (isFormBusy) {
       return <Loader2 className="mr-2 h-4 w-4 animate-spin" />;
     }
-    if (currentForm.isPublished) {
+    if (form.isPublished) {
       return <Save className="mr-2 h-4 w-4" />;
     }
     return <Sparkle className="mr-2 h-4 w-4" />;
   };
 
   const generateAIField = async () => {
-    const apiEndpoint = `/form/${currentForm.id}/getNextFormField/`;
+    const apiEndpoint = `/form/${form.id}/getNextFormField/`;
     const formData = formHook.getValues();
     const payload = {
       overview: formData.overview,
@@ -485,7 +406,7 @@ function FormEditor({
             disabled={isFormBusy || isGeneratingAIField}
           >
             {getFormSubmitIcon()}
-            {currentForm.isPublished ? "Publish changes" : "Publish form"}
+            {form.isPublished ? "Publish changes" : "Publish form"}
           </Button>
         </form>
       </UIForm>
@@ -509,7 +430,3 @@ export const FormEditorFormSkeleton = () => {
     </div>
   );
 };
-
-FormEditorCard.Skeleton = FormEditorFormSkeleton;
-
-export { FormEditorCard };

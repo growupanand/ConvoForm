@@ -4,7 +4,7 @@ const config = {
   parserOptions: {
     project: true,
   },
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "import", "unused-imports"],
   extends: [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended-type-checked",
@@ -31,6 +31,7 @@ const config = {
         checksVoidReturn: { attributes: false },
       },
     ],
+    "import/no-unresolved": "error",
   },
 };
 

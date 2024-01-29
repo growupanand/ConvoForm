@@ -3,24 +3,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger } from "@convoform/ui/components/ui/tabs";
-import { useAtom } from "jotai";
 
 import { montserrat } from "@/app/fonts";
-import { currentFormAtom } from "@/lib/atoms/formAtoms";
 import { NavLink } from "@/lib/types/navigation";
 
-export default function NavLinks() {
+type Props = {
+  formId: string;
+};
+
+export default function NavLinks({ formId }: Readonly<Props>) {
   const pathName = usePathname();
-  const [currentForm] = useAtom(currentFormAtom);
-  const currentFormId = currentForm?.id;
+  const currentFormId = formId;
   const isAlreadyOnConversationsPage = pathName.includes(`conversations`);
 
   const tabLinks = [
     {
-      path: `/forms/${currentForm?.id}`,
+      path: `/forms/${currentFormId}`,
       name: "Editor",
       isActive: pathName === `/forms/${currentFormId}`,
-      disabled: !currentForm,
     },
     {
       name: "Conversations",
@@ -28,7 +28,6 @@ export default function NavLinks() {
         ? ""
         : `/forms/${currentFormId}/conversations`,
       isActive: isAlreadyOnConversationsPage,
-      disabled: !currentForm,
     },
   ] as NavLink[];
 

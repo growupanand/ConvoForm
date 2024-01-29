@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { api } from "@convoform/api/trpc/react";
 import { Form } from "@convoform/db";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
@@ -12,70 +12,39 @@ import {
   DropdownMenuTrigger,
 } from "@convoform/ui/components/ui/dropdown-menu";
 import { toast } from "@convoform/ui/components/ui/use-toast";
-import {
-  Check,
-  ExternalLink,
-  Loader2,
-  MoreVertical,
-  Trash,
-} from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { ExternalLink, Loader2, MoreVertical, Trash } from "lucide-react";
 
 import { LinkN } from "@/components/common/linkN";
-import { deleteFormController } from "@/lib/controllers/form";
 
 type Props = {
   form: Form;
-  onDeleted: (form: Form) => void;
 };
 
-type State = {
-  isDeleting: boolean;
-};
-
-export function FormListItem({ form, onDeleted }: Readonly<Props>) {
-  const [state, setState] = useState<State>({ isDeleting: false });
-  const { isDeleting } = state;
-
-  const handleDeleteForm = async () => {
-    setState((cs) => ({ ...cs, isDeleting: true }));
-    try {
-      await deleteFormController(form.id);
+export function FormListItem({ form }: Readonly<Props>) {
+  const queryClient = useQueryClient();
+  const deleteForm = api.form.delete.useMutation({
+    onSuccess: () => {
       toast({
-        action: (
-          <div className="w-full">
-            <div className="flex items-center gap-3">
-              <div className="rounded-full bg-green-500 p-1">
-                <Check className="text-white " />
-              </div>
-              <span>Form deleted</span>
-            </div>
-          </div>
-        ),
+        title: "Form deleted.",
         duration: 1500,
       });
-      onDeleted(form);
-    } catch (error) {
+      queryClient.invalidateQueries([["form", "getAll"]]);
+      queryClient.invalidateQueries([["metrics"]]);
+    },
+    onError: () => {
       toast({
         title: "Unable to delete form",
         duration: 1500,
-        action: (
-          <Button
-            variant="secondary"
-            disabled={isDeleting}
-            onClick={handleDeleteForm}
-          >
-            {isDeleting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              "Retry"
-            )}
-          </Button>
-        ),
       });
-    } finally {
-      setState((cs) => ({ ...cs, isDeleting: false }));
-    }
-  };
+    },
+  });
+  const isDeleting = deleteForm.isLoading;
+
+  const handleDeleteForm = async () =>
+    deleteForm.mutateAsync({
+      id: form.id,
+    });
 
   return (
     <div className="flex items-center justify-between py-1 transition-all hover:bg-gray-50 hover:ps-3">
