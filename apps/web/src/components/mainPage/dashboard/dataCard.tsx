@@ -2,13 +2,7 @@
 
 import { ReactNode } from "react";
 import dynamic from "next/dynamic";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@convoform/ui/components/ui/card";
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import { Card, CardContent, CardTitle } from "@convoform/ui/components/ui/card";
 
 import Spinner from "@/components/common/spinner";
 
@@ -32,7 +26,7 @@ type Props = {
   chartData?: any;
 };
 
-function DataCard({
+export function DataCard({
   title,
   mainValue,
   secondaryValue,
@@ -79,24 +73,3 @@ function DataCard({
     </Card>
   );
 }
-
-export const DataCardSkeleton = () => {
-  return (
-    <Card className="h-[130px]">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <Skeleton className="h-2 w-20" />
-      </CardHeader>
-      <CardContent>
-        <Skeleton className="mb-2 h-10 w-6" />
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-2 w-10" />
-          <Skeleton className="h-2 w-10" />
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-DataCard.Skeleton = DataCardSkeleton;
-
-export { DataCard };

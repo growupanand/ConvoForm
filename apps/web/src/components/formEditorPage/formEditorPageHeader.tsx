@@ -1,7 +1,7 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import { Form, Workspace } from "@convoform/db";
+import { api } from "@convoform/api/trpc/react";
 import { Button } from "@convoform/ui/components/ui/button";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { ChevronLeft, ChevronRight, Home } from "lucide-react";
@@ -12,12 +12,18 @@ import { cn } from "@/lib/utils";
 import FormNameInput from "./formNameInput";
 
 type Props = {
-  form: Form;
   formId: string;
-  workspace: Workspace;
 };
 
-function FormEditorPageHeader({ form, workspace }: Props) {
+function FormEditorPageHeader({ formId }: Props) {
+  const { data, isLoading } = api.form.getOneWithWorkspace.useQuery({
+    id: formId,
+  });
+
+  if (isLoading) {
+    return <FormEditorPageHeaderSkeleton />;
+  }
+
   return (
     <div className="sticky top-0 z-50 border-b bg-white/70 p-3 shadow-sm backdrop-blur">
       <div className="flex items-center justify-between ">
@@ -39,16 +45,25 @@ function FormEditorPageHeader({ form, workspace }: Props) {
             </Button>
           </LinkN>
           <ChevronRight size={20} />
-          <LinkN href={`/workspaces/${form.workspaceId}`}>
-            <Button size="sm" variant="link">
-              {workspace.name}
-            </Button>
-          </LinkN>
-          <ChevronRight size={20} />
-          <FormNameInput form={form} className="w-full text-xl font-medium" />
+          {data ? (
+            <>
+              <LinkN href={`/workspaces/${data.workspaceId}`}>
+                <Button size="sm" variant="link">
+                  {data.workspace.name}
+                </Button>
+              </LinkN>
+              <ChevronRight size={20} />
+              <FormNameInput
+                form={data}
+                className="w-full text-xl font-medium"
+              />
+            </>
+          ) : (
+            <span>Form not found</span>
+          )}
         </div>
         <div className="lg:hidden">
-          <LinkN href={`/workspaces/${form.workspaceId}`}>
+          <LinkN href={data ? `/workspaces/${data.workspaceId}` : "/dashboard"}>
             <Button size="sm" variant="link" className="px-0 text-sm">
               <ChevronLeft className="mr-2" size={20} />
               Back
@@ -56,7 +71,11 @@ function FormEditorPageHeader({ form, workspace }: Props) {
           </LinkN>
         </div>
         <div className="overflow-hidden lg:hidden">
-          <FormNameInput form={form} className="text-xl font-medium" />
+          {data ? (
+            <FormNameInput form={data} className="text-xl font-medium" />
+          ) : (
+            <span>Form not found</span>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <UserButton />

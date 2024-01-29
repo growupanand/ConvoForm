@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
+import { api } from "@convoform/api/trpc/react";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   Sheet,
@@ -9,15 +10,8 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@convoform/ui/components/ui/sheet";
-import { sendErrorResponseToast } from "@convoform/ui/components/ui/use-toast";
-import { useAtom } from "jotai";
 import { Menu } from "lucide-react";
 
-import {
-  conversationsAtom,
-  isLoadingConversationsAtom,
-} from "@/lib/atoms/formAtoms";
-import { getFormConversationsController } from "@/lib/controllers/form";
 import NavLinks from "../navLinks";
 import { ConversationsCard } from "./conversationsListCard";
 
@@ -37,33 +31,21 @@ export default function ConversationsSidebar({ formId }: Props) {
 
   const closeSheet = () => setState((cs) => ({ ...cs, open: false }));
 
-  const [isLoadingConversations, setIsLoadingConversations] = useAtom(
-    isLoadingConversationsAtom,
-  );
-  const [conversations, setConversations] = useAtom(conversationsAtom);
   const { conversationId } = useParams();
   const router = useRouter();
 
+  const { isLoading, data } = api.conversation.getAll.useQuery({
+    formId,
+  });
+
+  const isLoadingConversations = isLoading;
+  const conversations = data ?? [];
+
   useEffect(() => {
-    (async () => {
-      setIsLoadingConversations(true);
-      setConversations([]);
-      if (formId) {
-        try {
-          const conversations = await getFormConversationsController(formId);
-          setConversations(conversations);
-          setIsLoadingConversations(false);
-          if (conversations.length > 0 && !conversationId) {
-            router.replace(
-              `/forms/${formId}/conversations/${conversations[0].id}`,
-            );
-          }
-        } catch (error) {
-          sendErrorResponseToast(error);
-        }
-      }
-    })();
-  }, [formId]);
+    if (conversations.length > 0 && !conversationId) {
+      router.replace(`/forms/${formId}/conversations/${conversations[0].id}`);
+    }
+  }, [formId, conversations]);
 
   const pathname = usePathname();
 
@@ -76,7 +58,7 @@ export default function ConversationsSidebar({ formId }: Props) {
   return (
     <div className="px-3">
       <div className="lg:hidden">
-        <NavLinks />
+        <NavLinks formId={formId} />
         <Sheet
           open={open}
           onOpenChange={(status) => setState((cs) => ({ ...cs, open: status }))}
@@ -102,7 +84,7 @@ export default function ConversationsSidebar({ formId }: Props) {
         </Sheet>
       </div>
       <div className="max-lg:hidden">
-        <NavLinks />
+        <NavLinks formId={formId} />
         {isLoadingConversations || !formId ? (
           <ConversationsCard.ConversationsCardSkelton />
         ) : (

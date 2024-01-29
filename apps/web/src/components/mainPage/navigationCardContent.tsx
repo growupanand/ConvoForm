@@ -65,10 +65,12 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
   const workspaceLink = {
     text: isError ? "Unable to load workspaces" : "No workspaces",
     variant: isError ? "error" : "default",
-    action: {
-      label: "Retry",
-      onClick: refetch,
-    },
+    action: isError
+      ? {
+          label: "Retry",
+          onClick: refetch,
+        }
+      : undefined,
   };
 
   const workspacesLinks = useMemo(() => {
