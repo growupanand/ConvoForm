@@ -1,13 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { api } from "@convoform/api/trpc/react";
 import { Form } from "@convoform/db";
 import { Input } from "@convoform/ui/components/ui/input";
 import { toast } from "@convoform/ui/components/ui/use-toast";
-import { useAtom } from "jotai";
+import { useQueryClient } from "@tanstack/react-query";
 
-import { currentFormAtom } from "@/lib/atoms/formAtoms";
-import { patchFormController } from "@/lib/controllers/form";
 import { cn, debounce } from "@/lib/utils";
 
 type Props = {
@@ -15,43 +13,32 @@ type Props = {
   className?: string;
 };
 
-type State = {
-  formName: string;
-  isUpdating: boolean;
-};
-
 //TODO: create reusable component for this
 
 export default function FormNameInput({ form, className }: Props) {
-  const [state, setState] = useState<State>({
-    formName: form.name,
-    isUpdating: false,
-  });
-  const { formName, isUpdating } = state;
-
-  const [, setCurrentForm] = useAtom(currentFormAtom);
-
-  const updateWorkspace = async (name: string) => {
-    setState((cs) => ({ ...cs, isUpdating: true }));
-    try {
-      await patchFormController(form.id, { name });
+  const queryClient = useQueryClient();
+  const updateForm = api.form.patch.useMutation({
+    onSuccess: () => {
       toast({
         title: "Form name updated.",
         duration: 1500,
       });
-      setCurrentForm({
-        ...form,
-        name,
-      });
-    } catch (error) {
+      queryClient.invalidateQueries([["form", "getOneWithWorkspace"]]);
+    },
+    onError: () => {
       toast({
         title: "Unable to update form name",
         duration: 1500,
       });
-    } finally {
-      setState((cs) => ({ ...cs, isUpdating: false }));
-    }
-  };
+    },
+  });
+  const isUpdating = updateForm.isLoading;
+
+  const updateWorkspace = async (name: string) =>
+    updateForm.mutateAsync({
+      id: form.id,
+      name,
+    });
 
   const handleFormNameInputChange = async (e: any) => {
     const updatedName = e.target.value as string;
@@ -66,7 +53,7 @@ export default function FormNameInput({ form, className }: Props) {
         className,
       )}
       type="text"
-      defaultValue={formName}
+      defaultValue={form.name}
       onChange={handleFormNameInputChange}
     />
   );

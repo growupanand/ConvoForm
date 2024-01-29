@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { api } from "@convoform/api/trpc/react";
 import { Checkbox } from "@convoform/ui/components/ui/checkbox";
 import {
   Tooltip,
@@ -8,33 +8,28 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@convoform/ui/components/ui/tooltip";
-import { useAtom } from "jotai";
 
-import { currentFormAtom } from "@/lib/atoms/formAtoms";
 import { getFrontendBaseUrl } from "@/lib/url";
 import BrowserWindow from "../common/browserWindow";
+import Spinner from "../common/spinner";
 import { FormViewer } from "../formSubmissionPage/formViewer";
 
 type Props = {
   noToolbar?: boolean;
+  formId: string;
 };
 
-type State = {
-  refresh: boolean;
-};
-
-export default function FormPreview({ noToolbar }: Readonly<Props>) {
-  const [state, setState] = useState<State>({
-    refresh: false,
+export default function FormPreview({ noToolbar, formId }: Readonly<Props>) {
+  const {
+    isLoading,
+    data: form,
+    refetch,
+  } = api.form.getOne.useQuery({
+    id: formId,
   });
-  const { refresh } = state;
-
-  const [form] = useAtom(currentFormAtom);
 
   const formViewLink = form ? `${getFrontendBaseUrl()}/view/${form.id}` : "";
-  const refreshPreview = () => {
-    setState((cs) => ({ ...cs, refresh: !cs.refresh }));
-  };
+  const refreshPreview = () => refetch();
 
   const Toolbar = (
     <TooltipProvider delayDuration={0}>
@@ -57,6 +52,15 @@ export default function FormPreview({ noToolbar }: Readonly<Props>) {
     </TooltipProvider>
   );
 
+  const FormContent = () =>
+    !form ? (
+      <FormNotFound />
+    ) : !form.isPublished ? (
+      <UnpublishedForm />
+    ) : (
+      <FormViewer form={form} isPreview={false} />
+    );
+
   return (
     <BrowserWindow
       onRefresh={refreshPreview}
@@ -64,14 +68,16 @@ export default function FormPreview({ noToolbar }: Readonly<Props>) {
       toolbar={Toolbar}
     >
       <div className="flex h-full flex-col items-center justify-center">
-        {form?.isPublished ? (
-          <FormViewer form={form} refresh={refresh} isPreview={false} />
-        ) : (
-          <p className="text-muted-foreground">
-            Publish your form to see a preview
-          </p>
-        )}
+        {isLoading ? <Spinner label="Loading form..." /> : <FormContent />}
       </div>
     </BrowserWindow>
   );
 }
+
+const UnpublishedForm = () => (
+  <p className="text-muted-foreground">Publish your form to see a preview</p>
+);
+
+const FormNotFound = () => (
+  <p className="text-muted-foreground">Form not found</p>
+);
