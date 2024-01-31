@@ -1,11 +1,8 @@
 {
   "name": "@convoform/db",
   "version": "0.0.0",
-  "main": "./index.ts",
-  "types": "./index.ts",
-  "exports": {
-    ".": "./index.ts"
-  },
+  "private": true,
+  "main": "index.ts",
   "scripts": {
     "studio": "prisma studio",
     "reset-db": "prisma migrate reset",

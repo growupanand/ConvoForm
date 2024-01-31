@@ -6,17 +6,16 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { getAuth } from "@clerk/nextjs/server";
+import { SignedInAuthObject, SignedOutAuthObject } from "@clerk/nextjs/server";
 import { prisma } from "@convoform/db";
-import { inferAsyncReturnType, initTRPC, TRPCError } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
+import * as trpc from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-type AuthObject = ReturnType<typeof getAuth>;
-
-type CreateContextOptions = {
-  auth: AuthObject;
-};
+interface AuthContext {
+  auth: SignedInAuthObject | SignedOutAuthObject;
+}
 
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use
@@ -27,7 +26,7 @@ type CreateContextOptions = {
  * - trpc's `createSSGHelpers` where we don't have req/res
  * @see https://create.t3.gg/en/usage/trpc#-servertrpccontextts
  */
-export const createInnerTRPCContext = (opts: CreateContextOptions) => {
+export const createInnerTRPCContext = (opts: AuthContext) => {
   return {
     ...opts,
     db: prisma,
@@ -46,10 +45,11 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: {
-  headers: Headers;
-  auth: AuthObject;
-}) => {
+export const createTRPCContext = async (
+  opts: AuthContext & {
+    headers: Headers;
+  },
+) => {
   const innerContext = createInnerTRPCContext({
     auth: opts.auth,
   });
@@ -60,7 +60,7 @@ export const createTRPCContext = async (opts: {
   };
 };
 
-export type Context = inferAsyncReturnType<typeof createTRPCContext>;
+export type Context = trpc.inferAsyncReturnType<typeof createTRPCContext>;
 
 /**
  * 2. INITIALIZATION
@@ -109,11 +109,11 @@ export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.userId) {
+  if (!ctx.auth?.userId) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   // Make ctx.userId non-nullable in protected procedures
-  return next({ ctx: { userId: ctx.userId } });
+  return next({ ctx: { userId: ctx.auth.userId, auth: ctx.auth } });
 });
 
 /**
