@@ -5,7 +5,7 @@ import { FormField, formFieldSchema } from "../validations/form";
 
 export const formSchemaSystemPrompt = z.object({
   overview: z.string().min(1).max(255),
-  formField: z.array(formFieldSchema).min(1),
+  formFields: z.array(formFieldSchema).min(1),
 });
 
 export type FormSchemaSystemPrompt = z.infer<typeof formSchemaSystemPrompt>;
@@ -13,8 +13,8 @@ export type FormSchemaSystemPrompt = z.infer<typeof formSchemaSystemPrompt>;
 export class SystemPromptService {
   constructor() {}
 
-  getFormFieldNames(form: { formField: FormField[] }) {
-    return form.formField.map((item) => item.fieldName);
+  getFormFieldNames(form: { formFields: FormField[] }) {
+    return form.formFields.map((item) => item.fieldName);
   }
 
   getConversationFlowPrompt(form: FormSchemaSystemPrompt) {

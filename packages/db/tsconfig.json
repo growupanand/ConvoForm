@@ -1,8 +1,14 @@
 {
-  "extends": "@convoform/tsconfig/base.json",
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "tsup.config.ts"],
-  "exclude": ["node_modules"],
   "compilerOptions": {
-    "baseUrl": "."
-  }
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "preserveWatchOutput": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "strict": true
+  },
+  "exclude": ["node_modules"]
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import { api } from "@convoform/api/trpc/react";
 import { Button } from "@convoform/ui/components/ui/button";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { ChevronLeft, ChevronRight, Home } from "lucide-react";
@@ -9,6 +8,7 @@ import { ChevronLeft, ChevronRight, Home } from "lucide-react";
 import { montserrat } from "@/app/fonts";
 import { LinkN } from "@/components/common/linkN";
 import { cn } from "@/lib/utils";
+import { api } from "@/trpc/client";
 import FormNameInput from "./formNameInput";
 
 type Props = {

@@ -1,10 +1,11 @@
-import "server-only";
+"use server";
 
 import { cache } from "react";
 import { cookies, headers } from "next/headers";
 import { NextRequest } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
-import { prisma } from "@convoform/db";
+import { AppRouter, createTRPCContext } from "@convoform/api";
+import { appRouter } from "@convoform/api/server/api/root";
 import {
   createTRPCProxyClient,
   loggerLink,
@@ -13,10 +14,9 @@ import {
 import { callProcedure } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import { type TRPCErrorResponse } from "@trpc/server/rpc";
+import superjson from "superjson";
 
-import { appRouter, type AppRouter } from "../server/api/root";
-import { createTRPCContext } from "../server/api/trpc";
-import { getBaseUrl, transformer } from "./shared";
+import { getBackendBaseUrl } from "@/lib/url";
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
@@ -28,12 +28,12 @@ const createContext = cache(() => {
       cookie: cookies().toString(),
       "x-trpc-source": "rsc",
     }),
-    auth: getAuth(new NextRequest(getBaseUrl(), { headers: headers() })),
+    auth: getAuth(new NextRequest(getBackendBaseUrl(), { headers: headers() })),
   });
 });
 
 export const api = createTRPCProxyClient<AppRouter>({
-  transformer,
+  transformer: superjson,
   links: [
     loggerLink({
       enabled: (op) =>

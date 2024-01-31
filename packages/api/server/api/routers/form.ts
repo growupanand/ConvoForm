@@ -115,7 +115,7 @@ export const formRouter = createTRPCRouter({
       });
 
       if (!form) {
-        throw new Error("Form not found");
+        return null;
       }
 
       const { formField, ...restForm } = form;

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { api } from "@convoform/api/trpc/react";
 import { Form } from "@convoform/db";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
@@ -16,6 +15,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ExternalLink, Loader2, MoreVertical, Trash } from "lucide-react";
 
 import { LinkN } from "@/components/common/linkN";
+import { api } from "@/trpc/client";
 
 type Props = {
   form: Form;

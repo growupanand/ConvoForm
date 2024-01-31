@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { api } from "@convoform/api/trpc/react";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   Sheet,
@@ -12,6 +11,7 @@ import {
 } from "@convoform/ui/components/ui/sheet";
 import { Menu } from "lucide-react";
 
+import { api } from "@/trpc/client";
 import NavLinks from "../navLinks";
 import { ConversationsCard } from "./conversationsListCard";
 

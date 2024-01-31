@@ -19,9 +19,6 @@
     ],
     "incremental": true,
     "resolveJsonModule": true,
-    "declaration": false,
-    "declarationMap": false,
-    
   },
   "include": [
     ".eslintrc.cjs",
@@ -35,5 +32,4 @@
   "exclude": ["node_modules"],
   "strictNullChecks": true,
     "strict": true
-
 }
