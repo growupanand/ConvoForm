@@ -1,7 +1,16 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [
-    "**/.env.*local"
+  "globalDotEnv": [
+    ".env",
+    ".env.local"
+  ],
+  "globalEnv": [
+    "NODE_ENV",
+    "NEXT_PUBLIC_GOOGLE_ANALYTICS",
+    "NEXT_PUBLIC_APP_URL",
+    "VERCEL_URL",
+    "OPEN_AI_MODEL",
+    "OPENAI_API_KEY"
   ],
   "pipeline": {
     "build": {
@@ -11,16 +20,6 @@
       "outputs": [
         "dist/**",
         ".next/**"
-      ],
-      "env": [
-        "*",
-        "OPENAI_API_KEY",
-        "OPEN_AI_MODEL",
-        "DATABASE_URL",
-        "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
-        "CLERK_SECRET_KEY",
-        "NODE_ENV",
-        "VERCEL_URL"
       ]
     },
     "lint": {
@@ -36,11 +35,6 @@
     "dev": {
       "cache": false,
       "persistent": true
-    },
-    "generate": {
-      "dependsOn": [
-        "^generate"
-      ]
     },
     "db:generate": {
       "cache": false
