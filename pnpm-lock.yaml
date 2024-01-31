@@ -158,6 +158,9 @@ importers:
       "@convoform/tsconfig":
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      "@prisma/nextjs-monorepo-workaround-plugin":
+        specifier: ^5.9.0
+        version: 5.9.0
       "@swc-jotai/react-refresh":
         specifier: ^0.1.0
         version: 0.1.0
@@ -1940,6 +1943,13 @@ packages:
       }
     dependencies:
       "@prisma/debug": 5.8.1
+
+  /@prisma/nextjs-monorepo-workaround-plugin@5.9.0:
+    resolution:
+      {
+        integrity: sha512-++aY/BdZFbVMUvpFb+kyXSmFKGlFbyKCeR296hHfeokuIxnit9V4hVdRZbEzkGxza5d4bn/3UYbqhMatkMkHFQ==,
+      }
+    dev: true
 
   /@radix-ui/number@1.0.1:
     resolution:

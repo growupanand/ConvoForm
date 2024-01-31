@@ -1,4 +1,5 @@
 import createMDX from "@next/mdx";
+import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
 // Injected content via Sentry wizard below
 
 import { withSentryConfig } from "@sentry/nextjs";
@@ -26,6 +27,13 @@ const nextConfig = {
   // Configure `pageExtensions` to include MDX files
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   transpilePackages: ["@convoform/ui", "@convoform/db"],
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.plugins = [...config.plugins, new PrismaPlugin()];
+    }
+
+    return config;
+  },
 };
 
 const withMDX = createMDX({
