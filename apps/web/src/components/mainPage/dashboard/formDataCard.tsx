@@ -1,8 +1,7 @@
 "use client";
 
-import { api } from "@convoform/api/trpc/react";
-
 import { timeAgo } from "@/lib/utils";
+import { api } from "@/trpc/client";
 import { DataCard } from "./dataCard";
 import { DataCardSkeleton } from "./dataCardLoading";
 

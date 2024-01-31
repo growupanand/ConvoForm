@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { api } from "@convoform/api/trpc/server";
 
 import FormList from "@/components/mainPage/workspace/formList";
 import { WorkspaceHeader } from "@/components/mainPage/workspace/workspaceHeader";
 import { getOrganizationId } from "@/lib/getOrganizationId";
+import { api } from "@/trpc/server";
 
 export const dynamic = "force-dynamic";
 export const dynamicParams = true;

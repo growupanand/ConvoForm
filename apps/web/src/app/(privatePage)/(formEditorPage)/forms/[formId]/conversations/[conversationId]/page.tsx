@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { api } from "@convoform/api/trpc/server";
 
 import ConversationDetail from "@/components/formEditorPage/conversations/conversationDetail";
+import { api } from "@/trpc/server";
 
 type Props = {
   params: { conversationId: string };

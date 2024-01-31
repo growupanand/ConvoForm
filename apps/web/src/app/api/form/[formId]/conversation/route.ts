@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 import { freePlan } from "@/lib/config/pricing";
-import { prisma } from "@/lib/db";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { ConversationService } from "@/lib/services/conversation";
 import { ConversationPayloadSchema } from "@/lib/validations/conversation";
+import { api } from "@/trpc/server";
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -24,17 +24,8 @@ export async function POST(
     // const { isPreview } = reqPayload;
     const isPreview = false;
 
-    const form = await prisma.form.findUnique({
-      where: {
-        id: params.formId,
-      },
-      include: {
-        formField: {
-          orderBy: {
-            id: "asc",
-          },
-        },
-      },
+    const form = await api.form.getOneWithFields.query({
+      id: params.formId,
     });
 
     if (!form) {
@@ -46,23 +37,11 @@ export async function POST(
     }
 
     if (form.id !== "demo") {
-      // get all forms of current organization
-      const forms = await prisma.form.findMany({
-        where: {
-          organizationId: form.organizationId,
-        },
-        select: {
-          id: true,
-        },
-      });
       // get all conversations count for current organization
-      const totalSubmissionsCount = await prisma.conversation.count({
-        where: {
-          formId: {
-            in: forms.map((form) => form.id),
-          },
-        },
-      });
+      const totalSubmissionsCount =
+        await api.conversation.getResponseCountByOrganization.query({
+          organizationId: form.organizationId,
+        });
 
       const formSubmissionLimit =
         freePlan.features.find(

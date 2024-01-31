@@ -6,11 +6,12 @@
   "pipeline": {
     "build": {
       "dependsOn": [
+        "^db:generate",
         "^build"
       ],
       "outputs": [
-        ".next/**",
-        "!.next/cache/**"
+        "dist/**",
+        ".next/**"
       ],
       "env": [
         "*",
@@ -28,6 +29,7 @@
         "^lint"
       ]
     },
+    "type-check": {},
     "dev": {
       "cache": false,
       "persistent": true
@@ -36,6 +38,9 @@
       "dependsOn": [
         "^generate"
       ]
+    },
+    "db:generate": {
+      "cache": false
     }
   }
 }

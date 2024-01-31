@@ -1,35 +1,31 @@
 {
   "name": "@convoform/api",
   "version": "0.0.0",
-  "private": true,
+  "main": "index.ts",
   "scripts": {
-    "lint": "next lint --fix"
+    "lint": "next lint --fix",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@tanstack/react-query": "^4.36.1",
+    "@clerk/clerk-sdk-node": "^4.13.7",
+    "@clerk/nextjs": "^4.29.5",
+    "@convoform/db": "workspace:*",
+    "@prisma/client": "^5.6.0",
     "@trpc/client": "^10.43.6",
     "@trpc/next": "^10.43.6",
-    "@trpc/react-query": "^10.43.6",
     "@trpc/server": "^10.43.6",
     "next": "^14.1.0",
-    "react": "^18",
-    "react-dom": "^18",
-    "server-only": "^0.0.1",
     "superjson": "^2.2.1",
-    "zod": "^3.22.4",
-    "@clerk/nextjs": "^4.29.5",
-    "@convoform/db": "workspace:*"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@tanstack/react-query-devtools": "^5.17.21",
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
     "@typescript-eslint/parser": "^6.18.0",
     "autoprefixer": "^10.0.1",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-unused-imports": "^3.0.0",
+    "prisma": "^5.6.0",
     "typescript": "^5"
   }
 }

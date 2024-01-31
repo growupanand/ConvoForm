@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api } from "@convoform/api/trpc/react";
 import {
   Form as PrismaForm,
   FormField as PrismaFormField,
@@ -34,6 +33,7 @@ import {
   toast,
 } from "@convoform/ui/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   ArrowDownSquare,
   ArrowUpSquare,
@@ -53,6 +53,7 @@ import { montserrat } from "@/app/fonts";
 import { apiClient } from "@/lib/apiClient";
 import { cn } from "@/lib/utils";
 import { formUpdateSchema } from "@/lib/validations/form";
+import { api } from "@/trpc/client";
 
 const formSchema = formUpdateSchema;
 export type FormSubmitDataSchema = z.infer<typeof formSchema>;
@@ -72,6 +73,8 @@ export function FormEditorCard({ form }: Readonly<Props>) {
   const { isGeneratingAIField } = state;
 
   const formDefaultValues = form as FormSubmitDataSchema;
+
+  const queryClient = useQueryClient();
 
   const formHook = useForm<FormSubmitDataSchema>({
     resolver: zodResolver(formSchema),
@@ -101,6 +104,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
         title: "Changes saved successfully",
         duration: 1500,
       });
+      queryClient.invalidateQueries([["form"]]);
     },
   });
   const isFormBusy = updateForm.isLoading;
@@ -126,7 +130,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
     const formData = formHook.getValues();
     const payload = {
       overview: formData.overview,
-      formField: formData.formFields,
+      formFields: formData.formFields,
     };
     setState((cs) => ({ ...cs, isGeneratingAIField: true }));
     formHook.clearErrors();

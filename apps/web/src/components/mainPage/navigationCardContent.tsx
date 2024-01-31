@@ -3,13 +3,13 @@
 import { useCallback, useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ClerkLoading, OrganizationSwitcher, UserButton } from "@clerk/nextjs";
-import { api } from "@convoform/api/trpc/react";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
 
 import { NavigationConfig } from "@/lib/types/navigation";
+import { api } from "@/trpc/client";
 import BrandName from "../common/brandName";
 import { NavigationLinks } from "./mainNavigation/mainNavigation";
 

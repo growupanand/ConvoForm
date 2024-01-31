@@ -8,7 +8,7 @@ import {
 } from "ai";
 import { ChatCompletionRequestMessage } from "openai-edge";
 
-import { prisma } from "../db";
+import { api } from "@/trpc/server";
 import { FormWithFields } from "../types/form";
 import { OpenAIService } from "./openAI";
 
@@ -138,14 +138,12 @@ export class ConversationService extends OpenAIService {
     transcript: Record<string, any>[],
   ) {
     try {
-      return await prisma.conversation.create({
-        data: {
-          formId: this.form.id,
-          name: conversationName,
-          formFieldsData,
-          transcript,
-          organizationId: this.form.organizationId,
-        },
+      return await api.conversation.create.mutate({
+        formId: this.form.id,
+        organizationId: this.form.organizationId,
+        name: conversationName,
+        formFieldsData,
+        transcript,
       });
     } catch (error) {
       const errorMessage = "Unable to save conversation";

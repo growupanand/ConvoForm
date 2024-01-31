@@ -33,4 +33,35 @@ export const conversationRouter = createTRPCRouter({
         },
       });
     }),
+  create: protectedProcedure
+    .input(
+      z.object({
+        formId: z.string().min(5),
+        organizationId: z.string().min(5),
+        name: z.string().min(1),
+        formFieldsData: z.record(z.any()),
+        transcript: z.array(z.record(z.any())),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.db.conversation.create({
+        data: {
+          ...input,
+        },
+      });
+    }),
+
+  getResponseCountByOrganization: protectedProcedure
+    .input(
+      z.object({
+        organizationId: z.string().min(5),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.conversation.count({
+        where: {
+          organizationId: input.organizationId,
+        },
+      });
+    }),
 });

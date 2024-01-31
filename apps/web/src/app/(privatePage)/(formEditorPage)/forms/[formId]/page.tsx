@@ -1,6 +1,5 @@
 "use client";
 
-import { api } from "@convoform/api/trpc/react";
 import { Button } from "@convoform/ui/components/ui/button";
 import { Card, CardContent } from "@convoform/ui/components/ui/card";
 import {
@@ -20,6 +19,7 @@ import {
 import FormPreview from "@/components/formEditorPage/formPreview";
 import NavLinks from "@/components/formEditorPage/navLinks";
 import { cn } from "@/lib/utils";
+import { api } from "@/trpc/client";
 
 type Props = {
   params: { formId: string };

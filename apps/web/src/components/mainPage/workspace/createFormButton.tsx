@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { api } from "@convoform/api/trpc/react";
 import { Workspace } from "@convoform/db";
 import { Button } from "@convoform/ui/components/ui/button";
 import { toast } from "@convoform/ui/components/ui/use-toast";
@@ -10,6 +9,7 @@ import { Loader2, Plus } from "lucide-react";
 import { montserrat } from "@/app/fonts";
 import { cn } from "@/lib/utils";
 import { formCreateSchema } from "@/lib/validations/form";
+import { api } from "@/trpc/client";
 
 type Props = {
   workspace: Workspace;
