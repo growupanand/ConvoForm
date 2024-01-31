@@ -22,7 +22,7 @@ export const workspaceRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(
       z.object({
-        organizationId: z.string().min(5),
+        organizationId: z.string().min(1),
       }),
     )
     .query(async ({ input, ctx }) => {

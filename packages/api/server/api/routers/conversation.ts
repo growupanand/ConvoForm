@@ -6,7 +6,7 @@ export const conversationRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(
       z.object({
-        formId: z.string().min(5),
+        formId: z.string().min(1),
       }),
     )
     .query(async ({ input, ctx }) => {
@@ -36,8 +36,8 @@ export const conversationRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        formId: z.string().min(5),
-        organizationId: z.string().min(5),
+        formId: z.string().min(1),
+        organizationId: z.string().min(1),
         name: z.string().min(1),
         formFieldsData: z.record(z.any()),
         transcript: z.array(z.record(z.any())),
@@ -54,7 +54,7 @@ export const conversationRouter = createTRPCRouter({
   getResponseCountByOrganization: protectedProcedure
     .input(
       z.object({
-        organizationId: z.string().min(5),
+        organizationId: z.string().min(1),
       }),
     )
     .query(async ({ input, ctx }) => {

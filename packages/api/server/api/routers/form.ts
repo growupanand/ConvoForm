@@ -11,8 +11,8 @@ export const formRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       formCreateSchema.extend({
-        workspaceId: z.string().min(5),
-        organizationId: z.string().min(5),
+        workspaceId: z.string().min(1),
+        organizationId: z.string().min(1),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -35,7 +35,7 @@ export const formRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(
       z.object({
-        organizationId: z.string().min(5),
+        organizationId: z.string().min(1),
         workspaceId: z.string().optional(),
       }),
     )

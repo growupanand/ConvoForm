@@ -6,7 +6,7 @@ export const metricsRouter = createTRPCRouter({
   getFormMetrics: protectedProcedure
     .input(
       z.object({
-        organizationId: z.string().min(5),
+        organizationId: z.string().min(1),
         lastDaysCount: z.number().min(1),
       }),
     )
@@ -73,7 +73,7 @@ export const metricsRouter = createTRPCRouter({
   getConversationMetrics: protectedProcedure
     .input(
       z.object({
-        organizationId: z.string().min(5),
+        organizationId: z.string().min(1),
         lastDaysCount: z.number().min(1),
       }),
     )
