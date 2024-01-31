@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { getCurrentMonthDaysArray, getLastDaysDate } from "../../../lib/utils";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const metricsRouter = createTRPCRouter({
@@ -17,9 +18,9 @@ export const metricsRouter = createTRPCRouter({
         },
       });
 
-      const lastDaysDate = new Date();
-      const { lastDaysCount } = input;
-      lastDaysDate.setDate(lastDaysDate.getDate() - lastDaysCount);
+      const formCountsDataDayWise = {} as Record<string, any>;
+
+      const lastDaysDate = getLastDaysDate(input.lastDaysCount);
       const forms = await ctx.db.form.findMany({
         where: {
           organizationId: input.organizationId,
@@ -35,24 +36,12 @@ export const metricsRouter = createTRPCRouter({
         },
       });
 
-      const currentMonthTotalDays = new Date(
-        new Date().getFullYear(),
-        new Date().getMonth() + 1,
-        0,
-      ).getDate();
-      // get array of day of lastDaysLength days,
-      // E.g if today is 24 then [24, 23, 22, 21, 20, 19, 18]
-      const lastDays = Array.from(
-        { length: currentMonthTotalDays },
-        (_, i) => currentMonthTotalDays - i,
-      );
-
-      const formCountsDataDayWise = {} as Record<string, any>;
-      lastDays.forEach((day) => {
+      const currentMonthDaysArray = getCurrentMonthDaysArray();
+      currentMonthDaysArray.forEach((day) => {
         formCountsDataDayWise[day] = 0;
       });
-      for (let i = 0; i < forms.length; i++) {
-        const form = forms[i];
+      for (const element of forms) {
+        const form = element;
         const formCreatedAtDay = form.createdAt.getDate();
         formCountsDataDayWise[formCreatedAtDay] += 1;
       }
@@ -63,10 +52,29 @@ export const metricsRouter = createTRPCRouter({
         }),
       );
 
+      let lastFormCreatedAt = forms.length > 0 ? forms[0].createdAt : null;
+
+      // If there is no form created in the lastDaysCount days,
+      // then we will look into database for the last created form
+      if (lastFormCreatedAt === null) {
+        const lastForm = await ctx.db.form.findFirst({
+          where: {
+            organizationId: input.organizationId,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          select: {
+            createdAt: true,
+          },
+        });
+        lastFormCreatedAt = lastForm?.createdAt ?? null;
+      }
+
       return {
         totalCount,
         data: formCountDataArray,
-        lastFormCreatedAt: totalCount > 0 ? forms[0].createdAt : null,
+        lastFormCreatedAt,
       };
     }),
 
@@ -84,9 +92,8 @@ export const metricsRouter = createTRPCRouter({
         },
       });
 
-      const lastDaysDate = new Date();
-      const { lastDaysCount } = input;
-      lastDaysDate.setDate(lastDaysDate.getDate() - lastDaysCount);
+      const conversationCountsDataDayWise = {} as Record<string, any>;
+      const lastDaysDate = getLastDaysDate(input.lastDaysCount);
       const conversations = await ctx.db.conversation.findMany({
         where: {
           organizationId: input.organizationId,
@@ -102,24 +109,13 @@ export const metricsRouter = createTRPCRouter({
         },
       });
 
-      const currentMonthTotalDays = new Date(
-        new Date().getFullYear(),
-        new Date().getMonth() + 1,
-        0,
-      ).getDate();
-      // get array of day of lastDaysLength days,
-      // E.g if today is 24 then [24, 23, 22, 21, 20, 19, 18]
-      const lastDays = Array.from(
-        { length: currentMonthTotalDays },
-        (_, i) => currentMonthTotalDays - i,
-      );
+      const currentMonthDaysArray = getCurrentMonthDaysArray();
 
-      const conversationCountsDataDayWise = {} as Record<string, any>;
-      lastDays.forEach((day) => {
+      currentMonthDaysArray.forEach((day) => {
         conversationCountsDataDayWise[day] = 0;
       });
-      for (let i = 0; i < conversations.length; i++) {
-        const conversation = conversations[i];
+      for (const element of conversations) {
+        const conversation = element;
         const conversationCreatedAtDay = conversation.createdAt.getDate();
         conversationCountsDataDayWise[conversationCreatedAtDay] += 1;
       }
@@ -130,11 +126,30 @@ export const metricsRouter = createTRPCRouter({
         count: value,
       }));
 
+      let lastConversationCreatedAt =
+        conversations.length > 0 ? conversations[0].createdAt : null;
+
+      // If there is no conversation created in the lastDaysCount days,
+      // then we will look into database for the last created conversation
+      if (lastConversationCreatedAt === null) {
+        const lastConversation = await ctx.db.conversation.findFirst({
+          where: {
+            organizationId: input.organizationId,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          select: {
+            createdAt: true,
+          },
+        });
+        lastConversationCreatedAt = lastConversation?.createdAt ?? null;
+      }
+
       return {
         totalCount,
         data: conversationCountDataArray,
-        lastConversationCreatedAt:
-          totalCount > 0 ? conversations[0].createdAt : null,
+        lastConversationCreatedAt,
       };
     }),
 });

@@ -21,7 +21,7 @@
   "scripts": {
     "dev": "dotenv -e .env.local -- turbo run dev",
     "dev:staging": "dotenv -e .env.staging -- turbo run dev",
-    "build": "dotenv -- turbo build",
+    "build": "dotenv -e .env.local -- turbo build",
     "prepare": "husky install",
     "format:all": "prettier --write .",
     "format:staged": "prettier --write $(git diff --staged --name-only --diff-filter d | xargs)",

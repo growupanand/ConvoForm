@@ -4,7 +4,7 @@ import {
   formCreateSchema,
   formPatchSchema,
   formUpdateSchema,
-} from "@/lib/validations/form";
+} from "../../../lib/validations/form";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const formRouter = createTRPCRouter({

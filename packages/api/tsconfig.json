@@ -1,12 +1,6 @@
 {
   "extends": "@convoform/tsconfig/nextjs.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "./*"
-      ],
-    },
     "plugins": [
       {
         "name": "next"
@@ -19,6 +13,8 @@
     ],
     "incremental": true,
     "resolveJsonModule": true,
+    "strictNullChecks": true,
+    "strict": true
   },
   "include": [
     ".eslintrc.cjs",
@@ -30,6 +26,4 @@
     "**/*.mjs",
   ],
   "exclude": ["node_modules"],
-  "strictNullChecks": true,
-    "strict": true
 }
