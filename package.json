@@ -19,16 +19,19 @@
     "schema": "packages/db/prisma/schema.prisma"
   },
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo run dev",
+    "dev": "dotenv -e .env.local -- turbo run dev",
+    "dev:staging": "dotenv -e .env.staging -- turbo run dev",
+    "build": "dotenv -- turbo build",
     "prepare": "husky install",
     "format:all": "prettier --write .",
     "format:staged": "prettier --write $(git diff --staged --name-only --diff-filter d | xargs)",
     "release": "release-it",
     "commit": "git-cz",
-    "lint": "turbo lint",
-    "type-check": "turbo run type-check",
-    "ui:add": "pnpm --filter @convoform/ui ui:add"
+    "lint": "dotenv -e .env.local -- turbo lint",
+    "type-check": "dotenv -- turbo run type-check",
+    "ui:add": "pnpm --filter @convoform/ui ui:add",
+    "db:generate": "dotenv -e .env.local -- pnpm --filter @convoform/db generate",
+    "db:generate:staging": "dotenv -e .env.staging -- pnpm --filter @convoform/db generate"
   },
   "config": {
     "commitizen": {
@@ -42,6 +45,7 @@
     "@release-it/conventional-changelog": "^8.0.1",
     "@typescript-eslint/parser": "^6.18.0",
     "auto-changelog": "^2.4.0",
+    "dotenv-cli": "^7.3.0",
     "eslint": "^8.56.0",
     "eslint-plugin-unused-imports": "^3.0.0",
     "git-cz": "^4.9.0",
