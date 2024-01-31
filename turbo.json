@@ -6,7 +6,6 @@
   "pipeline": {
     "build": {
       "dependsOn": [
-        "^db:generate",
         "^build"
       ],
       "outputs": [
@@ -29,7 +28,11 @@
         "^lint"
       ]
     },
-    "type-check": {},
+    "type-check": {
+      "dependsOn": [
+        "^type-check"
+      ]
+    },
     "dev": {
       "cache": false,
       "persistent": true

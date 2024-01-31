@@ -2,8 +2,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import type { WebhookEvent } from "@clerk/clerk-sdk-node";
-
-import { prisma } from "@/lib/db";
+import { prisma } from "@convoform/db";
 
 export async function POST(req: NextRequest) {
   const reqJson = await req.json();
