@@ -6,7 +6,8 @@
     "types": "./src/index.tsx",
     "scripts": {
         "ui:add": "pnpm dlx shadcn-ui@latest add",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "type-check": "tsc --noEmit"
     },
     "dependencies": {
         "@headlessui/react": "^1.7.18",

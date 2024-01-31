@@ -212,9 +212,6 @@ importers:
       "@convoform/db":
         specifier: workspace:*
         version: link:../db
-      "@prisma/client":
-        specifier: ^5.6.0
-        version: 5.8.1(prisma@5.8.1)
       "@trpc/client":
         specifier: ^10.43.6
         version: 10.45.0(@trpc/server@10.45.0)
@@ -252,9 +249,6 @@ importers:
       eslint-plugin-unused-imports:
         specifier: ^3.0.0
         version: 3.0.0(@typescript-eslint/eslint-plugin@6.19.1)(eslint@8.56.0)
-      prisma:
-        specifier: ^5.6.0
-        version: 5.8.1
       typescript:
         specifier: ^5
         version: 5.3.3

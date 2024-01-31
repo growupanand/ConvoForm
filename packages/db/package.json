@@ -8,10 +8,9 @@
     "reset-db": "prisma migrate reset",
     "prisma-migrate-dev": "prisma migrate dev",
     "prisma-migrate-deploy": "prisma migrate deploy",
-    "prisma-generate": "prisma generate",
-    "postinstall": "prisma generate",
     "generate": "prisma generate",
-    "db:generate": "prisma generate"
+    "type-check": "tsc --noEmit",
+    "build": "pnpm run generate"
   },
   "dependencies": {
     "@prisma/client": "^5.6.0"
