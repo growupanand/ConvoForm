@@ -8,11 +8,31 @@
  */
 import { getAuth } from "@clerk/nextjs/server";
 import { prisma } from "@convoform/db";
-import { initTRPC, TRPCError } from "@trpc/server";
+import { inferAsyncReturnType, initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
 type AuthObject = ReturnType<typeof getAuth>;
+
+type CreateContextOptions = {
+  auth: AuthObject;
+};
+
+/**
+ * This helper generates the "internals" for a tRPC context. If you need to use
+ * it, you can export it from here
+ *
+ * Examples of things you may need it for:
+ * - testing, so we dont have to mock Next.js' req/res
+ * - trpc's `createSSGHelpers` where we don't have req/res
+ * @see https://create.t3.gg/en/usage/trpc#-servertrpccontextts
+ */
+export const createInnerTRPCContext = (opts: CreateContextOptions) => {
+  return {
+    ...opts,
+    db: prisma,
+  };
+};
 
 /**
  * 1. CONTEXT
@@ -30,12 +50,17 @@ export const createTRPCContext = async (opts: {
   headers: Headers;
   auth: AuthObject;
 }) => {
+  const innerContext = createInnerTRPCContext({
+    auth: opts.auth,
+  });
   return {
-    db: prisma,
+    ...innerContext,
     userId: opts.auth.userId,
     ...opts,
   };
 };
+
+export type Context = inferAsyncReturnType<typeof createTRPCContext>;
 
 /**
  * 2. INITIALIZATION
@@ -44,7 +69,7 @@ export const createTRPCContext = async (opts: {
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
+const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return {
@@ -71,6 +96,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
  * @see https://trpc.io/docs/router
  */
 export const createTRPCRouter = t.router;
+export const mergeRouters = t.mergeRouters;
 
 /**
  * Public (unauthenticated) procedure

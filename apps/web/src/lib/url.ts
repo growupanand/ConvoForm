@@ -23,3 +23,7 @@ export const getBackendBaseUrl = () => {
   // else return frontend url as we are using nextjs api routes
   return getFrontendBaseUrl();
 };
+
+export const getTRPCUrl = () => {
+  return getBackendBaseUrl() + "/api/trpc";
+};

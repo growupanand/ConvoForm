@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { api } from "@convoform/api/trpc/server";
 
 import { FormViewer } from "@/components/formSubmissionPage/formViewer";
+import { api } from "@/trpc/server";
 
 interface FormViewerPageProps {
   params: { formId: string };

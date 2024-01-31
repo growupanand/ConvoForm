@@ -28,7 +28,8 @@
     "commit": "git-cz",
     "lint": "turbo lint",
     "ui:add": "pnpm --filter @convoform/ui ui:add",
-    "generate": "turbo run generate"
+    "generate": "turbo run generate",
+    "type-check": "turbo run type-check"
   },
   "config": {
     "commitizen": {

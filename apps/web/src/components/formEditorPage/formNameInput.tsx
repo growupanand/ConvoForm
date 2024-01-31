@@ -1,12 +1,12 @@
 "use client";
 
-import { api } from "@convoform/api/trpc/react";
 import { Form } from "@convoform/db";
 import { Input } from "@convoform/ui/components/ui/input";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { cn, debounce } from "@/lib/utils";
+import { api } from "@/trpc/client";
 
 type Props = {
   form: Form;

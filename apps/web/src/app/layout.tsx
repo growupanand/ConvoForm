@@ -4,12 +4,12 @@ import "@convoform/ui/globals.css";
 import "nprogress/nprogress.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
-import { TRPCReactProvider } from "@convoform/api/trpc/react";
 import { Toaster } from "@convoform/ui/components/ui/toaster";
 
 import GoogleAnalytics from "@/components/googleAnalytics";
 import { SentryUserInit } from "@/components/sentryUserInit";
 import { cn } from "@/lib/utils";
+import { TRPCReactProvider } from "@/trpc/provider";
 import { roboto } from "./fonts";
 
 export const metadata: Metadata = {

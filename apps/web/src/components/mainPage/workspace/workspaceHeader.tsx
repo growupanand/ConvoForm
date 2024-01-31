@@ -2,7 +2,6 @@
 
 import { useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@convoform/api/trpc/react";
 import { Workspace } from "@convoform/db";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
@@ -18,6 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Check, Edit, MoreVertical, Trash } from "lucide-react";
 
 import { cn, debounce } from "@/lib/utils";
+import { api } from "@/trpc/client";
 import Spinner from "../../common/spinner";
 import CreateFormButton from "./createFormButton";
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { api } from "@convoform/api/trpc/react";
 import { Checkbox } from "@convoform/ui/components/ui/checkbox";
 import {
   Tooltip,
@@ -10,6 +9,7 @@ import {
 } from "@convoform/ui/components/ui/tooltip";
 
 import { getFrontendBaseUrl } from "@/lib/url";
+import { api } from "@/trpc/client";
 import BrowserWindow from "../common/browserWindow";
 import Spinner from "../common/spinner";
 import { FormViewer } from "../formSubmissionPage/formViewer";
