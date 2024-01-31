@@ -36,20 +36,20 @@
     }
   },
   "devDependencies": {
-    "husky": "^8.0.0",
-    "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
-    "@release-it/conventional-changelog": "^8.0.1",
-    "inquirer": "^8.2.6",
-    "release-it": "^17.0.1",
-    "prettier": "^3.1.1",
-    "prettier-plugin-tailwindcss": "^0.5.11",
-    "git-cz": "^4.9.0",
-    "auto-changelog": "^2.4.0",
     "@convoform/eslint-config": "workspace:*",
     "@convoform/tsconfig": "workspace:*",
-    "turbo": "latest",
-    "eslint": "^8.56.0",
+    "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
+    "@release-it/conventional-changelog": "^8.0.1",
     "@typescript-eslint/parser": "^6.18.0",
-    "eslint-plugin-unused-imports": "^3.0.0"
+    "auto-changelog": "^2.4.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-unused-imports": "^3.0.0",
+    "git-cz": "^4.9.0",
+    "husky": "^8.0.0",
+    "inquirer": "^8.2.6",
+    "prettier": "^3.1.1",
+    "prettier-plugin-tailwindcss": "^0.5.11",
+    "release-it": "^17.0.1",
+    "turbo": "^1.12.1"
   }
 }
