@@ -21,7 +21,6 @@ const nextConfig = {
     ],
   },
   experimental: {
-    swcPlugins: [["@swc-jotai/react-refresh", {}]],
     optimizePackageImports: ["@tremor/react"],
   },
   // Configure `pageExtensions` to include MDX files

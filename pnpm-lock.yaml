@@ -112,9 +112,6 @@ importers:
       clsx:
         specifier: ^2.0.0
         version: 2.1.0
-      jotai:
-        specifier: ^2.6.1
-        version: 2.6.3(@types/react@18.2.48)(react@18.2.0)
       lucide-react:
         specifier: ^0.292.0
         version: 0.292.0(react@18.2.0)
@@ -161,9 +158,6 @@ importers:
       "@prisma/nextjs-monorepo-workaround-plugin":
         specifier: ^5.9.0
         version: 5.9.0
-      "@swc-jotai/react-refresh":
-        specifier: ^0.1.0
-        version: 0.1.0
       "@tanstack/react-query-devtools":
         specifier: ^5.17.21
         version: 5.17.21(@tanstack/react-query@4.36.1)(react@18.2.0)
@@ -3208,13 +3202,6 @@ packages:
         integrity: sha512-rUV5WyJrJLoloD4NDN1V1+LDMDWOa4OTsT4yYJwQNpTU6FWxkxHpL7eu4w+DmiH8x/EAM1otkPE1+LaspIbplw==,
       }
     engines: { node: ">=18" }
-    dev: true
-
-  /@swc-jotai/react-refresh@0.1.0:
-    resolution:
-      {
-        integrity: sha512-CWV4W06GdfQo3cW3CoUM2fp7avH4Z/suR7SvECNJnQbr6Sa9U3p7o10nXjNv2zT6z09bbNUPM55HBw5Nwd24Iw==,
-      }
     dev: true
 
   /@swc/helpers@0.5.2:
@@ -9052,25 +9039,6 @@ packages:
         integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==,
       }
     dev: true
-
-  /jotai@2.6.3(@types/react@18.2.48)(react@18.2.0):
-    resolution:
-      {
-        integrity: sha512-0htSJ2d6426ZdSEYHncJHXY6Lkgde1Hc2HE/ADIRi9d2L3hQL+jLKY1LkWBMeCNyOSlKH8+1u/Gc33Ox0uq21Q==,
-      }
-    engines: { node: ">=12.20.0" }
-    peerDependencies:
-      "@types/react": ">=17.0.0"
-      react: ">=17.0.0"
-    peerDependenciesMeta:
-      "@types/react":
-        optional: true
-      react:
-        optional: true
-    dependencies:
-      "@types/react": 18.2.48
-      react: 18.2.0
-    dev: false
 
   /js-cookie@3.0.1:
     resolution:
