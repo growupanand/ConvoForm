@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { getCurrentMonthDaysArray, getLastDaysDate } from "../../../lib/utils";
+import { getCurrentMonthDaysArray, getLastDaysDate } from "../lib/utils";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const metricsRouter = createTRPCRouter({

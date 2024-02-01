@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
-import { appRouter } from "@convoform/api/server/api/root";
-import { createTRPCContext } from "@convoform/api/server/api/trpc";
+import { appRouter } from "@convoform/api/src/router/root";
+import { createTRPCContext } from "@convoform/api/src/trpc";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
 /**

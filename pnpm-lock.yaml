@@ -203,27 +203,15 @@ importers:
 
   packages/api:
     dependencies:
-      "@clerk/clerk-sdk-node":
-        specifier: ^4.13.7
-        version: 4.13.7(react@18.2.0)
       "@clerk/nextjs":
         specifier: ^4.29.5
         version: 4.29.5(next@14.1.0)(react-dom@18.2.0)(react@18.2.0)
       "@convoform/db":
         specifier: workspace:*
         version: link:../db
-      "@trpc/client":
-        specifier: ^10.43.6
-        version: 10.45.0(@trpc/server@10.45.0)
-      "@trpc/next":
-        specifier: ^10.43.6
-        version: 10.45.0(@tanstack/react-query@4.36.1)(@trpc/client@10.45.0)(@trpc/react-query@10.45.0)(@trpc/server@10.45.0)(next@14.1.0)(react-dom@18.2.0)(react@18.2.0)
       "@trpc/server":
         specifier: ^10.43.6
         version: 10.45.0
-      next:
-        specifier: ^14.1.0
-        version: 14.1.0(@babel/core@7.23.9)(react-dom@18.2.0)(react@18.2.0)
       superjson:
         specifier: ^2.2.1
         version: 2.2.1
@@ -237,18 +225,6 @@ importers:
       "@typescript-eslint/parser":
         specifier: ^6.18.0
         version: 6.19.1(eslint@8.56.0)(typescript@5.3.3)
-      autoprefixer:
-        specifier: ^10.0.1
-        version: 10.4.17(postcss@8.4.33)
-      eslint-import-resolver-typescript:
-        specifier: ^3.6.1
-        version: 3.6.1(@typescript-eslint/parser@6.19.1)(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
-      eslint-plugin-import:
-        specifier: ^2.25.2
-        version: 2.29.1(@typescript-eslint/parser@6.19.1)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
-      eslint-plugin-unused-imports:
-        specifier: ^3.0.0
-        version: 3.0.0(@typescript-eslint/eslint-plugin@6.19.1)(eslint@8.56.0)
       typescript:
         specifier: ^5
         version: 5.3.3

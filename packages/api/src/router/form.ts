@@ -1,11 +1,11 @@
 import { z } from "zod";
 
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import {
   formCreateSchema,
   formPatchSchema,
   formUpdateSchema,
-} from "../../../lib/validations/form";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+} from "../validators/form";
 
 export const formRouter = createTRPCRouter({
   create: protectedProcedure

@@ -1,8 +1,8 @@
-import { conversationRouter } from "./routers/conversation";
-import { formRouter } from "./routers/form";
-import { metricsRouter } from "./routers/metrics";
-import { workspaceRouter } from "./routers/workspace";
-import { createTRPCRouter } from "./trpc";
+import { createTRPCRouter } from "../trpc";
+import { conversationRouter } from "./conversation";
+import { formRouter } from "./form";
+import { metricsRouter } from "./metrics";
+import { workspaceRouter } from "./workspace";
 
 /**
  * This is the primary router for your server.
