@@ -1,6 +1,0 @@
-Do not delete this empty directory. It is created to fix below eslint error
-
-@convoform/api:lint:         throw new Error("> Couldn't find any `pages` or `app` directory. Please create one under the project root");
-@convoform/api:lint:               ^
-@convoform/api:lint: 
-@convoform/api:lint: Error: > Couldn't find any `pages` or `app` directory. Please create one under the project root

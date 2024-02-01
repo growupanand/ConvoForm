@@ -5,7 +5,7 @@ import { cookies, headers } from "next/headers";
 import { NextRequest } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import { createTRPCContext, type AppRouter } from "@convoform/api";
-import { appRouter } from "@convoform/api/server/api/root";
+import { appRouter } from "@convoform/api/src/router/root";
 import {
   createTRPCProxyClient,
   loggerLink,
