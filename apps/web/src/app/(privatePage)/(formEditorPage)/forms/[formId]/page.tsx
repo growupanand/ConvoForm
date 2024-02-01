@@ -25,10 +25,6 @@ type Props = {
   params: { formId: string };
 };
 
-// export const metadata: Metadata = {
-//   title: "Form editor",
-// };
-
 export default function FormPage({ params: { formId } }: Props) {
   const { isLoading, data } = api.form.getOneWithFields.useQuery({
     id: formId,

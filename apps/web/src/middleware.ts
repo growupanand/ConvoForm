@@ -13,6 +13,7 @@ export default authMiddleware({
     // Added for sentry
     "/monitoring(.*)",
     "/changelog",
+    "/api/og",
   ],
 });
 

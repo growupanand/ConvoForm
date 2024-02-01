@@ -1,8 +1,14 @@
+import { Metadata } from "next";
+
 import ConversationsSidebar from "@/components/formEditorPage/conversations/conversationsSidebar";
 
 type Props = {
   children: React.ReactNode;
   params: { formId: string };
+};
+
+export const metadata: Metadata = {
+  title: "Responses",
 };
 
 export default function Layout({ children, params: { formId } }: Props) {

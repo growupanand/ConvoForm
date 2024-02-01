@@ -23,7 +23,7 @@ export default function NavLinks({ formId }: Readonly<Props>) {
       isActive: pathName === `/forms/${currentFormId}`,
     },
     {
-      name: "Conversations",
+      name: "Responses",
       path: isAlreadyOnConversationsPage
         ? ""
         : `/forms/${currentFormId}/conversations`,
