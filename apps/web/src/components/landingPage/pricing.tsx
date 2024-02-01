@@ -1,4 +1,3 @@
-import { auth } from "@clerk/nextjs";
 import { Badge } from "@convoform/ui/components/ui/badge";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
@@ -55,8 +54,6 @@ const FeatureListItem = ({
 };
 
 const PlanCard = ({ plan }: { plan: Plan }) => {
-  const { userId } = auth();
-  const isLoggedin = !!userId;
   return (
     <Card className=" w-full rounded-xl border-none shadow-lg shadow-gray-200">
       <CardHeader>
@@ -87,9 +84,7 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
           className={cn("w-full rounded-full font-bold", montserrat.className)}
           asChild
         >
-          <LinkN href={isLoggedin ? "/dashboard" : "/auth/register"}>
-            Sign up now
-          </LinkN>
+          <LinkN href="/auth/register">Sign up now</LinkN>
         </Button>
       </CardFooter>
     </Card>

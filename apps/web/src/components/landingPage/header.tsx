@@ -1,38 +1,20 @@
-import { auth, ClerkLoading, UserButton } from "@clerk/nextjs";
-import { Button } from "@convoform/ui/components/ui/button";
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
-import { LayoutDashboard } from "lucide-react";
+import dynamic from "next/dynamic";
 
-import { LinkN } from "@/components/common/linkN";
 import BrandName from "../common/brandName";
+import { SignInButton } from "./signInButton";
+
+const UserSignInButton = dynamic(() => import("./userButton"), {
+  ssr: false,
+  loading: () => <SignInButton />,
+});
 
 export function Header() {
-  const { userId } = auth();
-
   return (
     <header>
       <div className="flex w-full items-center justify-between p-3">
         <BrandName className="text-xl lg:text-2xl" />
         <nav className="flex items-center gap-3">
-          {userId ? (
-            <>
-              <LinkN href="/dashboard">
-                <Button variant="secondary">
-                  <LayoutDashboard className="mr-2" size={20} /> Go to Dashboard
-                </Button>
-              </LinkN>
-              <ClerkLoading>
-                <Skeleton className="h-10 w-10 animate-pulse rounded-full" />
-              </ClerkLoading>
-              <UserButton />
-            </>
-          ) : (
-            <LinkN href="/auth/sign-in" rel="noopener noreferrer nofollow">
-              <Button variant="secondary" className="rounded-full">
-                Sign In
-              </Button>
-            </LinkN>
-          )}
+          <UserSignInButton />
         </nav>
       </div>
     </header>
