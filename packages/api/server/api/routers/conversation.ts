@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const conversationRouter = createTRPCRouter({
   getAll: protectedProcedure
@@ -33,7 +33,7 @@ export const conversationRouter = createTRPCRouter({
         },
       });
     }),
-  create: protectedProcedure
+  create: publicProcedure
     .input(
       z.object({
         formId: z.string().min(1),
@@ -51,7 +51,7 @@ export const conversationRouter = createTRPCRouter({
       });
     }),
 
-  getResponseCountByOrganization: protectedProcedure
+  getResponseCountByOrganization: publicProcedure
     .input(
       z.object({
         organizationId: z.string().min(1),

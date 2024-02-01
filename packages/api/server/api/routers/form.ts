@@ -5,7 +5,7 @@ import {
   formPatchSchema,
   formUpdateSchema,
 } from "../../../lib/validations/form";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const formRouter = createTRPCRouter({
   create: protectedProcedure
@@ -51,7 +51,7 @@ export const formRouter = createTRPCRouter({
       });
     }),
 
-  getOne: protectedProcedure
+  getOne: publicProcedure
     .input(
       z.object({
         id: z.string().min(1),
@@ -65,7 +65,7 @@ export const formRouter = createTRPCRouter({
       });
     }),
 
-  getOneWithWorkspace: protectedProcedure
+  getOneWithWorkspace: publicProcedure
     .input(
       z.object({
         id: z.string().min(1),
@@ -98,7 +98,7 @@ export const formRouter = createTRPCRouter({
       };
     }),
 
-  getOneWithFields: protectedProcedure
+  getOneWithFields: publicProcedure
     .input(
       z.object({
         id: z.string().min(1),
