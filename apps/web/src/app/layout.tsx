@@ -11,6 +11,7 @@ import { TRPCReactProvider } from "@/trpc/provider";
 import { roboto } from "./fonts";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.convoform.com"),
   title: {
     default: "ConvoForm | AI Powered Conversational Forms",
     template: "%s | ConvoForm",
@@ -50,6 +51,7 @@ export const metadata: Metadata = {
       "Transform your standard forms into engaging conversations with ConvoForm. Our easy-to-use, secure, and responsive form builder makes data collection more interactive.",
     url: "https://www.convoform.com",
     type: "website",
+    images: new URL("https://www.convoform.com/api/og"),
   },
 };
 
