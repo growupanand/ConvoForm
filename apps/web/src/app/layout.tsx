@@ -3,11 +3,9 @@ import type { Metadata } from "next";
 import "@convoform/ui/globals.css";
 import "nprogress/nprogress.css";
 
-import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@convoform/ui/components/ui/toaster";
 
 import GoogleAnalytics from "@/components/googleAnalytics";
-import { SentryUserInit } from "@/components/sentryUserInit";
 import { cn } from "@/lib/utils";
 import { TRPCReactProvider } from "@/trpc/provider";
 import { roboto } from "./fonts";
@@ -57,21 +55,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <ClerkProvider signInUrl="/auth/sign-in" signUpUrl="/auth/register">
-      <html lang="en">
-        <body className={cn(roboto.className, "bg-gray-50")}>
-          {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
-            <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
-          ) : null}
-          <SentryUserInit />
-          <TRPCReactProvider>{children}</TRPCReactProvider>
-          <Toaster />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className={cn(roboto.className, "bg-gray-50")}>
+        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
+          <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
+        ) : null}
+        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Toaster />
+      </body>
+    </html>
   );
 }
