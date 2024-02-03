@@ -1,7 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AspectRatio } from "@convoform/ui/components/ui/aspect-ratio";
 import { Badge } from "@convoform/ui/components/ui/badge";
 import { Button } from "@convoform/ui/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@convoform/ui/components/ui/carousel";
 import { ChevronRight } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";
@@ -70,6 +78,32 @@ export function Hero() {
             Try demo form
           </LinkN>
         </Button>
+      </div>
+      <div className="mt-[100px]  max-lg:hidden">
+        <Carousel className="shadow-lg">
+          <CarouselContent>
+            <CarouselItem>
+              <AspectRatio ratio={16 / 9}>
+                <Image
+                  alt="screenshot of form editor"
+                  src="/screenshots/formEditor.png"
+                  fill
+                />
+              </AspectRatio>
+            </CarouselItem>
+            <CarouselItem>
+              <AspectRatio ratio={16 / 9}>
+                <Image
+                  alt="screenshot of responses page"
+                  src="/screenshots/responses.png"
+                  fill
+                />
+              </AspectRatio>
+            </CarouselItem>
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </div>
     </section>
   );
