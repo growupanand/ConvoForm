@@ -51,7 +51,7 @@ export const metadata: Metadata = {
       "Transform your standard forms into engaging conversations with ConvoForm. Our easy-to-use, secure, and responsive form builder makes data collection more interactive.",
     url: "https://www.convoform.com",
     type: "website",
-    images: new URL("https://www.convoform.com/api/og"),
+    images: [`/api/og`],
   },
 };
 
