@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     title: {
       absolute: "Experience The New Magic Of Rich Conversational Forms",
     },
+    images: [`/api/og`],
   },
 };
 
