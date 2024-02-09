@@ -24,7 +24,7 @@ export async function POST(
     // const { isPreview } = reqPayload;
     const isPreview = false;
 
-    const form = await api.form.getOneWithFields.query({
+    const form = await api.form.getOneWithFields({
       id: params.formId,
     });
 
@@ -39,7 +39,7 @@ export async function POST(
     if (form.id !== "demo") {
       // get all conversations count for current organization
       const totalSubmissionsCount =
-        await api.conversation.getResponseCountByOrganization.query({
+        await api.conversation.getResponseCountByOrganization({
           organizationId: form.organizationId,
         });
 

@@ -25,7 +25,7 @@ const nextConfig = {
   },
   // Configure `pageExtensions` to include MDX files
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
-  transpilePackages: ["@convoform/ui", "@convoform/db"],
+  transpilePackages: ["@convoform/ui", "@convoform/db", "@convoform/api"],
   webpack: (config, { isServer }) => {
     if (isServer) {
       config.plugins = [...config.plugins, new PrismaPlugin()];
@@ -33,6 +33,9 @@ const nextConfig = {
 
     return config;
   },
+  /** We already do linting and typechecking as separate tasks in CI */
+  eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: true },
 };
 
 const withMDX = createMDX({

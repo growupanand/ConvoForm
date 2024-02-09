@@ -53,7 +53,7 @@ import { montserrat } from "@/app/fonts";
 import { apiClient } from "@/lib/apiClient";
 import { cn } from "@/lib/utils";
 import { formUpdateSchema } from "@/lib/validations/form";
-import { api } from "@/trpc/client";
+import { api } from "@/trpc/react";
 
 const formSchema = formUpdateSchema;
 export type FormSubmitDataSchema = z.infer<typeof formSchema>;
@@ -104,10 +104,12 @@ export function FormEditorCard({ form }: Readonly<Props>) {
         title: "Changes saved successfully",
         duration: 1500,
       });
-      queryClient.invalidateQueries([["form"]]);
+      queryClient.invalidateQueries({
+        queryKey: [["form"]],
+      });
     },
   });
-  const isFormBusy = updateForm.isLoading;
+  const isFormBusy = updateForm.isPending;
 
   const onSubmit = (formData: FormSubmitDataSchema) =>
     updateForm.mutateAsync({

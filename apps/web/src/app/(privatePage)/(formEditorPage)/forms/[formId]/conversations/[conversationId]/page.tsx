@@ -10,7 +10,7 @@ type Props = {
 export default async function ConversationDetailPage(props: Props) {
   const { conversationId } = props.params;
 
-  const conversation = await api.conversation.getOne.query({
+  const conversation = await api.conversation.getOne({
     id: conversationId,
   });
 

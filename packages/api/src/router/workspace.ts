@@ -26,7 +26,6 @@ export const workspaceRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      console.log({ "input.organizationId": input.organizationId });
       return await ctx.db.workspace.findMany({
         where: {
           organizationId: input.organizationId,

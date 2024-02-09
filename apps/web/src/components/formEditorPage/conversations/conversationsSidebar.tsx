@@ -11,7 +11,7 @@ import {
 } from "@convoform/ui/components/ui/sheet";
 import { Menu } from "lucide-react";
 
-import { api } from "@/trpc/client";
+import { api } from "@/trpc/react";
 import NavLinks from "../navLinks";
 import { ConversationsCard } from "./conversationsListCard";
 

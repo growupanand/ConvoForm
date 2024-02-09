@@ -22,7 +22,7 @@ export default async function WorkspacePage({
   params: { workspaceId },
 }: Readonly<Props>) {
   const orgId = getOrganizationId();
-  const workspace = await api.workspace.getOne.query({ id: workspaceId });
+  const workspace = await api.workspace.getOne({ id: workspaceId });
 
   if (!workspace) {
     notFound();

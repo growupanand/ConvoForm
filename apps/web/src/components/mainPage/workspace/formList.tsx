@@ -1,6 +1,6 @@
 "use client";
 
-import { api } from "@/trpc/client";
+import { api } from "@/trpc/react";
 import { FormListItem } from "./formListItem";
 import FormListLoading from "./formListLoading";
 

@@ -19,7 +19,7 @@ import {
 import FormPreview from "@/components/formEditorPage/formPreview";
 import NavLinks from "@/components/formEditorPage/navLinks";
 import { cn } from "@/lib/utils";
-import { api } from "@/trpc/client";
+import { api } from "@/trpc/react";
 
 type Props = {
   params: { formId: string };
