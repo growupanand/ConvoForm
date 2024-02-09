@@ -9,7 +9,7 @@ import {
 } from "@convoform/ui/components/ui/tooltip";
 
 import { getFrontendBaseUrl } from "@/lib/url";
-import { api } from "@/trpc/client";
+import { api } from "@/trpc/react";
 import BrowserWindow from "../common/browserWindow";
 import Spinner from "../common/spinner";
 import { FormViewer } from "../formSubmissionPage/formViewer";

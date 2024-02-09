@@ -9,7 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
 
 import { NavigationConfig } from "@/lib/types/navigation";
-import { api } from "@/trpc/client";
+import { api } from "@/trpc/react";
 import BrandName from "../common/brandName";
 import { NavigationLinks } from "./mainNavigation/mainNavigation";
 
@@ -43,7 +43,7 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
         variant: "destructive",
       }),
   });
-  const isCreatingWorkspace = createWorkspace.isLoading;
+  const isCreatingWorkspace = createWorkspace.isPending;
 
   const handleCreateWorkspace = useCallback(async () => {
     await createWorkspace.mutateAsync({

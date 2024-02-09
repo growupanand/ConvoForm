@@ -17,7 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Check, Edit, MoreVertical, Trash } from "lucide-react";
 
 import { cn, debounce } from "@/lib/utils";
-import { api } from "@/trpc/client";
+import { api } from "@/trpc/react";
 import Spinner from "../../common/spinner";
 import CreateFormButton from "./createFormButton";
 
@@ -31,7 +31,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
   const queryClient = useQueryClient();
 
   const deleteWorkspace = api.workspace.delete.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         action: (
           <div className="w-full">
@@ -45,7 +45,9 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
         ),
         duration: 1500,
       });
-      queryClient.invalidateQueries([["workspace"]]);
+      await queryClient.invalidateQueries({
+        queryKey: [["workspace"]],
+      });
 
       router.push("/dashboard");
     },
@@ -60,7 +62,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
     async () => deleteWorkspace.mutateAsync({ id: currentWorkspaceId }),
     [currentWorkspaceId],
   );
-  const isDeleting = deleteWorkspace.isLoading;
+  const isDeleting = deleteWorkspace.isPending;
 
   const updateWorkspace = api.workspace.patch.useMutation({
     onSuccess: () => {
@@ -68,7 +70,9 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
         title: "Workspace updated",
         duration: 1500,
       });
-      queryClient.invalidateQueries([["workspace"]]);
+      queryClient.invalidateQueries({
+        queryKey: [["workspace"]],
+      });
     },
     onError: () =>
       toast({
@@ -87,7 +91,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
     [currentWorkspaceId],
   );
 
-  const isUpdating = updateWorkspace.isLoading;
+  const isUpdating = updateWorkspace.isPending;
 
   const inputRef = useRef<HTMLInputElement>(null);
 

@@ -9,7 +9,7 @@ import { Loader2, Plus } from "lucide-react";
 import { montserrat } from "@/app/fonts";
 import { cn } from "@/lib/utils";
 import { formCreateSchema } from "@/lib/validations/form";
-import { api } from "@/trpc/client";
+import { api } from "@/trpc/react";
 
 type Props = {
   workspace: Workspace;
@@ -44,7 +44,7 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
       });
     },
   });
-  const { isLoading } = createForm;
+  const { isPending } = createForm;
 
   const handleCreateForm = () =>
     createForm.mutateAsync({
@@ -56,12 +56,12 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
   return (
     <Button
       variant="secondary"
-      disabled={isLoading}
+      disabled={isPending}
       onClick={handleCreateForm}
       className={cn(montserrat.className, "font-semibold")}
     >
-      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-      {!isLoading && <Plus className="mr-2 h-4 w-4" />}
+      {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      {!isPending && <Plus className="mr-2 h-4 w-4" />}
       New Form
     </Button>
   );

@@ -6,7 +6,7 @@ import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { cn, debounce } from "@/lib/utils";
-import { api } from "@/trpc/client";
+import { api } from "@/trpc/react";
 
 type Props = {
   form: Form;
@@ -23,7 +23,9 @@ export default function FormNameInput({ form, className }: Props) {
         title: "Form name updated.",
         duration: 1500,
       });
-      queryClient.invalidateQueries([["form", "getOneWithWorkspace"]]);
+      queryClient.invalidateQueries({
+        queryKey: [["form", "getOneWithWorkspace"]],
+      });
     },
     onError: () => {
       toast({
@@ -32,7 +34,7 @@ export default function FormNameInput({ form, className }: Props) {
       });
     },
   });
-  const isUpdating = updateForm.isLoading;
+  const isUpdating = updateForm.isPending;
 
   const updateWorkspace = async (name: string) =>
     updateForm.mutateAsync({
