@@ -13,14 +13,15 @@
     "drizzle:apply-migration": "tsx ./src/migrate.ts"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^0.8.1",
     "@paralleldrive/cuid2": "^2.2.2",
     "drizzle-orm": "^0.29.3",
     "drizzle-zod": "^0.5.1",
+    "pg": "^8.11.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/pg": "^8.11.0",
     "@typescript-eslint/parser": "^6.18.0",
     "drizzle-kit": "^0.20.14",
     "eslint": "^8.56.0",

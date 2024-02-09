@@ -2,7 +2,7 @@ import { type NextRequest } from "next/server";
 import { appRouter, createTRPCContext } from "@convoform/api";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 /**
  * Configure basic CORS headers
