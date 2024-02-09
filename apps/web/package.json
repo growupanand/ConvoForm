@@ -48,7 +48,6 @@
   "devDependencies": {
     "@convoform/eslint-config": "workspace:*",
     "@convoform/tsconfig": "workspace:*",
-    "@prisma/nextjs-monorepo-workaround-plugin": "^5.9.0",
     "@tanstack/react-query-devtools": "^5.17.21",
     "@types/node": "^20",
     "@types/nprogress": "^0.2.3",

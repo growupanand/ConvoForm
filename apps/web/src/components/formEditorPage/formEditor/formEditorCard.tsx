@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Form as PrismaForm,
-  FormField as PrismaFormField,
-} from "@convoform/db";
+import { Form as DBForm, FormField as DBFormField } from "@convoform/db";
 import {
   Accordion,
   AccordionContent,
@@ -59,7 +56,7 @@ const formSchema = formUpdateSchema;
 export type FormSubmitDataSchema = z.infer<typeof formSchema>;
 
 type Props = {
-  form: PrismaForm & { formFields: PrismaFormField[] };
+  form: DBForm & { formFields: DBFormField[] };
 };
 
 type State = {

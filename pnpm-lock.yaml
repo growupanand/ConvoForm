@@ -155,9 +155,6 @@ importers:
       "@convoform/tsconfig":
         specifier: workspace:*
         version: link:../../packages/tsconfig
-      "@prisma/nextjs-monorepo-workaround-plugin":
-        specifier: ^5.9.0
-        version: 5.9.0
       "@tanstack/react-query-devtools":
         specifier: ^5.17.21
         version: 5.17.21(@tanstack/react-query@5.18.1)(react@18.2.0)
@@ -240,9 +237,6 @@ importers:
       "@paralleldrive/cuid2":
         specifier: ^2.2.2
         version: 2.2.2
-      "@prisma/client":
-        specifier: ^5.6.0
-        version: 5.8.1(prisma@5.8.1)
       drizzle-orm:
         specifier: ^0.29.3
         version: 0.29.3(@types/pg@8.11.0)(pg@8.11.3)
@@ -274,9 +268,6 @@ importers:
       eslint-plugin-unused-imports:
         specifier: ^3.0.0
         version: 3.0.0(@typescript-eslint/eslint-plugin@6.19.1)(eslint@8.56.0)
-      prisma:
-        specifier: ^5.6.0
-        version: 5.8.1
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.11.8)(typescript@5.3.3)
@@ -2229,71 +2220,6 @@ packages:
       "@pnpm/config.env-replace": 1.1.0
       "@pnpm/network.ca-file": 1.0.2
       config-chain: 1.1.13
-    dev: true
-
-  /@prisma/client@5.8.1(prisma@5.8.1):
-    resolution:
-      {
-        integrity: sha512-xQtMPfbIwLlbm0VVIVQY2yqQVOxPwRQhvIp7Z3m2900g1bu/zRHKhYZJQWELqmjl6d8YwBy0K2NvMqh47v1ubw==,
-      }
-    engines: { node: ">=16.13" }
-    requiresBuild: true
-    peerDependencies:
-      prisma: "*"
-    peerDependenciesMeta:
-      prisma:
-        optional: true
-    dependencies:
-      prisma: 5.8.1
-    dev: false
-
-  /@prisma/debug@5.8.1:
-    resolution:
-      {
-        integrity: sha512-tjuw7eA0Us3T42jx9AmAgL58rzwzpFGYc3R7Y4Ip75EBYrKMBA1YihuWMcBC92ILmjlQ/u3p8VxcIE0hr+fZfg==,
-      }
-
-  /@prisma/engines-version@5.8.1-1.78caf6feeaed953168c64e15a249c3e9a033ebe2:
-    resolution:
-      {
-        integrity: sha512-f5C3JM3l9yhGr3cr4FMqWloFaSCpNpMi58Om22rjD2DOz3owci2mFdFXMgnAGazFPKrCbbEhcxdsRfspEYRoFQ==,
-      }
-
-  /@prisma/engines@5.8.1:
-    resolution:
-      {
-        integrity: sha512-TJgYLRrZr56uhqcXO4GmP5be+zjCIHtLDK20Cnfg+o9d905hsN065QOL+3Z0zQAy6YD31Ol4u2kzSfRmbJv/uA==,
-      }
-    requiresBuild: true
-    dependencies:
-      "@prisma/debug": 5.8.1
-      "@prisma/engines-version": 5.8.1-1.78caf6feeaed953168c64e15a249c3e9a033ebe2
-      "@prisma/fetch-engine": 5.8.1
-      "@prisma/get-platform": 5.8.1
-
-  /@prisma/fetch-engine@5.8.1:
-    resolution:
-      {
-        integrity: sha512-+bgjjoSFa6uYEbAPlklfoVSStOEfcpheOjoBoNsNNSQdSzcwE2nM4Q0prun0+P8/0sCHo18JZ9xqa8gObvgOUw==,
-      }
-    dependencies:
-      "@prisma/debug": 5.8.1
-      "@prisma/engines-version": 5.8.1-1.78caf6feeaed953168c64e15a249c3e9a033ebe2
-      "@prisma/get-platform": 5.8.1
-
-  /@prisma/get-platform@5.8.1:
-    resolution:
-      {
-        integrity: sha512-wnA+6HTFcY+tkykMokix9GiAkaauPC5W/gg0O5JB0J8tCTNWrqpnQ7AsaGRfkYUbeOIioh6woDjQrGTTRf1Zag==,
-      }
-    dependencies:
-      "@prisma/debug": 5.8.1
-
-  /@prisma/nextjs-monorepo-workaround-plugin@5.9.0:
-    resolution:
-      {
-        integrity: sha512-++aY/BdZFbVMUvpFb+kyXSmFKGlFbyKCeR296hHfeokuIxnit9V4hVdRZbEzkGxza5d4bn/3UYbqhMatkMkHFQ==,
-      }
     dev: true
 
   /@radix-ui/number@1.0.1:
@@ -12426,17 +12352,6 @@ packages:
     engines: { node: ">=14" }
     hasBin: true
     dev: true
-
-  /prisma@5.8.1:
-    resolution:
-      {
-        integrity: sha512-N6CpjzECnUHZ5beeYpDzkt2rYpEdAeqXX2dweu6BoQaeYkNZrC/WJHM+5MO/uidFHTak8QhkPKBWck1o/4MD4A==,
-      }
-    engines: { node: ">=16.13" }
-    hasBin: true
-    requiresBuild: true
-    dependencies:
-      "@prisma/engines": 5.8.1
 
   /progress@2.0.3:
     resolution:
