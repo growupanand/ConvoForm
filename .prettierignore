@@ -2,7 +2,6 @@
 public/
 .gitignore
 .husky/
-prisma/
 templates/
 .env.example
 

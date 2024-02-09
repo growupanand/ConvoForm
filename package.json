@@ -15,9 +15,6 @@
     "apps/*",
     "packages/*"
   ],
-  "prisma": {
-    "schema": "packages/db/prisma/schema.prisma"
-  },
   "scripts": {
     "dev": "dotenv -e .env.local -- turbo run dev",
     "dev:staging": "dotenv -e .env.staging -- turbo run dev",
@@ -30,8 +27,6 @@
     "lint": "dotenv -e .env.local -- turbo lint",
     "type-check": "dotenv -- turbo run type-check",
     "ui:add": "pnpm --filter @convoform/ui ui:add",
-    "db:generate": "dotenv -e .env.local -- pnpm --filter @convoform/db generate",
-    "db:generate:staging": "dotenv -e .env.staging -- pnpm --filter @convoform/db generate",
     "drizzle-kit": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle-kit",
     "drizzle:generate-migration": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle:generate-migration",
     "drizzle:apply-migration": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle:apply-migration"
