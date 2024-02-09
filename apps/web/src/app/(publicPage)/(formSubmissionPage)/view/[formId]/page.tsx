@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default async function FormViewPage({ params }: FormViewerPageProps) {
   const { formId } = params;
-  const formData = await api.form.getOne.query({ id: formId });
+  const formData = await api.form.getOne({ id: formId });
   if (!formData || !formData.isPublished) {
     notFound();
   }

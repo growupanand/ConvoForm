@@ -7,7 +7,7 @@ import { Toaster } from "@convoform/ui/components/ui/toaster";
 
 import GoogleAnalytics from "@/components/googleAnalytics";
 import { cn } from "@/lib/utils";
-import { TRPCReactProvider } from "@/trpc/provider";
+import { TRPCReactProvider } from "@/trpc/react";
 import { roboto } from "./fonts";
 
 export const metadata: Metadata = {

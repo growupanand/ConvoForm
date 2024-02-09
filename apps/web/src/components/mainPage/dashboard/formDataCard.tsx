@@ -1,7 +1,7 @@
 "use client";
 
 import { timeAgo } from "@/lib/utils";
-import { api } from "@/trpc/client";
+import { api } from "@/trpc/react";
 import { DataCard } from "./dataCard";
 import { DataCardSkeleton } from "./dataCardLoading";
 

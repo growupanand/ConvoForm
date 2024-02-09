@@ -1,27 +1,34 @@
 import { type NextRequest } from "next/server";
-import { getAuth } from "@clerk/nextjs/server";
-import { appRouter } from "@convoform/api/src/router/root";
-import { createTRPCContext } from "@convoform/api/src/trpc";
+import { appRouter, createTRPCContext } from "@convoform/api";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
+// export const runtime = "edge";
+
 /**
- * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
- * handling a HTTP request (e.g. when you make requests from Client Components).
+ * Configure basic CORS headers
+ * You should extend this to match your needs
  */
+function setCorsHeaders(res: Response) {
+  res.headers.set("Access-Control-Allow-Origin", "*");
+  res.headers.set("Access-Control-Request-Method", "*");
+  res.headers.set("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
+  res.headers.set("Access-Control-Allow-Headers", "*");
+}
 
-const createContext = async (req: NextRequest) => {
-  return createTRPCContext({
-    headers: req.headers,
-    auth: getAuth(req),
+export function OPTIONS() {
+  const response = new Response(null, {
+    status: 204,
   });
-};
+  setCorsHeaders(response);
+  return response;
+}
 
-const handler = (req: NextRequest) =>
-  fetchRequestHandler({
+const handler = async (req: NextRequest) => {
+  const response = await fetchRequestHandler({
     endpoint: "/api/trpc",
-    req,
     router: appRouter,
-    createContext: () => createContext(req),
+    req,
+    createContext: () => createTRPCContext(),
     onError:
       process.env.NODE_ENV === "development"
         ? ({ path, error }: any) => {
@@ -31,5 +38,9 @@ const handler = (req: NextRequest) =>
           }
         : undefined,
   });
+
+  setCorsHeaders(response);
+  return response;
+};
 
 export { handler as GET, handler as POST };

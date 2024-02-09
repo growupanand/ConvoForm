@@ -15,7 +15,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ExternalLink, Loader2, MoreVertical, Trash } from "lucide-react";
 
 import { LinkN } from "@/components/common/linkN";
-import { api } from "@/trpc/client";
+import { api } from "@/trpc/react";
 
 type Props = {
   form: Form;
@@ -29,8 +29,12 @@ export function FormListItem({ form }: Readonly<Props>) {
         title: "Form deleted.",
         duration: 1500,
       });
-      queryClient.invalidateQueries([["form", "getAll"]]);
-      queryClient.invalidateQueries([["metrics"]]);
+      queryClient.invalidateQueries({
+        queryKey: [["form", "getAll"]],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [["metrics"]],
+      });
     },
     onError: () => {
       toast({
@@ -39,7 +43,7 @@ export function FormListItem({ form }: Readonly<Props>) {
       });
     },
   });
-  const isDeleting = deleteForm.isLoading;
+  const isDeleting = deleteForm.isPending;
 
   const handleDeleteForm = async () =>
     deleteForm.mutateAsync({

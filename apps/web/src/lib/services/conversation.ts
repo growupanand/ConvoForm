@@ -138,7 +138,7 @@ export class ConversationService extends OpenAIService {
     transcript: Record<string, any>[],
   ) {
     try {
-      return await api.conversation.create.mutate({
+      return await api.conversation.create({
         formId: this.form.id,
         organizationId: this.form.organizationId,
         name: conversationName,
