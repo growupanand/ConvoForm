@@ -46,6 +46,3 @@ build/**
 dist/**
 .next/**
 dist
-
-# prisma generated client and types in packages > db
-**/lib/generated/client/**
