@@ -8,6 +8,20 @@
       "when": 1707493043450,
       "tag": "0000_clear_scarecrow",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1707498277191,
+      "tag": "0001_odd_toro",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1707498311953,
+      "tag": "0002_nosy_swarm",
+      "breakpoints": true
     }
   ]
 }
