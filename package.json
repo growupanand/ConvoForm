@@ -31,7 +31,10 @@
     "type-check": "dotenv -- turbo run type-check",
     "ui:add": "pnpm --filter @convoform/ui ui:add",
     "db:generate": "dotenv -e .env.local -- pnpm --filter @convoform/db generate",
-    "db:generate:staging": "dotenv -e .env.staging -- pnpm --filter @convoform/db generate"
+    "db:generate:staging": "dotenv -e .env.staging -- pnpm --filter @convoform/db generate",
+    "drizzle-kit": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle-kit",
+    "drizzle:generate-migration": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle:generate-migration",
+    "drizzle:apply-migration": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle:apply-migration"
   },
   "config": {
     "commitizen": {
@@ -43,9 +46,9 @@
     "@convoform/tsconfig": "workspace:*",
     "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
     "@release-it/conventional-changelog": "^8.0.1",
-    "@typescript-eslint/parser": "^6.18.0",
     "auto-changelog": "^2.4.0",
     "dotenv-cli": "^7.3.0",
+    "@typescript-eslint/parser": "^6.18.0",
     "eslint": "^8.56.0",
     "eslint-plugin-unused-imports": "^3.0.0",
     "git-cz": "^4.9.0",

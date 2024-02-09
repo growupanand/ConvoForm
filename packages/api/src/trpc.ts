@@ -5,7 +5,7 @@
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
-import { prisma } from "@convoform/db";
+import { db } from "@convoform/db";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
@@ -24,7 +24,7 @@ import { ZodError } from "zod";
  */
 export const createTRPCContext = async () => {
   return {
-    db: prisma,
+    db,
     auth: getAuth(new NextRequest(getBaseUrl(), { headers: headers() })),
   };
 };
