@@ -2,24 +2,40 @@
   "name": "@convoform/db",
   "version": "0.0.0",
   "private": true,
-  "main": "index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
+    "lint": "eslint ./src/**/*.ts --fix",
     "studio": "prisma studio",
     "reset-db": "prisma migrate reset",
     "prisma-migrate-dev": "prisma migrate dev",
     "prisma-migrate-deploy": "prisma migrate deploy",
     "generate": "prisma generate",
     "type-check": "tsc --noEmit",
-    "build": "pnpm run generate"
+    "build": "pnpm run generate",
+    "drizzle-kit": "drizzle-kit",
+    "drizzle:generate-migration": "drizzle-kit generate:pg --out drizzle/migrations --schema src/schema/index.ts",
+    "drizzle:apply-migration": "tsx ./src/migrate.ts"
   },
   "dependencies": {
-    "@prisma/client": "^5.6.0"
+    "@paralleldrive/cuid2": "^2.2.2",
+    "@prisma/client": "^5.6.0",
+    "drizzle-orm": "^0.29.3",
+    "drizzle-zod": "^0.5.1",
+    "pg": "^8.11.3",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "prisma": "^5.6.0",
-    "tsx": "^4.7.0",
-    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/pg": "^8.11.0",
+    "@typescript-eslint/parser": "^6.18.0",
+    "drizzle-kit": "^0.20.14",
     "eslint": "^8.56.0",
-    "@types/node": "^20"
+    "eslint-plugin-unused-imports": "^3.0.0",
+    "prisma": "^5.6.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
   }
 }

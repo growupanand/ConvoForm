@@ -24,3 +24,4 @@ node_modules/
 *.png
 *.ico
 DONT_DELETE_FOLDER
+**/*.sql

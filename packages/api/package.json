@@ -1,9 +1,13 @@
 {
   "name": "@convoform/api",
   "version": "0.0.0",
-  "main": "index.ts",
+  "private": true,
+  "exports": {
+    ".": "./index.ts"
+  },
   "scripts": {
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "lint": "eslint ./src/**/*.ts --fix"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.5",
@@ -15,7 +19,9 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "typescript": "^5",
     "@typescript-eslint/parser": "^6.18.0",
-    "typescript": "^5"
+    "eslint": "^8.56.0",
+    "eslint-plugin-unused-imports": "^3.0.0"
   }
 }

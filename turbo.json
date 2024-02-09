@@ -10,7 +10,8 @@
     "NEXT_PUBLIC_APP_URL",
     "VERCEL_URL",
     "OPEN_AI_MODEL",
-    "OPENAI_API_KEY"
+    "OPENAI_API_KEY",
+    "DATABASE_URL"
   ],
   "pipeline": {
     "build": {

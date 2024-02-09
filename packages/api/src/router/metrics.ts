@@ -1,3 +1,4 @@
+import { conversation, count, eq, form } from "@convoform/db";
 import { z } from "zod";
 
 import { getCurrentMonthDaysArray, getLastDaysDate } from "../lib/utils";
@@ -12,26 +13,24 @@ export const metricsRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const totalCount = await ctx.db.form.count({
-        where: {
-          organizationId: input.organizationId,
-        },
-      });
+      const [result] = await ctx.db
+        .select({ value: count() })
+        .from(form)
+        .where(eq(form.organizationId, input.organizationId));
+
+      const totalCount = result?.value;
 
       const formCountsDataDayWise = {} as Record<string, any>;
 
       const lastDaysDate = getLastDaysDate(input.lastDaysCount);
-      const forms = await ctx.db.form.findMany({
-        where: {
-          organizationId: input.organizationId,
-          createdAt: {
-            gte: lastDaysDate,
-          },
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-        select: {
+      const forms = await ctx.db.query.form.findMany({
+        where: (form, { eq, and, gte }) =>
+          and(
+            eq(form.organizationId, input.organizationId),
+            gte(form.createdAt, lastDaysDate),
+          ),
+        orderBy: (form, { desc }) => [desc(form.createdAt)],
+        columns: {
           createdAt: true,
         },
       });
@@ -52,19 +51,16 @@ export const metricsRouter = createTRPCRouter({
         }),
       );
 
-      let lastFormCreatedAt = forms.length > 0 ? forms[0].createdAt : null;
+      let lastFormCreatedAt =
+        forms.length > 0 && forms[0] ? forms[0].createdAt : null;
 
       // If there is no form created in the lastDaysCount days,
       // then we will look into database for the last created form
       if (lastFormCreatedAt === null) {
-        const lastForm = await ctx.db.form.findFirst({
-          where: {
-            organizationId: input.organizationId,
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-          select: {
+        const lastForm = await ctx.db.query.form.findFirst({
+          where: eq(form.organizationId, input.organizationId),
+          orderBy: (form, { desc }) => [desc(form.createdAt)],
+          columns: {
             createdAt: true,
           },
         });
@@ -86,25 +82,23 @@ export const metricsRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const totalCount = await ctx.db.conversation.count({
-        where: {
-          organizationId: input.organizationId,
-        },
-      });
+      const [result] = await ctx.db
+        .select({ value: count() })
+        .from(conversation)
+        .where(eq(conversation.organizationId, input.organizationId));
+
+      const totalCount = result?.value;
 
       const conversationCountsDataDayWise = {} as Record<string, any>;
       const lastDaysDate = getLastDaysDate(input.lastDaysCount);
-      const conversations = await ctx.db.conversation.findMany({
-        where: {
-          organizationId: input.organizationId,
-          createdAt: {
-            gte: lastDaysDate,
-          },
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-        select: {
+      const conversations = await ctx.db.query.conversation.findMany({
+        where: (conversation, { eq, and, gte }) =>
+          and(
+            eq(conversation.organizationId, input.organizationId),
+            gte(conversation.createdAt, lastDaysDate),
+          ),
+        orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
+        columns: {
           createdAt: true,
         },
       });
@@ -127,19 +121,17 @@ export const metricsRouter = createTRPCRouter({
       }));
 
       let lastConversationCreatedAt =
-        conversations.length > 0 ? conversations[0].createdAt : null;
+        conversations.length > 0 && conversations[0]
+          ? conversations[0].createdAt
+          : null;
 
       // If there is no conversation created in the lastDaysCount days,
       // then we will look into database for the last created conversation
       if (lastConversationCreatedAt === null) {
-        const lastConversation = await ctx.db.conversation.findFirst({
-          where: {
-            organizationId: input.organizationId,
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-          select: {
+        const lastConversation = await ctx.db.query.conversation.findFirst({
+          where: eq(conversation.organizationId, input.organizationId),
+          orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
+          columns: {
             createdAt: true,
           },
         });

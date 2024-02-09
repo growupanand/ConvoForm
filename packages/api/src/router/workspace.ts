@@ -1,23 +1,26 @@
+import { eq, insertWorkspaceSchema, workspace } from "@convoform/db";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const workspaceRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(
-      z.object({
-        name: z.string().min(1),
-        organizationId: z.string().min(1),
-      }),
-    )
+    .input(insertWorkspaceSchema)
     .mutation(async ({ input, ctx }) => {
-      return await ctx.db.workspace.create({
-        data: {
+      const [result] = await ctx.db
+        .insert(workspace)
+        .values({
           name: input.name,
           organizationId: input.organizationId,
           userId: ctx.userId,
-        },
-      });
+        })
+        .returning();
+
+      if (!result) {
+        throw new Error("Unable to create workspace");
+      }
+
+      return result;
     }),
   getAll: protectedProcedure
     .input(
@@ -26,13 +29,10 @@ export const workspaceRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.db.workspace.findMany({
-        where: {
-          organizationId: input.organizationId,
-        },
-        orderBy: {
-          createdAt: "asc",
-        },
+      return await ctx.db.query.workspace.findMany({
+        where: (workspace, { eq }) =>
+          eq(workspace.organizationId, input.organizationId),
+        orderBy: (workspace, { asc }) => [asc(workspace.createdAt)],
       });
     }),
 
@@ -43,10 +43,8 @@ export const workspaceRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.db.workspace.findFirst({
-        where: {
-          id: input.id,
-        },
+      return await ctx.db.query.workspace.findFirst({
+        where: eq(workspace.id, input.id),
       });
     }),
 
@@ -57,11 +55,7 @@ export const workspaceRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.db.workspace.delete({
-        where: {
-          id: input.id,
-        },
-      });
+      return await ctx.db.delete(workspace).where(eq(workspace.id, input.id));
     }),
 
   patch: protectedProcedure
@@ -72,13 +66,12 @@ export const workspaceRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.db.workspace.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          name: input.name,
-        },
-      });
+      const [updatedWorkspace] = await ctx.db
+        .update(workspace)
+        .set({ name: input.name })
+        .where(eq(workspace.id, input.id))
+        .returning();
+
+      return updatedWorkspace;
     }),
 });

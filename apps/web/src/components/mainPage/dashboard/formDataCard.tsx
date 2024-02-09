@@ -15,7 +15,7 @@ export function FormDataCard({ orgId }: { orgId: string }) {
     return <DataCardSkeleton />;
   }
 
-  if (!data) {
+  if (!data || !data.totalCount) {
     return null;
   }
 

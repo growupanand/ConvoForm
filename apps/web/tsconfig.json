@@ -19,6 +19,8 @@
     ],
     "incremental": true,
     "resolveJsonModule": true,
+    "strictNullChecks": true,
+    "strict": true
   },
   "include": [
     "next-env.d.ts",
@@ -27,9 +29,7 @@
     "**/*.jsx",
     ".next/types/**/*.ts",
     "**/*.mjs",
-    "tailwind.config.js"
+    "tailwind.config.js",
   ],
   "exclude": ["node_modules"],
-  "strictNullChecks": true,
-    "strict": true
 }
