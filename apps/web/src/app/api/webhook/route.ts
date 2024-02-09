@@ -1,8 +1,15 @@
 /* eslint-disable no-case-declarations */
 
 import { NextRequest, NextResponse } from "next/server";
-import type { WebhookEvent } from "@clerk/clerk-sdk-node";
-import { prisma } from "@convoform/db";
+import { type WebhookEvent } from "@clerk/clerk-sdk-node";
+import {
+  db,
+  eq,
+  insertUserSchema,
+  organization,
+  organizationMember,
+  user,
+} from "@convoform/db";
 
 export async function POST(req: NextRequest) {
   const reqJson = await req.json();
@@ -18,15 +25,15 @@ export async function POST(req: NextRequest) {
           data.email_addresses.length > 0
             ? data.email_addresses[0]?.email_address
             : "";
-        const user = {
+        const newUser = insertUserSchema.parse({
           email: email,
           firstName: data.first_name,
           lastName: data.last_name,
           userId: data.id,
           imageUrl: data.image_url,
-        };
-        await prisma.user.create({
-          data: user,
+        });
+        await db.insert(user).values({
+          ...newUser,
         });
         console.log("user created successfully in our database");
       } catch (e: any) {
@@ -45,11 +52,7 @@ export async function POST(req: NextRequest) {
           console.log("user id not found in event data");
           break;
         }
-        await prisma.user.deleteMany({
-          where: {
-            userId: userData.id,
-          },
-        });
+        await db.delete(user).where(eq(user.id, userData.id));
         console.log("user deleted successfully in our database");
       } catch (e: any) {
         console.error({
@@ -69,8 +72,8 @@ export async function POST(req: NextRequest) {
           organizationId: orgData.id,
           slug: orgData.slug || "",
         };
-        await prisma.organization.create({
-          data: org,
+        await db.insert(organization).values({
+          ...org,
         });
         console.log("organization created successfully in our database");
       } catch (e: any) {
@@ -91,8 +94,8 @@ export async function POST(req: NextRequest) {
           userId: orgMembershipData.public_user_data.user_id,
           role: orgMembershipData.role,
         };
-        await prisma.organizationMember.create({
-          data: orgMembership,
+        await db.insert(organizationMember).values({
+          ...orgMembership,
         });
         console.log(
           "organizationMembership created successfully in our database",
@@ -114,11 +117,9 @@ export async function POST(req: NextRequest) {
           console.log("organizationMembership id not found in event data");
           break;
         }
-        await prisma.organizationMember.deleteMany({
-          where: {
-            memberId: orgMembershipDeletedData.id,
-          },
-        });
+        await db
+          .delete(organizationMember)
+          .where(eq(organizationMember.memberId, orgMembershipDeletedData.id));
         console.log(
           "organizationMembership deleted successfully in our database",
         );
@@ -139,16 +140,12 @@ export async function POST(req: NextRequest) {
           console.log("organization id not found in event data");
           break;
         }
-        await prisma.organization.deleteMany({
-          where: {
-            organizationId: orgDeletedData.id,
-          },
-        });
-        await prisma.organizationMember.deleteMany({
-          where: {
-            organizationId: orgDeletedData.id,
-          },
-        });
+        await db
+          .delete(organization)
+          .where(eq(organization.organizationId, orgDeletedData.id));
+        await db
+          .delete(organizationMember)
+          .where(eq(organizationMember.organizationId, orgDeletedData.id));
         console.log("organization deleted successfully in our database");
       } catch (e: any) {
         console.error({

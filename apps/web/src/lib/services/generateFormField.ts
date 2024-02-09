@@ -27,7 +27,7 @@ export class GenerateFormFieldService extends OpenAIService {
       message,
     ]);
 
-    const responseJson = openAiResponse.choices[0].message.content;
+    const responseJson = openAiResponse.choices[0]?.message.content;
     if (responseJson) {
       try {
         nextFieldName = JSON.parse(responseJson).fieldName;

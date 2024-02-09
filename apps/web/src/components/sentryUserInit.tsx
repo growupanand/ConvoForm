@@ -9,7 +9,7 @@ export function SentryUserInit() {
   if (user) {
     Sentry.setUser({
       userId: user.id,
-      email: user.emailAddresses[0].emailAddress,
+      email: user.emailAddresses[0]?.emailAddress,
       fullName: `${user.firstName} ${user.lastName}`,
     });
   }

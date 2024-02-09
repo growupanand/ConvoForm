@@ -42,7 +42,7 @@ export default function ConversationsSidebar({ formId }: Props) {
   const conversations = data ?? [];
 
   useEffect(() => {
-    if (conversations.length > 0 && !conversationId) {
+    if (conversations.length > 0 && conversations[0] && !conversationId) {
       router.replace(`/forms/${formId}/conversations/${conversations[0].id}`);
     }
   }, [formId, conversations]);

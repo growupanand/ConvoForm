@@ -1,3 +1,9 @@
+import {
+  conversation,
+  count,
+  eq,
+  insertConversationSchema,
+} from "@convoform/db";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
@@ -10,13 +16,9 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.db.conversation.findMany({
-        where: {
-          formId: input.formId,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
+      return await ctx.db.query.conversation.findMany({
+        where: (conversation, { eq }) => eq(conversation.formId, input.formId),
+        orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
       });
     }),
 
@@ -27,10 +29,8 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.db.conversation.findFirst({
-        where: {
-          id: input.id,
-        },
+      return await ctx.db.query.conversation.findFirst({
+        where: eq(conversation.id, input.id),
       });
     }),
   create: publicProcedure
@@ -44,11 +44,26 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.db.conversation.create({
-        data: {
-          ...input,
-        },
-      });
+      const test = insertConversationSchema.parse(input);
+      let { formFieldsData, transcript, ...newConversation } = test;
+      // TODO: If we don't typecast here it will throw type error
+      const newFormFieldsData = formFieldsData as Record<string, string>;
+      const newTranscript = transcript as Array<Record<string, string>>;
+      const [result] = await ctx.db
+        .insert(conversation)
+        .values({
+          ...newConversation,
+          formFieldsData: newFormFieldsData,
+          transcript: newTranscript,
+          updatedAt: new Date(),
+        })
+        .returning();
+
+      if (!result) {
+        throw new Error("Failed to create conversation");
+      }
+
+      return result;
     }),
 
   getResponseCountByOrganization: publicProcedure
@@ -58,10 +73,11 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.db.conversation.count({
-        where: {
-          organizationId: input.organizationId,
-        },
-      });
+      const [result] = await ctx.db
+        .select({ value: count() })
+        .from(conversation)
+        .where(eq(conversation.organizationId, input.organizationId));
+
+      return result?.value;
     }),
 });

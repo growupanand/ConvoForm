@@ -1,3 +1,4 @@
+import { eq, form, formField } from "@convoform/db";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
@@ -16,39 +17,54 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.db.form.create({
-        data: {
+      const [newForm] = await ctx.db
+        .insert(form)
+        .values({
           userId: ctx.userId,
           organizationId: input.organizationId,
           workspaceId: input.workspaceId,
           name: input.name,
           overview: input.overview,
-          formField: {
-            create: input.formField,
-          },
           welcomeScreenCTALabel: input.welcomeScreenCTALabel,
           welcomeScreenTitle: input.welcomeScreenTitle,
           welcomeScreenMessage: input.welcomeScreenMessage,
-        },
-      });
+        })
+        .returning();
+      if (!newForm) {
+        throw new Error("Failed to create form");
+      }
+
+      const newField = await ctx.db
+        .insert(formField)
+        .values({
+          fieldName: "",
+          formId: newForm.id,
+        })
+        .returning();
+      return {
+        ...newForm,
+        formFields: [newField],
+      };
     }),
   getAll: protectedProcedure
     .input(
       z.object({
         organizationId: z.string().min(1),
-        workspaceId: z.string().optional(),
+        workspaceId: z.string().min(1),
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.db.form.findMany({
-        where: {
-          organizationId: input.organizationId,
-          workspaceId: input.workspaceId,
-        },
-        orderBy: {
-          createdAt: "asc",
-        },
+      console.log({ input });
+      const forms = await ctx.db.query.form.findMany({
+        where: (form, { eq, and }) =>
+          and(
+            eq(form.organizationId, input.organizationId),
+            eq(form.workspaceId, input.workspaceId),
+          ),
+        orderBy: (form, { asc }) => [asc(form.createdAt)],
       });
+      console.log({ forms });
+      return forms;
     }),
 
   getOne: publicProcedure
@@ -58,10 +74,8 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.db.form.findFirst({
-        where: {
-          id: input.id,
-        },
+      return await ctx.db.query.form.findFirst({
+        where: eq(form.id, input.id),
       });
     }),
 
@@ -72,30 +86,12 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const form = await ctx.db.form.findFirst({
-        where: {
-          id: input.id,
+      return await ctx.db.query.form.findFirst({
+        where: eq(form.id, input.id),
+        with: {
+          workspace: true,
         },
       });
-
-      if (!form) {
-        throw new Error("Form not found");
-      }
-
-      const workspace = await ctx.db.workspace.findFirst({
-        where: {
-          id: form.workspaceId,
-        },
-      });
-
-      if (!workspace) {
-        throw new Error("Workspace not found");
-      }
-
-      return {
-        ...form,
-        workspace,
-      };
     }),
 
   getOneWithFields: publicProcedure
@@ -105,25 +101,13 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const form = await ctx.db.form.findFirst({
-        where: {
-          id: input.id,
-        },
-        include: {
-          formField: true,
+      return await ctx.db.query.form.findFirst({
+        where: eq(form.id, input.id),
+        with: {
+          workspace: true,
+          formFields: true,
         },
       });
-
-      if (!form) {
-        return null;
-      }
-
-      const { formField, ...restForm } = form;
-
-      return {
-        ...restForm,
-        formFields: formField,
-      };
     }),
 
   delete: protectedProcedure
@@ -133,11 +117,7 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.db.form.delete({
-        where: {
-          id: input.id,
-        },
-      });
+      return await ctx.db.delete(form).where(eq(form.id, input.id));
     }),
 
   patch: protectedProcedure
@@ -147,14 +127,11 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.db.form.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          name: input.name,
-        },
-      });
+      return await ctx.db
+        .update(form)
+        .set({ name: input.name })
+        .where(eq(form.id, input.id))
+        .returning();
     }),
 
   updateForm: protectedProcedure
@@ -164,23 +141,33 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.db.form.update({
-        where: {
-          id: input.id,
-        },
-        data: {
+      const [updatedForm] = await ctx.db
+        .update(form)
+        .set({
           name: input.name,
           overview: input.overview,
           welcomeScreenCTALabel: input.welcomeScreenCTALabel,
           welcomeScreenTitle: input.welcomeScreenTitle,
           welcomeScreenMessage: input.welcomeScreenMessage,
           isPublished: true,
-          formField: {
-            deleteMany: {},
-            create: input.formFields,
-          },
-        },
-      });
+          updatedAt: new Date(),
+        })
+        .where(eq(form.id, input.id))
+        .returning();
+
+      await ctx.db.delete(formField).where(eq(formField.formId, input.id));
+      const updatedFormFields = await ctx.db.insert(formField).values([
+        ...input.formFields.map((field) => ({
+          fieldName: field.fieldName,
+          formId: input.id,
+          updatedAt: new Date(),
+        })),
+      ]);
+
+      return {
+        ...updatedForm,
+        formFields: updatedFormFields,
+      };
     }),
 
   deleteForm: protectedProcedure
@@ -190,10 +177,6 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.db.form.delete({
-        where: {
-          id: input.id,
-        },
-      });
+      return await ctx.db.delete(form).where(eq(form.id, input.id));
     }),
 });

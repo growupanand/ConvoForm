@@ -15,7 +15,7 @@ export function ResponseDataCard({ orgId }: { orgId: string }) {
     return <DataCardSkeleton />;
   }
 
-  if (!data) {
+  if (!data || !data.totalCount) {
     return null;
   }
 

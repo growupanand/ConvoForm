@@ -48,7 +48,16 @@ export async function POST(
           (feature) => feature.name === "Collect form responses",
         )?.featureValue ?? 0;
 
-      if (totalSubmissionsCount > formSubmissionLimit) {
+      if (!totalSubmissionsCount) {
+        console.error("Unable to get total submissions count", {
+          organizationId: form.organizationId,
+        });
+      }
+
+      if (
+        totalSubmissionsCount &&
+        totalSubmissionsCount > formSubmissionLimit
+      ) {
         throw new Error("This form have reached total submissions limit", {
           cause: {
             statusCode: 403,

@@ -1,3 +1,4 @@
+import { Conversation } from "@convoform/db";
 import {
   CreateMessage,
   experimental_StreamData,
@@ -80,7 +81,7 @@ export class ConversationService extends OpenAIService {
       //    3. Conversation name
 
       // 1. Get form field data
-      let formFieldData = {};
+      let formFieldData = {} as Record<string, string>;
       const formFieldDataJSONString = functionCallPayload.arguments
         .formData as string;
       try {
@@ -98,7 +99,7 @@ export class ConversationService extends OpenAIService {
           role: "assistant",
           content: thankYouMessage,
         },
-      ];
+      ] as Record<string, string>[];
 
       // 3. Get conversation name
       const conversationName =
@@ -133,18 +134,19 @@ export class ConversationService extends OpenAIService {
   }
 
   async saveConversation(
-    formFieldsData: Record<string, any>,
+    formFieldsData: Record<string, string>,
     conversationName: string,
-    transcript: Record<string, any>[],
-  ) {
+    transcript: Record<string, string>[],
+  ): Promise<Conversation> {
     try {
-      return await api.conversation.create({
+      const newConversation = {
         formId: this.form.id,
         organizationId: this.form.organizationId,
         name: conversationName,
         formFieldsData,
         transcript,
-      });
+      };
+      return await api.conversation.create(newConversation);
     } catch (error) {
       const errorMessage = "Unable to save conversation";
       console.error(errorMessage, error);
