@@ -13,6 +13,7 @@ type Props = {
   headerClassName?: string;
   sectionClassName?: string;
   stickyHeader?: boolean;
+  titleClassName?: string;
 };
 
 export function SectionCard({
@@ -21,6 +22,7 @@ export function SectionCard({
   headerClassName,
   sectionClassName,
   stickyHeader,
+  titleClassName,
 }: Props) {
   return (
     <section>
@@ -42,6 +44,7 @@ export function SectionCard({
             className={cn(
               "text-xl font-semibold tracking-tight",
               montserrat.className,
+              titleClassName,
             )}
           >
             {title}

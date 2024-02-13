@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import ConversationsSidebar from "@/components/formEditorPage/conversations/conversationsSidebar";
+import ConversationsSidebar from "@/app/(protectedPage)/forms/[formId]/conversations/_components/conversationsSidebar";
 
 type Props = {
   children: React.ReactNode;
@@ -17,7 +17,7 @@ export default function Layout({ children, params: { formId } }: Props) {
       <div className="lg:w-[400px] lg:min-w-[400px]">
         <ConversationsSidebar formId={formId} />
       </div>
-      <div className="flex grow flex-col border-l bg-white">{children}</div>
+      <div className="grow p-3">{children}</div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import { FormEditorPageHeader } from "@/components/formEditorPage/formEditorPageHeader";
+import { FormEditorPageHeader } from "@/app/(protectedPage)/forms/[formId]/_components/formPageHeader";
 
 type Props = {
   children: React.ReactNode;

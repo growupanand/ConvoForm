@@ -8,11 +8,11 @@ import {
   TooltipTrigger,
 } from "@convoform/ui/components/ui/tooltip";
 
+import BrowserWindow from "@/components/common/browserWindow";
+import Spinner from "@/components/common/spinner";
+import { FormViewer } from "@/components/formSubmissionPage/formViewer";
 import { getFrontendBaseUrl } from "@/lib/url";
 import { api } from "@/trpc/react";
-import BrowserWindow from "../common/browserWindow";
-import Spinner from "../common/spinner";
-import { FormViewer } from "../formSubmissionPage/formViewer";
 
 type Props = {
   noToolbar?: boolean;

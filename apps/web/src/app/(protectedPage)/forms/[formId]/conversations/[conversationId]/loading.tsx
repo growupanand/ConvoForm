@@ -1,4 +1,4 @@
-import ConversationDetail from "@/components/formEditorPage/conversations/conversationDetail";
+import ConversationDetail from "../_components/conversationDetail";
 
 export default function Loading() {
   return <ConversationDetail.ConversationDetailSkeleton />;

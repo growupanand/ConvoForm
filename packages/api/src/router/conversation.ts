@@ -80,4 +80,22 @@ export const conversationRouter = createTRPCRouter({
 
       return result?.value;
     }),
+  getFormResponsesData: protectedProcedure
+    .input(
+      z.object({
+        formId: z.string().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      return await ctx.db.query.conversation.findMany({
+        where: eq(conversation.formId, input.formId),
+        columns: {
+          id: true,
+          formFieldsData: true,
+          createdAt: true,
+          name: true,
+        },
+        orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
+      });
+    }),
 });

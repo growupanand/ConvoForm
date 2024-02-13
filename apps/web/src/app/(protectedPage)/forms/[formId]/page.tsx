@@ -10,14 +10,14 @@ import {
 } from "@convoform/ui/components/ui/drawer";
 import { Eye } from "lucide-react";
 
-import { montserrat } from "@/app/fonts";
-import { NotFoundPage } from "@/components/common/notFound";
 import {
   FormEditorCard,
   FormEditorFormSkeleton,
-} from "@/components/formEditorPage/formEditor/formEditorCard";
-import FormPreview from "@/components/formEditorPage/formPreview";
-import NavLinks from "@/components/formEditorPage/navLinks";
+} from "@/app/(protectedPage)/forms/[formId]/_components/formEditor/formEditorCard";
+import FormPreview from "@/app/(protectedPage)/forms/[formId]/_components/formEditor/formPreview";
+import MainNavTab from "@/app/(protectedPage)/forms/[formId]/_components/mainNavTab";
+import { montserrat } from "@/app/fonts";
+import { NotFoundPage } from "@/components/common/notFound";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
@@ -41,7 +41,7 @@ export default function FormPage({ params: { formId } }: Props) {
   return (
     <div className="h-full lg:flex">
       <div className="px-3 lg:max-h-[calc(100vh-100px)] lg:w-[400px] lg:min-w-[400px] lg:overflow-auto">
-        <NavLinks formId={formId} />
+        <MainNavTab formId={formId} />
         <Card className="border-0 bg-transparent shadow-none">
           <CardContent className="p-0 lg:pt-6">
             {isLoading ? (
@@ -86,7 +86,7 @@ function FormPageLoading({ formId }: { formId: string }) {
   return (
     <div className="h-full lg:flex">
       <div className="px-3 lg:max-h-[calc(100vh-100px)] lg:w-[400px] lg:min-w-[400px] lg:overflow-auto">
-        <NavLinks formId={formId} />
+        <MainNavTab formId={formId} />
         <Card className="border-0 bg-transparent shadow-none">
           <CardContent className="p-0 lg:pt-6">
             <FormEditorFormSkeleton />
