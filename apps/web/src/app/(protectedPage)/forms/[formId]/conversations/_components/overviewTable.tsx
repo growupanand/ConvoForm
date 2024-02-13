@@ -12,6 +12,8 @@ export function OverviewTable({ formId }: Readonly<Props>) {
     formId,
   });
 
+  const exportFileName = `Responses ${new Date().toLocaleString()}.csv`;
+
   return (
     <QueryTable
       query={query}
@@ -22,6 +24,8 @@ export function OverviewTable({ formId }: Readonly<Props>) {
           ...item.formFieldsData,
         }));
       }}
+      showExportButton
+      exportFileName={exportFileName}
     />
   );
 }

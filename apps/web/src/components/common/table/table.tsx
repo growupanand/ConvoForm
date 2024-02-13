@@ -15,13 +15,21 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { Download } from "lucide-react";
+import { CSVLink } from "react-csv";
 
 type FormFieldData = Record<string, string>;
 const columnHelper = createColumnHelper<FormFieldData>();
 
 export function TableComponent({
   tableData,
-}: Readonly<{ tableData: Record<string, string>[] }>) {
+  showExportButton,
+  exportFileName,
+}: Readonly<{
+  tableData: Record<string, string>[];
+  showExportButton?: boolean;
+  exportFileName?: string;
+}>) {
   const tableColumns = Array.from(
     new Set(
       tableData.reduce((acc: string[], row) => {
@@ -41,40 +49,51 @@ export function TableComponent({
   });
 
   return (
-    <div className="relative max-h-[80vh] overflow-auto rounded-md border bg-white">
-      <Table>
-        <TableHeader className="sticky top-0 bg-gray-50/90">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead
-                  key={header.id}
-                  className="h-auto py-2 font-bold capitalize"
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id} className="py-2">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    <>
+      {showExportButton && (
+        <div className="flex items-center justify-start py-3">
+          <CSVLink data={tableData} filename={exportFileName}>
+            <Button size="sm" variant="outline">
+              <Download size={20} className="mr-2" /> <span>Export</span>
+            </Button>
+          </CSVLink>
+        </div>
+      )}
+      <div className="relative max-h-[80vh] overflow-auto rounded-md border bg-white">
+        <Table>
+          <TableHeader className="sticky top-0 bg-gray-50/90">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="h-auto py-2 font-bold capitalize"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} className="py-2">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 }
 

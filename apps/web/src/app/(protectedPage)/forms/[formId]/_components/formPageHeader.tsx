@@ -89,13 +89,13 @@ const FormEditorPageHeaderSkeleton = () => {
   return (
     <div className="border-border/40 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 flex items-center justify-between border-b bg-white p-3 backdrop-blur">
       <div className="flex items-center ">
-        <Skeleton className="mr-2 h-[40px] w-12" />
-        <Skeleton className="mr-2 h-[40px] w-12" />
-        <Skeleton className="mr-2 h-[40px] w-12" />
+        <Skeleton className="mr-2 h-5 w-5" />
+        <Skeleton className="mr-2 h-5 w-12" />
+        <Skeleton className="mr-2 h-5 w-12" />
+        <Skeleton className="mr-2 h-5 w-20" />
       </div>
       <div className="flex items-center gap-2">
-        <Skeleton className="mr-2 h-[40px] w-12" />
-        <Skeleton className="mr-2 h-[40px] w-12" />
+        <Skeleton className="h-10 w-10 animate-pulse rounded-full" />
       </div>
     </div>
   );
