@@ -14,7 +14,7 @@ export default function DashboardPage() {
   return (
     <div className="max-lg:p-3">
       <h1 className="mb-5 py-3 text-xl font-medium lg:text-2xl">Dashboard</h1>
-      <div className="grid gap-3 lg:grid-flow-col">
+      <div className="grid gap-3 lg:grid-flow-col lg:grid-cols-2">
         <FormDataCard orgId={orgId} />
         <ResponseDataCard orgId={orgId} />
       </div>

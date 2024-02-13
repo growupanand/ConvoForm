@@ -14,9 +14,9 @@ import {
 } from "@convoform/ui/components/ui/table";
 import { FileText } from "lucide-react";
 
+import { SectionCard } from "@/components/landingPage/sectionCard";
 import { FormFieldData } from "@/lib/types/conversation";
 import { Transcript } from "@/lib/types/transcript";
-import { SectionCard } from "../../landingPage/sectionCard";
 import TranscriptCard from "./transcriptCard";
 
 type Props = {
@@ -42,10 +42,10 @@ export default function ConversationDetail({ conversation }: Props) {
           {conversation.createdAt.toLocaleString()}
         </span>
       </div>
-      <div className="max-w-lg space-y-10">
+      <div className="grid max-w-lg gap-3">
         {!isFormDataEmpty && (
-          <SectionCard stickyHeader title="Form Data">
-            <div className="overflow-hidden rounded-md border">
+          <SectionCard title="Collected data" titleClassName="font-medium">
+            <div className="overflow-hidden rounded-md border bg-white">
               <Table className="">
                 <TableBody>
                   {formFieldsDataKeys.map((key) => {
@@ -63,7 +63,7 @@ export default function ConversationDetail({ conversation }: Props) {
             </div>
           </SectionCard>
         )}
-        <SectionCard stickyHeader title="Transcript">
+        <SectionCard title="Transcript" titleClassName="font-medium">
           <TranscriptCard transcript={transcript} />
         </SectionCard>
       </div>
@@ -74,7 +74,7 @@ export default function ConversationDetail({ conversation }: Props) {
 const ConversationDetailSkeleton = () => {
   return (
     <div className="h-full lg:container">
-      <Card className="h-full border-none shadow-none">
+      <Card className="h-full border-none bg-transparent shadow-none">
         <CardHeader>
           <CardTitle>
             <div className="flex items-center justify-between">
@@ -92,33 +92,34 @@ const ConversationDetailSkeleton = () => {
         </CardHeader>
         <CardContent>
           <div className="max-w-lg space-y-10">
-            <section>
-              <h3 className="mb-3 text-lg font-semibold">
-                <Skeleton className="h-5 w-20" />
-              </h3>
-              <div className="overflow-hidden rounded-md border">
-                <Table>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="py-2">
-                        <Skeleton className="h-5 w-20" />
-                      </TableCell>
-                      <TableCell className="py-2 font-medium">
-                        <Skeleton className="h-5 w-20" />
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="py-2">
-                        <Skeleton className="h-5 w-20" />
-                      </TableCell>
-                      <TableCell className="py-2 font-medium">
-                        <Skeleton className="h-5 w-20" />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            </section>
+            <div className="overflow-hidden rounded-md border bg-white">
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="py-2">
+                      <Skeleton className="h-5 w-20" />
+                    </TableCell>
+                    <TableCell className="py-2 font-medium">
+                      <Skeleton className="h-5 w-20" />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="py-2">
+                      <Skeleton className="h-5 w-20" />
+                    </TableCell>
+                    <TableCell className="py-2 font-medium">
+                      <Skeleton className="h-5 w-20" />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+            <div className="grid gap-2">
+              <Skeleton className="h-5 w-20" />
+              <Skeleton className="h-5 w-40" />
+              <Skeleton className="h-5 w-20" />
+              <Skeleton className="h-5 w-40" />
+            </div>
           </div>
         </CardContent>
       </Card>
