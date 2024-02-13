@@ -11,6 +11,8 @@ import {
 type Props<TData, TError> = {
   query: UseQueryResult<TData, TError>;
   getTableData: (data: TData) => Record<string, string>[];
+  showExportButton?: boolean;
+  exportFileName?: string;
 };
 
 export function QueryTable<TData, TError>(props: Props<TData, TError>) {
@@ -23,7 +25,11 @@ export function QueryTable<TData, TError>(props: Props<TData, TError>) {
       {(data) => {
         const tableData = props.getTableData(data);
         return tableData.length > 0 ? (
-          <TableComponent tableData={tableData} />
+          <TableComponent
+            tableData={tableData}
+            showExportButton={props.showExportButton}
+            exportFileName={props.exportFileName}
+          />
         ) : (
           <TableEmpty />
         );
