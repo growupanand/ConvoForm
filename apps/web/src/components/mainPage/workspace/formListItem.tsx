@@ -14,6 +14,7 @@ import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ExternalLink, Loader2, MoreVertical, Trash } from "lucide-react";
 
+import { ConfirmAction } from "@/components/common/confirmAction";
 import { LinkN } from "@/components/common/linkN";
 import { api } from "@/trpc/react";
 
@@ -51,7 +52,7 @@ export function FormListItem({ form }: Readonly<Props>) {
     });
 
   return (
-    <div className="flex items-center justify-between py-1 transition-all hover:bg-gray-50 hover:ps-3">
+    <div className="flex items-center justify-between py-1 transition-all hover:bg-gray-50 hover:ps-1">
       <div className="grow">
         <LinkN href={`/forms/${form.id}`}>
           <Button
@@ -104,13 +105,20 @@ export function FormListItem({ form }: Readonly<Props>) {
                 Not published
               </DropdownMenuLabel>
             )}
-            <DropdownMenuItem
-              className="text-destructive focus:text-destructive cursor-pointer"
-              onClick={handleDeleteForm}
+            <ConfirmAction
+              title="Are you sure you want to delete this form?"
+              description="This action will delete all data related to this form. This action cannot be undone."
+              onConfirm={() => handleDeleteForm()}
+              confirmText="Yes, delete form"
             >
-              <Trash className="mr-2 h-4 w-4" />
-              Delete form
-            </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive cursor-pointer"
+                onSelect={(e) => e.preventDefault()}
+              >
+                <Trash className="mr-2 h-4 w-4" />
+                Delete form
+              </DropdownMenuItem>
+            </ConfirmAction>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
