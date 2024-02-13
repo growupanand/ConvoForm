@@ -42,7 +42,7 @@ cd ConvoForm
 ### Install Dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### Configuration
@@ -68,25 +68,17 @@ application.
 pnpm run build
 ```
 
-or
-
-To build the project for Vercel deployment, run:
-
-```bash
-pnpm run vercel-build
-```
-
 ## Screenshots
 
 Here are some screenshots from the app
 
-| Workspace Page                                                                                                   | Form Editor                                                                                                   |
-| ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| ![Workspace page](https://github.com/growupanand/ConvoForm/assets/29487686/a854d340-afd6-477f-a402-c7ce3e8c9787) | ![Form editor](https://github.com/growupanand/ConvoForm/assets/29487686/31df4942-b403-43fa-a7d5-5b72c453745f) |
+| Workspace Page                                                                                                   | Form Submission                                                                                                   |
+| ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| ![Workspace page](https://github.com/growupanand/ConvoForm/assets/29487686/a854d340-afd6-477f-a402-c7ce3e8c9787) | ![Form submission](https://github.com/growupanand/ConvoForm/assets/29487686/06874d85-0920-408b-a84a-5970eb7c1819) |
 
-| Form Submission                                                                                                   | View Submissions                                                                                                   |
-| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| ![Form submission](https://github.com/growupanand/ConvoForm/assets/29487686/06874d85-0920-408b-a84a-5970eb7c1819) | ![View Submissions](https://github.com/growupanand/ConvoForm/assets/29487686/8b09c79c-bc58-4e80-b5cb-bc9e378c017f) |
+| Form Editor                                                | View Submissions                                               |
+| ---------------------------------------------------------- | -------------------------------------------------------------- |
+| ![Form editor](apps/web/public/screenshots/formEditor.png) | ![View Submissions](apps/web/public/screenshots/responses.png) |
 
 ## Contributing
 
