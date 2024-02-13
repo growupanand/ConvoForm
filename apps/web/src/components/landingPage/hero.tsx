@@ -83,7 +83,7 @@ export function Hero() {
         <Carousel className="shadow-lg">
           <CarouselContent>
             <CarouselItem>
-              <AspectRatio ratio={16 / 9}>
+              <AspectRatio ratio={3 / 2}>
                 <Image
                   alt="screenshot of form editor"
                   src="/screenshots/formEditor.png"
@@ -92,10 +92,19 @@ export function Hero() {
               </AspectRatio>
             </CarouselItem>
             <CarouselItem>
-              <AspectRatio ratio={16 / 9}>
+              <AspectRatio ratio={3 / 2}>
                 <Image
-                  alt="screenshot of responses page"
+                  alt="screenshot of form response page"
                   src="/screenshots/responses.png"
+                  fill
+                />
+              </AspectRatio>
+            </CarouselItem>
+            <CarouselItem>
+              <AspectRatio ratio={3 / 2}>
+                <Image
+                  alt="screenshot of responses overview page"
+                  src="/screenshots/responsesOverview.png"
                   fill
                 />
               </AspectRatio>
