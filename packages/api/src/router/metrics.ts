@@ -1,7 +1,7 @@
-import { conversation, count, eq, form } from "@convoform/db";
+import { and, conversation, count, eq, form } from "@convoform/db";
 import { z } from "zod";
 
-import { getCurrentMonthDaysArray, getLastDaysDate } from "../lib/utils";
+import { getCurrentMonthDaysArray } from "../lib/utils";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const metricsRouter = createTRPCRouter({
@@ -9,7 +9,6 @@ export const metricsRouter = createTRPCRouter({
     .input(
       z.object({
         organizationId: z.string().min(1),
-        lastDaysCount: z.number().min(1),
       }),
     )
     .query(async ({ input, ctx }) => {
@@ -21,13 +20,16 @@ export const metricsRouter = createTRPCRouter({
       const totalCount = result?.value;
 
       const formCountsDataDayWise = {} as Record<string, any>;
-
-      const lastDaysDate = getLastDaysDate(input.lastDaysCount);
+      const monthFirstDate = new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        1,
+      );
       const forms = await ctx.db.query.form.findMany({
         where: (form, { eq, and, gte }) =>
           and(
             eq(form.organizationId, input.organizationId),
-            gte(form.createdAt, lastDaysDate),
+            gte(form.createdAt, monthFirstDate),
           ),
         orderBy: (form, { desc }) => [desc(form.createdAt)],
         columns: {
@@ -51,12 +53,12 @@ export const metricsRouter = createTRPCRouter({
         }),
       );
 
-      let lastFormCreatedAt =
+      let lastCreatedAt =
         forms.length > 0 && forms[0] ? forms[0].createdAt : null;
 
       // If there is no form created in the lastDaysCount days,
       // then we will look into database for the last created form
-      if (lastFormCreatedAt === null) {
+      if (lastCreatedAt === null) {
         const lastForm = await ctx.db.query.form.findFirst({
           where: eq(form.organizationId, input.organizationId),
           orderBy: (form, { desc }) => [desc(form.createdAt)],
@@ -64,13 +66,13 @@ export const metricsRouter = createTRPCRouter({
             createdAt: true,
           },
         });
-        lastFormCreatedAt = lastForm?.createdAt ?? null;
+        lastCreatedAt = lastForm?.createdAt ?? null;
       }
 
       return {
         totalCount,
         data: formCountDataArray,
-        lastFormCreatedAt,
+        lastCreatedAt,
       };
     }),
 
@@ -78,24 +80,33 @@ export const metricsRouter = createTRPCRouter({
     .input(
       z.object({
         organizationId: z.string().min(1),
-        lastDaysCount: z.number().min(1),
+        formId: z.string().min(1).optional(),
       }),
     )
     .query(async ({ input, ctx }) => {
       const [result] = await ctx.db
         .select({ value: count() })
         .from(conversation)
-        .where(eq(conversation.organizationId, input.organizationId));
-
-      const totalCount = result?.value;
+        .where(
+          and(
+            eq(conversation.organizationId, input.organizationId),
+            input.formId ? eq(conversation.formId, input.formId) : undefined,
+          ),
+        );
+      const totalCount = result?.value ?? 0;
 
       const conversationCountsDataDayWise = {} as Record<string, any>;
-      const lastDaysDate = getLastDaysDate(input.lastDaysCount);
+      const monthFirstDate = new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        1,
+      );
       const conversations = await ctx.db.query.conversation.findMany({
         where: (conversation, { eq, and, gte }) =>
           and(
+            gte(conversation.createdAt, monthFirstDate),
             eq(conversation.organizationId, input.organizationId),
-            gte(conversation.createdAt, lastDaysDate),
+            input.formId ? eq(conversation.formId, input.formId) : undefined,
           ),
         orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
         columns: {
@@ -104,7 +115,6 @@ export const metricsRouter = createTRPCRouter({
       });
 
       const currentMonthDaysArray = getCurrentMonthDaysArray();
-
       currentMonthDaysArray.forEach((day) => {
         conversationCountsDataDayWise[day] = 0;
       });
@@ -120,28 +130,31 @@ export const metricsRouter = createTRPCRouter({
         count: value,
       }));
 
-      let lastConversationCreatedAt =
+      let lastCreatedAt =
         conversations.length > 0 && conversations[0]
           ? conversations[0].createdAt
           : null;
 
       // If there is no conversation created in the lastDaysCount days,
       // then we will look into database for the last created conversation
-      if (lastConversationCreatedAt === null) {
+      if (lastCreatedAt === null) {
         const lastConversation = await ctx.db.query.conversation.findFirst({
-          where: eq(conversation.organizationId, input.organizationId),
+          where: and(
+            eq(conversation.organizationId, input.organizationId),
+            input.formId ? eq(conversation.formId, input.formId) : undefined,
+          ),
           orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
           columns: {
             createdAt: true,
           },
         });
-        lastConversationCreatedAt = lastConversation?.createdAt ?? null;
+        lastCreatedAt = lastConversation?.createdAt ?? null;
       }
 
       return {
         totalCount,
         data: conversationCountDataArray,
-        lastConversationCreatedAt,
+        lastCreatedAt,
       };
     }),
 });

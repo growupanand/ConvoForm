@@ -9,13 +9,13 @@ import { montserrat } from "@/app/fonts";
 import { LinkN } from "@/components/common/linkN";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import FormNameInput from "./formNameInput";
+import ChangeNameInput from "./changeNameInput";
 
 type Props = {
   formId: string;
 };
 
-function FormEditorPageHeader({ formId }: Props) {
+function FormPageHeader({ formId }: Props) {
   const { data, isLoading } = api.form.getOneWithWorkspace.useQuery({
     id: formId,
   });
@@ -53,7 +53,7 @@ function FormEditorPageHeader({ formId }: Props) {
                 </Button>
               </LinkN>
               <ChevronRight size={20} />
-              <FormNameInput
+              <ChangeNameInput
                 form={data}
                 className="w-full text-xl font-medium"
               />
@@ -72,7 +72,7 @@ function FormEditorPageHeader({ formId }: Props) {
         </div>
         <div className="overflow-hidden lg:hidden">
           {data ? (
-            <FormNameInput form={data} className="text-xl font-medium" />
+            <ChangeNameInput form={data} className="text-xl font-medium" />
           ) : (
             <span>Form not found</span>
           )}
@@ -101,6 +101,6 @@ const FormEditorPageHeaderSkeleton = () => {
   );
 };
 
-FormEditorPageHeader.Skeleton = FormEditorPageHeaderSkeleton;
+FormPageHeader.Skeleton = FormEditorPageHeaderSkeleton;
 
-export { FormEditorPageHeader };
+export { FormPageHeader as FormEditorPageHeader };

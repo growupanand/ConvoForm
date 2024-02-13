@@ -15,7 +15,7 @@ type Props = {
 
 //TODO: create reusable component for this
 
-export default function FormNameInput({ form, className }: Props) {
+export default function ChangeNameInput({ form, className }: Props) {
   const queryClient = useQueryClient();
   const updateForm = api.form.patch.useMutation({
     onSuccess: () => {

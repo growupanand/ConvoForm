@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   Sheet,
@@ -9,11 +9,12 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@convoform/ui/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { List } from "lucide-react";
 
+import { SecondaryNavigation } from "@/components/common/secondaryNavigation";
 import { api } from "@/trpc/react";
-import NavLinks from "../navLinks";
-import { ConversationsCard } from "./conversationsListCard";
+import MainNavTab from "../../_components/mainNavTab";
+import { ConversationsNavigation } from "./conversationsNavigation";
 
 type Props = {
   formId: string;
@@ -31,21 +32,12 @@ export default function ConversationsSidebar({ formId }: Props) {
 
   const closeSheet = () => setState((cs) => ({ ...cs, open: false }));
 
-  const { conversationId } = useParams();
-  const router = useRouter();
-
   const { isLoading, data } = api.conversation.getAll.useQuery({
     formId,
   });
 
   const isLoadingConversations = isLoading;
   const conversations = data ?? [];
-
-  useEffect(() => {
-    if (conversations.length > 0 && conversations[0] && !conversationId) {
-      router.replace(`/forms/${formId}/conversations/${conversations[0].id}`);
-    }
-  }, [formId, conversations]);
 
   const pathname = usePathname();
 
@@ -58,24 +50,32 @@ export default function ConversationsSidebar({ formId }: Props) {
   return (
     <div className="px-3">
       <div className="lg:hidden">
-        <NavLinks formId={formId} />
+        <MainNavTab formId={formId} />
         <Sheet
           open={open}
           onOpenChange={(status) => setState((cs) => ({ ...cs, open: status }))}
         >
-          <div className="p-3">
+          <div className="flex justify-end py-3">
             <SheetTrigger asChild>
               <Button variant="outline" size="sm">
-                <Menu />
+                <span>Conversation list</span>
+                <List size={20} className="ml-2" />
               </Button>
             </SheetTrigger>
           </div>
           <SheetContent side="left" className="w-[90%] ">
             <SheetClose />
+            <div className="mb-3">
+              <SecondaryNavigation
+                items={[
+                  { href: `/forms/${formId}/conversations`, title: "Overview" },
+                ]}
+              />
+            </div>
             {isLoadingConversations || !formId ? (
-              <ConversationsCard.ConversationsCardSkelton />
+              <ConversationsNavigation.ConversationsCardSkelton />
             ) : (
-              <ConversationsCard
+              <ConversationsNavigation
                 conversations={conversations}
                 formId={formId}
               />
@@ -84,11 +84,27 @@ export default function ConversationsSidebar({ formId }: Props) {
         </Sheet>
       </div>
       <div className="max-lg:hidden">
-        <NavLinks formId={formId} />
+        <div className="mb-5">
+          <MainNavTab formId={formId} />
+        </div>
+
+        <div className="mb-3">
+          <SecondaryNavigation
+            items={[
+              {
+                href: `/forms/${formId}/conversations`,
+                title: "Overview",
+              },
+            ]}
+          />
+        </div>
         {isLoadingConversations || !formId ? (
-          <ConversationsCard.ConversationsCardSkelton />
+          <ConversationsNavigation.ConversationsCardSkelton />
         ) : (
-          <ConversationsCard conversations={conversations} formId={formId} />
+          <ConversationsNavigation
+            conversations={conversations}
+            formId={formId}
+          />
         )}
       </div>
     </div>

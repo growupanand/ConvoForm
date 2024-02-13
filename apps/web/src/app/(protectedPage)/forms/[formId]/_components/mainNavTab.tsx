@@ -11,7 +11,7 @@ type Props = {
   formId: string;
 };
 
-export default function NavLinks({ formId }: Readonly<Props>) {
+export default function MainNavTab({ formId }: Readonly<Props>) {
   const pathName = usePathname();
   const currentFormId = formId;
   const isAlreadyOnConversationsPage = pathName.includes(`conversations`);
