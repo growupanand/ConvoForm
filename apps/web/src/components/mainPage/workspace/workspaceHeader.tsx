@@ -16,6 +16,7 @@ import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Check, Edit, MoreVertical, Trash } from "lucide-react";
 
+import { ConfirmAction } from "@/components/common/confirmAction";
 import { cn, debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import Spinner from "../../common/spinner";
@@ -152,13 +153,20 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
                 <Edit className="mr-2 h-4 w-4" />
                 Edit workspace
               </DropdownMenuItem>
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive cursor-pointer"
-                onClick={handleDeleteWorkspace}
+              <ConfirmAction
+                onConfirm={handleDeleteWorkspace}
+                title="Are you sure you want to delete this workspace?"
+                description="This action will delete all data related to this workspace. This action cannot be undone."
+                confirmText="Yes, delete workspace"
               >
-                <Trash className="mr-2 h-4 w-4" />
-                Delete workspace
-              </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-destructive focus:text-destructive cursor-pointer"
+                  onSelect={(e) => e.preventDefault()}
+                >
+                  <Trash className="mr-2 h-4 w-4" />
+                  Delete workspace
+                </DropdownMenuItem>
+              </ConfirmAction>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
