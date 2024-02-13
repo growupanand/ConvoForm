@@ -1,3 +1,38 @@
+## [0.4.0](https://github.com/growupanand/ConvoForm/compare/0.3.0...0.4.0) (2024-02-13)
+
+### Features
+
+- 🚀 added form responses overview page
+  ([fade9a1](https://github.com/growupanand/ConvoForm/commit/fade9a1539031afc9ed879be7c2c9c045c1d9da6)),
+  closes [#162](https://github.com/growupanand/ConvoForm/issues/162)
+- 🚀 now you can export and download responses table data
+  ([105e241](https://github.com/growupanand/ConvoForm/commit/105e24103017b52339bba2894cbf93cdb0590e49)),
+  closes [#186](https://github.com/growupanand/ConvoForm/issues/186)
+
+### Bug Fixes
+
+- 🐛 meta images not showing
+  ([b19cfa1](https://github.com/growupanand/ConvoForm/commit/b19cfa19e70d8cd10d01462ec3e4cda7e482da8e))
+
+### Improvements
+
+- ⚡️ added drizzle and used it in whole project
+  ([b50d53e](https://github.com/growupanand/ConvoForm/commit/b50d53ed080300652dd086353ab2aec415a72dfe))
+- ⚡️ converted tRPC api route into edge runtime
+  ([b41bc5d](https://github.com/growupanand/ConvoForm/commit/b41bc5d23d012681108de17aa172c4e58ef38886)),
+  closes [#182](https://github.com/growupanand/ConvoForm/issues/182)
+- ⚡️ removed prisma
+  ([8e99984](https://github.com/growupanand/ConvoForm/commit/8e9998450faeb745b713d707e16327c24e13f14c))
+- ⚡️ upgraded version of tRPC and @tanstack/react-query
+  ([131c0a7](https://github.com/growupanand/ConvoForm/commit/131c0a7d7c9448da06906c7560488d47317a549d))
+- 💄 added screenshots Carousel in landing page hero secito
+  ([f8b5e1e](https://github.com/growupanand/ConvoForm/commit/f8b5e1ee6431644cd9c9bcf7430a4563ab67fbb8))
+- 💄 Display confirm box before deleting workspace or form
+  ([60c1dda](https://github.com/growupanand/ConvoForm/commit/60c1dda58a26d084ff7de7c8e811495e6a809e6f)),
+  closes [#116](https://github.com/growupanand/ConvoForm/issues/116)
+- 💡 fixed default value for updatedAt field in database
+  ([97fd638](https://github.com/growupanand/ConvoForm/commit/97fd638d58a0b8f7abb46e6c5b388ae3460c7c73))
+
 ## 0.3.0 (2024-02-02)
 
 ### Features

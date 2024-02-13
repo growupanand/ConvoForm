@@ -2,8 +2,90 @@
 
 export const changelog = [ 
 {
-"title": "0.3.0",
+"title": "0.4.0",
 "tag": "",
+"isoDate": "2024-02-13",
+"commits": {
+"features": [
+
+{
+"message": "feat: 🚀 added form responses overview page\n\nIn this overview page we can see all the responses collected data in\ntable and also we can see data card for all responses\n\n✅ Closes: #162",
+"shorthash": "fade9a1",
+"href": "https://github.com/growupanand/ConvoForm/commit/fade9a1539031afc9ed879be7c2c9c045c1d9da6"
+},
+
+{
+"message": "feat: 🚀 now you can export and download responses table data\n\nyou can download the exported for responses table data in excel format\n\n✅ Closes: #186",
+"shorthash": "105e241",
+"href": "https://github.com/growupanand/ConvoForm/commit/105e24103017b52339bba2894cbf93cdb0590e49"
+},
+
+],
+"improvements": [
+
+{
+"message": "perf: ⚡️ added drizzle and used it in whole project\n\n✅ Closes: 178",
+"shorthash": "b50d53e",
+"href": "https://github.com/growupanand/ConvoForm/commit/b50d53ed080300652dd086353ab2aec415a72dfe"
+},
+
+{
+"message": "refactor: 💡 fixed default value for updatedAt field in database",
+"shorthash": "97fd638",
+"href": "https://github.com/growupanand/ConvoForm/commit/97fd638d58a0b8f7abb46e6c5b388ae3460c7c73"
+},
+
+{
+"message": "perf: ⚡️ upgraded version of tRPC and @tanstack/react-query",
+"shorthash": "131c0a7",
+"href": "https://github.com/growupanand/ConvoForm/commit/131c0a7d7c9448da06906c7560488d47317a549d"
+},
+
+{
+"message": "perf: ⚡️ removed prisma\n\nremoved prisma as we are now using drizzle",
+"shorthash": "8e99984",
+"href": "https://github.com/growupanand/ConvoForm/commit/8e9998450faeb745b713d707e16327c24e13f14c"
+},
+
+{
+"message": "style: 💄 added screenshots Carousel in landing page hero secito",
+"shorthash": "f8b5e1e",
+"href": "https://github.com/growupanand/ConvoForm/commit/f8b5e1ee6431644cd9c9bcf7430a4563ab67fbb8"
+},
+
+{
+"message": "style: 💄 Display confirm box before deleting workspace or form\n\n✅ Closes: #116",
+"shorthash": "60c1dda",
+"href": "https://github.com/growupanand/ConvoForm/commit/60c1dda58a26d084ff7de7c8e811495e6a809e6f"
+},
+
+{
+"message": "Revert \"perf: ⚡️ converted tRPC api route into edge runtime\"\n\nThis reverts commit 2fe96acc8cbdc555df6e468d49e3716b3ad06922.",
+"shorthash": "7bda4bf",
+"href": "https://github.com/growupanand/ConvoForm/commit/7bda4bf0e1e317c065b4b666f973cb49cd418fb6"
+},
+
+{
+"message": "perf: ⚡️ converted tRPC api route into edge runtime\n\n✅ Closes: #182",
+"shorthash": "b41bc5d",
+"href": "https://github.com/growupanand/ConvoForm/commit/b41bc5d23d012681108de17aa172c4e58ef38886"
+},
+
+],
+"fixes": [
+
+{
+"message": "fix: 🐛 meta images not showing",
+"shorthash": "b19cfa1",
+"href": "https://github.com/growupanand/ConvoForm/commit/b19cfa19e70d8cd10d01462ec3e4cda7e482da8e"
+},
+
+]
+}
+},
+{
+"title": "0.3.0",
+"tag": "0.3.0",
 "isoDate": "2024-02-02",
 "commits": {
 "features": [
