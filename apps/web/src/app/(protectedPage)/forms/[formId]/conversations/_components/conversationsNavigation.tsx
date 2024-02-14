@@ -1,5 +1,4 @@
 import { Conversation } from "@convoform/db";
-import { Card, CardContent } from "@convoform/ui/components/ui/card";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 
 import { timeAgo } from "@/lib/utils";
@@ -41,17 +40,22 @@ export function ConversationsNavigation({
 }
 
 const ConversationsCardSkelton = () => (
-  <Card className="border-0 bg-transparent shadow-none">
-    <CardContent className="pt-6">
-      <h3 className="mb-5 px-4 text-lg font-semibold tracking-tight">
-        <Skeleton className="h-5 w-20" />
-      </h3>
-      <nav className="flex flex-col gap-1">
-        <Skeleton className="h-[40px] w-full" />
-        <Skeleton className="h-[40px] w-full" />
-      </nav>
-    </CardContent>
-  </Card>
+  <div>
+    <nav className="grid gap-1">
+      <div className="flex h-[40px] w-full items-center justify-between ps-3">
+        <Skeleton className="h-[15px] w-[80px]" />
+        <Skeleton className="h-[15px] w-[40px]" />
+      </div>
+      <div className="flex h-[40px] w-full items-center justify-between ps-3">
+        <Skeleton className="h-[15px] w-[80px]" />
+        <Skeleton className="h-[15px] w-[40px]" />
+      </div>
+      <div className="flex h-[40px] w-full items-center justify-between ps-3">
+        <Skeleton className="h-[15px] w-[80px]" />
+        <Skeleton className="h-[15px] w-[40px]" />
+      </div>
+    </nav>
+  </div>
 );
 
 ConversationsNavigation.ConversationsCardSkelton = ConversationsCardSkelton;

@@ -39,7 +39,7 @@ export function ResponseUsageCard({ organizationId }: Readonly<Props>) {
   }
 
   if (data) {
-    const usage = 200;
+    const usage = data;
     const maximum = formSubmissionLimit;
     const usagePercentage = (usage / maximum) * 100;
 
