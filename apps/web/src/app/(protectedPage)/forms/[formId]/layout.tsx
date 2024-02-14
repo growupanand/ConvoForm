@@ -16,7 +16,7 @@ export default function Layout({
   params: { formId },
 }: Readonly<Props>) {
   return (
-    <div className="relative flex h-screen flex-col ">
+    <div className="relative flex h-screen flex-col gap-3 ">
       <FormEditorPageHeader formId={formId} />
       <div className="grow">{children}</div>
     </div>

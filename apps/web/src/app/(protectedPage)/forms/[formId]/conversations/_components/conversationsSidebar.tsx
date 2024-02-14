@@ -9,7 +9,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@convoform/ui/components/ui/sheet";
-import { List } from "lucide-react";
+import { GanttChartSquare, List } from "lucide-react";
 
 import { SecondaryNavigation } from "@/components/common/secondaryNavigation";
 import { api } from "@/trpc/react";
@@ -68,7 +68,18 @@ export default function ConversationsSidebar({ formId }: Props) {
             <div className="mb-3">
               <SecondaryNavigation
                 items={[
-                  { href: `/forms/${formId}/conversations`, title: "Overview" },
+                  {
+                    href: `/forms/${formId}/conversations`,
+                    title: (
+                      <div className="flex w-full items-center justify-between">
+                        <span className="text-lg">Overview</span>
+                        <GanttChartSquare
+                          className="text-muted-foreground"
+                          size={20}
+                        />
+                      </div>
+                    ),
+                  },
                 ]}
               />
             </div>
@@ -93,7 +104,15 @@ export default function ConversationsSidebar({ formId }: Props) {
             items={[
               {
                 href: `/forms/${formId}/conversations`,
-                title: "Overview",
+                title: (
+                  <div className="flex w-full items-center justify-between">
+                    <span className="text-lg">Overview</span>
+                    <GanttChartSquare
+                      className="text-muted-foreground"
+                      size={20}
+                    />
+                  </div>
+                ),
               },
             ]}
           />

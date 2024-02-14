@@ -25,7 +25,7 @@ function FormPageHeader({ formId }: Props) {
   }
 
   return (
-    <div className="sticky top-0 z-50 border-b bg-white/70 p-3 shadow-sm backdrop-blur">
+    <div className="sticky top-0 z-50 border-b bg-white/70 p-3 backdrop-blur">
       <div className="flex items-center justify-between ">
         <div
           className={cn(
@@ -55,7 +55,7 @@ function FormPageHeader({ formId }: Props) {
               <ChevronRight size={20} />
               <ChangeNameInput
                 form={data}
-                className="w-full text-xl font-medium"
+                className="w-full text-lg font-medium"
               />
             </>
           ) : (
