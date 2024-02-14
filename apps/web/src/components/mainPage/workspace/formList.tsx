@@ -1,5 +1,6 @@
 "use client";
 
+import { ListCard } from "@/components/common/list";
 import { api } from "@/trpc/react";
 import { FormListItem } from "./formListItem";
 import FormListLoading from "./formListLoading";
@@ -28,11 +29,11 @@ export default function FormList({ workspaceId, orgId }: Readonly<Props>) {
     <div className="h-full">
       {emptyForms && <p className="text-muted-foreground">No form</p>}
       {!emptyForms && (
-        <div className="divide-border grid divide-y border-b">
+        <ListCard>
           {forms.map((form) => (
             <FormListItem key={form.id} form={form} />
           ))}
-        </div>
+        </ListCard>
       )}
     </div>
   );

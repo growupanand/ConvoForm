@@ -21,3 +21,7 @@ export const freePlan: Plan = {
     },
   ],
 };
+
+export const formSubmissionLimit =
+  freePlan.features.find((feature) => feature.name === "Collect form responses")
+    ?.featureValue ?? 0;

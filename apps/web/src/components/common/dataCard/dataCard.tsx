@@ -14,13 +14,13 @@ import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 
 import Spinner from "@/components/common/spinner";
 
-const BarChart = dynamic(
-  async () => import("@tremor/react").then((mod) => mod.BarChart),
+const LineChart = dynamic(
+  async () => import("@tremor/react").then((mod) => mod.LineChart),
   {
     ssr: false,
     loading: () => (
       <div className="flex h-full w-full items-center justify-center">
-        <Spinner className="mr-2" /> Loading
+        <Spinner className="mr-2" /> Loading chart
       </div>
     ),
   },
@@ -64,9 +64,9 @@ export function DataCard({
         </div>
       </CardHeader>
       {chartData && (
-        <CardContent>
+        <CardContent className="pt-3">
           <div className="h-[150px] grow  ">
-            <BarChart
+            <LineChart
               className="h-full w-full"
               data={chartData}
               index="name"
