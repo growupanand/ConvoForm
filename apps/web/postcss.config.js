@@ -1,1 +1,7 @@
-module.exports = require("@convoform/ui/postcss.config");
+// eslint-disable-next-line no-undef
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};
