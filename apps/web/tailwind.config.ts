@@ -1,18 +1,12 @@
-import headlessui_tailwindcss from "@headlessui/tailwindcss";
-import tailwindcss_forms from "@tailwindcss/forms";
 import tailwindcss_typography from "@tailwindcss/typography";
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
 
+import { withTremorConfig } from "./src/lib/config/tailwind.config/tremor.chart";
+
 const config = {
   darkMode: ["class"],
-  content: [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
-    "../../packages/ui/src/**/*.{ts,tsx}",
-  ],
+  content: ["./src/**/*.{ts,tsx}", "../../packages/ui/src/**/*.{ts,tsx}"],
   prefix: "",
   theme: {
     container: {
@@ -79,12 +73,7 @@ const config = {
       },
     },
   },
-  plugins: [
-    headlessui_tailwindcss,
-    tailwindcss_forms,
-    tailwindcss_typography,
-    tailwindcssAnimate,
-  ],
+  plugins: [tailwindcss_typography, tailwindcssAnimate],
 } satisfies Config;
 
-export default config;
+export default withTremorConfig(config);

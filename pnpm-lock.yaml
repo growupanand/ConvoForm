@@ -73,6 +73,9 @@ importers:
       "@convoform/ui":
         specifier: workspace:*
         version: link:../../packages/ui
+      "@headlessui/tailwindcss":
+        specifier: ^0.2.0
+        version: 0.2.0(tailwindcss@3.4.1)
       "@hookform/resolvers":
         specifier: ^3.3.2
         version: 3.3.4(react-hook-form@7.49.3)
@@ -88,6 +91,9 @@ importers:
       "@sentry/nextjs":
         specifier: ^7.91.0
         version: 7.98.0(next@14.1.0)(react@18.2.0)(webpack@5.90.0)
+      "@tailwindcss/typography":
+        specifier: ^0.5.10
+        version: 0.5.10(tailwindcss@3.4.1)
       "@tanstack/react-query":
         specifier: ^5.18.1
         version: 5.18.1(react@18.2.0)
@@ -151,6 +157,9 @@ importers:
       tailwind-merge:
         specifier: ^2.0.0
         version: 2.2.1
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@3.4.1)
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -161,6 +170,9 @@ importers:
       "@convoform/tsconfig":
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      "@tailwindcss/forms":
+        specifier: ^0.5.7
+        version: 0.5.7(tailwindcss@3.4.1)
       "@tanstack/react-query-devtools":
         specifier: ^5.17.21
         version: 5.17.21(@tanstack/react-query@5.18.1)(react@18.2.0)
@@ -345,9 +357,6 @@ importers:
       "@headlessui/react":
         specifier: ^1.7.18
         version: 1.7.18(react-dom@18.2.0)(react@18.2.0)
-      "@headlessui/tailwindcss":
-        specifier: ^0.2.0
-        version: 0.2.0(tailwindcss@3.4.1)
       "@hookform/resolvers":
         specifier: ^3.3.2
         version: 3.3.4(react-hook-form@7.49.3)
@@ -396,9 +405,6 @@ importers:
       "@radix-ui/react-tooltip":
         specifier: ^1.0.7
         version: 1.0.7(@types/react-dom@18.2.18)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
-      "@tailwindcss/typography":
-        specifier: ^0.5.10
-        version: 0.5.10(tailwindcss@3.4.1)
       "@tremor/react":
         specifier: ^3.13.3
         version: 3.13.3(prop-types@15.8.1)(react-dom@18.2.0)(react@18.2.0)(tailwindcss@3.4.1)
@@ -423,9 +429,6 @@ importers:
       tailwind-merge:
         specifier: ^2.0.0
         version: 2.2.1
-      tailwindcss-animate:
-        specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@3.4.1)
       vaul:
         specifier: ^0.8.0
         version: 0.8.9(@types/react-dom@18.2.18)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
@@ -436,9 +439,6 @@ importers:
       "@convoform/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
-      "@tailwindcss/forms":
-        specifier: ^0.5.7
-        version: 0.5.7(tailwindcss@3.4.1)
       "@types/node":
         specifier: ^20
         version: 20.11.8
@@ -448,12 +448,6 @@ importers:
       "@types/react-dom":
         specifier: ^18
         version: 18.2.18
-      postcss:
-        specifier: ^8
-        version: 8.4.33
-      tailwindcss:
-        specifier: ^3.3.0
-        version: 3.4.1
       typescript:
         specifier: ^5
         version: 5.3.3

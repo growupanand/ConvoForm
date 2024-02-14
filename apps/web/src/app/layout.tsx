@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import "@convoform/ui/globals.css";
+import "../globals.css";
 import "nprogress/nprogress.css";
 
 import { Toaster } from "@convoform/ui/components/ui/toaster";
