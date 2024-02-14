@@ -60,7 +60,7 @@ export function ResponseUsageCard({ organizationId }: Readonly<Props>) {
                 </span>
               </p>
             </div>
-            <div className="flex justify-end">
+            <div className="relative flex justify-end">
               <ProgressCircle value={usagePercentage}>
                 <span className="text-muted-foreground font-medium">
                   {usagePercentage}%
