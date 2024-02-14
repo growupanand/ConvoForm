@@ -2,7 +2,7 @@ import { and, conversation, count, eq, form } from "@convoform/db";
 import { z } from "zod";
 
 import { getCurrentMonthDaysArray } from "../lib/utils";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const metricsRouter = createTRPCRouter({
   getFormMetrics: protectedProcedure
@@ -79,17 +79,23 @@ export const metricsRouter = createTRPCRouter({
   getConversationMetrics: protectedProcedure
     .input(
       z.object({
-        organizationId: z.string().min(1),
+        organizationId: z.string().min(1).optional(),
         formId: z.string().min(1).optional(),
       }),
     )
     .query(async ({ input, ctx }) => {
+      if (!input.organizationId && !input.formId) {
+        throw new Error("Either organizationId or formId is required");
+      }
+
       const [result] = await ctx.db
         .select({ value: count() })
         .from(conversation)
         .where(
           and(
-            eq(conversation.organizationId, input.organizationId),
+            input.organizationId
+              ? eq(conversation.organizationId, input.organizationId)
+              : undefined,
             input.formId ? eq(conversation.formId, input.formId) : undefined,
           ),
         );
@@ -105,7 +111,9 @@ export const metricsRouter = createTRPCRouter({
         where: (conversation, { eq, and, gte }) =>
           and(
             gte(conversation.createdAt, monthFirstDate),
-            eq(conversation.organizationId, input.organizationId),
+            input.organizationId
+              ? eq(conversation.organizationId, input.organizationId)
+              : undefined,
             input.formId ? eq(conversation.formId, input.formId) : undefined,
           ),
         orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
@@ -140,7 +148,9 @@ export const metricsRouter = createTRPCRouter({
       if (lastCreatedAt === null) {
         const lastConversation = await ctx.db.query.conversation.findFirst({
           where: and(
-            eq(conversation.organizationId, input.organizationId),
+            input.organizationId
+              ? eq(conversation.organizationId, input.organizationId)
+              : undefined,
             input.formId ? eq(conversation.formId, input.formId) : undefined,
           ),
           orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
@@ -156,5 +166,20 @@ export const metricsRouter = createTRPCRouter({
         data: conversationCountDataArray,
         lastCreatedAt,
       };
+    }),
+
+  getResponsesCount: publicProcedure
+    .input(
+      z.object({
+        organizationId: z.string().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const [result] = await ctx.db
+        .select({ value: count() })
+        .from(conversation)
+        .where(eq(conversation.organizationId, input.organizationId));
+
+      return result?.value ?? 0;
     }),
 });

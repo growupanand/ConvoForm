@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { freePlan } from "@/lib/config/pricing";
+import { formSubmissionLimit } from "@/lib/config/pricing";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { ConversationService } from "@/lib/services/conversation";
 import { ConversationPayloadSchema } from "@/lib/validations/conversation";
@@ -42,11 +42,6 @@ export async function POST(
         await api.conversation.getResponseCountByOrganization({
           organizationId: form.organizationId,
         });
-
-      const formSubmissionLimit =
-        freePlan.features.find(
-          (feature) => feature.name === "Collect form responses",
-        )?.featureValue ?? 0;
 
       if (!totalSubmissionsCount) {
         console.error("Unable to get total submissions count", {
