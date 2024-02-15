@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 import { OpenAIService } from "./openAI";
@@ -36,8 +35,6 @@ export class GenerateFormFieldService extends OpenAIService {
       }
     }
 
-    return NextResponse.json({
-      fieldName: nextFieldName,
-    });
+    return nextFieldName;
   }
 }
