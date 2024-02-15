@@ -23,8 +23,6 @@ export default function FormList({ workspaceId, orgId }: Readonly<Props>) {
     return <FormListLoading />;
   }
 
-  console.log({ forms });
-
   return (
     <div className="h-full">
       {emptyForms && <p className="text-muted-foreground">No form</p>}
