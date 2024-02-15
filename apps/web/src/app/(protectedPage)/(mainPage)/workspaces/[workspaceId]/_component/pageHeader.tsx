@@ -17,9 +17,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Check, Edit, MoreVertical, Trash } from "lucide-react";
 
 import { ConfirmAction } from "@/components/common/confirmAction";
+import Spinner from "@/components/common/spinner";
 import { cn, debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import Spinner from "../../common/spinner";
 import CreateFormButton from "./createFormButton";
 
 type Props = {
