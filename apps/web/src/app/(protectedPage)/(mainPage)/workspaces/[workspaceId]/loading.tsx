@@ -1,4 +1,4 @@
-import { WorkspaceHeaderSkeleton } from "@/components/mainPage/workspace/workspaceHeader";
+import { WorkspaceHeaderSkeleton } from "./_component/pageHeader";
 
 export default function Loading() {
   return (

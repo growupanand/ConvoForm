@@ -34,12 +34,19 @@ export const formRouter = createTRPCRouter({
         throw new Error("Failed to create form");
       }
 
+      const emptyFormField = {
+        fieldName: "",
+        formId: newForm.id,
+      };
+
+      const formFields = input.formField.map((field) => ({
+        ...field,
+        formId: newForm.id,
+      }));
+
       const newField = await ctx.db
         .insert(formField)
-        .values({
-          fieldName: "",
-          formId: newForm.id,
-        })
+        .values(formFields.length > 0 ? formFields : [emptyFormField])
         .returning();
       return {
         ...newForm,
