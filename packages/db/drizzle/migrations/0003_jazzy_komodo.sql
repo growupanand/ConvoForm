@@ -1,0 +1,1 @@
+ALTER TABLE "Form" ADD COLUMN "isAIGenerated" boolean DEFAULT false NOT NULL;
