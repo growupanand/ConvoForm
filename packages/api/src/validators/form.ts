@@ -17,6 +17,8 @@ export const formCreateSchema = z.object({
       fieldName: z.string().max(255),
     }),
   ),
+  isAIGenerated: z.boolean().optional(),
+  isPublished: z.boolean().optional(),
 });
 
 export type FormCreateSchema = z.infer<typeof formCreateSchema>;

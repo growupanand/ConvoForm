@@ -1,4 +1,4 @@
-import { eq, form, formField } from "@convoform/db";
+import { and, count, eq, form, formField } from "@convoform/db";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
@@ -28,6 +28,8 @@ export const formRouter = createTRPCRouter({
           welcomeScreenCTALabel: input.welcomeScreenCTALabel,
           welcomeScreenTitle: input.welcomeScreenTitle,
           welcomeScreenMessage: input.welcomeScreenMessage,
+          isAIGenerated: input.isAIGenerated,
+          isPublished: input.isPublished,
         })
         .returning();
       if (!newForm) {
@@ -185,5 +187,25 @@ export const formRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       return await ctx.db.delete(form).where(eq(form.id, input.id));
+    }),
+
+  getAIGeneratedCountByOrganization: publicProcedure
+    .input(
+      z.object({
+        organizationId: z.string().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const [result] = await ctx.db
+        .select({ value: count() })
+        .from(form)
+        .where(
+          and(
+            eq(form.organizationId, input.organizationId),
+            eq(form.isAIGenerated, true),
+          ),
+        );
+
+      return result?.value;
     }),
 });

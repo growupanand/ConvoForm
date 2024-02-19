@@ -5,12 +5,12 @@ export const freePlan: Plan = {
   price: "$0/month",
   features: [
     {
-      name: "Create workspaces",
+      name: "Create forms manually",
       featureValue: Infinity,
       featureText: "Unlimited",
     },
     {
-      name: "Create forms",
+      name: "Generate forms using AI",
       featureValue: Infinity,
       featureText: "Unlimited",
     },
@@ -25,3 +25,8 @@ export const freePlan: Plan = {
 export const formSubmissionLimit =
   freePlan.features.find((feature) => feature.name === "Collect form responses")
     ?.featureValue ?? 0;
+
+export const aiGeneratedFormLimit =
+  freePlan.features.find(
+    (feature) => feature.name === "Generate forms using AI",
+  )?.featureValue ?? 0;
