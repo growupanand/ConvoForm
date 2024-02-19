@@ -29,7 +29,7 @@
     "**/*.jsx",
     ".next/types/**/*.ts",
     "**/*.mjs",
-    "tailwind.config.js",
+    "tailwind.config.js", "../../packages/api/src/validators/form.ts",
   ],
   "exclude": ["node_modules"],
 }

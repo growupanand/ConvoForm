@@ -51,7 +51,6 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
   const handleCreateForm = async (
     formData: z.infer<typeof createFormSchema>,
   ) => {
-    console.log("saving form to database", { formData });
     await createForm.mutateAsync({
       ...formData,
       workspaceId: workspace.id,

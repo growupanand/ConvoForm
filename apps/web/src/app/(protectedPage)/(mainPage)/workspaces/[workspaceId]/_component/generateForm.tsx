@@ -80,6 +80,8 @@ export function GenerateForm({
       await onFormGenerated({
         ...newFormData,
         formField: newFormData.formFields,
+        isAIGenerated: true,
+        isPublished: true,
       });
     } catch (error: any) {
       let errorMessage =
