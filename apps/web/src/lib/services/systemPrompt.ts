@@ -120,6 +120,11 @@ export class SystemPromptService {
 
     OUTPUT FORMAT - STRING
 
+    "formSummary" - This is summary of the form which will be shown to user before starting to fill the form.
+
+    OUTPUT FORMAT - STRING
+
+
     
     ========================================
 
@@ -128,7 +133,8 @@ export class SystemPromptService {
         formFields : JSON,
         welcomeScreenData : JSON,
         formName : STRING,
-        isInvalidFormOverview : BOOLEAN
+        isInvalidFormOverview : BOOLEAN,
+        formSummary : STRING
       }
   `;
   }
