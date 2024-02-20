@@ -1,6 +1,6 @@
 "use client";
 
-import { UserButton } from "@clerk/nextjs";
+import { useOrganization, UserButton } from "@clerk/nextjs";
 import { Button } from "@convoform/ui/components/ui/button";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { ChevronLeft, ChevronRight, Home } from "lucide-react";
@@ -15,13 +15,18 @@ type Props = {
   formId: string;
 };
 
-function FormPageHeader({ formId }: Props) {
+function FormPageHeader({ formId }: Readonly<Props>) {
+  const { organization } = useOrganization();
   const { data, isLoading } = api.form.getOneWithWorkspace.useQuery({
     id: formId,
   });
 
   if (isLoading) {
     return <FormEditorPageHeaderSkeleton />;
+  }
+
+  if (!data || !organization || data.organizationId !== organization.id) {
+    return null;
   }
 
   return (

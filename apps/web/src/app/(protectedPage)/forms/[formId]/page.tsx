@@ -1,5 +1,7 @@
 "use client";
 
+import { notFound } from "next/navigation";
+import { useOrganization } from "@clerk/nextjs";
 import { Button } from "@convoform/ui/components/ui/button";
 import { Card, CardContent } from "@convoform/ui/components/ui/card";
 import {
@@ -17,7 +19,6 @@ import {
 import FormPreview from "@/app/(protectedPage)/forms/[formId]/_components/formEditor/formPreview";
 import MainNavTab from "@/app/(protectedPage)/forms/[formId]/_components/mainNavTab";
 import { montserrat } from "@/app/fonts";
-import { NotFoundPage } from "@/components/common/notFound";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
@@ -26,6 +27,7 @@ type Props = {
 };
 
 export default function FormPage({ params: { formId } }: Props) {
+  const { organization } = useOrganization();
   const { isLoading, data } = api.form.getOneWithFields.useQuery({
     id: formId,
   });
@@ -34,8 +36,8 @@ export default function FormPage({ params: { formId } }: Props) {
     return <FormPageLoading formId={formId} />;
   }
 
-  if (!data) {
-    return <NotFoundPage title="Form not found" />;
+  if (!data || !organization || data.organizationId !== organization.id) {
+    return notFound();
   }
 
   return (
