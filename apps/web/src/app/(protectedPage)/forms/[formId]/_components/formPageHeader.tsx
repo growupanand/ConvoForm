@@ -16,12 +16,12 @@ type Props = {
 };
 
 function FormPageHeader({ formId }: Readonly<Props>) {
-  const { organization } = useOrganization();
+  const { organization, isLoaded } = useOrganization();
   const { data, isLoading } = api.form.getOneWithWorkspace.useQuery({
     id: formId,
   });
 
-  if (isLoading) {
+  if (isLoading || !isLoaded) {
     return <FormEditorPageHeaderSkeleton />;
   }
 
