@@ -27,12 +27,12 @@ type Props = {
 };
 
 export default function FormPage({ params: { formId } }: Props) {
-  const { organization } = useOrganization();
+  const { organization, isLoaded } = useOrganization();
   const { isLoading, data } = api.form.getOneWithFields.useQuery({
     id: formId,
   });
 
-  if (isLoading) {
+  if (isLoading || !isLoaded) {
     return <FormPageLoading formId={formId} />;
   }
 
