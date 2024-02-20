@@ -31,8 +31,14 @@ export async function POST(req: Request) {
     }
 
     const generateFormService = new GenerateFormService({ formOverview });
-    const { formFields, welcomeScreenData, formName, isInvalidFormOverview } =
-      await generateFormService.getGeneratedFormData();
+    const aiResponseJSON = await generateFormService.getGeneratedFormData();
+    const {
+      formFields,
+      welcomeScreenData,
+      formName,
+      isInvalidFormOverview,
+      formSummary: generatedFormOverview,
+    } = aiResponseJSON;
 
     if (isInvalidFormOverview == true) {
       throw new Error("Invalid form overview");
@@ -40,7 +46,7 @@ export async function POST(req: Request) {
 
     const generatedFormData = {
       name: formName,
-      overview: formOverview,
+      overview: generatedFormOverview,
       welcomeScreenCTALabel: welcomeScreenData?.buttonLabelText,
       welcomeScreenTitle: welcomeScreenData?.pageTitle,
       welcomeScreenMessage: welcomeScreenData?.pageDescription,
