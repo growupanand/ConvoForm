@@ -55,11 +55,11 @@ export default function ConversationsSidebar({ formId }: Props) {
           open={open}
           onOpenChange={(status) => setState((cs) => ({ ...cs, open: status }))}
         >
-          <div className="flex justify-end py-3">
+          <div className="flex items-center justify-start py-3">
             <SheetTrigger asChild>
-              <Button variant="outline" size="sm">
-                <span>Conversation list</span>
-                <List size={20} className="ml-2" />
+              <Button variant="outline">
+                <List size={20} className="mr-2" />
+                <span>Conversations</span>
               </Button>
             </SheetTrigger>
           </div>

@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     } = aiResponseJSON;
 
     if (isInvalidFormOverview == true) {
-      throw new Error("Invalid form overview");
+      throw new Error("Invalid form description.");
     }
 
     const generatedFormData = {

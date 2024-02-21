@@ -3,12 +3,20 @@ import type { Metadata } from "next";
 import "../globals.css";
 import "nprogress/nprogress.css";
 
+import type { Viewport } from "next";
 import { Toaster } from "@convoform/ui/components/ui/toaster";
 
 import GoogleAnalytics from "@/components/googleAnalytics";
 import { cn } from "@/lib/utils";
 import { TRPCReactProvider } from "@/trpc/react";
 import { roboto } from "./fonts";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.convoform.com"),
