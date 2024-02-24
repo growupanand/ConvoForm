@@ -38,7 +38,7 @@ Follow these steps to set up the project locally on your machine.
 Make sure you have the following installed:
 
 - [Node.js](https://nodejs.org/) (v18.17.1 or higher)
-- [pnpm]([https://www.npmjs.com/](https://pnpm.io/)) (v8.14.3 or higher)
+- [pnpm](https://pnpm.io/) (v8.14.3 or higher)
 - [Git](https://git-scm.com/)
 
 ### Clone the Repository
