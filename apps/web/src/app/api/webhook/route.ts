@@ -2,159 +2,82 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { type WebhookEvent } from "@clerk/clerk-sdk-node";
-import {
-  db,
-  eq,
-  insertUserSchema,
-  organization,
-  organizationMember,
-  user,
-} from "@convoform/db";
+import { insertUserSchema } from "@convoform/db";
+
+import { api } from "@/trpc/server";
 
 export async function POST(req: NextRequest) {
-  const reqJson = await req.json();
-  const event = reqJson as WebhookEvent;
+  const event = (await req.json()) as WebhookEvent;
 
   switch (event.type) {
-    case "user.created":
-      console.log("user created event received");
+    case "user.created": {
       const { data } = event;
-
-      try {
-        const email =
-          data.email_addresses.length > 0
-            ? data.email_addresses[0]?.email_address
-            : "";
-        const newUser = insertUserSchema.parse({
-          email: email,
-          firstName: data.first_name,
-          lastName: data.last_name,
-          userId: data.id,
-          imageUrl: data.image_url,
-        });
-        await db.insert(user).values({
-          ...newUser,
-        });
-        console.log("user created successfully in our database");
-      } catch (e: any) {
-        console.error({
-          message: "Unable to create user",
-          data: data,
-          errorMessage: e.message,
-        });
-      }
+      const email =
+        data.email_addresses.length > 0
+          ? data.email_addresses[0]?.email_address
+          : "";
+      const newUser = insertUserSchema.parse({
+        email: email,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        userId: data.id,
+        imageUrl: data.image_url,
+      });
+      await api.webhook.userCreated(newUser);
       break;
+    }
     case "user.deleted":
-      console.log("user deleted event received");
-      const { data: userData } = event;
-      try {
-        if (!userData.id) {
-          console.log("user id not found in event data");
-          break;
+      {
+        const { data } = event;
+        if (!data.id) {
+          throw new Error("user.deleted - User id not found in event data");
         }
-        await db.delete(user).where(eq(user.id, userData.id));
-        console.log("user deleted successfully in our database");
-      } catch (e: any) {
-        console.error({
-          message: "Unable to delete user",
-          data: userData,
-          errorMessage: e.message,
-        });
+        await api.webhook.userDeleted({ userId: data.id });
       }
       break;
 
-    case "organization.created":
-      console.log("organization created event received");
-      const { data: orgData } = event;
-      try {
-        const org = {
-          name: orgData.name,
-          organizationId: orgData.id,
-          slug: orgData.slug || "",
-        };
-        await db.insert(organization).values({
-          ...org,
-        });
-        console.log("organization created successfully in our database");
-      } catch (e: any) {
-        console.error({
-          message: "Unable to create organization",
-          data: orgData,
-          errorMessage: e.message,
-        });
-      }
+    case "organization.created": {
+      const { data } = event;
+      const org = {
+        name: data.name,
+        organizationId: data.id,
+        slug: data.slug ?? "",
+      };
+      await api.webhook.organizationCreated(org);
       break;
-    case "organizationMembership.created":
-      console.log("organizationMembership created event received");
+    }
+    case "organizationMembership.created": {
       const { data: orgMembershipData } = event;
-      try {
-        const orgMembership = {
-          memberId: orgMembershipData.id,
-          organizationId: orgMembershipData.organization.id,
-          userId: orgMembershipData.public_user_data.user_id,
-          role: orgMembershipData.role,
-        };
-        await db.insert(organizationMember).values({
-          ...orgMembership,
-        });
-        console.log(
-          "organizationMembership created successfully in our database",
-        );
-      } catch (e: any) {
-        console.error({
-          message: "Unable to create organizationMembership",
-          data: orgMembershipData,
-          errorMessage: e.message,
-        });
-      }
+      const orgMembership = {
+        memberId: orgMembershipData.id,
+        organizationId: orgMembershipData.organization.id,
+        userId: orgMembershipData.public_user_data.user_id,
+        role: orgMembershipData.role,
+      };
+      await api.webhook.organizationMembershipCreated(orgMembership);
       break;
+    }
 
-    case "organizationMembership.deleted":
-      console.log("organizationMembership deleted event received");
+    case "organizationMembership.deleted": {
       const { data: orgMembershipDeletedData } = event;
-      try {
-        if (!orgMembershipDeletedData.id) {
-          console.log("organizationMembership id not found in event data");
-          break;
-        }
-        await db
-          .delete(organizationMember)
-          .where(eq(organizationMember.memberId, orgMembershipDeletedData.id));
-        console.log(
-          "organizationMembership deleted successfully in our database",
-        );
-      } catch (e: any) {
-        console.error({
-          message: "Unable to delete organizationMembership",
-          data: orgMembershipDeletedData,
-          errorMessage: e.message,
-        });
-      }
+      await api.webhook.organizationMembershipDeleted({
+        membershipId: orgMembershipDeletedData.id,
+      });
       break;
+    }
 
-    case "organization.deleted":
-      console.log("organization deleted event received");
-      const { data: orgDeletedData } = event;
-      try {
-        if (!orgDeletedData.id) {
-          console.log("organization id not found in event data");
-          break;
-        }
-        await db
-          .delete(organization)
-          .where(eq(organization.organizationId, orgDeletedData.id));
-        await db
-          .delete(organizationMember)
-          .where(eq(organizationMember.organizationId, orgDeletedData.id));
-        console.log("organization deleted successfully in our database");
-      } catch (e: any) {
-        console.error({
-          message: "Unable to delete organization",
-          data: orgDeletedData,
-          errorMessage: e.message,
-        });
+    case "organization.deleted": {
+      const { data } = event;
+      if (!data.id) {
+        throw new Error(
+          "organization.deleted - organization id not found in event data",
+        );
       }
+      await api.webhook.organizationDeleted({
+        organizationId: data.id,
+      });
       break;
+    }
 
     default:
       // Unhandled event type
