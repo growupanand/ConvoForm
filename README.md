@@ -20,6 +20,15 @@ You can see live demo here - [ConvoForm.com](https://www.convoform.com/).
   welcome screen that greets users before they start filling out the form,
   enhancing the user experience.
 
+## Learnings
+In the course of working on ConvoForm.com, I penned down two insightful pieces on Medium reflecting on my journey and learning:
+
+- [A Comprehensive Guide to Easily Switch from Prisma to Drizzle ORM](https://medium.com/@growupanand/a-comprehensive-guide-to-easily-switch-from-prisma-to-drizzle-orm-c290f8ed8ef3)
+
+- [Transitioning from Monorepo to Turborepo: My Development Journey with ConvoForm.com](https://medium.com/@growupanand/transitioning-from-monorepo-to-turborepo-my-development-journey-with-convoform-com-691b9d19f397)
+
+Feel free to delve in, and I hope these articles provide value to your coding journey.
+
 ## Local Setup
 
 Follow these steps to set up the project locally on your machine.
@@ -29,7 +38,7 @@ Follow these steps to set up the project locally on your machine.
 Make sure you have the following installed:
 
 - [Node.js](https://nodejs.org/) (v18.17.1 or higher)
-- [npm](https://www.npmjs.com/) (v9.6.4 or higher)
+- [pnpm]([https://www.npmjs.com/](https://pnpm.io/)) (v8.14.3 or higher)
 - [Git](https://git-scm.com/)
 
 ### Clone the Repository
@@ -47,11 +56,11 @@ pnpm install
 
 ### Configuration
 
-1. Copy the .env.example file to .env file.
+1. Copy the .env.example file to .env.local file.
    ```bash
-   cp .env.example .env
+   cp .env.example .env.local
    ```
-2. Open the `.env` file and update the necessary environment variables.
+2. Open the `.env.local` file and update the necessary environment variables.
 
 ### Run the Development Server
 
