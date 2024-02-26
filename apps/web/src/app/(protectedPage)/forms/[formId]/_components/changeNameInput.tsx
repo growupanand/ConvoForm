@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { cn, debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { ExtractFieldErrors } from "@/trpc/utils";
 
 type Props = {
   form: Form;
@@ -27,10 +28,13 @@ export default function ChangeNameInput({ form, className }: Props) {
         queryKey: [["form", "getOneWithWorkspace"]],
       });
     },
-    onError: () => {
+    throwOnError: false,
+    onError: (error) => {
+      const { name } = ExtractFieldErrors(error);
       toast({
-        title: "Unable to update form name",
+        title: "Unable to update Form's Name",
         duration: 1500,
+        description: name ?? undefined,
       });
     },
   });
