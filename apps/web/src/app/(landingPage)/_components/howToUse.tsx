@@ -4,11 +4,7 @@ import { SectionCard } from "./sectionCard";
 
 export function HowToUseSection() {
   return (
-    <SectionCard
-      stickyHeader
-      title="How to use"
-      headerClassName="bg-gray-50/60"
-    >
+    <SectionCard stickyHeader title="How to use">
       <div className="space-y-6 ">
         <div className="flex items-start">
           <Badge variant="outline" className="bg-white text-lg font-extrabold">

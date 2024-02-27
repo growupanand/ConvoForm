@@ -5,8 +5,8 @@ import { Button } from "@convoform/ui/components/ui/button";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { LayoutDashboard } from "lucide-react";
 
-import { LinkN } from "../common/linkN";
-import { AuthProvider } from "../providers/authProvider";
+import { LinkN } from "../../../components/common/linkN";
+import { AuthProvider } from "../../../components/providers/authProvider";
 import { SignInButton } from "./signInButton";
 
 export default function UserSignInButton() {

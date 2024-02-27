@@ -16,7 +16,9 @@ export const WelcomeScreen = ({ form, onCTAClick: onClick }: Props) => {
       <h2 className={cn("text-center text-5xl font-bold", roboto.className)}>
         {form.welcomeScreenTitle}
       </h2>
-      <p className="mb-8 text-2xl font-light ">{form.welcomeScreenMessage}</p>
+      <p className="mb-8 text-center text-2xl font-light">
+        {form.welcomeScreenMessage}
+      </p>
       <div>
         <Button
           size="lg"

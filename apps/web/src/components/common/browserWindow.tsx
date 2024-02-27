@@ -41,10 +41,12 @@ const BrowserWindow = ({
           onRefresh={onRefresh}
         />
       </div>
-      <div className="bg-muted flex w-full justify-start gap-2 p-3">
-        {toolbar}
-      </div>
-      <div className="grow overflow-scroll bg-white ">{children}</div>
+      {toolbar && (
+        <div className="bg-muted flex w-full justify-start gap-2 p-3">
+          {toolbar}
+        </div>
+      )}
+      <div className="grow overflow-auto bg-white ">{children}</div>
     </div>
   );
 };

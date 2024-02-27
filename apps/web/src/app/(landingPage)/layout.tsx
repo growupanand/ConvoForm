@@ -1,7 +1,8 @@
 import { Metadata } from "next";
 
-import { Footer } from "@/components/landingPage/footer";
-import { Header } from "@/components/landingPage/header";
+import { Footer } from "@/app/(landingPage)/_components/footer";
+import { Header } from "@/app/(landingPage)/_components/header";
+import { SectionShell } from "./_components/sectionShell";
 
 type Props = {
   children: React.ReactNode;
@@ -9,11 +10,11 @@ type Props = {
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Experience The New Magic Of Rich Conversational Forms",
+    absolute: "ConvoForm | Create Conversational Forms",
   },
   openGraph: {
     title: {
-      absolute: "Experience The New Magic Of Rich Conversational Forms",
+      absolute: "ConvoForm | Create Conversational Forms",
     },
     images: [`/api/og`],
   },
@@ -23,14 +24,16 @@ export default function Layout({ children }: Props) {
   return (
     <main className="min-h-screen w-screen">
       <div className="item-center flex h-full flex-col justify-between">
-        <div className="sticky top-0 z-50 w-full border-b  bg-white/80 shadow-sm backdrop-blur-lg ">
+        <div className="h-15 sticky top-0 z-50 w-full  border-b bg-white/80 shadow-sm backdrop-blur-lg">
           <div className="lg:container">
             <Header />
           </div>
         </div>
-        <div className="lg:container lg:max-w-[900px]">
+        <div>
           {children}
-          <Footer />
+          <SectionShell>
+            <Footer />
+          </SectionShell>
         </div>
       </div>
     </main>

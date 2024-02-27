@@ -1,5 +1,5 @@
 import { CommitSections, Release } from "@/lib/validations/changeLog";
-import { SectionCard } from "../landingPage/sectionCard";
+import { SectionCard } from "../../app/(landingPage)/_components/sectionCard";
 import { CommitSection } from "./commitSection";
 
 export const commitsSections = [
@@ -14,11 +14,7 @@ export const ReleaseCard = ({ release }: { release: Release }) => {
   );
 
   return (
-    <SectionCard
-      stickyHeader
-      title={`${release.title} - ${release.isoDate}`}
-      headerClassName="bg-transparent top-12 py-2 lg:py-3"
-    >
+    <SectionCard stickyHeader title={`${release.title} - ${release.isoDate}`}>
       <div className="grid gap-3">
         {commitSectionsWithCommits.map((section) => (
           <CommitSection

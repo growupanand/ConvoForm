@@ -1,6 +1,7 @@
 import tailwindcss_typography from "@tailwindcss/typography";
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
+import colors from "tailwindcss/colors";
 
 import { withTremorConfig } from "./src/lib/config/tailwind.config/tremor.chart";
 
@@ -51,6 +52,7 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        brand: colors.blue,
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -14,7 +14,7 @@ import {
 } from "@convoform/ui/components/ui/table";
 import { FileText } from "lucide-react";
 
-import { SectionCard } from "@/components/landingPage/sectionCard";
+import { SectionCard } from "@/app/(landingPage)/_components/sectionCard";
 import { FormFieldData } from "@/lib/types/conversation";
 import { Transcript } from "@/lib/types/transcript";
 import TranscriptCard from "./transcriptCard";
