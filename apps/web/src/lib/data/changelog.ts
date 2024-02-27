@@ -2,8 +2,114 @@
 
 export const changelog = [ 
 {
-"title": "0.4.0",
+"title": "0.5.0",
 "tag": "",
+"isoDate": "2024-02-27",
+"commits": {
+"features": [
+
+{
+"message": "feat: 🚀 As a User, I Can Generate a New Form with AI\n\nAs a User, I Can Generate a New Form using AI by Providing an Form\nOverview\n\n✅ Closes: #192",
+"shorthash": "70182c7",
+"href": "https://github.com/growupanand/ConvoForm/commit/70182c7241ad46b825785ee84d26d5bb4e1d15c2"
+},
+
+{
+"message": "feat: 🚀 added recent responses and usage card in dashboard page",
+"shorthash": "0adb281",
+"href": "https://github.com/growupanand/ConvoForm/commit/0adb28109b3255dbadec52b74638b1ef6227a5b4"
+},
+
+],
+"improvements": [
+
+{
+"message": "style: 💄 UI changes in landing page for new feature lanuch",
+"shorthash": "4c4e066",
+"href": "https://github.com/growupanand/ConvoForm/commit/4c4e066267cc0f613d794df7ab59fe81abc35024"
+},
+
+{
+"message": "refactor: 💡 clerk webhook db calls from nextjs app to api\n\nmoved all db calls related to clerk webhook from nextjs app to api\npackage",
+"shorthash": "0c3a265",
+"href": "https://github.com/growupanand/ConvoForm/commit/0c3a265ea7ee6bc92131f58a545c2245a560d1ad"
+},
+
+{
+"message": "style: 💄 make generate AI form dialog responsive",
+"shorthash": "db04ffc",
+"href": "https://github.com/growupanand/ConvoForm/commit/db04ffcefdc9729e7b01ea7080aef38518b8a8b2"
+},
+
+{
+"message": "style: 💄 UI improvements in auto generate form",
+"shorthash": "f03894e",
+"href": "https://github.com/growupanand/ConvoForm/commit/f03894e7c0ea5901fd2f55ee651f47d18e9d28b7"
+},
+
+{
+"message": "style: 💄 minor UI changes and removed harcoded value",
+"shorthash": "c183e64",
+"href": "https://github.com/growupanand/ConvoForm/commit/c183e64ad11dbec679d1a1f5ada3bc87aee2aad1"
+},
+
+{
+"message": "perf: ⚡️ While using Auto form generate using AI, we will genera\n\nWhile using Auto form generate using AI, we will generate form overview\nalso. Previously we were using provided user input as form overview",
+"shorthash": "24e899c",
+"href": "https://github.com/growupanand/ConvoForm/commit/24e899c0bc66518605e35108c984d10c5cf1dde1"
+},
+
+{
+"message": "style: 💄 fixed percentage in response usage progress circle",
+"shorthash": "129477a",
+"href": "https://github.com/growupanand/ConvoForm/commit/129477a004b74165e5429cbb097899d37a27cd02"
+},
+
+],
+"fixes": [
+
+{
+"message": "fix: 🐛 tremor chart library styling was not working with shadcn",
+"shorthash": "2b21f28",
+"href": "https://github.com/growupanand/ConvoForm/commit/2b21f280a0a5a19853571a5a6518955227424809"
+},
+
+{
+"message": "fix: 🐛 edge case where collected data value is not string\n\nIf the collected field value is not string but object, It break the page\nbecause react try to render the object as string",
+"shorthash": "7989c2b",
+"href": "https://github.com/growupanand/ConvoForm/commit/7989c2bfca42ee72f36f9f29776a37ad7a370a3e"
+},
+
+{
+"message": "fix: 🐛 Anyone can edit any form using the form link even it is\n\nAnyone can edit any form using the form link even it is not in there\norganization\n\n✅ Closes: #194",
+"shorthash": "37f4203",
+"href": "https://github.com/growupanand/ConvoForm/commit/37f42033e35269bcc6137a88e71c9e4def43561d"
+},
+
+{
+"message": "fix: 🐛 handled uncaught error while chaning form name\n\nIf we pass empty string while chaning form name it show error toast ,\nbut also trigger an uncaught error in sentry",
+"shorthash": "386b28a",
+"href": "https://github.com/growupanand/ConvoForm/commit/386b28ac3a6afbb41ab332de13e5ec30c206fdd1"
+},
+
+{
+"message": "fix: 🐛 form editor page break sometime",
+"shorthash": "bf718b7",
+"href": "https://github.com/growupanand/ConvoForm/commit/bf718b7a2a20cd6c1009064486d7d2f01b64992a"
+},
+
+{
+"message": "fix: 🐛 progress circle label position fixed while scroll window",
+"shorthash": "faafcbf",
+"href": "https://github.com/growupanand/ConvoForm/commit/faafcbf18dc6341071f6e14e819f6ebc7d8ca13f"
+},
+
+]
+}
+},
+{
+"title": "0.4.0",
+"tag": "0.4.0",
 "isoDate": "2024-02-13",
 "commits": {
 "features": [

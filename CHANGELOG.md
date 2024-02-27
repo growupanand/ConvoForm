@@ -1,3 +1,46 @@
+## [0.5.0](https://github.com/growupanand/ConvoForm/compare/0.4.0...0.5.0) (2024-02-27)
+
+### Features
+
+- 🚀 added recent responses and usage card in dashboard page
+  ([0adb281](https://github.com/growupanand/ConvoForm/commit/0adb28109b3255dbadec52b74638b1ef6227a5b4))
+- 🚀 As a User, I Can Generate a New Form with AI
+  ([70182c7](https://github.com/growupanand/ConvoForm/commit/70182c7241ad46b825785ee84d26d5bb4e1d15c2)),
+  closes [#192](https://github.com/growupanand/ConvoForm/issues/192)
+
+### Bug Fixes
+
+- 🐛 Anyone can edit any form using the form link even it is
+  ([37f4203](https://github.com/growupanand/ConvoForm/commit/37f42033e35269bcc6137a88e71c9e4def43561d)),
+  closes [#194](https://github.com/growupanand/ConvoForm/issues/194)
+- 🐛 edge case where collected data value is not string
+  ([7989c2b](https://github.com/growupanand/ConvoForm/commit/7989c2bfca42ee72f36f9f29776a37ad7a370a3e))
+- 🐛 form editor page break sometime
+  ([bf718b7](https://github.com/growupanand/ConvoForm/commit/bf718b7a2a20cd6c1009064486d7d2f01b64992a))
+- 🐛 handled uncaught error while chaning form name
+  ([386b28a](https://github.com/growupanand/ConvoForm/commit/386b28ac3a6afbb41ab332de13e5ec30c206fdd1))
+- 🐛 progress circle label position fixed while scroll window
+  ([faafcbf](https://github.com/growupanand/ConvoForm/commit/faafcbf18dc6341071f6e14e819f6ebc7d8ca13f))
+- 🐛 tremor chart library styling was not working with shadcn
+  ([2b21f28](https://github.com/growupanand/ConvoForm/commit/2b21f280a0a5a19853571a5a6518955227424809))
+
+### Improvements
+
+- ⚡️ While using Auto form generate using AI, we will genera
+  ([24e899c](https://github.com/growupanand/ConvoForm/commit/24e899c0bc66518605e35108c984d10c5cf1dde1))
+- 💄 fixed percentage in response usage progress circle
+  ([129477a](https://github.com/growupanand/ConvoForm/commit/129477a004b74165e5429cbb097899d37a27cd02))
+- 💄 make generate AI form dialog responsive
+  ([db04ffc](https://github.com/growupanand/ConvoForm/commit/db04ffcefdc9729e7b01ea7080aef38518b8a8b2))
+- 💄 minor UI changes and removed harcoded value
+  ([c183e64](https://github.com/growupanand/ConvoForm/commit/c183e64ad11dbec679d1a1f5ada3bc87aee2aad1))
+- 💄 UI changes in landing page for new feature lanuch
+  ([4c4e066](https://github.com/growupanand/ConvoForm/commit/4c4e066267cc0f613d794df7ab59fe81abc35024))
+- 💄 UI improvements in auto generate form
+  ([f03894e](https://github.com/growupanand/ConvoForm/commit/f03894e7c0ea5901fd2f55ee651f47d18e9d28b7))
+- 💡 clerk webhook db calls from nextjs app to api
+  ([0c3a265](https://github.com/growupanand/ConvoForm/commit/0c3a265ea7ee6bc92131f58a545c2245a560d1ad))
+
 ## [0.4.0](https://github.com/growupanand/ConvoForm/compare/0.3.0...0.4.0) (2024-02-13)
 
 ### Features
