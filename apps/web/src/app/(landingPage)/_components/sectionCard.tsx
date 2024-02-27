@@ -36,7 +36,7 @@ export function SectionCard({
           className={cn(
             "pb-4 ",
             stickyHeader &&
-              " bg-background/70 sticky top-14 z-30 backdrop-blur",
+              " bg-background/70 sticky top-14 z-30 backdrop-blur ",
             headerClassName,
           )}
         >

@@ -1,6 +1,5 @@
 import { montserrat } from "@/app/fonts";
 import { LinkN } from "@/components/common/linkN";
-import { brandName } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -17,7 +16,10 @@ export default function BrandName({ className = "" }: Props) {
           montserrat.className,
         )}
       >
-        {brandName}
+        <span className="flex items-center justify-start gap-0">
+          <span className="text-brand-500">Convo</span>
+          <span>Form</span>
+        </span>
       </span>
     </LinkN>
   );

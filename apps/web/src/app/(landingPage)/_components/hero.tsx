@@ -1,15 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AspectRatio } from "@convoform/ui/components/ui/aspect-ratio";
 import { Badge } from "@convoform/ui/components/ui/badge";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@convoform/ui/components/ui/carousel";
+  Card,
+  CardContent,
+  CardHeader,
+} from "@convoform/ui/components/ui/card";
 import { ChevronRight } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";
@@ -22,7 +19,7 @@ export function Hero() {
   const demoFormLink = getFrontendBaseUrl() + "/view/demo";
 
   return (
-    <section className="md:my-15 my-10 flex w-full flex-col justify-center gap-1 py-4 text-center">
+    <section className="md:my-15 my-10 flex w-full flex-col justify-center gap-1 text-center">
       <div className="flex flex-col items-center justify-center gap-3">
         <Link
           href="https://github.com/growupanand/ConvoForm"
@@ -49,15 +46,20 @@ export function Hero() {
           </Link>
         </Badge>
       </div>
-      <div className="mb-3 flex flex-col gap-6">
-        <h1 className="text-3xl font-semibold text-gray-700 lg:text-6xl ">
-          Create your own AI-Powered conversational form
-        </h1>
-        <p className="text-muted-foreground mx-auto text-lg lg:text-2xl">
-          Build engaging and interactive forms that are easy to fill and fun to
-          answer.
-        </p>
-      </div>
+      <Card className="border-none bg-transparent shadow-none">
+        <CardHeader>
+          <h1 className="text-3xl font-semibold text-gray-700 lg:text-6xl ">
+            Create <span className="text-brand-500">Convo</span> Form
+          </h1>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground mx-auto text-lg lg:text-2xl">
+            Build your own AI-Powered conversational form, Which are engaging
+            and interactive forms that are easy to build and fun to answer.
+          </p>
+        </CardContent>
+      </Card>
+
       <div className="flex items-center justify-center gap-3">
         <Button
           size="lg"
@@ -78,41 +80,6 @@ export function Hero() {
             Try demo form
           </LinkN>
         </Button>
-      </div>
-      <div className="mt-[100px]  max-lg:hidden">
-        <Carousel className="shadow-lg">
-          <CarouselContent>
-            <CarouselItem>
-              <AspectRatio ratio={3 / 2}>
-                <Image
-                  alt="screenshot of form editor"
-                  src="/screenshots/formEditor.png"
-                  fill
-                />
-              </AspectRatio>
-            </CarouselItem>
-            <CarouselItem>
-              <AspectRatio ratio={3 / 2}>
-                <Image
-                  alt="screenshot of form response page"
-                  src="/screenshots/responses.png"
-                  fill
-                />
-              </AspectRatio>
-            </CarouselItem>
-            <CarouselItem>
-              <AspectRatio ratio={3 / 2}>
-                <Image
-                  alt="screenshot of responses overview page"
-                  src="/screenshots/responsesOverview.png"
-                  fill
-                />
-              </AspectRatio>
-            </CarouselItem>
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
       </div>
     </section>
   );

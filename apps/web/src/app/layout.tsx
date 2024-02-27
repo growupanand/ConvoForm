@@ -7,7 +7,6 @@ import type { Viewport } from "next";
 import { Toaster } from "@convoform/ui/components/ui/toaster";
 
 import GoogleAnalytics from "@/components/googleAnalytics";
-import { cn } from "@/lib/utils";
 import { TRPCReactProvider } from "@/trpc/react";
 import { roboto } from "./fonts";
 
@@ -48,6 +47,7 @@ export const metadata: Metadata = {
     "Artificial Intelligence in Forms",
     "Data Collection Tool",
     "Customized Form Design",
+    "Convo Form",
   ],
   creator: "Utkarsh Anand",
   openGraph: {
@@ -70,7 +70,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(roboto.className, "bg-gray-50")}>
+      <body className={roboto.className}>
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}

@@ -3,7 +3,6 @@ import { Button } from "@convoform/ui/components/ui/button";
 import { Github, Instagram, Mail, Twitter } from "lucide-react";
 
 import { marck_script, montserrat } from "@/app/fonts";
-import { brandName } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 export function Footer() {
@@ -11,7 +10,7 @@ export function Footer() {
     <footer className="mb-2 mt-10 w-full max-lg:px-6 lg:mb-5 lg:mt-20">
       <div className="flex flex-col items-center justify-start gap-2 lg:flex-row lg:gap-5">
         <span aria-label="App name" className={montserrat.className}>
-          {brandName}
+          ConvoForm
         </span>
 
         <div className="flex items-center gap-3">

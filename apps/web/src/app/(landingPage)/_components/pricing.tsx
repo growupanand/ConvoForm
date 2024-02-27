@@ -18,7 +18,7 @@ import { SectionCard } from "./sectionCard";
 
 export function Pricing() {
   return (
-    <SectionCard stickyHeader title="Pricing" headerClassName="bg-gray-50/60">
+    <SectionCard stickyHeader title="Pricing">
       <div className="grid grid-cols-1">
         <PlanCard plan={freePlan} />
       </div>
@@ -55,7 +55,7 @@ const FeatureListItem = ({
 
 const PlanCard = ({ plan }: { plan: Plan }) => {
   return (
-    <Card className=" w-full rounded-xl border-none shadow-lg shadow-gray-200">
+    <Card className="  w-full rounded-xl  shadow-xl">
       <CardHeader>
         <CardTitle>
           <div className="flex items-center justify-between">

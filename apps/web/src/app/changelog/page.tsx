@@ -24,7 +24,7 @@ export default function Page() {
 
   return (
     <div>
-      <div className="sticky  top-0 z-50 mb-10 border-b bg-white/70 shadow-sm backdrop-blur">
+      <div className="sticky top-0 z-50 h-16 w-full  border-b bg-white/80 shadow-sm backdrop-blur-lg">
         <div className="  w-full  p-3 lg:container ">
           <BrandName className="text-xl lg:text-2xl" />
         </div>

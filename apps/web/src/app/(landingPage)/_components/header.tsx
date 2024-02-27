@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import BrandName from "../common/brandName";
+import BrandName from "@/components/common/brandName";
 import { SignInButton } from "./signInButton";
 
 const UserSignInButton = dynamic(() => import("./userButton"), {
@@ -11,7 +11,7 @@ const UserSignInButton = dynamic(() => import("./userButton"), {
 export function Header() {
   return (
     <header>
-      <div className="flex w-full items-center justify-between p-3">
+      <div className="flex w-full flex-nowrap items-center justify-between gap-3 p-3">
         <BrandName className="text-xl lg:text-2xl" />
         <nav className="flex items-center gap-3">
           <UserSignInButton />

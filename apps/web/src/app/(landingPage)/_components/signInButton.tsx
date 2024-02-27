@@ -1,6 +1,6 @@
 import { Button } from "@convoform/ui/components/ui/button";
 
-import { LinkN } from "../common/linkN";
+import { LinkN } from "@/components/common/linkN";
 
 export function SignInButton() {
   return (

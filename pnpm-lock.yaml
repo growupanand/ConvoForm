@@ -121,6 +121,9 @@ importers:
       clsx:
         specifier: ^2.0.0
         version: 2.1.0
+      framer-motion:
+        specifier: ^11.0.6
+        version: 11.0.6(react-dom@18.2.0)(react@18.2.0)
       lucide-react:
         specifier: ^0.292.0
         version: 0.292.0(react@18.2.0)
@@ -860,6 +863,26 @@ packages:
     dependencies:
       superjson: 2.2.1
     dev: true
+
+  /@emotion/is-prop-valid@0.8.8:
+    resolution:
+      {
+        integrity: sha512-u5WtneEAr5IDG2Wv65yhunPSMLIpuKsbuOktRojfrEiEvRyC85LgPMZI63cr7NUqT8ZIGdSVg8ZKGxIug4lXcA==,
+      }
+    requiresBuild: true
+    dependencies:
+      "@emotion/memoize": 0.7.4
+    dev: false
+    optional: true
+
+  /@emotion/memoize@0.7.4:
+    resolution:
+      {
+        integrity: sha512-Ja/Vfqe3HpuzRsG1oBtWTHk2PGZ7GR+2Vz5iYGelAw8dx32K0y7PjVuxK6z1nMpZOqAFsRUPCkK1YjJ56qJlgw==,
+      }
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /@esbuild-kit/core-utils@3.3.2:
     resolution:
@@ -8299,6 +8322,27 @@ packages:
         integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==,
       }
     dev: true
+
+  /framer-motion@11.0.6(react-dom@18.2.0)(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-BpO3mWF8UwxzO3Ca5AmSkrg14QYTeJa9vKgoLOoBdBdTPj0e81i1dMwnX6EQJXRieUx20uiDBXq8bA6y7N6b8Q==,
+      }
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      tslib: 2.6.2
+    optionalDependencies:
+      "@emotion/is-prop-valid": 0.8.8
+    dev: false
 
   /fs-extra@8.1.0:
     resolution:
