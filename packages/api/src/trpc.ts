@@ -37,13 +37,24 @@ export const createTRPCContext = async () => {
  */
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
-  errorFormatter: ({ shape, error }) => ({
-    ...shape,
-    data: {
-      ...shape.data,
-      zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
-    },
-  }),
+  errorFormatter: ({ shape, error }) => {
+    // Add rate limit error data into response
+    let rateLimitErrorData = {};
+    const isRateLimitError = error.code === "TOO_MANY_REQUESTS";
+    if (isRateLimitError && typeof error.cause === "object") {
+      rateLimitErrorData = error.cause;
+    }
+
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        ...rateLimitErrorData,
+        zodError:
+          error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
+    };
+  },
 });
 
 /**
