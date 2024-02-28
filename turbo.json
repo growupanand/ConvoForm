@@ -11,7 +11,9 @@
     "VERCEL_URL",
     "OPEN_AI_MODEL",
     "OPENAI_API_KEY",
-    "DATABASE_URL"
+    "DATABASE_URL",
+    "UPSTASH_REDIS_REST_URL",
+    "UPSTASH_REDIS_REST_TOKEN"
   ],
   "pipeline": {
     "build": {

@@ -24,3 +24,9 @@ export const getCurrentMonthDaysArray = () => {
     (_, i) => currentMonthTotalDays - i,
   );
 };
+
+export const getRemainingSeconds = (timeStamp: number) => {
+  const currentTime = Date.now();
+  const remainingSeconds = Math.floor((timeStamp - currentTime) / 1000);
+  return remainingSeconds;
+};
