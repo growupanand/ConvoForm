@@ -1,6 +1,7 @@
 import { and, count, eq, form, formField } from "@convoform/db";
 import { z } from "zod";
 
+import { checkRateLimit } from "../lib/rateLimit";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import {
   formCreateSchema,
@@ -17,6 +18,10 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      await checkRateLimit({
+        identifier: ctx.userId,
+        rateLimitType: "core:create",
+      });
       const [newForm] = await ctx.db
         .insert(form)
         .values({

@@ -13,25 +13,41 @@ if (!isRateLimiterAvailable) {
 
 const redis = isRateLimiterAvailable ? Redis.fromEnv() : undefined;
 
+type LimitType = "common" | "core:create";
+type RateLimit = Record<LimitType, any>;
+
 export const ratelimit = redis
-  ? {
-      core: new Ratelimit({
+  ? ({
+      common: new Ratelimit({
         redis,
         analytics: true,
-        prefix: "ratelimit:core",
+        prefix: "ratelimit",
+        limiter: Ratelimit.fixedWindow(200, "60s"),
+      }),
+      ["core:create"]: new Ratelimit({
+        redis,
+        analytics: true,
+        prefix: "ratelimit:api",
         limiter: Ratelimit.fixedWindow(2, "10s"),
       }),
-    }
+    } as RateLimit)
   : undefined;
 
+/**
+ * Check for rate limit and throw an error if the limit is exceeded.
+ * @returns `Promise<void>`
+ */
 export const checkRateLimit = async ({
+  identifier,
   message,
   rateLimitType,
-  identifier,
 }: {
+  /** A unique string value to identify user */
   identifier: string;
+  /** Custom message to send in response */
   message?: string;
-  rateLimitType?: keyof typeof ratelimit;
+  /** Limit type E.g. `core`, `AI` etc */
+  rateLimitType?: LimitType;
 }) => {
   if (
     !redis ||
@@ -45,7 +61,7 @@ export const checkRateLimit = async ({
     success,
     /** Unix timestamp in milliseconds when the limits are reset. */
     reset: resetTimeStamp,
-  } = await ratelimit[rateLimitType ?? "core"].limit(identifier);
+  } = await ratelimit[rateLimitType ?? "common"].limit(identifier);
 
   if (!success) {
     const remainingSeconds = getRemainingSeconds(resetTimeStamp);

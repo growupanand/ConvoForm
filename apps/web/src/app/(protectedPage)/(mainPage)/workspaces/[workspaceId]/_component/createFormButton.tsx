@@ -16,6 +16,7 @@ import { Loader2, PenLine, Plus, Sparkles } from "lucide-react";
 import { z } from "zod";
 
 import { montserrat } from "@/app/fonts";
+import { isRateLimitError } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
 import { createFormSchema } from "@/lib/validations/form";
 import { api } from "@/trpc/react";
@@ -50,9 +51,12 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
       });
       router.push(`/forms/${newForm.id}`);
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         title: "Unable to create form",
+        duration: 2000,
+        variant: "destructive",
+        description: isRateLimitError(error) ? error.message : undefined,
       });
     },
   });

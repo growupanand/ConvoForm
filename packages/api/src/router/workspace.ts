@@ -1,12 +1,17 @@
 import { eq, insertWorkspaceSchema, workspace } from "@convoform/db";
 import { z } from "zod";
 
+import { checkRateLimit } from "../lib/rateLimit";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const workspaceRouter = createTRPCRouter({
   create: protectedProcedure
     .input(insertWorkspaceSchema)
     .mutation(async ({ input, ctx }) => {
+      await checkRateLimit({
+        identifier: ctx.userId,
+        rateLimitType: "core:create",
+      });
       const [result] = await ctx.db
         .insert(workspace)
         .values({
