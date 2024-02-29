@@ -71,6 +71,10 @@ export const workspaceRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      await checkRateLimit({
+        identifier: ctx.userId,
+        rateLimitType: "core:edit",
+      });
       const [updatedWorkspace] = await ctx.db
         .update(workspace)
         .set({ name: input.name })

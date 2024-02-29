@@ -141,6 +141,10 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      await checkRateLimit({
+        identifier: ctx.userId,
+        rateLimitType: "core:edit",
+      });
       return await ctx.db
         .update(form)
         .set({ name: input.name })
@@ -155,6 +159,10 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      await checkRateLimit({
+        identifier: ctx.userId,
+        rateLimitType: "core:edit",
+      });
       const [updatedForm] = await ctx.db
         .update(form)
         .set({

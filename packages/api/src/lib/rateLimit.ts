@@ -13,7 +13,7 @@ if (!isRateLimiterAvailable) {
 
 const redis = isRateLimiterAvailable ? Redis.fromEnv() : undefined;
 
-type LimitType = "common" | "core:create";
+type LimitType = "common" | "core:create" | "core:edit";
 type RateLimit = Record<LimitType, any>;
 
 export const ratelimit = redis
@@ -29,6 +29,12 @@ export const ratelimit = redis
         analytics: true,
         prefix: "ratelimit:api",
         limiter: Ratelimit.fixedWindow(2, "10s"),
+      }),
+      ["core:edit"]: new Ratelimit({
+        redis,
+        analytics: true,
+        prefix: "ratelimit:api",
+        limiter: Ratelimit.fixedWindow(4, "10s"),
       }),
     } as RateLimit)
   : undefined;
