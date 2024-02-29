@@ -21,3 +21,7 @@ export const sendErrorResponse = (error: any) => {
     { status: error.cause?.statusCode || 500 },
   );
 };
+
+export const isRateLimitError = (error: any) => {
+  return error.data?.code === "TOO_MANY_REQUESTS";
+};
