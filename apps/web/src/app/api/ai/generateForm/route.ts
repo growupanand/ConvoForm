@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit } from "@convoform/api";
 import { z } from "zod";
 
 import { aiGeneratedFormLimit } from "@/lib/config/pricing";
@@ -11,12 +12,19 @@ import {
 } from "@/lib/validations/form";
 import { api } from "@/trpc/server";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const requestJson = await req.json();
     const { formOverview } = generateFormSchema.parse(requestJson);
 
     const orgId = getOrganizationId();
+
+    // TODO: After moving AI related routes to tRPC, we can use userId as identifier
+
+    await checkRateLimit({
+      identifier: orgId,
+      rateLimitType: "ai:identified",
+    });
 
     // Check current plan usage and limit
     const aiGeneratedFormsCount =

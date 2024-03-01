@@ -1,7 +1,10 @@
+import { NextRequest } from "next/server";
+import { checkRateLimit } from "@convoform/api";
 import { z } from "zod";
 
 import { formSubmissionLimit } from "@/lib/config/pricing";
 import { sendErrorResponse } from "@/lib/errorHandlers";
+import getIP from "@/lib/getIP";
 import { ConversationService } from "@/lib/services/conversation";
 import { ConversationPayloadSchema } from "@/lib/validations/conversation";
 import { api } from "@/trpc/server";
@@ -13,7 +16,7 @@ const routeContextSchema = z.object({
 });
 
 export async function POST(
-  req: Request,
+  req: NextRequest,
   context: z.infer<typeof routeContextSchema>,
 ) {
   try {
@@ -23,6 +26,13 @@ export async function POST(
     // TODO: Uncomment once premium plan is ready
     // const { isPreview } = reqPayload;
     const isPreview = false;
+
+    const clientIp = getIP(req);
+
+    await checkRateLimit({
+      identifier: clientIp ?? "unknown",
+      rateLimitType: clientIp ? "ai:identified" : "ai:unkown",
+    });
 
     const form = await api.form.getOneWithFields({
       id: params.formId,
@@ -63,7 +73,7 @@ export async function POST(
 
     const conversation = new ConversationService(form, isPreview);
 
-    return conversation.getNextQuestion(reqPayload.messages);
+    return await conversation.getNextQuestion(reqPayload.messages);
   } catch (error) {
     return sendErrorResponse(error);
   }
