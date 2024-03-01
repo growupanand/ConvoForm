@@ -1,8 +1,7 @@
-import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-import { getRemainingSeconds } from "./utils";
+import { timeAhead } from "./utils";
 
 const isRateLimiterAvailable =
   !!process.env.UPSTASH_REDIS_REST_TOKEN &&
@@ -13,8 +12,14 @@ if (!isRateLimiterAvailable) {
 
 const redis = isRateLimiterAvailable ? Redis.fromEnv() : undefined;
 
-type LimitType = "common" | "core:create" | "core:edit";
+type LimitType =
+  | "common"
+  | "core:create"
+  | "core:edit"
+  | "ai:unkown"
+  | "ai:identified";
 type RateLimit = Record<LimitType, any>;
+export const RATE_LIMIT_ERROR_NAME = "TOO_MANY_REQUESTS";
 
 export const ratelimit = redis
   ? ({
@@ -35,6 +40,18 @@ export const ratelimit = redis
         analytics: true,
         prefix: "ratelimit:api",
         limiter: Ratelimit.fixedWindow(4, "10s"),
+      }),
+      ["ai:unkown"]: new Ratelimit({
+        redis,
+        analytics: true,
+        prefix: "ratelimit:ai",
+        limiter: Ratelimit.fixedWindow(300, "1d"),
+      }),
+      ["ai:identified"]: new Ratelimit({
+        redis,
+        analytics: true,
+        prefix: "ratelimit:ai",
+        limiter: Ratelimit.fixedWindow(100, "1d"),
       }),
     } as RateLimit)
   : undefined;
@@ -70,17 +87,19 @@ export const checkRateLimit = async ({
   } = await ratelimit[rateLimitType ?? "common"].limit(identifier);
 
   if (!success) {
-    const remainingSeconds = getRemainingSeconds(resetTimeStamp);
-    throw new TRPCError({
-      code: "TOO_MANY_REQUESTS",
-      message:
-        typeof message === "string"
-          ? message
-          : `Rate limit exceeded. Try again in ${remainingSeconds} seconds.`,
-      cause: {
-        resetTimeStamp,
-        remainingSeconds,
-      },
-    });
+    const errorMessage =
+      typeof message === "string"
+        ? message
+        : `Rate limit exceeded. Try again in ${timeAhead(resetTimeStamp)}.`;
+    const error = new Error(errorMessage);
+    error.name = RATE_LIMIT_ERROR_NAME;
+    error.cause = {
+      resetTimeStamp,
+    };
+    throw error;
   }
+};
+
+export const isRateLimitError = (error: any) => {
+  return error.name === RATE_LIMIT_ERROR_NAME;
 };

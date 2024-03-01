@@ -13,6 +13,18 @@ export const sendErrorResponse = (error: any) => {
     );
   }
 
+  if (error.name === "TOO_MANY_REQUESTS") {
+    return NextResponse.json(
+      {
+        nonFieldError: error.message || "Rate limit exceeded",
+        ...error.cause,
+      },
+      {
+        status: 429,
+      },
+    );
+  }
+
   return NextResponse.json(
     {
       nonFieldError: error.message || "something went wrong",

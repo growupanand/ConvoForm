@@ -10,6 +10,8 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
+import { isRateLimitError } from "./lib/rateLimit";
+
 /**
  * 1. CONTEXT
  *
@@ -38,11 +40,13 @@ export const createTRPCContext = async () => {
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => {
+    console.log({ shape, error: error.name });
     // Add rate limit error data into response
-    let rateLimitErrorData = {};
-    const isRateLimitError = error.code === "TOO_MANY_REQUESTS";
-    if (isRateLimitError && typeof error.cause === "object") {
+    let rateLimitErrorData: Record<string, any> = {};
+    if (isRateLimitError(error) && typeof error.cause === "object") {
       rateLimitErrorData = error.cause;
+      rateLimitErrorData.code = "TOO_MANY_REQUESTS";
+      rateLimitErrorData.httpStatus = 429;
     }
 
     return {

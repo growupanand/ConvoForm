@@ -30,7 +30,7 @@ export class OpenAIService extends SystemPromptService {
     super();
   }
 
-  getOpenAIResponse(
+  async getOpenAIResponse(
     messages: ChatCompletionRequestMessage[],
     stream: boolean = false,
     functions?: ChatCompletionFunctions[],
@@ -48,14 +48,14 @@ export class OpenAIService extends SystemPromptService {
     return this.openai.createChatCompletion(createChatCompletionRequest);
   }
 
-  getOpenAIResponseStream(
+  async getOpenAIResponseStream(
     messages: ChatCompletionRequestMessage[],
     functions?: ChatCompletionFunctions[],
   ) {
     return this.getOpenAIResponse(messages, true, functions);
   }
 
-  getOpenAIResponseJSON(messages: ChatCompletionMessageParam[]) {
+  async getOpenAIResponseJSON(messages: ChatCompletionMessageParam[]) {
     return openAiOG.chat.completions.create({
       model: this.openAIModel,
       messages,

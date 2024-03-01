@@ -6,6 +6,7 @@ import { sendErrorResponseToast } from "@convoform/ui/components/ui/use-toast";
 import { useChat } from "ai/react";
 
 import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
+import { isRateLimitError } from "@/lib/errorHandlers";
 import { EndScreen } from "./endScreen";
 import { FormFieldsViewer } from "./formFields";
 import { WelcomeScreen } from "./welcomeScreen";
@@ -48,7 +49,11 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
     onError(error) {
       let errorMessage;
       try {
-        errorMessage = JSON.parse(error.message).nonFieldError;
+        if (isRateLimitError(error)) {
+          errorMessage = error.message ?? "Rate limit exceeded";
+        } else {
+          errorMessage = JSON.parse(error.message).nonFieldError;
+        }
       } catch (_) {
         errorMessage = undefined;
       }
