@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: Props) {
   return (
-    <main className="min-h-screen w-screen">
+    <main className="min-h-screen">
       <div className="item-center flex h-full flex-col justify-between">
         <div className="h-15 sticky top-0 z-50 w-full  border-b bg-white/80 shadow-sm backdrop-blur-lg">
           <div className="lg:container">
