@@ -8,7 +8,7 @@ import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
 
-import { isRateLimitError } from "@/lib/errorHandlers";
+import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { NavigationConfig } from "@/lib/types/navigation";
 import { api } from "@/trpc/react";
 import BrandName from "../common/brandName";
@@ -42,7 +42,9 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
         title: "Unable to create workspace",
         duration: 2000,
         variant: "destructive",
-        description: isRateLimitError(error) ? error.message : undefined,
+        description: isRateLimitErrorResponse(error)
+          ? error.message
+          : undefined,
       }),
   });
   const isCreatingWorkspace = createWorkspace.isPending;

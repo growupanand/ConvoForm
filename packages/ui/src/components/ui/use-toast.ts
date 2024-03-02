@@ -180,7 +180,8 @@ async function sendErrorResponseToast(
   }
   toast({
     title: errorMessage || fallbackMessage || "Something went wrong",
-    duration: 1500,
+    duration: 2000,
+    variant: "destructive",
   });
 }
 

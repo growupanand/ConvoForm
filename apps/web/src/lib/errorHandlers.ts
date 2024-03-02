@@ -34,6 +34,6 @@ export const sendErrorResponse = (error: any) => {
   );
 };
 
-export const isRateLimitError = (error: any) => {
-  return error.data?.code === "TOO_MANY_REQUESTS";
+export const isRateLimitErrorResponse = (error: any) => {
+  return error.data?.code === "TOO_MANY_REQUESTS" || error.status === 429;
 };

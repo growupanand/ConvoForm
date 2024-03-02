@@ -18,7 +18,7 @@ import { Check, Edit, MoreVertical, Trash } from "lucide-react";
 
 import { ConfirmAction } from "@/components/common/confirmAction";
 import Spinner from "@/components/common/spinner";
-import { isRateLimitError } from "@/lib/errorHandlers";
+import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn, debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import CreateFormButton from "./createFormButton";
@@ -81,7 +81,9 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
         title: "Unable to update workspace",
         duration: 2000,
         variant: "destructive",
-        description: isRateLimitError(error) ? error.message : undefined,
+        description: isRateLimitErrorResponse(error)
+          ? error.message
+          : undefined,
       }),
   });
 

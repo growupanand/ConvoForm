@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
@@ -16,7 +17,9 @@ type LimitType =
   | "common"
   | "core:create"
   | "core:edit"
+  /** All OpenAI request called (except from loggedInUser or detected ip address of client)  */
   | "ai:unkown"
+  /** All OpenAI request called by loggedInUser or detected ip address of client */
   | "ai:identified";
 type RateLimit = Record<LimitType, any>;
 export const RATE_LIMIT_ERROR_NAME = "TOO_MANY_REQUESTS";
@@ -45,22 +48,30 @@ export const ratelimit = redis
         redis,
         analytics: true,
         prefix: "ratelimit:ai",
-        limiter: Ratelimit.fixedWindow(300, "1d"),
+        limiter: Ratelimit.fixedWindow(400, "1d"),
       }),
       ["ai:identified"]: new Ratelimit({
         redis,
         analytics: true,
         prefix: "ratelimit:ai",
-        limiter: Ratelimit.fixedWindow(100, "1d"),
+        limiter: Ratelimit.fixedWindow(150, "1d"),
       }),
     } as RateLimit)
   : undefined;
+
+export const isRateLimitError = (error: any) => {
+  return error.name === RATE_LIMIT_ERROR_NAME;
+};
+
+export const isRateLimitErrorResponse = (error: any) => {
+  return error.data?.code === RATE_LIMIT_ERROR_NAME || error.status === 429;
+};
 
 /**
  * Check for rate limit and throw an error if the limit is exceeded.
  * @returns `Promise<void>`
  */
-export const checkRateLimit = async ({
+export const checkRateLimitThrowError = async ({
   identifier,
   message,
   rateLimitType,
@@ -100,6 +111,32 @@ export const checkRateLimit = async ({
   }
 };
 
-export const isRateLimitError = (error: any) => {
-  return error.name === RATE_LIMIT_ERROR_NAME;
+export const checkRateLimitThrowTRPCError = async ({
+  identifier,
+  message,
+  rateLimitType,
+}: {
+  /** A unique string value to identify user */
+  identifier: string;
+  /** Custom message to send in response */
+  message?: string;
+  /** Limit type E.g. `core`, `AI` etc */
+  rateLimitType?: LimitType;
+}) => {
+  try {
+    await checkRateLimitThrowError({
+      identifier,
+      message,
+      rateLimitType,
+    });
+  } catch (error) {
+    if (error instanceof Error && isRateLimitError(error)) {
+      throw new TRPCError({
+        code: RATE_LIMIT_ERROR_NAME,
+        message: error.message,
+        cause: error.cause,
+      });
+    }
+    throw error;
+  }
 };

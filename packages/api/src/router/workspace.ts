@@ -1,14 +1,14 @@
 import { eq, insertWorkspaceSchema, workspace } from "@convoform/db";
 import { z } from "zod";
 
-import { checkRateLimit } from "../lib/rateLimit";
+import { checkRateLimitThrowTRPCError } from "../lib/rateLimit";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const workspaceRouter = createTRPCRouter({
   create: protectedProcedure
     .input(insertWorkspaceSchema)
     .mutation(async ({ input, ctx }) => {
-      await checkRateLimit({
+      await checkRateLimitThrowTRPCError({
         identifier: ctx.userId,
         rateLimitType: "core:create",
       });
@@ -71,7 +71,7 @@ export const workspaceRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      await checkRateLimit({
+      await checkRateLimitThrowTRPCError({
         identifier: ctx.userId,
         rateLimitType: "core:edit",
       });

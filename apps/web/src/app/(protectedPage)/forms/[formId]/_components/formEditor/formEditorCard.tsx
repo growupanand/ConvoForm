@@ -48,7 +48,7 @@ import { z } from "zod";
 
 import { montserrat } from "@/app/fonts";
 import { apiClient } from "@/lib/apiClient";
-import { isRateLimitError } from "@/lib/errorHandlers";
+import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
 import { formUpdateSchema } from "@/lib/validations/form";
 import { api } from "@/trpc/react";
@@ -111,7 +111,9 @@ export function FormEditorCard({ form }: Readonly<Props>) {
         title: "Unable to save changes",
         duration: 2000,
         variant: "destructive",
-        description: isRateLimitError(error) ? error.message : undefined,
+        description: isRateLimitErrorResponse(error)
+          ? error.message
+          : undefined,
       });
     },
   });
