@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import type { AppRouter } from "@convoform/api";
+import { type AppRouter } from "@convoform/api";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import SuperJSON from "superjson";
 
-import { isRateLimitError } from "@/lib/errorHandlers";
+import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { getTRPCUrl } from "@/lib/url";
 
 export const api = createTRPCReact<AppRouter>();
@@ -25,7 +25,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
           },
           mutations: {
             onError: (err) => {
-              if (isRateLimitError(err)) {
+              if (isRateLimitErrorResponse(err)) {
                 toast({
                   title: err.message ?? "Too many requests",
                   duration: 1500,

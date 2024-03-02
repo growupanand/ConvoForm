@@ -5,7 +5,7 @@ import { Input } from "@convoform/ui/components/ui/input";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { isRateLimitError } from "@/lib/errorHandlers";
+import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn, debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { ExtractFieldErrors } from "@/trpc/utils";
@@ -36,7 +36,7 @@ export default function ChangeNameInput({ form, className }: Props) {
         title: "Unable to update Form's Name",
         duration: 2000,
         variant: "destructive",
-        description: isRateLimitError(error)
+        description: isRateLimitErrorResponse(error)
           ? error.message
           : nameFieldError ?? undefined,
       });

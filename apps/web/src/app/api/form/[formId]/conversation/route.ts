@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { checkRateLimit } from "@convoform/api";
+import { checkRateLimitThrowError } from "@convoform/api";
 import { z } from "zod";
 
 import { formSubmissionLimit } from "@/lib/config/pricing";
@@ -29,7 +29,7 @@ export async function POST(
 
     const clientIp = getIP(req);
 
-    await checkRateLimit({
+    await checkRateLimitThrowError({
       identifier: clientIp ?? "unknown",
       rateLimitType: clientIp ? "ai:identified" : "ai:unkown",
     });

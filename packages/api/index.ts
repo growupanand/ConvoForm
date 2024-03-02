@@ -1,6 +1,6 @@
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
-import { checkRateLimit, RATE_LIMIT_ERROR_NAME } from "./src/lib/rateLimit";
+import { checkRateLimitThrowError } from "./src/lib/rateLimit";
 import type { AppRouter } from "./src/router/root";
 import { appRouter } from "./src/router/root";
 import { createCallerFactory, createTRPCContext } from "./src/trpc";
@@ -28,12 +28,7 @@ type RouterInputs = inferRouterInputs<AppRouter>;
  * type AllPostsOutput = RouterOutputs['post']['all']
  *      ^? Post[]
  **/
+
 type RouterOutputs = inferRouterOutputs<AppRouter>;
-export {
-  createTRPCContext,
-  appRouter,
-  createCaller,
-  checkRateLimit,
-  RATE_LIMIT_ERROR_NAME,
-};
+export { createTRPCContext, appRouter, createCaller, checkRateLimitThrowError };
 export type { AppRouter, RouterInputs, RouterOutputs };
