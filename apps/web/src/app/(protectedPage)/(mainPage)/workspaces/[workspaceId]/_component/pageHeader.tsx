@@ -61,7 +61,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
   });
 
   const handleDeleteWorkspace = useCallback(
-    async () => deleteWorkspace.mutateAsync({ id: currentWorkspaceId }),
+    async () => deleteWorkspace.mutate({ id: currentWorkspaceId }),
     [currentWorkspaceId],
   );
   const isDeleting = deleteWorkspace.isPending;
@@ -88,8 +88,8 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
   });
 
   const handleUpdateWorkspace = useCallback(
-    async (name: string) =>
-      await updateWorkspace.mutateAsync({
+    (name: string) =>
+      updateWorkspace.mutate({
         id: currentWorkspaceId,
         name,
       }),
@@ -100,7 +100,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleWorkspaceNameInputChange = async (e: any) => {
+  const handleWorkspaceNameInputChange = (e: any) => {
     const updatedName = e.target.value as string;
     debounce(() => handleUpdateWorkspace(updatedName), 1000);
   };

@@ -50,7 +50,7 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
   const isCreatingWorkspace = createWorkspace.isPending;
 
   const handleCreateWorkspace = useCallback(async () => {
-    await createWorkspace.mutateAsync({
+    await createWorkspace.mutate({
       organizationId: orgId,
       name: "New Workspace",
     });
