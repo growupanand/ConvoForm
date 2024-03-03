@@ -26,9 +26,7 @@ import {
 } from "@/lib/validations/form";
 
 type Props = {
-  onFormGenerated: (
-    formData: z.infer<typeof createFormSchema>,
-  ) => Promise<void>;
+  onFormGenerated: (formData: z.infer<typeof createFormSchema>) => void;
   isCreatingForm: boolean;
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -78,7 +76,7 @@ export function GenerateForm({
         isGeneratingFormData: false,
         isGeneratedSuccessfully: true,
       }));
-      await onFormGenerated({
+      onFormGenerated({
         ...newFormData,
         formField: newFormData.formFields,
         isAIGenerated: true,

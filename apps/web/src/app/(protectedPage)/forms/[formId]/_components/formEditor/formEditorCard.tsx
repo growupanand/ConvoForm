@@ -120,7 +120,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
   const isFormBusy = updateForm.isPending;
 
   const onSubmit = (formData: FormSubmitDataSchema) =>
-    updateForm.mutateAsync({
+    updateForm.mutate({
       id: form.id,
       ...formData,
     });

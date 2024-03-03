@@ -44,13 +44,13 @@ export default function ChangeNameInput({ form, className }: Props) {
   });
   const isUpdating = updateForm.isPending;
 
-  const updateWorkspace = async (name: string) =>
-    updateForm.mutateAsync({
+  const updateWorkspace = (name: string) =>
+    updateForm.mutate({
       id: form.id,
       name,
     });
 
-  const handleFormNameInputChange = async (e: any) => {
+  const handleFormNameInputChange = (e: any) => {
     const updatedName = e.target.value as string;
     debounce(() => updateWorkspace(updatedName), 1000);
   };
