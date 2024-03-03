@@ -7,6 +7,7 @@ import type { Viewport } from "next";
 import { Toaster } from "@convoform/ui/components/ui/toaster";
 
 import GoogleAnalytics from "@/components/googleAnalytics";
+import { AuthProvider } from "@/components/providers/authProvider";
 import { TRPCReactProvider } from "@/trpc/react";
 import { roboto } from "./fonts";
 
@@ -74,7 +75,9 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </TRPCReactProvider>
         <Toaster />
       </body>
     </html>
