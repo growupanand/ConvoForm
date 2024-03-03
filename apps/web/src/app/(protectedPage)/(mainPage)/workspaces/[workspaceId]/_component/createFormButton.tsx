@@ -64,10 +64,8 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
   });
   const { isPending: isCreatingForm } = createForm;
 
-  const handleCreateForm = async (
-    formData: z.infer<typeof createFormSchema>,
-  ) => {
-    await createForm.mutateAsync({
+  const handleCreateForm = (formData: z.infer<typeof createFormSchema>) => {
+    createForm.mutate({
       ...formData,
       workspaceId: workspace.id,
       organizationId: workspace.organizationId,

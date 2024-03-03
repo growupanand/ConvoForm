@@ -47,8 +47,8 @@ export function FormListItem({ form }: Readonly<Props>) {
   });
   const isDeleting = deleteForm.isPending;
 
-  const handleDeleteForm = async () =>
-    deleteForm.mutateAsync({
+  const handleDeleteForm = () =>
+    deleteForm.mutate({
       id: form.id,
     });
 
@@ -110,7 +110,7 @@ export function FormListItem({ form }: Readonly<Props>) {
               <ConfirmAction
                 title="Are you sure you want to delete this form?"
                 description="This action will delete all data related to this form. This action cannot be undone."
-                onConfirm={() => handleDeleteForm()}
+                onConfirm={handleDeleteForm}
                 confirmText="Yes, delete form"
               >
                 <DropdownMenuItem
