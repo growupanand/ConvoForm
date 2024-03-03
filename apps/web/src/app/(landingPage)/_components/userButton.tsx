@@ -6,18 +6,9 @@ import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { LayoutDashboard } from "lucide-react";
 
 import { LinkN } from "../../../components/common/linkN";
-import { AuthProvider } from "../../../components/providers/authProvider";
 import { SignInButton } from "./signInButton";
 
 export default function UserSignInButton() {
-  return (
-    <AuthProvider>
-      <UserSignInButtonInner />
-    </AuthProvider>
-  );
-}
-
-function UserSignInButtonInner() {
   const { isSignedIn } = useAuth();
 
   if (isSignedIn) {

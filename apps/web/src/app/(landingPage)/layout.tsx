@@ -4,6 +4,12 @@ import { Footer } from "@/app/(landingPage)/_components/footer";
 import { Header } from "@/app/(landingPage)/_components/header";
 import { SectionShell } from "./_components/sectionShell";
 
+/**
+ * We need to force static rendering for our homepage, by setting `dynamic` to `force-static`
+ * Because we used <ClerkProvider> in root Layout, Which make whole child tree to be dynamic rendered.
+ */
+export const dynamic = "force-static";
+
 type Props = {
   children: React.ReactNode;
 };
