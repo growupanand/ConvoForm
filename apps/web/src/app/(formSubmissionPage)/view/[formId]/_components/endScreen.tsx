@@ -1,4 +1,4 @@
-import BrandName from "../common/brandName";
+import BrandName from "../../../../../components/common/brandName";
 
 type Props = {
   endScreenMessage: string;
