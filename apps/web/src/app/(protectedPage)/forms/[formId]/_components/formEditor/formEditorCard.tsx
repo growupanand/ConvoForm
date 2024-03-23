@@ -378,23 +378,25 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                       />
                     ))}
 
-                    <div className="mt-2 flex items-center justify-start gap-3">
+                    <div className=" mt-2 flex gap-3 max-lg:flex-col lg:items-center">
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         onClick={() => append({ fieldName: "" })}
                         type="button"
                         size="sm"
                         disabled={isGeneratingAIField || isFormBusy}
+                        className="w-full "
                       >
                         <Plus className="mr-2 h-4 w-4" />
                         Add Field
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="secondary"
                         onClick={generateAIField}
                         type="button"
                         size="sm"
                         disabled={isGeneratingAIField || isFormBusy}
+                        className="w-full "
                       >
                         <Sparkles
                           className={cn(
@@ -402,7 +404,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                             isGeneratingAIField && "animate-ping",
                           )}
                         />
-                        Auto Generate
+                        Auto Generate Field
                       </Button>
                     </div>
                   </div>
@@ -413,7 +415,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
 
           <Button
             className={cn(
-              "w-full transition-all hover:scale-105 active:scale-100",
+              "sticky bottom-0 w-full transition-all hover:scale-105 active:scale-100",
               montserrat.className,
             )}
             type="submit"

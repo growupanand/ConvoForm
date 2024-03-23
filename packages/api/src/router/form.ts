@@ -68,7 +68,6 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      console.log({ input });
       const forms = await ctx.db.query.form.findMany({
         where: (form, { eq, and }) =>
           and(
@@ -77,7 +76,6 @@ export const formRouter = createTRPCRouter({
           ),
         orderBy: (form, { asc }) => [asc(form.createdAt)],
       });
-      console.log({ forms });
       return forms;
     }),
 
@@ -220,5 +218,29 @@ export const formRouter = createTRPCRouter({
         );
 
       return result?.value;
+    }),
+
+  updateShowOrganizationName: protectedProcedure
+    .input(
+      z.object({
+        formId: z.string().min(1),
+        showOrganizationName: z.boolean(),
+        organizationName: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { showOrganizationName, organizationName } = input;
+
+      if (
+        showOrganizationName &&
+        (!organizationName || organizationName.trim() === "")
+      ) {
+        throw new Error("Organization name is required");
+      }
+
+      return await ctx.db
+        .update(form)
+        .set({ showOrganizationName, organizationName })
+        .where(eq(form.id, input.formId));
     }),
 });

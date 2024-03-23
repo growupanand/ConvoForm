@@ -10,7 +10,7 @@ import {
 
 import BrowserWindow from "@/components/common/browserWindow";
 import Spinner from "@/components/common/spinner";
-import { FormViewer } from "@/components/formSubmissionPage/formViewer";
+import { FormViewer } from "@/components/formViewer";
 import { getFrontendBaseUrl } from "@/lib/url";
 import { api } from "@/trpc/react";
 
