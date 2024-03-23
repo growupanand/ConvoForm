@@ -30,6 +30,10 @@ export const form = pgTable("Form", {
   userId: text("userId").notNull(),
   organizationId: text("organizationId").notNull(),
   isAIGenerated: boolean("isAIGenerated").default(false).notNull(),
+  showOrganizationName: boolean("showOrganizationName")
+    .default(false)
+    .notNull(),
+  organizationName: text("organizationName"),
 });
 
 export const formRelations = relations(form, ({ one, many }) => ({

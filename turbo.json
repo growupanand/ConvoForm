@@ -13,7 +13,8 @@
     "OPENAI_API_KEY",
     "DATABASE_URL",
     "UPSTASH_REDIS_REST_URL",
-    "UPSTASH_REDIS_REST_TOKEN"
+    "UPSTASH_REDIS_REST_TOKEN",
+    "SHOW_NO_RATE_LIMIT_LOG"
   ],
   "pipeline": {
     "build": {
