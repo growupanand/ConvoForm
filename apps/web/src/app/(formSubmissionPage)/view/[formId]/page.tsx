@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { FormViewer } from "@/components/formViewer";
@@ -19,14 +20,31 @@ export default async function FormViewPage({ params }: FormViewerPageProps) {
     notFound();
   }
 
-  const { showOrganizationName, organizationName } = formData;
+  const {
+    showOrganizationName,
+    organizationName,
+    showOrganizationLogo,
+    organizationLogoUrl,
+  } = formData;
+
+  const showHeader = showOrganizationName || showOrganizationLogo;
 
   return (
     <div className="flex min-h-screen flex-col">
-      {showOrganizationName && (
+      {showHeader && (
         <header className="border-b bg-white">
-          <div className=" p-3 lg:container">
-            <h1 className="text-xl lg:text-2xl">{organizationName}</h1>
+          <div className=" flex items-center justify-start gap-3 p-3 lg:container">
+            {showOrganizationLogo && organizationLogoUrl && (
+              <Image
+                alt="Organization Logo"
+                src={organizationLogoUrl}
+                width={30}
+                height={30}
+              />
+            )}
+            {showOrganizationName && organizationName && (
+              <h1 className="text-xl lg:text-2xl">{organizationName}</h1>
+            )}
           </div>
         </header>
       )}

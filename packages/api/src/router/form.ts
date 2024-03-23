@@ -243,4 +243,28 @@ export const formRouter = createTRPCRouter({
         .set({ showOrganizationName, organizationName })
         .where(eq(form.id, input.formId));
     }),
+
+  updateShowOrganizationLogo: protectedProcedure
+    .input(
+      z.object({
+        formId: z.string().min(1),
+        showOrganizationLogo: z.boolean(),
+        organizationLogoUrl: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { showOrganizationLogo, organizationLogoUrl } = input;
+
+      if (
+        showOrganizationLogo &&
+        (!organizationLogoUrl || organizationLogoUrl.trim() === "")
+      ) {
+        throw new Error("Organization logo url is required");
+      }
+
+      return await ctx.db
+        .update(form)
+        .set({ showOrganizationLogo, organizationLogoUrl })
+        .where(eq(form.id, input.formId));
+    }),
 });
