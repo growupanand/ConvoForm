@@ -24,7 +24,7 @@ export default async function FormViewPage({ params }: FormViewerPageProps) {
   return (
     <div className="flex min-h-screen flex-col">
       {showOrganizationName && (
-        <header>
+        <header className="border-b bg-white">
           <div className=" p-3 lg:container">
             <h1 className="text-xl lg:text-2xl">{organizationName}</h1>
           </div>
