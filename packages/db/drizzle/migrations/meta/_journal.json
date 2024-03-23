@@ -36,6 +36,13 @@
       "when": 1711088436321,
       "tag": "0004_nosy_human_fly",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1711200756195,
+      "tag": "0005_secret_king_cobra",
+      "breakpoints": true
     }
   ]
 }

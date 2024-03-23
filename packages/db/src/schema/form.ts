@@ -34,6 +34,10 @@ export const form = pgTable("Form", {
     .default(false)
     .notNull(),
   organizationName: text("organizationName"),
+  showOrganizationLogo: boolean("showOrganizationLogo")
+    .default(false)
+    .notNull(),
+  organizationLogoUrl: text("organizationLogoUrl"),
 });
 
 export const formRelations = relations(form, ({ one, many }) => ({
