@@ -21,6 +21,7 @@ import MainNavTab from "@/app/(protectedPage)/forms/[formId]/_components/mainNav
 import { montserrat } from "@/app/fonts";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { FormCustomize } from "./_components/formEditor/formCustomize";
 
 type Props = {
   params: { formId: string };
@@ -42,10 +43,10 @@ export default function FormPage({ params: { formId } }: Props) {
 
   return (
     <div className="h-full lg:flex">
-      <div className="px-3 lg:max-h-[calc(100vh-100px)] lg:w-[400px] lg:min-w-[400px] lg:overflow-auto">
+      <div className="flex flex-col px-3 lg:max-h-[calc(100vh-100px)] lg:w-[400px] lg:min-w-[400px] lg:overflow-auto">
         <MainNavTab formId={formId} />
-        <Card className="border-0 bg-transparent shadow-none">
-          <CardContent className="p-0 lg:pt-6">
+        <Card className="relative flex-grow overflow-auto border-0 bg-transparent shadow-none">
+          <CardContent className="p-0">
             {isLoading ? (
               <FormEditorFormSkeleton />
             ) : (
@@ -74,6 +75,9 @@ export default function FormPage({ params: { formId } }: Props) {
             </div>
           </CardContent>
         </Card>
+        <div className="mt-5 max-lg:mb-3 lg:mt-10">
+          <FormCustomize form={data} organization={organization} />
+        </div>
       </div>
       <div className="flex grow items-center justify-center py-3 max-lg:hidden">
         <div className="h-[100%] w-full pr-3">

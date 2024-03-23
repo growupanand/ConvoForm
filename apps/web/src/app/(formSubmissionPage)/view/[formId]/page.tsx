@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { FormViewer } from "@/components/formSubmissionPage/formViewer";
+import { FormViewer } from "@/components/formViewer";
 import { api } from "@/trpc/server";
 
 interface FormViewerPageProps {
@@ -18,9 +18,22 @@ export default async function FormViewPage({ params }: FormViewerPageProps) {
   if (!formData || !formData.isPublished) {
     notFound();
   }
+
+  const { showOrganizationName, organizationName } = formData;
+
   return (
-    <div className="relative flex min-h-screen grow flex-col items-center justify-center">
-      <FormViewer form={formData} />
+    <div className="flex min-h-screen flex-col">
+      {showOrganizationName && (
+        <header className="border-b bg-white">
+          <div className=" p-3 lg:container">
+            <h1 className="text-xl lg:text-2xl">{organizationName}</h1>
+          </div>
+        </header>
+      )}
+
+      <div className="flex flex-grow items-center justify-center">
+        <FormViewer form={formData} />
+      </div>
     </div>
   );
 }

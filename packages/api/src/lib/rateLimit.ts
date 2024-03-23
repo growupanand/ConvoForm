@@ -8,7 +8,12 @@ const isRateLimiterAvailable =
   !!process.env.UPSTASH_REDIS_REST_TOKEN &&
   !!process.env.UPSTASH_REDIS_REST_URL;
 if (!isRateLimiterAvailable) {
-  console.warn("Rate limiter is not available");
+  if (process.env.SHOW_NO_RATE_LIMIT_LOG === undefined) {
+    console.warn("=====> Rate limiter is not available");
+
+    // This is to avoid showing the warning multiple times in development
+    process.env.SHOW_NO_RATE_LIMIT_LOG = "true";
+  }
 }
 
 const redis = isRateLimiterAvailable ? Redis.fromEnv() : undefined;
