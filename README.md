@@ -35,11 +35,24 @@ Follow these steps to set up the project locally on your machine.
 
 ### Prerequisites
 
-Make sure you have the following installed:
+- Make sure you have the following installed:
 
-- [Node.js](https://nodejs.org/) (v18.17.1 or higher)
-- [pnpm](https://pnpm.io/) (v8.14.3 or higher)
-- [Git](https://git-scm.com/)
+    - [Node.js](https://nodejs.org/) (v18.17.1 or higher)
+    - [pnpm](https://pnpm.io/) (v8.14.3 or higher)
+    - [Git](https://git-scm.com/)
+
+- You need a PostgreSQL database instance to store the customer data. Create a free superbase Postgres instance at [Supabase](https://supabase.com).
+
+- [Clerk](clerk.com) is used for Authentication and User Management. Please make sure you Enable organizations in Organizations Settings within Clerk settings.
+
+- Get your OpenAI key at [OpenAI Dashboard](https://platform.openai.com/api-keys)
+
+- You need a Redis Database from [Upstash](https://upstash.com)
+
+- Application Performance Monitoring & Error Tracking is done using [Sentry](https://sentry.io)
+
+
+
 
 ### Clone the Repository
 
