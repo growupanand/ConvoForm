@@ -92,5 +92,6 @@ Here are some screenshots from the app
 ## Contributing
 
 Feel free to contribute to the development by opening issues, providing
-feedback, or submitting pull requests. Your input is valuable in making Smart
-Form Wizard even smarter!
+feedback, or submitting pull requests.
+
+**Please note** that we do not accept pull requests which consist solely of **changes to the README file**. Contributions **should be code-focused** and aim to enhance the functionality, efficiency, or quality of the project.
