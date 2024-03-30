@@ -2,7 +2,7 @@
 
 import { ChangeEvent, useEffect, useState } from "react";
 import { Form } from "@convoform/db";
-import { sendErrorResponseToast } from "@convoform/ui/components/ui/use-toast";
+import { showErrorResponseToast } from "@convoform/ui/components/ui/use-toast";
 import { useChat } from "ai/react";
 
 import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
@@ -59,7 +59,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
       } catch (_) {
         errorMessage = undefined;
       }
-      sendErrorResponseToast(error, errorMessage);
+      showErrorResponseToast(error, errorMessage);
     },
   });
 

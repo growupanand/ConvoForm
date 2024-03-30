@@ -26,7 +26,7 @@ import {
   TooltipTrigger,
 } from "@convoform/ui/components/ui/tooltip";
 import {
-  sendErrorResponseToast,
+  showErrorResponseToast,
   toast,
 } from "@convoform/ui/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -154,7 +154,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
       append({ fieldName });
     } catch (error: any) {
       formHook.trigger(["overview", "formFields"]);
-      sendErrorResponseToast(error, "Unable to generate field");
+      showErrorResponseToast(error, "Unable to generate field");
     } finally {
       setState((cs) => ({ ...cs, isGeneratingAIField: false }));
     }

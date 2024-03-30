@@ -19,11 +19,13 @@ import {
 } from "@convoform/ui/components/ui/sheet";
 import { Switch } from "@convoform/ui/components/ui/switch";
 import { Textarea } from "@convoform/ui/components/ui/textarea";
-import { toast } from "@convoform/ui/components/ui/use-toast";
+import {
+  showErrorResponseToast,
+  toast,
+} from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Palette } from "lucide-react";
 
-import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
@@ -67,14 +69,7 @@ export function FormCustomize({ form, organization }: Readonly<Props>) {
         });
       },
       onError: (error) => {
-        toast({
-          title: "Unable to save changes",
-          duration: 2000,
-          variant: "destructive",
-          description: isRateLimitErrorResponse(error)
-            ? error.message
-            : undefined,
-        });
+        showErrorResponseToast(error, "Unable to save changes");
       },
     });
   const { isPending: isPendingOrganizationName } = updateShowOrganizationName;
@@ -99,14 +94,7 @@ export function FormCustomize({ form, organization }: Readonly<Props>) {
         });
       },
       onError: (error) => {
-        toast({
-          title: "Unable to save changes",
-          duration: 2000,
-          variant: "destructive",
-          description: isRateLimitErrorResponse(error)
-            ? error.message
-            : undefined,
-        });
+        showErrorResponseToast(error, "Unable to save changes");
       },
     });
   const { isPending: isPendingOrganizationLogo } = updateShowOrganizationLogo;
@@ -131,14 +119,7 @@ export function FormCustomize({ form, organization }: Readonly<Props>) {
         });
       },
       onError: (error) => {
-        toast({
-          title: "Unable to save changes",
-          duration: 2000,
-          variant: "destructive",
-          description: isRateLimitErrorResponse(error)
-            ? error.message
-            : undefined,
-        });
+        showErrorResponseToast(error, "Unable to save changes");
       },
     });
   const { isPending: isPendingCustomEndScreenMessage } =
