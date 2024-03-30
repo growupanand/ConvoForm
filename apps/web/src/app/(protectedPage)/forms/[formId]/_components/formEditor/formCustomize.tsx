@@ -1,9 +1,14 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
 import { Organization } from "@clerk/clerk-sdk-node";
 import { Form } from "@convoform/db";
 import { Button } from "@convoform/ui/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+} from "@convoform/ui/components/ui/collapsible";
 import { Label } from "@convoform/ui/components/ui/label";
 import {
   Sheet,
@@ -13,19 +18,32 @@ import {
   SheetTrigger,
 } from "@convoform/ui/components/ui/sheet";
 import { Switch } from "@convoform/ui/components/ui/switch";
+import { Textarea } from "@convoform/ui/components/ui/textarea";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Palette } from "lucide-react";
 
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
+import { debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
 type Props = {
-  form: Pick<Form, "id" | "showOrganizationName" | "showOrganizationLogo">;
+  form: Pick<
+    Form,
+    | "id"
+    | "showOrganizationName"
+    | "showOrganizationLogo"
+    | "showCustomEndScreenMessage"
+    | "customEndScreenMessage"
+  >;
   organization: Pick<Organization, "name" | "imageUrl">;
 };
 
 export function FormCustomize({ form, organization }: Readonly<Props>) {
+  const customEndScreenMessageRef = useRef<string>(
+    form.customEndScreenMessage || "",
+  );
+
   const queryClient = useQueryClient();
 
   const params = new URLSearchParams();
@@ -101,6 +119,52 @@ export function FormCustomize({ form, organization }: Readonly<Props>) {
     });
   };
 
+  const updateShowCustomEndScreenMessage =
+    api.form.updateShowCustomEndScreenMessage.useMutation({
+      onSuccess: () => {
+        toast({
+          title: "Changes saved successfully",
+          duration: 1500,
+        });
+        queryClient.invalidateQueries({
+          queryKey: [["form"]],
+        });
+      },
+      onError: (error) => {
+        toast({
+          title: "Unable to save changes",
+          duration: 2000,
+          variant: "destructive",
+          description: isRateLimitErrorResponse(error)
+            ? error.message
+            : undefined,
+        });
+      },
+    });
+  const { isPending: isPendingCustomEndScreenMessage } =
+    updateShowCustomEndScreenMessage;
+
+  const handleToggleShowCustomEndScreenMessage = async (checked: boolean) => {
+    await updateShowCustomEndScreenMessage.mutateAsync({
+      formId: form.id,
+      showCustomEndScreenMessage: checked,
+      customEndScreenMessage: customEndScreenMessageRef.current,
+    });
+  };
+
+  const handleChangeCustomEndScreenMessage = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const updatedCustomEndMessage = e.target.value as string;
+    console.log(updatedCustomEndMessage);
+    customEndScreenMessageRef.current = updatedCustomEndMessage;
+    debounce(() => {
+      if (customEndScreenMessageRef.current !== form.customEndScreenMessage) {
+        handleToggleShowCustomEndScreenMessage(form.showCustomEndScreenMessage);
+      }
+    }, 1000);
+  };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -159,6 +223,35 @@ export function FormCustomize({ form, organization }: Readonly<Props>) {
               onCheckedChange={handleToggleShowOrganizationLogo}
               id="showOrganizationLogoSwitch"
             />
+          </div>
+          <div className="px-2">
+            <div className="mb-2 flex items-start justify-between gap-3">
+              <Label
+                htmlFor="showCustomEndScreenMessageSwitch"
+                className="text-md flex-grow cursor-pointer font-normal"
+              >
+                <div>End screen message</div>
+                <div className="text-muted-foreground text-sm">
+                  Display custom message after form submission
+                </div>
+              </Label>
+              <Switch
+                disabled={isPendingCustomEndScreenMessage}
+                defaultChecked={form.showCustomEndScreenMessage}
+                onCheckedChange={handleToggleShowCustomEndScreenMessage}
+                id="showCustomEndScreenMessageSwitch"
+              />
+            </div>
+            <Collapsible open={form.showCustomEndScreenMessage}>
+              <CollapsibleContent>
+                <Textarea
+                  disabled={isPendingCustomEndScreenMessage}
+                  onChange={handleChangeCustomEndScreenMessage}
+                  placeholder="Thank you for filling the form!"
+                  defaultValue={customEndScreenMessageRef.current}
+                />
+              </CollapsibleContent>
+            </Collapsible>
           </div>
         </div>
       </SheetContent>
