@@ -277,14 +277,11 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const { showCustomEndScreenMessage, customEndScreenMessage } = input;
-
-      if (
-        showCustomEndScreenMessage &&
-        (!customEndScreenMessage || customEndScreenMessage.trim() === "")
-      ) {
-        throw new Error("End screen message is required");
-      }
+      const { showCustomEndScreenMessage } = input;
+      const customEndScreenMessage =
+        typeof input.customEndScreenMessage === "string"
+          ? input.customEndScreenMessage.trim()
+          : "";
 
       return await ctx.db
         .update(form)
