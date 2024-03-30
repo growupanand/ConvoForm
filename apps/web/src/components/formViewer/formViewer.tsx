@@ -7,9 +7,9 @@ import { useChat } from "ai/react";
 
 import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
-import { EndScreen } from "../app/(formSubmissionPage)/view/[formId]/_components/endScreen";
-import { FormFieldsViewer } from "../app/(formSubmissionPage)/view/[formId]/_components/formFields";
-import { WelcomeScreen } from "../app/(formSubmissionPage)/view/[formId]/_components/welcomeScreen";
+import { EndScreen } from "./endScreen";
+import { FormFieldsViewer } from "./formFields";
+import { WelcomeScreen } from "./welcomeScreen";
 
 type Props = {
   form: Form;
