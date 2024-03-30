@@ -27,6 +27,8 @@ export type FormStage = "welcomeScreen" | "conversationFlow" | "endScreen";
 export function FormViewer({ form, refresh, isPreview }: Props) {
   const apiEndpoint = `/api/form/${form.id}/conversation`;
 
+  const { showCustomEndScreenMessage, customEndScreenMessage } = form;
+
   const [state, setState] = useState<State>({
     formStage: "welcomeScreen",
     endScreenMessage: "",
@@ -73,6 +75,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
     }
     return "";
   };
+
   const currentQuestion = getCurrentQuestion();
 
   const handleFormSubmit = (event: any) => {
@@ -113,9 +116,14 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
 
   useEffect(() => {
     if (data?.includes("conversationFinished")) {
+      const currentEndScreenMessage =
+        showCustomEndScreenMessage && customEndScreenMessage
+          ? customEndScreenMessage
+          : currentQuestion;
+
       setState((cs) => ({
         ...cs,
-        endScreenMessage: getCurrentQuestion(),
+        endScreenMessage: currentEndScreenMessage,
         formStage: "endScreen",
       }));
     }

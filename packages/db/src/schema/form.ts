@@ -38,6 +38,10 @@ export const form = pgTable("Form", {
     .default(false)
     .notNull(),
   organizationLogoUrl: text("organizationLogoUrl"),
+  showCustomEndScreenMessage: boolean("showCustomEndScreenMessage")
+    .default(false)
+    .notNull(),
+  customEndScreenMessage: text("customEndScreenMessage"),
 });
 
 export const formRelations = relations(form, ({ one, many }) => ({

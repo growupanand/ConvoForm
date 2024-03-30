@@ -267,4 +267,28 @@ export const formRouter = createTRPCRouter({
         .set({ showOrganizationLogo, organizationLogoUrl })
         .where(eq(form.id, input.formId));
     }),
+
+  updateShowCustomEndScreenMessage: protectedProcedure
+    .input(
+      z.object({
+        formId: z.string().min(1),
+        showCustomEndScreenMessage: z.boolean(),
+        customEndScreenMessage: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { showCustomEndScreenMessage, customEndScreenMessage } = input;
+
+      if (
+        showCustomEndScreenMessage &&
+        (!customEndScreenMessage || customEndScreenMessage.trim() === "")
+      ) {
+        throw new Error("End screen message is required");
+      }
+
+      return await ctx.db
+        .update(form)
+        .set({ showCustomEndScreenMessage, customEndScreenMessage })
+        .where(eq(form.id, input.formId));
+    }),
 });
