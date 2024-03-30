@@ -43,6 +43,13 @@
       "when": 1711200756195,
       "tag": "0005_secret_king_cobra",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1711784444350,
+      "tag": "0006_narrow_sir_ram",
+      "breakpoints": true
     }
   ]
 }
