@@ -2,8 +2,96 @@
 
 export const changelog = [ 
 {
-"title": "0.5.0",
+"title": "0.6.0",
 "tag": "",
+"isoDate": "2024-04-03",
+"commits": {
+"features": [
+
+{
+"message": "feat: 🚀 Added custom end screen message setting\n\nForm creator can add a custom message to show when form is submitted\n\n✅ Closes: 61",
+"shorthash": "aa84182",
+"href": "https://github.com/growupanand/ConvoForm/commit/aa841829a19a3af2380f0dd5269cfae28774d816"
+},
+
+],
+"improvements": [
+
+{
+"message": "style: 💄 added stagger animation for list items\n\n✅ Closes: #210",
+"shorthash": "1961d0f",
+"href": "https://github.com/growupanand/ConvoForm/commit/1961d0f6256399573887575a1aee8d3b6d9ce37c"
+},
+
+{
+"message": "perf: ⚡️ added ratelimit for OpenAI calls\n\n✅ Closes: #201",
+"shorthash": "8376550",
+"href": "https://github.com/growupanand/ConvoForm/commit/8376550caae63620f5db51f7cf71e2e92e68c91d"
+},
+
+{
+"message": "refactor: 💡 fixed ratelimit error message toast",
+"shorthash": "e887a1b",
+"href": "https://github.com/growupanand/ConvoForm/commit/e887a1b57d10a0338308a46b9dfa8a6351735e8f"
+},
+
+{
+"message": "refactor: 💡 changes related to form submission page",
+"shorthash": "f658846",
+"href": "https://github.com/growupanand/ConvoForm/commit/f6588465ab4155393b83253074d183a179d411b1"
+},
+
+{
+"message": "style: 💄 Added request feature card in landing page",
+"shorthash": "c72e516",
+"href": "https://github.com/growupanand/ConvoForm/commit/c72e51680e3f7e399f08ad5490b1b7c2d9b5c0b0"
+},
+
+{
+"message": "perf: ⚡️ added ratelimit - create workspaces, forms\n\n✅ Closes: #199",
+"shorthash": "aa70d75",
+"href": "https://github.com/growupanand/ConvoForm/commit/aa70d75ef06cd5ce637fd512a08a7dcb870e806b"
+},
+
+{
+"message": "refactor: 💡 custom end screen message related changes",
+"shorthash": "f6a3ce4",
+"href": "https://github.com/growupanand/ConvoForm/commit/f6a3ce4c014fe036db034c9cd4e3e0d87149644a"
+},
+
+{
+"message": "perf: ⚡️ added ratelimit - edit workspace, form\n\n✅ Closes: #200",
+"shorthash": "6ac8f8d",
+"href": "https://github.com/growupanand/ConvoForm/commit/6ac8f8d48f39f703f5ec20d6efec79c00fa02d50"
+},
+
+{
+"message": "style: 💄 UI improvements in landing page",
+"shorthash": "6df1fcb",
+"href": "https://github.com/growupanand/ConvoForm/commit/6df1fcbaaff49660b408daa7dd4598a4a65c4756"
+},
+
+],
+"fixes": [
+
+{
+"message": "fix: 🐛 Sometimes form editor page not loading\n\nMoved clerk provider to root layout, and make root page force static\nrendered\n\n✅ Closes: #206",
+"shorthash": "c46eab4",
+"href": "https://github.com/growupanand/ConvoForm/commit/c46eab40a7283d25764078785f857ec2fa6f9be6"
+},
+
+{
+"message": "fix: 🐛 tanstack mutate query raise false uncaught error\n\n✅ Closes: #208",
+"shorthash": "7828ac4",
+"href": "https://github.com/growupanand/ConvoForm/commit/7828ac49b86724516eb0c2ab8f8b684312a01444"
+},
+
+]
+}
+},
+{
+"title": "0.5.0",
+"tag": "0.5.0",
 "isoDate": "2024-02-27",
 "commits": {
 "features": [

@@ -1,3 +1,50 @@
+## [0.6.0](https://github.com/growupanand/ConvoForm/compare/0.5.0...0.6.0) (2024-04-03)
+
+### Features
+
+- 🚀 Added custom end screen message setting
+  ([aa84182](https://github.com/growupanand/ConvoForm/commit/aa841829a19a3af2380f0dd5269cfae28774d816))
+- 🚀 As form creator, I can add my company logo to the form
+  ([#219](https://github.com/growupanand/ConvoForm/issues/219))
+  ([9781e48](https://github.com/growupanand/ConvoForm/commit/9781e485be1f0805503060f909b7fabe817fd9be))
+- 🚀 As form creator, I can add my company name to the form
+  ([#216](https://github.com/growupanand/ConvoForm/issues/216))
+  ([9b0cbf6](https://github.com/growupanand/ConvoForm/commit/9b0cbf6e0079de7872f51700925d86a4eea71212))
+
+### Bug Fixes
+
+- 🐛 Sometimes form editor page not loading
+  ([c46eab4](https://github.com/growupanand/ConvoForm/commit/c46eab40a7283d25764078785f857ec2fa6f9be6)),
+  closes [#206](https://github.com/growupanand/ConvoForm/issues/206)
+- 🐛 tanstack mutate query raise false uncaught error
+  ([7828ac4](https://github.com/growupanand/ConvoForm/commit/7828ac49b86724516eb0c2ab8f8b684312a01444)),
+  closes [#208](https://github.com/growupanand/ConvoForm/issues/208)
+
+### Improvements
+
+- ⚡️ added ratelimit - create workspaces, forms
+  ([aa70d75](https://github.com/growupanand/ConvoForm/commit/aa70d75ef06cd5ce637fd512a08a7dcb870e806b)),
+  closes [#199](https://github.com/growupanand/ConvoForm/issues/199)
+- ⚡️ added ratelimit - edit workspace, form
+  ([6ac8f8d](https://github.com/growupanand/ConvoForm/commit/6ac8f8d48f39f703f5ec20d6efec79c00fa02d50)),
+  closes [#200](https://github.com/growupanand/ConvoForm/issues/200)
+- ⚡️ added ratelimit for OpenAI calls
+  ([8376550](https://github.com/growupanand/ConvoForm/commit/8376550caae63620f5db51f7cf71e2e92e68c91d)),
+  closes [#201](https://github.com/growupanand/ConvoForm/issues/201)
+- 💄 Added request feature card in landing page
+  ([c72e516](https://github.com/growupanand/ConvoForm/commit/c72e51680e3f7e399f08ad5490b1b7c2d9b5c0b0))
+- 💄 added stagger animation for list items
+  ([1961d0f](https://github.com/growupanand/ConvoForm/commit/1961d0f6256399573887575a1aee8d3b6d9ce37c)),
+  closes [#210](https://github.com/growupanand/ConvoForm/issues/210)
+- 💄 UI improvements in landing page
+  ([6df1fcb](https://github.com/growupanand/ConvoForm/commit/6df1fcbaaff49660b408daa7dd4598a4a65c4756))
+- 💡 changes related to form submission page
+  ([f658846](https://github.com/growupanand/ConvoForm/commit/f6588465ab4155393b83253074d183a179d411b1))
+- 💡 custom end screen message related changes
+  ([f6a3ce4](https://github.com/growupanand/ConvoForm/commit/f6a3ce4c014fe036db034c9cd4e3e0d87149644a))
+- 💡 fixed ratelimit error message toast
+  ([e887a1b](https://github.com/growupanand/ConvoForm/commit/e887a1b57d10a0338308a46b9dfa8a6351735e8f))
+
 ## [0.5.0](https://github.com/growupanand/ConvoForm/compare/0.4.0...0.5.0) (2024-02-27)
 
 ### Features
