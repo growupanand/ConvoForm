@@ -31,7 +31,7 @@ export function FormViewer({ form, refresh, isPreview }: Readonly<Props>) {
   const { showCustomEndScreenMessage, customEndScreenMessage } = form;
 
   const [state, setState] = useState<State>({
-    formStage: "welcomeScreen",
+    formStage: "endScreen",
     endScreenMessage: "",
   });
 
@@ -114,7 +114,7 @@ export function FormViewer({ form, refresh, isPreview }: Readonly<Props>) {
   }, [data]);
 
   useEffect(() => {
-    setState((cs) => ({ ...cs, formStage: "welcomeScreen" }));
+    setState((cs) => ({ ...cs, formStage: "endScreen" }));
     setMessages([]);
   }, [form, refresh]);
 
