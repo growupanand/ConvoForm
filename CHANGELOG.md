@@ -1,3 +1,14 @@
+## [0.6.1](https://github.com/growupanand/ConvoForm/compare/0.6.0...0.6.1) (2024-04-07)
+
+### Improvements
+
+- ⚡️ Added empty string validation in answer input form
+  ([ad3acec](https://github.com/growupanand/ConvoForm/commit/ad3acec7e27b6d61f550a651cb6e97efcfd745fb))
+- 💄 Added illustration for endscreen in Form Submission pa
+  ([50ae285](https://github.com/growupanand/ConvoForm/commit/50ae285d1b7704ed7ebcf6c95fc380bfdcf1625b))
+- 💄 UI improvement in Form submission page
+  ([d3b0332](https://github.com/growupanand/ConvoForm/commit/d3b033251f374170b044c3f159547284db8e7a91))
+
 ## [0.6.0](https://github.com/growupanand/ConvoForm/compare/0.5.0...0.6.0) (2024-04-03)
 
 ### Features

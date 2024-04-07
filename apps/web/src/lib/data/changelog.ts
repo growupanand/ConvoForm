@@ -2,8 +2,40 @@
 
 export const changelog = [ 
 {
-"title": "0.6.0",
+"title": "0.6.1",
 "tag": "",
+"isoDate": "2024-04-07",
+"commits": {
+"features": [
+],
+"improvements": [
+
+{
+"message": "perf: ⚡️ Added empty string validation in answer input form",
+"shorthash": "ad3acec",
+"href": "https://github.com/growupanand/ConvoForm/commit/ad3acec7e27b6d61f550a651cb6e97efcfd745fb"
+},
+
+{
+"message": "style: 💄 UI improvement in Form submission page\n\nfont size, spacing",
+"shorthash": "d3b0332",
+"href": "https://github.com/growupanand/ConvoForm/commit/d3b033251f374170b044c3f159547284db8e7a91"
+},
+
+{
+"message": "style: 💄 Added illustration for endscreen in Form Submission pa",
+"shorthash": "50ae285",
+"href": "https://github.com/growupanand/ConvoForm/commit/50ae285d1b7704ed7ebcf6c95fc380bfdcf1625b"
+},
+
+],
+"fixes": [
+]
+}
+},
+{
+"title": "0.6.0",
+"tag": "0.6.0",
 "isoDate": "2024-04-03",
 "commits": {
 "features": [
