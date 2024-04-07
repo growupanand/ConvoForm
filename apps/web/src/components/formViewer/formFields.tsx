@@ -59,21 +59,23 @@ export const FormFieldsViewer = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className={cn("py-3", showPrevQuestionButton && "hidden")}>
+        <div className={cn("mb-8", showPrevQuestionButton && "hidden")}>
           <Button
             type="button"
             variant="ghost"
-            className={cn("rounded-full", montserrat.className)}
-            size="sm"
+            className={cn(
+              "rounded-full ps-1 text-base font-semibold uppercase lg:text-xl",
+              montserrat.className,
+            )}
             onClick={goToPrevQuestion}
             disabled={isFormBusy}
           >
-            <ChevronLeft className="mr-2" size={20} />
-            <span>Back to Previous</span>
+            <ChevronLeft className="" size={20} />
+            <span>Previous</span>
           </Button>
         </div>
-        <div className="flex min-h-full w-full flex-col items-center justify-center px-3 ">
-          <h1 className="mb-10 w-full text-4xl font-medium ">
+        <div className="flex min-h-full w-full flex-col justify-center px-3 ">
+          <h1 className="mb-8 w-full whitespace-break-spaces text-justify text-xl lg:text-2xl">
             <span>
               {currentQuestion}
               {isFormBusy && <Tally1 className="ml-2 inline animate-ping" />}
@@ -90,7 +92,7 @@ export const FormFieldsViewer = ({
                     <FormControl>
                       <Textarea
                         autoFocus
-                        className="w-full rounded-none border-0 border-b	bg-transparent text-xl focus-visible:ring-0  focus-visible:ring-transparent focus-visible:ring-offset-0"
+                        className="w-full rounded-none border-0 border-b bg-transparent ps-0	text-xl font-medium focus-visible:ring-0 focus-visible:ring-transparent  focus-visible:ring-offset-0 lg:text-2xl"
                         placeholder="Type answer here..."
                         disabled={isFormBusy}
                         onKeyDown={(event) => {
@@ -106,22 +108,26 @@ export const FormFieldsViewer = ({
                   </FormItem>
                 )}
               />
-              <div className="text-muted-foreground flex items-center justify-end pt-1 text-sm font-light max-lg:hidden">
+              <div
+                className={cn(
+                  "text-muted-foreground flex items-center justify-end pt-1 text-sm font-light max-lg:hidden",
+                  montserrat.className,
+                )}
+              >
                 Press{" "}
                 <span className="mx-1 flex items-center font-bold">
                   Shift + Enter <CornerDownLeft className="h-3 w-3 " />
                 </span>{" "}
                 for new line
               </div>
-              <div className="py-3 ">
-                <div className="lg:hidden">
-                  <Button
-                    type="submit"
-                    className="w-full rounded-md px-6 py-3 font-medium "
-                  >
-                    Answer
-                  </Button>
-                </div>
+              <div className="mt-8 lg:hidden">
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full rounded-lg text-xl font-semibold uppercase"
+                >
+                  Answer
+                </Button>
               </div>
             </div>
           )}
