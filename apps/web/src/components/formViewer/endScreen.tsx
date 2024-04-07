@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import BrandName from "../common/brandName";
 
 type Props = {
@@ -17,7 +19,14 @@ export const EndScreen = (props: Props) => {
       <h1 className="whitespace-break-spaces break-words text-center text-2xl font-semibold lg:text-4xl">
         {message}
       </h1>
-      <div className="mt-10 flex items-center">
+      <div className="relative mt-10 h-[200px] w-full">
+        <Image
+          src="/images/GroovySittingDoodle.svg"
+          alt="thank you image"
+          fill
+        />
+      </div>
+      <div className="mt-2 flex items-center">
         <p className="text-muted-foreground mr-2 text-sm">Form created using</p>
         <BrandName />
       </div>
