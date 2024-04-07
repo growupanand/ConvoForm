@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Form } from "@convoform/db";
 import { showErrorResponseToast } from "@convoform/ui/components/ui/use-toast";
 import { useChat } from "ai/react";
@@ -9,6 +9,7 @@ import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { EndScreen } from "./endScreen";
 import { FormFieldsViewer } from "./formFields";
+import { getCurrentQuestion, isFirstQuestion } from "./utils";
 import { WelcomeScreen } from "./welcomeScreen";
 
 type Props = {
@@ -24,7 +25,7 @@ type State = {
 
 export type FormStage = "welcomeScreen" | "conversationFlow" | "endScreen";
 
-export function FormViewer({ form, refresh, isPreview }: Props) {
+export function FormViewer({ form, refresh, isPreview }: Readonly<Props>) {
   const apiEndpoint = `/api/form/${form.id}/conversation`;
 
   const { showCustomEndScreenMessage, customEndScreenMessage } = form;
@@ -36,16 +37,7 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
 
   const { formStage: currentStage, endScreenMessage } = state;
 
-  const {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    append,
-    data,
-    setMessages,
-    isLoading,
-  } = useChat({
+  const { messages, append, data, setMessages, isLoading, setInput } = useChat({
     api: apiEndpoint,
     body: { isPreview },
     onError(error) {
@@ -63,26 +55,16 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
     },
   });
 
-  const isFirstQuestion =
-    messages.filter((message) => message.role === "assistant").length <= 1;
+  const currentQuestion = getCurrentQuestion(messages) ?? "";
+  const showPrevQuestionButton = isFirstQuestion(messages);
 
-  const getCurrentQuestion = () => {
-    const lastMessage = messages[messages.length - 1];
-    const currentQuestion =
-      lastMessage?.role === "assistant" && lastMessage.content;
-    if (currentQuestion && currentQuestion !== "") {
-      return currentQuestion;
-    }
-    return "";
-  };
-
-  const currentQuestion = getCurrentQuestion();
-
-  const handleFormSubmit = (event: any) => {
-    event.preventDefault();
+  const submitAnswer = async (answer: string) => {
     if (!isLoading) {
       setState((s) => ({ ...s, isFormBusy: true }));
-      handleSubmit(event);
+      await append({
+        content: answer,
+        role: "user",
+      });
     }
   };
 
@@ -99,31 +81,33 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
     gotoStage("conversationFlow");
   };
 
-  const handleShowPreviousQuestion = () => {
+  // This will remove the current question and previous answer from the messages list of useChat hook
+  // And return the previous answer string
+  const handleGoToPrevQuestion = (): string => {
     // Remove previous question message from messages list
     messages.pop();
     // Remove previous answer message from messages list
     const previousAnswerMessage = messages.pop();
+    const previousAnswerString = previousAnswerMessage?.content ?? "";
+    // Update messages list in useChat hook
     setMessages(messages);
-    // Set previous answer in text input
-    const event = {
-      target: {
-        value: previousAnswerMessage?.content || "",
-      },
-    } as ChangeEvent<HTMLTextAreaElement>;
-    handleInputChange(event);
+    // Calling this for only rerendering the current question,
+    // because setMessages(messages) will not rerender the current question
+    setInput(previousAnswerString);
+    return previousAnswerString;
   };
 
   useEffect(() => {
-    if (data?.includes("conversationFinished")) {
-      const currentEndScreenMessage =
+    const isConversationFinished = data?.includes("conversationFinished");
+    if (isConversationFinished) {
+      const endScreenMessage =
         showCustomEndScreenMessage && customEndScreenMessage
           ? customEndScreenMessage
           : currentQuestion;
 
       setState((cs) => ({
         ...cs,
-        endScreenMessage: currentEndScreenMessage,
+        endScreenMessage,
         formStage: "endScreen",
       }));
     }
@@ -143,12 +127,10 @@ export function FormViewer({ form, refresh, isPreview }: Props) {
       {currentStage === "conversationFlow" && (
         <FormFieldsViewer
           currentQuestion={currentQuestion}
-          handleFormSubmit={handleFormSubmit}
-          handleInputChange={handleInputChange}
-          input={input}
           isFormBusy={isLoading}
-          handleShowPreviousQuestion={handleShowPreviousQuestion}
-          isFirstQuestion={isFirstQuestion}
+          handleGoToPrevQuestion={handleGoToPrevQuestion}
+          showPrevQuestionButton={showPrevQuestionButton}
+          submitAnswer={submitAnswer}
         />
       )}
       {currentStage === "endScreen" && (
