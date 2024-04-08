@@ -14,7 +14,7 @@ import {
 } from "@convoform/ui/components/ui/table";
 import { FileText } from "lucide-react";
 
-import { SectionCard } from "@/app/(landingPage)/_components/sectionCard";
+import { SectionCard } from "@/components/sectionCard";
 import { FormFieldData } from "@/lib/types/conversation";
 import { Transcript } from "@/lib/types/transcript";
 import TranscriptCard from "./transcriptCard";
@@ -23,7 +23,7 @@ type Props = {
   conversation: Conversation;
 };
 
-export default function ConversationDetail({ conversation }: Props) {
+export default function ConversationDetail({ conversation }: Readonly<Props>) {
   const formFieldsData = conversation.formFieldsData as FormFieldData;
   const formFieldsDataKeys = Object.keys(formFieldsData);
   const isFormDataEmpty = formFieldsDataKeys.length === 0;

@@ -1,11 +1,11 @@
 import { Metadata } from "next";
 import { Badge } from "@convoform/ui/components/ui/badge";
 
-import { ReleaseCard } from "@/components/changeLogPage/releaseCard";
-import { RequestFeatureCard } from "@/components/changeLogPage/requestFeatureCard";
 import BrandName from "@/components/common/brandName";
+import { RequestFeatureCard } from "@/components/requestFeatureCard";
 import { changelog } from "@/lib/data/changelog";
 import { changeLogSchema } from "@/lib/validations/changeLog";
+import { ReleaseCard } from "./_components/releaseCard";
 
 export const metadata: Metadata = {
   title: "Changelog",

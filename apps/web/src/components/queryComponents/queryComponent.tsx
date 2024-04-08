@@ -1,7 +1,7 @@
 import { Button } from "@convoform/ui/components/ui/button";
 import { UseQueryResult } from "@tanstack/react-query";
 
-import Spinner from "./spinner";
+import Spinner from "../common/spinner";
 
 type Props<TData, TError> = {
   query: UseQueryResult<TData, TError>;

@@ -2,10 +2,10 @@ import { Features } from "@/app/(landingPage)/_components/features";
 import { Hero } from "@/app/(landingPage)/_components/hero";
 import { HowToUseSection } from "@/app/(landingPage)/_components/howToUse";
 import { Pricing } from "@/app/(landingPage)/_components/pricing";
-import { RequestFeatureCard } from "@/components/changeLogPage/requestFeatureCard";
+import { RequestFeatureCard } from "@/components/requestFeatureCard";
+import { SectionCard } from "@/components/sectionCard";
 import { NewFeature } from "./_components/newFeature";
 import { ScreenshotSlider } from "./_components/screenshotsSlider";
-import { SectionCard } from "./_components/sectionCard";
 import { SectionShell } from "./_components/sectionShell";
 
 export default function Home() {

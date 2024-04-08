@@ -1,5 +1,5 @@
-import NavigationCardContent from "@/components/mainPage/navigationCardContent";
-import NavigationMobileCard from "@/components/mainPage/navigationMobileCard";
+import NavigationCardContent from "@/app/(protectedPage)/(mainPage)/_components/navigationCardContent";
+import NavigationMobileCard from "@/app/(protectedPage)/(mainPage)/_components/navigationMobileCard";
 import { getOrganizationId } from "@/lib/getOrganizationId";
 
 type Props = {

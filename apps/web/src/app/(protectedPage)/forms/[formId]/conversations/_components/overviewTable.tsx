@@ -1,6 +1,6 @@
 "use client";
 
-import { QueryTable } from "@/components/common/table/queryTable";
+import { QueryTable } from "@/components/queryComponents/table/queryTable";
 import { api } from "@/trpc/react";
 
 type Props = {

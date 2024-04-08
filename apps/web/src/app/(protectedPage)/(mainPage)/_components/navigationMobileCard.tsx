@@ -11,7 +11,7 @@ import {
 } from "@convoform/ui/components/ui/sheet";
 import { Menu } from "lucide-react";
 
-import BrandName from "../common/brandName";
+import BrandName from "@/components/common/brandName";
 
 type Props = {
   children: React.ReactNode;

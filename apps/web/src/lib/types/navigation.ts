@@ -1,4 +1,4 @@
-import { NavigationTextVariants } from "@/components/mainPage/mainNavigation/navigationText";
+import { NavigationTextVariants } from "@/app/(protectedPage)/(mainPage)/_components/mainNavigation/navigationText";
 
 export type NavItemAction = {
   label: string;
