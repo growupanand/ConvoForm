@@ -1,58 +1,42 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { showErrorResponseToast } from "@convoform/ui/components/ui/use-toast";
 import { useChat } from "ai/react";
 
-import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
-import { api } from "@/trpc/react";
 import { getCurrentQuestion, isFirstQuestion } from "./utils";
 
 type Props = {
   isPreview?: boolean;
   formId: string;
+  onError?: (error: Error) => void;
+  showCustomEndScreenMessage?: boolean;
+  customEndScreenMessage?: string;
 };
 
 type State = {
   endScreenMessage: string;
+  isFormFinished: boolean;
 };
 
-export function useConvoForm({ isPreview, formId }: Readonly<Props>) {
-  const { isFetching, data: form } = api.form.getOne.useQuery(
-    {
-      id: formId,
-    },
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
-
-  const isReady = !isFetching;
-
-  const { showCustomEndScreenMessage, customEndScreenMessage } = form ?? {};
+export function useConvoForm({
+  isPreview,
+  formId,
+  onError,
+  showCustomEndScreenMessage,
+  customEndScreenMessage,
+}: Readonly<Props>) {
   const apiEndpoint = `/api/form/${formId}/conversation`;
 
   const [state, setState] = useState<State>({
     endScreenMessage: "",
+    isFormFinished: false,
   });
-  const { endScreenMessage } = state;
+  const { endScreenMessage, isFormFinished } = state;
 
   const { messages, append, data, setMessages, isLoading, setInput } = useChat({
     api: apiEndpoint,
     body: { isPreview },
-    onError(error) {
-      let errorMessage;
-      try {
-        if (isRateLimitErrorResponse(error)) {
-          errorMessage = error.message ?? "Rate limit exceeded";
-        } else {
-          errorMessage = JSON.parse(error.message).nonFieldError;
-        }
-      } catch (_) {
-        errorMessage = undefined;
-      }
-      showErrorResponseToast(error, errorMessage);
-    },
+    onError: onError,
   });
 
   const currentQuestion = getCurrentQuestion(messages) ?? "";
@@ -95,7 +79,7 @@ export function useConvoForm({ isPreview, formId }: Readonly<Props>) {
       setState((cs) => ({
         ...cs,
         endScreenMessage,
-        formStage: "endScreen",
+        isFormFinished: true,
       }));
     }
   }, [data]);
@@ -118,6 +102,6 @@ export function useConvoForm({ isPreview, formId }: Readonly<Props>) {
     handleGoToPrevQuestion,
     endScreenMessage,
     resetForm,
-    isReady,
+    isFormFinished,
   };
 }
