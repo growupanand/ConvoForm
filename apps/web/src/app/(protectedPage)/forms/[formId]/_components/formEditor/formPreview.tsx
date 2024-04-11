@@ -52,15 +52,6 @@ export default function FormPreview({ noToolbar, formId }: Readonly<Props>) {
     </TooltipProvider>
   );
 
-  const FormContent = () =>
-    !form ? (
-      <FormNotFound />
-    ) : !form.isPublished ? (
-      <UnpublishedForm />
-    ) : (
-      <FormViewer form={form} isPreview={false} />
-    );
-
   return (
     <BrowserWindow
       onRefresh={refreshPreview}
@@ -68,11 +59,25 @@ export default function FormPreview({ noToolbar, formId }: Readonly<Props>) {
       toolbar={Toolbar}
     >
       <div className="flex h-full flex-col items-center justify-center">
-        {isLoading ? <Spinner label="Loading form..." /> : <FormContent />}
+        {isLoading ? (
+          <Spinner label="Loading form..." />
+        ) : (
+          <FormContent form={form} />
+        )}
       </div>
     </BrowserWindow>
   );
 }
+
+const FormContent = ({ form }: { form: any }) => {
+  if (!form) {
+    return <FormNotFound />;
+  }
+  if (!form.isPublished) {
+    return <UnpublishedForm />;
+  }
+  return <FormViewer form={form} isPreview={false} />;
+};
 
 const UnpublishedForm = () => (
   <p className="text-muted-foreground">Publish your form to see a preview</p>

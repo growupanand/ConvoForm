@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { showErrorResponseToast } from "@convoform/ui/components/ui/use-toast";
 import { useChat } from "ai/react";
 
@@ -58,12 +58,12 @@ export function useConvoForm({ isPreview, formId }: Readonly<Props>) {
   const currentQuestion = getCurrentQuestion(messages) ?? "";
   const isCurrentQuestionFirstQuestion = isFirstQuestion(messages);
 
-  const submitAnswer = async (answer: string) => {
+  const submitAnswer = useCallback(async (answer: string) => {
     await append({
       content: answer,
       role: "user",
     });
-  };
+  }, []);
 
   const handleGoToPrevQuestion = (): string => {
     // Remove previous question message from messages list
@@ -79,10 +79,10 @@ export function useConvoForm({ isPreview, formId }: Readonly<Props>) {
     return previousAnswerString;
   };
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setMessages([]);
     setInput("");
-  };
+  }, []);
 
   useEffect(() => {
     const isConversationFinished = data?.includes("conversationFinished");
