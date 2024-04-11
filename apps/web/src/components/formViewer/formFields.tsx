@@ -21,7 +21,7 @@ type Props = {
   isFormBusy: boolean;
   currentQuestion: string;
   handleGoToPrevQuestion: () => string;
-  showPrevQuestionButton: boolean;
+  hidePrevQuestionButton: boolean;
   submitAnswer: (answer: string) => Promise<void>;
 };
 
@@ -33,7 +33,7 @@ export const FormFieldsViewer = ({
   isFormBusy,
   currentQuestion,
   handleGoToPrevQuestion,
-  showPrevQuestionButton,
+  hidePrevQuestionButton,
   submitAnswer,
 }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -44,10 +44,12 @@ export const FormFieldsViewer = ({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { answer } = values;
-    await submitAnswer(answer);
-    form.reset();
-    form.setFocus("answer");
+    if (!isFormBusy) {
+      const { answer } = values;
+      await submitAnswer(answer);
+      form.reset();
+      form.setFocus("answer");
+    }
   }
 
   function goToPrevQuestion() {
@@ -59,7 +61,7 @@ export const FormFieldsViewer = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className={cn("mb-8", showPrevQuestionButton && "hidden")}>
+        <div className={cn("mb-8", hidePrevQuestionButton && "hidden")}>
           <Button
             type="button"
             variant="ghost"
