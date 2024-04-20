@@ -35,6 +35,18 @@ const nextConfig = {
   /** We already do linting and typechecking as separate tasks in CI */
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
+  async headers() {
+    return [
+      {
+        source: "/api/:path*",
+        headers: [
+          { key: "Access-Control-Allow-Credentials", value: "true" },
+          { key: "Access-Control-Allow-Origin", value: process.env.ALLOW_ORIGIN }, // replace this your actual origin
+          { key: "Access-Control-Allow-Methods", value: "GET,DELETE,PATCH,POST,PUT" }
+        ]
+      }
+    ]
+  }
 };
 
 const withMDX = createMDX({
