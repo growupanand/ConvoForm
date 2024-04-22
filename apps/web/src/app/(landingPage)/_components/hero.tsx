@@ -19,16 +19,12 @@ export function Hero() {
   const demoFormLink = getFrontendBaseUrl() + "/view/demo";
 
   return (
-    <section className="md:my-15 my-10 flex w-full flex-col justify-center gap-1 text-center">
-      <div className="flex flex-col items-center justify-center gap-3">
-        <Link
-          href="https://github.com/growupanand/ConvoForm"
-          target="_blank"
-          rel="noreferrer nofollow noopener"
+    <section className="flex w-full flex-col justify-center gap-1 text-center">
+      <div className="mb-3 flex flex-col items-center justify-center gap-3 lg:mb-5">
+        <Badge
+          variant="outline"
+          className="group text-sm font-medium lg:px-4 lg:py-3 lg:text-base"
         >
-          <GithubStars />
-        </Link>
-        <Badge variant="outline" className="group text-sm font-normal">
           <Link
             href="https://github.com/growupanand/ConvoForm"
             target="_blank"
@@ -43,17 +39,29 @@ export function Hero() {
               className="ml-1 transition-all group-hover:translate-x-0.5"
               size="15px"
             />
+            <Link
+              href="https://github.com/growupanand/ConvoForm"
+              target="_blank"
+              rel="noreferrer nofollow noopener"
+            >
+              <GithubStars />
+            </Link>
           </Link>
         </Badge>
       </div>
-      <Card className="border-none bg-transparent shadow-none">
-        <CardHeader>
-          <h1 className="text-3xl font-semibold text-gray-700 lg:text-6xl ">
-            Create <span className="text-brand-500">Convo</span> Form
+      <Card className="border-none bg-transparent shadow-none lg:mb-12">
+        <CardHeader className="mb-6">
+          <h1 className="text-3xl font-normal leading-6 text-gray-700 lg:text-7xl">
+            Create{" "}
+            <span className="bg-brand-500 convo-word rounded-full px-5 py-1 text-white lg:pe-5 lg:ps-8 ">
+              Convo
+              <span className="convo-arrow bg-brand-500"></span>
+            </span>{" "}
+            Form
           </h1>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground mx-auto text-lg lg:text-2xl">
+          <p className="text-muted-foreground mx-auto text-xl font-normal leading-7">
             Build your own AI-Powered conversational form, Which are engaging
             and interactive forms that are easy to build and fun to answer.
           </p>
@@ -63,7 +71,10 @@ export function Hero() {
       <div className="flex items-center justify-center gap-3">
         <Button
           size="lg"
-          className={cn("rounded-full lg:text-lg", montserrat.className)}
+          className={cn(
+            "rounded-full lg:py-7 lg:text-lg",
+            montserrat.className,
+          )}
           asChild
         >
           <LinkN href="/auth/register" rel="noreferrer nofollow noopener">
@@ -73,7 +84,10 @@ export function Hero() {
         <Button
           size="lg"
           variant="outline"
-          className={cn("rounded-full  lg:text-lg", montserrat.className)}
+          className={cn(
+            "rounded-full lg:py-7 lg:text-lg",
+            montserrat.className,
+          )}
           asChild
         >
           <LinkN href={demoFormLink} target="_blank">

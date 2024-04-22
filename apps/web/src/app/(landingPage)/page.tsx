@@ -10,7 +10,7 @@ import { SectionShell } from "./_components/sectionShell";
 
 export default function Home() {
   return (
-    <div className="grid space-y-5 lg:space-y-20 ">
+    <div className="mt-5 grid space-y-5 lg:mt-10 lg:space-y-20">
       <SectionShell>
         <Hero />
       </SectionShell>

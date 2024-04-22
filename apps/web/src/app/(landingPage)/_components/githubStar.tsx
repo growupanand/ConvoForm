@@ -9,7 +9,7 @@ async function GithubStars() {
   return (
     <Badge
       variant="secondary"
-      className="group gap-1 rounded-full active:scale-125"
+      className="group gap-1 rounded-full bg-transparent px-1 active:scale-125"
     >
       <Star
         size={15}

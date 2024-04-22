@@ -66,7 +66,7 @@ export const FormFieldsViewer = ({
             type="button"
             variant="ghost"
             className={cn(
-              "rounded-full ps-1 text-base font-semibold uppercase lg:text-xl",
+              "rounded-full ps-1  text-base font-semibold uppercase",
               montserrat.className,
             )}
             onClick={goToPrevQuestion}
@@ -77,7 +77,7 @@ export const FormFieldsViewer = ({
           </Button>
         </div>
         <div className="flex min-h-full w-full flex-col justify-center px-3 ">
-          <h1 className="mb-8 w-full whitespace-break-spaces text-justify text-xl lg:text-2xl">
+          <h1 className="mb-8 w-full whitespace-break-spaces text-justify text-xl leading-6 lg:text-2xl lg:leading-7">
             <span>
               {currentQuestion}
               {isFormBusy && <Tally1 className="ml-2 inline animate-ping" />}
@@ -94,7 +94,8 @@ export const FormFieldsViewer = ({
                     <FormControl>
                       <Textarea
                         autoFocus
-                        className="w-full rounded-none border-0 border-b bg-transparent ps-0	text-xl font-medium focus-visible:ring-0 focus-visible:ring-transparent  focus-visible:ring-offset-0 lg:text-2xl"
+                        rows={1}
+                        className="w-full rounded-none border-0 border-b bg-transparent ps-0	text-xl focus-visible:ring-0 focus-visible:ring-transparent  focus-visible:ring-offset-0 lg:text-2xl"
                         placeholder="Type answer here..."
                         disabled={isFormBusy}
                         onKeyDown={(event) => {
@@ -117,7 +118,7 @@ export const FormFieldsViewer = ({
                 )}
               >
                 Press{" "}
-                <span className="mx-1 flex items-center font-bold">
+                <span className="mx-1 flex items-center font-semibold">
                   Shift + Enter <CornerDownLeft className="h-3 w-3 " />
                 </span>{" "}
                 for new line
