@@ -70,6 +70,9 @@ importers:
       "@convoform/db":
         specifier: workspace:*
         version: link:../../packages/db
+      "@convoform/react":
+        specifier: workspace:*
+        version: link:../../packages/react
       "@convoform/ui":
         specifier: workspace:*
         version: link:../../packages/ui
@@ -358,6 +361,22 @@ importers:
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
+
+  packages/react:
+    dependencies:
+      ai:
+        specifier: ^2.2.26
+        version: 2.2.31(react@18.2.0)(solid-js@1.8.12)(svelte@4.2.9)(vue@3.4.15)
+      react:
+        specifier: ^18
+        version: 18.2.0
+      typescript:
+        specifier: ^5
+        version: 5.3.3
+    devDependencies:
+      "@types/react":
+        specifier: ^18
+        version: 18.2.48
 
   packages/tsconfig: {}
 

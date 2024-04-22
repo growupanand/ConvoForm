@@ -1,6 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 
-import { SentryUserInit } from "../sentryUserInit";
+import { SentryUserInit } from "./sentryUserInit";
 
 export function AuthProvider({
   children,

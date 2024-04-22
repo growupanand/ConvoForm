@@ -1,6 +1,6 @@
 import { Badge } from "@convoform/ui/components/ui/badge";
 
-import { SectionCard } from "./sectionCard";
+import { SectionCard } from "@/components/sectionCard";
 
 export function HowToUseSection() {
   return (

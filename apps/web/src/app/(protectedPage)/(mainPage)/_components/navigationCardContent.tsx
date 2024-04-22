@@ -8,10 +8,10 @@ import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
 
+import BrandName from "@/components/common/brandName";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { NavigationConfig } from "@/lib/types/navigation";
 import { api } from "@/trpc/react";
-import BrandName from "../common/brandName";
 import { NavigationLinks } from "./mainNavigation/mainNavigation";
 
 type Props = {

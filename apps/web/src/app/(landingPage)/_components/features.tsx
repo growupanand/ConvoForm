@@ -5,8 +5,8 @@ import {
   CardTitle,
 } from "@convoform/ui/components/ui/card";
 
+import { SectionCard } from "@/components/sectionCard";
 import { cn } from "@/lib/utils";
-import { SectionCard } from "./sectionCard";
 
 export function Features() {
   return (

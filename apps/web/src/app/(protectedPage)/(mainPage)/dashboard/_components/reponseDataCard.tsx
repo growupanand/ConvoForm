@@ -1,6 +1,6 @@
 "use client";
 
-import { QueryDataCard } from "@/components/common/dataCard/queryDataCard";
+import { QueryDataCard } from "@/components/queryComponents/dataCard/queryDataCard";
 import { api } from "@/trpc/react";
 
 export function ResponseDataCard({ orgId }: { orgId: string }) {

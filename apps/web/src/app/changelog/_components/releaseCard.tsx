@@ -1,5 +1,5 @@
+import { SectionCard } from "@/components/sectionCard";
 import { CommitSections, Release } from "@/lib/validations/changeLog";
-import { SectionCard } from "../../app/(landingPage)/_components/sectionCard";
 import { CommitSection } from "./commitSection";
 
 export const commitsSections = [

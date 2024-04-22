@@ -6,8 +6,8 @@ import "nprogress/nprogress.css";
 import type { Viewport } from "next";
 import { Toaster } from "@convoform/ui/components/ui/toaster";
 
+import { AuthProvider } from "@/components/authProvider";
 import GoogleAnalytics from "@/components/googleAnalytics";
-import { AuthProvider } from "@/components/providers/authProvider";
 import { TRPCReactProvider } from "@/trpc/react";
 import { roboto } from "./fonts";
 
