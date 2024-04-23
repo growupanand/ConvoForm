@@ -41,7 +41,7 @@ type Props = {
   organization: Pick<Organization, "name" | "imageUrl">;
 };
 
-export function FormCustomize({ form, organization }: Readonly<Props>) {
+export function FormCustomizeSheet({ form, organization }: Readonly<Props>) {
   const customEndScreenMessageRef = useRef<string>(
     form.customEndScreenMessage || "",
   );
@@ -149,14 +149,14 @@ export function FormCustomize({ form, organization }: Readonly<Props>) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="w-full" variant="outline">
+        <Button variant="outline">
           <Palette className="mr-2 size-4" />
           Customize
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader className="mb-10">
-          <SheetTitle>Customize form</SheetTitle>
+          <SheetTitle>Customize</SheetTitle>
         </SheetHeader>
         <div className="grid space-y-5">
           <div className="flex items-start justify-between gap-3 px-2">

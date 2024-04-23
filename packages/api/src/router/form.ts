@@ -169,7 +169,6 @@ export const formRouter = createTRPCRouter({
           welcomeScreenCTALabel: input.welcomeScreenCTALabel,
           welcomeScreenTitle: input.welcomeScreenTitle,
           welcomeScreenMessage: input.welcomeScreenMessage,
-          isPublished: true,
           updatedAt: new Date(),
         })
         .where(eq(form.id, input.id))
@@ -286,6 +285,22 @@ export const formRouter = createTRPCRouter({
       return await ctx.db
         .update(form)
         .set({ showCustomEndScreenMessage, customEndScreenMessage })
+        .where(eq(form.id, input.formId));
+    }),
+
+  updateIsPublished: protectedProcedure
+    .input(
+      z.object({
+        formId: z.string().min(1),
+        isPublished: z.boolean(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { isPublished } = input;
+
+      return await ctx.db
+        .update(form)
+        .set({ isPublished })
         .where(eq(form.id, input.formId));
     }),
 });
