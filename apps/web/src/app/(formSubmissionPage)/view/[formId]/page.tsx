@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { FormViewer } from "@/components/formViewer/formViewer";
+import { formUpdateSchema } from "@/lib/validations/form";
 import { api } from "@/trpc/server";
 import { FormSubmissionPageHeader } from "./_components/header";
 
@@ -15,8 +16,11 @@ export const metadata: Metadata = {
 
 export default async function FormViewPage({ params }: FormViewerPageProps) {
   const { formId } = params;
-  const formData = await api.form.getOne({ id: formId });
-  if (!formData || !formData.isPublished) {
+  const formData = await api.form.getOneWithFields({ id: formId });
+
+  const isValidForm = formUpdateSchema.safeParse(formData).success;
+
+  if (!formData || !formData.isPublished || !isValidForm) {
     notFound();
   }
 

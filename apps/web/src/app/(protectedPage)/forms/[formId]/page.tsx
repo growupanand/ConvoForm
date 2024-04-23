@@ -10,6 +10,12 @@ import {
   DrawerPortal,
   DrawerTrigger,
 } from "@convoform/ui/components/ui/drawer";
+import { Label } from "@convoform/ui/components/ui/label";
+import { Switch } from "@convoform/ui/components/ui/switch";
+import {
+  showErrorResponseToast,
+  toast,
+} from "@convoform/ui/components/ui/use-toast";
 import { Eye } from "lucide-react";
 
 import {
@@ -21,7 +27,7 @@ import MainNavTab from "@/app/(protectedPage)/forms/[formId]/_components/mainNav
 import { montserrat } from "@/app/fonts";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { FormCustomize } from "./_components/formEditor/formCustomize";
+import { FormCustomizeSheet } from "./_components/formEditor/formCustomizeSheet";
 
 type Props = {
   params: { formId: string };
@@ -33,6 +39,20 @@ export default function FormPage({ params: { formId } }: Props) {
     id: formId,
   });
 
+  const updateFormIsPublished = api.form.updateIsPublished.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Changes saved successfully",
+        duration: 1500,
+      });
+    },
+    onError: (error) => {
+      showErrorResponseToast(error, "Unable to save changes");
+    },
+  });
+
+  const { isPending: isPendingUpdateFormIsPublished } = updateFormIsPublished;
+
   if (isLoading || !isLoaded) {
     return <FormPageLoading formId={formId} />;
   }
@@ -41,10 +61,18 @@ export default function FormPage({ params: { formId } }: Props) {
     return notFound();
   }
 
+  async function toggleIsFormPublished(checked: boolean): Promise<void> {
+    await updateFormIsPublished.mutateAsync({
+      formId,
+      isPublished: checked,
+    });
+  }
+
   return (
     <div className="h-full lg:flex">
       <div className="flex flex-col px-3 lg:max-h-[calc(100vh-100px)] lg:w-[400px] lg:min-w-[400px] lg:overflow-auto">
         <MainNavTab formId={formId} />
+
         <Card className="relative flex-grow overflow-auto border-0 bg-transparent shadow-none">
           <CardContent className="p-0">
             {isLoading ? (
@@ -75,8 +103,23 @@ export default function FormPage({ params: { formId } }: Props) {
             </div>
           </CardContent>
         </Card>
-        <div className="mt-5 max-lg:mb-3 lg:mt-10">
-          <FormCustomize form={data} organization={organization} />
+        <div className="mt-6 flex items-center justify-between px-2 max-lg:mb-6">
+          <FormCustomizeSheet form={data} organization={organization} />
+
+          <div className=" flex items-start justify-start gap-3">
+            <Label
+              htmlFor="isFormPublished"
+              className="text-md cursor-pointer font-normal"
+            >
+              Published
+            </Label>
+            <Switch
+              defaultChecked={data.isPublished}
+              onCheckedChange={toggleIsFormPublished}
+              id="isFormPublished"
+              disabled={isPendingUpdateFormIsPublished}
+            />
+          </div>
         </div>
       </div>
       <div className="flex grow items-center justify-center py-3 max-lg:hidden">

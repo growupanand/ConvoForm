@@ -36,10 +36,7 @@ import {
   ArrowUpSquare,
   CornerDownLeft,
   Info,
-  Loader2,
   Plus,
-  Save,
-  Sparkle,
   Sparkles,
   X,
 } from "lucide-react";
@@ -124,16 +121,6 @@ export function FormEditorCard({ form }: Readonly<Props>) {
       id: form.id,
       ...formData,
     });
-
-  const getFormSubmitIcon = () => {
-    if (isFormBusy) {
-      return <Loader2 className="mr-2 h-4 w-4 animate-spin" />;
-    }
-    if (form.isPublished) {
-      return <Save className="mr-2 h-4 w-4" />;
-    }
-    return <Sparkle className="mr-2 h-4 w-4" />;
-  };
 
   const generateAIField = async () => {
     const apiEndpoint = `/form/${form.id}/getNextFormField/`;
@@ -414,15 +401,11 @@ export function FormEditorCard({ form }: Readonly<Props>) {
           </div>
 
           <Button
-            className={cn(
-              "sticky bottom-0 w-full transition-all hover:scale-105 active:scale-100",
-              montserrat.className,
-            )}
+            className={cn("sticky bottom-0 w-full", montserrat.className)}
             type="submit"
             disabled={isFormBusy || isGeneratingAIField}
           >
-            {getFormSubmitIcon()}
-            {form.isPublished ? "Publish changes" : "Publish form"}
+            Save Changes
           </Button>
         </form>
       </UIForm>

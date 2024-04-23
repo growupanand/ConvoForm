@@ -12,6 +12,7 @@ import BrowserWindow from "@/components/common/browserWindow";
 import Spinner from "@/components/common/spinner";
 import { FormViewer } from "@/components/formViewer/formViewer";
 import { getFrontendBaseUrl } from "@/lib/url";
+import { formUpdateSchema } from "@/lib/validations/form";
 import { api } from "@/trpc/react";
 
 type Props = {
@@ -24,12 +25,13 @@ export default function FormPreview({ noToolbar, formId }: Readonly<Props>) {
     isLoading,
     data: form,
     refetch,
-  } = api.form.getOne.useQuery({
+  } = api.form.getOneWithFields.useQuery({
     id: formId,
   });
 
   const formViewLink = form ? `${getFrontendBaseUrl()}/view/${form.id}` : "";
   const refreshPreview = () => refetch();
+  const isValidForm = formUpdateSchema.safeParse(form).success;
 
   const Toolbar = (
     <TooltipProvider delayDuration={0}>
@@ -41,7 +43,7 @@ export default function FormPreview({ noToolbar, formId }: Readonly<Props>) {
               htmlFor="savePreviewSubmission"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              Save submissions in preview mode
+              Save response in preview mode
             </label>
           </div>
         </TooltipTrigger>
@@ -55,32 +57,40 @@ export default function FormPreview({ noToolbar, formId }: Readonly<Props>) {
   return (
     <BrowserWindow
       onRefresh={refreshPreview}
-      link={noToolbar || !form?.isPublished ? undefined : formViewLink}
+      link={noToolbar ? undefined : formViewLink}
       toolbar={Toolbar}
     >
       <div className="flex h-full flex-col items-center justify-center">
         {isLoading ? (
           <Spinner label="Loading form..." />
         ) : (
-          <FormContent form={form} />
+          <FormContent form={form} isValidForm={isValidForm} />
         )}
       </div>
     </BrowserWindow>
   );
 }
 
-const FormContent = ({ form }: { form: any }) => {
+const FormContent = ({
+  form,
+  isValidForm,
+}: {
+  form: any;
+  isValidForm: boolean;
+}) => {
   if (!form) {
     return <FormNotFound />;
   }
-  if (!form.isPublished) {
-    return <UnpublishedForm />;
+  if (!isValidForm) {
+    return <InvalidForm />;
   }
   return <FormViewer form={form} isPreview={false} />;
 };
 
-const UnpublishedForm = () => (
-  <p className="text-muted-foreground">Publish your form to see a preview</p>
+const InvalidForm = () => (
+  <p className="text-muted-foreground">
+    Unable to preview form, Please check all form details are filled.
+  </p>
 );
 
 const FormNotFound = () => (

@@ -39,13 +39,7 @@ export function Hero() {
               className="ml-1 transition-all group-hover:translate-x-0.5"
               size="15px"
             />
-            <Link
-              href="https://github.com/growupanand/ConvoForm"
-              target="_blank"
-              rel="noreferrer nofollow noopener"
-            >
-              <GithubStars />
-            </Link>
+            <GithubStars />
           </Link>
         </Badge>
       </div>
