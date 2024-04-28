@@ -22,7 +22,7 @@ import {
   FormEditorCard,
   FormEditorFormSkeleton,
 } from "@/app/(protectedPage)/forms/[formId]/_components/formEditor/formEditorCard";
-import FormPreview from "@/app/(protectedPage)/forms/[formId]/_components/formEditor/formPreview";
+import FormPreviewBrowser from "@/app/(protectedPage)/forms/[formId]/_components/formEditor/formPreviewBrowser";
 import MainNavTab from "@/app/(protectedPage)/forms/[formId]/_components/mainNavTab";
 import { montserrat } from "@/app/fonts";
 import { cn } from "@/lib/utils";
@@ -95,7 +95,7 @@ export default function FormPage({ params: { formId } }: Props) {
                 <DrawerPortal>
                   <DrawerContent className="h-full">
                     <div className="h-full pt-3">
-                      <FormPreview formId={formId} noToolbar />
+                      <FormPreviewBrowser formId={formId} noToolbar />
                     </div>
                   </DrawerContent>
                 </DrawerPortal>
@@ -124,7 +124,7 @@ export default function FormPage({ params: { formId } }: Props) {
       </div>
       <div className="flex grow items-center justify-center py-3 max-lg:hidden">
         <div className="h-[100%] w-full pr-3">
-          <FormPreview formId={formId} />
+          <FormPreviewBrowser formId={formId} />
         </div>
       </div>
     </div>

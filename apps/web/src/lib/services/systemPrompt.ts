@@ -1,3 +1,4 @@
+import { FieldData } from "@convoform/db";
 import { ChatCompletionRequestMessage } from "openai-edge";
 import { z } from "zod";
 
@@ -5,6 +6,7 @@ import {
   FormField,
   formFieldSchema,
   generateFormSchema,
+  Message,
 } from "../validations/form";
 
 export const formSchemaSystemPrompt = z.object({
@@ -145,6 +147,156 @@ export class SystemPromptService {
     return {
       role: "system",
       content: this.getGenerateFormPrompt(data),
+    } as ChatCompletionRequestMessage;
+  }
+
+  getGenerateQuestionPrompt(
+    formOverview: string,
+    requiredFieldName: string,
+    fieldsDataWithValues: Array<
+      Omit<FieldData, "fieldValue"> & { fieldValue: string }
+    >,
+    isFirstQuestion: boolean,
+  ) {
+    return `
+        This platform lets users complete forms through conversational flow. Your task is to conversation with user to get current field data.
+        And You will act like professional human, and user should not feel like they are talking to a robot.
+        And Please note that a form field name might consist of multiple words, separated by spaces.
+        
+        Please adhere to the following rules while creating a conversational flow:
+
+        RULES:
+            - Enforce user to provide data for current field. If user deny to provide data, then keep asking for data until user provide data.
+            - Only pose questions pertaining to the provided form fields.
+            - Validate field value. If a value appears invalid according to field name, ask for user confirmation.
+            - Keep question concise and clear – not exceeding 25 words – as users can view only one line at a time.
+            ${isFirstQuestion ? "- This is first question, So ask question with greeting message. Do not ask for confirmation from user to start form filling." : ""}
+            
+
+        Here is some context about the form responsible for its creation, followed by the form fields and already provided fields data:
+
+        Form Details: ${formOverview}
+
+        Current Field: ${requiredFieldName}
+
+        Already Provided Fields Data:
+            ${fieldsDataWithValues
+              .map((item) => `${item.fieldName}: ${item.fieldValue}`)
+              .join("\n")}
+
+
+        `;
+  }
+
+  getGenerateQuestionPromptMessage(
+    formOverview: string,
+    requiredFieldName: string,
+    fieldsDataWithValues: Array<
+      Omit<FieldData, "fieldValue"> & { fieldValue: string }
+    >,
+    isFirstQuestion: boolean,
+  ) {
+    return {
+      role: "system",
+      content: this.getGenerateQuestionPrompt(
+        formOverview,
+        requiredFieldName,
+        fieldsDataWithValues,
+        isFirstQuestion,
+      ),
+    } as ChatCompletionRequestMessage;
+  }
+
+  getExtractAnswerPrompt({
+    messages,
+    currentField,
+    formOverview,
+  }: {
+    messages: Message[];
+    currentField: string;
+    formOverview: string;
+  }) {
+    return `
+        This platform lets users complete forms through conversational flow. Your task is to extract answer for the current field based on the provided form information and conversation messages.
+        Please note that a form field name might consist of multiple words, separated by spaces.
+        
+
+        Form Details: ${formOverview}
+
+        Current Field: ${currentField}
+
+        Conversation Messages:
+            ${messages.map((message) => `${message.role}: ${message.content}`).join("\n")}
+
+
+        ========================================
+
+        FINAL OUTPUT FORMAT JSON:
+          {
+            isAnswerExtracted : BOOLEAN,
+            extractedAnswer : STRING,
+          }
+
+
+        `;
+  }
+
+  getExtractAnswerPromptMessage({
+    messages,
+    currentField,
+    formOverview,
+  }: {
+    messages: Message[];
+    currentField: string;
+    formOverview: string;
+  }) {
+    return {
+      role: "system",
+      content: this.getExtractAnswerPrompt({
+        messages,
+        currentField,
+        formOverview,
+      }),
+    } as ChatCompletionRequestMessage;
+  }
+
+  getGenerateEndMessagePrompt(
+    formOverview: string,
+    fieldsDataWithValues: Array<
+      Omit<FieldData, "fieldValue"> & { fieldValue: string }
+    >,
+  ) {
+    return `
+        This platform lets users complete forms through conversational flow. User have provided all the required data for the form.
+        Your task is to generate end message for the user based on the provided form information and fields.
+        And You will act like professional human, and user should not feel like they are talking to a robot.
+
+
+        Here is some context about the form responsible for its creation, followed by already provided fields data:
+
+        Form Details: ${formOverview}
+
+        Already Provided Fields Data:
+            ${fieldsDataWithValues
+              .map((item) => `${item.fieldName}: ${item.fieldValue}`)
+              .join("\n")}
+
+
+        `;
+  }
+
+  getGenerateEndMessagePromptMessage(
+    formOverview: string,
+    fieldsDataWithValues: Array<
+      Omit<FieldData, "fieldValue"> & { fieldValue: string }
+    >,
+  ) {
+    return {
+      role: "system",
+      content: this.getGenerateEndMessagePrompt(
+        formOverview,
+        fieldsDataWithValues,
+      ),
     } as ChatCompletionRequestMessage;
   }
 }

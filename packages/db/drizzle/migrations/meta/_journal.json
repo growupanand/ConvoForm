@@ -50,6 +50,13 @@
       "when": 1711784444350,
       "tag": "0006_narrow_sir_ram",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1714155005193,
+      "tag": "0007_quick_shard",
+      "breakpoints": true
     }
   ]
 }

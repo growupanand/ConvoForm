@@ -1,22 +1,22 @@
 {
-    "name": "@convoform/react",
-    "description": "A React hook for creating conversational forms with ConvoForm.",
-    "homepage": "https://www.convoform.com",
-    "author": {
-      "name": "Utkarsh Anand",
-      "email": "growupanand@gmail.com"
-    },
-    "private": true,
-    "exports" : {
-      "." : "./src/index.ts"
-    },
-    "version": "0.0.1",
-    "dependencies": {
-      "typescript": "^5",
-      "react": "^18",
-      "ai": "^2.2.26"
-    },
-    "devDependencies": {
-      "@types/react": "^18"
-    }
+  "name": "@convoform/react",
+  "description": "A React hook for creating conversational forms with ConvoForm.",
+  "homepage": "https://www.convoform.com",
+  "author": {
+    "name": "Utkarsh Anand",
+    "email": "growupanand@gmail.com"
+  },
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "version": "0.0.1",
+  "dependencies": {
+    "ai": "^3.0.34",
+    "react": "^18",
+    "typescript": "^5"
+  },
+  "devDependencies": {
+    "@types/react": "^18"
   }
+}

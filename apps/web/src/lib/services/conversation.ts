@@ -145,6 +145,8 @@ export class ConversationService extends OpenAIService {
         name: conversationName,
         formFieldsData,
         transcript,
+        formOverview: this.form.overview,
+        fieldsData: [],
       };
       return await api.conversation.create(newConversation);
     } catch (error) {
