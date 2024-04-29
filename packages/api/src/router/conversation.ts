@@ -188,4 +188,29 @@ export const conversationRouter = createTRPCRouter({
 
       return result;
     }),
+
+  updateFinishedStatus: publicProcedure
+    .input(
+      z.object({
+        conversationId: z.string().min(1),
+        isFinished: z.boolean(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { conversationId, isFinished } = input;
+
+      const [result] = await ctx.db
+        .update(conversation)
+        .set({
+          isFinished,
+          updatedAt: new Date(),
+        })
+        .where(eq(conversation.id, conversationId))
+        .returning();
+      if (!result) {
+        throw new Error("Failed to update conversation");
+      }
+
+      return result;
+    }),
 });

@@ -65,9 +65,7 @@ export function useNewConvoForm({ formId, onError }: Readonly<Props>) {
       method: "POST",
       body: JSON.stringify({
         conversationId,
-        answer,
         messages: [...messages, answerMessage],
-        currentQuestion,
         currentField,
       }),
     });

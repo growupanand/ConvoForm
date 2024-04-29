@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { Conversation, FieldData } from "@convoform/db";
+import { Conversation, FieldHavingData } from "@convoform/db";
 import { z } from "zod";
 
 import { sendErrorMessage } from "@/lib/errorHandlers";
@@ -29,16 +29,10 @@ export async function POST(
     params: { formId },
   } = routeContextSchema.parse(context);
   const requestJson = await req.json();
-  const { conversationId, answer, messages, currentQuestion, currentField } =
+  const { conversationId, messages, currentField } =
     requestSchema.parse(requestJson);
-
-  console.log({
-    conversationId,
-    answer,
-    messages,
-    currentQuestion,
-    currentField,
-  });
+  const ConversationService = new NewConversationService();
+  let conversation: Conversation;
 
   const form = await api.form.getOneWithFields({
     id: formId,
@@ -48,28 +42,22 @@ export async function POST(
     return sendErrorMessage("Form not found", 404);
   }
 
-  let conversation: Conversation;
-
+  // Get the conversation by id or create a new one
   if (!conversationId) {
-    // Create a new conversation with empty form fields data
-
-    const fieldsData = form.formFields.map((field) => ({
+    const fieldsWithEmptyData = form.formFields.map((field) => ({
       fieldName: field.fieldName,
       fieldValue: null,
     }));
 
-    const newConversation = await api.conversation.create({
+    conversation = await api.conversation.create({
       formId,
       formFieldsData: {},
       name: "New Conversation",
       organizationId: form.organizationId,
       transcript: [],
-      fieldsData,
+      fieldsData: fieldsWithEmptyData,
       formOverview: form.overview,
     });
-    conversation = {
-      ...newConversation,
-    };
   } else {
     const existConversation = await api.conversation.getOne({
       id: conversationId,
@@ -80,16 +68,21 @@ export async function POST(
     conversation = existConversation;
   }
 
-  const ConversationService = new NewConversationService();
+  // Check if conversation already finished
+  if (conversation.isFinished) {
+    return sendErrorMessage("Conversation already finished", 400);
+  }
 
+  // Try to extract the answer from the current conversation messages
   if (currentField !== undefined) {
-    // Try to extract the answer from the user message
     const { isAnswerExtracted, extractedAnswer } =
       await ConversationService.extractAnswerFromMessage({
         messages,
         currentField,
-        formOverview: form.overview,
+        formOverview: conversation.formOverview,
       });
+
+    console.log({ isAnswerExtracted, extractedAnswer, currentField });
 
     if (isAnswerExtracted) {
       // Update conversation with the extracted answer
@@ -115,50 +108,52 @@ export async function POST(
   const requiredFieldName = ConversationService.getNextEmptyField(
     conversation.fieldsData,
   );
+  console.log({ requiredFieldName, fields: conversation.fieldsData });
 
   const isFormSubmissionFinished = requiredFieldName === undefined;
 
-  const extraStreamData = {
+  const extraCustomStreamData = {
     ...conversation,
     currentField: requiredFieldName,
     isFormSubmissionFinished,
   };
 
-  const onFinal = (completion: string) => {
-    // When gpt completes the response, update the conversation transcript with the generated question
+  // Save updated conversation transcript in DB
+  const onStreamFinish = (generatedQuestionString: string) => {
+    const generatedQuestionMessage = {
+      role: "assistant",
+      content: generatedQuestionString,
+      fieldName: requiredFieldName,
+    };
+
     api.conversation.updateTranscript({
       conversationId: conversation.id,
-      transcript: [
-        ...messages,
-        {
-          role: "assistant",
-          content: completion,
-          fieldName: requiredFieldName,
-        },
-      ],
+      transcript: [...messages, generatedQuestionMessage],
     });
   };
 
-  const fieldsWithData = conversation.fieldsData.filter(
-    (field) => field.fieldValue !== null,
-  ) as Array<Omit<FieldData, "fieldValue"> & { fieldValue: string }>;
-
-  // If all fields are filled, return end message
+  // If all fields are filled, mark the conversation as finished, and generate the end message
   if (isFormSubmissionFinished) {
+    await api.conversation.updateFinishedStatus({
+      conversationId: conversation.id,
+      isFinished: true,
+    });
+
     return ConversationService.generateEndMessage({
       formOverview: conversation.formOverview,
-      fieldsData: fieldsWithData,
-      extraStreamData,
-      onFinal,
+      fieldsData: conversation.fieldsData as FieldHavingData[],
+      extraCustomStreamData,
+      onStreamFinish,
     });
   }
 
+  // Generate the next question
   return ConversationService.generateQuestion({
     formOverview: conversation.formOverview,
     requiredFieldName,
     fieldsData: conversation.fieldsData,
-    extraStreamData,
+    extraCustomStreamData,
     messages,
-    onFinal,
+    onStreamFinish,
   });
 }
