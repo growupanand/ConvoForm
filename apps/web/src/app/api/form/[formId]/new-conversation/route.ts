@@ -15,9 +15,7 @@ const routeContextSchema = z.object({
 
 const requestSchema = z.object({
   conversationId: z.string().optional(),
-  answer: z.string().optional(),
   messages: z.array(messageSchema),
-  currentQuestion: z.string(),
   currentField: z.string().optional(),
 });
 
@@ -134,14 +132,21 @@ export async function POST(
 
   // If all fields are filled, mark the conversation as finished, and generate the end message
   if (isFormSubmissionFinished) {
+    const { conversationName } =
+      await ConversationService.generateConversationName({
+        formOverview: conversation.formOverview,
+        fieldsWithData: conversation.fieldsData as FieldHavingData[],
+      });
+
     await api.conversation.updateFinishedStatus({
       conversationId: conversation.id,
       isFinished: true,
+      conversationName,
     });
 
     return ConversationService.generateEndMessage({
       formOverview: conversation.formOverview,
-      fieldsData: conversation.fieldsData as FieldHavingData[],
+      fieldsWithData: conversation.fieldsData as FieldHavingData[],
       extraCustomStreamData,
       onStreamFinish,
     });

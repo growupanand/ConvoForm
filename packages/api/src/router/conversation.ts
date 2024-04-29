@@ -194,16 +194,18 @@ export const conversationRouter = createTRPCRouter({
       z.object({
         conversationId: z.string().min(1),
         isFinished: z.boolean(),
+        conversationName: z.string().min(1),
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const { conversationId, isFinished } = input;
+      const { conversationId, isFinished, conversationName } = input;
 
       const [result] = await ctx.db
         .update(conversation)
         .set({
           isFinished,
           updatedAt: new Date(),
+          name: conversationName,
         })
         .where(eq(conversation.id, conversationId))
         .returning();

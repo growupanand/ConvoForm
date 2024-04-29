@@ -1,4 +1,4 @@
-import { FieldData } from "@convoform/db";
+import { FieldData, FieldHavingData } from "@convoform/db";
 import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
@@ -25,18 +25,18 @@ export class NewConversationService extends OpenAIService {
     messages: Message[];
     onStreamFinish?: (completion: string) => void;
   }) {
-    const fieldsDataWithValues = fieldsData.filter(
+    const fieldsWithData = fieldsData.filter(
       (field) => field.fieldValue !== null,
-    ) as Array<Omit<FieldData, "fieldValue"> & { fieldValue: string }>;
+    ) as FieldHavingData[];
     const isFirstQuestion =
-      fieldsDataWithValues.length === 0 && messages.length === 1;
+      fieldsWithData.length === 0 && messages.length === 1;
 
-    const systemMessage = this.getGenerateQuestionPromptMessage(
+    const systemMessage = this.getGenerateQuestionPromptMessage({
       formOverview,
       requiredFieldName,
-      fieldsDataWithValues,
+      fieldsWithData,
       isFirstQuestion,
-    );
+    });
     const openAiResponse = await this.getOpenAIResponseStream([
       systemMessage,
       ...messages.map(({ role, content }) => ({
@@ -102,19 +102,19 @@ export class NewConversationService extends OpenAIService {
 
   public async generateEndMessage({
     formOverview,
-    fieldsData,
+    fieldsWithData,
     extraCustomStreamData,
     onStreamFinish,
   }: {
     formOverview: string;
-    fieldsData: Array<Omit<FieldData, "fieldValue"> & { fieldValue: string }>;
+    fieldsWithData: FieldHavingData[];
     extraCustomStreamData: Record<string, any>;
     onStreamFinish?: (completion: string) => void;
   }) {
-    const systemMessage = this.getGenerateEndMessagePromptMessage(
+    const systemMessage = this.getGenerateEndMessagePromptMessage({
       formOverview,
-      fieldsData,
-    );
+      fieldsWithData,
+    });
 
     const openAiResponse = await this.getOpenAIResponseStream([
       systemMessage,
@@ -138,5 +138,40 @@ export class NewConversationService extends OpenAIService {
     });
     // Respond with the stream
     return new StreamingTextResponse(stream, {}, data);
+  }
+
+  public async generateConversationName({
+    formOverview,
+    fieldsWithData,
+  }: {
+    formOverview: string;
+    fieldsWithData: FieldHavingData[];
+  }) {
+    const systemMessage = this.getGenerateConversationNamePromptMessage({
+      formOverview,
+      fieldsWithData,
+    }) as ChatCompletionMessageParam;
+
+    const openAiResponse = await this.getOpenAIResponseJSON([
+      systemMessage,
+      {
+        role: "user",
+        content: "Generate conversation name",
+      },
+    ]);
+
+    let conversationName = "Finished conversation";
+
+    const responseJson = openAiResponse.choices[0]?.message.content;
+    if (responseJson) {
+      try {
+        const parsedJson = JSON.parse(responseJson);
+        conversationName = parsedJson.conversationName ?? conversationName;
+      } catch (_) {
+        /* empty */
+      }
+    }
+
+    return { conversationName };
   }
 }
