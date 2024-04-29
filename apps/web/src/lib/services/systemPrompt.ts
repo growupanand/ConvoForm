@@ -271,6 +271,10 @@ export class SystemPromptService {
         Your task is to generate end message for the user based on the provided form information and fields.
         And You will act like professional human, and user should not feel like they are talking to a robot.
 
+        Please adhere to the following rules while creating a conversational flow:
+
+        RULES:
+            - Keep message concise and clear – not exceeding 25 words – as users can view only one line at a time.
 
         Here is some context about the form responsible for its creation, followed by already provided fields data:
 
