@@ -27,9 +27,6 @@ export const conversation = pgTable("Conversation", {
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   name: text("name").notNull(),
   transcript: jsonb("transcript").array().$type<Record<string, string>[]>(),
-  formFieldsData: jsonb("formFieldsData")
-    .$type<Record<string, string>>()
-    .notNull(),
   fieldsData: jsonb("fieldsData").array().$type<FieldData[]>().notNull(),
   formOverview: text("formOverview").notNull(),
   formId: text("formId")

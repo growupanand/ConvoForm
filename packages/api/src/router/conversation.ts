@@ -40,22 +40,15 @@ export const conversationRouter = createTRPCRouter({
         formId: z.string().min(1),
         organizationId: z.string().min(1),
         name: z.string().min(1),
-        formFieldsData: z.record(z.any()),
         transcript: z.array(z.record(z.any())),
         formOverview: z.string().min(1),
         fieldsData: z.array(fieldDataSchema),
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      let {
-        formFieldsData,
-        transcript,
-        fieldsData,
-        formOverview,
-        ...newConversation
-      } = insertConversationSchema.parse(input);
+      let { transcript, fieldsData, formOverview, ...newConversation } =
+        insertConversationSchema.parse(input);
       // TODO: If we don't typecast here it will throw type error
-      const newFormFieldsData = formFieldsData as Record<string, string>;
       const newTranscript = transcript as Array<Record<string, string>>;
       const newFieldsData = z.array(fieldDataSchema).parse(fieldsData);
 
@@ -63,7 +56,6 @@ export const conversationRouter = createTRPCRouter({
         .insert(conversation)
         .values({
           ...newConversation,
-          formFieldsData: newFormFieldsData,
           transcript: newTranscript,
           updatedAt: new Date(),
           formOverview,

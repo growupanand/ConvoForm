@@ -85,7 +85,6 @@ export async function POST(
 
       conversation = await api.conversation.create({
         formId,
-        formFieldsData: {},
         name: "New Conversation",
         organizationId: form.organizationId,
         transcript: [],
