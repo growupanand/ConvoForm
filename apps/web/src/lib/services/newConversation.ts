@@ -70,8 +70,10 @@ export class NewConversationService extends OpenAIService {
     currentField: string;
     formOverview: string;
   }) {
-    let isAnswerExtracted = false;
-    let extractedAnswer = "";
+    let isAnswerExtracted: boolean = false;
+    let extractedAnswer: string = "";
+    let reasonForFailure: string | null = null;
+    let otherFieldsData: FieldHavingData[] = [];
 
     const systemMessage = this.getExtractAnswerPromptMessage({
       messages,
@@ -92,12 +94,21 @@ export class NewConversationService extends OpenAIService {
         const parsedJson = JSON.parse(responseJson);
         isAnswerExtracted = parsedJson.isAnswerExtracted ?? isAnswerExtracted;
         extractedAnswer = parsedJson.extractedAnswer ?? extractedAnswer;
+        reasonForFailure = parsedJson.reasonForFailure ?? reasonForFailure;
+        otherFieldsData = Array.isArray(parsedJson.otherFieldsData)
+          ? parsedJson.otherFieldsData
+          : otherFieldsData;
       } catch (_) {
         /* empty */
       }
     }
 
-    return { isAnswerExtracted, extractedAnswer };
+    return {
+      isAnswerExtracted,
+      extractedAnswer,
+      reasonForFailure,
+      otherFieldsData,
+    };
   }
 
   public async generateEndMessage({

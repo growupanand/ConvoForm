@@ -71,20 +71,21 @@ export async function POST(
     return sendErrorMessage("Conversation already finished", 400);
   }
 
-  // Try to extract the answer from the current conversation messages
+  // Try to extract the answer from the current conversation messages, and Update conversation with the extracted answer
   if (currentField !== undefined) {
-    const { isAnswerExtracted, extractedAnswer } =
-      await ConversationService.extractAnswerFromMessage({
-        messages,
-        currentField,
-        formOverview: conversation.formOverview,
-      });
+    const {
+      isAnswerExtracted,
+      extractedAnswer,
+      reasonForFailure,
+      otherFieldsData,
+    } = await ConversationService.extractAnswerFromMessage({
+      messages,
+      currentField,
+      formOverview: conversation.formOverview,
+    });
 
-    console.log({ isAnswerExtracted, extractedAnswer, currentField });
-
+    // If user provided valid answer for current field
     if (isAnswerExtracted) {
-      // Update conversation with the extracted answer
-
       const updatedFieldsData = conversation.fieldsData.map((field) => {
         if (field.fieldName === currentField) {
           return {
@@ -101,12 +102,46 @@ export async function POST(
       });
       conversation.fieldsData = updatedFieldsData;
     }
+
+    // If user provided valid answer for other than current field (E.g user provided answer for previous field)
+    if (
+      isAnswerExtracted === false &&
+      reasonForFailure === "wrongField" &&
+      otherFieldsData.length > 0
+    ) {
+      // update valid fields data only
+      const validFields = conversation.fieldsData.map(
+        ({ fieldName }) => fieldName,
+      );
+      const validOtherFieldsData = otherFieldsData.filter(({ fieldName }) =>
+        validFields.includes(fieldName),
+      );
+      if (validOtherFieldsData.length > 0) {
+        const updatedFieldsData = [...conversation.fieldsData].map((field) => {
+          const updatedFieldValue = validOtherFieldsData.find(
+            (f) => f.fieldName === field.fieldName,
+          )?.fieldValue;
+          if (typeof updatedFieldValue === "string") {
+            return {
+              ...field,
+              fieldValue: updatedFieldValue,
+            };
+          }
+          return field;
+        });
+
+        await api.conversation.updateFieldsData({
+          conversationId: conversation.id,
+          fieldsData: updatedFieldsData,
+        });
+        conversation.fieldsData = updatedFieldsData;
+      }
+    }
   }
 
   const requiredFieldName = ConversationService.getNextEmptyField(
     conversation.fieldsData,
   );
-  console.log({ requiredFieldName, fields: conversation.fieldsData });
 
   const isFormSubmissionFinished = requiredFieldName === undefined;
 

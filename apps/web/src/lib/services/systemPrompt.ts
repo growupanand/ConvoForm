@@ -222,8 +222,22 @@ export class SystemPromptService {
 
         FINAL OUTPUT FORMAT JSON:
           {
+            // If answer is extracted successfully for the current field
             isAnswerExtracted : BOOLEAN,
+            // Extracted answer for the current field
             extractedAnswer : STRING,
+            // If answer is not extracted, provide the reason for failure, there could be only two reasons:
+            // 1. User denied to provide data or provided invalid data, for this type of failure, provide the reason "inValidAnswer" in this field
+            // 2. User is trying to provide data for other field, for this type of failure, provide the reason "wrongField" in this field
+            reasonForFailure : STRING,
+            // If user is trying to provide data for other field, then provide the field name and extracted answer for those fields
+            otherFieldsData : [
+              {
+                fieldName : STRING,
+                fieldValue : STRING
+              },
+              ...
+            ] 
           }
 
 
