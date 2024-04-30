@@ -102,7 +102,7 @@ export const conversationRouter = createTRPCRouter({
         where: eq(conversation.formId, input.formId),
         columns: {
           id: true,
-          formFieldsData: true,
+          fieldsData: true,
           createdAt: true,
           name: true,
         },
