@@ -1,6 +1,7 @@
 "use client";
 
 import { QueryTable } from "@/components/queryComponents/table/queryTable";
+import { getConversationTableData } from "@/components/queryComponents/table/utils";
 import { api } from "@/trpc/react";
 
 type Props = {
@@ -19,24 +20,11 @@ export function OverviewTable({ formId }: Readonly<Props>) {
       query={query}
       getTableData={(data) => {
         return data.map((item) => {
-          // Handled edge case where field value is not string but object
-          Object.keys(item.formFieldsData).forEach((key) => {
-            const formValue = item.formFieldsData[key];
-            if (!formValue) return;
-            const valueType = typeof formValue;
-            if (valueType !== "string") {
-              if (valueType === "object") {
-                item.formFieldsData[key] = Object.values(formValue).join(", ");
-                return;
-              }
-              item.formFieldsData[key] = JSON.stringify(formValue);
-            }
-          });
-
+          const tableData = getConversationTableData(item.fieldsData);
           return {
             ["Created"]: item.createdAt.toLocaleString(),
             ["Response name"]: item.name,
-            ...item.formFieldsData,
+            ...tableData,
           };
         });
       }}

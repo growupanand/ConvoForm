@@ -1,6 +1,8 @@
+import { FieldHavingData } from "@convoform/db";
 import { ChatCompletionRequestMessage } from "openai-edge";
 import { z } from "zod";
 
+import { Message } from "../validations/conversation";
 import {
   FormField,
   formFieldSchema,
@@ -16,43 +18,8 @@ export type FormSchemaSystemPrompt = z.infer<typeof formSchemaSystemPrompt>;
 
 export const getGenerateFormPromptSchema = generateFormSchema;
 export class SystemPromptService {
-  constructor() {}
-
   getFormFieldNames(form: { formFields: FormField[] }) {
     return form.formFields.map((item) => item.fieldName);
-  }
-
-  getConversationFlowPrompt(form: FormSchemaSystemPrompt) {
-    return `
-        This platform lets users complete forms through conversational flow. Your task is to create a conversation path based on the provided form information and fields.
-        You will act like professional human, and user not feel like they are talking to a robot.
-        Please note that a form field name might consist of multiple words, separated by spaces.
-        
-        Please adhere to the following rules while creating a conversational flow:
-
-        RULES:
-            - Only pose questions pertaining to the provided form fields.
-            - Validate each user-provided form field value. If a value appears invalid, ask for user confirmation.
-            - Keep each question concise and clear – not exceeding 25 words – as users can view only one line at a time.
-            - If all fields have been answered correctly, save the form data directly into the database without further questions.
-            - Avoid saving any data after it has been stored.
-            - Start first question with greeting message. Do not ask for confirmation from user to start form filling.
-
-        Here is some context about the form responsible for its creation, followed by the form fields:
-
-        Form Details: ${form.overview}
-
-        Form Fields:
-            ${this.getFormFieldNames(form).join("\n")}
-
-        `;
-  }
-
-  getConversationFlowPromptMessage(form: FormSchemaSystemPrompt) {
-    return {
-      role: "system",
-      content: this.getConversationFlowPrompt(form),
-    } as ChatCompletionRequestMessage;
   }
 
   getGenerateFormFieldPrompt(form: FormSchemaSystemPrompt) {
@@ -145,6 +112,174 @@ export class SystemPromptService {
     return {
       role: "system",
       content: this.getGenerateFormPrompt(data),
+    } as ChatCompletionRequestMessage;
+  }
+
+  getGenerateQuestionPromptMessage({
+    formOverview,
+    requiredFieldName,
+    fieldsWithData,
+    isFirstQuestion,
+  }: {
+    formOverview: string;
+    requiredFieldName: string;
+    fieldsWithData: FieldHavingData[];
+    isFirstQuestion: boolean;
+  }) {
+    const systemPrompt = `
+    This platform lets users complete forms through conversational flow. Your task is to conversation with user to get current field data.
+    And You will act like professional human, and user should not feel like they are talking to a robot.
+    And Please note that a form field name might consist of multiple words, separated by spaces.
+    
+    Please adhere to the following rules while creating a conversational flow:
+
+    RULES:
+        - Enforce user to provide data for current field. If user deny to provide data, then keep asking for data until user provide data.
+        - Only pose questions pertaining to the provided form fields.
+        - Validate field value. If a value appears invalid according to field name, ask for user confirmation.
+        - Keep question concise and clear – not exceeding 25 words – as users can view only one line at a time.
+        ${isFirstQuestion ? "- This is first question, So ask question with greeting message. Do not ask for confirmation from user to start form filling." : ""}
+        
+
+    Here is some context about the form responsible for its creation, followed by the form fields and already provided fields data:
+
+    Form Details: ${formOverview}
+
+    Current Field: ${requiredFieldName}
+
+    Already Provided Fields Data:
+        ${fieldsWithData
+          .map((item) => `${item.fieldName}: ${item.fieldValue}`)
+          .join("\n")}
+
+
+    `;
+
+    return {
+      role: "system",
+      content: systemPrompt,
+    } as ChatCompletionRequestMessage;
+  }
+
+  getExtractAnswerPromptMessage({
+    messages,
+    currentField,
+    formOverview,
+  }: {
+    messages: Message[];
+    currentField: string;
+    formOverview: string;
+  }) {
+    const systemPrompt = `
+    This platform lets users complete forms through conversational flow. Your task is to extract answer for the current field based on the provided form information and conversation messages.
+    Please note that a form field name might consist of multiple words, separated by spaces.
+    
+
+    Form Details: ${formOverview}
+
+    Current Field: ${currentField}
+
+    Conversation Messages:
+        ${messages.map((message) => `${message.role}: ${message.content}`).join("\n")}
+
+
+    ========================================
+
+    FINAL OUTPUT FORMAT JSON:
+      {
+        // If answer is extracted successfully for the current field
+        isAnswerExtracted : BOOLEAN,
+        // Extracted answer for the current field
+        extractedAnswer : STRING,
+        // If answer is not extracted, provide the reason for failure, there could be only two reasons:
+        // 1. User denied to provide data or provided invalid data, for this type of failure, provide the reason "inValidAnswer" in this field
+        // 2. User is trying to provide data for other field, for this type of failure, provide the reason "wrongField" in this field
+        reasonForFailure : STRING,
+        // If user is trying to provide data for other field, then provide the field name and extracted answer for those fields
+        otherFieldsData : [
+          {
+            fieldName : STRING,
+            fieldValue : STRING
+          },
+          ...
+        ] 
+      }
+
+
+    `;
+    return {
+      role: "system",
+      content: systemPrompt,
+    } as ChatCompletionRequestMessage;
+  }
+
+  getGenerateEndMessagePromptMessage({
+    formOverview,
+    fieldsWithData,
+  }: {
+    formOverview: string;
+    fieldsWithData: FieldHavingData[];
+  }) {
+    const systemPrompt = `
+    This platform lets users complete forms through conversational flow. User have provided all the required data for the form.
+    Your task is to generate end message for the user based on the provided form information and fields.
+    And You will act like professional human, and user should not feel like they are talking to a robot.
+
+    Please adhere to the following rules while creating a conversational flow:
+
+    RULES:
+        - Keep message concise and clear – not exceeding 25 words – as users can view only one line at a time.
+
+    Here is some context about the form responsible for its creation, followed by already provided fields data:
+
+    Form Details: ${formOverview}
+
+    Already Provided Fields Data:
+        ${fieldsWithData
+          .map((item) => `${item.fieldName}: ${item.fieldValue}`)
+          .join("\n")}
+
+
+    `;
+    return {
+      role: "system",
+      content: systemPrompt,
+    } as ChatCompletionRequestMessage;
+  }
+
+  getGenerateConversationNamePromptMessage({
+    formOverview,
+    fieldsWithData,
+  }: {
+    formOverview: string;
+    fieldsWithData: FieldHavingData[];
+  }) {
+    const systemPrompt = `
+    This platform lets users complete forms through conversational flow. User have provided all the required data for the form.
+    Your task is to generate generate one word name from data collected from user, E.g. user name or email address etc.
+
+    Here is some context about the form responsible for its creation, followed by already provided fields data:
+
+    Form Details: ${formOverview}
+
+    Already Provided Fields Data:
+        ${fieldsWithData
+          .map((item) => `${item.fieldName}: ${item.fieldValue}`)
+          .join("\n")}
+
+    
+
+    ========================================
+
+    FINAL OUTPUT FORMAT JSON:
+      {
+        conversationName : STRING,
+      }
+
+    `;
+    return {
+      role: "system",
+      content: systemPrompt,
     } as ChatCompletionRequestMessage;
   }
 }

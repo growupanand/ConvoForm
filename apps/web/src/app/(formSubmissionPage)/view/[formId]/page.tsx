@@ -14,7 +14,9 @@ export const metadata: Metadata = {
   title: "Submit Form",
 };
 
-export default async function FormViewPage({ params }: FormViewerPageProps) {
+export default async function FormViewPage({
+  params,
+}: Readonly<FormViewerPageProps>) {
   const { formId } = params;
   const formData = await api.form.getOneWithFields({ id: formId });
 

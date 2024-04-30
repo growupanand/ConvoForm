@@ -34,6 +34,10 @@ export const sendErrorResponse = (error: any) => {
   );
 };
 
+export const sendErrorMessage = (message: string, status: number) => {
+  return NextResponse.json({ nonFieldError: message }, { status });
+};
+
 export const isRateLimitErrorResponse = (error: any) => {
   return error.data?.code === "TOO_MANY_REQUESTS" || error.status === 429;
 };

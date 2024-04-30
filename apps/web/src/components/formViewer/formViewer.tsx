@@ -3,12 +3,10 @@
 import { useEffect, useState } from "react";
 import { Form } from "@convoform/db";
 import { useConvoForm } from "@convoform/react";
-import { showErrorResponseToast } from "@convoform/ui/components/ui/use-toast";
 
 import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
-import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { EndScreen } from "./endScreen";
-import { FormFieldsViewer } from "./formFields";
+import { FormFieldsViewer } from "./FormFieldsViewer";
 import { WelcomeScreen } from "./welcomeScreen";
 
 type Props = {
@@ -23,9 +21,7 @@ type State = {
 
 export type FormStage = "welcomeScreen" | "conversationFlow" | "endScreen";
 
-export function FormViewer({ form, refresh, isPreview }: Readonly<Props>) {
-  const showCustomEndScreenMessage = form.showCustomEndScreenMessage;
-  const customEndScreenMessage = form.customEndScreenMessage || undefined;
+export function FormViewer({ form, refresh }: Readonly<Props>) {
   const [state, setState] = useState<State>({
     formStage: "welcomeScreen",
   });
@@ -33,35 +29,21 @@ export function FormViewer({ form, refresh, isPreview }: Readonly<Props>) {
   const { formStage: currentStage } = state;
 
   const {
-    currentQuestion,
-    isFirstQuestion,
     submitAnswer,
-    isLoading,
-    endScreenMessage,
-    handleGoToPrevQuestion,
+    currentQuestion,
+    isBusy,
+    isFormSubmissionFinished,
+    endScreenMessage: generatedEndScreenMessage,
     resetForm,
-    isFormFinished,
   } = useConvoForm({
-    isPreview,
     formId: form.id,
-    showCustomEndScreenMessage,
-    customEndScreenMessage,
-    onError: (error) => {
-      let errorMessage;
-      try {
-        if (isRateLimitErrorResponse(error)) {
-          errorMessage = error.message ?? "Rate limit exceeded";
-        } else {
-          errorMessage = JSON.parse(error.message).nonFieldError;
-        }
-      } catch (_) {
-        errorMessage = undefined;
-      }
-      showErrorResponseToast(error, errorMessage);
-    },
   });
 
-  const hidePrevQuestionButton = isFirstQuestion;
+  const customEndScreenMessage = form.customEndScreenMessage || undefined;
+
+  const endScreenMessage = form.showCustomEndScreenMessage
+    ? customEndScreenMessage
+    : generatedEndScreenMessage;
 
   const gotoStage = (newStage: FormStage) => {
     setState((cs) => ({ ...cs, formStage: newStage }));
@@ -78,10 +60,10 @@ export function FormViewer({ form, refresh, isPreview }: Readonly<Props>) {
   }, [form, refresh]);
 
   useEffect(() => {
-    if (isFormFinished) {
+    if (isFormSubmissionFinished) {
       gotoStage("endScreen");
     }
-  }, [isFormFinished]);
+  }, [isFormSubmissionFinished]);
 
   return (
     <div className="container max-w-[800px]">
@@ -92,9 +74,10 @@ export function FormViewer({ form, refresh, isPreview }: Readonly<Props>) {
       {currentStage === "conversationFlow" && (
         <FormFieldsViewer
           currentQuestion={currentQuestion}
-          isFormBusy={isLoading}
-          handleGoToPrevQuestion={handleGoToPrevQuestion}
-          hidePrevQuestionButton={hidePrevQuestionButton}
+          isFormBusy={isBusy}
+          // TODO: Implement this
+          // handleGoToPrevQuestion={handleGoToPrevQuestion}
+          // hidePrevQuestionButton={hidePrevQuestionButton}
           submitAnswer={submitAnswer}
         />
       )}

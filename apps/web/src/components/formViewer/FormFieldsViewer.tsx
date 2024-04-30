@@ -10,7 +10,7 @@ import {
 } from "@convoform/ui/components/ui/form";
 import { Textarea } from "@convoform/ui/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronLeft, CornerDownLeft, Tally1 } from "lucide-react";
+import { CornerDownLeft, Tally1 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -20,8 +20,8 @@ import { cn } from "@/lib/utils";
 type Props = {
   isFormBusy: boolean;
   currentQuestion: string;
-  handleGoToPrevQuestion: () => string;
-  hidePrevQuestionButton: boolean;
+  // handleGoToPrevQuestion: () => string;
+  // hidePrevQuestionButton: boolean;
   submitAnswer: (answer: string) => Promise<void>;
 };
 
@@ -32,8 +32,8 @@ const formSchema = z.object({
 export const FormFieldsViewer = ({
   isFormBusy,
   currentQuestion,
-  handleGoToPrevQuestion,
-  hidePrevQuestionButton,
+  // handleGoToPrevQuestion,
+  // hidePrevQuestionButton,
   submitAnswer,
 }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -52,16 +52,16 @@ export const FormFieldsViewer = ({
     }
   }
 
-  function goToPrevQuestion() {
-    const prevAnswer = handleGoToPrevQuestion();
-    form.setValue("answer", prevAnswer);
-    form.setFocus("answer");
-  }
+  // function goToPrevQuestion() {
+  //   const prevAnswer = handleGoToPrevQuestion();
+  //   form.setValue("answer", prevAnswer);
+  //   form.setFocus("answer");
+  // }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className={cn("mb-8", hidePrevQuestionButton && "hidden")}>
+        {/* <div className={cn("mb-8", hidePrevQuestionButton && "hidden")}>
           <Button
             type="button"
             variant="ghost"
@@ -75,7 +75,7 @@ export const FormFieldsViewer = ({
             <ChevronLeft className="" size={20} />
             <span>Previous</span>
           </Button>
-        </div>
+        </div> */}
         <div className="flex min-h-full w-full flex-col justify-center px-3 ">
           <h1 className="mb-8 w-full whitespace-break-spaces text-justify text-xl leading-6 lg:text-2xl lg:leading-7">
             <span>

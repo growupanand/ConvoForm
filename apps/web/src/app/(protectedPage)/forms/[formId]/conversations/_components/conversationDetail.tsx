@@ -14,8 +14,8 @@ import {
 } from "@convoform/ui/components/ui/table";
 import { FileText } from "lucide-react";
 
+import { getConversationTableData } from "@/components/queryComponents/table/utils";
 import { SectionCard } from "@/components/sectionCard";
-import { FormFieldData } from "@/lib/types/conversation";
 import { Transcript } from "@/lib/types/transcript";
 import TranscriptCard from "./transcriptCard";
 
@@ -24,9 +24,9 @@ type Props = {
 };
 
 export default function ConversationDetail({ conversation }: Readonly<Props>) {
-  const formFieldsData = conversation.formFieldsData as FormFieldData;
-  const formFieldsDataKeys = Object.keys(formFieldsData);
-  const isFormDataEmpty = formFieldsDataKeys.length === 0;
+  const tableData = getConversationTableData(conversation.fieldsData);
+  const tableColumns = Object.keys(tableData);
+  const isFormDataEmpty = tableColumns.length === 0;
   const transcript = conversation.transcript as Transcript;
 
   return (
@@ -48,26 +48,12 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
             <div className="overflow-hidden rounded-md border bg-white">
               <Table className="">
                 <TableBody>
-                  {formFieldsDataKeys.map((key) => {
-                    // Handled edge case where field value is not string but object
-                    formFieldsDataKeys.forEach((key) => {
-                      const formValue = formFieldsData[key];
-                      if (!formValue) return;
-                      const valueType = typeof formValue;
-                      if (valueType !== "string") {
-                        if (valueType === "object") {
-                          formFieldsData[key] =
-                            Object.values(formValue).join(", ");
-                          return;
-                        }
-                        formFieldsData[key] = JSON.stringify(formValue);
-                      }
-                    });
+                  {tableColumns.map((columnName) => {
                     return (
-                      <TableRow key={formFieldsData[key]}>
-                        <TableCell className="py-2">{key}</TableCell>
+                      <TableRow key={tableData[columnName]}>
+                        <TableCell className="py-2">{columnName}</TableCell>
                         <TableCell className="py-2 font-medium">
-                          {formFieldsData[key]}
+                          {tableData[columnName]}
                         </TableCell>
                       </TableRow>
                     );

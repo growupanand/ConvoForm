@@ -8,6 +8,7 @@ export default authMiddleware({
     "/",
     "/view/(.*)",
     "/api/form/(.*)/conversation",
+    "/api/form/(.*)/new-conversation",
     "/api/webhook",
     "/auth/(.*)",
     // Added for sentry
