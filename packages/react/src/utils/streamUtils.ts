@@ -4,6 +4,8 @@
 
 import { JSONValue } from "../types";
 
+const NEWLINE = "\n".charCodeAt(0);
+
 const textStreamLineParser = {
   code: "0",
   name: "text",
@@ -65,35 +67,55 @@ export const parseStreamLine = (line: string) => {
   return parser.parse(streamLineValue);
 };
 
-const createChunkDecoder = () => {
-  const decoder = new TextDecoder();
-  return (chunk: Uint8Array | undefined) =>
-    chunk
-      ? decoder
-          .decode(chunk, { stream: true })
-          .split("\n")
-          .filter((line) => line !== "")
-      : "";
-};
+// concatenates all the chunks into a single Uint8Array
+function concatChunks(chunks: Uint8Array[], totalLength: number) {
+  const concatenatedChunks = new Uint8Array(totalLength);
+
+  let offset = 0;
+  for (const chunk of chunks) {
+    concatenatedChunks.set(chunk, offset);
+    offset += chunk.length;
+  }
+  chunks.length = 0;
+
+  return concatenatedChunks;
+}
 
 export async function* readResponseStream(
   reader: ReadableStreamDefaultReader<Uint8Array>,
 ) {
-  const decoder = createChunkDecoder();
+  const chunks: Uint8Array[] = [];
+  const decoder = new TextDecoder();
+  let totalLength = 0;
 
   let data: Record<string, any> = {};
 
   while (true) {
     let textValue = "";
-    const { done, value } = await reader.read();
-    if (done) {
-      break;
+    const { value } = await reader.read();
+
+    if (value) {
+      chunks.push(value);
+      totalLength += value.length;
+      if (value[value.length - 1] !== NEWLINE) {
+        // if the last character is not a newline, we have not read the whole JSON value
+        continue;
+      }
     }
-    const decoded = decoder(value);
-    if (typeof decoded === "string") {
-      textValue = decoded;
-    } else {
-      decoded.map(parseStreamLine).forEach((line) => {
+
+    if (chunks.length === 0) {
+      break; // we have reached the end of the stream
+    }
+
+    const concatenatedChunks = concatChunks(chunks, totalLength);
+    totalLength = 0;
+
+    decoder
+      .decode(concatenatedChunks, { stream: true })
+      .split("\n")
+      .filter((line) => line !== "") // splitting leaves an empty string at the end
+      .map(parseStreamLine)
+      .forEach((line) => {
         if (
           line.type === "data" &&
           line.value &&
@@ -106,7 +128,6 @@ export async function* readResponseStream(
           textValue += line.value;
         }
       });
-    }
     yield { textValue, data };
   }
 }
