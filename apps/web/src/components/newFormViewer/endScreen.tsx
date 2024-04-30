@@ -3,14 +3,11 @@ import Image from "next/image";
 import BrandName from "../common/brandName";
 
 type Props = {
-  endScreenMessage: string;
+  endScreenMessage?: string;
 };
 
 export const EndScreen = (props: Props) => {
-  const message =
-    props.endScreenMessage !== ""
-      ? props.endScreenMessage
-      : "Thank you for filling the form!";
+  const message = props.endScreenMessage || "Thank you for filling the form!";
   return (
     <div className="flex flex-col items-center justify-center">
       <p className="text-muted-foreground text-center">

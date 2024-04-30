@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
-import { Message } from "./types/message";
-import { parseStreamLine, readResponseStream } from "./utils/streamUtils";
+import { Message } from "./types";
+import { readResponseStream } from "./utils/streamUtils";
 
 type Props = {
   formId: string;
@@ -20,18 +20,20 @@ type State = {
   messages: Message[];
 };
 
+const initialState: State = {
+  conversationId: undefined,
+  currentQuestion: "",
+  data: undefined,
+  fieldsData: [],
+  currentField: undefined,
+  isBusy: false,
+  messages: [],
+};
+
 export function useNewConvoForm({ formId, onError }: Readonly<Props>) {
   const apiEndpoint = `/api/form/${formId}/new-conversation`;
 
-  const [state, setState] = useState<State>({
-    conversationId: undefined,
-    currentQuestion: "",
-    data: undefined,
-    fieldsData: [],
-    currentField: undefined,
-    isBusy: false,
-    messages: [],
-  });
+  const [state, setState] = useState<State>(initialState);
   const { currentQuestion, data, isBusy, messages } = state;
 
   const {
@@ -43,14 +45,9 @@ export function useNewConvoForm({ formId, onError }: Readonly<Props>) {
 
   const endScreenMessage = isFormSubmissionFinished ? currentQuestion : "";
 
-  console.log({
-    conversationId,
-    currentQuestion,
-    data,
-    fieldsData,
-    currentField,
-    messages,
-  });
+  const resetForm = useCallback(() => {
+    setState(initialState);
+  }, []);
 
   async function submitAnswer(answer: string) {
     setState((cs) => ({ ...cs, isBusy: true, currentQuestion: "" }));
@@ -115,5 +112,6 @@ export function useNewConvoForm({ formId, onError }: Readonly<Props>) {
     isBusy,
     isFormSubmissionFinished,
     endScreenMessage,
+    resetForm,
   };
 }

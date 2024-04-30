@@ -1,11 +1,9 @@
 import { z } from "zod";
 
-export const ConversationPayloadSchema = z.object({
-  messages: z.array(
-    z.object({
-      role: z.enum(["assistant", "user"]),
-      content: z.string().min(1).max(255),
-    }),
-  ),
-  isPreview: z.boolean().optional(),
+export const messageSchema = z.object({
+  role: z.enum(["user", "assistant"]),
+  content: z.string(),
+  fieldName: z.string().optional(),
 });
+
+export type Message = z.infer<typeof messageSchema>;

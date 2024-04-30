@@ -21,13 +21,7 @@ type State = {
 
 export type FormStage = "welcomeScreen" | "conversationFlow" | "endScreen";
 
-export function FormViewer({
-  form,
-  refresh,
-  // isPreview
-}: Readonly<Props>) {
-  // const showCustomEndScreenMessage = form.showCustomEndScreenMessage;
-  // const customEndScreenMessage = form.customEndScreenMessage || undefined;
+export function FormViewer({ form, refresh }: Readonly<Props>) {
   const [state, setState] = useState<State>({
     formStage: "welcomeScreen",
   });
@@ -39,13 +33,17 @@ export function FormViewer({
     currentQuestion,
     isBusy,
     isFormSubmissionFinished,
-    endScreenMessage,
+    endScreenMessage: generatedEndScreenMessage,
+    resetForm,
   } = useNewConvoForm({
     formId: form.id,
   });
 
-  // TODO: Implement this
-  // const hidePrevQuestionButton = isFirstQuestion;
+  const customEndScreenMessage = form.customEndScreenMessage || undefined;
+
+  const endScreenMessage = form.showCustomEndScreenMessage
+    ? customEndScreenMessage
+    : generatedEndScreenMessage;
 
   const gotoStage = (newStage: FormStage) => {
     setState((cs) => ({ ...cs, formStage: newStage }));
@@ -58,7 +56,7 @@ export function FormViewer({
 
   useEffect(() => {
     gotoStage("welcomeScreen");
-    // resetForm();
+    resetForm();
   }, [form, refresh]);
 
   useEffect(() => {
@@ -77,6 +75,7 @@ export function FormViewer({
         <FormFieldsViewer
           currentQuestion={currentQuestion}
           isFormBusy={isBusy}
+          // TODO: Implement this
           // handleGoToPrevQuestion={handleGoToPrevQuestion}
           // hidePrevQuestionButton={hidePrevQuestionButton}
           submitAnswer={submitAnswer}

@@ -50,11 +50,3 @@ export const createGeneratedFormSchema = formUpdateSchema.merge(
 export const generateFormSchema = z.object({
   formOverview: z.string().min(100).max(500),
 });
-
-export const messageSchema = z.object({
-  role: z.enum(["user", "assistant"]),
-  content: z.string(),
-  fieldName: z.string().optional(),
-});
-
-export type Message = z.infer<typeof messageSchema>;

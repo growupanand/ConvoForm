@@ -2,7 +2,7 @@
  * This utils will help to parse stream response coming from the server
  */
 
-import { JSONValue } from "ai";
+import { JSONValue } from "../types";
 
 const textStreamLineParser = {
   code: "0",

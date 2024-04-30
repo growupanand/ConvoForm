@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { FormViewer } from "@/components/formViewer/formViewer";
+import { FormViewer } from "@/components/newFormViewer/formViewer";
 import { formUpdateSchema } from "@/lib/validations/form";
 import { api } from "@/trpc/server";
 import { FormSubmissionPageHeader } from "./_components/header";
@@ -14,7 +14,9 @@ export const metadata: Metadata = {
   title: "Submit Form",
 };
 
-export default async function FormViewPage({ params }: FormViewerPageProps) {
+export default async function FormViewPage({
+  params,
+}: Readonly<FormViewerPageProps>) {
   const { formId } = params;
   const formData = await api.form.getOneWithFields({ id: formId });
 

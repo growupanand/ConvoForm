@@ -364,9 +364,6 @@ importers:
 
   packages/react:
     dependencies:
-      ai:
-        specifier: ^3.0.34
-        version: 3.0.34(react@18.2.0)(solid-js@1.8.17)(svelte@4.2.15)(vue@3.4.25)(zod@3.22.4)
       react:
         specifier: ^18
         version: 18.2.0
