@@ -6,7 +6,7 @@ import { z } from "zod";
 import { formSubmissionLimit } from "@/lib/config/pricing";
 import { sendErrorMessage, sendErrorResponse } from "@/lib/errorHandlers";
 import getIP from "@/lib/getIP";
-import { NewConversationService } from "@/lib/services/newConversation";
+import { ConversationService } from "@/lib/services/conversation";
 import { messageSchema } from "@/lib/validations/conversation";
 import { api } from "@/trpc/server";
 
@@ -73,7 +73,7 @@ export async function POST(
       }
     }
 
-    const ConversationService = new NewConversationService();
+    const conversationService = new ConversationService();
     let conversation: Conversation;
 
     // Get the conversation by id or create a new one
@@ -114,7 +114,7 @@ export async function POST(
         extractedAnswer,
         reasonForFailure,
         otherFieldsData,
-      } = await ConversationService.extractAnswerFromMessage({
+      } = await conversationService.extractAnswerFromMessage({
         messages,
         currentField,
         formOverview: conversation.formOverview,
@@ -177,7 +177,7 @@ export async function POST(
       }
     }
 
-    const requiredFieldName = ConversationService.getNextEmptyField(
+    const requiredFieldName = conversationService.getNextEmptyField(
       conversation.fieldsData,
     );
 
@@ -206,7 +206,7 @@ export async function POST(
     // If all fields are filled, mark the conversation as finished, and generate the end message
     if (isFormSubmissionFinished) {
       const { conversationName } =
-        await ConversationService.generateConversationName({
+        await conversationService.generateConversationName({
           formOverview: conversation.formOverview,
           fieldsWithData: conversation.fieldsData as FieldHavingData[],
         });
@@ -217,7 +217,7 @@ export async function POST(
         conversationName,
       });
 
-      return ConversationService.generateEndMessage({
+      return conversationService.generateEndMessage({
         formOverview: conversation.formOverview,
         fieldsWithData: conversation.fieldsData as FieldHavingData[],
         extraCustomStreamData,
@@ -226,7 +226,7 @@ export async function POST(
     }
 
     // Generate the next question
-    return ConversationService.generateQuestion({
+    return conversationService.generateQuestion({
       formOverview: conversation.formOverview,
       requiredFieldName,
       fieldsData: conversation.fieldsData,

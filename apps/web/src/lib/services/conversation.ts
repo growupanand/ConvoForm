@@ -5,7 +5,7 @@ import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { Message } from "../validations/conversation";
 import { OpenAIService } from "./openAI";
 
-export class NewConversationService extends OpenAIService {
+export class ConversationService extends OpenAIService {
   public getNextEmptyField(fieldsData: FieldData[]): string | undefined {
     return fieldsData.find((field) => field.fieldValue === null)?.fieldName;
   }

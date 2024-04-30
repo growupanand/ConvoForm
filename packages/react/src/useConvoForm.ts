@@ -30,8 +30,8 @@ const initialState: State = {
   messages: [],
 };
 
-export function useNewConvoForm({ formId, onError }: Readonly<Props>) {
-  const apiEndpoint = `/api/form/${formId}/new-conversation`;
+export function useConvoForm({ formId, onError }: Readonly<Props>) {
+  const apiEndpoint = `/api/form/${formId}/conversation`;
 
   const [state, setState] = useState<State>(initialState);
   const { currentQuestion, data, isBusy, messages } = state;

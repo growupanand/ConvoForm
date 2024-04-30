@@ -1,4 +1,4 @@
-import { FormViewer } from "@/components/newFormViewer/formViewer";
+import { FormViewer } from "@/components/formViewer/formViewer";
 import { formUpdateSchema } from "@/lib/validations/form";
 
 export const FormPreview = ({ form }: { form: any }) => {

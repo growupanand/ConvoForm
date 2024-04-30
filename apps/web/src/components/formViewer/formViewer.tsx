@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Form } from "@convoform/db";
-import { useNewConvoForm } from "@convoform/react";
+import { useConvoForm } from "@convoform/react";
 
 import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
 import { EndScreen } from "./endScreen";
@@ -35,7 +35,7 @@ export function FormViewer({ form, refresh }: Readonly<Props>) {
     isFormSubmissionFinished,
     endScreenMessage: generatedEndScreenMessage,
     resetForm,
-  } = useNewConvoForm({
+  } = useConvoForm({
     formId: form.id,
   });
 
