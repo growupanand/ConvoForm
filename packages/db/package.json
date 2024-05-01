@@ -10,7 +10,8 @@
     "type-check": "tsc --noEmit",
     "drizzle-kit": "drizzle-kit",
     "drizzle:generate-migration": "drizzle-kit generate:pg --out drizzle/migrations --schema src/schema/index.ts",
-    "drizzle:apply-migration": "tsx ./src/migrate.ts"
+    "drizzle:apply-migration": "tsx ./src/migrate.ts",
+    "custom-script" : "tsx ./src/script.ts"
   },
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.2",
