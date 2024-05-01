@@ -1,3 +1,17 @@
+## [0.7.0](https://github.com/growupanand/ConvoForm/compare/0.6.1...0.7.0) (2024-05-01)
+
+### Features
+
+- 🚀 51 Revamped conversation flow
+  ([#238](https://github.com/growupanand/ConvoForm/issues/238))
+  ([bc4994f](https://github.com/growupanand/ConvoForm/commit/bc4994fc745c9a89ad65a76acebe71e60c5505d8)),
+  closes [#51](https://github.com/growupanand/ConvoForm/issues/51)
+
+### Improvements
+
+- 💄 Minor UI changes
+  ([957fbec](https://github.com/growupanand/ConvoForm/commit/957fbecf2b8cc3885a031876e83415b392ee0793))
+
 ## [0.6.1](https://github.com/growupanand/ConvoForm/compare/0.6.0...0.6.1) (2024-04-07)
 
 ### Improvements
