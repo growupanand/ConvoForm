@@ -1,0 +1,20 @@
+{
+  "name": "websocket",
+  "version": "1.0.0",
+  "description": "This is websocket server for convoform.",
+  "scripts": {
+    "dev" : "nodemon --exec ts-node src/index.ts"
+  },
+  "keywords": [],
+  "author": "Utkarsh Anand",
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
