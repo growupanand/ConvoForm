@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 const SIZES_MAP = {
-  xs: "size-1",
+  xs: "size-2",
   sm: "size-4",
   md: "size-6",
   lg: "size-8",
@@ -22,8 +22,8 @@ export function Spinner({ className, label, size = "md" }: Readonly<Props>) {
       <svg
         className={cn(
           "inline animate-spin fill-gray-500 text-gray-200 dark:text-gray-600",
-          className,
           SIZES_MAP[size],
+          className,
         )}
         viewBox="0 0 100 101"
         fill="none"

@@ -41,8 +41,11 @@ export function useConvoForm({ formId, onError }: Readonly<Props>) {
   const endScreenMessage = isFormSubmissionFinished ? currentQuestion : "";
 
   const resetForm = useCallback(() => {
+    if (conversationId !== undefined) {
+      socket.emit("conversation:stopped", { conversationId });
+    }
     setState(initialState);
-  }, []);
+  }, [conversationId]);
 
   async function submitAnswer(answer: string) {
     setState((cs) => ({ ...cs, isBusy: true, currentQuestion: "" }));
@@ -101,7 +104,7 @@ export function useConvoForm({ formId, onError }: Readonly<Props>) {
   useEffect(() => {
     // If new conversation started
     if (conversationId !== undefined) {
-      socket.emit("conversation:created", { formId });
+      socket.emit("conversation:started", { conversationId, formId });
     }
   }, [conversationId]);
 
@@ -112,7 +115,7 @@ export function useConvoForm({ formId, onError }: Readonly<Props>) {
         socket.emit("conversation:updated", { conversationId });
       }, 2000);
     }
-  }, [isBusy, conversationId]);
+  }, [isBusy]);
 
   return {
     submitAnswer,

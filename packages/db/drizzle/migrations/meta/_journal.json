@@ -71,6 +71,13 @@
       "when": 1714506733718,
       "tag": "0009_chubby_gwen_stacy",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1714838509285,
+      "tag": "0010_wealthy_zaran",
+      "breakpoints": true
     }
   ]
 }

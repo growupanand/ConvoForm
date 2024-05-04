@@ -2,6 +2,7 @@ import { Conversation } from "@convoform/db";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 
 import { SecondaryNavigation } from "@/components/common/secondaryNavigation";
+import Spinner from "@/components/common/spinner";
 import { cn, timeAgo } from "@/lib/utils";
 
 interface ConversationsCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -19,14 +20,18 @@ export function ConversationsNavigation({
     title: (
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-3">
-          <span
-            className={cn(
-              "flex h-2 w-2 rounded-full",
-              conversation.isFinished
-                ? "bg-primary"
-                : "border border-gray-500 ",
-            )}
-          ></span>
+          {conversation.isInProgress ? (
+            <Spinner size="sm" />
+          ) : (
+            <span
+              className={cn(
+                "flex size-2 rounded-full",
+                conversation.isFinished
+                  ? "bg-primary"
+                  : "border border-gray-500 ",
+              )}
+            ></span>
+          )}
           <span className="capitalize">{conversation.name}</span>
         </div>
         <span className="text-muted-foreground font-light">

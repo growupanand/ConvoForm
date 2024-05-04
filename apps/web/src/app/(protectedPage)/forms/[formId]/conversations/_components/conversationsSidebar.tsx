@@ -54,13 +54,18 @@ export default function ConversationsSidebar({ formId }: Props) {
   useEffect(() => {
     socket.on(eventListener, (data) => {
       const { event } = data;
-      if (typeof event === "string" && event === "conversation:created") {
-        sonnerToast.info("New conversation started", {
-          position: "top-center",
-        });
-        refetch();
+      if (typeof event === "string") {
+        if (event === "conversations:started") {
+          sonnerToast.info("New conversation started", {
+            position: "top-center",
+          });
+        }
+        if (event === "conversations:updated") {
+          refetch();
+        }
       }
     });
+
     return () => {
       if (socket.hasListeners(eventListener)) {
         socket.off(eventListener);

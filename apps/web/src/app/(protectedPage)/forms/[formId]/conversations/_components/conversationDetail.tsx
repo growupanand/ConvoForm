@@ -30,6 +30,31 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
   const isFormDataEmpty = tableColumns.length === 0;
   const transcript = conversation.transcript as Transcript;
 
+  const getStatusBadge = () => {
+    if (conversation.isFinished) {
+      return (
+        <Badge variant="default" className="text-sm">
+          Finished
+        </Badge>
+      );
+    }
+
+    if (conversation.isInProgress) {
+      return (
+        <Badge variant="secondary" className="flex items-center gap-3 text-sm ">
+          <span className="bg-primary flex size-3 animate-pulse rounded-full"></span>
+          <span>In progress</span>
+        </Badge>
+      );
+    }
+
+    return (
+      <Badge variant="outline" className="text-sm ">
+        Not Finished
+      </Badge>
+    );
+  };
+
   return (
     <div className="h-full lg:container">
       <div className="mb-5 flex items-start justify-between px-3 lg:mb-10">
@@ -47,17 +72,7 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
             </span>
           </div>
         </div>
-        <div className="flex flex-col items-end">
-          {conversation.isFinished ? (
-            <Badge variant="default" className="text-base font-normal">
-              Finished
-            </Badge>
-          ) : (
-            <Badge variant="outline" className="text-base font-normal">
-              In Progress
-            </Badge>
-          )}
-        </div>
+        <div className="flex flex-col items-end">{getStatusBadge()}</div>
       </div>
       <div className="grid  gap-3 lg:grid-cols-2">
         {!isFormDataEmpty && (
