@@ -9,6 +9,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@convoform/ui/components/ui/sheet";
+import { toast } from "@convoform/ui/components/ui/use-toast";
 import { socket } from "@convoform/websocket-client";
 import { GanttChartSquare, List } from "lucide-react";
 
@@ -48,10 +49,15 @@ export default function ConversationsSidebar({ formId }: Props) {
     }
   }, [pathname]);
 
+  // Update conversations list when a new conversation is created
   useEffect(() => {
     socket.on(eventListener, (data) => {
       const { event } = data;
       if (typeof event === "string" && event === "conversation:created") {
+        toast({
+          title: "New conversation created.",
+          duration: 2000,
+        });
         refetch();
       }
     });
@@ -80,14 +86,14 @@ export default function ConversationsSidebar({ formId }: Props) {
           </div>
           <SheetContent side="left" className="w-[90%] ">
             <SheetClose />
-            <div className="mb-3">
+            <div className="mb-5">
               <SecondaryNavigation
                 items={[
                   {
                     href: `/forms/${formId}/conversations`,
                     title: (
                       <div className="flex w-full items-center justify-between">
-                        <span className="text-lg">Overview</span>
+                        <span className="text-lg">All conversations</span>
                         <GanttChartSquare
                           className="text-muted-foreground"
                           size={20}
@@ -97,6 +103,9 @@ export default function ConversationsSidebar({ formId }: Props) {
                   },
                 ]}
               />
+            </div>
+            <div className="text-muted-foreground mb-2 px-4 text-sm">
+              Recent conversations
             </div>
             {isLoadingConversations || !formId ? (
               <ConversationsNavigation.ConversationsCardSkelton />
@@ -114,14 +123,14 @@ export default function ConversationsSidebar({ formId }: Props) {
           <MainNavTab formId={formId} />
         </div>
 
-        <div className="mb-3">
+        <div className="mb-5">
           <SecondaryNavigation
             items={[
               {
                 href: `/forms/${formId}/conversations`,
                 title: (
                   <div className="flex w-full items-center justify-between">
-                    <span className="text-lg">Overview</span>
+                    <span className="text-lg">All conversations</span>
                     <GanttChartSquare
                       className="text-muted-foreground"
                       size={20}
@@ -131,6 +140,9 @@ export default function ConversationsSidebar({ formId }: Props) {
               },
             ]}
           />
+        </div>
+        <div className="text-muted-foreground mb-2 px-4 text-sm">
+          Recent conversations
         </div>
         {isLoadingConversations || !formId ? (
           <ConversationsNavigation.ConversationsCardSkelton />

@@ -1,4 +1,5 @@
 import { Conversation } from "@convoform/db";
+import { Badge } from "@convoform/ui/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -31,18 +32,34 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
 
   return (
     <div className="h-full lg:container">
-      <div className="flex items-center justify-between px-3 pt-6">
-        <div className="flex items-center gap-2">
-          <FileText className=" " size={20} />
-          <h2 className="text-xl font-medium capitalize lg:text-2xl">
-            {conversation.name}
-          </h2>
+      <div className="mb-5 flex items-start justify-between px-3 lg:mb-10">
+        <div className="flex flex-col items-start ">
+          <div className="flex items-center gap-2">
+            <FileText className=" " size={20} />
+            <h2 className="text-xl font-medium capitalize lg:text-2xl">
+              {conversation.name}
+            </h2>
+          </div>
+          <div className="text-muted-foreground text-xs font-normal lg:text-sm">
+            <span className="">Started on - </span>
+            <span className="font-medium">
+              {conversation.createdAt.toLocaleString()}
+            </span>
+          </div>
         </div>
-        <span className="text-muted-foreground text-xs font-normal lg:text-sm">
-          {conversation.createdAt.toLocaleString()}
-        </span>
+        <div className="flex flex-col items-end">
+          {conversation.isFinished ? (
+            <Badge variant="default" className="text-base font-normal">
+              Finished
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="text-base font-normal">
+              In Progress
+            </Badge>
+          )}
+        </div>
       </div>
-      <div className="grid max-w-lg gap-3">
+      <div className="grid  gap-3 lg:grid-cols-2">
         {!isFormDataEmpty && (
           <SectionCard title="Collected data" titleClassName="font-medium">
             <div className="overflow-hidden rounded-md border bg-white">
@@ -93,7 +110,7 @@ const ConversationDetailSkeleton = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="max-w-lg space-y-10">
+          <div className="grid gap-10 lg:grid-cols-2">
             <div className="overflow-hidden rounded-md border bg-white">
               <Table>
                 <TableBody>

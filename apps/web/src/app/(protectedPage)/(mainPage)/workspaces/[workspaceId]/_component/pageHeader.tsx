@@ -126,7 +126,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
         <Input
           ref={inputRef}
           className={cn(
-            "h-auto rounded-none border-0 border-transparent bg-transparent py-3 ps-0 text-xl font-medium hover:border-b hover:border-gray-300 focus-visible:border-b-2 focus-visible:border-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 lg:text-2xl ",
+            "hover:border-input h-auto border-transparent bg-transparent text-xl font-medium ring-0 focus-visible:ring-0 lg:text-2xl",
           )}
           type="text"
           onChange={handleWorkspaceNameInputChange}
