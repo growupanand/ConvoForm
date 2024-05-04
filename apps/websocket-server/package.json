@@ -1,5 +1,5 @@
 {
-  "name": "websocket",
+  "name": "websocket-server",
   "version": "1.0.0",
   "description": "This is websocket server for convoform.",
   "scripts": {

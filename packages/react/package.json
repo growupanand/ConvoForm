@@ -12,8 +12,8 @@
   },
   "version": "0.0.1",
   "dependencies": {
+    "@convoform/websocket-client": "workspace:*",
     "react": "^18",
-    "socket.io-client": "^4.7.5",
     "typescript": "^5"
   },
   "devDependencies": {

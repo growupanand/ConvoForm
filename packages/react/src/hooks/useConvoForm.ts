@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { socket } from "@convoform/websocket-client";
 
-import { socket } from "../socket";
 import { ExtraStreamData, Message } from "../types";
 import { readResponseStream } from "../utils/streamUtils";
 

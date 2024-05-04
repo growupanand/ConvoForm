@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
+import { socket } from "@convoform/websocket-client";
 
 import ConversationDetail from "@/app/(protectedPage)/forms/[formId]/conversations/_components/conversationDetail";
-import { socket } from "@/socket";
 import { api } from "@/trpc/react";
 import Loading from "./loading";
 import Notfound from "./not-found";

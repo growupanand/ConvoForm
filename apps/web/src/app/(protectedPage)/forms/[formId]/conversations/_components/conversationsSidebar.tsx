@@ -9,10 +9,10 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@convoform/ui/components/ui/sheet";
+import { socket } from "@convoform/websocket-client";
 import { GanttChartSquare, List } from "lucide-react";
 
 import { SecondaryNavigation } from "@/components/common/secondaryNavigation";
-import { socket } from "@/socket";
 import { api } from "@/trpc/react";
 import MainNavTab from "../../_components/mainNavTab";
 import { ConversationsNavigation } from "./conversationsNavigation";
