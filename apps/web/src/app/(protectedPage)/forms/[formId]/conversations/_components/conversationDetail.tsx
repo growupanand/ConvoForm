@@ -48,9 +48,11 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
             <div className="overflow-hidden rounded-md border bg-white">
               <Table className="">
                 <TableBody>
-                  {tableColumns.map((columnName) => {
+                  {tableColumns.map((columnName, index) => {
                     return (
-                      <TableRow key={tableData[columnName]}>
+                      <TableRow
+                        key={`${index}-${conversation.id}-${columnName}`}
+                      >
                         <TableCell className="py-2">{columnName}</TableCell>
                         <TableCell className="py-2 font-medium">
                           {tableData[columnName]}

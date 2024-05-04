@@ -30,7 +30,8 @@
     "drizzle-kit": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle-kit",
     "drizzle:generate-migration": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle:generate-migration",
     "drizzle:apply-migration": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle:apply-migration",
-    "custom-script": "dotenv -e .env.local -- pnpm --filter @convoform/db custom-script"
+    "custom-script": "dotenv -e .env.local -- pnpm --filter @convoform/db custom-script",
+    "start" : "dotenv -e .env.local -- turbo run start"
   },
   "config": {
     "commitizen": {

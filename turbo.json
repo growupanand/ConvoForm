@@ -14,7 +14,8 @@
     "DATABASE_URL",
     "UPSTASH_REDIS_REST_URL",
     "UPSTASH_REDIS_REST_TOKEN",
-    "SHOW_NO_RATE_LIMIT_LOG"
+    "SHOW_NO_RATE_LIMIT_LOG",
+    "NEXT_PUBLIC_WEBSOCKET_URL"
   ],
   "pipeline": {
     "build": {
@@ -24,6 +25,11 @@
       "outputs": [
         "dist/**",
         ".next/**"
+      ]
+    },
+    "start" : {
+      "dependsOn": [
+        "^start"
       ]
     },
     "lint": {

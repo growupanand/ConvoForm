@@ -12,6 +12,7 @@ import {
 import { GanttChartSquare, List } from "lucide-react";
 
 import { SecondaryNavigation } from "@/components/common/secondaryNavigation";
+import { socket } from "@/socket";
 import { api } from "@/trpc/react";
 import MainNavTab from "../../_components/mainNavTab";
 import { ConversationsNavigation } from "./conversationsNavigation";
@@ -25,6 +26,7 @@ type State = {
 };
 
 export default function ConversationsSidebar({ formId }: Props) {
+  const pathname = usePathname();
   const [state, setState] = useState<State>({
     open: false,
   });
@@ -32,20 +34,33 @@ export default function ConversationsSidebar({ formId }: Props) {
 
   const closeSheet = () => setState((cs) => ({ ...cs, open: false }));
 
-  const { isLoading, data } = api.conversation.getAll.useQuery({
+  const { isLoading, data, refetch } = api.conversation.getAll.useQuery({
     formId,
   });
 
   const isLoadingConversations = isLoading;
   const conversations = data ?? [];
-
-  const pathname = usePathname();
+  const eventListener = `form:${formId}`;
 
   useEffect(() => {
     if (open) {
       closeSheet();
     }
   }, [pathname]);
+
+  useEffect(() => {
+    socket.on(eventListener, (data) => {
+      const { event } = data;
+      if (typeof event === "string" && event === "conversation:created") {
+        refetch();
+      }
+    });
+    return () => {
+      if (socket.hasListeners(eventListener)) {
+        socket.off(eventListener);
+      }
+    };
+  }, []);
 
   return (
     <div className="px-3">

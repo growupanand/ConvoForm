@@ -47,6 +47,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.48.2",
     "remark-gfm": "^4.0.0",
+    "socket.io-client": "^4.7.5",
     "superjson": "^2.2.1",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",

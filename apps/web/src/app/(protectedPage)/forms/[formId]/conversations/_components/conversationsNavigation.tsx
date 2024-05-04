@@ -1,8 +1,8 @@
 import { Conversation } from "@convoform/db";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 
+import { SecondaryNavigation } from "@/components/common/secondaryNavigation";
 import { timeAgo } from "@/lib/utils";
-import { SecondaryNavigation } from "../../../../../../components/common/secondaryNavigation";
 
 interface ConversationsCardProps extends React.HTMLAttributes<HTMLDivElement> {
   conversations: Conversation[];
@@ -33,10 +33,7 @@ export function ConversationsNavigation({
           <p className="text-sm text-gray-500">No Conversations</p>
         </div>
       ) : (
-        <SecondaryNavigation
-          items={navigationItems}
-          enableStaggerListAnimation
-        />
+        <SecondaryNavigation items={navigationItems} />
       )}
     </>
   );
