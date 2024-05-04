@@ -2,17 +2,29 @@ import { createServer } from "http";
 import express from "express";
 import { Server } from "socket.io";
 
+const IS_PROD = process.env.NODE_ENV === "production";
 const PORT = 4000;
 
+/**
+ * ============ HTTP SERVER ============
+ */
 const app = express();
 const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Working");
 });
 
-app.use(express.json());
+/**
+ * ============ WEBSOCKET SERVER ============
+ */
+
+const io = new Server(server, {
+  cors: {
+    origin: IS_PROD ? "convoform.com" : "*",
+  },
+});
 
 io.on("connection", (socket) => {
   socket.on("conversation:created", (data) => {
@@ -31,5 +43,7 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`WEBSOCKET Server started on port ${PORT}\n`);
+  console.log(
+    `WEBSOCKET Server (${IS_PROD ? "Production" : "Development"}) started on port ${PORT}\n`,
+  );
 });
