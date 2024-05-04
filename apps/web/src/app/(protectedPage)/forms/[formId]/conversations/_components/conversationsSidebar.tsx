@@ -9,7 +9,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@convoform/ui/components/ui/sheet";
-import { toast } from "@convoform/ui/components/ui/use-toast";
+import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { socket } from "@convoform/websocket-client";
 import { GanttChartSquare, List } from "lucide-react";
 
@@ -28,6 +28,7 @@ type State = {
 
 export default function ConversationsSidebar({ formId }: Props) {
   const pathname = usePathname();
+
   const [state, setState] = useState<State>({
     open: false,
   });
@@ -54,9 +55,8 @@ export default function ConversationsSidebar({ formId }: Props) {
     socket.on(eventListener, (data) => {
       const { event } = data;
       if (typeof event === "string" && event === "conversation:created") {
-        toast({
-          title: "New conversation created.",
-          duration: 2000,
+        sonnerToast.info("New conversation started", {
+          position: "top-center",
         });
         refetch();
       }
@@ -69,7 +69,7 @@ export default function ConversationsSidebar({ formId }: Props) {
   }, []);
 
   return (
-    <div className="px-3">
+    <div className="">
       <div className="lg:hidden">
         <MainNavTab formId={formId} />
         <Sheet
@@ -84,7 +84,7 @@ export default function ConversationsSidebar({ formId }: Props) {
               </Button>
             </SheetTrigger>
           </div>
-          <SheetContent side="left" className="w-[90%] ">
+          <SheetContent side="left" className="w-[90%] overflow-auto">
             <SheetClose />
             <div className="mb-5">
               <SecondaryNavigation
@@ -118,40 +118,46 @@ export default function ConversationsSidebar({ formId }: Props) {
           </SheetContent>
         </Sheet>
       </div>
-      <div className="max-lg:hidden">
-        <div className="mb-5">
-          <MainNavTab formId={formId} />
-        </div>
+      <div className="relative flex flex-col px-3 max-lg:hidden lg:max-h-[calc(100vh-100px)]">
+        <div>
+          <div className="mb-5">
+            <MainNavTab formId={formId} />
+          </div>
 
-        <div className="mb-5">
-          <SecondaryNavigation
-            items={[
-              {
-                href: `/forms/${formId}/conversations`,
-                title: (
-                  <div className="flex w-full items-center justify-between">
-                    <span className="text-lg">All conversations</span>
-                    <GanttChartSquare
-                      className="text-muted-foreground"
-                      size={20}
-                    />
-                  </div>
-                ),
-              },
-            ]}
-          />
+          <div className="mb-5">
+            <SecondaryNavigation
+              items={[
+                {
+                  href: `/forms/${formId}/conversations`,
+                  title: (
+                    <div className="flex w-full items-center justify-between">
+                      <span className="text-lg">All conversations</span>
+                      <GanttChartSquare
+                        className="text-muted-foreground"
+                        size={20}
+                      />
+                    </div>
+                  ),
+                },
+              ]}
+            />
+          </div>
         </div>
-        <div className="text-muted-foreground mb-2 px-4 text-sm">
-          Recent conversations
+        <div className="relative h-full grow overflow-auto pb-5">
+          <div className="text-muted-foreground mb-2 px-4 text-sm">
+            Recent conversations
+          </div>
+          <div>
+            {isLoadingConversations || !formId ? (
+              <ConversationsNavigation.ConversationsCardSkelton />
+            ) : (
+              <ConversationsNavigation
+                conversations={conversations}
+                formId={formId}
+              />
+            )}
+          </div>
         </div>
-        {isLoadingConversations || !formId ? (
-          <ConversationsNavigation.ConversationsCardSkelton />
-        ) : (
-          <ConversationsNavigation
-            conversations={conversations}
-            formId={formId}
-          />
-        )}
       </div>
     </div>
   );
