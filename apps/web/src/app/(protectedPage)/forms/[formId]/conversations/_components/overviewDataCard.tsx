@@ -11,5 +11,5 @@ export function OverviewDataCard({ formId }: Readonly<Props>) {
   const query = api.metrics.getConversationMetrics.useQuery({
     formId,
   });
-  return <QueryDataCard query={query} dataSourceName="Overview" />;
+  return <QueryDataCard query={query} title="Conversations" />;
 }

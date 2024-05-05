@@ -1,10 +1,12 @@
+import { AnimatedTypingDots } from "@/components/common/typingDots";
 import { Transcript } from "@/lib/types/transcript";
 
 type Props = {
   transcript: Transcript;
+  isBusy?: boolean;
 };
 
-export default function TranscriptCard({ transcript }: Props) {
+export default function TranscriptCard({ transcript, isBusy }: Props) {
   if (transcript.length === 0) {
     return <SystemMessageBox message="No messages yet" />;
   }
@@ -24,6 +26,11 @@ export default function TranscriptCard({ transcript }: Props) {
           </div>
         );
       })}
+      {isBusy && (
+        <div className="pt-2">
+          <AnimatedTypingDots size="xxs" />
+        </div>
+      )}
     </div>
   );
 }

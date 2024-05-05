@@ -1,0 +1,1 @@
+ALTER TABLE "Conversation" ADD COLUMN "isInProgress" boolean DEFAULT false NOT NULL;

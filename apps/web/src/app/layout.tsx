@@ -4,6 +4,7 @@ import "../globals.css";
 import "nprogress/nprogress.css";
 
 import type { Viewport } from "next";
+import { Toaster as SonnerToaster } from "@convoform/ui/components/ui/sonner";
 import { Toaster } from "@convoform/ui/components/ui/toaster";
 
 import { AuthProvider } from "@/components/authProvider";
@@ -79,6 +80,7 @@ export default function RootLayout({
           <AuthProvider>{children}</AuthProvider>
         </TRPCReactProvider>
         <Toaster />
+        <SonnerToaster />
       </body>
     </html>
   );

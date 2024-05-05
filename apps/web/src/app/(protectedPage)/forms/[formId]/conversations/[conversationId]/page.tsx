@@ -1,21 +1,58 @@
+"use client";
+
+import { useEffect } from "react";
 import { notFound } from "next/navigation";
+import { useOrganization } from "@clerk/nextjs";
+import { socket } from "@convoform/websocket-client";
 
 import ConversationDetail from "@/app/(protectedPage)/forms/[formId]/conversations/_components/conversationDetail";
-import { api } from "@/trpc/server";
+import { api } from "@/trpc/react";
+import Loading from "./loading";
 
 type Props = {
   params: { conversationId: string };
 };
 
-export default async function ConversationDetailPage(props: Props) {
+export default function ConversationDetailPage(props: Readonly<Props>) {
   const { conversationId } = props.params;
+  const { organization, isLoaded: isOrganizationLoaded } = useOrganization();
 
-  const conversation = await api.conversation.getOne({
+  const {
+    data,
+    isLoading: isLoadingConversations,
+    refetch,
+  } = api.conversation.getOne.useQuery({
     id: conversationId,
   });
+  const conversation = data;
+  const eventListener = `conversation:${conversationId}`;
+  const isLoading = isLoadingConversations || !isOrganizationLoaded;
+  const canAccessConversation =
+    organization && organization.id === conversation?.organizationId;
 
-  if (!conversation) {
-    notFound();
+  useEffect(() => {
+    if (conversation && conversation.isFinished === false) {
+      socket.on(eventListener, (data) => {
+        const { event } = data;
+        if (typeof event === "string" && event === "updated") {
+          refetch();
+        }
+      });
+    }
+
+    return () => {
+      if (socket.hasListeners(eventListener)) {
+        socket.off(eventListener);
+      }
+    };
+  }, [conversation?.id]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!conversation || !canAccessConversation) {
+    return notFound();
   }
 
   return <ConversationDetail conversation={conversation} />;

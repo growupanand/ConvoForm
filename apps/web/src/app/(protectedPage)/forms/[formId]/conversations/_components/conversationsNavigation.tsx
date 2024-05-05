@@ -1,8 +1,9 @@
 import { Conversation } from "@convoform/db";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 
-import { timeAgo } from "@/lib/utils";
-import { SecondaryNavigation } from "../../../../../../components/common/secondaryNavigation";
+import { SecondaryNavigation } from "@/components/common/secondaryNavigation";
+import Spinner from "@/components/common/spinner";
+import { cn, timeAgo } from "@/lib/utils";
 
 interface ConversationsCardProps extends React.HTMLAttributes<HTMLDivElement> {
   conversations: Conversation[];
@@ -18,7 +19,23 @@ export function ConversationsNavigation({
     href: `/forms/${formId}/conversations/${conversation.id}`,
     title: (
       <div className="flex w-full items-center justify-between">
-        <span className="capitalize">{conversation.name}</span>
+        <div className="flex items-center gap-3">
+          {conversation.isInProgress ? (
+            <Spinner size="sm" />
+          ) : (
+            <span
+              className={cn(
+                "flex size-2 rounded-full",
+                conversation.isFinished
+                  ? "bg-primary"
+                  : "border border-gray-500 ",
+              )}
+            ></span>
+          )}
+          <span className="capitalize">
+            {conversation.isInProgress ? "In progress..." : conversation.name}
+          </span>
+        </div>
         <span className="text-muted-foreground font-light">
           {timeAgo(conversation.createdAt)}
         </span>
@@ -33,10 +50,7 @@ export function ConversationsNavigation({
           <p className="text-sm text-gray-500">No Conversations</p>
         </div>
       ) : (
-        <SecondaryNavigation
-          items={navigationItems}
-          enableStaggerListAnimation
-        />
+        <SecondaryNavigation items={navigationItems} />
       )}
     </>
   );
@@ -45,15 +59,15 @@ export function ConversationsNavigation({
 const ConversationsCardSkelton = () => (
   <div>
     <nav className="grid gap-1">
-      <div className="flex h-[40px] w-full items-center justify-between ps-3">
+      <div className="flex h-[40px] w-full items-center justify-between">
         <Skeleton className="h-[15px] w-[80px]" />
         <Skeleton className="h-[15px] w-[40px]" />
       </div>
-      <div className="flex h-[40px] w-full items-center justify-between ps-3">
+      <div className="flex h-[40px] w-full items-center justify-between">
         <Skeleton className="h-[15px] w-[80px]" />
         <Skeleton className="h-[15px] w-[40px]" />
       </div>
-      <div className="flex h-[40px] w-full items-center justify-between ps-3">
+      <div className="flex h-[40px] w-full items-center justify-between">
         <Skeleton className="h-[15px] w-[80px]" />
         <Skeleton className="h-[15px] w-[40px]" />
       </div>

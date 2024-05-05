@@ -12,6 +12,7 @@
   },
   "version": "0.0.1",
   "dependencies": {
+    "@convoform/websocket-client": "workspace:*",
     "react": "^18",
     "typescript": "^5"
   },

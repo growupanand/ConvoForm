@@ -16,17 +16,16 @@ type Props = {
 };
 
 function FormPageHeader({ formId }: Readonly<Props>) {
-  const { organization, isLoaded } = useOrganization();
+  const { organization, isLoaded: isOrganizationLoaded } = useOrganization();
   const { data, isLoading } = api.form.getOneWithWorkspace.useQuery({
     id: formId,
   });
 
-  if (isLoading || !isLoaded) {
-    return <FormEditorPageHeaderSkeleton />;
-  }
+  const canAccessForm =
+    organization && data && data.organizationId === organization.id;
 
-  if (!data || !organization || data.organizationId !== organization.id) {
-    return null;
+  if (isLoading || !isOrganizationLoaded || !canAccessForm) {
+    return <FormEditorPageHeaderSkeleton />;
   }
 
   return (
@@ -34,7 +33,7 @@ function FormPageHeader({ formId }: Readonly<Props>) {
       <div className="flex items-center justify-between ">
         <div
           className={cn(
-            "flex w-full items-center overflow-hidden text-xs max-lg:hidden",
+            "flex w-full items-center overflow-hidden pe-5 text-xs max-lg:hidden",
             montserrat.className,
           )}
         >
@@ -45,7 +44,11 @@ function FormPageHeader({ formId }: Readonly<Props>) {
           </Button>
           <ChevronRight size={20} />
           <LinkN href={"/dashboard"}>
-            <Button size="sm" variant="link">
+            <Button
+              size="sm"
+              variant="link"
+              className="text-muted-foreground hover:text-primary"
+            >
               Dashboard
             </Button>
           </LinkN>
@@ -53,14 +56,18 @@ function FormPageHeader({ formId }: Readonly<Props>) {
           {data ? (
             <>
               <LinkN href={`/workspaces/${data.workspaceId}`}>
-                <Button size="sm" variant="link">
+                <Button
+                  size="sm"
+                  variant="link"
+                  className="text-muted-foreground hover:text-primary"
+                >
                   {data.workspace.name}
                 </Button>
               </LinkN>
               <ChevronRight size={20} />
               <ChangeNameInput
                 form={data}
-                className="w-full text-lg font-medium"
+                className="hover:border-input w-full text-base font-semibold ring-0 focus-visible:ring-0"
               />
             </>
           ) : (

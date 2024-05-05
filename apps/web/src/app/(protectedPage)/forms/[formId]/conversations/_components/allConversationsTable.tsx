@@ -8,7 +8,7 @@ type Props = {
   formId: string;
 };
 
-export function OverviewTable({ formId }: Readonly<Props>) {
+export function AllConversationsTable({ formId }: Readonly<Props>) {
   const query = api.conversation.getFormResponsesData.useQuery({
     formId,
   });

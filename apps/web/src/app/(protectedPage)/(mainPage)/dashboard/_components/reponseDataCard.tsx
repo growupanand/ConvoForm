@@ -8,5 +8,5 @@ export function ResponseDataCard({ orgId }: { orgId: string }) {
     organizationId: orgId,
   });
 
-  return <QueryDataCard dataSourceName="Responses" query={query} />;
+  return <QueryDataCard title="Responses" query={query} />;
 }

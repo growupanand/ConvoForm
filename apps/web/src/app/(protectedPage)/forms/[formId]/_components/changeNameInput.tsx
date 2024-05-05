@@ -59,7 +59,7 @@ export default function ChangeNameInput({ form, className }: Props) {
     <Input
       disabled={isUpdating}
       className={cn(
-        "rounded-none border-0 bg-transparent text-2xl font-bold hover:border-b hover:border-gray-300 focus-visible:border-b focus-visible:border-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0",
+        " border-transparent  bg-transparent text-2xl font-bold  ",
         className,
       )}
       type="text"

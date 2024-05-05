@@ -13,3 +13,10 @@ export type Message = {
   content: string;
   fieldName?: string;
 };
+
+export type ExtraStreamData = {
+  id?: string;
+  fieldsData?: Record<string, any>;
+  currentField?: string;
+  isFormSubmissionFinished?: boolean;
+};

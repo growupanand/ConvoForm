@@ -1,6 +1,5 @@
 "use client";
 
-import { notFound } from "next/navigation";
 import { useOrganization } from "@clerk/nextjs";
 import { Button } from "@convoform/ui/components/ui/button";
 import { Card, CardContent } from "@convoform/ui/components/ui/card";
@@ -28,6 +27,7 @@ import { montserrat } from "@/app/fonts";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { FormCustomizeSheet } from "./_components/formEditor/formCustomizeSheet";
+import NotFound from "./not-found";
 
 type Props = {
   params: { formId: string };
@@ -35,9 +35,14 @@ type Props = {
 
 export default function FormPage({ params: { formId } }: Props) {
   const { organization, isLoaded } = useOrganization();
-  const { isLoading, data } = api.form.getOneWithFields.useQuery({
-    id: formId,
-  });
+  const { isLoading, data, isError } = api.form.getOneWithFields.useQuery(
+    {
+      id: formId,
+    },
+    {
+      throwOnError: false,
+    },
+  );
 
   const updateFormIsPublished = api.form.updateIsPublished.useMutation({
     onSuccess: () => {
@@ -57,8 +62,8 @@ export default function FormPage({ params: { formId } }: Props) {
     return <FormPageLoading formId={formId} />;
   }
 
-  if (!data || !organization || data.organizationId !== organization.id) {
-    return notFound();
+  if (!data || isError || !organization) {
+    return <NotFound />;
   }
 
   async function toggleIsFormPublished(checked: boolean): Promise<void> {

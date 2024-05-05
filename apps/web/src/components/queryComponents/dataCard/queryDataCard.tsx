@@ -15,7 +15,7 @@ type DataCardResult = {
 
 type Props<TData extends DataCardResult, TError> = {
   query: UseQueryResult<TData, TError>;
-  dataSourceName: string;
+  title: string;
 };
 
 export function QueryDataCard<TData extends DataCardResult, TError>(
@@ -26,16 +26,13 @@ export function QueryDataCard<TData extends DataCardResult, TError>(
       query={props.query}
       loadingComponent={<DataCardSkeleton />}
       errorComponent={(refetch) => (
-        <DataCardError
-          onRetry={refetch}
-          dataSourceName={props.dataSourceName}
-        />
+        <DataCardError onRetry={refetch} dataSourceName={props.title} />
       )}
     >
       {(data) => {
         return (
           <DataCard
-            title={props.dataSourceName}
+            title={props.title}
             mainValue={data.totalCount?.toString() ?? "-"}
             secondaryValue={
               data.lastCreatedAt

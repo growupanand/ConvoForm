@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import ConversationsSidebar from "@/app/(protectedPage)/forms/[formId]/conversations/_components/conversationsSidebar";
+import { ConversationsSidebar } from "./_components/conversationsSidebar";
 
 type Props = {
   children: React.ReactNode;

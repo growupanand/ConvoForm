@@ -1,20 +1,23 @@
+import { AllConversationsTable } from "./_components/allConversationsTable";
 import { OverviewDataCard } from "./_components/overviewDataCard";
-import { OverviewTable } from "./_components/overviewTable";
 
 type Props = {
   params: { formId: string };
 };
 
-export default function ConversationPage({
+export default async function ConversationPage({
   params: { formId },
 }: Readonly<Props>) {
   return (
     <>
+      <h2 className="mb-5 text-xl font-medium capitalize lg:text-2xl">
+        All conversations
+      </h2>
       <div className="mb-3 lg:mb-5">
         <OverviewDataCard formId={formId} />
       </div>
       <div className="col-auto">
-        <OverviewTable formId={formId} />
+        <AllConversationsTable formId={formId} />
       </div>
     </>
   );

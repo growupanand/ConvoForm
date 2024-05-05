@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { socket } from "@convoform/websocket-client";
 
-import { Message } from "./types";
-import { readResponseStream } from "./utils/streamUtils";
+import { ExtraStreamData, Message } from "../types";
+import { readResponseStream } from "../utils/streamUtils";
 
 type Props = {
   formId: string;
@@ -11,21 +12,15 @@ type Props = {
 };
 
 type State = {
-  conversationId?: string;
   currentQuestion: string;
-  data?: Record<string, any>;
-  fieldsData: Record<string, any>[];
-  currentField?: string;
+  data?: ExtraStreamData;
   isBusy: boolean;
   messages: Message[];
 };
 
 const initialState: State = {
-  conversationId: undefined,
   currentQuestion: "",
   data: undefined,
-  fieldsData: [],
-  currentField: undefined,
   isBusy: false,
   messages: [],
 };
@@ -46,8 +41,11 @@ export function useConvoForm({ formId, onError }: Readonly<Props>) {
   const endScreenMessage = isFormSubmissionFinished ? currentQuestion : "";
 
   const resetForm = useCallback(() => {
+    if (conversationId !== undefined) {
+      socket.emit("conversation:stopped", { conversationId, formId });
+    }
     setState(initialState);
-  }, []);
+  }, [conversationId]);
 
   async function submitAnswer(answer: string) {
     setState((cs) => ({ ...cs, isBusy: true, currentQuestion: "" }));
@@ -102,6 +100,28 @@ export function useConvoForm({ formId, onError }: Readonly<Props>) {
       messages: cs.messages.concat([answerMessage, questionMessage]),
     }));
   }
+
+  useEffect(() => {
+    // If new conversation started
+    if (conversationId !== undefined) {
+      socket.emit("conversation:started", { conversationId, formId });
+    }
+  }, [conversationId]);
+
+  useEffect(() => {
+    // If conversation is already started, then update the conversation
+    if (conversationId !== undefined && isBusy === false) {
+      setTimeout(() => {
+        socket.emit("conversation:updated", { conversationId });
+      }, 2000);
+    }
+  }, [isBusy]);
+
+  useEffect(() => {
+    if (conversationId !== undefined && isFormSubmissionFinished === true) {
+      socket.emit("conversation:stopped", { conversationId, formId });
+    }
+  }, [isFormSubmissionFinished]);
 
   return {
     submitAnswer,

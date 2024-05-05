@@ -34,6 +34,7 @@ export const conversation = pgTable("Conversation", {
     .references(() => form.id, { onDelete: "cascade", onUpdate: "cascade" }),
   organizationId: text("organizationId").notNull(),
   isFinished: boolean("isFinished").default(false).notNull(),
+  isInProgress: boolean("isInProgress").default(false).notNull(),
 });
 
 export const conversationRelations = relations(conversation, ({ one }) => ({

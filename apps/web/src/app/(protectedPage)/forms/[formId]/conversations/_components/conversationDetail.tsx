@@ -1,4 +1,5 @@
 import { Conversation } from "@convoform/db";
+import { Badge } from "@convoform/ui/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -29,28 +30,61 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
   const isFormDataEmpty = tableColumns.length === 0;
   const transcript = conversation.transcript as Transcript;
 
+  const getStatusBadge = () => {
+    if (conversation.isFinished) {
+      return (
+        <Badge variant="default" className="text-sm">
+          Finished
+        </Badge>
+      );
+    }
+
+    if (conversation.isInProgress) {
+      return (
+        <Badge variant="secondary" className="flex items-center gap-3 text-sm ">
+          <span className="bg-primary flex size-3 animate-pulse rounded-full"></span>
+          <span>In progress</span>
+        </Badge>
+      );
+    }
+
+    return (
+      <Badge variant="outline" className="text-sm ">
+        Not Finished
+      </Badge>
+    );
+  };
+
   return (
     <div className="h-full lg:container">
-      <div className="flex items-center justify-between px-3 pt-6">
-        <div className="flex items-center gap-2">
-          <FileText className=" " size={20} />
-          <h2 className="text-xl font-medium capitalize lg:text-2xl">
-            {conversation.name}
-          </h2>
+      <div className="mb-5 flex items-start justify-between px-3 lg:mb-10">
+        <div className="flex flex-col items-start ">
+          <div className="flex items-center gap-2">
+            <FileText className=" " size={20} />
+            <h2 className="text-xl font-medium capitalize lg:text-2xl">
+              {conversation.name}
+            </h2>
+          </div>
+          <div className="text-muted-foreground text-xs font-normal lg:text-sm">
+            <span className="">Started on - </span>
+            <span className="font-medium">
+              {conversation.createdAt.toLocaleString()}
+            </span>
+          </div>
         </div>
-        <span className="text-muted-foreground text-xs font-normal lg:text-sm">
-          {conversation.createdAt.toLocaleString()}
-        </span>
+        <div className="flex flex-col items-end">{getStatusBadge()}</div>
       </div>
-      <div className="grid max-w-lg gap-3">
+      <div className="grid  gap-3 lg:grid-cols-2">
         {!isFormDataEmpty && (
           <SectionCard title="Collected data" titleClassName="font-medium">
             <div className="overflow-hidden rounded-md border bg-white">
               <Table className="">
                 <TableBody>
-                  {tableColumns.map((columnName) => {
+                  {tableColumns.map((columnName, index) => {
                     return (
-                      <TableRow key={tableData[columnName]}>
+                      <TableRow
+                        key={`${index}-${conversation.id}-${columnName}`}
+                      >
                         <TableCell className="py-2">{columnName}</TableCell>
                         <TableCell className="py-2 font-medium">
                           {tableData[columnName]}
@@ -64,7 +98,10 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
           </SectionCard>
         )}
         <SectionCard title="Transcript" titleClassName="font-medium">
-          <TranscriptCard transcript={transcript} />
+          <TranscriptCard
+            isBusy={conversation.isInProgress}
+            transcript={transcript}
+          />
         </SectionCard>
       </div>
     </div>
@@ -91,7 +128,7 @@ const ConversationDetailSkeleton = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="max-w-lg space-y-10">
+          <div className="grid gap-10 lg:grid-cols-2">
             <div className="overflow-hidden rounded-md border bg-white">
               <Table>
                 <TableBody>
