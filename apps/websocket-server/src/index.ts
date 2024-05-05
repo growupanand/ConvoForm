@@ -8,7 +8,7 @@ import { extractDomainFromUrl } from "./utils";
 
 const PORT = 4000;
 const DOMAIN = extractDomainFromUrl(apiEndpoint);
-
+console.log({ DOMAIN });
 /**
  * ============ HTTP SERVER ============
  */
@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
 
 const io = new Server(server, {
   cors: {
-    origin: IS_PROD ? DOMAIN : "*",
+    origin: /https:\/\/(.+?)\.convoform\.com/,
   },
 });
 
