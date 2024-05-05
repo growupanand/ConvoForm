@@ -2,6 +2,6 @@
   "regions": [
     "sin1"
   ],
-  "buildCommand": "cd ../.. && pnpm build",
+  "buildCommand": "cd ../.. && pnpm build --filter=web",
   "outputDirectory": ".next"
 }
