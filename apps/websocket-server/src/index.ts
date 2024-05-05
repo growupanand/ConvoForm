@@ -7,8 +7,7 @@ import { conversationStarted, conversationStopped } from "./controller";
 import { extractDomainFromUrl } from "./utils";
 
 const PORT = 4000;
-const DOMAIN = extractDomainFromUrl(apiEndpoint);
-console.log({ DOMAIN });
+const API_DOMAIN = extractDomainFromUrl(apiEndpoint);
 /**
  * ============ HTTP SERVER ============
  */
@@ -26,7 +25,7 @@ app.get("/", (req, res) => {
 
 const io = new Server(server, {
   cors: {
-    origin: /https:\/\/(.+?)\.convoform\.com/,
+    origin: IS_PROD ? new RegExp(`https://(.+?)\\.${API_DOMAIN}`) : "*",
   },
 });
 
