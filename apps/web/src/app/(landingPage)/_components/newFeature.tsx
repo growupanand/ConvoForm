@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
-import { AspectRatio } from "@convoform/ui/components/ui/aspect-ratio";
 import { motion, useAnimate, useInView } from "framer-motion";
 
 import { useMediaQuery } from "@/hooks/use-media-query";
@@ -22,8 +21,8 @@ export function NewFeature() {
       if (isDesktop) {
         await animate(
           "#feature-image",
-          { rotate: -6 },
-          { duration: 0.5, ease: "easeInOut" },
+          { rotateZ: -5 },
+          { duration: 1, ease: "easeIn" },
         );
       } else {
         await animate("#feature-image", { rotate: 0 });
@@ -41,26 +40,25 @@ export function NewFeature() {
         <div className="col-span-2">
           <motion.div
             id="feature-image"
-            whileHover={{ rotate: 0 }}
-            onHoverEnd={() => animate("#feature-image", { rotate: -6 })}
+            whileHover={{ rotateZ: 0 }}
+            onHoverEnd={() => animate("#feature-image", { rotateZ: -5 })}
             className=" origin-top-right overflow-hidden rounded-xl border transition-all hover:shadow-sm lg:shadow-xl"
           >
-            <AspectRatio ratio={3 / 2}>
-              <Image
-                alt="screenshot of form editor"
-                src="/screenshots/autogenerate_form.png"
-                fill
-              />
-            </AspectRatio>
+            <Image
+              alt="screenshot of new feature in ConvoForm"
+              src="/screenshots/newFeature.png"
+              width={550}
+              height={400}
+            />
           </motion.div>
         </div>
         <div className="col-span-1">
           <div className="flex h-full flex-col justify-center">
             <h4 className=" mb-1   gap-2 text-2xl font-normal lg:mb-5 lg:text-3xl">
-              AI-Powered Form Generation
+              Live Progress Conversations
             </h4>
             <p className="text-md">
-              {`Simply explain the purpose and requirements of your form, and let our advanced AI technology take over the task. It'll proficiently generate a comprehensive form, including all necessary fields, further simplifying your workflow.`}
+              {`Get a real-time view of users filling out your forms! Track progress, see exactly where they are in the form, and gain valuable insights with the new live conversation feature on the responses page.`}
             </p>
           </div>
         </div>

@@ -1,9 +1,11 @@
+import React from "react";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@convoform/ui/components/ui/card";
+import { Cpu, MessageSquare, Shield, SlidersHorizontal } from "lucide-react";
 
 import { SectionCard } from "@/components/sectionCard";
 import { cn } from "@/lib/utils";
@@ -13,20 +15,32 @@ export function Features() {
     <SectionCard stickyHeader title="Features">
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <FeatureListItem
-          title="Easy to use"
-          description="The form builder is simple to use, even for those who are not technical."
+          title="AI-Powered Form Generation"
+          description="Describe your form, and our AI does the heavy lifting."
+          icon={
+            <Cpu className="stroke-primary-500 size-6 fill-white lg:size-10" />
+          }
         />
         <FeatureListItem
-          title="Conversational"
-          description="The forms are conversational, which makes them more engaging and easier to complete."
+          title="Effortless form creation"
+          description="ConvoForm's intuitive builder makes crafting forms a breeze."
+          icon={
+            <SlidersHorizontal className="stroke-primary-500 size-6 fill-white lg:size-10" />
+          }
         />
         <FeatureListItem
-          title="Responsive"
-          description="The forms are responsive, so they can be used on any device."
+          title="Engaging conversations"
+          description="Ditch boring forms for dynamic, AI-powered conversations."
+          icon={
+            <MessageSquare className="stroke-primary-500 size-6 fill-white lg:size-10" />
+          }
         />
         <FeatureListItem
-          title="Secure"
-          description="The forms are secure, so you can be confident that your data is safe."
+          title="Secure and accessible"
+          description="Securely collect and store sensitive information on any device."
+          icon={
+            <Shield className="stroke-primary-500 size-6 fill-white lg:size-10" />
+          }
         />
       </div>
     </SectionCard>
@@ -37,10 +51,12 @@ const FeatureListItem = ({
   title,
   description,
   className,
+  icon,
 }: {
   title: string;
   description: string;
   className?: string;
+  icon?: React.ReactNode;
 }) => (
   <Card
     className={cn(
@@ -49,7 +65,8 @@ const FeatureListItem = ({
     )}
   >
     <CardHeader>
-      <CardTitle className="text-left text-2xl font-normal leading-none tracking-tight lg:text-center">
+      <CardTitle className="flex items-start gap-2 text-left text-2xl font-normal leading-none tracking-tight lg:gap-3">
+        {icon ? <span className="size-6 lg:size-10">{icon}</span> : undefined}
         {title}
       </CardTitle>
     </CardHeader>

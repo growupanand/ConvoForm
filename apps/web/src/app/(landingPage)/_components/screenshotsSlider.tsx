@@ -20,30 +20,41 @@ const screenshotsData = [
     src: "/screenshots/formEditor.png",
     description: (
       <p>
-        Easily customize form with{" "}
-        <span className="font-medium">Live Preview</span>.
+        Customize your forms with ease. See changes in{" "}
+        <span className="font-medium">real-time</span>.
       </p>
     ),
   },
   {
     id: 2,
-    alt: "screenshot of form response page",
-    src: "/screenshots/responses.png",
+    alt: "screenshot of form editor",
+    src: "/screenshots/aiGeneratedForm.png",
     description: (
       <p>
-        View <span className="font-medium">Collected data</span> and{" "}
-        <span className="font-medium">Transcript</span> of conversation.
+        <span className="font-medium">AI form generation</span> in action!
+        Describe your needs, get a ready-to-edit form.
       </p>
     ),
   },
   {
     id: 3,
+    alt: "screenshot of form response page",
+    src: "/screenshots/responses.png",
+    description: (
+      <p>
+        Track <span className="font-medium">Collected data</span> and{" "}
+        <span className="font-medium">conversations</span> effortlessly.
+      </p>
+    ),
+  },
+  {
+    id: 4,
     alt: "screenshot of responses overview page",
     src: "/screenshots/responsesOverview.png",
     description: (
       <p>
-        All responses <span className="font-medium">Table</span> in one place or{" "}
-        <span className="font-medium">Export Data</span> in CSV format.
+        Manage all your data at a glance.{" "}
+        <span className="font-medium">Export</span> as needed.
       </p>
     ),
   },

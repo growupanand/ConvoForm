@@ -25,3 +25,4 @@ node_modules/
 DONT_DELETE_FOLDER
 **/*.sql
 !package.json
+*.woff

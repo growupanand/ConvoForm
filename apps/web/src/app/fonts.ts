@@ -1,4 +1,5 @@
 import { Marck_Script, Montserrat, Roboto } from "next/font/google";
+import localFont from "next/font/local";
 
 export const montserrat = Montserrat({
   subsets: ["latin"],
@@ -36,3 +37,8 @@ export const marck_script = Marck_Script({
 //   display: "swap",
 //   weight: ["300", "400", "700", "900"],
 // });
+
+export const nohemi = localFont({
+  src: "./fonts/Nohemi-Medium.woff",
+  display: "swap",
+});

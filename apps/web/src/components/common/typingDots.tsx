@@ -7,25 +7,42 @@ export type DotSize = keyof typeof SIZES_MAP;
 type Props = {
   dotClassName?: string;
   size?: DotSize;
+  animate?: boolean;
+  className?: string;
 };
 
 export function AnimatedTypingDots({
   dotClassName,
   size = "md",
+  animate = true,
+  className,
 }: Readonly<Props>) {
   return (
-    <div className="flex items-center gap-1">
+    <div className={cn("inline-flex items-center gap-1", className)}>
       <Dot
         size={size}
-        className={cn("animate-bounce-lg delay-0", dotClassName)}
+        className={cn(
+          "delay-0",
+          animate && "animate-bounce-lg",
+
+          dotClassName,
+        )}
       ></Dot>
       <Dot
         size={size}
-        className={cn(" animate-bounce-lg   delay-150", dotClassName)}
+        className={cn(
+          " delay-150",
+          animate && "animate-bounce-lg",
+          dotClassName,
+        )}
       ></Dot>
       <Dot
         size={size}
-        className={cn("  animate-bounce-lg   delay-300", dotClassName)}
+        className={cn(
+          "delay-300",
+          animate && "animate-bounce-lg",
+          dotClassName,
+        )}
       ></Dot>
     </div>
   );
