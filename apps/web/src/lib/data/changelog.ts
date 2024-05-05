@@ -2,8 +2,28 @@
 
 export const changelog = [ 
 {
-"title": "0.7.0",
+"title": "0.8.0",
 "tag": "",
+"isoDate": "2024-05-05",
+"commits": {
+"features": [
+],
+"improvements": [
+
+{
+"message": "style: 💄 Updated homepage UI, screenshots, text",
+"shorthash": "6370026",
+"href": "https://github.com/growupanand/ConvoForm/commit/6370026f96330a95a12cd311f5f66fbcb3320713"
+},
+
+],
+"fixes": [
+]
+}
+},
+{
+"title": "0.7.0",
+"tag": "0.7.0",
 "isoDate": "2024-05-01",
 "commits": {
 "features": [

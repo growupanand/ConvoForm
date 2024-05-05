@@ -1,3 +1,16 @@
+## [0.8.0](https://github.com/growupanand/ConvoForm/compare/0.7.0...0.8.0) (2024-05-05)
+
+### Features
+
+- 🚀 Implement live form submission progress for creators using
+  ([#241](https://github.com/growupanand/ConvoForm/issues/241))
+  ([6d01015](https://github.com/growupanand/ConvoForm/commit/6d010155e81068b664773c2d4a406f24e009b477))
+
+### Improvements
+
+- 💄 Updated homepage UI, screenshots, text
+  ([6370026](https://github.com/growupanand/ConvoForm/commit/6370026f96330a95a12cd311f5f66fbcb3320713))
+
 ## [0.7.0](https://github.com/growupanand/ConvoForm/compare/0.6.1...0.7.0) (2024-05-01)
 
 ### Features

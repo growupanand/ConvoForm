@@ -1,6 +1,6 @@
 {
   "name": "convoform",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "author": "Utkarsh Anand",
   "repository": {
@@ -31,7 +31,7 @@
     "drizzle:generate-migration": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle:generate-migration",
     "drizzle:apply-migration": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle:apply-migration",
     "custom-script": "dotenv -e .env.local -- pnpm --filter @convoform/db custom-script",
-    "start" : "dotenv -e .env.local -- turbo run start"
+    "start": "dotenv -e .env.local -- turbo run start"
   },
   "config": {
     "commitizen": {
