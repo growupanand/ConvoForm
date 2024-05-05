@@ -44,7 +44,7 @@ io.on("connection", async (socket) => {
         typeof conversationId === "string" &&
         conversationId.trim().length > 0
       ) {
-        io.emit(`conversation:${conversationId}`, { event: "stopped" });
+        io.emit(`conversation:${conversationId}`, { event: "updated" });
       }
       if (typeof formId === "string" && formId.trim().length > 0) {
         io.emit(`form:${formId}`, { event: "conversations:updated" });
