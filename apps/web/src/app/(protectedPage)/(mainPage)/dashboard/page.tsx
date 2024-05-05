@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 import { ResponseDataCard } from "@/app/(protectedPage)/(mainPage)/dashboard/_components/reponseDataCard";
 import { getOrganizationId } from "@/lib/getOrganizationId";
-import { RecentResponseList } from "./_components/recentResponseList";
+import { RecentResponsesList } from "./_components/recentResponseList";
 import { ResponseUsageCard } from "./_components/responseUsageCard";
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export default function DashboardPage() {
               Recent responses
             </h3>
             <div>
-              <RecentResponseList organizationId={orgId} />
+              <RecentResponsesList take={10} />
             </div>
           </div>
         </div>

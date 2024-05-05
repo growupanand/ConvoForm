@@ -17,8 +17,15 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
+      if (!ctx.auth.orgId) {
+        throw new Error("Organization ID is missing");
+      }
       return await ctx.db.query.conversation.findMany({
-        where: (conversation, { eq }) => eq(conversation.formId, input.formId),
+        where: (conversation, { eq, and }) =>
+          and(
+            eq(conversation.formId, input.formId),
+            eq(conversation.organizationId, ctx.auth.orgId!),
+          ),
         orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
       });
     }),
@@ -90,8 +97,15 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
+      if (!ctx.auth.orgId) {
+        throw new Error("Organization ID is missing");
+      }
       return await ctx.db.query.conversation.findMany({
-        where: eq(conversation.formId, input.formId),
+        where: (conversation, { eq, and }) =>
+          and(
+            eq(conversation.formId, input.formId),
+            eq(conversation.organizationId, ctx.auth.orgId!),
+          ),
         columns: {
           id: true,
           fieldsData: true,
@@ -105,13 +119,15 @@ export const conversationRouter = createTRPCRouter({
   getRecentResponses: protectedProcedure
     .input(
       z.object({
-        organizationId: z.string().min(1),
         take: z.number().int().positive(),
       }),
     )
     .query(async ({ input, ctx }) => {
+      if (!ctx.auth.orgId) {
+        throw new Error("Organization ID is missing");
+      }
       return await ctx.db.query.conversation.findMany({
-        where: eq(conversation.organizationId, input.organizationId),
+        where: eq(conversation.organizationId, ctx.auth.orgId!),
         orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
         limit: input.take,
         columns: {

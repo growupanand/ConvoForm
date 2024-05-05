@@ -5,7 +5,7 @@ type Props = {
   params: { formId: string };
 };
 
-export default function ConversationPage({
+export default async function ConversationPage({
   params: { formId },
 }: Readonly<Props>) {
   return (

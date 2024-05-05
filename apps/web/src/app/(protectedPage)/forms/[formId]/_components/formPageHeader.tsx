@@ -16,17 +16,16 @@ type Props = {
 };
 
 function FormPageHeader({ formId }: Readonly<Props>) {
-  const { organization, isLoaded } = useOrganization();
+  const { organization, isLoaded: isOrganizationLoaded } = useOrganization();
   const { data, isLoading } = api.form.getOneWithWorkspace.useQuery({
     id: formId,
   });
 
-  if (isLoading || !isLoaded) {
-    return <FormEditorPageHeaderSkeleton />;
-  }
+  const canAccessForm =
+    organization && data && data.organizationId === organization.id;
 
-  if (!data || !organization || data.organizationId !== organization.id) {
-    return null;
+  if (isLoading || !isOrganizationLoaded || !canAccessForm) {
+    return <FormEditorPageHeaderSkeleton />;
   }
 
   return (

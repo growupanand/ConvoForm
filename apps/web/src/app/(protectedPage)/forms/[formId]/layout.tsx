@@ -1,6 +1,9 @@
 import { Metadata } from "next";
 
 import { FormEditorPageHeader } from "@/app/(protectedPage)/forms/[formId]/_components/formPageHeader";
+import { getOrganizationId } from "@/lib/getOrganizationId";
+import { api } from "@/trpc/server";
+import NotFound from "./not-found";
 
 type Props = {
   children: React.ReactNode;
@@ -11,10 +14,17 @@ export const metadata: Metadata = {
   title: "Form editor",
 };
 
-export default function Layout({
+export default async function Layout({
   children,
   params: { formId },
 }: Readonly<Props>) {
+  const orgId = getOrganizationId();
+
+  const form = await api.form.getOne({ id: formId });
+
+  if (!form || form.organizationId !== orgId) {
+    return <NotFound />;
+  }
   return (
     <div className="relative flex h-screen flex-col gap-3 ">
       <FormEditorPageHeader formId={formId} />

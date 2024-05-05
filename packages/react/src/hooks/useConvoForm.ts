@@ -42,7 +42,7 @@ export function useConvoForm({ formId, onError }: Readonly<Props>) {
 
   const resetForm = useCallback(() => {
     if (conversationId !== undefined) {
-      socket.emit("conversation:stopped", { conversationId });
+      socket.emit("conversation:stopped", { conversationId, formId });
     }
     setState(initialState);
   }, [conversationId]);
@@ -116,6 +116,12 @@ export function useConvoForm({ formId, onError }: Readonly<Props>) {
       }, 2000);
     }
   }, [isBusy]);
+
+  useEffect(() => {
+    if (conversationId !== undefined && isFormSubmissionFinished === true) {
+      socket.emit("conversation:stopped", { conversationId, formId });
+    }
+  }, [isFormSubmissionFinished]);
 
   return {
     submitAnswer,

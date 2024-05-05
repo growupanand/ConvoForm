@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@convoform/ui/components/ui/tabs";
 
 import { montserrat } from "@/app/fonts";
@@ -51,3 +52,16 @@ export default function MainNavTab({ formId }: Readonly<Props>) {
     </Tabs>
   );
 }
+
+const MainNavTabSkeleton = () => {
+  return (
+    <div className="w-full py-3">
+      <div className="grid h-8 grid-cols-2 gap-1">
+        <Skeleton className=" w-full" />
+        <Skeleton className="w-full" />
+      </div>
+    </div>
+  );
+};
+
+MainNavTab.Skeleton = MainNavTabSkeleton;

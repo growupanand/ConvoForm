@@ -10,13 +10,10 @@ import { ListItem } from "@/components/common/listItem";
 import { timeAgo } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
-export function RecentResponseList({
-  organizationId,
-}: Readonly<{ organizationId: string }>) {
+export function RecentResponsesList({ take }: Readonly<{ take: number }>) {
   const [scope, animate] = useAnimate();
   const { data, isLoading } = api.conversation.getRecentResponses.useQuery({
-    organizationId,
-    take: 10,
+    take: take,
   });
   const emptyData = data?.length === 0;
 

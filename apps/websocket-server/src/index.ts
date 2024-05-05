@@ -32,6 +32,25 @@ const io = new Server(server, {
 io.on("connection", async (socket) => {
   socket.on("conversation:started", async (data) => {
     const { conversationId, formId } = data;
+
+    const onConversationStopped = ({
+      conversationId,
+      formId,
+    }: {
+      conversationId: string;
+      formId: string;
+    }) => {
+      if (
+        typeof conversationId === "string" &&
+        conversationId.trim().length > 0
+      ) {
+        io.emit(`conversation:${conversationId}`, { event: "stopped" });
+      }
+      if (typeof formId === "string" && formId.trim().length > 0) {
+        io.emit(`form:${formId}`, { event: "conversations:updated" });
+      }
+    };
+
     if (typeof conversationId === "string") {
       try {
         await conversationStarted(conversationId);
@@ -45,20 +64,21 @@ io.on("connection", async (socket) => {
       io.emit(`form:${formId}`, { event: "conversations:started" });
     }
 
-    // When user leave the conversation, we need to update the conversation status
+    // When user leave the conversation (E.g close browser), we need to update the conversation status
     socket.on("disconnect", async () => {
       try {
         await conversationStopped(conversationId);
+        onConversationStopped({ conversationId, formId });
       } catch (error) {
         console.error("Error sending conversation:stopped event", error);
       }
     });
 
-    socket.on("conversation:stopped", async () => {
+    socket.on("conversation:stopped", async (data) => {
+      const { conversationId, formId } = data;
       try {
         await conversationStopped(conversationId);
-        io.emit(`conversation:${conversationId}`, { event: "updated" });
-        io.emit(`form:${formId}`, { event: "conversations:updated" });
+        onConversationStopped({ conversationId, formId });
       } catch (error) {
         console.error("Error sending conversation:stopped event", error);
       }

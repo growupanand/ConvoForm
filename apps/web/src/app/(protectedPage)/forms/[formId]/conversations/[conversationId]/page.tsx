@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
+import { notFound } from "next/navigation";
+import { useOrganization } from "@clerk/nextjs";
 import { socket } from "@convoform/websocket-client";
 
 import ConversationDetail from "@/app/(protectedPage)/forms/[formId]/conversations/_components/conversationDetail";
 import { api } from "@/trpc/react";
 import Loading from "./loading";
-import Notfound from "./not-found";
 
 type Props = {
   params: { conversationId: string };
@@ -14,12 +15,20 @@ type Props = {
 
 export default function ConversationDetailPage(props: Readonly<Props>) {
   const { conversationId } = props.params;
+  const { organization, isLoaded: isOrganizationLoaded } = useOrganization();
 
-  const { data, isLoading, refetch } = api.conversation.getOne.useQuery({
+  const {
+    data,
+    isLoading: isLoadingConversations,
+    refetch,
+  } = api.conversation.getOne.useQuery({
     id: conversationId,
   });
   const conversation = data;
   const eventListener = `conversation:${conversationId}`;
+  const isLoading = isLoadingConversations || !isOrganizationLoaded;
+  const canAccessConversation =
+    organization && organization.id === conversation?.organizationId;
 
   useEffect(() => {
     if (conversation && conversation.isFinished === false) {
@@ -42,8 +51,8 @@ export default function ConversationDetailPage(props: Readonly<Props>) {
     return <Loading />;
   }
 
-  if (!conversation) {
-    return <Notfound />;
+  if (!conversation || !canAccessConversation) {
+    return notFound();
   }
 
   return <ConversationDetail conversation={conversation} />;

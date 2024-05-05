@@ -26,7 +26,7 @@ type State = {
   open: boolean;
 };
 
-export default function ConversationsSidebar({ formId }: Props) {
+export function ConversationsSidebar({ formId }: Props) {
   const pathname = usePathname();
 
   const [state, setState] = useState<State>({
@@ -34,21 +34,17 @@ export default function ConversationsSidebar({ formId }: Props) {
   });
   const { open } = state;
 
-  const closeSheet = () => setState((cs) => ({ ...cs, open: false }));
-
-  const { isLoading, data, refetch } = api.conversation.getAll.useQuery({
+  const {
+    isLoading: isLoadingConversations,
+    data,
+    refetch,
+  } = api.conversation.getAll.useQuery({
     formId,
   });
 
-  const isLoadingConversations = isLoading;
   const conversations = data ?? [];
   const eventListener = `form:${formId}`;
-
-  useEffect(() => {
-    if (open) {
-      closeSheet();
-    }
-  }, [pathname]);
+  const closeSheet = () => setState((cs) => ({ ...cs, open: false }));
 
   // Update conversations list when a new conversation is created
   useEffect(() => {
@@ -57,7 +53,9 @@ export default function ConversationsSidebar({ formId }: Props) {
       if (typeof event === "string") {
         if (event === "conversations:started") {
           sonnerToast.info("New conversation started", {
-            position: "top-center",
+            position: "top-left",
+            dismissible: true,
+            duration: 1500,
           });
         }
         if (event === "conversations:updated") {
@@ -72,6 +70,16 @@ export default function ConversationsSidebar({ formId }: Props) {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (open) {
+      closeSheet();
+    }
+  }, [pathname]);
+
+  if (isLoadingConversations) {
+    return <ConversationsSidebarSkeleton />;
+  }
 
   return (
     <div className="">
@@ -153,17 +161,26 @@ export default function ConversationsSidebar({ formId }: Props) {
             Recent conversations
           </div>
           <div>
-            {isLoadingConversations || !formId ? (
-              <ConversationsNavigation.ConversationsCardSkelton />
-            ) : (
-              <ConversationsNavigation
-                conversations={conversations}
-                formId={formId}
-              />
-            )}
+            <ConversationsNavigation
+              conversations={conversations}
+              formId={formId}
+            />
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+const ConversationsSidebarSkeleton = () => {
+  return (
+    <div className="flex flex-col gap-3 px-3">
+      <MainNavTab.Skeleton />
+      <div className="px-4">
+        <ConversationsNavigation.ConversationsCardSkelton />
+      </div>
+    </div>
+  );
+};
+
+ConversationsSidebar.Skeleton = ConversationsSidebarSkeleton;

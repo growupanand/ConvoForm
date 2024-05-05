@@ -107,13 +107,15 @@ export function DataCardSkeleton() {
 export function DataCardError({
   onRetry,
   dataSourceName,
-}: Readonly<{ onRetry: () => void; dataSourceName: string }>) {
+}: Readonly<{ onRetry: () => void; dataSourceName?: string }>) {
   return (
     <Card className="items-center justify-center border-none bg-red-50">
       <Alert variant="destructive" className="self-stretch border-none ">
-        <AlertTitle className="text-2xl font-normal">
-          {dataSourceName}
-        </AlertTitle>
+        {dataSourceName && (
+          <AlertTitle className="text-2xl font-normal">
+            {dataSourceName}
+          </AlertTitle>
+        )}
         <div className="flex items-center justify-start gap-3">
           <span>Unable to fetch data</span>
           <Button size="sm" variant="destructive" onClick={() => onRetry()}>

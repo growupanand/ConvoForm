@@ -32,7 +32,9 @@ export function ConversationsNavigation({
               )}
             ></span>
           )}
-          <span className="capitalize">{conversation.name}</span>
+          <span className="capitalize">
+            {conversation.isInProgress ? "In progress..." : conversation.name}
+          </span>
         </div>
         <span className="text-muted-foreground font-light">
           {timeAgo(conversation.createdAt)}
@@ -57,15 +59,15 @@ export function ConversationsNavigation({
 const ConversationsCardSkelton = () => (
   <div>
     <nav className="grid gap-1">
-      <div className="flex h-[40px] w-full items-center justify-between ps-3">
+      <div className="flex h-[40px] w-full items-center justify-between">
         <Skeleton className="h-[15px] w-[80px]" />
         <Skeleton className="h-[15px] w-[40px]" />
       </div>
-      <div className="flex h-[40px] w-full items-center justify-between ps-3">
+      <div className="flex h-[40px] w-full items-center justify-between">
         <Skeleton className="h-[15px] w-[80px]" />
         <Skeleton className="h-[15px] w-[40px]" />
       </div>
-      <div className="flex h-[40px] w-full items-center justify-between ps-3">
+      <div className="flex h-[40px] w-full items-center justify-between">
         <Skeleton className="h-[15px] w-[80px]" />
         <Skeleton className="h-[15px] w-[40px]" />
       </div>

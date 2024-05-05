@@ -1,12 +1,5 @@
 import { cn } from "@/lib/utils";
-
-const SIZES_MAP = {
-  xs: "size-2",
-  sm: "size-4",
-  md: "size-6",
-  lg: "size-8",
-  xl: "size-12",
-};
+import { SIZES_MAP } from "./constants";
 
 export type SpinnerSize = keyof typeof SIZES_MAP;
 

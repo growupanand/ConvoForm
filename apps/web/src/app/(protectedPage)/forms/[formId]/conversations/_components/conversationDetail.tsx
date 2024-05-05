@@ -98,7 +98,10 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
           </SectionCard>
         )}
         <SectionCard title="Transcript" titleClassName="font-medium">
-          <TranscriptCard transcript={transcript} />
+          <TranscriptCard
+            isBusy={conversation.isInProgress}
+            transcript={transcript}
+          />
         </SectionCard>
       </div>
     </div>
