@@ -26,7 +26,7 @@ const initialState: State = {
 };
 
 export function useConvoForm({ formId, onError }: Readonly<Props>) {
-  const apiEndpoint = `/api/form/${formId}/conversation`;
+  const apiEndpoint = `https://staging.convoform.com/api/form/${formId}/conversation`;
 
   const [state, setState] = useState<State>(initialState);
   const { currentQuestion, data, isBusy, messages } = state;

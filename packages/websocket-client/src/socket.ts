@@ -1,7 +1,7 @@
 "use client";
 
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 
 import { URL } from "./constants";
 
-export const socket = io(URL);
+export const socket: Socket = io(URL);
