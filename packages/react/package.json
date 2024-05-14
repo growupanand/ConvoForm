@@ -7,24 +7,24 @@
     "email": "growupanand@gmail.com"
   },
   "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts",
-    "dev": "npm run build -- --watch"
+    "clean": "rm -rf dist",
+    "build": "pnpm run clean && tsup src/index.ts --format cjs --dts",
+    "dev": "pnpm run build --watch"
   },
   "private": false,
-  "exports": {
-    ".": "./src/index.ts"
-  },
   "version": "0.0.1",
   "dependencies": {
-    "@convoform/websocket-client": "workspace:*",
-    "react": "^18",
-    "typescript": "^5"
+    "@convoform/websocket-client": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18",
-    "tsup": "^8.0.2"
+    "tsup": "^8.0.2",
+    "typescript": "^5"
+  },
+  "peerDependencies": {
+    "react": "^18",
+    "react-dom": "^18"
   }
 }

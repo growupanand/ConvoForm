@@ -1,22 +1,26 @@
 {
   "name": "@convoform/websocket-client",
   "description": "Convoform Websocket Client",
-  "private": true,
-  "exports": {
-    ".": "./src/index.ts"
-  },
+  "private": false,
   "version": "0.0.1",
   "scripts": {
     "lint": "eslint ./src/**/*.ts --fix",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "build": "pnpm run clean && tsup src/index.ts --format cjs --dts",
+    "dev": "pnpm run build --watch"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@typescript-eslint/parser": "^6.18.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-unused-imports": "^3.0.0",
+    "tsup": "^8.0.2",
     "socket.io-client": "^4.7.5",
     "typescript": "^5"
   },
-  "devDependencies": {
-    "eslint": "^8.56.0",
-    "eslint-plugin-unused-imports": "^3.0.0",
-    "@typescript-eslint/parser": "^6.18.0"
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.js",
+  "peerDependencies": {
+    "socket.io-client": "^4.7.5"
   }
 }
