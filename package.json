@@ -42,6 +42,7 @@
     "@convoform/eslint-config": "workspace:*",
     "@convoform/tsconfig": "workspace:*",
     "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
+    "release-it": "^17.0.1",
     "@release-it/conventional-changelog": "^8.0.1",
     "auto-changelog": "^2.4.0",
     "dotenv-cli": "^7.3.0",
@@ -53,7 +54,6 @@
     "inquirer": "^8.2.6",
     "prettier": "^3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.11",
-    "release-it": "^17.0.1",
     "turbo": "^1.12.1"
   }
 }

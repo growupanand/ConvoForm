@@ -14,7 +14,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "pnpm run clean && tsup src/index.ts --format cjs --dts",
-    "dev": "pnpm run build --watch"
+    "dev": "pnpm run build --watch",
+    "release": "release-it"
   },
   "dependencies": {
     "@convoform/websocket-client": "workspace:*"
@@ -22,7 +23,9 @@
   "devDependencies": {
     "@types/react": "^18",
     "tsup": "^8.0.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "release-it": "^17.0.1",
+    "@release-it/conventional-changelog": "^8.0.1"
   },
   "peerDependencies": {
     "react": "^18",
