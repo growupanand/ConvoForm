@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { socket } from "@convoform/websocket-client";
 
+import { API_DOMAIN } from "../constants";
 import { ExtraStreamData, Message } from "../types";
 import { readResponseStream } from "../utils/streamUtils";
 
@@ -26,7 +27,7 @@ const initialState: State = {
 };
 
 export function useConvoForm({ formId, onError }: Readonly<Props>) {
-  const apiEndpoint = `https://www.convoform.com/api/form/${formId}/conversation`;
+  const apiEndpoint = `${API_DOMAIN}/api/form/${formId}/conversation`;
 
   const [state, setState] = useState<State>(initialState);
   const { currentQuestion, data, isBusy, messages } = state;

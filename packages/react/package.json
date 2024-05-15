@@ -1,7 +1,10 @@
 {
   "name": "@convoform/react",
-  "description": "A React hook for creating conversational forms with ConvoForm.",
+  "description": "React hook for creating conversational forms with ConvoForm.",
   "homepage": "https://www.convoform.com",
+  "private": false,
+  "version": "0.0.1",
+  "license": "MIT",
   "author": {
     "name": "Utkarsh Anand",
     "email": "growupanand@gmail.com"
@@ -13,8 +16,6 @@
     "build": "pnpm run clean && tsup src/index.ts --format cjs --dts",
     "dev": "pnpm run build --watch"
   },
-  "private": false,
-  "version": "0.0.1",
   "dependencies": {
     "@convoform/websocket-client": "workspace:*"
   },
