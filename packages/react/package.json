@@ -3,14 +3,30 @@
   "description": "React hook for creating conversational forms with ConvoForm.",
   "homepage": "https://www.convoform.com",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.4",
   "license": "MIT",
   "author": {
     "name": "Utkarsh Anand",
     "email": "growupanand@gmail.com"
   },
+  "keywords": [
+    "convoform",
+    "conversational form",
+    "react hook",
+    "react"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/growupanand/ConvoForm.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "./dist/**"
+  ],
   "scripts": {
     "clean": "rm -rf dist",
     "build": "pnpm run clean && tsup src/index.ts --format cjs --dts",
