@@ -1,33 +1,31 @@
-# ConvoForm
+# About ConvoForm
 
-Imagine Google Forms, but supercharged with AI for an improved user experience,
-Build engaging and interactive forms that are easy to fill and fun to answer.
-You can see live demo here - [ConvoForm.com](https://www.convoform.com/?utm_source=genai_works&utm_medium=social&utm_campaign=github_launch).
+[ConvoForm.com](https://www.convoform.com/?utm_source=genai_works&utm_medium=social&utm_campaign=github_launch) transforms traditional forms into interactive conversational experiences, powered by AI for an enhanced user journey. Think Google Forms, but more engaging and intuitive.
 
-## Features
+#### Features:
 
-- **User-Friendly Interface:** The interface is designed to be user-friendly,
-  ensuring a seamless and efficient form-building experience.
+- **AI-Powered Form Generation:** Automatically generate comprehensive forms by describing your needs, streamlining the creation process.
+- **Real-time Form Editing and Preview:** Edit forms with live changes previewed on the same page, providing immediate feedback.
+- **Customizable Submission Pages:** Tailor the submission page with your organization's branding and personalized messages.
 
-- **Intelligent Field Input:** Creating form fields is made easy; users can
-  provide the necessary information without worrying about specifying exact
-  field names.
 
-- **Dynamic Form Rendering:** The form view page dynamically displays questions
-  based on the provided form summary, eliminating the need for users to
-  predefine every field.
-- **Customizable Welcome Screen:** Users have the flexibility to personalize the
-  welcome screen that greets users before they start filling out the form,
-  enhancing the user experience.
-
-## Learnings
-In the course of working on ConvoForm.com, I penned down two insightful pieces on Medium reflecting on my journey and learning:
+#### Learnings
+In the course of building it from scratch, I penned down some insightful pieces on Medium reflecting on my journey and learning, I hope these articles provide value to your coding journey.
 
 - [A Comprehensive Guide to Easily Switch from Prisma to Drizzle ORM](https://medium.com/@growupanand/a-comprehensive-guide-to-easily-switch-from-prisma-to-drizzle-orm-c290f8ed8ef3)
-
 - [Transitioning from Monorepo to Turborepo: My Development Journey with ConvoForm.com](https://medium.com/@growupanand/transitioning-from-monorepo-to-turborepo-my-development-journey-with-convoform-com-691b9d19f397)
 
-Feel free to delve in, and I hope these articles provide value to your coding journey.
+
+
+## Tech Stack
+
+- **Frontend**: [Next.js](https://nextjs.org) for optimized server and client rendering.
+- **Backend**: [tRPC](https://trpc.io) for type-safe API development.
+- **AI Integration**: [GPT-3.5-Turbo](https://platform.openai.com/docs/models/gpt-3-5-turbo) for dynamic form generation and response analysis.
+- **Real-time updates**: [Socket.io](https://socket.io/) for live form progress tracking.
+
+
+
 
 ## Local Setup
 
@@ -47,35 +45,39 @@ Follow these steps to set up the project locally on your machine.
 
 - Get your OpenAI key at [OpenAI Dashboard](https://platform.openai.com/api-keys)
 
-- You need a Redis Database from [Upstash](https://upstash.com)
+- You need a Redis Database from [Upstash](https://upstash.com) (Optional if you want rate limiting)
 
 - Application Performance Monitoring & Error Tracking is done using [Sentry](https://sentry.io)
 
 
 
 
-### Clone the Repository
+1. #### Clone the Repository
 
 ```bash
 git clone https://github.com/growupanand/ConvoForm.git
 cd ConvoForm
 ```
 
-### Install Dependencies
+2. #### Install Dependencies
 
 ```bash
 pnpm install
 ```
 
-### Configuration
+3. #### Configuration environment
 
-1. Copy the .env.example file to .env.local file.
-   ```bash
-   cp .env.example .env.local
-   ```
-2. Open the `.env.local` file and update the necessary environment variables.
+    1. Copy the .env.example file to .env.local file.
+       ```bash
+       cp .env.example .env.local
+       ```
+    2. Open the `.env.local` file and update the necessary environment variables.
+    3. Setup database by running migrations
+       ```
+       pnpm drizzle:apply-migration
+       ```
 
-### Run the Development Server
+4. #### Run the Development Server
 
 ```bash
 pnpm run dev
@@ -84,27 +86,17 @@ pnpm run dev
 Visit [http://localhost:3000](http://localhost:3000/) in your browser to see the
 application.
 
-### Build for Production
+5. #### Build for Production
 
 ```bash
 pnpm run build
 ```
 
-## Screenshots
-
-Here are some screenshots from the app
-
-| Workspace Page                                                                                                   | Form Submission                                                                                                   |
-| ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| ![Workspace page](https://github.com/growupanand/ConvoForm/assets/29487686/a854d340-afd6-477f-a402-c7ce3e8c9787) | ![Form submission](https://github.com/growupanand/ConvoForm/assets/29487686/06874d85-0920-408b-a84a-5970eb7c1819) |
-
-| Form Editor                                                | View Submissions                                               |
-| ---------------------------------------------------------- | -------------------------------------------------------------- |
-| ![Form editor](apps/web/public/screenshots/formEditor.png) | ![View Submissions](apps/web/public/screenshots/responses.png) |
 
 ## Contributing
 
-Feel free to contribute to the development by opening issues, providing
-feedback, or submitting pull requests.
+Feel free to contribute to the development by opening issues, providing feedback, or submitting pull requests. see the [CONTRIBUTING.md](https://github.com/growupanand/ConvoForm/blob/main/CONTRIBUTING.md) for more details.
 
-**Please note** that we do not accept pull requests which consist solely of **changes to the README file**. Contributions **should be code-focused** and aim to enhance the functionality, efficiency, or quality of the project.
+## License
+
+This project is licensed under the [MIT License](https://github.com/growupanand/ConvoForm/blob/main/LICENSE).
