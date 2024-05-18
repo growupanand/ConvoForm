@@ -2,8 +2,21 @@
 
 export const changelog = [ 
 {
-"title": "0.8.0",
+"title": "0.9.0",
 "tag": "",
+"isoDate": "2024-05-18",
+"commits": {
+"features": [
+],
+"improvements": [
+],
+"fixes": [
+]
+}
+},
+{
+"title": "0.8.0",
+"tag": "0.8.0",
 "isoDate": "2024-05-05",
 "commits": {
 "features": [

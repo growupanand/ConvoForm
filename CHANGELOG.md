@@ -1,3 +1,11 @@
+## [0.9.0](https://github.com/growupanand/ConvoForm/compare/0.8.0...0.9.0) (2024-05-18)
+
+### Features
+
+- 🚀 Published React package
+  ([#245](https://github.com/growupanand/ConvoForm/issues/245))
+  ([c5a353b](https://github.com/growupanand/ConvoForm/commit/c5a353b14d9698edb6efecf1326e715d08f93f90))
+
 ## [0.8.0](https://github.com/growupanand/ConvoForm/compare/0.7.0...0.8.0) (2024-05-05)
 
 ### Features
