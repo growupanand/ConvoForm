@@ -407,6 +407,9 @@ importers:
       react-dom:
         specifier: ^18
         version: 18.3.1(react@18.3.1)
+      socket.io-client:
+        specifier: ^4.7.5
+        version: 4.7.5
     devDependencies:
       "@convoform/websocket-client":
         specifier: ../websocket-client
@@ -553,9 +556,6 @@ importers:
       eslint-plugin-unused-imports:
         specifier: ^3.0.0
         version: 3.2.0(@typescript-eslint/eslint-plugin@6.21.0)(eslint@8.57.0)
-      tsup:
-        specifier: ^8.0.2
-        version: 8.0.2(typescript@5.4.5)
       typescript:
         specifier: ^5
         version: 5.4.5

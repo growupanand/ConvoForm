@@ -9,6 +9,6 @@ export default defineConfig({
   external: ["react", "react-dom"], // Keep React and ReactDOM as external
   dts: true, // Generate .d.ts files
   noExternal: ["@convoform/websocket-client"],
-  // minify: true,
+  minify: true,
   treeshake: true,
 });
