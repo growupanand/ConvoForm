@@ -36,13 +36,13 @@ export function SectionCard({
           className={cn(
             "pb-4 ",
             stickyHeader &&
-              " bg-background/70 sticky top-14 z-30 backdrop-blur ",
+              " sticky top-14 z-30 bg-white/30   backdrop-blur-md",
             headerClassName,
           )}
         >
           <h2
             className={cn(
-              "text-xl font-semibold tracking-tight",
+              " text-xl font-semibold tracking-tight drop-shadow-[0px_0px_4px_white]",
               montserrat.className,
               titleClassName,
             )}

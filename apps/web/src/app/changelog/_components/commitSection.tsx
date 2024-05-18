@@ -20,13 +20,13 @@ export const CommitSection = ({
     <div>
       <Badge
         variant={sectionBadgeVariants[section]}
-        className="mb-3 text-xs font-normal capitalize"
+        className="mb-2 text-xs font-normal capitalize"
       >
         {section}
       </Badge>
-      <ul className="grid gap-2 ps-3">
+      <ul className="grid gap-1 ps-3">
         {commits.map((commit) => (
-          <li key={commit.shorthash} className="border-b pb-2">
+          <li key={commit.shorthash} className=" pb-2">
             <CommitItem commit={commit} />
           </li>
         ))}

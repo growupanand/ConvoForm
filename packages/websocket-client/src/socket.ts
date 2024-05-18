@@ -1,7 +1,5 @@
-"use client";
-
 import { io, Socket } from "socket.io-client";
 
-import { URL } from "./constants";
+import { WEBSOCKET_URL } from "./constants";
 
-export const socket: Socket = io(URL);
+export const socket: Socket = io(WEBSOCKET_URL);

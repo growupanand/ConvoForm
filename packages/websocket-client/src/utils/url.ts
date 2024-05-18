@@ -4,8 +4,8 @@ export const getAPIDomainUrl = (): string => {
     process.env.NEXT_PUBLIC_PACKAGE_ENV &&
     process.env.NEXT_PUBLIC_PACKAGE_ENV === "development"
   ) {
-    return `http://localhost:3000`;
+    return process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? `ws://localhost:4000`;
   }
 
-  return "https://www.convoform.com";
+  return "wss://convoform.onrender.com";
 };

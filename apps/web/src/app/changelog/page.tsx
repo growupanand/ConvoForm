@@ -31,7 +31,7 @@ export default function Page() {
         </div>
       </div>
       <main className="py-5 lg:container ">
-        <div className="mx-auto flex max-w-[700px] flex-col items-center justify-center">
+        <div className="mx-auto flex  flex-col ">
           <div className=" flex flex-col items-center justify-center py-5">
             <Badge variant="secondary" className="font-medium">
               Changelog
@@ -40,16 +40,14 @@ export default function Page() {
               Changes and updates
             </h2>
           </div>
-          <div className="mb-10 px-5">
+          <div className="mx-auto mb-10 max-w-[800px] px-5">
             <RequestFeatureCard />
           </div>
 
-          <div className="flex  items-start justify-center">
-            <div className="w-full ">
-              {removedEmptyReleases.map((release) => (
-                <ReleaseCard key={release.title} release={release} />
-              ))}
-            </div>
+          <div>
+            {removedEmptyReleases.map((release) => (
+              <ReleaseCard key={release.title} release={release} />
+            ))}
           </div>
         </div>
       </main>

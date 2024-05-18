@@ -1,7 +1,7 @@
-import { apiEndpoint } from "./constants";
+import { API_DOMAIN_URL } from "./constants";
 
 const isValidEndpoint =
-  typeof apiEndpoint === "string" && apiEndpoint.trim().length > 0;
+  typeof API_DOMAIN_URL === "string" && API_DOMAIN_URL.trim().length > 0;
 
 async function fetchApi<T = any>(
   input: RequestInfo,
@@ -20,7 +20,7 @@ async function fetchApi<T = any>(
 }
 
 export async function apiClient(method: string, payload: Record<string, any>) {
-  return fetchApi(`${apiEndpoint}/api/webhook/websocket`, {
+  return fetchApi(`${API_DOMAIN_URL}/api/webhook/websocket`, {
     method,
     headers: {
       "Content-Type": "application/json",

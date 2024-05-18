@@ -1,3 +1,3 @@
-// "undefined" means the URL will be computed from the `window.location` object
-export const URL =
-  process.env.NEXT_PUBLIC_WEBSOCKET_URL || "http://localhost:4000";
+import { getAPIDomainUrl } from "./utils/url";
+
+export const WEBSOCKET_URL = getAPIDomainUrl();

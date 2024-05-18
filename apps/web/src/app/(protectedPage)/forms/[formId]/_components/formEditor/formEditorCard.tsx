@@ -370,7 +370,6 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                         variant="outline"
                         onClick={() => append({ fieldName: "" })}
                         type="button"
-                        size="sm"
                         disabled={isGeneratingAIField || isFormBusy}
                         className="w-full "
                       >
@@ -381,9 +380,8 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                         variant="secondary"
                         onClick={generateAIField}
                         type="button"
-                        size="sm"
                         disabled={isGeneratingAIField || isFormBusy}
-                        className="w-full "
+                        className="w-full border"
                       >
                         <Sparkles
                           className={cn(

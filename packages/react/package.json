@@ -3,7 +3,7 @@
   "description": "React hook for creating conversational forms with ConvoForm.",
   "homepage": "https://www.convoform.com",
   "private": false,
-  "version": "0.0.4",
+  "version": "0.0.69",
   "license": "MIT",
   "author": {
     "name": "Utkarsh Anand",
@@ -17,34 +17,39 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/growupanand/ConvoForm.git"
+    "url": "git+https://github.com/growupanand/ConvoForm.git",
+    "directory": "packages/react"
   },
   "publishConfig": {
     "access": "public"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "module": "./dist/index.esm.js",
   "files": [
     "./dist/**"
   ],
   "scripts": {
-    "clean": "rm -rf dist",
-    "build": "pnpm run clean && tsup src/index.ts --format cjs --dts",
+    "build": "tsup",
     "dev": "pnpm run build --watch",
-    "release": "release-it"
-  },
-  "dependencies": {
-    "@convoform/websocket-client": "workspace:*"
+    "release": "release-it",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/react": "^18",
     "tsup": "^8.0.2",
     "typescript": "^5",
     "release-it": "^17.0.1",
-    "@release-it/conventional-changelog": "^8.0.1"
+    "@release-it/conventional-changelog": "^8.0.1",
+    "@convoform/websocket-client": "../websocket-client"
   },
   "peerDependencies": {
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "socket.io-client": "^4.7.5"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/growupanand"
   }
 }

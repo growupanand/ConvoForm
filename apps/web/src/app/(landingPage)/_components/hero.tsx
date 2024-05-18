@@ -113,6 +113,7 @@ export function Hero() {
               alt="winner project of the month"
               width={130}
               height={128}
+              quality={100}
             />
           </div>
         </Link>

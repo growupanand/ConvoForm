@@ -2,7 +2,6 @@ import { Features } from "@/app/(landingPage)/_components/features";
 import { Hero } from "@/app/(landingPage)/_components/hero";
 import { HowToUseSection } from "@/app/(landingPage)/_components/howToUse";
 import { Pricing } from "@/app/(landingPage)/_components/pricing";
-import { RequestFeatureCard } from "@/components/requestFeatureCard";
 import { SectionCard } from "@/components/sectionCard";
 import { NewFeature } from "./_components/newFeature";
 import { ScreenshotSlider } from "./_components/screenshotsSlider";
@@ -33,11 +32,6 @@ export default function Home() {
         <div className="grid gap-1 lg:grid-cols-2">
           <HowToUseSection />
           <Pricing />
-        </div>
-      </SectionShell>
-      <SectionShell>
-        <div className="px-5">
-          <RequestFeatureCard />
         </div>
       </SectionShell>
     </div>
