@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { socket } from "@convoform/websocket-client";
 
+import { API_DOMAIN } from "../constants";
 import { ExtraStreamData, Message } from "../types";
 import { readResponseStream } from "../utils/streamUtils";
 
@@ -25,8 +26,13 @@ const initialState: State = {
   messages: [],
 };
 
-export function useConvoForm({ formId, onError }: Readonly<Props>) {
-  const apiEndpoint = `/api/form/${formId}/conversation`;
+export function useConvoForm({
+  /** Generated from id from ConvoForm.com */
+  formId,
+  /** Callback function will be called if something went wrong */
+  onError,
+}: Readonly<Props>) {
+  const apiEndpoint = `${API_DOMAIN}/api/form/${formId}/conversation`;
 
   const [state, setState] = useState<State>(initialState);
   const { currentQuestion, data, isBusy, messages } = state;
@@ -124,14 +130,31 @@ export function useConvoForm({ formId, onError }: Readonly<Props>) {
   }, [isFormSubmissionFinished]);
 
   return {
+    /** Function to submit an answer to the current question */
     submitAnswer,
+
+    /** The text of the current question in the conversation, will update as soon as the question is being fetched */
     currentQuestion,
+
+    /** The ID of the current conversation */
     conversationId,
+
+    /** Data related to form fields */
     fieldsData,
+
+    /** The current field in focus */
     currentField,
+
+    /** Boolean indicating whether any API call is ongoing */
     isBusy,
+
+    /** Boolean indicating whether the form submission is finished */
     isFormSubmissionFinished,
+
+    /** Message to display at the end screen */
     endScreenMessage,
+
+    /** Function to reset the form state */
     resetForm,
   };
 }

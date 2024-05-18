@@ -2,12 +2,10 @@ import { createServer } from "http";
 import express from "express";
 import { Server } from "socket.io";
 
-import { apiEndpoint, IS_PROD } from "./constants";
+import { IS_PROD } from "./constants";
 import { conversationStarted, conversationStopped } from "./controller";
-import { extractDomainFromUrl } from "./utils";
 
 const PORT = 4000;
-const API_DOMAIN = extractDomainFromUrl(apiEndpoint);
 /**
  * ============ HTTP SERVER ============
  */
@@ -25,7 +23,7 @@ app.get("/", (req, res) => {
 
 const io = new Server(server, {
   cors: {
-    origin: IS_PROD ? new RegExp(`https://(.+?)\\.${API_DOMAIN}`) : "*",
+    origin: IS_PROD ? /https:\/\/(.+?)\.convoform.com/ : "*",
   },
 });
 

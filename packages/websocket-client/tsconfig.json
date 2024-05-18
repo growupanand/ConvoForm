@@ -7,9 +7,10 @@
       "moduleResolution": "Bundler",
       "preserveWatchOutput": true,
       "skipLibCheck": true,
-      "noEmit": true,
+      "noEmit": false,
       "strict": true,
       "target": "ES2022",
     },
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules"],
+    "include": ["."]
   }

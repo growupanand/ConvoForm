@@ -24,7 +24,7 @@ export default function DashboardPage() {
         </div>
         <div className="lg:col-span-4">
           <div>
-            <h3 className="text-muted-foreground mb-3 text-sm font-normal">
+            <h3 className="text-muted-foreground text-sm font-normal">
               Recent responses
             </h3>
             <div>

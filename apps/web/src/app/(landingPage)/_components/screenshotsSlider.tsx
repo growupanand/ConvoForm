@@ -83,14 +83,19 @@ export function ScreenshotSlider() {
 
   return (
     <div>
-      <Carousel setApi={setApi} className="w-full">
-        <div className="overflow-hidden rounded-xl border shadow-lg">
+      <Carousel setApi={setApi} className="w-full ">
+        <div className="overflow-hidden rounded-xl border shadow-lg ">
           <CarouselContent>
             {screenshotsData.map((screenshot) => {
               return (
                 <CarouselItem key={screenshot.id}>
-                  <AspectRatio ratio={3 / 2}>
-                    <Image alt={screenshot.alt} src={screenshot.src} fill />
+                  <AspectRatio ratio={16 / 9}>
+                    <Image
+                      quality={100}
+                      alt={screenshot.alt}
+                      src={screenshot.src}
+                      fill
+                    />
                   </AspectRatio>
                 </CarouselItem>
               );

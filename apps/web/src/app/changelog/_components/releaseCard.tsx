@@ -1,4 +1,5 @@
 import { SectionCard } from "@/components/sectionCard";
+import { formatDate } from "@/lib/utils";
 import { CommitSections, Release } from "@/lib/validations/changeLog";
 import { CommitSection } from "./commitSection";
 
@@ -14,8 +15,12 @@ export const ReleaseCard = ({ release }: { release: Release }) => {
   );
 
   return (
-    <SectionCard stickyHeader title={`${release.title} - ${release.isoDate}`}>
-      <div className="grid gap-3">
+    <SectionCard
+      stickyHeader
+      headerClassName="border-b mb-5"
+      title={`${release.title} - ${formatDate(release.isoDate)}`}
+    >
+      <div className="grid gap-3 lg:ps-20">
         {commitSectionsWithCommits.map((section) => (
           <CommitSection
             key={section}

@@ -58,7 +58,13 @@ export class ConversationService extends OpenAIService {
       },
     });
     // Respond with the stream
-    return new StreamingTextResponse(stream, {}, data);
+    return new StreamingTextResponse(
+      stream,
+      {
+        headers: { "Access-Control-Allow-Origin": "*" },
+      },
+      data,
+    );
   }
 
   public async extractAnswerFromMessage({
@@ -148,7 +154,11 @@ export class ConversationService extends OpenAIService {
       },
     });
     // Respond with the stream
-    return new StreamingTextResponse(stream, {}, data);
+    return new StreamingTextResponse(
+      stream,
+      { headers: { "Access-Control-Allow-Origin": "*" } },
+      data,
+    );
   }
 
   public async generateConversationName({

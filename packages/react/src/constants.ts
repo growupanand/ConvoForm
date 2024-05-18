@@ -1,3 +1,3 @@
 import { getAPIDomainUrl } from "./utils/url";
 
-export const WEBSOCKET_URL = getAPIDomainUrl();
+export const API_DOMAIN = getAPIDomainUrl();

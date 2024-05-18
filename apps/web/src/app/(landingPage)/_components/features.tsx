@@ -60,14 +60,18 @@ const FeatureListItem = ({
 }) => (
   <Card
     className={cn(
-      "h-full w-full rounded-3xl  p-2 shadow-inner lg:p-5",
+      "relative h-full w-full  rounded-3xl p-2 pe-6 shadow-inner lg:pe-10",
       className,
     )}
   >
     <CardHeader>
       <CardTitle className="flex items-start gap-2 text-left text-2xl font-normal leading-none tracking-tight lg:gap-3">
-        {icon ? <span className="size-6 lg:size-10">{icon}</span> : undefined}
         {title}
+        {icon ? (
+          <span className="absolute right-5 top-5 size-6 lg:size-10">
+            {icon}
+          </span>
+        ) : undefined}
       </CardTitle>
     </CardHeader>
     <CardContent>
