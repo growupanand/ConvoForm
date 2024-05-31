@@ -1,3 +1,4 @@
+
 # Learn.md ✍
 # ConvoForm 
 [ConvoForm.com](https://www.convoform.com/?utm_source=genai_works&utm_medium=social&utm_campaign=github_launch) transforms traditional forms into interactive conversational experiences, powered by AI for an enhanced user journey. Think Google Forms, but more engaging and intuitive.
@@ -27,12 +28,10 @@
 ConvoForm.com transforms traditional forms into interactive conversational experiences, powered by AI for an enhanced user journey.
 
 ## Tech Stack 🗃️
-
-- **Frontend**: React.js, Tailwind CSS
-- **Backend**: Node.js, Express.js
-- **Database**: PostgreSQL
-- **Hosting**: Render
-- **Version Control**: Git, GitHub
+- **Frontend**: [Next.js](https://nextjs.org) for optimized server and client rendering.
+- **Backend**: [tRPC](https://trpc.io) for type-safe API development.
+- **AI Integration**: [GPT-3.5-Turbo](https://platform.openai.com/docs/models/gpt-3-5-turbo) for dynamic form generation and response analysis.
+- **Real-time updates**: [Socket.io](https://socket.io/) for live form progress tracking.
 
 ## Contributing 📝
 Raise and issue; Get assigned and then work on fixing the issue.
