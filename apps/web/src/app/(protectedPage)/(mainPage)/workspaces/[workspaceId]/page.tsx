@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { getOrganizationId } from "@/lib/getOrganizationId";
 import { api } from "@/trpc/server";
+import { PageShell } from "../../_components/pageShell";
 import FormList from "./_component/formList";
 import { WorkspaceHeader } from "./_component/pageHeader";
 
@@ -29,9 +30,8 @@ export default async function WorkspacePage({
   }
 
   return (
-    <div>
-      <WorkspaceHeader workspace={workspace} />
+    <PageShell title={<WorkspaceHeader workspace={workspace} />}>
       <FormList workspaceId={workspaceId} orgId={orgId} />
-    </div>
+    </PageShell>
   );
 }

@@ -24,7 +24,7 @@ export function RecentResponsesCard({ take }: Readonly<{ take: number }>) {
       animate(
         ".slide-down-list-item",
         { opacity: 1, translate: 0 },
-        { delay: stagger(0.1), duration: 0.2 },
+        { delay: stagger(0.05), duration: 0.2 },
       );
     }
   };
@@ -87,11 +87,7 @@ export function RecentResponsesCard({ take }: Readonly<{ take: number }>) {
 function RecentResponsesCardShell({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <CardShell title="Recent responses">
-      <div className="min-h-[400px]">{children}</div>
-    </CardShell>
-  );
+  return <CardShell title="Recent responses">{children}</CardShell>;
 }
 
 function RecentResponsesListLoading() {
@@ -114,16 +110,14 @@ function RecentResponsesListLoading() {
 
 function RecentResponsesEmptyList() {
   return (
-    <div className="h-[400px]">
-      <div className="flex h-full flex-col items-center justify-center ">
-        <InboxIcon className="h-16 w-16 text-gray-400" />
-        <h3 className="mt-2 text-lg font-medium text-gray-700">
-          No recent responses
-        </h3>
-        <p className="mt-1 text-sm text-gray-500">
-          {"As you receive responses, they'll appear here."}
-        </p>
-      </div>
+    <div className="flex  flex-col items-center justify-center py-10">
+      <InboxIcon className="h-16 w-16 text-gray-400" />
+      <h3 className="mt-2 text-lg font-medium text-gray-700">
+        No recent responses
+      </h3>
+      <p className="mt-1 text-sm text-gray-500">
+        {"As you receive responses, they'll appear here."}
+      </p>
     </div>
   );
 }
