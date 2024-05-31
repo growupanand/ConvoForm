@@ -13,7 +13,7 @@ export default async function ConversationPage({
       <h2 className="mb-5 text-xl font-medium capitalize lg:text-2xl">
         All conversations
       </h2>
-      <div className="mb-3 lg:mb-5">
+      <div className="mb-5 lg:mb-10">
         <OverviewDataCard formId={formId} />
       </div>
       <div className="col-auto">
