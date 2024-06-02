@@ -7,6 +7,7 @@ import { motion, stagger, useAnimate } from "framer-motion";
 import { InboxIcon } from "lucide-react";
 
 import { CardShell } from "@/components/common/cardShell";
+import { EmptyCard } from "@/components/common/emptyCard";
 import { ListCard } from "@/components/common/list";
 import { ListItem } from "@/components/common/listItem";
 import { timeAgo } from "@/lib/utils";
@@ -79,7 +80,10 @@ export function RecentResponsesCard({ take }: Readonly<{ take: number }>) {
 
   return (
     <RecentResponsesCardShell>
-      <RecentResponsesEmptyList />
+      <EmptyCard
+        title="No recent responses"
+        illustration={<InboxIcon className="text-muted-foreground h-16 w-16" />}
+      />
     </RecentResponsesCardShell>
   );
 }
@@ -87,7 +91,14 @@ export function RecentResponsesCard({ take }: Readonly<{ take: number }>) {
 function RecentResponsesCardShell({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  return <CardShell title="Recent responses">{children}</CardShell>;
+  return (
+    <CardShell
+      title="Recent responses"
+      secondaryText="As you receive responses, they'll appear here."
+    >
+      {children}
+    </CardShell>
+  );
 }
 
 function RecentResponsesListLoading() {
@@ -105,19 +116,5 @@ function RecentResponsesListLoading() {
         </ListItem>
       ))}
     </ListCard>
-  );
-}
-
-function RecentResponsesEmptyList() {
-  return (
-    <div className="flex  flex-col items-center justify-center py-10">
-      <InboxIcon className="h-16 w-16 text-gray-400" />
-      <h3 className="mt-2 text-lg font-medium text-gray-700">
-        No recent responses
-      </h3>
-      <p className="mt-1 text-sm text-gray-500">
-        {"As you receive responses, they'll appear here."}
-      </p>
-    </div>
   );
 }

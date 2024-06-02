@@ -89,7 +89,7 @@ function FormPageHeader({ formId }: Readonly<Props>) {
             <span>Form not found</span>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center pe-5">
           <UserButton />
         </div>
       </div>

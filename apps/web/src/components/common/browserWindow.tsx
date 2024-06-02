@@ -84,7 +84,7 @@ const ActionButtons = ({
   );
 };
 
-const AddressBar = ({ link }: { link?: string }) => (
+export const AddressBar = ({ link }: { link?: string }) => (
   <div>
     {link && (
       <div className="flex w-full items-center gap-1 rounded-lg bg-gray-100">

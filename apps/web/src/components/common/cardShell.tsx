@@ -21,9 +21,9 @@ export function CardShell({
   const showCardHeader = title || secondaryText;
 
   return (
-    <Card className=" border-none shadow">
+    <Card>
       {showCardHeader && (
-        <CardHeader className={cn("pb-3", cardHeaderClassName)}>
+        <CardHeader className={cn("space-y-0 pb-3", cardHeaderClassName)}>
           {title && (
             <CardTitle className="text-base font-medium lg:text-xl">
               {title}

@@ -23,7 +23,10 @@ export default async function WorkspacePage({
   params: { workspaceId },
 }: Readonly<Props>) {
   const orgId = getOrganizationId();
-  const workspace = await api.workspace.getOne({ id: workspaceId });
+  const workspace = await api.workspace.getOne({
+    id: workspaceId,
+    organizationId: orgId,
+  });
 
   if (!workspace) {
     notFound();
@@ -31,7 +34,7 @@ export default async function WorkspacePage({
 
   return (
     <PageShell title={<WorkspaceHeader workspace={workspace} />}>
-      <FormList workspaceId={workspaceId} orgId={orgId} />
+      <FormList workspace={workspace} />
     </PageShell>
   );
 }

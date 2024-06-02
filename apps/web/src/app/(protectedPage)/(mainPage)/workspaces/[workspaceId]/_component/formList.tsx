@@ -1,24 +1,29 @@
 "use client";
 
 import { useEffect } from "react";
+import { Workspace } from "@convoform/db";
 import { motion, stagger, useAnimate } from "framer-motion";
 
+import {
+  EmptyCard,
+  IllustrationImageEnum,
+} from "@/components/common/emptyCard";
 import { ListCard } from "@/components/common/list";
 import { api } from "@/trpc/react";
+import CreateFormButton from "./createFormButton";
 import { FormListItem } from "./formListItem";
 import FormListLoading from "./formListLoading";
 
 type Props = {
-  workspaceId: string;
-  orgId: string;
+  workspace: Workspace;
 };
 
-export default function FormList({ workspaceId, orgId }: Readonly<Props>) {
+export default function FormList({ workspace }: Readonly<Props>) {
   const [scope, animate] = useAnimate();
 
   const { isLoading, data } = api.form.getAll.useQuery({
-    workspaceId,
-    organizationId: orgId,
+    workspaceId: workspace.id,
+    organizationId: workspace.organizationId,
   });
 
   const forms = data ?? [];
@@ -44,7 +49,14 @@ export default function FormList({ workspaceId, orgId }: Readonly<Props>) {
 
   return (
     <div className="h-full" ref={scope}>
-      {emptyForms && <p className="text-muted-foreground">No form</p>}
+      {emptyForms && (
+        <EmptyCard
+          title="No Forms Yet"
+          description="Get started by creating your first form. Click the button below to get started."
+          illustration={IllustrationImageEnum.UnboxingDoodle}
+          actionButton={<CreateFormButton workspace={workspace} />}
+        />
+      )}
       {!emptyForms && (
         <ListCard>
           {forms.map((form) => (
