@@ -37,7 +37,7 @@ type State = {
   isGeneratedSuccessfully: boolean;
 };
 
-export function GenerateForm({
+export function GenerateFormModal({
   onFormGenerated,
   isCreatingForm,
   open,

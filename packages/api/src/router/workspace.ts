@@ -45,11 +45,16 @@ export const workspaceRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string().min(1),
+        organizationId: z.string().min(1),
       }),
     )
     .query(async ({ input, ctx }) => {
       return await ctx.db.query.workspace.findFirst({
-        where: eq(workspace.id, input.id),
+        where: (workspace, { eq, and }) =>
+          and(
+            eq(workspace.id, input.id),
+            eq(workspace.organizationId, input.organizationId),
+          ),
       });
     }),
 

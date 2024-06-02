@@ -4,12 +4,7 @@ import { ReactNode } from "react";
 import dynamic from "next/dynamic";
 import { Alert, AlertTitle } from "@convoform/ui/components/ui/alert";
 import { Button } from "@convoform/ui/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@convoform/ui/components/ui/card";
+import { Card, CardTitle } from "@convoform/ui/components/ui/card";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 
 import Spinner from "@/components/common/spinner";
@@ -27,7 +22,7 @@ const LineChart = dynamic(
 );
 
 type Props = {
-  title: string;
+  title?: string;
   mainValue: string;
   secondaryValue?: string;
   dataType?: ReactNode;
@@ -42,65 +37,57 @@ export function DataCard({
   chartData,
 }: Readonly<Props>) {
   return (
-    <Card>
-      <CardHeader className="pb-0">
-        <div className="flex items-start justify-between">
-          <CardTitle className="font-normal">
-            {title}
-            {secondaryValue && (
-              <p className="text-muted-foreground text-sm font-normal">
-                {secondaryValue}
-              </p>
-            )}
-          </CardTitle>
-          <div className="text-right">
-            <div className="text-4xl font-bold">{mainValue}</div>
-            {dataType && (
-              <p className="text-muted-foreground text-sm font-normal">
-                {dataType}
-              </p>
-            )}
-          </div>
+    <div>
+      <div className="mb-5 flex items-start justify-between">
+        <div>
+          <h4 className="text-lg font-medium">{title}</h4>
+          {secondaryValue && (
+            <p className="text-muted-foreground text-sm font-normal">
+              {secondaryValue}
+            </p>
+          )}
         </div>
-      </CardHeader>
+        <div className="flex items-end gap-1">
+          <div className="text-4xl font-bold">{mainValue}</div>
+          {dataType && (
+            <p className="text-muted-foreground text-sm font-normal">
+              {dataType}
+            </p>
+          )}
+        </div>
+      </div>
       {chartData && (
-        <CardContent className="pt-3">
-          <div className="h-[150px] grow  ">
-            <LineChart
-              className="h-full w-full"
-              data={chartData}
-              index="name"
-              categories={["count"]}
-              yAxisWidth={30}
-            />
-          </div>
-        </CardContent>
+        <div className="h-[150px] grow  ">
+          <LineChart
+            className="h-full w-full"
+            data={chartData}
+            index="name"
+            categories={["count"]}
+            yAxisWidth={30}
+          />
+        </div>
       )}
-    </Card>
+    </div>
   );
 }
 
 export function DataCardSkeleton() {
   return (
-    <Card>
-      <CardHeader className="pb-4">
-        <div className="flex items-start justify-between">
-          <CardTitle>
-            <Skeleton className="mb-2 h-4 w-40" />
-            <Skeleton className="h-3 w-20" />
-          </CardTitle>
-          <div className="flex flex-col items-end">
-            <Skeleton className="mb-2 h-5 w-10" />
-            <Skeleton className="h-3 w-12" />
-          </div>
+    <div>
+      <div className="mb-5 flex items-start justify-between">
+        <CardTitle>
+          <Skeleton className="mb-2 h-4 w-40" />
+          <Skeleton className="h-3 w-20" />
+        </CardTitle>
+        <div className="flex flex-col items-end">
+          <Skeleton className="mb-2 h-5 w-10" />
+          <Skeleton className="h-3 w-12" />
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[150px] grow">
-          <Skeleton className="h-full w-full" />
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+      <div className="h-[150px] grow">
+        <Skeleton className="h-full w-full" />
+      </div>
+    </div>
   );
 }
 

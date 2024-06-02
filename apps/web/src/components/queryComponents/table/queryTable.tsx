@@ -13,6 +13,7 @@ type Props<TData, TError> = {
   getTableData: (data: TData) => Record<string, string>[];
   showExportButton?: boolean;
   exportFileName?: string;
+  emptyComponent?: React.ReactNode;
 };
 
 export function QueryTable<TData, TError>(props: Props<TData, TError>) {
@@ -31,7 +32,7 @@ export function QueryTable<TData, TError>(props: Props<TData, TError>) {
             exportFileName={props.exportFileName}
           />
         ) : (
-          <TableEmpty />
+          props.emptyComponent ?? <TableEmpty />
         );
       }}
     </QueryComponent>

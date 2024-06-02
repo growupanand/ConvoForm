@@ -1,3 +1,7 @@
+import {
+  EmptyCard,
+  IllustrationImageEnum,
+} from "@/components/common/emptyCard";
 import { FormViewer } from "@/components/formViewer/formViewer";
 import { formUpdateSchema } from "@/lib/validations/form";
 
@@ -15,9 +19,11 @@ export const FormPreview = ({ form }: { form: any }) => {
 };
 
 const InvalidForm = () => (
-  <p className="text-muted-foreground">
-    Unable to preview form, Please check all form details are filled.
-  </p>
+  <EmptyCard
+    title="Unable to preview form"
+    description="The form cannot be previewed due to empty form or invalid fields."
+    illustration={IllustrationImageEnum.MessyDoodle}
+  />
 );
 
 const FormNotFound = () => (

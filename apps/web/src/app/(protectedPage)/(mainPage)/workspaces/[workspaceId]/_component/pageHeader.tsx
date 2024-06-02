@@ -121,8 +121,8 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
   };
 
   return (
-    <div className="mb-5">
-      <div className="mb-3 flex items-center justify-between lg:mb-10">
+    <div>
+      <div className="mb-5 flex items-center justify-between">
         <Input
           ref={inputRef}
           className={cn(
@@ -132,7 +132,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
           onChange={handleWorkspaceNameInputChange}
           defaultValue={workspace!.name}
         />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 pl-5">
           {isUpdating && <Spinner />}
           <DropdownMenu>
             <DropdownMenuTrigger disabled={isDeleting} asChild>
@@ -190,7 +190,7 @@ export const WorkspaceHeaderSkeleton = () => {
           <Skeleton className="h-8 w-40" />
         </div>
         <div className="flex items-center gap-2">
-          <Skeleton className="h-8 w-8" />
+          <Spinner />
         </div>
       </div>
       <div>
