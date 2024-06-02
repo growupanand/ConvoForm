@@ -38,6 +38,7 @@ import {
   Info,
   Plus,
   Sparkles,
+  Undo,
   X,
 } from "lucide-react";
 import { FieldArrayWithId, useFieldArray, useForm } from "react-hook-form";
@@ -59,13 +60,15 @@ type Props = {
 
 type State = {
   isGeneratingAIField: boolean;
+  removedFields: FieldArrayWithId[];
 };
 
 export function FormEditorCard({ form }: Readonly<Props>) {
   const [state, setState] = useState<State>({
     isGeneratingAIField: false,
+    removedFields: [],
   });
-  const { isGeneratingAIField } = state;
+  const { isGeneratingAIField, removedFields } = state;
 
   const formDefaultValues = form as FormSubmitDataSchema;
 
@@ -76,7 +79,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
     defaultValues: formDefaultValues,
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, insert } = useFieldArray({
     control: formHook.control,
     name: "formFields",
   });
@@ -170,6 +173,23 @@ export function FormEditorCard({ form }: Readonly<Props>) {
       if (currentFieldIndex !== 0) {
         formHook.setFocus(`formFields.${currentFieldIndex - 1}.fieldName`);
       }
+    }
+  };
+
+  const handleRemoveField = (index: number) => {
+    const removedField = fields[index];
+    remove(index);
+    setState((cs) => ({
+      ...cs,
+      removedFields: [...cs.removedFields, removedField],
+    }));
+  };
+
+  const handleUndoRemoveField = () => {
+    const lastRemovedField = removedFields.pop();
+    if (lastRemovedField) {
+      setState((cs) => ({ ...cs, removedFields }));
+      insert(fields.length, lastRemovedField);
     }
   };
 
@@ -349,9 +369,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                                     isGeneratingAIField ||
                                     isFormBusy
                                   }
-                                  onClick={() =>
-                                    fields.length != 1 && remove(index)
-                                  }
+                                  onClick={() => handleRemoveField(index)}
                                   type="button"
                                   size="icon"
                                 >
@@ -392,6 +410,18 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                         Auto Generate Field
                       </Button>
                     </div>
+                    {removedFields.length > 0 && (
+                      <Button
+                        variant="outline"
+                        onClick={handleUndoRemoveField}
+                        type="button"
+                        disabled={isGeneratingAIField || isFormBusy}
+                        className="mt-2 w-[90%] border-2 "
+                      >
+                        <Undo className="mr-2 h-4 w-4" />
+                        Undo Remove Field
+                      </Button>
+                    )}
                   </div>
                 </AccordionContent>
               </AccordionItem>
