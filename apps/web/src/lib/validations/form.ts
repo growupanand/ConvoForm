@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const formFieldSchema = z.object({
   fieldName: z.string().min(1).max(255),
+  isMarkedForRemoval: z.boolean().default(false),
 });
 
 export type FormField = z.infer<typeof formFieldSchema>;
