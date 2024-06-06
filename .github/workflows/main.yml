@@ -12,6 +12,6 @@ jobs:
           pull-requests: write
         steps:
             - name: Contribute List
-              uses: growupanand/ConvoForm@v2.3.10
+              uses: growupanand/ConvoForm@v2.317.0
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
