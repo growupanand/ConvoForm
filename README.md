@@ -110,8 +110,8 @@ This project is licensed under the [MIT License](https://github.com/growupanand/
   <div align = "center">
  <h3>Thank you for contributing to our repository</h3>
 
-<!-- readme: contributors -start -->
-<!-- readme: contributors -end -->
+
 
 ### Show some ❤️ by starring this awesome repository!
-
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
