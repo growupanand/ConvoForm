@@ -108,9 +108,9 @@ This project is licensed under the [MIT License](https://github.com/growupanand/
   <div align = "center">
  <h3>Thank you for contributing to our repository</h3>
 
-![Contributors](https://contrib.rocks/image?repo=growupanand/ConvoForm)
 
-### Show some ❤️ by starring this awesome repository!
+
+
 
 
 <!-- readme: contributors -start -->
@@ -149,3 +149,5 @@ This project is licensed under the [MIT License](https://github.com/growupanand/
 	<tbody>
 </table>
 <!-- readme: contributors -end -->
+
+### Show some ❤️ by starring this awesome repository!
