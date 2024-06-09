@@ -78,7 +78,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
     defaultValues: formDefaultValues,
   });
 
-  const { fields, append, update, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control: formHook.control,
     name: "formFields",
   });
@@ -381,18 +381,31 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                                   disabled={removeFieldsIds.includes(item.id)}
                                   {...field}
                                 />
-                                <Button
-                                  variant="ghost"
-                                  onClick={() => toggleRemoveField(index, item)}
-                                  type="button"
-                                  size="icon"
-                                >
-                                  {removeFieldsIds.includes(item.id) ? (
-                                    <Undo className="h-4 w-4" />
-                                  ) : (
-                                    <X className="h-4 w-4" />
-                                  )}
-                                </Button>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        variant="ghost"
+                                        onClick={() =>
+                                          toggleRemoveField(index, item)
+                                        }
+                                        type="button"
+                                        size="icon"
+                                      >
+                                        {removeFieldsIds.includes(item.id) ? (
+                                          <Undo className="h-4 w-4" />
+                                        ) : (
+                                          <X className="h-4 w-4" />
+                                        )}
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top">
+                                      {removeFieldsIds.includes(item.id)
+                                        ? "Undo removal"
+                                        : "Remove field"}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
                               </div>
                             </FormControl>
                             <FormMessage />
