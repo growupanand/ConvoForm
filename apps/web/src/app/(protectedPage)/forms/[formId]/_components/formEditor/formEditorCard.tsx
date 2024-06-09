@@ -60,21 +60,16 @@ type Props = {
 
 type State = {
   isGeneratingAIField: boolean;
+  removeFieldsIds: string[];
 };
 
 export function FormEditorCard({ form }: Readonly<Props>) {
   const [state, setState] = useState<State>({
     isGeneratingAIField: false,
+    removeFieldsIds: [],
   });
-  const { isGeneratingAIField } = state;
-
-  const formDefaultValues = {
-    ...form,
-    formFields: form.formFields.map((field) => ({
-      ...field,
-      isMarkedForRemoval: false,
-    })),
-  } as FormSubmitDataSchema;
+  const { isGeneratingAIField, removeFieldsIds } = state;
+  const formDefaultValues = form as FormSubmitDataSchema;
 
   const queryClient = useQueryClient();
 
@@ -83,20 +78,14 @@ export function FormEditorCard({ form }: Readonly<Props>) {
     defaultValues: formDefaultValues,
   });
 
-  const { fields, append, update } = useFieldArray({
+  const { fields, append, update, remove } = useFieldArray({
     control: formHook.control,
     name: "formFields",
   });
 
   // This will reset form when another form page is opened, otherwise react-hook-form will keep previous form values
   useEffect(() => {
-    // Initialize isMarkedForRemoval property for existing fields
-    const updatedFormFields = form.formFields.map((field) => ({
-      ...field,
-      isMarkedForRemoval: false,
-    }));
-    const updatedFormDefaultValues = { ...form, formFields: updatedFormFields };
-    formHook.reset(updatedFormDefaultValues);
+    formHook.reset(formDefaultValues);
   }, [form]);
 
   const isErrorInRequirementFields = formHook.formState.errors.formFields;
@@ -130,11 +119,10 @@ export function FormEditorCard({ form }: Readonly<Props>) {
   const isFormBusy = updateForm.isPending;
 
   const onSubmit = (formData: FormSubmitDataSchema) => {
-    console.log("form data", formData);
     const cleanedData = {
       ...formData,
       formFields: formData.formFields.filter(
-        (field) => field.isMarkedForRemoval != true,
+        (field, index) => !removeFieldsIds.includes(fields[index]!.id),
       ),
     };
     console.log("testing", cleanedData);
@@ -160,10 +148,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
       });
       const responseJson = await response.json();
       const { fieldName } = responseJson;
-      append({ fieldName, isMarkedForRemoval: false } as {
-        fieldName: string;
-        isMarkedForRemoval: boolean;
-      });
+      append({ fieldName });
     } catch (error: any) {
       formHook.trigger(["overview", "formFields"]);
       showErrorResponseToast(error, "Unable to generate field");
@@ -197,14 +182,33 @@ export function FormEditorCard({ form }: Readonly<Props>) {
       }
     }
   };
-  const toggleRemoveField = (index: number) => {
-    const field = fields[index];
-    if (field) {
-      update(index, {
-        ...field,
-        isMarkedForRemoval: !field.isMarkedForRemoval,
-      } as { fieldName: string; isMarkedForRemoval: boolean });
+
+  const toggleRemoveField = (
+    fieldIndex: number,
+    field: { fieldName: string; id: string },
+  ) => {
+    // Check if field is already marked for removal
+    if (removeFieldsIds.includes(field.id)) {
+      setState((cs) => ({
+        ...cs,
+        removeFieldsIds: removeFieldsIds.filter((id) => id !== field.id),
+      }));
+      return;
     }
+
+    const fieldValue = formHook.getValues().formFields[fieldIndex]?.fieldName;
+    // check if field value is empty then we can safely remove it instead of marking it for removal
+    if (fieldValue === "") {
+      // remove field
+      remove(fieldIndex);
+      return;
+    }
+
+    // mark field for removal
+    setState((cs) => ({
+      ...cs,
+      removeFieldsIds: [...removeFieldsIds, field.id],
+    }));
   };
 
   return (
@@ -374,16 +378,16 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                                   onKeyDown={(e) =>
                                     handleFormFieldInputKeyDown(e, item)
                                   }
-                                  disabled={item.isMarkedForRemoval}
+                                  disabled={removeFieldsIds.includes(item.id)}
                                   {...field}
                                 />
                                 <Button
                                   variant="ghost"
-                                  onClick={() => toggleRemoveField(index)}
+                                  onClick={() => toggleRemoveField(index, item)}
                                   type="button"
                                   size="icon"
                                 >
-                                  {item.isMarkedForRemoval ? (
+                                  {removeFieldsIds.includes(item.id) ? (
                                     <Undo className="h-4 w-4" />
                                   ) : (
                                     <X className="h-4 w-4" />
@@ -400,9 +404,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                     <div className=" mt-2 flex gap-3 max-lg:flex-col lg:items-center">
                       <Button
                         variant="outline"
-                        onClick={() =>
-                          append({ fieldName: "", isMarkedForRemoval: false })
-                        }
+                        onClick={() => append({ fieldName: "" })}
                         type="button"
                         disabled={isGeneratingAIField || isFormBusy}
                         className="w-full "
