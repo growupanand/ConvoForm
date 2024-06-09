@@ -125,7 +125,6 @@ export function FormEditorCard({ form }: Readonly<Props>) {
         (field, index) => !removeFieldsIds.includes(fields[index]!.id),
       ),
     };
-    console.log("testing", cleanedData);
     updateForm.mutate({
       id: form.id,
       ...cleanedData,
