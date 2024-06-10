@@ -1,3 +1,11 @@
+## [0.9.2](https://github.com/growupanand/ConvoForm/compare/0.9.1...0.9.2) (2024-06-10)
+
+### Improvements
+
+- 💄 In form editor, After remove a form field I can undo this remove
+  ([#263](https://github.com/growupanand/ConvoForm/issues/263))
+  ([c8edb9e](https://github.com/growupanand/ConvoForm/commit/c8edb9edf2ea9127366aa53b71f220d447dcd13e))
+
 ## [0.9.1](https://github.com/growupanand/ConvoForm/compare/0.9.0...0.9.1) (2024-06-02)
 
 ### Improvements
