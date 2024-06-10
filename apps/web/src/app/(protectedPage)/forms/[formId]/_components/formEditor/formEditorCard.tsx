@@ -38,6 +38,7 @@ import {
   Info,
   Plus,
   Sparkles,
+  Undo,
   X,
 } from "lucide-react";
 import { FieldArrayWithId, useFieldArray, useForm } from "react-hook-form";
@@ -59,14 +60,15 @@ type Props = {
 
 type State = {
   isGeneratingAIField: boolean;
+  removeFieldsIds: string[];
 };
 
 export function FormEditorCard({ form }: Readonly<Props>) {
   const [state, setState] = useState<State>({
     isGeneratingAIField: false,
+    removeFieldsIds: [],
   });
-  const { isGeneratingAIField } = state;
-
+  const { isGeneratingAIField, removeFieldsIds } = state;
   const formDefaultValues = form as FormSubmitDataSchema;
 
   const queryClient = useQueryClient();
@@ -116,11 +118,18 @@ export function FormEditorCard({ form }: Readonly<Props>) {
   });
   const isFormBusy = updateForm.isPending;
 
-  const onSubmit = (formData: FormSubmitDataSchema) =>
+  const onSubmit = (formData: FormSubmitDataSchema) => {
+    const cleanedData = {
+      ...formData,
+      formFields: formData.formFields.filter(
+        (field, index) => !removeFieldsIds.includes(fields[index]!.id),
+      ),
+    };
     updateForm.mutate({
       id: form.id,
-      ...formData,
+      ...cleanedData,
     });
+  };
 
   const generateAIField = async () => {
     const apiEndpoint = `/form/${form.id}/getNextFormField/`;
@@ -171,6 +180,34 @@ export function FormEditorCard({ form }: Readonly<Props>) {
         formHook.setFocus(`formFields.${currentFieldIndex - 1}.fieldName`);
       }
     }
+  };
+
+  const toggleRemoveField = (
+    fieldIndex: number,
+    field: { fieldName: string; id: string },
+  ) => {
+    // Check if field is already marked for removal
+    if (removeFieldsIds.includes(field.id)) {
+      setState((cs) => ({
+        ...cs,
+        removeFieldsIds: removeFieldsIds.filter((id) => id !== field.id),
+      }));
+      return;
+    }
+
+    const fieldValue = formHook.getValues().formFields[fieldIndex]?.fieldName;
+    // check if field value is empty then we can safely remove it instead of marking it for removal
+    if (fieldValue === "") {
+      // remove field
+      remove(fieldIndex);
+      return;
+    }
+
+    // mark field for removal
+    setState((cs) => ({
+      ...cs,
+      removeFieldsIds: [...removeFieldsIds, field.id],
+    }));
   };
 
   return (
@@ -340,23 +377,34 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                                   onKeyDown={(e) =>
                                     handleFormFieldInputKeyDown(e, item)
                                   }
+                                  disabled={removeFieldsIds.includes(item.id)}
                                   {...field}
                                 />
-                                <Button
-                                  variant="ghost"
-                                  disabled={
-                                    (index === 0 && fields.length === 1) ||
-                                    isGeneratingAIField ||
-                                    isFormBusy
-                                  }
-                                  onClick={() =>
-                                    fields.length != 1 && remove(index)
-                                  }
-                                  type="button"
-                                  size="icon"
-                                >
-                                  <X className="h-4 w-4" />
-                                </Button>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        variant="ghost"
+                                        onClick={() =>
+                                          toggleRemoveField(index, item)
+                                        }
+                                        type="button"
+                                        size="icon"
+                                      >
+                                        {removeFieldsIds.includes(item.id) ? (
+                                          <Undo className="h-4 w-4" />
+                                        ) : (
+                                          <X className="h-4 w-4" />
+                                        )}
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top">
+                                      {removeFieldsIds.includes(item.id)
+                                        ? "Undo removal"
+                                        : "Remove field"}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
                               </div>
                             </FormControl>
                             <FormMessage />
