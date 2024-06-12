@@ -1,6 +1,6 @@
 name: 📝 Documentation Update
 description: Improve Documentation
-title: "📝[Docs]: "
+title: "Docs: 📝 "
 labels: 'enhancement'
 body:
   - type: checkboxes
@@ -9,7 +9,7 @@ body:
       label: Is there an existing issue for this?
       description: Please search to see if an issue already exists for the updates you want to make.
       options:
-        - label: I have searched the existing issues
+        - label: No, I have searched the existing issues
           required: true
   - type: textarea
     id: issue-description
