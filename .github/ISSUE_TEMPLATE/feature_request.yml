@@ -1,6 +1,6 @@
-name: 💡Feature Request
+name: 🚀Feature Request
 description: Suggest a feature
-title: "💡[Feature]: "
+title: "feat: 🚀 "
 labels: "enhancement"
 body:
   - type: checkboxes
@@ -9,7 +9,7 @@ body:
       label: Is there an existing issue for this?
       description: Please search to see if an issue already exists for this feature.
       options:
-        - label: I have searched the existing issues
+        - label: No, I have searched the existing issues
           required: true
   - type: textarea
     id: feature-description
