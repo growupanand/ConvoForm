@@ -1,0 +1,29 @@
+name: Comment on Issue When PR is Merged
+
+on:
+  issues:
+    types: [closed]
+
+jobs:
+  greet-on-close:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Greet User
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const contributor = issue.user.login;
+            const issueNumber = issue.number;
+
+            const greetingMessage = `Hello @${contributor}, Thank you so much for your contribution! 🙏 Your help is greatly appreciated. If you could share this project with your community, it would mean a lot. 🌟 Additionally, if you have any suggestions for improvements, please feel free to share. 💡 Looking forward to more collaborations! 🚀`;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: greetingMessage
+            });
