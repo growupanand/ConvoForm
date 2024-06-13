@@ -92,6 +92,9 @@ application.
 pnpm run build
 ```
 
+## Community and Support
+Join our community on [Discord](https://discord.gg/73Q9gdPX) to get support, share feedback, and connect with other users and developers:
+
 
 ## Contributing
 
