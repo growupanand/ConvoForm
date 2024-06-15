@@ -1,6 +1,6 @@
-name: 📝 Documentation Update
+name: Documentation Update 📝
 description: Improve Documentation
-title: "Docs: 📝 "
+title: "📝[Docs]: "
 labels: 'enhancement'
 body:
   - type: checkboxes
