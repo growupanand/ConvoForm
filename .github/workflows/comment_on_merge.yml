@@ -1,27 +1,45 @@
 name: Comment on Issue When PR is Merged
 
 on:
-  issues:
+  pull_request:
     types: [closed]
 
+permissions:
+  issues: write
+  pull-requests: read
+
 jobs:
-  greet-on-close:
+  comment:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
+    if: github.event.pull_request.merged == true
+
     steps:
-      - name: Greet User
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Get Issue Number
+        id: get-issue-number
+        run: |
+          ISSUE_NUMBER=$(echo "${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')
+          echo "::set-output name=issue_number::$ISSUE_NUMBER"
+
+      - name: Comment on Issue
         uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issue = context.payload.issue;
-            const contributor = issue.user.login;
-            const issueNumber = issue.number;
+            const issueNumber = '${{ steps.get-issue-number.outputs.issue_number }}';
+            const issue = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber
+            });
 
-            const greetingMessage = `Hello @${contributor}, Thank you so much for your contribution! 🙏 Your help is greatly appreciated. If you could share this project with your community, it would mean a lot. 🌟 Additionally, if you have any suggestions for improvements, please feel free to share. 💡 Looking forward to more collaborations! 🚀`;
+            const contributor = issue.data.user.login;
 
-            github.rest.issues.createComment({
+            const greetingMessage = `@${contributor}, Thank you so much for your contribution! 🙏 Your help is greatly appreciated. If you could share this project with your community, it would mean a lot. 🌟 Additionally, if you have any suggestions for improvements, please feel free to share. 💡 Looking forward to more collaborations! 🚀`;
+
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issueNumber,

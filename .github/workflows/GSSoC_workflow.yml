@@ -1,5 +1,4 @@
-name: Label issues based on form input
-
+name: GSSoC Workflow
 on:
   issues:
     types:
@@ -19,7 +18,7 @@ jobs:
             const issueBody = context.payload.issue.body;
             const issueLabels = [];
 
-            if (issueBody.includes("I'm a GSSOC'24 contributor")) {
+            if (issueBody.includes("[X] I'm a GSSOC'24 contributor")) {
               issueLabels.push("gssoc", "level1");
             }
 
