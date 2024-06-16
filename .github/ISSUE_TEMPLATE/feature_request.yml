@@ -1,6 +1,6 @@
-name: Feature Request 🚀
+name: 🚀Feature Request
 description: Suggest a feature
-title: "🚀[Feat]: "
+title: "feat: 🚀 "
 labels: "enhancement"
 body:
   - type: checkboxes
