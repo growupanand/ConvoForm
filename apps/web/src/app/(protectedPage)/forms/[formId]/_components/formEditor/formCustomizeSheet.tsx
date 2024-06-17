@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { Organization } from "@clerk/clerk-sdk-node";
-import { Form } from "@convoform/db";
+import { Form } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   Collapsible,

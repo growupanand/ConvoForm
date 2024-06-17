@@ -4,7 +4,7 @@ import { boolean, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-import { form } from "./form";
+import { form } from "../forms/form";
 
 export const fieldDataSchema = z.object({
   fieldName: z.string().min(1),

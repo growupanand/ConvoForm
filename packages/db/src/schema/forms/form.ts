@@ -4,8 +4,8 @@ import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-import { formField } from "./formField";
-import { workspace } from "./workspace";
+import { formField } from "../formFields";
+import { workspace } from "../workspaces/workspace";
 
 export const form = pgTable("Form", {
   id: text("id")

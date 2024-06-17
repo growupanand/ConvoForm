@@ -4,7 +4,7 @@ import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-import { form } from "./form";
+import { form } from "../forms/form";
 
 export const formField = pgTable("FormField", {
   id: text("id")
@@ -28,5 +28,8 @@ export const formFieldRelations = relations(formField, ({ one }) => ({
 
 export const insertFormFieldSchema = createInsertSchema(formField);
 export const selectFormFieldSchema = createSelectSchema(formField);
+export const updateFormFieldSchema = insertFormFieldSchema.pick({
+  fieldName: true,
+});
 
 export type FormField = z.infer<typeof selectFormFieldSchema>;

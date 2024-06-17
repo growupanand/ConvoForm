@@ -1,4 +1,4 @@
-import { Conversation } from "@convoform/db";
+import { Conversation } from "@convoform/db/src/schema";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 
 import { SecondaryNavigation } from "@/components/common/secondaryNavigation";

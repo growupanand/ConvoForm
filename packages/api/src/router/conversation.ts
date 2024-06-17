@@ -1,10 +1,9 @@
+import { count, eq } from "@convoform/db";
 import {
   conversation,
-  count,
-  eq,
   fieldDataSchema,
   insertConversationSchema,
-} from "@convoform/db";
+} from "@convoform/db/src/schema";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";

@@ -1,17 +1,14 @@
 {
   "name": "@convoform/db",
   "version": "0.0.0",
-  "private": true,
-  "exports": {
-    ".": "./src/index.ts"
-  },
+  "main": "src/index.ts",
   "scripts": {
     "lint": "eslint ./src/**/*.ts --fix",
     "type-check": "tsc --noEmit",
     "drizzle-kit": "drizzle-kit",
     "drizzle:generate-migration": "drizzle-kit generate:pg --out drizzle/migrations --schema src/schema/index.ts",
     "drizzle:apply-migration": "tsx ./src/migrate.ts",
-    "custom-script" : "tsx ./src/script.ts"
+    "custom-script": "tsx ./src/script.ts"
   },
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.2",

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Form } from "@convoform/db";
+import { Form } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   DropdownMenu,

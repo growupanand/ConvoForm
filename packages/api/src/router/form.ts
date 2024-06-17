@@ -1,4 +1,5 @@
-import { and, count, eq, form, formField } from "@convoform/db";
+import { and, count, eq } from "@convoform/db";
+import { form, formField } from "@convoform/db/src/schema";
 import { z } from "zod";
 
 import { checkRateLimitThrowTRPCError } from "../lib/rateLimit";
