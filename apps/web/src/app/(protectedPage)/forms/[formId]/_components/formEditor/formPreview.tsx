@@ -1,12 +1,13 @@
+import { formSubmissionSchema } from "@convoform/db/src/schema";
+
 import {
   EmptyCard,
   IllustrationImageEnum,
 } from "@/components/common/emptyCard";
 import { FormViewer } from "@/components/formViewer/formViewer";
-import { formUpdateSchema } from "@/lib/validations/form";
 
 export const FormPreview = ({ form }: { form: any }) => {
-  const validForm = formUpdateSchema.safeParse(form);
+  const validForm = formSubmissionSchema.safeParse(form);
   const isValidForm = validForm.success;
 
   if (!form) {

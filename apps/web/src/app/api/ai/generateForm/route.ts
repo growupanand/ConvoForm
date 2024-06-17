@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimitThrowError } from "@convoform/api";
-import { z } from "zod";
+import {
+  aiGeneratedFormSchema,
+  generateFormSchema,
+} from "@convoform/db/src/schema";
 
 import { aiGeneratedFormLimit } from "@/lib/config/pricing";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getOrganizationId } from "@/lib/getOrganizationId";
 import { GenerateFormService } from "@/lib/services/generateForm";
-import {
-  createGeneratedFormSchema,
-  generateFormSchema,
-} from "@/lib/validations/form";
 import { api } from "@/trpc/server";
 
 export async function POST(req: NextRequest) {
@@ -52,22 +51,16 @@ export async function POST(req: NextRequest) {
       throw new Error("Invalid form description.");
     }
 
-    const generatedFormData = {
+    const generatedFormData = aiGeneratedFormSchema.parse({
       name: formName,
       overview: generatedFormOverview,
       welcomeScreenCTALabel: welcomeScreenData?.buttonLabelText,
       welcomeScreenTitle: welcomeScreenData?.pageTitle,
       welcomeScreenMessage: welcomeScreenData?.pageDescription,
-      formFields:
-        Array.isArray(formFields) &&
-        formFields.filter(
-          (formField: any) => typeof formField?.["fieldName"] === "string",
-        ),
-    } as z.infer<typeof createGeneratedFormSchema>;
+      formFields,
+    });
 
-    return NextResponse.json(
-      createGeneratedFormSchema.parse(generatedFormData),
-    );
+    return NextResponse.json(generatedFormData);
   } catch (error) {
     return sendErrorResponse(error);
   }

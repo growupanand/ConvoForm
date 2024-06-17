@@ -51,8 +51,3 @@ export const formRelations = relations(form, ({ one, many }) => ({
   }),
   formFields: many(formField),
 }));
-
-export const insertFormSchema = createInsertSchema(form);
-export const selectFormSchema = createSelectSchema(form);
-
-export type Form = z.infer<typeof selectFormSchema>;

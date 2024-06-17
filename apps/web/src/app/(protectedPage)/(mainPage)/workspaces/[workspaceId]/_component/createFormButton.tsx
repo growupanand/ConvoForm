@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Workspace } from "@convoform/db/src/schema";
+import {
+  newFormSchema,
+  Workspace,
+} from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   DropdownMenu,
@@ -18,7 +21,6 @@ import { z } from "zod";
 import { montserrat } from "@/app/fonts";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
-import { createFormSchema } from "@/lib/validations/form";
 import { api } from "@/trpc/react";
 import { GenerateFormModal } from "./generateFormModal";
 
@@ -26,15 +28,20 @@ type Props = {
   workspace: Workspace;
 };
 
-const newFormData = createFormSchema.parse({
+export type HandleCreateForm = (
+  formData: z.infer<typeof newFormSchema>,
+) => void;
+
+const newFormData = newFormSchema.parse({
   name: "New form",
-  welcomeScreenTitle: "",
-  welcomeScreenMessage: "",
-  welcomeScreenCTALabel: "",
-  overview: "",
-  formField: [
+  welcomeScreenTitle: "Welcome to your new form!",
+  welcomeScreenMessage: "Customize your form.",
+  welcomeScreenCTALabel: "Start",
+  overview:
+    "This is brief description about the form, which will be used while generating questions.",
+  formFields: [
     {
-      fieldName: "",
+      fieldName: "Name",
     },
   ],
 });
@@ -64,7 +71,7 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
   });
   const { isPending: isCreatingForm } = createForm;
 
-  const handleCreateForm = (formData: z.infer<typeof createFormSchema>) => {
+  const handleCreateForm: HandleCreateForm = (formData) => {
     createForm.mutate({
       ...formData,
       workspaceId: workspace.id,
