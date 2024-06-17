@@ -1,4 +1,5 @@
-import { and, conversation, count, eq, form } from "@convoform/db";
+import { and, count, eq } from "@convoform/db";
+import { conversation, form } from "@convoform/db/src/schema";
 import { z } from "zod";
 
 import { getCurrentMonthDaysArray } from "../lib/utils";

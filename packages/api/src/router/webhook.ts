@@ -1,12 +1,12 @@
+import { eq } from "@convoform/db";
 import {
-  eq,
   insertOrganizationMemberSchema,
   insertOrganizationSchema,
   insertUserSchema,
   organization,
   organizationMember,
   user,
-} from "@convoform/db";
+} from "@convoform/db/src/schema";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";

@@ -1,4 +1,4 @@
-import { Form, FormField } from "@convoform/db";
+import { Form, FormField } from "@convoform/db/src/schema";
 
 export type FormWithFields = Form & {
   formFields: FormField[];

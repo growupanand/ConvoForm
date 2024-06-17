@@ -2,7 +2,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { type WebhookEvent } from "@clerk/clerk-sdk-node";
-import { insertUserSchema } from "@convoform/db";
+import { insertUserSchema } from "@convoform/db/src/schema";
 
 import { api } from "@/trpc/server";
 

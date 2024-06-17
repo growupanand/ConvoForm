@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { checkRateLimitThrowError } from "@convoform/api";
-import { Conversation, FieldHavingData } from "@convoform/db";
+import { Conversation, FieldHavingData } from "@convoform/db/src/schema";
 import { z } from "zod";
 
 import { formSubmissionLimit } from "@/lib/config/pricing";

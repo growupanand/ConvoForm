@@ -1,4 +1,4 @@
-import { FieldData } from "@convoform/db";
+import { FieldData } from "@convoform/db/src/schema";
 
 /**
  * Format conversation fields data for TableComponent,

@@ -1,4 +1,4 @@
-import { FieldData, FieldHavingData } from "@convoform/db";
+import { FieldData, FieldHavingData } from "@convoform/db/src/schema";
 import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 

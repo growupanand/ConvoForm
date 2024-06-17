@@ -1,6 +1,6 @@
 "use client";
 
-import { Form } from "@convoform/db";
+import { Form } from "@convoform/db/src/schema";
 import { Input } from "@convoform/ui/components/ui/input";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";

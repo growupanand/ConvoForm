@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Form as DBForm, FormField as DBFormField } from "@convoform/db";
+import {
+  Form as DBForm,
+  FormField as DBFormField,
+} from "@convoform/db/src/schema";
 import {
   Accordion,
   AccordionContent,

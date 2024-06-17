@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Form } from "@convoform/db";
+import { Form } from "@convoform/db/src/schema";
 import { useConvoForm } from "@convoform/react";
 
 import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
