@@ -1,8 +1,10 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import {
+  formSubmissionSchema,
+} from "@convoform/db/src/schema";
 
 import { FormViewer } from "@/components/formViewer/formViewer";
-import { formUpdateSchema } from "@/lib/validations/form";
 import { api } from "@/trpc/server";
 import { FormSubmissionPageHeader } from "./_components/header";
 
@@ -20,7 +22,7 @@ export default async function FormViewPage({
   const { formId } = params;
   const formData = await api.form.getOneWithFields({ id: formId });
 
-  const isValidForm = formUpdateSchema.safeParse(formData).success;
+  const isValidForm = formSubmissionSchema.safeParse(formData).success;
 
   if (!formData || !formData.isPublished || !isValidForm) {
     notFound();

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   Form as DBForm,
   FormField as DBFormField,
+  updateFormSchema,
 } from "@convoform/db/src/schema";
 import {
   Accordion,
@@ -51,11 +52,7 @@ import { montserrat } from "@/app/fonts";
 import { apiClient } from "@/lib/apiClient";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
-import { formUpdateSchema } from "@/lib/validations/form";
 import { api } from "@/trpc/react";
-
-const formSchema = formUpdateSchema;
-export type FormSubmitDataSchema = z.infer<typeof formSchema>;
 
 type Props = {
   form: DBForm & { formFields: DBFormField[] };
@@ -72,12 +69,12 @@ export function FormEditorCard({ form }: Readonly<Props>) {
     removeFieldsIds: [],
   });
   const { isGeneratingAIField, removeFieldsIds } = state;
-  const formDefaultValues = form as FormSubmitDataSchema;
+  const formDefaultValues = form;
 
   const queryClient = useQueryClient();
 
-  const formHook = useForm<FormSubmitDataSchema>({
-    resolver: zodResolver(formSchema),
+  const formHook = useForm<z.infer<typeof updateFormSchema>>({
+    resolver: zodResolver(updateFormSchema),
     defaultValues: formDefaultValues,
   });
 
@@ -121,16 +118,13 @@ export function FormEditorCard({ form }: Readonly<Props>) {
   });
   const isFormBusy = updateForm.isPending;
 
-  const onSubmit = (formData: FormSubmitDataSchema) => {
-    const cleanedData = {
+  const onSubmit = (formData: z.infer<typeof updateFormSchema>) => {
+    updateForm.mutate({
       ...formData,
+      // Remove fields that have been removed
       formFields: formData.formFields.filter(
         (field, index) => !removeFieldsIds.includes(fields[index]!.id),
       ),
-    };
-    updateForm.mutate({
-      id: form.id,
-      ...cleanedData,
     });
   };
 

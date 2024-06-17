@@ -1,28 +1,29 @@
-import { FieldHavingData } from "@convoform/db/src/schema";
+import {
+  FieldHavingData,
+  FormField,
+  generateFormSchema,
+  selectFormFieldSchema,
+  selectFormSchema,
+} from "@convoform/db/src/schema";
 import { ChatCompletionRequestMessage } from "openai-edge";
 import { z } from "zod";
 
 import { Message } from "../validations/conversation";
-import {
-  FormField,
-  formFieldSchema,
-  generateFormSchema,
-} from "../validations/form";
 
-export const formSchemaSystemPrompt = z.object({
-  overview: z.string().min(100).max(500),
-  formFields: z.array(formFieldSchema).min(1),
-});
+export const systemPromptSchema = selectFormSchema
+  .pick({ overview: true })
+  .extend({
+    formFields: selectFormFieldSchema.array().min(1),
+  });
 
-export type FormSchemaSystemPrompt = z.infer<typeof formSchemaSystemPrompt>;
+export type SchemaSystemPrompt = z.infer<typeof systemPromptSchema>;
 
-export const getGenerateFormPromptSchema = generateFormSchema;
 export class SystemPromptService {
   getFormFieldNames(form: { formFields: FormField[] }) {
     return form.formFields.map((item) => item.fieldName);
   }
 
-  getGenerateFormFieldPrompt(form: FormSchemaSystemPrompt) {
+  getGenerateFormFieldPrompt(form: SchemaSystemPrompt) {
     return `
         This platform lets users complete forms through conversational flow. Your task is to create one form field based on the provided form information and fields.
         
@@ -42,14 +43,14 @@ export class SystemPromptService {
         `;
   }
 
-  getGenerateFormFieldPromptMessage(form: FormSchemaSystemPrompt) {
+  getGenerateFormFieldPromptMessage(form: SchemaSystemPrompt) {
     return {
       role: "system",
       content: this.getGenerateFormFieldPrompt(form),
     } as ChatCompletionRequestMessage;
   }
 
-  getGenerateFormPrompt(data: z.infer<typeof getGenerateFormPromptSchema>) {
+  getGenerateFormPrompt(data: z.infer<typeof generateFormSchema>) {
     return `
     This automated platform allows users to design and generate forms. The tasks depend on an overview provided by the user. Validation of the form contents is crucial: if the form overview seems invalid (e.g., if it appears to be random text, or unrelated to the form being created), the form generation process should not proceed, and the "isInvalidFormOverview" value should be set to true.        
     
@@ -106,9 +107,7 @@ export class SystemPromptService {
   `;
   }
 
-  getGenerateFormPromptMessage(
-    data: z.infer<typeof getGenerateFormPromptSchema>,
-  ) {
+  getGenerateFormPromptMessage(data: z.infer<typeof generateFormSchema>) {
     return {
       role: "system",
       content: this.getGenerateFormPrompt(data),
