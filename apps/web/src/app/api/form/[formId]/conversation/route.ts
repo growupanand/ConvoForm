@@ -1,13 +1,16 @@
 import { NextRequest } from "next/server";
 import { checkRateLimitThrowError } from "@convoform/api";
-import { Conversation, FieldHavingData } from "@convoform/db/src/schema";
+import {
+  Conversation,
+  FieldHavingData,
+  messageSchema,
+} from "@convoform/db/src/schema";
 import { z } from "zod";
 
 import { formSubmissionLimit } from "@/lib/config/pricing";
 import { sendErrorMessage, sendErrorResponse } from "@/lib/errorHandlers";
 import getIP from "@/lib/getIP";
 import { ConversationService } from "@/lib/services/conversation";
-import { messageSchema } from "@/lib/validations/conversation";
 import { api } from "@/trpc/server";
 
 const routeContextSchema = z.object({
