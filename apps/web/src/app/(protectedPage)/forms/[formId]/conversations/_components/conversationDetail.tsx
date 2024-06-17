@@ -1,4 +1,4 @@
-import { Conversation } from "@convoform/db";
+import { Conversation } from "@convoform/db/src/schema";
 import { Badge } from "@convoform/ui/components/ui/badge";
 import {
   Card,

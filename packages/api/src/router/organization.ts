@@ -1,4 +1,5 @@
-import { eq, organization } from "@convoform/db";
+import { eq } from "@convoform/db";
+import { organization } from "@convoform/db/src/schema";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";

@@ -1,8 +1,7 @@
+import { updateFormFieldSchema } from "@convoform/db/src/schema";
 import { z } from "zod";
 
-export const formFieldSchema = z.object({
-  fieldName: z.string().min(1).max(255),
-});
+export const formFieldSchema = updateFormFieldSchema;
 
 export type FormField = z.infer<typeof formFieldSchema>;
 

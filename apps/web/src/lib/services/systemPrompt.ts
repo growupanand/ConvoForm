@@ -1,4 +1,4 @@
-import { FieldHavingData } from "@convoform/db";
+import { FieldHavingData } from "@convoform/db/src/schema";
 import { ChatCompletionRequestMessage } from "openai-edge";
 import { z } from "zod";
 

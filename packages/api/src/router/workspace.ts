@@ -1,4 +1,5 @@
-import { eq, insertWorkspaceSchema, workspace } from "@convoform/db";
+import { eq } from "@convoform/db";
+import { insertWorkspaceSchema, workspace } from "@convoform/db/src/schema";
 import { z } from "zod";
 
 import { checkRateLimitThrowTRPCError } from "../lib/rateLimit";
