@@ -14,8 +14,3 @@ export const workspace = pgTable("Workspace", {
   userId: text("userId"),
   organizationId: text("organizationId").notNull(),
 });
-
-export const insertWorkspaceSchema = createInsertSchema(workspace);
-export const selectWorkspaceSchema = createSelectSchema(workspace);
-
-export type Workspace = z.infer<typeof selectWorkspaceSchema>;

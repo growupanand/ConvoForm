@@ -2,13 +2,12 @@ import {
   FieldHavingData,
   FormField,
   generateFormSchema,
+  Message,
   selectFormFieldSchema,
   selectFormSchema,
 } from "@convoform/db/src/schema";
 import { ChatCompletionRequestMessage } from "openai-edge";
 import { z } from "zod";
-
-import { Message } from "../validations/conversation";
 
 export const systemPromptSchema = selectFormSchema
   .pick({ overview: true })

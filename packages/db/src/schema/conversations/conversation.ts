@@ -43,12 +43,3 @@ export const conversationRelations = relations(conversation, ({ one }) => ({
     references: [form.id],
   }),
 }));
-
-export const insertConversationSchema = createInsertSchema(conversation);
-export const selectConversationSchema = createSelectSchema(conversation).extend(
-  {
-    fieldsData: z.array(fieldDataSchema),
-  },
-);
-
-export type Conversation = z.infer<typeof selectConversationSchema>;

@@ -1,8 +1,7 @@
-import { FieldData, FieldHavingData } from "@convoform/db/src/schema";
+import { FieldData, FieldHavingData, Message } from "@convoform/db/src/schema";
 import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
-import { Message } from "../validations/conversation";
 import { OpenAIService } from "./openAI";
 
 export class ConversationService extends OpenAIService {
