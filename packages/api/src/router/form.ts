@@ -1,19 +1,20 @@
 import { and, count, eq } from "@convoform/db";
-import { form, formField } from "@convoform/db/src/schema";
+import {
+  form,
+  formField,
+  newFormSchema,
+  patchFormSchema,
+  updateFormSchema,
+} from "@convoform/db/src/schema";
 import { z } from "zod";
 
 import { checkRateLimitThrowTRPCError } from "../lib/rateLimit";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
-import {
-  formCreateSchema,
-  formPatchSchema,
-  formUpdateSchema,
-} from "../validators/form";
 
 export const formRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
-      formCreateSchema.extend({
+      newFormSchema.extend({
         workspaceId: z.string().min(1),
         organizationId: z.string().min(1),
       }),
@@ -47,7 +48,7 @@ export const formRouter = createTRPCRouter({
         formId: newForm.id,
       };
 
-      const formFields = input.formField.map((field) => ({
+      const formFields = input.formFields.map((field) => ({
         ...field,
         formId: newForm.id,
       }));
@@ -134,11 +135,7 @@ export const formRouter = createTRPCRouter({
     }),
 
   patch: protectedProcedure
-    .input(
-      formPatchSchema.extend({
-        id: z.string().min(1),
-      }),
-    )
+    .input(patchFormSchema)
     .mutation(async ({ input, ctx }) => {
       await checkRateLimitThrowTRPCError({
         identifier: ctx.userId,
@@ -152,11 +149,7 @@ export const formRouter = createTRPCRouter({
     }),
 
   updateForm: protectedProcedure
-    .input(
-      formUpdateSchema.extend({
-        id: z.string().min(1),
-      }),
-    )
+    .input(updateFormSchema)
     .mutation(async ({ input, ctx }) => {
       await checkRateLimitThrowTRPCError({
         identifier: ctx.userId,

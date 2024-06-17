@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import {
+  aiGeneratedFormSchema,
+  generateFormSchema,
+} from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   Form,
@@ -19,14 +23,10 @@ import { z } from "zod";
 import { ResponsiveModal } from "@/components/common/responsiveModal";
 import Spinner from "@/components/common/spinner";
 import { apiClient } from "@/lib/apiClient";
-import {
-  createFormSchema,
-  createGeneratedFormSchema,
-  generateFormSchema,
-} from "@/lib/validations/form";
+import { HandleCreateForm } from "./createFormButton";
 
 type Props = {
-  onFormGenerated: (formData: z.infer<typeof createFormSchema>) => void;
+  onFormGenerated: HandleCreateForm;
   isCreatingForm: boolean;
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -70,7 +70,8 @@ export function GenerateFormModal({
         data: formData,
       });
       const responseJson = await response.json();
-      const newFormData = createGeneratedFormSchema.parse(responseJson);
+      const newFormData = aiGeneratedFormSchema.parse(responseJson);
+      console.log({ newFormData });
       setState((cs) => ({
         ...cs,
         isGeneratingFormData: false,
@@ -78,7 +79,7 @@ export function GenerateFormModal({
       }));
       onFormGenerated({
         ...newFormData,
-        formField: newFormData.formFields,
+        formFields: newFormData.formFields,
         isAIGenerated: true,
         isPublished: true,
       });

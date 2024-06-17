@@ -25,11 +25,3 @@ export const formFieldRelations = relations(formField, ({ one }) => ({
     references: [form.id],
   }),
 }));
-
-export const insertFormFieldSchema = createInsertSchema(formField);
-export const selectFormFieldSchema = createSelectSchema(formField);
-export const updateFormFieldSchema = insertFormFieldSchema.pick({
-  fieldName: true,
-});
-
-export type FormField = z.infer<typeof selectFormFieldSchema>;

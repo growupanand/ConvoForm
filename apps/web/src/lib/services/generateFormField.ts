@@ -1,12 +1,12 @@
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 import { OpenAIService } from "./openAI";
-import { FormSchemaSystemPrompt } from "./systemPrompt";
+import { SchemaSystemPrompt } from "./systemPrompt";
 
 export class GenerateFormFieldService extends OpenAIService {
-  form: FormSchemaSystemPrompt;
+  form: SchemaSystemPrompt;
 
-  constructor(form: FormSchemaSystemPrompt) {
+  constructor(form: SchemaSystemPrompt) {
     super();
     this.form = form;
   }
