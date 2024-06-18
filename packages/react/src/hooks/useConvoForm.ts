@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { Transcript } from "@convoform/db/src/schema";
 import { socket } from "@convoform/websocket-client";
 
 import { API_DOMAIN } from "../constants";
-import { ExtraStreamData, Message } from "../types";
+import { ExtraStreamData } from "../types";
 import { readResponseStream } from "../utils/streamUtils";
 
 type Props = {
@@ -16,14 +17,14 @@ type State = {
   currentQuestion: string;
   data?: ExtraStreamData;
   isBusy: boolean;
-  messages: Message[];
+  transcript: Transcript[];
 };
 
 const initialState: State = {
   currentQuestion: "",
   data: undefined,
   isBusy: false,
-  messages: [],
+  transcript: [],
 };
 
 export function useConvoForm({
@@ -35,11 +36,11 @@ export function useConvoForm({
   const apiEndpoint = `${API_DOMAIN}/api/form/${formId}/conversation`;
 
   const [state, setState] = useState<State>(initialState);
-  const { currentQuestion, data, isBusy, messages } = state;
+  const { currentQuestion, data, isBusy, transcript } = state;
 
   const {
     id: conversationId,
-    fieldsData,
+    collectedData,
     currentField,
     isFormSubmissionFinished,
   } = data ?? {};
@@ -56,7 +57,7 @@ export function useConvoForm({
   async function submitAnswer(answer: string) {
     setState((cs) => ({ ...cs, isBusy: true, currentQuestion: "" }));
 
-    const answerMessage: Message = {
+    const answerMessage: Transcript = {
       role: "user",
       content: answer,
     };
@@ -66,7 +67,7 @@ export function useConvoForm({
       method: "POST",
       body: JSON.stringify({
         conversationId,
-        messages: [...messages, answerMessage],
+        transcript: [...transcript, answerMessage],
         currentField,
       }),
     });
@@ -94,7 +95,7 @@ export function useConvoForm({
       }));
     }
 
-    const questionMessage: Message = {
+    const questionMessage: Transcript = {
       role: "assistant",
       content: currentQuestionText,
       fieldName: updatedCurrentField,
@@ -103,7 +104,7 @@ export function useConvoForm({
     setState((cs) => ({
       ...cs,
       isBusy: false,
-      messages: cs.messages.concat([answerMessage, questionMessage]),
+      transcript: cs.transcript.concat([answerMessage, questionMessage]),
     }));
   }
 
@@ -140,7 +141,7 @@ export function useConvoForm({
     conversationId,
 
     /** Data related to form fields */
-    fieldsData,
+    collectedData,
 
     /** The current field in focus */
     currentField,

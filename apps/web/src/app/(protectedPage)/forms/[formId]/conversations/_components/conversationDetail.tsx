@@ -25,7 +25,7 @@ type Props = {
 };
 
 export default function ConversationDetail({ conversation }: Readonly<Props>) {
-  const tableData = getConversationTableData(conversation.fieldsData);
+  const tableData = getConversationTableData(conversation.collectedData);
   const tableColumns = Object.keys(tableData);
   const isFormDataEmpty = tableColumns.length === 0;
   const transcript = conversation.transcript as Transcript;

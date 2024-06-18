@@ -34,7 +34,7 @@ export function AllConversationsTable({ formId }: Readonly<Props>) {
       query={query}
       getTableData={(data) => {
         return data.map((item) => {
-          const tableData = getConversationTableData(item.fieldsData);
+          const tableData = getConversationTableData(item.collectedData);
           return {
             ["Created"]: item.createdAt.toLocaleString(),
             ["Response name"]: item.name,

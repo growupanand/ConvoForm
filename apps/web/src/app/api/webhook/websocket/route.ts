@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       case "conversation:started": {
         const { conversationId } = eventData;
         await api.conversation.updateInProgressStatus({
-          conversationId,
+          id: conversationId,
           isInProgress: true,
         });
         break;
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       case "conversation:stopped": {
         const { conversationId } = eventData;
         await api.conversation.updateInProgressStatus({
-          conversationId,
+          id: conversationId,
           isInProgress: false,
         });
         break;

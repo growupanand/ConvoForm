@@ -1,10 +1,8 @@
 {
-  "id": "714fdef1-f4dc-4eab-8556-d0402fc1756a",
-  "prevId": "bc3de5f0-465d-4876-8b66-e97b740abf8b",
-  "version": "5",
-  "dialect": "pg",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "Conversation": {
+    "public.Conversation": {
       "name": "Conversation",
       "schema": "",
       "columns": {
@@ -83,29 +81,29 @@
         "Conversation_formId_Form_id_fk": {
           "name": "Conversation_formId_Form_id_fk",
           "tableFrom": "Conversation",
-          "tableTo": "Form",
           "columnsFrom": [
             "formId"
           ],
+          "tableTo": "Form",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
+          "onUpdate": "cascade",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "Conversation_id_unique": {
           "name": "Conversation_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "Form": {
+    "public.Form": {
       "name": "Form",
       "schema": "",
       "columns": {
@@ -242,29 +240,29 @@
         "Form_workspaceId_Workspace_id_fk": {
           "name": "Form_workspaceId_Workspace_id_fk",
           "tableFrom": "Form",
-          "tableTo": "Workspace",
           "columnsFrom": [
             "workspaceId"
           ],
+          "tableTo": "Workspace",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
+          "onUpdate": "cascade",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "Form_id_unique": {
           "name": "Form_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "FormField": {
+    "public.FormField": {
       "name": "FormField",
       "schema": "",
       "columns": {
@@ -306,29 +304,29 @@
         "FormField_formId_Form_id_fk": {
           "name": "FormField_formId_Form_id_fk",
           "tableFrom": "FormField",
-          "tableTo": "Form",
           "columnsFrom": [
             "formId"
           ],
+          "tableTo": "Form",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
+          "onUpdate": "cascade",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "FormField_id_unique": {
           "name": "FormField_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "Organization": {
+    "public.Organization": {
       "name": "Organization",
       "schema": "",
       "columns": {
@@ -377,14 +375,14 @@
       "uniqueConstraints": {
         "Organization_id_unique": {
           "name": "Organization_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "User": {
+    "public.User": {
       "name": "User",
       "schema": "",
       "columns": {
@@ -445,21 +443,21 @@
       "uniqueConstraints": {
         "User_id_unique": {
           "name": "User_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "id"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "User_userId_unique": {
           "name": "User_userId_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "userId"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "Workspace": {
+    "public.Workspace": {
       "name": "Workspace",
       "schema": "",
       "columns": {
@@ -508,14 +506,14 @@
       "uniqueConstraints": {
         "Workspace_id_unique": {
           "name": "Workspace_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "OrganizationMember": {
+    "public.OrganizationMember": {
       "name": "OrganizationMember",
       "schema": "",
       "columns": {
@@ -570,10 +568,10 @@
       "uniqueConstraints": {
         "OrganizationMember_id_unique": {
           "name": "OrganizationMember_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     }
@@ -581,8 +579,10 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "714fdef1-f4dc-4eab-8556-d0402fc1756a",
+  "prevId": "bc3de5f0-465d-4876-8b66-e97b740abf8b"
 }
