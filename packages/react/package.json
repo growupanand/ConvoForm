@@ -41,7 +41,8 @@
     "typescript": "^5",
     "release-it": "^17.0.1",
     "@release-it/conventional-changelog": "^8.0.1",
-    "@convoform/websocket-client": "../websocket-client"
+    "@convoform/websocket-client": "../websocket-client",
+    "@convoform/db": "../db"
   },
   "peerDependencies": {
     "react": "^18",

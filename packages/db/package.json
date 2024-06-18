@@ -6,8 +6,8 @@
     "lint": "eslint ./src/**/*.ts --fix",
     "type-check": "tsc --noEmit",
     "drizzle-kit": "drizzle-kit",
-    "drizzle:generate-migration": "drizzle-kit generate:pg --out drizzle/migrations --schema src/schema/index.ts",
-    "drizzle:apply-migration": "tsx ./src/migrate.ts",
+    "drizzle:generate-migration": "drizzle-kit generate",
+    "drizzle:apply-migration": "drizzle-kit migrate",
     "custom-script": "tsx ./src/script.ts"
   },
   "dependencies": {

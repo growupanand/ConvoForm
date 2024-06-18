@@ -1,34 +1,38 @@
-import { FieldData, FieldHavingData, Message } from "@convoform/db/src/schema";
+import {
+  CollectedData,
+  FieldHavingData,
+  Transcript,
+} from "@convoform/db/src/schema";
 import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 import { OpenAIService } from "./openAI";
 
 export class ConversationService extends OpenAIService {
-  public getNextEmptyField(fieldsData: FieldData[]): string | undefined {
-    return fieldsData.find((field) => field.fieldValue === null)?.fieldName;
+  public getNextEmptyField(collectedData: CollectedData[]): string | undefined {
+    return collectedData.find((field) => field.fieldValue === null)?.fieldName;
   }
 
   public async generateQuestion({
     formOverview,
     requiredFieldName,
-    fieldsData,
+    collectedData,
     extraCustomStreamData,
-    messages,
+    transcript,
     onStreamFinish,
   }: {
     formOverview: string;
     requiredFieldName: string;
-    fieldsData: FieldData[];
+    collectedData: CollectedData[];
     extraCustomStreamData: Record<string, any>;
-    messages: Message[];
+    transcript: Transcript[];
     onStreamFinish?: (completion: string) => void;
   }) {
-    const fieldsWithData = fieldsData.filter(
+    const fieldsWithData = collectedData.filter(
       (field) => field.fieldValue !== null,
     ) as FieldHavingData[];
     const isFirstQuestion =
-      fieldsWithData.length === 0 && messages.length === 1;
+      fieldsWithData.length === 0 && transcript.length === 1;
 
     const systemMessage = this.getGenerateQuestionPromptMessage({
       formOverview,
@@ -38,7 +42,7 @@ export class ConversationService extends OpenAIService {
     });
     const openAiResponse = await this.getOpenAIResponseStream([
       systemMessage,
-      ...messages.map(({ role, content }) => ({
+      ...transcript.map(({ role, content }) => ({
         role,
         content,
       })),
@@ -67,11 +71,11 @@ export class ConversationService extends OpenAIService {
   }
 
   public async extractAnswerFromMessage({
-    messages,
+    transcript,
     currentField,
     formOverview,
   }: {
-    messages: Message[];
+    transcript: Transcript[];
     currentField: string;
     formOverview: string;
   }) {
@@ -81,7 +85,7 @@ export class ConversationService extends OpenAIService {
     let otherFieldsData: FieldHavingData[] = [];
 
     const systemMessage = this.getExtractAnswerPromptMessage({
-      messages,
+      transcript,
       currentField,
       formOverview,
     }) as ChatCompletionMessageParam;
