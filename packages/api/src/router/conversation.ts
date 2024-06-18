@@ -1,8 +1,8 @@
 import { count, eq } from "@convoform/db";
 import {
   conversation,
-  fieldDataSchema,
   insertConversationSchema,
+  updateConversationSchema,
 } from "@convoform/db/src/schema";
 import { z } from "zod";
 
@@ -41,31 +41,19 @@ export const conversationRouter = createTRPCRouter({
       });
     }),
   create: publicProcedure
-    .input(
-      z.object({
-        formId: z.string().min(1),
-        organizationId: z.string().min(1),
-        name: z.string().min(1),
-        transcript: z.array(z.record(z.any())),
-        formOverview: z.string().min(1),
-        fieldsData: z.array(fieldDataSchema),
-      }),
-    )
+    .input(insertConversationSchema)
     .mutation(async ({ input, ctx }) => {
-      let { transcript, fieldsData, formOverview, ...newConversation } =
+      let { transcript, collectedData, formOverview, ...newConversation } =
         insertConversationSchema.parse(input);
-      // TODO: If we don't typecast here it will throw type error
-      const newTranscript = transcript as Array<Record<string, string>>;
-      const newFieldsData = z.array(fieldDataSchema).parse(fieldsData);
 
       const [result] = await ctx.db
         .insert(conversation)
         .values({
           ...newConversation,
-          transcript: newTranscript,
-          updatedAt: new Date(),
+          transcript,
           formOverview,
-          fieldsData: newFieldsData,
+          collectedData,
+          updatedAt: new Date(),
         })
         .returning();
       if (!result) {
@@ -107,7 +95,7 @@ export const conversationRouter = createTRPCRouter({
           ),
         columns: {
           id: true,
-          fieldsData: true,
+          collectedData: true,
           createdAt: true,
           name: true,
         },
@@ -145,24 +133,16 @@ export const conversationRouter = createTRPCRouter({
       });
     }),
 
-  updateFieldsData: publicProcedure
-    .input(
-      z.object({
-        conversationId: z.string().min(1),
-        fieldsData: z.array(fieldDataSchema),
-      }),
-    )
+  updateCollectedData: publicProcedure
+    .input(updateConversationSchema.pick({ id: true, collectedData: true }))
     .mutation(async ({ input, ctx }) => {
-      const { conversationId, fieldsData } = input;
-      const newFieldsData = z.array(fieldDataSchema).parse(fieldsData);
-
       const [result] = await ctx.db
         .update(conversation)
         .set({
-          fieldsData: newFieldsData,
+          collectedData: input.collectedData,
           updatedAt: new Date(),
         })
-        .where(eq(conversation.id, conversationId))
+        .where(eq(conversation.id, input.id))
         .returning();
       if (!result) {
         throw new Error("Failed to update conversation");
@@ -171,23 +151,15 @@ export const conversationRouter = createTRPCRouter({
       return result;
     }),
   updateTranscript: publicProcedure
-    .input(
-      z.object({
-        conversationId: z.string().min(1),
-        transcript: z.array(z.record(z.any())),
-      }),
-    )
+    .input(updateConversationSchema.pick({ id: true, transcript: true }))
     .mutation(async ({ input, ctx }) => {
-      const { conversationId, transcript } = input;
-      const newTranscript = transcript as Array<Record<string, string>>;
-
       const [result] = await ctx.db
         .update(conversation)
         .set({
-          transcript: newTranscript,
+          transcript: input.transcript,
           updatedAt: new Date(),
         })
-        .where(eq(conversation.id, conversationId))
+        .where(eq(conversation.id, input.id))
         .returning();
       if (!result) {
         throw new Error("Failed to update conversation");
@@ -198,23 +170,17 @@ export const conversationRouter = createTRPCRouter({
 
   updateFinishedStatus: publicProcedure
     .input(
-      z.object({
-        conversationId: z.string().min(1),
-        isFinished: z.boolean(),
-        conversationName: z.string().min(1),
-      }),
+      updateConversationSchema.pick({ id: true, name: true, isFinished: true }),
     )
     .mutation(async ({ input, ctx }) => {
-      const { conversationId, isFinished, conversationName } = input;
-
       const [result] = await ctx.db
         .update(conversation)
         .set({
-          isFinished,
+          isFinished: input.isFinished,
+          name: input.name,
           updatedAt: new Date(),
-          name: conversationName,
         })
-        .where(eq(conversation.id, conversationId))
+        .where(eq(conversation.id, input.id))
         .returning();
       if (!result) {
         throw new Error("Failed to update conversation");
@@ -224,21 +190,19 @@ export const conversationRouter = createTRPCRouter({
     }),
   updateInProgressStatus: publicProcedure
     .input(
-      z.object({
-        conversationId: z.string().min(1),
-        isInProgress: z.boolean(),
+      updateConversationSchema.pick({
+        id: true,
+        isInProgress: true,
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const { conversationId, isInProgress } = input;
-
       const [result] = await ctx.db
         .update(conversation)
         .set({
-          isInProgress,
+          isInProgress: input.isInProgress,
           updatedAt: new Date(),
         })
-        .where(eq(conversation.id, conversationId))
+        .where(eq(conversation.id, input.id))
         .returning();
       if (!result) {
         throw new Error("Failed to update conversation");

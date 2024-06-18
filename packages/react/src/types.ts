@@ -8,15 +8,9 @@ export type JSONValue =
     }
   | Array<JSONValue>;
 
-export type Message = {
-  role: "user" | "assistant";
-  content: string;
-  fieldName?: string;
-};
-
 export type ExtraStreamData = {
   id?: string;
-  fieldsData?: Record<string, any>;
+  collectedData?: Record<string, any>;
   currentField?: string;
   isFormSubmissionFinished?: boolean;
 };

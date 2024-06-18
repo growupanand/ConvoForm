@@ -1,14 +1,14 @@
-import { FieldData } from "@convoform/db/src/schema";
+import { CollectedData } from "@convoform/db/src/schema";
 
 /**
  * Format conversation fields data for TableComponent,
  * Example: `<TableComponent tableData={tableData} />`
- * @param fieldsData
+ * @param collectedData
  * @returns
  */
-export function getConversationTableData(fieldsData: FieldData[]) {
+export function getConversationTableData(collectedData: CollectedData[]) {
   const sanitizedFieldsData: Record<string, string> = {};
-  fieldsData.map((field) => {
+  collectedData.map((field) => {
     let fieldValue = field.fieldValue;
     // Handled edge case where field value is not string but object
     if (fieldValue !== null && typeof fieldValue === "object") {

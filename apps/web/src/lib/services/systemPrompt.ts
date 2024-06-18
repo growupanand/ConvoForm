@@ -1,24 +1,30 @@
 import {
   FieldHavingData,
-  FormField,
   generateFormSchema,
-  Message,
   selectFormFieldSchema,
   selectFormSchema,
+  Transcript,
 } from "@convoform/db/src/schema";
 import { ChatCompletionRequestMessage } from "openai-edge";
 import { z } from "zod";
 
+const promtFormFieldSchema = selectFormFieldSchema.omit({
+  createdAt: true,
+  updatedAt: true,
+});
+
+type PromtFormFieldSchema = z.infer<typeof promtFormFieldSchema>;
+
 export const systemPromptSchema = selectFormSchema
   .pick({ overview: true })
   .extend({
-    formFields: selectFormFieldSchema.array().min(1),
+    formFields: promtFormFieldSchema.array().min(1),
   });
 
 export type SchemaSystemPrompt = z.infer<typeof systemPromptSchema>;
 
 export class SystemPromptService {
-  getFormFieldNames(form: { formFields: FormField[] }) {
+  getFormFieldNames(form: { formFields: PromtFormFieldSchema[] }) {
     return form.formFields.map((item) => item.fieldName);
   }
 
@@ -160,11 +166,11 @@ export class SystemPromptService {
   }
 
   getExtractAnswerPromptMessage({
-    messages,
+    transcript,
     currentField,
     formOverview,
   }: {
-    messages: Message[];
+    transcript: Transcript[];
     currentField: string;
     formOverview: string;
   }) {
@@ -178,7 +184,7 @@ export class SystemPromptService {
     Current Field: ${currentField}
 
     Conversation Messages:
-        ${messages.map((message) => `${message.role}: ${message.content}`).join("\n")}
+        ${transcript.map((message) => `${message.role}: ${message.content}`).join("\n")}
 
 
     ========================================

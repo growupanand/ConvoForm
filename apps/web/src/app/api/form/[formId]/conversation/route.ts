@@ -3,7 +3,7 @@ import { checkRateLimitThrowError } from "@convoform/api";
 import {
   Conversation,
   FieldHavingData,
-  messageSchema,
+  transcriptSchema,
 } from "@convoform/db/src/schema";
 import { z } from "zod";
 
@@ -21,7 +21,7 @@ const routeContextSchema = z.object({
 
 const requestSchema = z.object({
   conversationId: z.string().optional(),
-  messages: z.array(messageSchema),
+  transcript: transcriptSchema.array(),
   currentField: z.string().optional(),
 });
 
@@ -34,7 +34,7 @@ export async function POST(
       params: { formId },
     } = routeContextSchema.parse(context);
     const requestJson = await req.json();
-    const { conversationId, messages, currentField } =
+    const { conversationId, transcript, currentField } =
       requestSchema.parse(requestJson);
 
     const clientIp = getIP(req);
@@ -91,7 +91,7 @@ export async function POST(
         name: "New Conversation",
         organizationId: form.organizationId,
         transcript: [],
-        fieldsData: fieldsWithEmptyData,
+        collectedData: fieldsWithEmptyData,
         formOverview: form.overview,
       });
     } else {
@@ -117,14 +117,14 @@ export async function POST(
         reasonForFailure,
         otherFieldsData,
       } = await conversationService.extractAnswerFromMessage({
-        messages,
+        transcript,
         currentField,
         formOverview: conversation.formOverview,
       });
 
       // If user provided valid answer for current field
       if (isAnswerExtracted) {
-        const updatedFieldsData = conversation.fieldsData.map((field) => {
+        const updatedFieldsData = conversation.collectedData.map((field) => {
           if (field.fieldName === currentField) {
             return {
               ...field,
@@ -134,11 +134,11 @@ export async function POST(
           return field;
         });
 
-        await api.conversation.updateFieldsData({
-          conversationId: conversation.id,
-          fieldsData: updatedFieldsData,
+        await api.conversation.updateCollectedData({
+          id: conversation.id,
+          collectedData: updatedFieldsData,
         });
-        conversation.fieldsData = updatedFieldsData;
+        conversation.collectedData = updatedFieldsData;
       }
 
       // If user provided valid answer for other than current field (E.g user provided answer for previous field)
@@ -148,14 +148,14 @@ export async function POST(
         otherFieldsData.length > 0
       ) {
         // update valid fields data only
-        const validFields = conversation.fieldsData.map(
+        const validFields = conversation.collectedData.map(
           ({ fieldName }) => fieldName,
         );
         const validOtherFieldsData = otherFieldsData.filter(({ fieldName }) =>
           validFields.includes(fieldName),
         );
         if (validOtherFieldsData.length > 0) {
-          const updatedFieldsData = [...conversation.fieldsData].map(
+          const updatedFieldsData = [...conversation.collectedData].map(
             (field) => {
               const updatedFieldValue = validOtherFieldsData.find(
                 (f) => f.fieldName === field.fieldName,
@@ -170,17 +170,17 @@ export async function POST(
             },
           );
 
-          await api.conversation.updateFieldsData({
-            conversationId: conversation.id,
-            fieldsData: updatedFieldsData,
+          await api.conversation.updateCollectedData({
+            id: conversation.id,
+            collectedData: updatedFieldsData,
           });
-          conversation.fieldsData = updatedFieldsData;
+          conversation.collectedData = updatedFieldsData;
         }
       }
     }
 
     const requiredFieldName = conversationService.getNextEmptyField(
-      conversation.fieldsData,
+      conversation.collectedData,
     );
 
     const isFormSubmissionFinished = requiredFieldName === undefined;
@@ -193,15 +193,15 @@ export async function POST(
 
     // Save updated conversation transcript in DB
     const onStreamFinish = (generatedQuestionString: string) => {
-      const generatedQuestionMessage = {
+      const generatedQuestionMessage = transcriptSchema.parse({
         role: "assistant",
         content: generatedQuestionString,
         fieldName: requiredFieldName,
-      };
+      });
 
       api.conversation.updateTranscript({
-        conversationId: conversation.id,
-        transcript: [...messages, generatedQuestionMessage],
+        id: conversation.id,
+        transcript: [...transcript, generatedQuestionMessage],
       });
     };
 
@@ -210,18 +210,18 @@ export async function POST(
       const { conversationName } =
         await conversationService.generateConversationName({
           formOverview: conversation.formOverview,
-          fieldsWithData: conversation.fieldsData as FieldHavingData[],
+          fieldsWithData: conversation.collectedData as FieldHavingData[],
         });
 
       await api.conversation.updateFinishedStatus({
-        conversationId: conversation.id,
+        id: conversation.id,
         isFinished: true,
-        conversationName,
+        name: conversationName,
       });
 
       return conversationService.generateEndMessage({
         formOverview: conversation.formOverview,
-        fieldsWithData: conversation.fieldsData as FieldHavingData[],
+        fieldsWithData: conversation.collectedData as FieldHavingData[],
         extraCustomStreamData,
         onStreamFinish,
       });
@@ -231,9 +231,9 @@ export async function POST(
     return conversationService.generateQuestion({
       formOverview: conversation.formOverview,
       requiredFieldName,
-      fieldsData: conversation.fieldsData,
+      collectedData: conversation.collectedData,
       extraCustomStreamData,
-      messages,
+      transcript,
       onStreamFinish,
     });
   } catch (error) {
