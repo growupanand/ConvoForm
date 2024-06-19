@@ -77,7 +77,8 @@ export class SystemPromptService {
       OUTPUT FORMAT - JSON:
       {
         fieldName: "input label",
-        placeholder: "placeholder text"
+        placeholder: "placeholder text",
+        fieldDescription: "description of the field used for generating question for the field"
       }
 
     "welcomeScreenData" - This data will be used to display on the first page of the form which the user will see before starting to fill the form.

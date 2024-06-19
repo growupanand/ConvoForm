@@ -8,6 +8,7 @@ import { formField } from "./formField";
 
 export const insertFormFieldSchema = createInsertSchema(formField, {
   fieldName: z.string().min(1),
+  fieldDescription: z.string().min(1),
 });
 export const selectFormFieldSchema = createSelectSchema(formField);
 export const patchFormFieldSchema = insertFormFieldSchema.partial();

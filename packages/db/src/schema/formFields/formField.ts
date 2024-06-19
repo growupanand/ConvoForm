@@ -13,7 +13,10 @@ export const formField = pgTable("FormField", {
     .unique(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  // Human readable name of the field, also will be display in table column
   fieldName: text("fieldName").notNull(),
+  // Used while generating question for the field
+  fieldDescription: text("fieldDescription").notNull(),
   formId: text("formId")
     .notNull()
     .references(() => form.id, { onDelete: "cascade", onUpdate: "cascade" }),

@@ -32,18 +32,21 @@ export type HandleCreateForm = (
   formData: z.infer<typeof newFormSchema>,
 ) => void;
 
-const newFormData = newFormSchema.parse({
+const newFormFields: z.infer<typeof newFormSchema>["formFields"] = [
+  {
+    fieldName: "Name",
+    fieldDescription: "Description of the field",
+  },
+];
+
+const newFormData: z.infer<typeof newFormSchema> = newFormSchema.parse({
   name: "New form",
   welcomeScreenTitle: "Welcome to your new form!",
   welcomeScreenMessage: "Customize your form.",
   welcomeScreenCTALabel: "Start",
   overview:
     "This is brief description about the form, which will be used while generating questions.",
-  formFields: [
-    {
-      fieldName: "Name",
-    },
-  ],
+  formFields: newFormFields,
 });
 
 export default function CreateFormButton({ workspace }: Readonly<Props>) {

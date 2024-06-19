@@ -2,6 +2,7 @@ import { and, count, eq } from "@convoform/db";
 import {
   form,
   formField,
+  insertFormFieldSchema,
   newFormSchema,
   patchFormSchema,
   updateFormSchema,
@@ -43,9 +44,10 @@ export const formRouter = createTRPCRouter({
         throw new Error("Failed to create form");
       }
 
-      const emptyFormField = {
+      const emptyFormField: z.infer<typeof insertFormFieldSchema> = {
         fieldName: "",
         formId: newForm.id,
+        fieldDescription: "",
       };
 
       const formFields = input.formFields.map((field) => ({
@@ -172,6 +174,7 @@ export const formRouter = createTRPCRouter({
       const updatedFormFields = await ctx.db.insert(formField).values([
         ...input.formFields.map((field) => ({
           fieldName: field.fieldName,
+          fieldDescription: field.fieldDescription,
           formId: input.id,
           updatedAt: new Date(),
         })),
