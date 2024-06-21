@@ -1,4 +1,5 @@
 import {
+  CollectedData,
   FieldHavingData,
   generateFormSchema,
   selectFormFieldSchema,
@@ -122,12 +123,12 @@ export class SystemPromptService {
 
   getGenerateQuestionPromptMessage({
     formOverview,
-    requiredFieldName,
+    currentField,
     fieldsWithData,
     isFirstQuestion,
   }: {
     formOverview: string;
-    requiredFieldName: string;
+    currentField: CollectedData;
     fieldsWithData: FieldHavingData[];
     isFirstQuestion: boolean;
   }) {
@@ -150,14 +151,13 @@ export class SystemPromptService {
 
     Form Details: ${formOverview}
 
-    Current Field: ${requiredFieldName}
+    Already Collected Fields Data:
+    ${fieldsWithData
+      .map((item) => `${item.fieldName}: ${item.fieldValue}`)
+      .join("\n")}
 
-    Already Provided Fields Data:
-        ${fieldsWithData
-          .map((item) => `${item.fieldName}: ${item.fieldValue}`)
-          .join("\n")}
-
-
+    Current Field Name: ${currentField.fieldName}
+    Current Field description: ${currentField.fieldDescription}
     `;
 
     return {
@@ -172,7 +172,7 @@ export class SystemPromptService {
     formOverview,
   }: {
     transcript: Transcript[];
-    currentField: string;
+    currentField: CollectedData;
     formOverview: string;
   }) {
     const systemPrompt = `
@@ -182,7 +182,8 @@ export class SystemPromptService {
 
     Form Details: ${formOverview}
 
-    Current Field: ${currentField}
+    Current Field Name: ${currentField.fieldName}
+    Current Field Description: ${currentField.fieldDescription}
 
     Conversation Messages:
         ${transcript.map((message) => `${message.role}: ${message.content}`).join("\n")}

@@ -1,11 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Transcript } from "@convoform/db/src/schema";
+import { ExtraStreamData, Transcript } from "@convoform/db/src/schema";
 import { socket } from "@convoform/websocket-client";
 
 import { API_DOMAIN } from "../constants";
-import { ExtraStreamData } from "../types";
 import { readResponseStream } from "../utils/streamUtils";
 
 type Props = {
@@ -15,14 +14,14 @@ type Props = {
 
 type State = {
   currentQuestion: string;
-  data?: ExtraStreamData;
+  extraStreamData: ExtraStreamData;
   isBusy: boolean;
   transcript: Transcript[];
 };
 
 const initialState: State = {
   currentQuestion: "",
-  data: undefined,
+  extraStreamData: {},
   isBusy: false,
   transcript: [],
 };
@@ -36,14 +35,14 @@ export function useConvoForm({
   const apiEndpoint = `${API_DOMAIN}/api/form/${formId}/conversation`;
 
   const [state, setState] = useState<State>(initialState);
-  const { currentQuestion, data, isBusy, transcript } = state;
+  const { currentQuestion, extraStreamData, isBusy, transcript } = state;
 
   const {
     id: conversationId,
     collectedData,
     currentField,
     isFormSubmissionFinished,
-  } = data ?? {};
+  } = extraStreamData;
 
   const endScreenMessage = isFormSubmissionFinished ? currentQuestion : "";
 
@@ -81,17 +80,20 @@ export function useConvoForm({
     let updatedCurrentField;
 
     const reader = response.body.getReader();
-    for await (const { textValue, data } of readResponseStream(reader)) {
+    for await (const {
+      textValue,
+      data: updatedExtraSteamData,
+    } of readResponseStream<ExtraStreamData>(reader)) {
       if (textValue) {
         currentQuestionText += textValue;
       }
 
-      updatedCurrentField = data?.currentField;
+      updatedCurrentField = updatedExtraSteamData?.currentField?.fieldName;
 
       setState((cs) => ({
         ...cs,
         currentQuestion: currentQuestionText,
-        data,
+        extraStreamData: updatedExtraSteamData ?? {},
       }));
     }
 
