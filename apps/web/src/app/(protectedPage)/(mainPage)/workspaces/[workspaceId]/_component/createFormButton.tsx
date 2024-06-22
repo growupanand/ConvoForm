@@ -2,10 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  newFormSchema,
-  Workspace,
-} from "@convoform/db/src/schema";
+import { newFormSchema, Workspace } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   DropdownMenu,
@@ -36,6 +33,7 @@ const newFormFields: z.infer<typeof newFormSchema>["formFields"] = [
   {
     fieldName: "Name",
     fieldDescription: "Description of the field",
+    inputType: "text",
   },
 ];
 

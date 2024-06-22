@@ -144,7 +144,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
       });
       const responseJson = await response.json();
       const { fieldName } = responseJson;
-      append({ fieldName, fieldDescription: fieldName });
+      append({ fieldName, fieldDescription: fieldName, inputType: "text" });
     } catch (error: any) {
       formHook.trigger(["overview", "formFields"]);
       showErrorResponseToast(error, "Unable to generate field");
@@ -414,7 +414,11 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                       <Button
                         variant="outline"
                         onClick={() =>
-                          append({ fieldName: "", fieldDescription: "" })
+                          append({
+                            fieldName: "",
+                            fieldDescription: "",
+                            inputType: "text",
+                          })
                         }
                         type="button"
                         disabled={isGeneratingAIField || isFormBusy}

@@ -48,6 +48,7 @@ export const formRouter = createTRPCRouter({
         fieldName: "",
         formId: newForm.id,
         fieldDescription: "",
+        inputType: "text",
       };
 
       const formFields = input.formFields.map((field) => ({
@@ -157,6 +158,7 @@ export const formRouter = createTRPCRouter({
         identifier: ctx.userId,
         rateLimitType: "core:edit",
       });
+
       const [updatedForm] = await ctx.db
         .update(form)
         .set({
@@ -177,6 +179,7 @@ export const formRouter = createTRPCRouter({
           fieldDescription: field.fieldDescription,
           formId: input.id,
           updatedAt: new Date(),
+          inputType: field.inputType,
         })),
       ]);
 

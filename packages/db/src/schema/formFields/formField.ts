@@ -1,11 +1,13 @@
 import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
 import { getBaseSchema } from "../base";
 import { form } from "../forms/form";
+
+export const inputTypeEnum = pgEnum("inputTypeEnum", ["text"]);
 
 export const formField = pgTable("FormField", {
   ...getBaseSchema(),
@@ -13,6 +15,8 @@ export const formField = pgTable("FormField", {
   fieldName: text("fieldName").notNull(),
   // Used while generating question for the field
   fieldDescription: text("fieldDescription").notNull(),
+  inputType: inputTypeEnum("inputType").default("text").notNull(),
+
   formId: text("formId")
     .notNull()
     .references(() => form.id, { onDelete: "cascade", onUpdate: "cascade" }),
