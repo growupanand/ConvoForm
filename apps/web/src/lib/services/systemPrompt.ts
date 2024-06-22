@@ -1,6 +1,6 @@
 import {
   CollectedData,
-  FieldHavingData,
+  CollectedFilledData,
   generateFormSchema,
   selectFormFieldSchema,
   selectFormSchema,
@@ -129,7 +129,7 @@ export class SystemPromptService {
   }: {
     formOverview: string;
     currentField: CollectedData;
-    fieldsWithData: FieldHavingData[];
+    fieldsWithData: CollectedFilledData[];
     isFirstQuestion: boolean;
   }) {
     const systemPrompt = `
@@ -153,11 +153,15 @@ export class SystemPromptService {
 
     Already Collected Fields Data:
     ${fieldsWithData
-      .map((item) => `${item.fieldName}: ${item.fieldValue}`)
+      .map(
+        (item) => `
+      fieldName: ${item.fieldName},
+      fieldDescription: ${item.fieldDescription},
+      fieldValue: ${item.fieldValue}`,
+      )
       .join("\n")}
 
-    Current Field Name: ${currentField.fieldName}
-    Current Field description: ${currentField.fieldDescription}
+    Current Field: ${currentField.fieldDescription}
     `;
 
     return {
@@ -224,7 +228,7 @@ export class SystemPromptService {
     fieldsWithData,
   }: {
     formOverview: string;
-    fieldsWithData: FieldHavingData[];
+    fieldsWithData: CollectedFilledData[];
   }) {
     const systemPrompt = `
     This platform lets users complete forms through conversational flow. User have provided all the required data for the form.
@@ -240,10 +244,15 @@ export class SystemPromptService {
 
     Form Details: ${formOverview}
 
-    Already Provided Fields Data:
-        ${fieldsWithData
-          .map((item) => `${item.fieldName}: ${item.fieldValue}`)
-          .join("\n")}
+    Already Collected Fields Data:
+    ${fieldsWithData
+      .map(
+        (item) => `
+      fieldName: ${item.fieldName},
+      fieldDescription: ${item.fieldDescription},
+      fieldValue: ${item.fieldValue}`,
+      )
+      .join("\n")}
 
 
     `;
@@ -258,7 +267,7 @@ export class SystemPromptService {
     fieldsWithData,
   }: {
     formOverview: string;
-    fieldsWithData: FieldHavingData[];
+    fieldsWithData: CollectedFilledData[];
   }) {
     const systemPrompt = `
     This platform lets users complete forms through conversational flow. User have provided all the required data for the form.
@@ -268,10 +277,15 @@ export class SystemPromptService {
 
     Form Details: ${formOverview}
 
-    Already Provided Fields Data:
-        ${fieldsWithData
-          .map((item) => `${item.fieldName}: ${item.fieldValue}`)
-          .join("\n")}
+    Already Collected Fields Data:
+    ${fieldsWithData
+      .map(
+        (item) => `
+      fieldName: ${item.fieldName},
+      fieldDescription: ${item.fieldDescription},
+      fieldValue: ${item.fieldValue}`,
+      )
+      .join("\n")}
 
     
 

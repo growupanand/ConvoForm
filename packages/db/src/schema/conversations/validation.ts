@@ -14,6 +14,14 @@ export const collectedDataSchema = insertFormFieldSchema
   });
 export type CollectedData = z.infer<typeof collectedDataSchema>;
 
+export const collectedFilledDataSchema = collectedDataSchema
+  .omit({ fieldValue: true })
+  .extend({
+    fieldValue: z.string().min(1),
+  });
+
+export type CollectedFilledData = z.infer<typeof collectedFilledDataSchema>;
+
 export const transcriptSchema = z.object({
   role: z.enum(["user", "assistant"]),
   content: z.string(),

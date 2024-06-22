@@ -2,9 +2,9 @@ import { NextRequest } from "next/server";
 import { checkRateLimitThrowError } from "@convoform/api";
 import {
   CollectedData,
+  CollectedFilledData,
   Conversation,
   extraStreamDataSchema,
-  FieldHavingData,
   Transcript,
   transcriptSchema,
 } from "@convoform/db/src/schema";
@@ -218,7 +218,7 @@ export async function POST(
       const { conversationName } =
         await conversationService.generateConversationName({
           formOverview: conversation.formOverview,
-          fieldsWithData: conversation.collectedData as FieldHavingData[],
+          fieldsWithData: conversation.collectedData as CollectedFilledData[],
         });
 
       await api.conversation.updateFinishedStatus({
@@ -229,7 +229,7 @@ export async function POST(
 
       return conversationService.generateEndMessage({
         formOverview: conversation.formOverview,
-        fieldsWithData: conversation.collectedData as FieldHavingData[],
+        fieldsWithData: conversation.collectedData as CollectedFilledData[],
         extraCustomStreamData,
         onStreamFinish,
       });

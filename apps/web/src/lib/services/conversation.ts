@@ -1,6 +1,6 @@
 import {
   CollectedData,
-  FieldHavingData,
+  CollectedFilledData,
   Transcript,
 } from "@convoform/db/src/schema";
 import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
@@ -30,7 +30,7 @@ export class ConversationService extends OpenAIService {
   }) {
     const fieldsWithData = collectedData.filter(
       (field) => field.fieldValue !== null,
-    ) as FieldHavingData[];
+    ) as CollectedFilledData[];
     const isFirstQuestion =
       fieldsWithData.length === 0 && transcript.length === 1;
 
@@ -82,7 +82,7 @@ export class ConversationService extends OpenAIService {
     let isAnswerExtracted: boolean = false;
     let extractedAnswer: string = "";
     let reasonForFailure: string | null = null;
-    let otherFieldsData: FieldHavingData[] = [];
+    let otherFieldsData: CollectedFilledData[] = [];
 
     const systemMessage = this.getExtractAnswerPromptMessage({
       transcript,
@@ -127,7 +127,7 @@ export class ConversationService extends OpenAIService {
     onStreamFinish,
   }: {
     formOverview: string;
-    fieldsWithData: FieldHavingData[];
+    fieldsWithData: CollectedFilledData[];
     extraCustomStreamData: Record<string, any>;
     onStreamFinish?: (completion: string) => void;
   }) {
@@ -169,7 +169,7 @@ export class ConversationService extends OpenAIService {
     fieldsWithData,
   }: {
     formOverview: string;
-    fieldsWithData: FieldHavingData[];
+    fieldsWithData: CollectedFilledData[];
   }) {
     const systemMessage = this.getGenerateConversationNamePromptMessage({
       formOverview,

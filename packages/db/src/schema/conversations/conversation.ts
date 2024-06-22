@@ -6,13 +6,7 @@ import { z } from "zod";
 
 import { getBaseSchema } from "../base";
 import { form } from "../forms/form";
-import { CollectedData, Transcript } from "./validation";
-
-export const fieldHavingDataSchema = z.object({
-  fieldName: z.string().min(1),
-  fieldValue: z.string().min(1),
-});
-export type FieldHavingData = z.infer<typeof fieldHavingDataSchema>;
+import { CollectedData, collectedDataSchema, Transcript } from "./validation";
 
 export const conversation = pgTable("Conversation", {
   ...getBaseSchema(),
