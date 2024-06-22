@@ -4,22 +4,12 @@ import { boolean, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
+import { getBaseSchema } from "../base";
 import { form } from "../forms/form";
-import { CollectedData, Transcript } from "./validation";
-
-export const fieldHavingDataSchema = z.object({
-  fieldName: z.string().min(1),
-  fieldValue: z.string().min(1),
-});
-export type FieldHavingData = z.infer<typeof fieldHavingDataSchema>;
+import { CollectedData, collectedDataSchema, Transcript } from "./validation";
 
 export const conversation = pgTable("Conversation", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => createId())
-    .unique(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  ...getBaseSchema(),
   name: text("name").notNull(),
   transcript: jsonb("transcript").array().$type<Transcript[]>(),
   collectedData: jsonb("collectedData")

@@ -1,5 +1,6 @@
 import {
-  FieldHavingData,
+  CollectedData,
+  CollectedFilledData,
   generateFormSchema,
   selectFormFieldSchema,
   selectFormSchema,
@@ -77,7 +78,8 @@ export class SystemPromptService {
       OUTPUT FORMAT - JSON:
       {
         fieldName: "input label",
-        placeholder: "placeholder text"
+        placeholder: "placeholder text",
+        fieldDescription: "description of the field used for generating question for the field"
       }
 
     "welcomeScreenData" - This data will be used to display on the first page of the form which the user will see before starting to fill the form.
@@ -121,13 +123,13 @@ export class SystemPromptService {
 
   getGenerateQuestionPromptMessage({
     formOverview,
-    requiredFieldName,
+    currentField,
     fieldsWithData,
     isFirstQuestion,
   }: {
     formOverview: string;
-    requiredFieldName: string;
-    fieldsWithData: FieldHavingData[];
+    currentField: CollectedData;
+    fieldsWithData: CollectedFilledData[];
     isFirstQuestion: boolean;
   }) {
     const systemPrompt = `
@@ -149,14 +151,17 @@ export class SystemPromptService {
 
     Form Details: ${formOverview}
 
-    Current Field: ${requiredFieldName}
+    Already Collected Fields Data:
+    ${fieldsWithData
+      .map(
+        (item) => `
+      fieldName: ${item.fieldName},
+      fieldDescription: ${item.fieldDescription},
+      fieldValue: ${item.fieldValue}`,
+      )
+      .join("\n")}
 
-    Already Provided Fields Data:
-        ${fieldsWithData
-          .map((item) => `${item.fieldName}: ${item.fieldValue}`)
-          .join("\n")}
-
-
+    Current Field: ${currentField.fieldDescription}
     `;
 
     return {
@@ -171,7 +176,7 @@ export class SystemPromptService {
     formOverview,
   }: {
     transcript: Transcript[];
-    currentField: string;
+    currentField: CollectedData;
     formOverview: string;
   }) {
     const systemPrompt = `
@@ -181,7 +186,8 @@ export class SystemPromptService {
 
     Form Details: ${formOverview}
 
-    Current Field: ${currentField}
+    Current Field Name: ${currentField.fieldName}
+    Current Field Description: ${currentField.fieldDescription}
 
     Conversation Messages:
         ${transcript.map((message) => `${message.role}: ${message.content}`).join("\n")}
@@ -222,7 +228,7 @@ export class SystemPromptService {
     fieldsWithData,
   }: {
     formOverview: string;
-    fieldsWithData: FieldHavingData[];
+    fieldsWithData: CollectedFilledData[];
   }) {
     const systemPrompt = `
     This platform lets users complete forms through conversational flow. User have provided all the required data for the form.
@@ -238,10 +244,15 @@ export class SystemPromptService {
 
     Form Details: ${formOverview}
 
-    Already Provided Fields Data:
-        ${fieldsWithData
-          .map((item) => `${item.fieldName}: ${item.fieldValue}`)
-          .join("\n")}
+    Already Collected Fields Data:
+    ${fieldsWithData
+      .map(
+        (item) => `
+      fieldName: ${item.fieldName},
+      fieldDescription: ${item.fieldDescription},
+      fieldValue: ${item.fieldValue}`,
+      )
+      .join("\n")}
 
 
     `;
@@ -256,7 +267,7 @@ export class SystemPromptService {
     fieldsWithData,
   }: {
     formOverview: string;
-    fieldsWithData: FieldHavingData[];
+    fieldsWithData: CollectedFilledData[];
   }) {
     const systemPrompt = `
     This platform lets users complete forms through conversational flow. User have provided all the required data for the form.
@@ -266,10 +277,15 @@ export class SystemPromptService {
 
     Form Details: ${formOverview}
 
-    Already Provided Fields Data:
-        ${fieldsWithData
-          .map((item) => `${item.fieldName}: ${item.fieldValue}`)
-          .join("\n")}
+    Already Collected Fields Data:
+    ${fieldsWithData
+      .map(
+        (item) => `
+      fieldName: ${item.fieldName},
+      fieldDescription: ${item.fieldDescription},
+      fieldValue: ${item.fieldValue}`,
+      )
+      .join("\n")}
 
     
 
