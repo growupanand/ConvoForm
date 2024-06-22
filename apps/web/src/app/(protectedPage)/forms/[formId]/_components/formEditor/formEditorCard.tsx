@@ -70,6 +70,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
   });
   const { isGeneratingAIField, removeFieldsIds } = state;
   const formDefaultValues = form;
+  // console.log({ formDefaultValues });
 
   const queryClient = useQueryClient();
 
@@ -87,6 +88,11 @@ export function FormEditorCard({ form }: Readonly<Props>) {
   useEffect(() => {
     formHook.reset(formDefaultValues);
   }, [form]);
+
+  console.log({
+    "formHook.formState": formHook.formState,
+    errors: formHook.formState.errors,
+  });
 
   const isErrorInRequirementFields = formHook.formState.errors.formFields;
   const isErrorInLandingPageFields =
@@ -119,6 +125,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
   const isFormBusy = updateForm.isPending;
 
   const onSubmit = (formData: z.infer<typeof updateFormSchema>) => {
+    console.log("ok", formData);
     updateForm.mutate({
       ...formData,
       // Remove fields that have been removed
@@ -151,6 +158,12 @@ export function FormEditorCard({ form }: Readonly<Props>) {
     } finally {
       setState((cs) => ({ ...cs, isGeneratingAIField: false }));
     }
+  };
+
+  const handleFieldNameChange = (index: number, value: string) => {
+    // Because there is no form description input right now,
+    // We will use fieldName as field description
+    formHook.setValue(`formFields.${index}.fieldDescription`, value);
   };
 
   const handleFormFieldInputKeyDown = (
@@ -361,53 +374,64 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                     </div>
 
                     {fields.map((item, index) => (
-                      <FormField
-                        key={item.id}
-                        control={formHook.control}
-                        name={`formFields.${index}.fieldName`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <div className="flex w-full max-w-sm items-center space-x-2">
-                                <Input
-                                  placeholder={`E.g. name, email or anything`}
-                                  onKeyDown={(e) =>
-                                    handleFormFieldInputKeyDown(e, item)
-                                  }
-                                  disabled={removeFieldsIds.includes(item.id)}
-                                  {...field}
-                                />
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        variant="ghost"
-                                        onClick={() =>
-                                          toggleRemoveField(index, item)
-                                        }
-                                        type="button"
-                                        size="icon"
-                                      >
-                                        {removeFieldsIds.includes(item.id) ? (
-                                          <Undo className="h-4 w-4" />
-                                        ) : (
-                                          <X className="h-4 w-4" />
-                                        )}
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top">
-                                      {removeFieldsIds.includes(item.id)
-                                        ? "Undo removal"
-                                        : "Remove field"}
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      <div key={item.id}>
+                        <FormField
+                          control={formHook.control}
+                          name={`formFields.${index}.fieldName`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="flex w-full max-w-sm items-center space-x-2">
+                                  <Input
+                                    placeholder={`E.g. name, email or anything`}
+                                    onKeyDown={(e) =>
+                                      handleFormFieldInputKeyDown(e, item)
+                                    }
+                                    disabled={removeFieldsIds.includes(item.id)}
+                                    {...field}
+                                    onChange={(e) => {
+                                      field.onChange(e); // Important to call the original handler
+
+                                      // We need this because currently there is no form description input box,
+                                      // Once we implement field description input, we can remove this
+                                      handleFieldNameChange(
+                                        index,
+                                        e.target.value,
+                                      );
+                                    }}
+                                  />
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button
+                                          variant="ghost"
+                                          onClick={() =>
+                                            toggleRemoveField(index, item)
+                                          }
+                                          type="button"
+                                          size="icon"
+                                        >
+                                          {removeFieldsIds.includes(item.id) ? (
+                                            <Undo className="h-4 w-4" />
+                                          ) : (
+                                            <X className="h-4 w-4" />
+                                          )}
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="top">
+                                        {removeFieldsIds.includes(item.id)
+                                          ? "Undo removal"
+                                          : "Remove field"}
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     ))}
 
                     <div className=" mt-2 flex gap-3 max-lg:flex-col lg:items-center">
@@ -452,7 +476,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
           <Button
             className={cn("sticky bottom-0 w-full", montserrat.className)}
             type="submit"
-            disabled={isFormBusy || isGeneratingAIField}
+            // disabled={isFormBusy || isGeneratingAIField}
           >
             Save Changes
           </Button>
