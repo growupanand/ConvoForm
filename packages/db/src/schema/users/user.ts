@@ -3,13 +3,10 @@ import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
+import { getBaseSchema } from "../base";
+
 export const user = pgTable("User", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => createId())
-    .unique(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  ...getBaseSchema(),
   email: text("email").notNull(),
   firstName: text("firstName"),
   lastName: text("lastName"),

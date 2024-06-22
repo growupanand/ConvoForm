@@ -4,6 +4,7 @@ import {
   aiGeneratedFormSchema,
   generateFormSchema,
 } from "@convoform/db/src/schema";
+import { z } from "zod";
 
 import { aiGeneratedFormLimit } from "@/lib/config/pricing";
 import { sendErrorResponse } from "@/lib/errorHandlers";
@@ -51,16 +52,18 @@ export async function POST(req: NextRequest) {
       throw new Error("Invalid form description.");
     }
 
-    const generatedFormData = aiGeneratedFormSchema.parse({
+    const aiGeneratedForm: z.infer<typeof aiGeneratedFormSchema> = {
       name: formName,
       overview: generatedFormOverview,
       welcomeScreenCTALabel: welcomeScreenData?.buttonLabelText,
       welcomeScreenTitle: welcomeScreenData?.pageTitle,
       welcomeScreenMessage: welcomeScreenData?.pageDescription,
       formFields,
-    });
+    };
 
-    return NextResponse.json(generatedFormData);
+    const validAIGeneratedForm = aiGeneratedFormSchema.parse(aiGeneratedForm);
+
+    return NextResponse.json(validAIGeneratedForm);
   } catch (error) {
     return sendErrorResponse(error);
   }

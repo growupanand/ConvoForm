@@ -1,4 +1,4 @@
-import { Conversation } from "@convoform/db/src/schema";
+import { Conversation, Transcript } from "@convoform/db/src/schema";
 import { Badge } from "@convoform/ui/components/ui/badge";
 import {
   Card,
@@ -17,7 +17,6 @@ import { FileText } from "lucide-react";
 
 import { getConversationTableData } from "@/components/queryComponents/table/utils";
 import { SectionCard } from "@/components/sectionCard";
-import { Transcript } from "@/lib/types/transcript";
 import TranscriptCard from "./transcriptCard";
 
 type Props = {
@@ -28,7 +27,7 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
   const tableData = getConversationTableData(conversation.collectedData);
   const tableColumns = Object.keys(tableData);
   const isFormDataEmpty = tableColumns.length === 0;
-  const transcript = conversation.transcript as Transcript;
+  const transcript: Transcript[] = conversation.transcript ?? [];
 
   const getStatusBadge = () => {
     if (conversation.isFinished) {

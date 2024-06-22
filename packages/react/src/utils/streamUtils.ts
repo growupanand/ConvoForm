@@ -81,14 +81,14 @@ function concatChunks(chunks: Uint8Array[], totalLength: number) {
   return concatenatedChunks;
 }
 
-export async function* readResponseStream(
+export async function* readResponseStream<Data extends Record<string, any>>(
   reader: ReadableStreamDefaultReader<Uint8Array>,
 ) {
   const chunks: Uint8Array[] = [];
   const decoder = new TextDecoder();
   let totalLength = 0;
 
-  let data: Record<string, any> = {};
+  let data: Data = {} as Data;
 
   while (true) {
     let textValue = "";

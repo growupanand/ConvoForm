@@ -1,6 +1,6 @@
 import {
   CollectedData,
-  FieldHavingData,
+  CollectedFilledData,
   Transcript,
 } from "@convoform/db/src/schema";
 import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
@@ -9,20 +9,20 @@ import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { OpenAIService } from "./openAI";
 
 export class ConversationService extends OpenAIService {
-  public getNextEmptyField(collectedData: CollectedData[]): string | undefined {
-    return collectedData.find((field) => field.fieldValue === null)?.fieldName;
+  public getNextEmptyField(collectedData: CollectedData[]) {
+    return collectedData.find((field) => field.fieldValue === null);
   }
 
   public async generateQuestion({
     formOverview,
-    requiredFieldName,
+    currentField,
     collectedData,
     extraCustomStreamData,
     transcript,
     onStreamFinish,
   }: {
     formOverview: string;
-    requiredFieldName: string;
+    currentField: CollectedData;
     collectedData: CollectedData[];
     extraCustomStreamData: Record<string, any>;
     transcript: Transcript[];
@@ -30,13 +30,13 @@ export class ConversationService extends OpenAIService {
   }) {
     const fieldsWithData = collectedData.filter(
       (field) => field.fieldValue !== null,
-    ) as FieldHavingData[];
+    ) as CollectedFilledData[];
     const isFirstQuestion =
       fieldsWithData.length === 0 && transcript.length === 1;
 
     const systemMessage = this.getGenerateQuestionPromptMessage({
       formOverview,
-      requiredFieldName,
+      currentField,
       fieldsWithData,
       isFirstQuestion,
     });
@@ -76,13 +76,13 @@ export class ConversationService extends OpenAIService {
     formOverview,
   }: {
     transcript: Transcript[];
-    currentField: string;
+    currentField: CollectedData;
     formOverview: string;
   }) {
     let isAnswerExtracted: boolean = false;
     let extractedAnswer: string = "";
     let reasonForFailure: string | null = null;
-    let otherFieldsData: FieldHavingData[] = [];
+    let otherFieldsData: CollectedFilledData[] = [];
 
     const systemMessage = this.getExtractAnswerPromptMessage({
       transcript,
@@ -127,7 +127,7 @@ export class ConversationService extends OpenAIService {
     onStreamFinish,
   }: {
     formOverview: string;
-    fieldsWithData: FieldHavingData[];
+    fieldsWithData: CollectedFilledData[];
     extraCustomStreamData: Record<string, any>;
     onStreamFinish?: (completion: string) => void;
   }) {
@@ -169,7 +169,7 @@ export class ConversationService extends OpenAIService {
     fieldsWithData,
   }: {
     formOverview: string;
-    fieldsWithData: FieldHavingData[];
+    fieldsWithData: CollectedFilledData[];
   }) {
     const systemMessage = this.getGenerateConversationNamePromptMessage({
       formOverview,

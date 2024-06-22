@@ -1,8 +1,9 @@
+import { Transcript } from "@convoform/db/src/schema";
+
 import { AnimatedTypingDots } from "@/components/common/typingDots";
-import { Transcript } from "@/lib/types/transcript";
 
 type Props = {
-  transcript: Transcript;
+  transcript: Transcript[];
   isBusy?: boolean;
 };
 

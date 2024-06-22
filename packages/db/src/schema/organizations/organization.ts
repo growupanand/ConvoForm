@@ -3,13 +3,10 @@ import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
+import { getBaseSchema } from "../base";
+
 export const organization = pgTable("Organization", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => createId())
-    .unique(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  ...getBaseSchema(),
   name: text("name").notNull(),
   slug: text("slug"),
   organizationId: text("organizationId").notNull(),
