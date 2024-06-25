@@ -1,11 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  Form as DBForm,
-  FormField as DBFormField,
-  updateFormSchema,
-} from "@convoform/db/src/schema";
+import { useEffect } from "react";
+import { Form as FormSchema, updateFormSchema } from "@convoform/db/src/schema";
 import {
   Accordion,
   AccordionContent,
@@ -13,7 +9,6 @@ import {
   AccordionTrigger,
 } from "@convoform/ui/components/ui/accordion";
 import { Badge } from "@convoform/ui/components/ui/badge";
-import { Button } from "@convoform/ui/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -32,67 +27,21 @@ import {
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  ArrowDownSquare,
-  ArrowUpSquare,
-  CornerDownLeft,
-  Info,
-  Plus,
-  Undo,
-  X,
-} from "lucide-react";
-import { FieldArrayWithId, useFieldArray, useForm } from "react-hook-form";
+import { Info } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { montserrat } from "@/app/fonts";
+import Spinner from "@/components/common/spinner";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
 type Props = {
-  form: DBForm & { formFields: DBFormField[] };
-};
-
-type State = {
-  removeFieldsIds: string[];
+  form: FormSchema;
 };
 
 export function FormEditorCard({ form }: Readonly<Props>) {
-  const [state, setState] = useState<State>({
-    removeFieldsIds: [],
-  });
-  const { removeFieldsIds } = state;
-  const formDefaultValues = form;
-
   const queryClient = useQueryClient();
-
-  const formHook = useForm<z.infer<typeof updateFormSchema>>({
-    resolver: zodResolver(updateFormSchema),
-    defaultValues: formDefaultValues,
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control: formHook.control,
-    name: "formFields",
-  });
-
-  // This will reset form when another form page is opened, otherwise react-hook-form will keep previous form values
-  useEffect(() => {
-    formHook.reset(formDefaultValues);
-  }, [form]);
-
-  console.log({
-    "formHook.formState": formHook.formState,
-    errors: formHook.formState.errors,
-  });
-
-  const isErrorInRequirementFields = formHook.formState.errors.formFields;
-  const isErrorInLandingPageFields =
-    formHook.formState.errors.overview ||
-    formHook.formState.errors.welcomeScreenTitle ||
-    formHook.formState.errors.welcomeScreenMessage ||
-    formHook.formState.errors.welcomeScreenCTALabel;
-
   const updateForm = api.form.updateForm.useMutation({
     onSuccess: () => {
       toast({
@@ -106,7 +55,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
     onError: (error) => {
       toast({
         title: "Unable to save changes",
-        duration: 2000,
+        duration: 1500,
         variant: "destructive",
         description: isRateLimitErrorResponse(error)
           ? error.message
@@ -114,81 +63,44 @@ export function FormEditorCard({ form }: Readonly<Props>) {
       });
     },
   });
-  const isFormBusy = updateForm.isPending;
+
+  const isSavingForm = updateForm.isPending;
+
+  const formHook = useForm<z.infer<typeof updateFormSchema>>({
+    resolver: zodResolver(updateFormSchema),
+    defaultValues: form,
+  });
+
+  const isErrorInOverviewFields = formHook.formState.errors.overview;
+  const isErrorInLandingPageFields =
+    formHook.formState.errors.welcomeScreenTitle ||
+    formHook.formState.errors.welcomeScreenMessage ||
+    formHook.formState.errors.welcomeScreenCTALabel;
 
   const onSubmit = (formData: z.infer<typeof updateFormSchema>) => {
-    console.log("ok", formData);
     updateForm.mutate({
       ...formData,
-      // Remove fields that have been removed
-      formFields: formData.formFields.filter(
-        (field, index) => !removeFieldsIds.includes(fields[index]!.id),
-      ),
     });
   };
 
-  const handleFieldNameChange = (index: number, value: string) => {
-    // Because there is no form description input right now,
-    // We will use fieldName as field description
-    formHook.setValue(`formFields.${index}.fieldDescription`, value);
-  };
-
-  const handleFormFieldInputKeyDown = (
-    event: React.KeyboardEvent<HTMLInputElement>,
-    currentFieldItem: FieldArrayWithId,
-  ) => {
-    // we want to move input focus to next input on press enter
-    if (event.key === "Enter" || event.key === "ArrowDown") {
-      event.preventDefault();
-      const lastFieldIndex = fields.length - 1;
-      const currentFieldIndex = fields.findIndex(
-        (item) => item.id === currentFieldItem.id,
-      );
-      if (currentFieldIndex !== lastFieldIndex) {
-        formHook.setFocus(`formFields.${currentFieldIndex + 1}.fieldName`);
+  // Autosave functionality
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (formHook.formState.isDirty) {
+        onSubmit(formHook.getValues());
       }
-    }
-    if (event.key === "ArrowUp") {
-      event.preventDefault();
-      const currentFieldIndex = fields.findIndex(
-        (item) => item.id === currentFieldItem.id,
-      );
-      if (currentFieldIndex !== 0) {
-        formHook.setFocus(`formFields.${currentFieldIndex - 1}.fieldName`);
-      }
-    }
-  };
+    }, 2000); // Delay of 2 seconds
 
-  const toggleRemoveField = (
-    fieldIndex: number,
-    field: { fieldName: string; id: string },
-  ) => {
-    // Check if field is already marked for removal
-    if (removeFieldsIds.includes(field.id)) {
-      setState((cs) => ({
-        ...cs,
-        removeFieldsIds: removeFieldsIds.filter((id) => id !== field.id),
-      }));
-      return;
-    }
+    return () => clearTimeout(timeoutId); // Cleanup timeout on component unmount or value change
+  }, [formHook.watch()]); // Watch all form changes
 
-    const fieldValue = formHook.getValues().formFields[fieldIndex]?.fieldName;
-    // check if field value is empty then we can safely remove it instead of marking it for removal
-    if (fieldValue === "") {
-      // remove field
-      remove(fieldIndex);
-      return;
-    }
-
-    // mark field for removal
-    setState((cs) => ({
-      ...cs,
-      removeFieldsIds: [...removeFieldsIds, field.id],
-    }));
-  };
+  // Reset form in react-hook-form when props change
+  useEffect(() => {
+    formHook.reset(form);
+  }, [form]);
 
   return (
-    <div className="border-0 bg-transparent px-2">
+    <div className="center flex h-full flex-col justify-between border-0 px-2">
       <UIForm {...formHook}>
         <form onSubmit={formHook.handleSubmit(onSubmit)}>
           <div className="mb-8 space-y-4">
@@ -202,7 +114,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                 <AccordionTrigger
                   className={cn(
                     "text-muted-foreground group font-medium hover:text-black hover:no-underline data-[state=open]:text-black",
-                    isErrorInLandingPageFields && "text-red-500",
+                    isErrorInOverviewFields && "text-red-500",
                   )}
                 >
                   <div className="flex items-center gap-3">
@@ -310,130 +222,13 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                   />
                 </AccordionContent>
               </AccordionItem>
-
-              <AccordionItem
-                value="requirement-fields"
-                className="border-b-muted"
-              >
-                <AccordionTrigger
-                  className={cn(
-                    "text-muted-foreground group font-medium  hover:text-black hover:no-underline data-[state=open]:text-black",
-                    isErrorInRequirementFields && "text-red-500",
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <Badge
-                      variant="outline"
-                      className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
-                    >
-                      3
-                    </Badge>{" "}
-                    <span>What you want to ask?</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="lg:pe-1 lg:ps-10 lg:pt-1">
-                  <div className="grid gap-2">
-                    <div className="text-muted-foreground mb-2 flex items-center gap-1 text-xs">
-                      Use Arrow keys <ArrowUpSquare className="h-4 w-4 " />{" "}
-                      <ArrowDownSquare className="h-4 w-4 " />{" "}
-                      <CornerDownLeft className="h-3 w-3 " /> to navigate
-                      between fields
-                    </div>
-
-                    {fields.map((item, index) => (
-                      <div key={item.id}>
-                        <FormField
-                          control={formHook.control}
-                          name={`formFields.${index}.fieldName`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <div className="flex w-full max-w-sm items-center space-x-2">
-                                  <Input
-                                    placeholder={`E.g. name, email or anything`}
-                                    onKeyDown={(e) =>
-                                      handleFormFieldInputKeyDown(e, item)
-                                    }
-                                    disabled={removeFieldsIds.includes(item.id)}
-                                    {...field}
-                                    onChange={(e) => {
-                                      field.onChange(e); // Important to call the original handler
-
-                                      // We need this because currently there is no form description input box,
-                                      // Once we implement field description input, we can remove this
-                                      handleFieldNameChange(
-                                        index,
-                                        e.target.value,
-                                      );
-                                    }}
-                                  />
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Button
-                                          variant="ghost"
-                                          onClick={() =>
-                                            toggleRemoveField(index, item)
-                                          }
-                                          type="button"
-                                          size="icon"
-                                        >
-                                          {removeFieldsIds.includes(item.id) ? (
-                                            <Undo className="h-4 w-4" />
-                                          ) : (
-                                            <X className="h-4 w-4" />
-                                          )}
-                                        </Button>
-                                      </TooltipTrigger>
-                                      <TooltipContent side="top">
-                                        {removeFieldsIds.includes(item.id)
-                                          ? "Undo removal"
-                                          : "Remove field"}
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    ))}
-
-                    <div className=" mt-2 flex gap-3 max-lg:flex-col lg:items-center">
-                      <Button
-                        variant="outline"
-                        onClick={() =>
-                          append({
-                            fieldName: "",
-                            fieldDescription: "",
-                            inputType: "text",
-                          })
-                        }
-                        type="button"
-                        disabled={isFormBusy}
-                        className="w-full "
-                      >
-                        <Plus className="mr-2 h-4 w-4" />
-                        Add Field
-                      </Button>
-                    </div>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
             </Accordion>
           </div>
-
-          <Button
-            className={cn("sticky bottom-0 w-full", montserrat.className)}
-            type="submit"
-            disabled={isFormBusy}
-          >
-            Save Changes
-          </Button>
         </form>
       </UIForm>
+      <div className="relative overflow-hidden py-3">
+        {isSavingForm && <Spinner label="Saving form" />}
+      </div>
     </div>
   );
 }

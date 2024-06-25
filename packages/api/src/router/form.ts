@@ -152,7 +152,7 @@ export const formRouter = createTRPCRouter({
     }),
 
   updateForm: protectedProcedure
-    .input(updateFormSchema)
+    .input(updateFormSchema.omit({ formFields: true }))
     .mutation(async ({ input, ctx }) => {
       await checkRateLimitThrowTRPCError({
         identifier: ctx.userId,
@@ -172,21 +172,7 @@ export const formRouter = createTRPCRouter({
         .where(eq(form.id, input.id))
         .returning();
 
-      await ctx.db.delete(formField).where(eq(formField.formId, input.id));
-      const updatedFormFields = await ctx.db.insert(formField).values([
-        ...input.formFields.map((field) => ({
-          fieldName: field.fieldName,
-          fieldDescription: field.fieldDescription,
-          formId: input.id,
-          updatedAt: new Date(),
-          inputType: field.inputType,
-        })),
-      ]);
-
-      return {
-        ...updatedForm,
-        formFields: updatedFormFields,
-      };
+      return updatedForm;
     }),
 
   deleteForm: protectedProcedure
