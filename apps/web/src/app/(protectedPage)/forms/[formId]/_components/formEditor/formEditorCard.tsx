@@ -29,10 +29,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@convoform/ui/components/ui/tooltip";
-import {
-  showErrorResponseToast,
-  toast,
-} from "@convoform/ui/components/ui/use-toast";
+import { toast } from "@convoform/ui/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -41,7 +38,6 @@ import {
   CornerDownLeft,
   Info,
   Plus,
-  Sparkles,
   Undo,
   X,
 } from "lucide-react";
@@ -49,7 +45,6 @@ import { FieldArrayWithId, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { montserrat } from "@/app/fonts";
-import { apiClient } from "@/lib/apiClient";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
@@ -59,18 +54,15 @@ type Props = {
 };
 
 type State = {
-  isGeneratingAIField: boolean;
   removeFieldsIds: string[];
 };
 
 export function FormEditorCard({ form }: Readonly<Props>) {
   const [state, setState] = useState<State>({
-    isGeneratingAIField: false,
     removeFieldsIds: [],
   });
-  const { isGeneratingAIField, removeFieldsIds } = state;
+  const { removeFieldsIds } = state;
   const formDefaultValues = form;
-  // console.log({ formDefaultValues });
 
   const queryClient = useQueryClient();
 
@@ -133,31 +125,6 @@ export function FormEditorCard({ form }: Readonly<Props>) {
         (field, index) => !removeFieldsIds.includes(fields[index]!.id),
       ),
     });
-  };
-
-  const generateAIField = async () => {
-    const apiEndpoint = `/form/${form.id}/getNextFormField/`;
-    const formData = formHook.getValues();
-    const payload = {
-      overview: formData.overview,
-      formFields: formData.formFields,
-    };
-    setState((cs) => ({ ...cs, isGeneratingAIField: true }));
-    formHook.clearErrors();
-    try {
-      const response = await apiClient(apiEndpoint, {
-        method: "POST",
-        data: payload,
-      });
-      const responseJson = await response.json();
-      const { fieldName } = responseJson;
-      append({ fieldName, fieldDescription: fieldName, inputType: "text" });
-    } catch (error: any) {
-      formHook.trigger(["overview", "formFields"]);
-      showErrorResponseToast(error, "Unable to generate field");
-    } finally {
-      setState((cs) => ({ ...cs, isGeneratingAIField: false }));
-    }
   };
 
   const handleFieldNameChange = (index: number, value: string) => {
@@ -445,26 +412,11 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                           })
                         }
                         type="button"
-                        disabled={isGeneratingAIField || isFormBusy}
+                        disabled={isFormBusy}
                         className="w-full "
                       >
                         <Plus className="mr-2 h-4 w-4" />
                         Add Field
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        onClick={generateAIField}
-                        type="button"
-                        disabled={isGeneratingAIField || isFormBusy}
-                        className="w-full border"
-                      >
-                        <Sparkles
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            isGeneratingAIField && "animate-ping",
-                          )}
-                        />
-                        Auto Generate Field
                       </Button>
                     </div>
                   </div>
@@ -476,7 +428,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
           <Button
             className={cn("sticky bottom-0 w-full", montserrat.className)}
             type="submit"
-            // disabled={isFormBusy || isGeneratingAIField}
+            disabled={isFormBusy}
           >
             Save Changes
           </Button>

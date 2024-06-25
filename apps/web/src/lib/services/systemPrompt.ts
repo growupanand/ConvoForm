@@ -29,33 +29,6 @@ export class SystemPromptService {
     return form.formFields.map((item) => item.fieldName);
   }
 
-  getGenerateFormFieldPrompt(form: SchemaSystemPrompt) {
-    return `
-        This platform lets users complete forms through conversational flow. Your task is to create one form field based on the provided form information and fields.
-        
-        Here is some context about the form responsible for its creation, followed by the form fields:
-
-        Form Details: ${form.overview}
-
-        Form Fields:
-            ${this.getFormFieldNames(form).join("\n")}
-
-        
-        OUTPUT FORMAT JSON:
-        {
-          filedName: "field name",
-        }
-
-        `;
-  }
-
-  getGenerateFormFieldPromptMessage(form: SchemaSystemPrompt) {
-    return {
-      role: "system",
-      content: this.getGenerateFormFieldPrompt(form),
-    } as ChatCompletionRequestMessage;
-  }
-
   getGenerateFormPrompt(data: z.infer<typeof generateFormSchema>) {
     return `
     This automated platform allows users to design and generate forms. The tasks depend on an overview provided by the user. Validation of the form contents is crucial: if the form overview seems invalid (e.g., if it appears to be random text, or unrelated to the form being created), the form generation process should not proceed, and the "isInvalidFormOverview" value should be set to true.        
