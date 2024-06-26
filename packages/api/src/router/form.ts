@@ -118,13 +118,33 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.db.query.form.findFirst({
+      const formWithWorkspaceFields = await ctx.db.query.form.findFirst({
         where: eq(form.id, input.id),
         with: {
           workspace: true,
           formFields: true,
         },
+        orderBy: (form, { asc }) => [asc(form.createdAt)],
       });
+
+      if (!formWithWorkspaceFields) {
+        return undefined;
+      }
+
+      const { workspace, formFields, ...restForm } = formWithWorkspaceFields;
+
+      // Sort form fields by createdAt
+      const sortedFormFields = formFields.sort((a, b) => {
+        return (
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+      });
+
+      return {
+        ...restForm,
+        workspace,
+        formFields: sortedFormFields,
+      };
     }),
 
   delete: protectedProcedure

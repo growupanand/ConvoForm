@@ -130,6 +130,16 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                       1
                     </Badge>
                     <span>Overview</span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 " />
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" align="start">
+                          This will be used by AI for question generation.
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </AccordionTrigger>
 
@@ -169,17 +179,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                     >
                       2
                     </Badge>{" "}
-                    <span>Landing page </span>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 " />
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom" align="start">
-                          This will show on first page
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <span>Landing page</span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4 lg:pe-1 lg:ps-10 lg:pt-1">
@@ -243,11 +243,11 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                 >
                   3
                 </Badge>{" "}
-                <span>What you want to ask?</span>
+                <span>What you want to ask ?</span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="lg:pe-1 lg:ps-10 lg:pt-1">
-              <FieldsEditorCard formFields={form.formFields} />
+              <FieldsEditorCard formFields={form.formFields} formId={form.id} />
             </AccordionContent>
           </AccordionItem>
         </Accordion>

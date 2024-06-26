@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   FormField as FormFieldSchema,
   patchFormFieldSchema,
@@ -31,6 +31,8 @@ const formHookSchema = patchFormFieldSchema.pick({ fieldDescription: true });
 type FormHookData = z.infer<typeof formHookSchema>;
 
 export function EditFieldItem({ formField }: Readonly<Props>) {
+  // eslint-disable-next-line
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const queryClient = useQueryClient();
   const updateFormField = api.formField.patchFormField.useMutation({
     onSuccess: () => {
@@ -61,14 +63,18 @@ export function EditFieldItem({ formField }: Readonly<Props>) {
   });
 
   const handleSaveField = (formData: FormHookData) => {
-    updateFormField.mutateAsync({
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    updateFormField.mutate({
       id: formField.id,
       ...formData,
     });
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       if (formHook.formState.isDirty) {
         formHook.handleSubmit((formData) => {
           handleSaveField(formData);
@@ -76,12 +82,16 @@ export function EditFieldItem({ formField }: Readonly<Props>) {
       }
     }, 2000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, [formHook.watch("fieldDescription")]);
 
   return (
     <Form {...formHook}>
-      <form>
+      <form onSubmit={formHook.handleSubmit(handleSaveField)}>
         <FormField
           control={formHook.control}
           name="fieldDescription"
