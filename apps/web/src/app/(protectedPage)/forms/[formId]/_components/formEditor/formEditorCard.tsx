@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { Form as FormSchema, updateFormSchema } from "@convoform/db/src/schema";
+import {
+  FormField as FormFieldSchema,
+  Form as FormSchema,
+  updateFormSchema,
+} from "@convoform/db/src/schema";
 import {
   Accordion,
   AccordionContent,
@@ -35,21 +39,22 @@ import Spinner from "@/components/common/spinner";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { FieldsEditorCard } from "./fieldsEditorCard";
 
 type Props = {
-  form: FormSchema;
+  form: FormSchema & { formFields: FormFieldSchema[] };
 };
 
 export function FormEditorCard({ form }: Readonly<Props>) {
   const queryClient = useQueryClient();
   const updateForm = api.form.updateForm.useMutation({
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [["form"]],
+      });
       toast({
         title: "Changes saved successfully",
         duration: 1500,
-      });
-      queryClient.invalidateQueries({
-        queryKey: [["form"]],
       });
     },
     onError: (error) => {
@@ -87,7 +92,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (formHook.formState.isDirty) {
-        onSubmit(formHook.getValues());
+        formHook.handleSubmit(onSubmit)();
       }
     }, 2000); // Delay of 2 seconds
 
@@ -101,15 +106,15 @@ export function FormEditorCard({ form }: Readonly<Props>) {
 
   return (
     <div className="center flex h-full flex-col justify-between border-0 px-2">
-      <UIForm {...formHook}>
-        <form onSubmit={formHook.handleSubmit(onSubmit)}>
-          <div className="mb-8 space-y-4">
-            <Accordion
-              type="single"
-              collapsible
-              className="w-full"
-              defaultValue="overview"
-            >
+      <div className="mb-8 space-y-4">
+        <Accordion
+          type="single"
+          collapsible
+          className="w-full"
+          defaultValue="overview"
+        >
+          <UIForm {...formHook}>
+            <form onSubmit={formHook.handleSubmit(onSubmit)}>
               <AccordionItem value="overview" className="border-b-muted">
                 <AccordionTrigger
                   className={cn(
@@ -222,10 +227,32 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                   />
                 </AccordionContent>
               </AccordionItem>
-            </Accordion>
-          </div>
-        </form>
-      </UIForm>
+            </form>
+          </UIForm>
+          <AccordionItem value="requirement-fields" className="border-b-muted">
+            <AccordionTrigger
+              className={cn(
+                "text-muted-foreground group font-medium  hover:text-black hover:no-underline data-[state=open]:text-black",
+                // isErrorInRequirementFields && "text-red-500",
+              )}
+            >
+              <div className="flex items-center gap-3">
+                <Badge
+                  variant="outline"
+                  className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
+                >
+                  3
+                </Badge>{" "}
+                <span>What you want to ask?</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="lg:pe-1 lg:ps-10 lg:pt-1">
+              <FieldsEditorCard formFields={form.formFields} />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
+
       <div className="relative overflow-hidden py-3">
         {isSavingForm && <Spinner label="Saving form" />}
       </div>

@@ -12,6 +12,8 @@ export const insertFormFieldSchema = createInsertSchema(formField, {
   inputType: z.enum(inputTypeEnum.enumValues),
 });
 export const selectFormFieldSchema = createSelectSchema(formField);
-export const patchFormFieldSchema = insertFormFieldSchema.partial();
+export const patchFormFieldSchema = insertFormFieldSchema.partial().extend({
+  id: z.string().min(1),
+});
 
 export type FormField = z.infer<typeof selectFormFieldSchema>;
