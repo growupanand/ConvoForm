@@ -35,7 +35,6 @@ import { Info } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import Spinner from "@/components/common/spinner";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
@@ -94,7 +93,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
       if (formHook.formState.isDirty) {
         formHook.handleSubmit(onSubmit)();
       }
-    }, 2000); // Delay of 2 seconds
+    }, 1000);
 
     return () => clearTimeout(timeoutId); // Cleanup timeout on component unmount or value change
   }, [formHook.watch()]); // Watch all form changes
@@ -105,7 +104,7 @@ export function FormEditorCard({ form }: Readonly<Props>) {
   }, [form]);
 
   return (
-    <div className="center flex h-full flex-col justify-between border-0 px-2">
+    <div className=" px-2">
       <div className="mb-8 space-y-4">
         <Accordion
           type="single"
@@ -151,8 +150,9 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                       <FormItem>
                         <FormControl>
                           <Input
-                            placeholder="Purpose of this form"
                             {...field}
+                            placeholder="Purpose of this form"
+                            disabled={isSavingForm}
                           />
                         </FormControl>
                         <FormMessage />
@@ -189,7 +189,11 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="Page Heading" {...field} />
+                          <Input
+                            {...field}
+                            placeholder="Page Heading"
+                            disabled={isSavingForm}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -202,8 +206,9 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                       <FormItem>
                         <FormControl>
                           <Input
-                            placeholder="Short message to display below heading"
                             {...field}
+                            placeholder="Short message to display below heading"
+                            disabled={isSavingForm}
                           />
                         </FormControl>
                         <FormMessage />
@@ -217,8 +222,9 @@ export function FormEditorCard({ form }: Readonly<Props>) {
                       <FormItem>
                         <FormControl>
                           <Input
-                            placeholder="Button text (E.g. Fill form, Get started)"
                             {...field}
+                            placeholder="Button text (E.g. Fill form, Get started)"
+                            disabled={isSavingForm}
                           />
                         </FormControl>
                         <FormMessage />
@@ -251,10 +257,6 @@ export function FormEditorCard({ form }: Readonly<Props>) {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-      </div>
-
-      <div className="relative overflow-hidden py-3">
-        {isSavingForm && <Spinner label="Saving form" />}
       </div>
     </div>
   );

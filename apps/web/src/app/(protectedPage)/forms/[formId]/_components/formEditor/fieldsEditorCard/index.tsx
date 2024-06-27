@@ -7,6 +7,7 @@ import { Plus } from "lucide-react";
 
 import { AddFieldItem } from "./addFieldItem";
 import { EditFieldItem } from "./editFieldItem";
+import { EditFieldSheet } from "./editFieldSheet";
 
 type Props = {
   formFields: FormField[];
@@ -15,30 +16,49 @@ type Props = {
 
 type State = {
   showAddField: boolean;
+  showEditFieldSheet: boolean;
+  currentEditField?: FormField;
 };
 
 export function FieldsEditorCard({ formFields, formId }: Readonly<Props>) {
   const [state, setState] = useState<State>({
     showAddField: false,
+    showEditFieldSheet: false,
+    currentEditField: undefined,
   });
-  const { showAddField } = state;
+  const { showAddField, showEditFieldSheet, currentEditField } = state;
 
   const handleShowAddField = () => {
-    setState({
-      showAddField: true,
-    });
+    setState((cs) => ({ ...cs, showAddField: true }));
   };
 
   const handleHideAddField = () => {
-    setState({
-      showAddField: false,
-    });
+    setState((cs) => ({ ...cs, showAddField: false }));
+  };
+
+  const handleShowEditFieldSheet = (formField: FormField) => {
+    setState((cs) => ({
+      ...cs,
+      showEditFieldSheet: true,
+      currentEditField: formField,
+    }));
+  };
+
+  const handleHideEditFieldSheet = () => {
+    setState((cs) => ({
+      ...cs,
+      showEditFieldSheet: false,
+    }));
   };
 
   return (
     <div className=" grid gap-2">
       {formFields.map((formField) => (
-        <EditFieldItem key={formField.id} formField={formField} />
+        <EditFieldItem
+          key={formField.id}
+          formField={formField}
+          onEdit={handleShowEditFieldSheet}
+        />
       ))}
       <div className="mt-4">
         {showAddField ? (
@@ -50,6 +70,13 @@ export function FieldsEditorCard({ formFields, formId }: Readonly<Props>) {
           </Button>
         )}
       </div>
+      {!!currentEditField && (
+        <EditFieldSheet
+          formField={currentEditField}
+          open={showEditFieldSheet}
+          onOpenChange={handleHideEditFieldSheet}
+        />
+      )}
     </div>
   );
 }

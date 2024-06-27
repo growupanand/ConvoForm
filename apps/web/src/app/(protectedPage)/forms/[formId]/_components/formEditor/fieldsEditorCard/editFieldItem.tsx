@@ -5,6 +5,7 @@ import {
   FormField as FormFieldSchema,
   patchFormFieldSchema,
 } from "@convoform/db/src/schema";
+import { Button } from "@convoform/ui/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,9 +15,9 @@ import {
 } from "@convoform/ui/components/ui/form";
 import { Input } from "@convoform/ui/components/ui/input";
 import { toast } from "@convoform/ui/components/ui/use-toast";
-import { cn } from "@convoform/ui/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import { Settings } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -25,16 +26,17 @@ import { api } from "@/trpc/react";
 
 type Props = {
   formField: FormFieldSchema;
+  onEdit: (formField: FormFieldSchema) => void;
 };
 
 const formHookSchema = patchFormFieldSchema.pick({ fieldDescription: true });
 type FormHookData = z.infer<typeof formHookSchema>;
 
-export function EditFieldItem({ formField }: Readonly<Props>) {
+export function EditFieldItem({ formField, onEdit }: Readonly<Props>) {
   // eslint-disable-next-line
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const queryClient = useQueryClient();
-  const updateFormField = api.formField.patchFormField.useMutation({
+  const patchFormFieldMutation = api.formField.patchFormField.useMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [["form"]],
@@ -53,7 +55,7 @@ export function EditFieldItem({ formField }: Readonly<Props>) {
     },
   });
 
-  const isSavingFormField = updateFormField.isPending;
+  const isSavingFormField = patchFormFieldMutation.isPending;
 
   const formHook = useForm({
     defaultValues: {
@@ -67,7 +69,7 @@ export function EditFieldItem({ formField }: Readonly<Props>) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-    updateFormField.mutate({
+    patchFormFieldMutation.mutate({
       id: formField.id,
       ...formData,
     });
@@ -80,7 +82,7 @@ export function EditFieldItem({ formField }: Readonly<Props>) {
           handleSaveField(formData);
         })();
       }
-    }, 2000);
+    }, 1000);
 
     return () => {
       if (timeoutRef.current) {
@@ -88,6 +90,12 @@ export function EditFieldItem({ formField }: Readonly<Props>) {
       }
     };
   }, [formHook.watch("fieldDescription")]);
+
+  useEffect(() => {
+    formHook.reset({
+      fieldDescription: formField.fieldDescription,
+    });
+  }, [formField]);
 
   return (
     <Form {...formHook}>
@@ -103,15 +111,21 @@ export function EditFieldItem({ formField }: Readonly<Props>) {
                     placeholder="Field description"
                     {...field}
                     disabled={isSavingFormField}
+                    className="grow"
                   />
-                  <div
-                    className={cn(
-                      "absolute -left-10 inline-block",
-                      !isSavingFormField && "hidden",
-                    )}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    disabled={isSavingFormField}
+                    onClick={() => onEdit(formField)}
                   >
-                    <Spinner />
-                  </div>
+                    {isSavingFormField ? (
+                      <Spinner />
+                    ) : (
+                      <Settings className="size-4" />
+                    )}
+                  </Button>
                 </div>
               </FormControl>
               <FormMessage />
