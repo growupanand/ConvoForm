@@ -79,34 +79,32 @@ export default function FormPage({ params: { formId } }: Props) {
         <MainNavTab formId={formId} />
 
         <Card className="relative flex-grow overflow-auto border-0 bg-transparent shadow-none">
-          <CardContent className="p-0">
-            {isLoading ? (
-              <FormEditorFormSkeleton />
-            ) : (
-              <FormEditorCard form={data} />
-            )}
+          {isLoading ? (
+            <FormEditorFormSkeleton />
+          ) : (
+            <FormEditorCard form={data} />
+          )}
 
-            <div className="py-3 lg:hidden">
-              <Drawer snapPoints={[0.95]}>
-                <DrawerTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn("w-full", montserrat.className)}
-                  >
-                    <Eye className="mr-2 h-4 w-4" />
-                    Show Preview
-                  </Button>
-                </DrawerTrigger>
-                <DrawerPortal>
-                  <DrawerContent className="h-full">
-                    <div className="h-full pt-3">
-                      <FormPreviewBrowser formId={formId} noToolbar />
-                    </div>
-                  </DrawerContent>
-                </DrawerPortal>
-              </Drawer>
-            </div>
-          </CardContent>
+          <div className="py-3 lg:hidden">
+            <Drawer snapPoints={[0.95]}>
+              <DrawerTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn("w-full", montserrat.className)}
+                >
+                  <Eye className="mr-2 h-4 w-4" />
+                  Show Preview
+                </Button>
+              </DrawerTrigger>
+              <DrawerPortal>
+                <DrawerContent className="h-full">
+                  <div className="h-full pt-3">
+                    <FormPreviewBrowser formId={formId} noToolbar />
+                  </div>
+                </DrawerContent>
+              </DrawerPortal>
+            </Drawer>
+          </div>
         </Card>
         <div className="mt-6 flex items-center justify-between px-2 max-lg:mb-6">
           <FormCustomizeSheet form={data} organization={organization} />

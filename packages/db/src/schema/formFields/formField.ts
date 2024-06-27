@@ -1,13 +1,12 @@
-import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
-import { pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod";
+import { pgEnum, pgTable, text } from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
 import { form } from "../forms/form";
 
-export const inputTypeEnum = pgEnum("inputTypeEnum", ["text"]);
+export const INPUT_TYPES = ["text"] as const;
+
+export const inputTypeEnum = pgEnum("inputTypeEnum", INPUT_TYPES);
 
 export const formField = pgTable("FormField", {
   ...getBaseSchema(),
