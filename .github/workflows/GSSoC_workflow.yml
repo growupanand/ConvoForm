@@ -1,4 +1,4 @@
-name: Label issues based on form input
+name: GSSoC Workflow
 
 on:
   issues:
@@ -15,11 +15,12 @@ jobs:
       - name: Add labels based on issue body
         uses: actions/github-script@v4
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const issueBody = context.payload.issue.body;
             const issueLabels = [];
 
-            if (issueBody.includes("I'm a GSSOC'24 contributor")) {
+            if (issueBody.includes("[X] I'm a GSSOC'24 contributor")) {
               issueLabels.push("gssoc", "level1");
             }
 
