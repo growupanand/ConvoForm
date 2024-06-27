@@ -1,0 +1,72 @@
+name: Infrastructure Work 🏗️
+description: File an issue related to infrastructure work
+title: "🏗️ [Infrastructure]: "
+labels: 'enhancement'
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary of the issue
+      description: A brief summary of the infrastructure issue or task.
+      placeholder: Provide a short summary.
+    validations:
+      required: true
+  - type: textarea
+    id: detailed-description
+    attributes:
+      label: Detailed Description
+      description: A detailed description of the infrastructure issue or task.
+      placeholder: Provide a detailed description including steps, configurations, and other relevant information.
+    validations:
+      required: true
+  - type: dropdown
+    id: infrastructure-type
+    attributes:
+      label: Type of Infrastructure Work
+      multiple: true
+      options:
+        - Server Maintenance
+        - Network Configuration
+        - Database Migration
+        - Security Update
+        - Other
+    validations:
+      required: true
+  - type: checkboxes
+    id: environment
+    attributes:
+      label: Affected Environment(s)
+      options:
+        - label: Development
+        - label: Staging
+        - label: Production
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Describe the impact of this issue or task on the system or users.
+      placeholder: Explain the potential or actual impact.
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce / Steps to Implement
+      description: List the steps to reproduce the issue or steps to implement the task.
+      placeholder: Provide step-by-step details.
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Any additional information, notes, or comments.
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Record
+      options:
+        - label: "I have read the Contributing Guidelines"
+          required: true
+        - label: "I'm a GSSOC'24 contributor"
+        - label: "I want to work on this issue"
