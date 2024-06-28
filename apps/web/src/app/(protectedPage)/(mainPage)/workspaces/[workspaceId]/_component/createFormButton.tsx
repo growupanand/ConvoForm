@@ -33,7 +33,10 @@ const newFormFields: z.infer<typeof newFormSchema>["formFields"] = [
   {
     fieldName: "Name",
     fieldDescription: "Description of the field",
-    inputType: "text",
+    fieldConfiguration: {
+      inputType: "text",
+      inputConfiguration: {},
+    },
   },
 ];
 
