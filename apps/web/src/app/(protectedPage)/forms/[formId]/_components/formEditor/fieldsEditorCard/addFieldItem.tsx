@@ -81,6 +81,10 @@ export function AddFieldItem({ onFieldAdded, formId }: Readonly<Props>) {
     createFormFieldMutation.mutate({
       formId,
       ...formData,
+      fieldConfiguration: {
+        inputType: "text",
+        inputConfiguration: {},
+      },
     });
   };
 

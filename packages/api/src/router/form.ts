@@ -48,7 +48,10 @@ export const formRouter = createTRPCRouter({
         fieldName: "",
         formId: newForm.id,
         fieldDescription: "",
-        inputType: "text",
+        fieldConfiguration: {
+          inputType: "text",
+          inputConfiguration: {},
+        },
       };
 
       const formFields = input.formFields.map((field) => ({
