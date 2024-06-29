@@ -1,5 +1,6 @@
 "use client";
 
+import { ExtraStreamData } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   Form,
@@ -23,6 +24,7 @@ type Props = {
   // handleGoToPrevQuestion: () => string;
   // hidePrevQuestionButton: boolean;
   submitAnswer: (answer: string) => Promise<void>;
+  currentField: ExtraStreamData["currentField"];
 };
 
 const formSchema = z.object({
@@ -35,6 +37,7 @@ export const FormFieldsViewer = ({
   // handleGoToPrevQuestion,
   // hidePrevQuestionButton,
   submitAnswer,
+  currentField,
 }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,6 +54,20 @@ export const FormFieldsViewer = ({
       form.setFocus("answer");
     }
   }
+
+  const getTextInputPlaceholder = (
+    currentField: ExtraStreamData["currentField"],
+  ) => {
+    if (
+      currentField &&
+      currentField.fieldConfiguration.inputType === "text" &&
+      currentField.fieldConfiguration.inputConfiguration.placeholder
+    ) {
+      return currentField.fieldConfiguration.inputConfiguration.placeholder;
+    }
+
+    return "Type answer here...";
+  };
 
   // function goToPrevQuestion() {
   //   const prevAnswer = handleGoToPrevQuestion();
@@ -96,7 +113,7 @@ export const FormFieldsViewer = ({
                         autoFocus
                         rows={1}
                         className="w-full rounded-none border-0 border-b bg-transparent ps-0	text-xl focus-visible:ring-0 focus-visible:ring-transparent  focus-visible:ring-offset-0 lg:text-2xl"
-                        placeholder="Type answer here..."
+                        placeholder={getTextInputPlaceholder(currentField)}
                         disabled={isFormBusy}
                         onKeyDown={(event) => {
                           if (event.key === "Enter" && !event.shiftKey) {

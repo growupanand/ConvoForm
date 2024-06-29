@@ -4,8 +4,12 @@ import { z } from "zod";
 import { inputTypeEnum } from "./constants";
 import { formField } from "./formField";
 
-const textInputConfigSchema = z.object({
-  placeholder: z.string().min(1).optional(),
+export const inputTypeSchema = z.enum(inputTypeEnum.enumValues);
+
+export type InputTypeSchema = z.infer<typeof inputTypeSchema>;
+
+export const textInputConfigSchema = z.object({
+  placeholder: z.string().optional(),
   maxLength: z.number().optional(),
 });
 
@@ -14,12 +18,12 @@ const choiceOptionSchema = z.object({
   value: z.string().min(1),
 });
 
-const multipleChoiceInputConfigSchema = z.object({
+export const multipleChoiceInputConfigSchema = z.object({
   options: choiceOptionSchema.array().min(2),
   allowMultiple: z.boolean(),
 });
 
-const fieldConfigurationSchema = z.union([
+export const fieldConfigurationSchema = z.union([
   z.object({
     inputType: z.literal(z.enum(inputTypeEnum.enumValues).Values.text),
     inputConfiguration: textInputConfigSchema,
