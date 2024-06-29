@@ -10,25 +10,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Add labels based on issue body
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issueBody = context.payload.issue.body;
-            const issueLabels = [];
+            try {
+              const issueBody = context.payload.issue.body;
+              const issueLabels = [];
 
-            if (issueBody.includes("[X] I'm a GSSOC'24 contributor")) {
-              issueLabels.push("gssoc", "level1");
-            }
+              if (issueBody && issueBody.includes("[X] I'm a GSSOC'24 contributor")) {
+                issueLabels.push("gssoc", "level1");
+              }
 
-            if (issueLabels.length > 0) {
-              await github.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.issue.number,
-                labels: issueLabels
-              });
+              if (issueLabels.length > 0) {
+                await github.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.issue.number,
+                  labels: issueLabels
+                });
+              }
+            } catch (error) {
+              core.setFailed(`Action failed with error: ${error}`);
             }
