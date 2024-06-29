@@ -1,11 +1,11 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-import { insertFormFieldSchema } from "../formFields";
+import { fieldConfigurationSchema, insertFormFieldSchema } from "../formFields";
 import { conversation } from "./conversation";
 
 export const collectedDataSchema = insertFormFieldSchema
-  .pick({ fieldName: true, fieldDescription: true })
+  .pick({ fieldName: true, fieldDescription: true, fieldConfiguration: true })
   .extend({
     fieldValue: z.string().min(1).nullable(),
   });

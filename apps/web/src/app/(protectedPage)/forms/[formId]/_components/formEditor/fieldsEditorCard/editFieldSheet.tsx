@@ -45,6 +45,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { api } from "@/trpc/react";
+import { InputConfigurationEditor } from "./inputConfigurationEditor";
 
 type Props = {
   formField: FormFieldSchema;
@@ -53,7 +54,7 @@ type Props = {
 };
 
 const formHookSchema = updateFormFieldSchema.omit({ id: true });
-type FormHookData = z.infer<typeof formHookSchema>;
+export type FormHookData = z.infer<typeof formHookSchema>;
 
 export function EditFieldSheet({
   formField,
@@ -92,6 +93,8 @@ export function EditFieldSheet({
     defaultValues: formDefaultValue,
     resolver: zodResolver(formHookSchema),
   });
+
+  const selectedInputType = formHook.watch("fieldConfiguration.inputType");
 
   const onSubmit = (formData: FormHookData) => {
     updateFormFieldMutation.mutate({
@@ -207,9 +210,10 @@ export function EditFieldSheet({
                             <SelectValue placeholder="Select a verified email to display" />
                           </SelectTrigger>
                         </FormControl>
+                        <FormMessage />
                         <SelectContent>
                           {
-                            // inputTypeEnum.enumValues  < -- uncomment this when multi choice input is ready
+                            // inputTypeEnum.enumValues  <-- uncomment this when multi choice input is ready
                             (["text"] as const).map((inputType) => (
                               <SelectItem key={inputType} value={inputType}>
                                 {INPUT_TYPES_MAP[inputType].name}
@@ -222,9 +226,13 @@ export function EditFieldSheet({
                           {INPUT_TYPES_MAP[field.value].description}
                         </FormDescription>
                       </Select>
-                      <FormMessage />
                     </FormItem>
                   )}
+                />
+
+                <InputConfigurationEditor
+                  inputType={selectedInputType}
+                  formHook={formHook}
                 />
 
                 <div className="absolute bottom-0 w-full py-5">
