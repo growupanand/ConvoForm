@@ -14,13 +14,12 @@ export const textInputConfigSchema = z.object({
 });
 
 const choiceOptionSchema = z.object({
-  optionName: z.string().min(1),
   value: z.string().min(1),
 });
 
 export const multipleChoiceInputConfigSchema = z.object({
-  options: choiceOptionSchema.array().min(2),
-  allowMultiple: z.boolean(),
+  options: choiceOptionSchema.array().min(2, "Must have at least 2 options"),
+  allowMultiple: z.boolean().optional(),
 });
 
 export const fieldConfigurationSchema = z.union([

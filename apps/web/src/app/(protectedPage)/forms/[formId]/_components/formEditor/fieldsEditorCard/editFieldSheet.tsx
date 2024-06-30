@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import {
   FormField as FormFieldSchema,
   INPUT_TYPES_MAP,
+  inputTypeEnum,
   updateFormFieldSchema,
 } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
@@ -212,17 +213,14 @@ export function EditFieldSheet({
                         </FormControl>
                         <FormMessage />
                         <SelectContent>
-                          {
-                            // inputTypeEnum.enumValues  <-- uncomment this when multi choice input is ready
-                            (["text"] as const).map((inputType) => (
-                              <SelectItem key={inputType} value={inputType}>
-                                {INPUT_TYPES_MAP[inputType].name}
-                              </SelectItem>
-                            ))
-                          }
+                          {inputTypeEnum.enumValues.map((inputType) => (
+                            <SelectItem key={inputType} value={inputType}>
+                              {INPUT_TYPES_MAP[inputType].name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
+                        <FormMessage />
                         <FormDescription className="flex items-center gap-2">
-                          <Info className="size-4 " />{" "}
                           {INPUT_TYPES_MAP[field.value].description}
                         </FormDescription>
                       </Select>
