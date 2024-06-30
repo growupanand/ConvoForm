@@ -18,7 +18,7 @@ export function InputConfigurationEditor({
     case "text":
       return <TextInputConfigurationEditor formHook={formHook} />;
     case "multipleChoice":
-      return <MultiChoiceInputConfiguration />;
+      return <MultiChoiceInputConfiguration formHook={formHook} />;
     default:
       return null;
   }
