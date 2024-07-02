@@ -1,0 +1,27 @@
+{
+  "name": "@convoform/email",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": "./index.ts"
+  },
+  "dependencies": {
+    "resend": "^1.1.0",
+    "@react-email/components": "^0.0.15",
+    "@react-email/render": "^0.0.15",
+    "next": "^13.4.12",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@typescript-eslint/parser": "^6.18.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-unused-imports": "^3.0.0",
+    "typescript": "^5.0.0"
+  }
+}
