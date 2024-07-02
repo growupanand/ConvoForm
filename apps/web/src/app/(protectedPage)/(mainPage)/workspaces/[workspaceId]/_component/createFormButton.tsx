@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@convoform/ui/components/ui/dropdown-menu";
+import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { Loader2, PenLine, Plus, Sparkles } from "lucide-react";
 import { z } from "zod";
@@ -56,30 +57,32 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
   const router = useRouter();
   const createForm = api.form.create.useMutation({
     onSuccess: async (newForm) => {
-      toast({
-        title: "Form created",
-        duration: 1500,
-      });
       router.push(`/forms/${newForm.id}`);
     },
     onError: (error) => {
-      toast({
-        title: "Unable to create form",
-        duration: 2000,
-        variant: "destructive",
-        description: isRateLimitErrorResponse(error)
-          ? error.message
-          : undefined,
-      });
+      if (isRateLimitErrorResponse(error)) {
+        toast({
+          title: "Rate limit exceeded",
+          duration: 1500,
+          variant: "destructive",
+          description: error.message,
+        });
+      }
     },
   });
   const { isPending: isCreatingForm } = createForm;
 
   const handleCreateForm: HandleCreateForm = (formData) => {
-    createForm.mutate({
+    const createFormPromise = createForm.mutateAsync({
       ...formData,
       workspaceId: workspace.id,
       organizationId: workspace.organizationId,
+    });
+
+    sonnerToast.promise(createFormPromise, {
+      loading: "Creating form...",
+      success: "Form created successfully",
+      error: "Failed to create form",
     });
   };
 

@@ -69,4 +69,17 @@ export const formFieldRouter = createTRPCRouter({
         throw new Error("Failed to update form field");
       }
     }),
+  deleteFormField: protectedProcedure
+    .input(updateFormFieldSchema.pick({ id: true }))
+    .mutation(async ({ input, ctx }) => {
+      const { id } = input;
+      const [deletedFormField] = await ctx.db
+        .delete(formField)
+        .where(eq(formField.id, id))
+        .returning();
+      if (!deletedFormField) {
+        throw new Error("Failed to delete form field");
+      }
+      return deletedFormField;
+    }),
 });

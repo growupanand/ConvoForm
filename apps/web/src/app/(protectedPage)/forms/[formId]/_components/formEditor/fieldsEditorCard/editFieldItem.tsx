@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@convoform/ui/components/ui/form";
 import { Input } from "@convoform/ui/components/ui/input";
-import { toast } from "@convoform/ui/components/ui/use-toast";
+import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Settings } from "lucide-react";
@@ -41,17 +41,6 @@ export function EditFieldItem({ formField, onEdit }: Readonly<Props>) {
       queryClient.invalidateQueries({
         queryKey: [["form"]],
       });
-      toast({
-        title: "Changes saved successfully",
-        duration: 1500,
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Failed to save changes",
-        description: error.message,
-        variant: "destructive",
-      });
     },
   });
 
@@ -69,9 +58,15 @@ export function EditFieldItem({ formField, onEdit }: Readonly<Props>) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-    patchFormFieldMutation.mutate({
+    const patchFormPromise = patchFormFieldMutation.mutateAsync({
       id: formField.id,
       ...formData,
+    });
+
+    sonnerToast.promise(patchFormPromise, {
+      loading: "Saving changes...",
+      success: "Changes saved successfully",
+      error: "Failed to save changes",
     });
   };
 
