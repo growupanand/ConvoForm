@@ -18,6 +18,7 @@
     "@clerk/nextjs": "^4.29.5",
     "@convoform/api": "workspace:*",
     "@convoform/db": "workspace:*",
+    "@convoform/email": "workspace:*",
     "@convoform/react": "workspace:*",
     "@convoform/ui": "workspace:*",
     "@convoform/websocket-client": "workspace:*",
