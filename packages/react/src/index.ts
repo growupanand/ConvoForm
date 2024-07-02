@@ -1,3 +1,3 @@
-import { useConvoForm } from "./hooks/useConvoForm";
+export { useConvoForm } from "./hooks/useConvoForm";
 
-export { useConvoForm };
+export * from "./types";
