@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   FormControl,
@@ -23,7 +24,14 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
     name: "fieldConfiguration.inputConfiguration.options",
   });
 
-  const isLastChoice = fields.length === 1;
+  const isLastTwoChoice = fields.length <= 2;
+
+  useEffect(() => {
+    if (fields && fields.length === 0) {
+      append({ value: "" });
+      append({ value: "" });
+    }
+  }, [fields]);
 
   return (
     <div className="grid gap-2">
@@ -48,7 +56,7 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
                         size="icon"
                         variant="outline"
                         onClick={() => remove(index)}
-                        disabled={isLastChoice}
+                        disabled={isLastTwoChoice}
                       >
                         <X className="size-4" />
                       </Button>
@@ -58,7 +66,6 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
                 )}
               />
             ))}
-            <FormMessage />
           </FormItem>
         )}
       />

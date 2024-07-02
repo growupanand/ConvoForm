@@ -13,6 +13,8 @@ export const textInputConfigSchema = z.object({
   maxLength: z.number().optional(),
 });
 
+export type TextInputConfigSchema = z.infer<typeof textInputConfigSchema>;
+
 const choiceOptionSchema = z.object({
   value: z.string().min(1),
 });
@@ -21,6 +23,10 @@ export const multipleChoiceInputConfigSchema = z.object({
   options: choiceOptionSchema.array().min(2, "Must have at least 2 options"),
   allowMultiple: z.boolean().optional(),
 });
+
+export type MultipleChoiceInputConfigSchema = z.infer<
+  typeof multipleChoiceInputConfigSchema
+>;
 
 export const fieldConfigurationSchema = z.union([
   z.object({

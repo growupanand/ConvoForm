@@ -5,6 +5,7 @@ import { ExtraStreamData, Transcript } from "@convoform/db/src/schema";
 import { socket } from "@convoform/websocket-client";
 
 import { API_DOMAIN } from "../constants";
+import { SubmitAnswer } from "../types";
 import { readResponseStream } from "../utils/streamUtils";
 
 type Props = {
@@ -53,7 +54,7 @@ export function useConvoForm({
     setState(initialState);
   }, [conversationId]);
 
-  async function submitAnswer(answer: string) {
+  const submitAnswer: SubmitAnswer = async (answer) => {
     setState((cs) => ({ ...cs, isBusy: true, currentQuestion: "" }));
 
     const answerMessage: Transcript = {
@@ -108,7 +109,7 @@ export function useConvoForm({
       isBusy: false,
       transcript: cs.transcript.concat([answerMessage, questionMessage]),
     }));
-  }
+  };
 
   useEffect(() => {
     // If new conversation started
