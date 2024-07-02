@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimitThrowError } from "@convoform/api";
 import {
   aiGeneratedFormSchema,
+  FormField,
   generateFormSchema,
 } from "@convoform/db/src/schema";
 import { z } from "zod";
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
     const generateFormService = new GenerateFormService({ formOverview });
     const aiResponseJSON = await generateFormService.getGeneratedFormData();
     const {
-      formFields,
+      formFields: generatedFormFields,
       welcomeScreenData,
       formName,
       isInvalidFormOverview,
@@ -51,6 +52,18 @@ export async function POST(req: NextRequest) {
     if (isInvalidFormOverview == true) {
       throw new Error("Invalid form description.");
     }
+
+    const formFields = generatedFormFields.map(
+      (formField: Record<string, any>) => {
+        return {
+          ...formField,
+          fieldConfiguration: {
+            inputType: "text",
+            inputConfiguration: {},
+          },
+        } as FormField;
+      },
+    );
 
     const aiGeneratedForm: z.infer<typeof aiGeneratedFormSchema> = {
       name: formName,
