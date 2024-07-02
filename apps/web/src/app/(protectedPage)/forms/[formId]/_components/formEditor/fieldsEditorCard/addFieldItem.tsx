@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from "@convoform/ui/components/ui/form";
 import { Input } from "@convoform/ui/components/ui/input";
+import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { Textarea } from "@convoform/ui/components/ui/textarea";
 import {
   Tooltip,
@@ -57,34 +58,36 @@ export function AddFieldItem({ onFieldAdded, formId }: Readonly<Props>) {
         queryKey: [["form"]],
       });
       formHook.reset();
-      toast({
-        title: "Changes saved successfully",
-        duration: 1500,
-      });
       onFieldAdded();
     },
     onError: (error) => {
-      toast({
-        title: "Unable to save changes",
-        duration: 1500,
-        variant: "destructive",
-        description: isRateLimitErrorResponse(error)
-          ? error.message
-          : undefined,
-      });
+      if (isRateLimitErrorResponse(error)) {
+        toast({
+          title: "Rate limit exceeded",
+          duration: 1500,
+          variant: "destructive",
+          description: error.message,
+        });
+      }
     },
   });
 
   const isCreatingForm = createFormFieldMutation.isPending;
 
   const onSubmit = (formData: FormHookData) => {
-    createFormFieldMutation.mutate({
+    const createFormFieldPromise = createFormFieldMutation.mutateAsync({
       formId,
       ...formData,
       fieldConfiguration: {
         inputType: "text",
         inputConfiguration: {},
       },
+    });
+
+    sonnerToast.promise(createFormFieldPromise, {
+      loading: "Adding field...",
+      success: "Field added successfully",
+      error: "Failed to add field",
     });
   };
 

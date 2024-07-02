@@ -31,6 +31,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@convoform/ui/components/ui/sheet";
+import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { Textarea } from "@convoform/ui/components/ui/textarea";
 import {
   Tooltip,
@@ -38,13 +39,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@convoform/ui/components/ui/tooltip";
-import { toast } from "@convoform/ui/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Info } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { ConfirmAction } from "@/components/common/confirmAction";
 import { api } from "@/trpc/react";
 import { InputConfigurationEditor } from "./inputConfigurationEditor";
 
@@ -73,22 +74,34 @@ export function EditFieldSheet({
       queryClient.invalidateQueries({
         queryKey: [["form"]],
       });
-      toast({
-        title: "Changes saved successfully",
-        duration: 1500,
-      });
       onOpenChange(false);
-    },
-    onError: (error) => {
-      toast({
-        title: "Failed to save changes",
-        description: error.message,
-        variant: "destructive",
-      });
     },
   });
 
   const isSavingFormField = updateFormFieldMutation.isPending;
+
+  const deleteFormFieldMutation = api.formField.deleteFormField.useMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [["form"]],
+      });
+      onOpenChange(false);
+    },
+  });
+
+  const isDeletingFormField = deleteFormFieldMutation.isPending;
+  const isFormBusy = isDeletingFormField || isSavingFormField;
+
+  const handleDeleteField = () => {
+    const deletePromise = deleteFormFieldMutation.mutateAsync({
+      id: formField.id,
+    });
+    sonnerToast.promise(deletePromise, {
+      loading: "Deleting field...",
+      success: "Field deleted successfully",
+      error: "Failed to delete field",
+    });
+  };
 
   const formHook = useForm({
     defaultValues: formDefaultValue,
@@ -98,9 +111,15 @@ export function EditFieldSheet({
   const selectedInputType = formHook.watch("fieldConfiguration.inputType");
 
   const onSubmit = (formData: FormHookData) => {
-    updateFormFieldMutation.mutate({
+    const updatePromise = updateFormFieldMutation.mutateAsync({
       id: formField.id,
       ...formData,
+    });
+
+    sonnerToast.promise(updatePromise, {
+      loading: "Saving changes...",
+      success: "Changes saved successfully",
+      error: "Failed to save changes",
     });
   };
 
@@ -109,10 +128,7 @@ export function EditFieldSheet({
   }, [formField]);
 
   return (
-    <Sheet
-      open={open}
-      onOpenChange={!isSavingFormField ? onOpenChange : undefined}
-    >
+    <Sheet open={open} onOpenChange={!isFormBusy ? onOpenChange : undefined}>
       <SheetContent side="left">
         <SheetHeader>
           <SheetTitle>Edit form field</SheetTitle>
@@ -148,7 +164,7 @@ export function EditFieldSheet({
                             placeholder={`Information you would like to collect.\nE.g. Your email address, Your work experience in years etc...`}
                             {...field}
                             rows={4}
-                            disabled={isSavingFormField}
+                            disabled={isFormBusy}
                           />
                         </div>
                       </FormControl>
@@ -183,7 +199,7 @@ export function EditFieldSheet({
                           {...field}
                           placeholder="Human readable name for the field"
                           readOnly
-                          disabled={isSavingFormField}
+                          disabled={isFormBusy}
                         />
                       </FormControl>
                       <FormMessage />
@@ -204,7 +220,7 @@ export function EditFieldSheet({
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
-                        disabled={isSavingFormField}
+                        disabled={isFormBusy}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -234,13 +250,30 @@ export function EditFieldSheet({
                 />
 
                 <div className="absolute bottom-0 w-full py-5">
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={isSavingFormField}
-                  >
-                    Save
-                  </Button>
+                  <div className="grid gap-2">
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={isFormBusy}
+                    >
+                      Save
+                    </Button>
+                    <ConfirmAction
+                      onConfirm={handleDeleteField}
+                      title="Are you sure you want to delete this field?"
+                      description="This action cannot be undone."
+                      confirmText="Delete field"
+                    >
+                      <Button
+                        type="button"
+                        className=" w-full "
+                        disabled={isFormBusy}
+                        variant="ghost"
+                      >
+                        Delete field
+                      </Button>
+                    </ConfirmAction>
+                  </div>
                 </div>
               </div>
             </form>

@@ -22,6 +22,7 @@ import {
 } from "@convoform/ui/components/ui/form";
 import { Input } from "@convoform/ui/components/ui/input";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import {
   Tooltip,
   TooltipContent,
@@ -51,20 +52,16 @@ export function FormEditorCard({ form }: Readonly<Props>) {
       queryClient.invalidateQueries({
         queryKey: [["form"]],
       });
-      toast({
-        title: "Changes saved successfully",
-        duration: 1500,
-      });
     },
     onError: (error) => {
-      toast({
-        title: "Unable to save changes",
-        duration: 1500,
-        variant: "destructive",
-        description: isRateLimitErrorResponse(error)
-          ? error.message
-          : undefined,
-      });
+      if (isRateLimitErrorResponse(error)) {
+        toast({
+          title: "Rate limit exceeded",
+          duration: 1500,
+          variant: "destructive",
+          description: error.message,
+        });
+      }
     },
   });
 
@@ -82,8 +79,14 @@ export function FormEditorCard({ form }: Readonly<Props>) {
     formHook.formState.errors.welcomeScreenCTALabel;
 
   const onSubmit = (formData: z.infer<typeof updateFormSchema>) => {
-    updateForm.mutate({
+    const updateFormPromise = updateForm.mutateAsync({
       ...formData,
+    });
+
+    sonnerToast.promise(updateFormPromise, {
+      loading: "Saving changes...",
+      success: "Changes saved successfully",
+      error: "Failed to save changes",
     });
   };
 
