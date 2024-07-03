@@ -35,6 +35,7 @@ export function FormViewer({ form, refresh }: Readonly<Props>) {
     isFormSubmissionFinished,
     endScreenMessage: generatedEndScreenMessage,
     resetForm,
+    currentField,
   } = useConvoForm({
     formId: form.id,
   });
@@ -75,10 +76,8 @@ export function FormViewer({ form, refresh }: Readonly<Props>) {
         <FormFieldsViewer
           currentQuestion={currentQuestion}
           isFormBusy={isBusy}
-          // TODO: Implement this
-          // handleGoToPrevQuestion={handleGoToPrevQuestion}
-          // hidePrevQuestionButton={hidePrevQuestionButton}
           submitAnswer={submitAnswer}
+          currentField={currentField}
         />
       )}
       {currentStage === "endScreen" && (

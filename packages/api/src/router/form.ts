@@ -2,6 +2,7 @@ import { and, count, eq } from "@convoform/db";
 import {
   form,
   formField,
+  insertFormFieldSchema,
   newFormSchema,
   patchFormSchema,
   updateFormSchema,
@@ -43,9 +44,14 @@ export const formRouter = createTRPCRouter({
         throw new Error("Failed to create form");
       }
 
-      const emptyFormField = {
+      const emptyFormField: z.infer<typeof insertFormFieldSchema> = {
         fieldName: "",
         formId: newForm.id,
+        fieldDescription: "",
+        fieldConfiguration: {
+          inputType: "text",
+          inputConfiguration: {},
+        },
       };
 
       const formFields = input.formFields.map((field) => ({
@@ -115,13 +121,33 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.db.query.form.findFirst({
+      const formWithWorkspaceFields = await ctx.db.query.form.findFirst({
         where: eq(form.id, input.id),
         with: {
           workspace: true,
           formFields: true,
         },
+        orderBy: (form, { asc }) => [asc(form.createdAt)],
       });
+
+      if (!formWithWorkspaceFields) {
+        return undefined;
+      }
+
+      const { workspace, formFields, ...restForm } = formWithWorkspaceFields;
+
+      // Sort form fields by createdAt
+      const sortedFormFields = formFields.sort((a, b) => {
+        return (
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+      });
+
+      return {
+        ...restForm,
+        workspace,
+        formFields: sortedFormFields,
+      };
     }),
 
   delete: protectedProcedure
@@ -149,12 +175,13 @@ export const formRouter = createTRPCRouter({
     }),
 
   updateForm: protectedProcedure
-    .input(updateFormSchema)
+    .input(updateFormSchema.omit({ formFields: true }))
     .mutation(async ({ input, ctx }) => {
       await checkRateLimitThrowTRPCError({
         identifier: ctx.userId,
         rateLimitType: "core:edit",
       });
+
       const [updatedForm] = await ctx.db
         .update(form)
         .set({
@@ -168,19 +195,7 @@ export const formRouter = createTRPCRouter({
         .where(eq(form.id, input.id))
         .returning();
 
-      await ctx.db.delete(formField).where(eq(formField.formId, input.id));
-      const updatedFormFields = await ctx.db.insert(formField).values([
-        ...input.formFields.map((field) => ({
-          fieldName: field.fieldName,
-          formId: input.id,
-          updatedAt: new Date(),
-        })),
-      ]);
-
-      return {
-        ...updatedForm,
-        formFields: updatedFormFields,
-      };
+      return updatedForm;
     }),
 
   deleteForm: protectedProcedure

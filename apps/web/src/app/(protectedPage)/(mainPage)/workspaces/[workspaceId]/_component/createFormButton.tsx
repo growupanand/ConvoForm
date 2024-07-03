@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@convoform/ui/components/ui/dropdown-menu";
+import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { Loader2, PenLine, Plus, Sparkles } from "lucide-react";
 import { z } from "zod";
@@ -29,18 +30,25 @@ export type HandleCreateForm = (
   formData: z.infer<typeof newFormSchema>,
 ) => void;
 
-const newFormData = newFormSchema.parse({
+const newFormFields: z.infer<typeof newFormSchema>["formFields"] = [
+  {
+    fieldName: "Name",
+    fieldDescription: "Description of the field",
+    fieldConfiguration: {
+      inputType: "text",
+      inputConfiguration: {},
+    },
+  },
+];
+
+const newFormData: z.infer<typeof newFormSchema> = newFormSchema.parse({
   name: "New form",
   welcomeScreenTitle: "Welcome to your new form!",
   welcomeScreenMessage: "Customize your form.",
   welcomeScreenCTALabel: "Start",
   overview:
     "This is brief description about the form, which will be used while generating questions.",
-  formFields: [
-    {
-      fieldName: "Name",
-    },
-  ],
+  formFields: newFormFields,
 });
 
 export default function CreateFormButton({ workspace }: Readonly<Props>) {
@@ -49,30 +57,32 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
   const router = useRouter();
   const createForm = api.form.create.useMutation({
     onSuccess: async (newForm) => {
-      toast({
-        title: "Form created",
-        duration: 1500,
-      });
       router.push(`/forms/${newForm.id}`);
     },
     onError: (error) => {
-      toast({
-        title: "Unable to create form",
-        duration: 2000,
-        variant: "destructive",
-        description: isRateLimitErrorResponse(error)
-          ? error.message
-          : undefined,
-      });
+      if (isRateLimitErrorResponse(error)) {
+        toast({
+          title: "Rate limit exceeded",
+          duration: 1500,
+          variant: "destructive",
+          description: error.message,
+        });
+      }
     },
   });
   const { isPending: isCreatingForm } = createForm;
 
   const handleCreateForm: HandleCreateForm = (formData) => {
-    createForm.mutate({
+    const createFormPromise = createForm.mutateAsync({
       ...formData,
       workspaceId: workspace.id,
       organizationId: workspace.organizationId,
+    });
+
+    sonnerToast.promise(createFormPromise, {
+      loading: "Creating form...",
+      success: "Form created successfully",
+      error: "Failed to create form",
     });
   };
 

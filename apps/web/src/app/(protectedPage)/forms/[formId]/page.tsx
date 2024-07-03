@@ -10,6 +10,7 @@ import {
   DrawerTrigger,
 } from "@convoform/ui/components/ui/drawer";
 import { Label } from "@convoform/ui/components/ui/label";
+import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { Switch } from "@convoform/ui/components/ui/switch";
 import {
   showErrorResponseToast,
@@ -45,17 +46,7 @@ export default function FormPage({ params: { formId } }: Props) {
     },
   );
 
-  const updateFormIsPublished = api.form.updateIsPublished.useMutation({
-    onSuccess: () => {
-      toast({
-        title: "Changes saved successfully",
-        duration: 1500,
-      });
-    },
-    onError: (error) => {
-      showErrorResponseToast(error, "Unable to save changes");
-    },
-  });
+  const updateFormIsPublished = api.form.updateIsPublished.useMutation();
 
   const { isPending: isPendingUpdateFormIsPublished } = updateFormIsPublished;
 
@@ -68,9 +59,15 @@ export default function FormPage({ params: { formId } }: Props) {
   }
 
   async function toggleIsFormPublished(checked: boolean): Promise<void> {
-    await updateFormIsPublished.mutateAsync({
+    const updateFormPromise = updateFormIsPublished.mutateAsync({
       formId,
       isPublished: checked,
+    });
+
+    sonnerToast.promise(updateFormPromise, {
+      loading: "Saving changes...",
+      success: "Changes saved successfully",
+      error: "Unable to save changes",
     });
   }
 
@@ -120,7 +117,6 @@ export default function FormPage({ params: { formId } }: Props) {
           </Card>
           <div className="mt-6 flex items-center justify-between px-2 max-lg:mb-6">
             <FormCustomizeSheet form={data} organization={organization} />
-
             <div className=" flex items-start justify-start gap-3">
               <Label
                 htmlFor="isFormPublished"

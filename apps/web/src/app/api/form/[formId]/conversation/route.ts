@@ -1,17 +1,18 @@
 import { NextRequest } from "next/server";
 import { checkRateLimitThrowError } from "@convoform/api";
 import {
-  Conversation,
-  FieldHavingData,
+  CollectedFilledData,
+  extraStreamDataSchema,
+  Transcript,
   transcriptSchema,
 } from "@convoform/db/src/schema";
 import { z } from "zod";
 
-import { formSubmissionLimit } from "@/lib/config/pricing";
 import { sendErrorMessage, sendErrorResponse } from "@/lib/errorHandlers";
 import getIP from "@/lib/getIP";
 import { ConversationService } from "@/lib/services/conversation";
 import { api } from "@/trpc/server";
+import { checkNThrowErrorFormSubmissionLimit, getConversation } from "./_utils";
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -19,11 +20,12 @@ const routeContextSchema = z.object({
   }),
 });
 
-const requestSchema = z.object({
-  conversationId: z.string().optional(),
-  transcript: transcriptSchema.array(),
-  currentField: z.string().optional(),
-});
+const requestSchema = extraStreamDataSchema
+  .pick({ currentField: true })
+  .extend({
+    conversationId: z.string().optional(),
+    transcript: transcriptSchema.array(),
+  });
 
 export async function POST(
   req: NextRequest,
@@ -51,63 +53,19 @@ export async function POST(
       return sendErrorMessage("Form not found", 404);
     }
 
-    if (form.id !== "demo") {
-      // get all conversations count for current organization
-      const totalSubmissionsCount =
-        await api.conversation.getResponseCountByOrganization({
-          organizationId: form.organizationId,
-        });
+    await checkNThrowErrorFormSubmissionLimit(form);
 
-      if (!totalSubmissionsCount) {
-        console.error("Unable to get total submissions count", {
-          organizationId: form.organizationId,
-        });
-      }
+    const conversation = await getConversation(form, conversationId);
 
-      if (
-        totalSubmissionsCount &&
-        totalSubmissionsCount > formSubmissionLimit
-      ) {
-        throw new Error("This form have reached total submissions limit", {
-          cause: {
-            statusCode: 403,
-          },
-        });
-      }
+    if (conversation === undefined) {
+      return sendErrorMessage("Conversation not found", 404);
     }
 
-    const conversationService = new ConversationService();
-    let conversation: Conversation;
-
-    // Get the conversation by id or create a new one
-    if (!conversationId) {
-      const fieldsWithEmptyData = form.formFields.map((field) => ({
-        fieldName: field.fieldName,
-        fieldValue: null,
-      }));
-
-      conversation = await api.conversation.create({
-        formId,
-        name: "New Conversation",
-        organizationId: form.organizationId,
-        transcript: [],
-        collectedData: fieldsWithEmptyData,
-        formOverview: form.overview,
-      });
-    } else {
-      const existConversation = await api.conversation.getOne({
-        id: conversationId,
-      });
-      if (existConversation === undefined) {
-        return sendErrorMessage("Conversation not found", 404);
-      }
-      conversation = existConversation;
-    }
-
-    // Check if conversation already finished
     if (conversation.isFinished) {
       return sendErrorMessage("Conversation already finished", 400);
     }
+
+    const conversationService = new ConversationService();
 
     // Try to extract the answer from the current conversation messages, and Update conversation with the extracted answer
     if (currentField !== undefined) {
@@ -125,7 +83,7 @@ export async function POST(
       // If user provided valid answer for current field
       if (isAnswerExtracted) {
         const updatedFieldsData = conversation.collectedData.map((field) => {
-          if (field.fieldName === currentField) {
+          if (field.fieldName === currentField.fieldName) {
             return {
               ...field,
               fieldValue: extractedAnswer,
@@ -179,24 +137,25 @@ export async function POST(
       }
     }
 
-    const requiredFieldName = conversationService.getNextEmptyField(
+    const requiredField = conversationService.getNextEmptyField(
       conversation.collectedData,
     );
 
-    const isFormSubmissionFinished = requiredFieldName === undefined;
+    const isFormSubmissionFinished = requiredField === undefined;
 
-    const extraCustomStreamData = {
+    const { data } = extraStreamDataSchema.safeParse({
       ...conversation,
-      currentField: requiredFieldName,
+      currentField: requiredField,
       isFormSubmissionFinished,
-    };
+    });
+    const extraCustomStreamData = data ?? {};
 
     // Save updated conversation transcript in DB
     const onStreamFinish = (generatedQuestionString: string) => {
-      const generatedQuestionMessage = transcriptSchema.parse({
+      const generatedQuestionMessage: Transcript = transcriptSchema.parse({
         role: "assistant",
         content: generatedQuestionString,
-        fieldName: requiredFieldName,
+        fieldName: requiredField?.fieldName,
       });
 
       api.conversation.updateTranscript({
@@ -210,7 +169,7 @@ export async function POST(
       const { conversationName } =
         await conversationService.generateConversationName({
           formOverview: conversation.formOverview,
-          fieldsWithData: conversation.collectedData as FieldHavingData[],
+          fieldsWithData: conversation.collectedData as CollectedFilledData[],
         });
 
       await api.conversation.updateFinishedStatus({
@@ -221,7 +180,7 @@ export async function POST(
 
       return conversationService.generateEndMessage({
         formOverview: conversation.formOverview,
-        fieldsWithData: conversation.collectedData as FieldHavingData[],
+        fieldsWithData: conversation.collectedData as CollectedFilledData[],
         extraCustomStreamData,
         onStreamFinish,
       });
@@ -230,7 +189,7 @@ export async function POST(
     // Generate the next question
     return conversationService.generateQuestion({
       formOverview: conversation.formOverview,
-      requiredFieldName,
+      currentField: requiredField,
       collectedData: conversation.collectedData,
       extraCustomStreamData,
       transcript,

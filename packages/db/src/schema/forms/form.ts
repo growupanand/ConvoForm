@@ -1,19 +1,12 @@
-import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
 import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod";
 
+import { getBaseSchema } from "../base";
 import { formField } from "../formFields";
 import { workspace } from "../workspaces/workspace";
 
 export const form = pgTable("Form", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => createId())
-    .unique(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  ...getBaseSchema(),
   name: text("name").notNull(),
   overview: text("overview").notNull(),
   welcomeScreenTitle: text("welcomeScreenTitle").notNull(),

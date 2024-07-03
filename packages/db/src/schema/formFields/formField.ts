@@ -1,19 +1,21 @@
-import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod";
+import { jsonb, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
 
+import { getBaseSchema } from "../base";
 import { form } from "../forms/form";
+import { FieldConfiguration } from "./validation";
 
 export const formField = pgTable("FormField", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => createId())
-    .unique(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  ...getBaseSchema(),
+  // Human readable name of the field, also will be display in table column
   fieldName: text("fieldName").notNull(),
+  // Used while generating question for the field
+  fieldDescription: text("fieldDescription").notNull(),
+  // Used to show answer Input
+  fieldConfiguration: jsonb("fieldConfiguration")
+    .$type<FieldConfiguration>()
+    .notNull(),
+
   formId: text("formId")
     .notNull()
     .references(() => form.id, { onDelete: "cascade", onUpdate: "cascade" }),

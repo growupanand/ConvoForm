@@ -8,9 +8,4 @@ export type JSONValue =
     }
   | Array<JSONValue>;
 
-export type ExtraStreamData = {
-  id?: string;
-  collectedData?: Record<string, any>;
-  currentField?: string;
-  isFormSubmissionFinished?: boolean;
-};
+export type SubmitAnswer = (answer: string) => Promise<void>;
