@@ -16,6 +16,8 @@ import { NavigationLinks } from "./mainNavigation/mainNavigation";
 
 type Props = {
   orgId: string;
+  workspacesLinks: any;
+  workspace: any;
 };
 
 export function NavigationCardContent({ orgId }: Readonly<Props>) {
@@ -140,7 +142,7 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
             <UserActions />
           </div>
         </div>
-        <NavigationLinks navigationLinks={navigationLinks} />
+        <NavigationLinks navigationLinks={navigationLinks} />{" "}
       </div>
       <div className="max-lg:hidden">
         <div className="flex items-center justify-between gap-2 lg:justify-evenly">

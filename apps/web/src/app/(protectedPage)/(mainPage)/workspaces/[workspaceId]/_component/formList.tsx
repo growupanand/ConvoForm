@@ -48,28 +48,38 @@ export default function FormList({ workspace }: Readonly<Props>) {
   }
 
   return (
-    <div className="h-full" ref={scope}>
-      {emptyForms && (
-        <EmptyCard
-          title="No Forms Yet"
-          description="Get started by creating your first form. Click the button below to get started."
-          illustration={IllustrationImageEnum.UnboxingDoodle}
-          actionButton={<CreateFormButton workspace={workspace} />}
-        />
-      )}
-      {!emptyForms && (
-        <ListCard>
-          {forms.map((form) => (
-            <motion.div
-              className="slide-down-list-item"
-              initial={{ opacity: 0, translate: "0 -0.5rem" }}
-              key={form.id}
-            >
-              <FormListItem form={form} />
-            </motion.div>
-          ))}
-        </ListCard>
-      )}
-    </div>
+    <motion.div
+      className="slide-left-list"
+      initial={{ opacity: 0 }}
+      animate={{
+        opacity: 1,
+        transition: { duration: 0.5 },
+        translate: "0 -1rem",
+      }}
+    >
+      <div className="h-full" ref={scope}>
+        {emptyForms && (
+          <EmptyCard
+            title="No Forms Yet"
+            description="Get started by creating your first form. Click the button below to get started."
+            illustration={IllustrationImageEnum.UnboxingDoodle}
+            actionButton={<CreateFormButton workspace={workspace} />}
+          />
+        )}
+        {!emptyForms && (
+          <ListCard>
+            {forms.map((form) => (
+              <motion.div
+                className="slide-down-list-item"
+                initial={{ opacity: 0, translate: "0 -0.5rem" }}
+                key={form.id}
+              >
+                <FormListItem form={form} />
+              </motion.div>
+            ))}
+          </ListCard>
+        )}
+      </div>
+    </motion.div>
   );
 }

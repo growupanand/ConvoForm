@@ -15,6 +15,7 @@ import {
   showErrorResponseToast,
   toast,
 } from "@convoform/ui/components/ui/use-toast";
+import { motion } from "framer-motion";
 import { Eye } from "lucide-react";
 
 import {
@@ -74,65 +75,75 @@ export default function FormPage({ params: { formId } }: Props) {
   }
 
   return (
-    <div className="h-full lg:flex">
-      <div className="flex flex-col px-3 lg:max-h-[calc(100vh-100px)] lg:w-[400px] lg:min-w-[400px] lg:overflow-auto">
-        <MainNavTab formId={formId} />
+    <motion.div
+      className="slide-left-list"
+      initial={{ opacity: 0 }}
+      animate={{
+        opacity: 1,
+        transition: { duration: 0.5 },
+        translate: "0 -1rem",
+      }}
+    >
+      <div className="h-full lg:flex">
+        <div className="flex flex-col px-3 lg:max-h-[calc(100vh-100px)] lg:w-[400px] lg:min-w-[400px] lg:overflow-auto">
+          <MainNavTab formId={formId} />
 
-        <Card className="relative flex-grow overflow-auto border-0 bg-transparent shadow-none">
-          <CardContent className="p-0">
-            {isLoading ? (
-              <FormEditorFormSkeleton />
-            ) : (
-              <FormEditorCard form={data} />
-            )}
+          <Card className="relative flex-grow overflow-auto border-0 bg-transparent shadow-none">
+            <CardContent className="p-0">
+              {isLoading ? (
+                <FormEditorFormSkeleton />
+              ) : (
+                <FormEditorCard form={data} />
+              )}
 
-            <div className="py-3 lg:hidden">
-              <Drawer snapPoints={[0.95]}>
-                <DrawerTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn("w-full", montserrat.className)}
-                  >
-                    <Eye className="mr-2 h-4 w-4" />
-                    Show Preview
-                  </Button>
-                </DrawerTrigger>
-                <DrawerPortal>
-                  <DrawerContent className="h-full">
-                    <div className="h-full pt-3">
-                      <FormPreviewBrowser formId={formId} noToolbar />
-                    </div>
-                  </DrawerContent>
-                </DrawerPortal>
-              </Drawer>
+              <div className="py-3 lg:hidden">
+                <Drawer snapPoints={[0.95]}>
+                  <DrawerTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn("w-full", montserrat.className)}
+                    >
+                      <Eye className="mr-2 h-4 w-4" />
+                      Show Preview
+                    </Button>
+                  </DrawerTrigger>
+                  <DrawerPortal>
+                    <DrawerContent className="h-full">
+                      <div className="h-full pt-3">
+                        <FormPreviewBrowser formId={formId} noToolbar />
+                      </div>
+                    </DrawerContent>
+                  </DrawerPortal>
+                </Drawer>
+              </div>
+            </CardContent>
+          </Card>
+          <div className="mt-6 flex items-center justify-between px-2 max-lg:mb-6">
+            <FormCustomizeSheet form={data} organization={organization} />
+
+            <div className=" flex items-start justify-start gap-3">
+              <Label
+                htmlFor="isFormPublished"
+                className="text-md cursor-pointer font-normal"
+              >
+                Published
+              </Label>
+              <Switch
+                defaultChecked={data.isPublished}
+                onCheckedChange={toggleIsFormPublished}
+                id="isFormPublished"
+                disabled={isPendingUpdateFormIsPublished}
+              />
             </div>
-          </CardContent>
-        </Card>
-        <div className="mt-6 flex items-center justify-between px-2 max-lg:mb-6">
-          <FormCustomizeSheet form={data} organization={organization} />
-
-          <div className=" flex items-start justify-start gap-3">
-            <Label
-              htmlFor="isFormPublished"
-              className="text-md cursor-pointer font-normal"
-            >
-              Published
-            </Label>
-            <Switch
-              defaultChecked={data.isPublished}
-              onCheckedChange={toggleIsFormPublished}
-              id="isFormPublished"
-              disabled={isPendingUpdateFormIsPublished}
-            />
+          </div>
+        </div>
+        <div className="flex grow items-center justify-center py-3 max-lg:hidden">
+          <div className="h-[100%] w-full pr-3">
+            <FormPreviewBrowser formId={formId} />
           </div>
         </div>
       </div>
-      <div className="flex grow items-center justify-center py-3 max-lg:hidden">
-        <div className="h-[100%] w-full pr-3">
-          <FormPreviewBrowser formId={formId} />
-        </div>
-      </div>
-    </div>
+    </motion.div>
   );
 }
 

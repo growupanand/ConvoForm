@@ -44,47 +44,69 @@ export function RecentResponsesCard({ take }: Readonly<{ take: number }>) {
 
   if (data && data.length > 0) {
     return (
-      <RecentResponsesCardShell>
-        <motion.div ref={scope}>
-          <ListCard>
-            {data.map((response) => (
-              <motion.div
-                className="slide-down-list-item"
-                key={response.id}
-                initial={{ opacity: 0, translate: "0 -0.5rem" }}
-              >
-                <ListItem>
-                  <Link
-                    href={`/forms/${response.formId}/conversations/${response.id}`}
-                  >
-                    <div className="flex items-center justify-between py-2">
-                      <div className="grid">
-                        <span>{response.name}</span>
-                        <span className="text-muted-foreground text-xs">
-                          {response.form.name}
+      <motion.div
+        className="slide-left-list"
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: 1,
+          transition: { duration: 0.5 },
+          translate: "0 -1rem",
+        }}
+      >
+        <RecentResponsesCardShell>
+          <motion.div ref={scope}>
+            <ListCard>
+              {data.map((response) => (
+                <motion.div
+                  className="slide-down-list-item"
+                  key={response.id}
+                  initial={{ opacity: 0, translate: "0 -0.5rem" }}
+                >
+                  <ListItem>
+                    <Link
+                      href={`/forms/${response.formId}/conversations/${response.id}`}
+                    >
+                      <div className="flex items-center justify-between py-2">
+                        <div className="grid">
+                          <span>{response.name}</span>
+                          <span className="text-muted-foreground text-xs">
+                            {response.form.name}
+                          </span>
+                        </div>
+                        <span className="text-muted-foreground text-sm">
+                          {timeAgo(response.createdAt)}
                         </span>
                       </div>
-                      <span className="text-muted-foreground text-sm">
-                        {timeAgo(response.createdAt)}
-                      </span>
-                    </div>
-                  </Link>
-                </ListItem>
-              </motion.div>
-            ))}
-          </ListCard>
-        </motion.div>
-      </RecentResponsesCardShell>
+                    </Link>
+                  </ListItem>
+                </motion.div>
+              ))}
+            </ListCard>
+          </motion.div>
+        </RecentResponsesCardShell>
+      </motion.div>
     );
   }
 
   return (
-    <RecentResponsesCardShell>
-      <EmptyCard
-        title="No recent responses"
-        illustration={<InboxIcon className="text-muted-foreground h-16 w-16" />}
-      />
-    </RecentResponsesCardShell>
+    <motion.div
+      className="slide-left-list"
+      initial={{ opacity: 0 }}
+      animate={{
+        opacity: 1,
+        transition: { duration: 0.5 },
+        translate: "0 -1rem",
+      }}
+    >
+      <RecentResponsesCardShell>
+        <EmptyCard
+          title="No recent responses"
+          illustration={
+            <InboxIcon className="text-muted-foreground h-16 w-16" />
+          }
+        />
+      </RecentResponsesCardShell>
+    </motion.div>
   );
 }
 

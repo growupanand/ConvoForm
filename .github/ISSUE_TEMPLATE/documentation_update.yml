@@ -1,13 +1,15 @@
 name: 📝 Documentation Update
 description: Improve Documentation
 title: "Docs: 📝 "
-labels: 'enhancement'
+labels: "enhancement"
 body:
   - type: checkboxes
     id: existing-issue
     attributes:
       label: Is there an existing issue for this?
-      description: Please search to see if an issue already exists for the updates you want to make.
+      description:
+        Please search to see if an issue already exists for the updates you want
+        to make.
       options:
         - label: No, I have searched the existing issues
           required: true
@@ -15,8 +17,12 @@ body:
     id: issue-description
     attributes:
       label: Issue Description
-      description: Please provide a clear description of the documentation update you are suggesting.
-      placeholder: Describe the improvement or correction you'd like to see in the documentation.
+      description:
+        Please provide a clear description of the documentation update you are
+        suggesting.
+      placeholder:
+        Describe the improvement or correction you'd like to see in the
+        documentation.
     validations:
       required: true
   - type: textarea
@@ -32,14 +38,16 @@ body:
     attributes:
       label: Rationale
       description: Why is this documentation update necessary or beneficial?
-      placeholder: Explain the importance or reasoning behind the suggested change.
+      placeholder:
+        Explain the importance or reasoning behind the suggested change.
     validations:
       required: False
   - type: dropdown
     id: urgency
     attributes:
       label: Urgency
-      description: How urgently do you believe this documentation update is needed?
+      description:
+        How urgently do you believe this documentation update is needed?
       options:
         - High
         - Medium
