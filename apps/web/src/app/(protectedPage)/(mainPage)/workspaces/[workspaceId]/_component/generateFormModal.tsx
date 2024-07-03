@@ -17,7 +17,7 @@ import {
 import { Textarea } from "@convoform/ui/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2, Sparkles } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { ResponsiveModal } from "@/components/common/responsiveModal";
@@ -56,7 +56,9 @@ export function GenerateFormModal({
     },
   });
 
-  async function onSubmit(formData: z.infer<typeof generateFormSchema>) {
+  const onSubmit: SubmitHandler<z.infer<typeof generateFormSchema>> = async (
+    formData,
+  ) => {
     const apiEndpoint = `ai/generateForm`;
     setState((cs) => ({
       ...cs,
@@ -100,7 +102,18 @@ export function GenerateFormModal({
         isGeneratedSuccessfully: false,
       }));
     }
-  }
+  };
+
+  const reloadWindow = () => {
+    window.location.reload();
+  };
+
+  const handleFormSubmit: SubmitHandler<z.infer<typeof generateFormSchema>> = (
+    data,
+  ) => {
+    onSubmit(data);
+    reloadWindow();
+  };
 
   return (
     <ResponsiveModal
@@ -121,7 +134,10 @@ export function GenerateFormModal({
       )}
       {!isBusy && !isGeneratedSuccessfully && (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-3">
+          <form
+            onSubmit={form.handleSubmit(handleFormSubmit)}
+            className="grid gap-3"
+          >
             <FormField
               control={form.control}
               name="formOverview"
@@ -143,7 +159,6 @@ export function GenerateFormModal({
                 </FormItem>
               )}
             />
-
             <Button type="submit" disabled={isBusy}>
               <Sparkles className="mr-2 h-4 w-4" />
               <span>{isBusy ? "Generating..." : "Generate Form"}</span>

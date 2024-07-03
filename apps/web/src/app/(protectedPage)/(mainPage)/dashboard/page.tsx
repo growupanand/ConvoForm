@@ -14,18 +14,20 @@ export default function DashboardPage() {
   const orgId = getOrganizationId();
 
   return (
-    <PageShell title="Dashboard">
-      <div className="grid gap-5 lg:grid-cols-6">
-        <div className="max-lg:mb-5 lg:col-span-2">
-          <div className="grid gap-5">
-            <ResponseDataCard orgId={orgId} />
-            <ResponseUsageCard organizationId={orgId} />
+    <>
+      <PageShell title="Dashboard">
+        <div className="grid gap-5 lg:grid-cols-6">
+          <div className="max-lg:mb-5 lg:col-span-2">
+            <div className="grid gap-5">
+              <ResponseDataCard orgId={orgId} />
+              <ResponseUsageCard organizationId={orgId} />
+            </div>
+          </div>
+          <div className="lg:col-span-4">
+            <RecentResponsesCard take={10} />
           </div>
         </div>
-        <div className="lg:col-span-4">
-          <RecentResponsesCard take={10} />
-        </div>
-      </div>
-    </PageShell>
+      </PageShell>
+    </>
   );
 }

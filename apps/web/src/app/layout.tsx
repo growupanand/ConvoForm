@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+// import {ClerkProvider} from '@clerk/nextjs'
 import "../globals.css";
 import "nprogress/nprogress.css";
 
@@ -77,7 +78,9 @@ export default function RootLayout({
           <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
         <TRPCReactProvider>
+          {/* <ClerkProvider> */}
           <AuthProvider>{children}</AuthProvider>
+          {/* </ClerkProvider> */}
         </TRPCReactProvider>
         <Toaster />
         <SonnerToaster />
