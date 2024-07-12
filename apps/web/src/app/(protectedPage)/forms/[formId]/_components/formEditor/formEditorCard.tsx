@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   FormField as FormFieldSchema,
   Form as FormSchema,
+  getSafeFormFieldsOrders,
   updateFormSchema,
 } from "@convoform/db/src/schema";
 import {
@@ -45,7 +46,34 @@ type Props = {
   form: FormSchema & { formFields: FormFieldSchema[] };
 };
 
+type State = {
+  fieldsOrders: string[];
+
+  // FAQ: You may think that we can use form.formFields directly from the props, So why we have to use State?
+  //
+  // Answer: because when we delete an field, formFields is updated but fieldsOrders is not at same time,
+  // So we get error "field not found" for the deleted fieldId in fieldOrders,
+  // to avoid that, we use formFields as state and update both at same time in useEffect
+  formFields: FormFieldSchema[];
+};
+
+export type HandleUpdateFieldsOrder = (newFieldsOrder: string[]) => void;
+
 export function FormEditorCard({ form }: Readonly<Props>) {
+  const [state, setState] = useState<State>({
+    fieldsOrders: getSafeFormFieldsOrders(form, form.formFields),
+    formFields: form.formFields,
+  });
+  const { fieldsOrders, formFields } = state;
+
+  useEffect(() => {
+    setState((cs) => ({
+      ...cs,
+      formFields: form.formFields,
+      fieldsOrders: getSafeFormFieldsOrders(form, form.formFields),
+    }));
+  }, [form.formFields]);
+
   const queryClient = useQueryClient();
   const updateForm = api.form.updateForm.useMutation({
     onSuccess: () => {
@@ -77,6 +105,22 @@ export function FormEditorCard({ form }: Readonly<Props>) {
     formHook.formState.errors.welcomeScreenTitle ||
     formHook.formState.errors.welcomeScreenMessage ||
     formHook.formState.errors.welcomeScreenCTALabel;
+
+  const handleUpdateFieldsOrder: HandleUpdateFieldsOrder = (newFieldsOrder) => {
+    // First update instantly in the browser UI, so that dragged fields can be seen in new order
+    setState((cs) => ({ ...cs, fieldsOrders: newFieldsOrder }));
+
+    // Now update in database
+    const updateFormPromise = updateForm.mutateAsync({
+      ...form,
+      formFieldsOrders: newFieldsOrder,
+    });
+    sonnerToast.promise(updateFormPromise, {
+      loading: "Saving order...",
+      success: "Saved successfully",
+      error: "Failed to save fields order",
+    });
+  };
 
   const onSubmit = (formData: z.infer<typeof updateFormSchema>) => {
     const updateFormPromise = updateForm.mutateAsync({
@@ -256,7 +300,13 @@ export function FormEditorCard({ form }: Readonly<Props>) {
               </div>
             </AccordionTrigger>
             <AccordionContent className="lg:pe-1 lg:ps-10 lg:pt-1">
-              <FieldsEditorCard formFields={form.formFields} formId={form.id} />
+              <FieldsEditorCard
+                formFields={formFields}
+                formFieldsOrders={fieldsOrders}
+                formId={form.id}
+                handleUpdateFieldsOrder={handleUpdateFieldsOrder}
+                isSavingForm={isSavingForm}
+              />
             </AccordionContent>
           </AccordionItem>
         </Accordion>

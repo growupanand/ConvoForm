@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
@@ -35,6 +35,10 @@ export const form = pgTable("Form", {
     .default(false)
     .notNull(),
   customEndScreenMessage: text("customEndScreenMessage"),
+  formFieldsOrders: text("formFieldsOrders")
+    .array()
+    .default(sql`'{}'::text[]`)
+    .notNull(),
 });
 
 export const formRelations = relations(form, ({ one, many }) => ({

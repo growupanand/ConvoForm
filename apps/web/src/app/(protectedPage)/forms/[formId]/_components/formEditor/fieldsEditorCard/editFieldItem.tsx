@@ -30,12 +30,18 @@ type Props = {
   formField: FormFieldSchema;
   onEdit: (formField: FormFieldSchema) => void;
   orderId: string;
+  isSavingForm: boolean;
 };
 
 const formHookSchema = patchFormFieldSchema.pick({ fieldDescription: true });
 type FormHookData = z.infer<typeof formHookSchema>;
 
-export function EditFieldItem({ formField, onEdit, orderId }: Readonly<Props>) {
+export function EditFieldItem({
+  formField,
+  onEdit,
+  orderId,
+  isSavingForm,
+}: Readonly<Props>) {
   // eslint-disable-next-line
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const queryClient = useQueryClient();
@@ -63,7 +69,7 @@ export function EditFieldItem({ formField, onEdit, orderId }: Readonly<Props>) {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: orderId });
+  } = useSortable({ id: orderId, disabled: isSavingForm });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -75,18 +81,19 @@ export function EditFieldItem({ formField, onEdit, orderId }: Readonly<Props>) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-    const patchFormPromise = patchFormFieldMutation.mutateAsync({
+    const patchFormFieldMutationPromise = patchFormFieldMutation.mutateAsync({
       id: formField.id,
       ...formData,
     });
 
-    sonnerToast.promise(patchFormPromise, {
+    sonnerToast.promise(patchFormFieldMutationPromise, {
       loading: "Saving changes...",
       success: "Changes saved successfully",
       error: "Failed to save changes",
     });
   };
 
+  // Auto save description
   useEffect(() => {
     timeoutRef.current = setTimeout(() => {
       if (formHook.formState.isDirty) {
@@ -103,6 +110,7 @@ export function EditFieldItem({ formField, onEdit, orderId }: Readonly<Props>) {
     };
   }, [formHook.watch("fieldDescription")]);
 
+  // Reset form in react-hook-form when props change
   useEffect(() => {
     formHook.reset({
       fieldDescription: formField.fieldDescription,
@@ -140,7 +148,13 @@ export function EditFieldItem({ formField, onEdit, orderId }: Readonly<Props>) {
                       )}
                     </Button>
                     <span
-                      style={{ cursor: isDragging ? "grabbing" : "grab" }}
+                      style={{
+                        cursor: isSavingForm
+                          ? "not-allowed"
+                          : isDragging
+                            ? "grabbing"
+                            : "grab",
+                      }}
                       {...listeners}
                       {...attributes}
                     >
