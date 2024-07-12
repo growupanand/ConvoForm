@@ -10,8 +10,11 @@ export const insertFormSchema = createInsertSchema(form, {
   welcomeScreenMessage: z.string().min(1),
   name: z.string().min(1),
   overview: z.string().min(1),
+  formFieldsOrders: z.string().array(),
 });
-export const selectFormSchema = createSelectSchema(form);
+export const selectFormSchema = createSelectSchema(form, {
+  formFieldsOrders: z.string().array(),
+});
 
 export const newFormSchema = insertFormSchema
   .omit({ userId: true, workspaceId: true, organizationId: true })
@@ -21,6 +24,7 @@ export const newFormSchema = insertFormSchema
 
 export const updateFormSchema = newFormSchema.extend({
   id: z.string().min(1),
+  formFieldsOrders: z.string().array().min(1),
 });
 
 export const patchFormSchema = newFormSchema.partial().extend({
