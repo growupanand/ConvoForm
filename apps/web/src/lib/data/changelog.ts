@@ -2,8 +2,108 @@
 
 export const changelog = [ 
 {
-"title": "0.9.2",
+"title": "0.10.0",
 "tag": "",
+"isoDate": "2024-07-13",
+"commits": {
+"features": [
+
+{
+"message": "feat: 🚀 Added Multi Choice Answer Input in Form submission page\n\nRespondent can now choose answer from given choices\n\n✅ Closes: 308",
+"shorthash": "895a181",
+"href": "https://github.com/growupanand/ConvoForm/commit/895a181ce3378eb669b4e3df047fae09dadaa9a7"
+},
+
+{
+"message": "feat: 🚀 Added Input Configuration editor in Edit Field Sheet\n\nForm creator can now customize input configuration according to the\ninput type. E.g. In text input type they can customize the input\nplaceholder text\n\n✅ Closes: 305",
+"shorthash": "a1a3b77",
+"href": "https://github.com/growupanand/ConvoForm/commit/a1a3b7767a1a9ad76e27e419d0c1b3a42265649c"
+},
+
+{
+"message": "feat: 🚀 Added Multi choices Input type editor\n\nForm creator now select \"Multiple choice\" Input type and can add choices\n\n✅ Closes: 301",
+"shorthash": "9ff4d15",
+"href": "https://github.com/growupanand/ConvoForm/commit/9ff4d1573d52175d12eca108c1a05e9150b63459"
+},
+
+],
+"improvements": [
+
+{
+"message": "refactor: 💡 upgraded drizzle-orm, moved rest schema validation\n\nmoved all rest schema validaiton into seperate file",
+"shorthash": "38b117f",
+"href": "https://github.com/growupanand/ConvoForm/commit/38b117f88adabe030cb4074e3921688b65bcb948"
+},
+
+{
+"message": "style: 💄 UI-UX Improvements",
+"shorthash": "77f1bc6",
+"href": "https://github.com/growupanand/ConvoForm/commit/77f1bc605ab607762024c8a4871c155a653186a6"
+},
+
+{
+"message": "refactor: 💡 moved all form validation schema into one file",
+"shorthash": "54347e8",
+"href": "https://github.com/growupanand/ConvoForm/commit/54347e83b52ead0d4d0cbde99bc5ccdf00f03a85"
+},
+
+{
+"message": "refactor: 💡 Added delete form field button\n\n✅ Closes: 313",
+"shorthash": "c3272f7",
+"href": "https://github.com/growupanand/ConvoForm/commit/c3272f73b23a45078e8ca21bad0ebece6d52d6d9"
+},
+
+{
+"message": "refactor: 💡 moved converstaion and workspace validation in file",
+"shorthash": "4936144",
+"href": "https://github.com/growupanand/ConvoForm/commit/49361445a271a865be84d986838dbc7745bdf581"
+},
+
+{
+"message": "refactor: 💡 moved db shcemas into seperate files",
+"shorthash": "90324a9",
+"href": "https://github.com/growupanand/ConvoForm/commit/90324a95581be4433d64a310147c7f615034d91b"
+},
+
+{
+"message": "style: 💄 Dragging of Fields are now restricted to VerticalAxis\n\nAs Fields are draggable for change there sorting order, We want to allo\nuser only dragg them vertically",
+"shorthash": "b684e65",
+"href": "https://github.com/growupanand/ConvoForm/commit/b684e6511c72836b12b6112e418ddafabe0e89d7"
+},
+
+],
+"fixes": [
+
+{
+"message": "fix: 🐛 Unable to save changes in form editor\n\nAfter adding fieldDescription column in formField table, form editor is\nnot able to get value of fieldDescription because there is not input box\nfor that, so using field Name as field description for now.",
+"shorthash": "240cded",
+"href": "https://github.com/growupanand/ConvoForm/commit/240cded179f1d233390388c83964079ba0d5c78b"
+},
+
+{
+"message": "fix: 🐛 Error in generating form by AI\n\nIn AI generated form, fieldConfiguration was missing in Output JSON",
+"shorthash": "b136923",
+"href": "https://github.com/growupanand/ConvoForm/commit/b136923ab72a683095144d345751e7446f976127"
+},
+
+{
+"message": "fix: 🐛 Added vercel deployment support for useConvoForm\n\n✅ Closes: 310",
+"shorthash": "3edac48",
+"href": "https://github.com/growupanand/ConvoForm/commit/3edac48cd07191a028c2891d5dcee8100d62ae2c"
+},
+
+{
+"message": "fix: 🐛 Added URL support from NEXT_PUBLIC_APP_URL in useconvofo\n\n✅ Closes: 310",
+"shorthash": "8ca371d",
+"href": "https://github.com/growupanand/ConvoForm/commit/8ca371da6d422654e53c90c5f8dd75d1ecc14ce9"
+},
+
+]
+}
+},
+{
+"title": "0.9.2",
+"tag": "0.9.2",
 "isoDate": "2024-06-10",
 "commits": {
 "features": [

@@ -1,3 +1,51 @@
+## [0.10.0](https://github.com/growupanand/ConvoForm/compare/0.9.2...0.10.0) (2024-07-13)
+
+### Features
+
+- 🚀 Added Input Configuration editor in Edit Field Sheet
+  ([a1a3b77](https://github.com/growupanand/ConvoForm/commit/a1a3b7767a1a9ad76e27e419d0c1b3a42265649c))
+- 🚀 Added Multi Choice Answer Input in Form submission page
+  ([895a181](https://github.com/growupanand/ConvoForm/commit/895a181ce3378eb669b4e3df047fae09dadaa9a7))
+- 🚀 Added Multi choices Input type editor
+  ([9ff4d15](https://github.com/growupanand/ConvoForm/commit/9ff4d1573d52175d12eca108c1a05e9150b63459))
+- 🚀 Form fields order can now be changed by dragging
+  ([#319](https://github.com/growupanand/ConvoForm/issues/319))
+  ([dd81520](https://github.com/growupanand/ConvoForm/commit/dd815200980fff4f75b2ccb36c34f50ab4e35547))
+
+### Bug Fixes
+
+- 🐛 Added URL support from NEXT_PUBLIC_APP_URL in useconvofo
+  ([8ca371d](https://github.com/growupanand/ConvoForm/commit/8ca371da6d422654e53c90c5f8dd75d1ecc14ce9))
+- 🐛 Added vercel deployment support for useConvoForm
+  ([3edac48](https://github.com/growupanand/ConvoForm/commit/3edac48cd07191a028c2891d5dcee8100d62ae2c))
+- 🐛 Error in generating form by AI
+  ([b136923](https://github.com/growupanand/ConvoForm/commit/b136923ab72a683095144d345751e7446f976127))
+- 🐛 Unable to save changes in form editor
+  ([240cded](https://github.com/growupanand/ConvoForm/commit/240cded179f1d233390388c83964079ba0d5c78b))
+- 🐛Related to label workflows, added Infrastructure issue template
+  ([#304](https://github.com/growupanand/ConvoForm/issues/304))
+  ([0bcb527](https://github.com/growupanand/ConvoForm/commit/0bcb527dd1888605f8808903960fa81448f83abc))
+
+### Improvements
+
+- 💄 Dragging of Fields are now restricted to VerticalAxis
+  ([b684e65](https://github.com/growupanand/ConvoForm/commit/b684e6511c72836b12b6112e418ddafabe0e89d7))
+- 💄 UI-UX Improvements
+  ([77f1bc6](https://github.com/growupanand/ConvoForm/commit/77f1bc605ab607762024c8a4871c155a653186a6))
+- 💡 296 as a creator i can edit form fields name description and input type
+  ([#300](https://github.com/growupanand/ConvoForm/issues/300))
+  ([fe072d8](https://github.com/growupanand/ConvoForm/commit/fe072d84e565b8d62a42a0aa74bce9b05d065ef3))
+- 💡 Added delete form field button
+  ([c3272f7](https://github.com/growupanand/ConvoForm/commit/c3272f73b23a45078e8ca21bad0ebece6d52d6d9))
+- 💡 moved all form validation schema into one file
+  ([54347e8](https://github.com/growupanand/ConvoForm/commit/54347e83b52ead0d4d0cbde99bc5ccdf00f03a85))
+- 💡 moved converstaion and workspace validation in file
+  ([4936144](https://github.com/growupanand/ConvoForm/commit/49361445a271a865be84d986838dbc7745bdf581))
+- 💡 moved db shcemas into seperate files
+  ([90324a9](https://github.com/growupanand/ConvoForm/commit/90324a95581be4433d64a310147c7f615034d91b))
+- 💡 upgraded drizzle-orm, moved rest schema validation
+  ([38b117f](https://github.com/growupanand/ConvoForm/commit/38b117f88adabe030cb4074e3921688b65bcb948))
+
 ## [0.9.2](https://github.com/growupanand/ConvoForm/compare/0.9.1...0.9.2) (2024-06-10)
 
 ### Improvements
