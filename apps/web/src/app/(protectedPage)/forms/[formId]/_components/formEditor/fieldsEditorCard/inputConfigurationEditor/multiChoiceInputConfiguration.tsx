@@ -49,12 +49,12 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
                   <FormItem>
                     <div className="flex items-center gap-4">
                       <FormControl>
-                        <Input {...field} placeholder="Enter a choice..." />
+                        <Input {...field} placeholder="Type a choice name" />
                       </FormControl>
                       <Button
                         type="button"
-                        size="icon"
-                        variant="outline"
+                        size="sm"
+                        variant="ghost"
                         onClick={() => remove(index)}
                         disabled={isLastTwoChoice}
                       >
@@ -70,8 +70,13 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
         )}
       />
 
-      <div className="mt-4">
-        <Button size="sm" type="button" onClick={() => append({ value: "" })}>
+      <div className="mt-2">
+        <Button
+          size="sm"
+          variant="outline"
+          type="button"
+          onClick={() => append({ value: "" })}
+        >
           <Plus className="mr-2 size-4" /> Add choice
         </Button>
       </div>

@@ -4,7 +4,6 @@ import { Checkbox } from "@convoform/ui/components/ui/checkbox";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@convoform/ui/components/ui/tooltip";
 
@@ -35,24 +34,22 @@ export default function FormPreviewBrowser({
   const refreshPreview = () => refetch();
 
   const Toolbar = (
-    <TooltipProvider delayDuration={0}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="flex items-center space-x-2">
-            <Checkbox id="savePreviewSubmission" checked />
-            <label
-              htmlFor="savePreviewSubmission"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Save response in preview mode
-            </label>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent side="right">
-          <p>Cannot change in free plan</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="flex items-center space-x-2">
+          <Checkbox id="savePreviewSubmission" checked />
+          <label
+            htmlFor="savePreviewSubmission"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Save response in preview mode
+          </label>
+        </div>
+      </TooltipTrigger>
+      <TooltipContent side="right">
+        <p>Cannot change in free plan</p>
+      </TooltipContent>
+    </Tooltip>
   );
 
   return (

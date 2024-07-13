@@ -24,7 +24,7 @@ export function TextInputConfigurationEditor({ formHook }: Readonly<Props>) {
           <FormItem>
             <FormLabel>Placeholder (optional)</FormLabel>
             <FormControl>
-              <Input {...field} placeholder="Custom placeholder text" />
+              <Input {...field} placeholder="Type placeholder text" />
             </FormControl>
             <FormMessage />
           </FormItem>

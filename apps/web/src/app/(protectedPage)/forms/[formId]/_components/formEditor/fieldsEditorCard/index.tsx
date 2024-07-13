@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { KeyboardEvent, useMemo, useRef, useState } from "react";
 import { Form, FormField } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
@@ -22,7 +22,7 @@ import {
 import { Plus } from "lucide-react";
 
 import { HandleUpdateFieldsOrder } from "../formEditorCard";
-import { AddFieldItem } from "./addFieldItem";
+import { AddFieldItemEditor } from "./addFieldItemEditor";
 import { EditFieldItem } from "./editFieldItem";
 import { EditFieldSheet } from "./editFieldSheet";
 
@@ -48,6 +48,8 @@ export function FieldsEditorCard({
   handleUpdateFieldsOrder,
   isSavingForm,
 }: Readonly<Props>) {
+  const editFieldsListRef = useRef<HTMLDivElement>(null);
+
   const [state, setState] = useState<State>({
     showAddFieldEditor: false,
     showEditFieldSheet: false,
@@ -110,6 +112,46 @@ export function FieldsEditorCard({
     }));
   };
 
+  const handleMoveFocusToNextField = (
+    event: KeyboardEvent<HTMLInputElement>,
+    currentFieldId: string,
+  ) => {
+    if (
+      !editFieldsListRef.current ||
+      (event.key !== "ArrowDown" && event.key !== "ArrowUp")
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const currentFieldIndex = formFieldsOrders.indexOf(currentFieldId);
+    let nextFieldIndex = 0;
+
+    // If user presses down arrow key, move focus to the next field
+    if (event.key === "ArrowDown") {
+      nextFieldIndex = currentFieldIndex + 1;
+    }
+
+    // If user presses up arrow key, move focus to the previous field
+    if (event.key === "ArrowUp") {
+      nextFieldIndex = currentFieldIndex - 1;
+    }
+
+    // If the next field exists, move focus to it
+    if (nextFieldIndex < formFieldsOrders.length) {
+      const nextFieldId = formFieldsOrders[nextFieldIndex];
+      if (nextFieldId) {
+        const inputElement = editFieldsListRef.current.querySelector(
+          `input[id="${nextFieldId}"]`,
+        ) as HTMLInputElement | HTMLTextAreaElement;
+        if (inputElement) {
+          inputElement.focus();
+        }
+      }
+    }
+  };
+
   return (
     <>
       {/* Fields list */}
@@ -123,7 +165,7 @@ export function FieldsEditorCard({
           items={formFieldsOrders}
           strategy={verticalListSortingStrategy}
         >
-          <div className=" grid gap-2">
+          <div ref={editFieldsListRef} className="grid gap-2">
             {formFieldsOrders.map((fieldId) => (
               <EditFieldItem
                 key={fieldId}
@@ -131,6 +173,7 @@ export function FieldsEditorCard({
                 formField={formFieldsMapByIds[fieldId]!}
                 onEdit={handleShowEditFieldSheet}
                 isSavingForm={isSavingForm}
+                handleMoveFocusToNextField={handleMoveFocusToNextField}
               />
             ))}
           </div>
@@ -138,19 +181,22 @@ export function FieldsEditorCard({
       </DndContext>
 
       {/* Add Field Button/Editor */}
-      <div className="mt-4">
-        {showAddFieldEditor ? (
-          <AddFieldItem
+
+      {showAddFieldEditor ? (
+        <div className="mt-10">
+          <AddFieldItemEditor
             onFieldAdded={handleHideAddFieldEditor}
             formId={formId}
           />
-        ) : (
+        </div>
+      ) : (
+        <div className="mt-4">
           <Button size="sm" type="button" onClick={handleShowAddFieldEditor}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 size-4" />
             Add field
           </Button>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Edit Field Sheet */}
       {!!currentEditField && (
