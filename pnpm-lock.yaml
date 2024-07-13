@@ -82,6 +82,9 @@ importers:
       "@dnd-kit/core":
         specifier: ^6.1.0
         version: 6.1.0(react-dom@18.3.1)(react@18.3.1)
+      "@dnd-kit/modifiers":
+        specifier: ^7.0.0
+        version: 7.0.0(@dnd-kit/core@6.1.0)(react@18.3.1)
       "@dnd-kit/sortable":
         specifier: ^8.0.0
         version: 8.0.0(@dnd-kit/core@6.1.0)(react@18.3.1)
@@ -1069,6 +1072,21 @@ packages:
       "@dnd-kit/utilities": 3.2.2(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
+      tslib: 2.6.2
+    dev: false
+
+  /@dnd-kit/modifiers@7.0.0(@dnd-kit/core@6.1.0)(react@18.3.1):
+    resolution:
+      {
+        integrity: sha512-BG/ETy3eBjFap7+zIti53f0PCLGDzNXyTmn6fSdrudORf+OH04MxrW4p5+mPu4mgMk9kM41iYONjc3DOUWTcfg==,
+      }
+    peerDependencies:
+      "@dnd-kit/core": ^6.1.0
+      react: ">=16.8.0"
+    dependencies:
+      "@dnd-kit/core": 6.1.0(react-dom@18.3.1)(react@18.3.1)
+      "@dnd-kit/utilities": 3.2.2(react@18.3.1)
+      react: 18.3.1
       tslib: 2.6.2
     dev: false
 
