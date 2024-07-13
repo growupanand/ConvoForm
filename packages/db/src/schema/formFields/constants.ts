@@ -12,10 +12,10 @@ type InputTypeMap = Record<
 export const INPUT_TYPES_MAP: InputTypeMap = {
   text: {
     name: "Text",
-    description: "Respondent can type answer",
+    description: "Respondent can type an answer",
   },
   multipleChoice: {
     name: "Multiple Choice",
-    description: "Respondent can choose answer from given choices",
+    description: "Respondent can select an answer from a list of choices",
   },
 };

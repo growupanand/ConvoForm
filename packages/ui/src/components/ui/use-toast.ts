@@ -167,22 +167,36 @@ function toast({ ...props }: Toast) {
   };
 }
 
-async function showErrorResponseToast(error: any, fallbackMessage?: string) {
-  let errorMessage;
-  if (error instanceof Response) {
-    const errorJson = await error.json();
-    if (errorJson.nonFieldError) {
-      errorMessage = errorJson.nonFieldError;
-    }
-  }
+export async function getErrorMessageFromResponse(
+  error: any,
+  fallbackMessage?: string,
+) {
+  let errorMessage = fallbackMessage || "Something went wrong";
 
   // eslint-disable-next-line no-prototype-builtins
   if (error?.hasOwnProperty("message") && error.message !== undefined) {
     errorMessage = error.message;
+    return errorMessage;
   }
 
+  if (error instanceof Response) {
+    const errorJson = await error.json();
+    if (errorJson.nonFieldError) {
+      errorMessage = errorJson.nonFieldError;
+      return errorMessage;
+    }
+  }
+
+  return errorMessage;
+}
+
+async function showErrorResponseToast(error: any, fallbackMessage?: string) {
+  const errorMessage = await getErrorMessageFromResponse(
+    error,
+    fallbackMessage,
+  );
   toast({
-    title: errorMessage || fallbackMessage || "Something went wrong",
+    title: errorMessage,
     duration: 2000,
     variant: "destructive",
   });

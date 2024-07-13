@@ -36,7 +36,6 @@ import { Textarea } from "@convoform/ui/components/ui/textarea";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@convoform/ui/components/ui/tooltip";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -129,17 +128,48 @@ export function EditFieldSheet({
 
   return (
     <Sheet open={open} onOpenChange={!isFormBusy ? onOpenChange : undefined}>
-      <SheetContent side="left">
+      <SheetContent side="left" className="w-full lg:min-w-[400px]">
         <SheetHeader>
           <SheetTitle>Edit form field</SheetTitle>
         </SheetHeader>
-        <div className="relative h-full pt-5">
-          <Form {...formHook}>
-            <form onSubmit={formHook.handleSubmit(onSubmit)}>
-              <div className="mb-10 grid h-full space-y-4">
-                <h4 className="text-muted-foreground text-xl">
-                  Question settings
-                </h4>
+
+        <Form {...formHook}>
+          <form
+            onSubmit={formHook.handleSubmit(onSubmit)}
+            className="relative flex h-full flex-col justify-between overflow-y-auto pe-5 ps-2 pt-5"
+          >
+            <div className="mb-10">
+              <h4 className="mb-4 text-xl font-semibold">Question</h4>
+              <div className="grid space-y-8">
+                <FormField
+                  control={formHook.control}
+                  name="fieldName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className=" flex items-center gap-2">
+                        <FormLabel>Internal name</FormLabel>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="size-4" />
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" align="start">
+                            This field is used for CSV export and as the column
+                            name in the table.
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Human readable name for the field"
+                          disabled
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={formHook.control}
                   name="fieldDescription"
@@ -147,58 +177,20 @@ export function EditFieldSheet({
                     <FormItem>
                       <div className="flex items-center gap-2">
                         <FormLabel>Field description</FormLabel>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Info className="h-4 w-4 " />
-                            </TooltipTrigger>
-                            <TooltipContent side="bottom" align="start">
-                              Will be used by AI for question generation
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-4 w-4 " />
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" align="start">
+                            Will be used by AI for question generation
+                          </TooltipContent>
+                        </Tooltip>
                       </div>
                       <FormControl>
-                        <div className="flex items-center justify-between gap-x-3">
-                          <Textarea
-                            placeholder={`Information you would like to collect.\nE.g. Your email address, Your work experience in years etc...`}
-                            {...field}
-                            rows={4}
-                            disabled={isFormBusy}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={formHook.control}
-                  name="fieldName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex items-center gap-2">
-                        <FormLabel>Field name</FormLabel>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Info className="h-4 w-4 " />
-                            </TooltipTrigger>
-                            <TooltipContent side="bottom" align="start">
-                              Used for CSV export, Column name in Table etc...
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      <FormDescription>
-                        Internal name should not be changed
-                      </FormDescription>
-                      <FormControl>
-                        <Input
+                        <Textarea
+                          placeholder={`Information you would like to collect.\nE.g. Your email address, Your work experience in years etc...`}
                           {...field}
-                          placeholder="Human readable name for the field"
-                          readOnly
+                          rows={4}
                           disabled={isFormBusy}
                         />
                       </FormControl>
@@ -207,78 +199,73 @@ export function EditFieldSheet({
                   )}
                 />
               </div>
-              <div className="grid h-full space-y-4 ">
-                <h4 className="text-muted-foreground text-xl">
-                  Answer settings
-                </h4>
-                <FormField
-                  control={formHook.control}
-                  name="fieldConfiguration.inputType"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Input type</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        disabled={isFormBusy}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a verified email to display" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <FormMessage />
-                        <SelectContent>
-                          {inputTypeEnum.enumValues.map((inputType) => (
-                            <SelectItem key={inputType} value={inputType}>
-                              {INPUT_TYPES_MAP[inputType].name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                        <FormMessage />
+              <h4 className="mb-4 mt-10 text-xl font-semibold">Answer</h4>
+              <div className=" grid space-y-8">
+                <div className="grid space-y-4">
+                  <FormField
+                    control={formHook.control}
+                    name="fieldConfiguration.inputType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Input type</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          disabled={isFormBusy}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a verified email to display" />
+                            </SelectTrigger>
+                          </FormControl>
+
+                          <SelectContent>
+                            {inputTypeEnum.enumValues.map((inputType) => (
+                              <SelectItem key={inputType} value={inputType}>
+                                {INPUT_TYPES_MAP[inputType].name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                          <FormMessage />
+                        </Select>
                         <FormDescription className="flex items-center gap-2">
                           {INPUT_TYPES_MAP[field.value].description}
                         </FormDescription>
-                      </Select>
-                    </FormItem>
-                  )}
-                />
+                      </FormItem>
+                    )}
+                  />
 
-                <InputConfigurationEditor
-                  inputType={selectedInputType}
-                  formHook={formHook}
-                />
-
-                <div className="absolute bottom-0 w-full py-5">
-                  <div className="grid gap-2">
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={isFormBusy}
-                    >
-                      Save
-                    </Button>
-                    <ConfirmAction
-                      onConfirm={handleDeleteField}
-                      title="Are you sure you want to delete this field?"
-                      description="This action cannot be undone."
-                      confirmText="Delete field"
-                    >
-                      <Button
-                        type="button"
-                        className=" w-full "
-                        disabled={isFormBusy}
-                        variant="ghost"
-                      >
-                        Delete field
-                      </Button>
-                    </ConfirmAction>
-                  </div>
+                  <InputConfigurationEditor
+                    inputType={selectedInputType}
+                    formHook={formHook}
+                  />
                 </div>
               </div>
-            </form>
-          </Form>
-        </div>
+            </div>
+            <div className="bg-background sticky bottom-0 mt-auto w-full py-5">
+              <div className="grid gap-2">
+                <Button type="submit" className="w-full" disabled={isFormBusy}>
+                  Save
+                </Button>
+                <ConfirmAction
+                  onConfirm={handleDeleteField}
+                  title="Are you sure you want to delete this field?"
+                  description="This action cannot be undone."
+                  confirmText="Delete field"
+                >
+                  <Button
+                    type="button"
+                    className=" w-full "
+                    disabled={isFormBusy}
+                    variant="ghost"
+                  >
+                    Delete field
+                  </Button>
+                </ConfirmAction>
+              </div>
+            </div>
+          </form>
+        </Form>
       </SheetContent>
     </Sheet>
   );

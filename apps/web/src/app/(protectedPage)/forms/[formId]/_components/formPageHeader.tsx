@@ -29,7 +29,7 @@ function FormPageHeader({ formId }: Readonly<Props>) {
   }
 
   return (
-    <div className="sticky top-0 z-50 border-b bg-white/70 p-3 backdrop-blur">
+    <div className="p-3">
       <div className="flex items-center justify-between ">
         <div
           className={cn(

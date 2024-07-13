@@ -6,6 +6,7 @@ import "nprogress/nprogress.css";
 import type { Viewport } from "next";
 import { Toaster as SonnerToaster } from "@convoform/ui/components/ui/sonner";
 import { Toaster } from "@convoform/ui/components/ui/toaster";
+import { TooltipProvider } from "@convoform/ui/components/ui/tooltip";
 
 import { AuthProvider } from "@/components/authProvider";
 import GoogleAnalytics from "@/components/googleAnalytics";
@@ -77,7 +78,9 @@ export default function RootLayout({
           <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
         <TRPCReactProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
+          </AuthProvider>
         </TRPCReactProvider>
         <Toaster />
         <SonnerToaster />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { KeyboardEvent, useEffect, useRef } from "react";
 import {
   FormField as FormFieldSchema,
   patchFormFieldSchema,
@@ -31,6 +31,10 @@ type Props = {
   onEdit: (formField: FormFieldSchema) => void;
   orderId: string;
   isSavingForm: boolean;
+  handleMoveFocusToNextField: (
+    event: KeyboardEvent<HTMLInputElement>,
+    currentFieldId: string,
+  ) => void;
 };
 
 const formHookSchema = patchFormFieldSchema.pick({ fieldDescription: true });
@@ -41,6 +45,7 @@ export function EditFieldItem({
   onEdit,
   orderId,
   isSavingForm,
+  handleMoveFocusToNextField,
 }: Readonly<Props>) {
   // eslint-disable-next-line
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -133,10 +138,14 @@ export function EditFieldItem({
                       {...field}
                       disabled={isSavingFormField || isDragging}
                       className="grow"
+                      id={formField.id}
+                      onKeyDown={(event) =>
+                        handleMoveFocusToNextField(event, formField.id)
+                      }
                     />
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="ghost"
                       size="sm"
                       disabled={isSavingFormField || isDragging}
                       onClick={() => onEdit(formField)}
