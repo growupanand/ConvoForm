@@ -153,8 +153,9 @@ export function EditFieldSheet({
                             <Info className="size-4" />
                           </TooltipTrigger>
                           <TooltipContent side="bottom" align="start">
-                            This field is used for CSV export and as the column
-                            name in the table.
+                            This field is used for CSV export, as the column
+                            name in the table, and as the field name in the form
+                            submission page to show current field.
                           </TooltipContent>
                         </Tooltip>
                       </div>
@@ -182,7 +183,8 @@ export function EditFieldSheet({
                             <Info className="h-4 w-4 " />
                           </TooltipTrigger>
                           <TooltipContent side="bottom" align="start">
-                            Will be used by AI for question generation
+                            This text will be utilized by the AI to generate
+                            questions.
                           </TooltipContent>
                         </Tooltip>
                       </div>

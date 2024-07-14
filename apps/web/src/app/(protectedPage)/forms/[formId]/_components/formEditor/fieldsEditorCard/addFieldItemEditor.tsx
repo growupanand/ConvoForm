@@ -106,8 +106,9 @@ export function AddFieldItemEditor({ onFieldAdded, formId }: Readonly<Props>) {
                       <Info className="h-4 w-4 " />
                     </TooltipTrigger>
                     <TooltipContent side="bottom" align="start">
-                      This field is used for CSV export and as the column name
-                      in the table.
+                      This field is used for CSV export, as the column name in
+                      the table, and as the field name in the form submission
+                      page to show current field.
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -144,7 +145,7 @@ export function AddFieldItemEditor({ onFieldAdded, formId }: Readonly<Props>) {
                 <FormControl>
                   <div className="flex items-center justify-between gap-x-3">
                     <Textarea
-                      placeholder={`What information do you want to collect?\nE.g. Your email address or Your work experience in years, etc...`}
+                      placeholder={`Information you would like to collect.\nE.g. Your email address, Your work experience in years etc...`}
                       {...field}
                       rows={4}
                       disabled={isCreatingForm}

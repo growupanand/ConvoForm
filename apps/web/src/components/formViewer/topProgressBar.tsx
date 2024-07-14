@@ -3,6 +3,9 @@ import NProgress from "nprogress";
 
 export function TopProgressBar({ totalProgress }: { totalProgress: number }) {
   useEffect(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
     NProgress.start();
     return () => {
       NProgress.done();
