@@ -21,7 +21,6 @@
     "build": "dotenv -e .env.local -- turbo build",
     "prepare": "husky install",
     "format": "biome format --write .",
-    "format:staged": "biome format --staged --write .",
     "release": "release-it",
     "commit": "git-cz",
     "lint": "dotenv -e .env.local -- biome lint --write . --unsafe",
