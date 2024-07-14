@@ -20,8 +20,7 @@
     "dev:staging": "dotenv -e .env.staging -- turbo run dev",
     "build": "dotenv -e .env.local -- turbo build",
     "prepare": "husky install",
-    "format:all": "biome format --write .",
-    "format:staged": "biome format --write $(git diff --staged --name-only --diff-filter d | xargs)",
+    "format": "biome format --write .",
     "release": "release-it",
     "commit": "git-cz",
     "lint": "dotenv -e .env.local -- biome lint --write . --unsafe",
@@ -42,15 +41,12 @@
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
     "@convoform/tsconfig": "workspace:*",
-    "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
     "@release-it/conventional-changelog": "^8.0.1",
     "auto-changelog": "^2.4.0",
     "dotenv-cli": "^7.3.0",
     "git-cz": "^4.9.0",
     "husky": "^8.0.0",
     "inquirer": "^8.2.6",
-    "prettier": "^3.1.1",
-    "prettier-plugin-tailwindcss": "^0.5.11",
     "release-it": "^17.0.1",
     "turbo": "^2.0.6"
   }

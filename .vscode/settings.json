@@ -1,19 +1,17 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-"[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[typescriptreact]": {
     "editor.formatOnSave": true
-},
-"cSpell.words": [
-  "Anand",
-  "convoform",
-  "Gantt",
-  "paralleldrive",
-  "sonner",
-  "treeshake",
-  "trpc",
-  "unkown",
-  "Utkarsh"
-]
+  },
+  "cSpell.words": [
+    "Anand",
+    "convoform",
+    "Gantt",
+    "paralleldrive",
+    "sonner",
+    "treeshake",
+    "trpc",
+    "unkown",
+    "Utkarsh"
+  ]
 }
