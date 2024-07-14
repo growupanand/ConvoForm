@@ -1,5 +1,3 @@
-/* eslint-disable no-case-declarations */
-
 import type { WebhookEvent } from "@clerk/clerk-sdk-node";
 import { insertUserSchema } from "@convoform/db/src/schema";
 import { type NextRequest, NextResponse } from "next/server";

@@ -47,7 +47,6 @@ export function EditFieldItem({
   isSavingForm,
   handleMoveFocusToNextField,
 }: Readonly<Props>) {
-  // eslint-disable-next-line
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const queryClient = useQueryClient();
   const patchFormFieldMutation = api.formField.patchFormField.useMutation({

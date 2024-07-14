@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --fix",
+    "lint": "next lint",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -58,7 +58,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@convoform/eslint-config": "workspace:*",
     "@convoform/tsconfig": "workspace:*",
     "@tailwindcss/forms": "^0.5.7",
     "@tanstack/react-query-devtools": "^5.17.21",
@@ -67,11 +66,7 @@
     "@types/react": "^18",
     "@types/react-csv": "^1.1.10",
     "@types/react-dom": "^18",
-    "@typescript-eslint/parser": "^6.18.0",
     "autoprefixer": "^10.0.1",
-    "eslint-import-resolver-typescript": "^3.6.1",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-unused-imports": "^3.0.0",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"

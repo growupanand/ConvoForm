@@ -6,8 +6,7 @@
     ".": "./index.ts"
   },
   "scripts": {
-    "type-check": "tsc --noEmit",
-    "lint": "eslint ./src/**/*.ts --fix"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.5",
@@ -21,9 +20,6 @@
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@typescript-eslint/parser": "^6.18.0",
-    "eslint": "^8.56.0",
-    "eslint-plugin-unused-imports": "^3.0.0",
     "typescript": "^5"
   }
 }

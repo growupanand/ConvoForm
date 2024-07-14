@@ -1,5 +1,3 @@
-/* eslint-disable no-case-declarations */
-
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 

@@ -33,7 +33,7 @@ const nextConfig = {
   transpilePackages: ["@convoform/ui", "@convoform/db", "@convoform/api"],
 
   /** We already do linting and typechecking as separate tasks in CI */
-  eslint: { ignoreDuringBuilds: true },
+  eslint: { ignoreDuringBuilds: false },
   typescript: { ignoreBuildErrors: true },
 };
 
