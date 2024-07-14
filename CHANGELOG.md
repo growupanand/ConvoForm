@@ -1,3 +1,20 @@
+
+
+## [0.11.0](https://github.com/growupanand/ConvoForm/compare/0.10.0...0.11.0) (2024-07-14)
+
+
+### Features
+
+* 🚀 Added submission progress bar ([2afd2f9](https://github.com/growupanand/ConvoForm/commit/2afd2f9bba9dbc01e20ca92e8515cf7d6af372e7))
+* 🚀 Current field will be shown in form submission page ([fdacaaf](https://github.com/growupanand/ConvoForm/commit/fdacaafe4654eb61809032902913afb000829fca))
+
+
+### Improvements
+
+* ⚡️ Replaced eslint and prettier with the Biomejs ([#327](https://github.com/growupanand/ConvoForm/issues/327)) ([f3ee459](https://github.com/growupanand/ConvoForm/commit/f3ee45931ef72a54c6778fdbc04bf70046b2be8c))
+* ⚡️ Upgraded Next.js version@14.2.5 ([fa351a0](https://github.com/growupanand/ConvoForm/commit/fa351a05b433ab7db38343e6a6dbcc50225e5912))
+* ⚡️ Upgraded Turborepo version@2 ([8b47847](https://github.com/growupanand/ConvoForm/commit/8b478477f2ff84fa9f784b83e6dbff6e2fd9c456))
+
 ## [0.10.0](https://github.com/growupanand/ConvoForm/compare/0.9.2...0.10.0) (2024-07-13)
 
 ### Features

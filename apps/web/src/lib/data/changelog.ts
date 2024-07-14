@@ -1,7 +1,48 @@
 export const changelog = [
   {
-    title: "0.10.0",
+    title: "0.11.0",
     tag: "",
+    isoDate: "2024-07-14",
+    commits: {
+      features: [
+        {
+          message:
+            "feat: 🚀 Added submission progress bar\n\nAs a Respondent, I can see current form submission progress bar in top\nedge screen\n\n✅ Closes: 249",
+          shorthash: "2afd2f9",
+          href: "https://github.com/growupanand/ConvoForm/commit/2afd2f9bba9dbc01e20ca92e8515cf7d6af372e7",
+        },
+
+        {
+          message:
+            "feat: 🚀 Current field will be shown in form submission page",
+          shorthash: "fdacaaf",
+          href: "https://github.com/growupanand/ConvoForm/commit/fdacaafe4654eb61809032902913afb000829fca",
+        },
+      ],
+      improvements: [
+        {
+          message: "perf: ⚡️ Replaced eslint and prettier with the Biomejs",
+          shorthash: "f3ee459",
+          href: "https://github.com/growupanand/ConvoForm/commit/f3ee45931ef72a54c6778fdbc04bf70046b2be8c",
+        },
+        {
+          message: "perf: ⚡️ Upgraded Turborepo version@2",
+          shorthash: "8b47847",
+          href: "https://github.com/growupanand/ConvoForm/commit/8b478477f2ff84fa9f784b83e6dbff6e2fd9c456",
+        },
+
+        {
+          message: "perf: ⚡️ Upgraded Next.js version@14.2.5",
+          shorthash: "fa351a0",
+          href: "https://github.com/growupanand/ConvoForm/commit/fa351a05b433ab7db38343e6a6dbcc50225e5912",
+        },
+      ],
+      fixes: [],
+    },
+  },
+  {
+    title: "0.10.0",
+    tag: "0.10.0",
     isoDate: "2024-07-13",
     commits: {
       features: [
