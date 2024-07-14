@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import { Workspace } from "@convoform/db/src/schema";
+import type { Workspace } from "@convoform/db/src/schema";
 import { motion, stagger, useAnimate } from "framer-motion";
+import { useEffect } from "react";
 
 import {
   EmptyCard,

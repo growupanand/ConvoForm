@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ExtraStreamData, Form } from "@convoform/db/src/schema";
+import type { ExtraStreamData, Form } from "@convoform/db/src/schema";
 import { useConvoForm } from "@convoform/react";
+import { useEffect, useState } from "react";
 
 import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
-import { EndScreen } from "./endScreen";
 import { FormFieldsViewer } from "./FormFieldsViewer";
+import { EndScreen } from "./endScreen";
 import { TopProgressBar } from "./topProgressBar";
 import { WelcomeScreen } from "./welcomeScreen";
 

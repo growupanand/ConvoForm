@@ -9,7 +9,7 @@
     { "pattern": "apps/*/" },
     { "pattern": "packages/*/" }
   ],
-"[typescriptreact]": { // for .tsx files
+"[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
 },
@@ -23,5 +23,5 @@
   "trpc",
   "unkown",
   "Utkarsh"
-],
+]
 }

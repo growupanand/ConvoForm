@@ -4,7 +4,7 @@ export const revalidatePath = async (
   path: string,
   type?: "layout" | "page",
 ) => {
-  await apiClient(`revalidate`, {
+  await apiClient("revalidate", {
     method: "GET",
     queryParams: type
       ? {

@@ -1,5 +1,8 @@
-import { ExtraStreamData, FieldConfiguration } from "@convoform/db/src/schema";
-import { SubmitAnswer } from "@convoform/react";
+import type {
+  ExtraStreamData,
+  FieldConfiguration,
+} from "@convoform/db/src/schema";
+import type { SubmitAnswer } from "@convoform/react";
 
 import { MultiChoiceInput } from "./multiChoiceInput";
 import { TextInput } from "./textInput";

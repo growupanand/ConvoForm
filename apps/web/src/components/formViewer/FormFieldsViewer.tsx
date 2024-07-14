@@ -1,7 +1,7 @@
 "use client";
 
-import { ExtraStreamData } from "@convoform/db/src/schema";
-import { SubmitAnswer } from "@convoform/react";
+import type { ExtraStreamData } from "@convoform/db/src/schema";
+import type { SubmitAnswer } from "@convoform/react";
 import { Tally1 } from "lucide-react";
 
 import { DynamicAnswerInput } from "./DynamicAnswerInput";

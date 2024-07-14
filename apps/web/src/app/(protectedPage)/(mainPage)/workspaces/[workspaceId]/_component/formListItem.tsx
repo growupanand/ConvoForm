@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { Form } from "@convoform/db/src/schema";
+import type { Form } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   DropdownMenu,
@@ -14,6 +13,7 @@ import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, useAnimate } from "framer-motion";
 import { ExternalLink, Loader2, MoreVertical, Trash } from "lucide-react";
+import Link from "next/link";
 
 import { ConfirmAction } from "@/components/common/confirmAction";
 import { LinkN } from "@/components/common/linkN";

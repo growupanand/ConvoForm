@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimitThrowError } from "@convoform/api";
 import {
+  type FormField,
   aiGeneratedFormSchema,
-  FormField,
   generateFormSchema,
 } from "@convoform/db/src/schema";
-import { z } from "zod";
+import { type NextRequest, NextResponse } from "next/server";
+import type { z } from "zod";
 
 import { aiGeneratedFormLimit } from "@/lib/config/pricing";
 import { sendErrorResponse } from "@/lib/errorHandlers";
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
       formSummary: generatedFormOverview,
     } = aiResponseJSON;
 
-    if (isInvalidFormOverview == true) {
+    if (isInvalidFormOverview === true) {
       throw new Error("Invalid form description.");
     }
 

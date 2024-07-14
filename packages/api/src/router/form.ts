@@ -3,7 +3,7 @@ import {
   form,
   formField,
   getSafeFormFieldsOrders,
-  insertFormFieldSchema,
+  type insertFormFieldSchema,
   newFormSchema,
   patchFormSchema,
   updateFormSchema,
@@ -153,6 +153,7 @@ export const formRouter = createTRPCRouter({
       // Sort form fields
       const formFieldsOrders = getSafeFormFieldsOrders(restForm, formFields);
       const sortedFormFields = formFieldsOrders.map(
+        // biome-ignore lint/style/noNonNullAssertion: ignored
         (id) => formFields.find((field) => field.id === id)!,
       );
 

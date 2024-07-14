@@ -1,4 +1,4 @@
-import { Transcript } from "@convoform/db/src/schema";
+import type { Transcript } from "@convoform/db/src/schema";
 
 import { AnimatedTypingDots } from "@/components/common/typingDots";
 

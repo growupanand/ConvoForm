@@ -1,14 +1,14 @@
 import OpenAI from "openai";
 import {
-  ChatCompletionFunctions,
-  ChatCompletionRequestMessage,
+  type ChatCompletionFunctions,
+  type ChatCompletionRequestMessage,
   Configuration,
-  CreateChatCompletionRequest,
+  type CreateChatCompletionRequest,
   OpenAIApi,
 } from "openai-edge";
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
-import { OPEN_AI_MODEL, OPENAI_API_KEY } from "../constants";
+import { OPENAI_API_KEY, OPEN_AI_MODEL } from "../constants";
 import { SystemPromptService } from "./systemPrompt";
 
 const openAI = new OpenAIApi(
@@ -26,13 +26,9 @@ export class OpenAIService extends SystemPromptService {
   openai: OpenAIApi = openAI;
   openAIModel: string = OPEN_AI_MODEL;
 
-  constructor() {
-    super();
-  }
-
   async getOpenAIResponse(
     messages: ChatCompletionRequestMessage[],
-    stream: boolean = false,
+    stream = false,
     functions?: ChatCompletionFunctions[],
   ) {
     const createChatCompletionRequest = {

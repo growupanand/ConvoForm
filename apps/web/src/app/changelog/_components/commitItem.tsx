@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { GitCommitHorizontal } from "lucide-react";
+import Link from "next/link";
 
 import { extractCommitMessage } from "@/lib/github";
-import { Commit } from "@/lib/validations/changeLog";
+import type { Commit } from "@/lib/validations/changeLog";
 
 export const CommitItem = ({ commit }: { commit: Commit }) => {
   const commitMessage = extractCommitMessage(commit.message);

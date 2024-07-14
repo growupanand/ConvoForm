@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import {
-  FormField as FormFieldSchema,
+  type FormField as FormFieldSchema,
   INPUT_TYPES_MAP,
   inputTypeEnum,
   updateFormFieldSchema,
@@ -41,8 +40,9 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Info } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 
 import { ConfirmAction } from "@/components/common/confirmAction";
 import { api } from "@/trpc/react";
@@ -190,7 +190,9 @@ export function EditFieldSheet({
                       </div>
                       <FormControl>
                         <Textarea
-                          placeholder={`Information you would like to collect.\nE.g. Your email address, Your work experience in years etc...`}
+                          placeholder={
+                            "Information you would like to collect.\nE.g. Your email address, Your work experience in years etc..."
+                          }
                           {...field}
                           rows={4}
                           disabled={isFormBusy}

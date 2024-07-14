@@ -13,7 +13,7 @@ import { montserrat } from "@/app/fonts";
 import { LinkN } from "@/components/common/linkN";
 import { SectionCard } from "@/components/sectionCard";
 import { freePlan } from "@/lib/config/pricing";
-import { Plan } from "@/lib/types/pricing";
+import type { Plan } from "@/lib/types/pricing";
 import { cn } from "@/lib/utils";
 
 export function Pricing() {

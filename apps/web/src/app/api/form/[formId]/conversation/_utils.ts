@@ -1,4 +1,4 @@
-import { CollectedData, Form, FormField } from "@convoform/db/src/schema";
+import type { CollectedData, Form, FormField } from "@convoform/db/src/schema";
 
 import { formSubmissionLimit } from "@/lib/config/pricing";
 import { api } from "@/trpc/server";

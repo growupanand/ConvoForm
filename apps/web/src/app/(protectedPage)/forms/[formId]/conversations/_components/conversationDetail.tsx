@@ -1,4 +1,4 @@
-import { Conversation, Transcript } from "@convoform/db/src/schema";
+import type { Conversation, Transcript } from "@convoform/db/src/schema";
 import { Badge } from "@convoform/ui/components/ui/badge";
 import {
   Card,
@@ -41,7 +41,7 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
     if (conversation.isInProgress) {
       return (
         <Badge variant="secondary" className="flex items-center gap-3 text-sm ">
-          <span className="bg-primary flex size-3 animate-pulse rounded-full"></span>
+          <span className="bg-primary flex size-3 animate-pulse rounded-full" />
           <span>In progress</span>
         </Badge>
       );

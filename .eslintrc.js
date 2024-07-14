@@ -2,8 +2,7 @@
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   root: true,
-  ignorePatterns: ["apps/**", "packages/**"],
-  extends: ["@convoform/eslint-config/library.js"],
+  extends: ["./apps/web/.eslintrc.js"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: "latest",

@@ -1,4 +1,4 @@
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 import { OpenAIService } from "./openAI";
 

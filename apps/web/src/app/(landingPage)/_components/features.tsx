@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Card,
   CardContent,
@@ -6,6 +5,7 @@ import {
   CardTitle,
 } from "@convoform/ui/components/ui/card";
 import { Cpu, MessageSquare, Shield, SlidersHorizontal } from "lucide-react";
+import type React from "react";
 
 import { SectionCard } from "@/components/sectionCard";
 import { cn } from "@/lib/utils";

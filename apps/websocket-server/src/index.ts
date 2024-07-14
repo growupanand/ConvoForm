@@ -1,4 +1,4 @@
-import { createServer } from "http";
+import { createServer } from "node:http";
 import express from "express";
 import { Server } from "socket.io";
 
@@ -13,7 +13,7 @@ const app = express();
 const server = createServer(app);
 app.use(express.json());
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send("Working");
 });
 

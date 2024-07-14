@@ -1,6 +1,6 @@
 import Dot from "@/components/common/dot";
 import { cn } from "@/lib/utils";
-import { SIZES_MAP } from "./constants";
+import type { SIZES_MAP } from "./constants";
 
 export type DotSize = keyof typeof SIZES_MAP;
 
@@ -27,7 +27,7 @@ export function AnimatedTypingDots({
 
           dotClassName,
         )}
-      ></Dot>
+      />
       <Dot
         size={size}
         className={cn(
@@ -35,7 +35,7 @@ export function AnimatedTypingDots({
           animate && "animate-bounce-lg",
           dotClassName,
         )}
-      ></Dot>
+      />
       <Dot
         size={size}
         className={cn(
@@ -43,7 +43,7 @@ export function AnimatedTypingDots({
           animate && "animate-bounce-lg",
           dotClassName,
         )}
-      ></Dot>
+      />
     </div>
   );
 }

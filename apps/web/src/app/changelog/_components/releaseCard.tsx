@@ -1,6 +1,6 @@
 import { SectionCard } from "@/components/sectionCard";
 import { formatDate } from "@/lib/utils";
-import { CommitSections, Release } from "@/lib/validations/changeLog";
+import type { CommitSections, Release } from "@/lib/validations/changeLog";
 import { CommitSection } from "./commitSection";
 
 export const commitsSections = [

@@ -2,7 +2,7 @@
  * This utils will help to parse stream response coming from the server
  */
 
-import { JSONValue } from "../types";
+import type { JSONValue } from "../types";
 
 const NEWLINE = "\n".charCodeAt(0);
 
@@ -110,24 +110,25 @@ export async function* readResponseStream<Data extends Record<string, any>>(
     const concatenatedChunks = concatChunks(chunks, totalLength);
     totalLength = 0;
 
-    decoder
+    const lines = decoder
       .decode(concatenatedChunks, { stream: true })
       .split("\n")
       .filter((line) => line !== "") // splitting leaves an empty string at the end
-      .map(parseStreamLine)
-      .forEach((line) => {
-        if (
-          line.type === "data" &&
-          line.value &&
-          typeof line.value === "object"
-        ) {
-          data = Array.isArray(line.value) ? line.value[0] : line.value;
-        }
+      .map(parseStreamLine);
 
-        if (line.type === "text") {
-          textValue += line.value;
-        }
-      });
+    for (const line of lines) {
+      if (
+        line.type === "data" &&
+        line.value &&
+        typeof line.value === "object"
+      ) {
+        data = Array.isArray(line.value) ? line.value[0] : line.value;
+      }
+
+      if (line.type === "text") {
+        textValue += line.value;
+      }
+    }
     yield { textValue, data };
   }
 }

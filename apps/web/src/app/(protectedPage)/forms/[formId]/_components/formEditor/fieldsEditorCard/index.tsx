@@ -1,27 +1,27 @@
 "use client";
 
-import { KeyboardEvent, useMemo, useRef, useState } from "react";
-import { Form, FormField } from "@convoform/db/src/schema";
+import type { Form, FormField } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
-  closestCenter,
   DndContext,
-  DragEndEvent,
+  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
+  closestCenter,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
-  arrayMove,
   SortableContext,
+  arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Plus } from "lucide-react";
+import { type KeyboardEvent, useMemo, useRef, useState } from "react";
 
-import { HandleUpdateFieldsOrder } from "../formEditorCard";
+import type { HandleUpdateFieldsOrder } from "../formEditorCard";
 import { AddFieldItemEditor } from "./addFieldItemEditor";
 import { EditFieldItem } from "./editFieldItem";
 import { EditFieldSheet } from "./editFieldSheet";
@@ -170,7 +170,10 @@ export function FieldsEditorCard({
               <EditFieldItem
                 key={fieldId}
                 orderId={fieldId}
-                formField={formFieldsMapByIds[fieldId]!}
+                formField={
+                  // biome-ignore lint/style/noNonNullAssertion: reason
+                  formFieldsMapByIds[fieldId]!
+                }
                 onEdit={handleShowEditFieldSheet}
                 isSavingForm={isSavingForm}
                 handleMoveFocusToNextField={handleMoveFocusToNextField}

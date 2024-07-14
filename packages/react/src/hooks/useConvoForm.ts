@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { ExtraStreamData, Transcript } from "@convoform/db/src/schema";
+import type { ExtraStreamData, Transcript } from "@convoform/db/src/schema";
 import { socket } from "@convoform/websocket-client";
+import { useCallback, useEffect, useState } from "react";
 
 import { API_DOMAIN } from "../constants";
-import { SubmitAnswer } from "../types";
+import type { SubmitAnswer } from "../types";
 import { readResponseStream } from "../utils/streamUtils";
 
 type Props = {
@@ -78,7 +78,7 @@ export function useConvoForm({
     }
 
     let currentQuestionText = "";
-    let updatedCurrentField;
+    let updatedCurrentField: string | undefined;
 
     const reader = response.body.getReader();
     for await (const {

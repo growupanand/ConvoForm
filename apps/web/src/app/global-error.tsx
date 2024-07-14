@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import * as Sentry from "@sentry/nextjs";
+import { useEffect } from "react";
 
 import { NotFoundPage } from "@/components/common/notFound";
 
@@ -11,7 +11,7 @@ export default function GlobalError({ error }: { error: any }) {
   }, [error]);
 
   return (
-    <html>
+    <html lang="en">
       <body>
         <NotFoundPage
           code={500}

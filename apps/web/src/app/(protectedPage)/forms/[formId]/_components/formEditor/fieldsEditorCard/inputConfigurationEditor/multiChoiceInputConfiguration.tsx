@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   FormControl,
@@ -10,9 +9,10 @@ import {
 } from "@convoform/ui/components/ui/form";
 import { Input } from "@convoform/ui/components/ui/input";
 import { Plus, X } from "lucide-react";
-import { useFieldArray, UseFormReturn } from "react-hook-form";
+import { useEffect } from "react";
+import { type UseFormReturn, useFieldArray } from "react-hook-form";
 
-import { FormHookData } from "../editFieldSheet";
+import type { FormHookData } from "../editFieldSheet";
 
 type Props = {
   formHook: UseFormReturn<FormHookData>;

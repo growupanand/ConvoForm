@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
 export const getOrganizationId = () => {
   const { orgId } = auth();

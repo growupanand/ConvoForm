@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Info } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 
 import Spinner from "@/components/common/spinner";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
@@ -145,7 +145,9 @@ export function AddFieldItemEditor({ onFieldAdded, formId }: Readonly<Props>) {
                 <FormControl>
                   <div className="flex items-center justify-between gap-x-3">
                     <Textarea
-                      placeholder={`Information you would like to collect.\nE.g. Your email address, Your work experience in years etc...`}
+                      placeholder={
+                        "Information you would like to collect.\nE.g. Your email address, Your work experience in years etc..."
+                      }
                       {...field}
                       rows={4}
                       disabled={isCreatingForm}

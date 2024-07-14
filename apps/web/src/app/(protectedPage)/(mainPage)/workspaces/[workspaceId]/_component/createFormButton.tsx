@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { newFormSchema, Workspace } from "@convoform/db/src/schema";
+import { type Workspace, newFormSchema } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   DropdownMenu,
@@ -14,7 +12,9 @@ import {
 import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { Loader2, PenLine, Plus, Sparkles } from "lucide-react";
-import { z } from "zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import type { z } from "zod";
 
 import { montserrat } from "@/app/fonts";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";

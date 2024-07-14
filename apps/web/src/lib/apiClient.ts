@@ -24,7 +24,7 @@ export const apiClient: ApiClient = async (url, fetchOptions) => {
   if (typeof window === "undefined") {
     const { getToken } = auth();
     const token = await getToken();
-    headers["Authorization"] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
   let finalUrl = `${baseURl}/api/${url}`;

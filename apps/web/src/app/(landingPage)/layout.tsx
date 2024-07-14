@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 import { Footer } from "@/app/(landingPage)/_components/footer";
 import { Header } from "@/app/(landingPage)/_components/header";
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: {
       absolute: "ConvoForm | Create Conversational Forms",
     },
-    images: [`/api/og`],
+    images: ["/api/og"],
   },
 };
 

@@ -6,9 +6,9 @@ import {
   FormMessage,
 } from "@convoform/ui/components/ui/form";
 import { Input } from "@convoform/ui/components/ui/input";
-import { UseFormReturn } from "react-hook-form";
+import type { UseFormReturn } from "react-hook-form";
 
-import { FormHookData } from "../editFieldSheet";
+import type { FormHookData } from "../editFieldSheet";
 
 type Props = {
   formHook: UseFormReturn<FormHookData>;

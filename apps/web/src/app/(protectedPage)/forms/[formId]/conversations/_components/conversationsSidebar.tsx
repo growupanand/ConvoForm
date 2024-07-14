@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   Sheet,
@@ -12,6 +10,8 @@ import {
 import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { socket } from "@convoform/websocket-client";
 import { GanttChartSquare, List } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { SecondaryNavigation } from "@/components/common/secondaryNavigation";
 import { api } from "@/trpc/react";

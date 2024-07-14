@@ -1,12 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@convoform/ui/components/ui/tabs";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { montserrat } from "@/app/fonts";
-import { NavLink } from "@/lib/types/navigation";
+import type { NavLink } from "@/lib/types/navigation";
 
 type Props = {
   formId: string;
@@ -15,7 +15,7 @@ type Props = {
 export default function MainNavTab({ formId }: Readonly<Props>) {
   const pathName = usePathname();
   const currentFormId = formId;
-  const isAlreadyOnConversationsPage = pathName.includes(`conversations`);
+  const isAlreadyOnConversationsPage = pathName.includes("conversations");
 
   const tabLinks = [
     {

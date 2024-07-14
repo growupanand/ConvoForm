@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import NProgress from "nprogress";
+import { useEffect } from "react";
 
 export function TopProgressBar({ totalProgress }: { totalProgress: number }) {
   useEffect(() => {

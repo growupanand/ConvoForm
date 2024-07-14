@@ -1,8 +1,8 @@
 /* eslint-disable no-case-declarations */
 
-import { NextRequest, NextResponse } from "next/server";
-import { type WebhookEvent } from "@clerk/clerk-sdk-node";
+import type { WebhookEvent } from "@clerk/clerk-sdk-node";
 import { insertUserSchema } from "@convoform/db/src/schema";
+import { type NextRequest, NextResponse } from "next/server";
 
 import { api } from "@/trpc/server";
 

@@ -1,11 +1,11 @@
-import { NextRequest } from "next/server";
 import { checkRateLimitThrowError } from "@convoform/api";
 import {
-  CollectedFilledData,
+  type CollectedFilledData,
+  type Transcript,
   extraStreamDataSchema,
-  Transcript,
   transcriptSchema,
 } from "@convoform/db/src/schema";
+import type { NextRequest } from "next/server";
 import { z } from "zod";
 
 import { sendErrorMessage, sendErrorResponse } from "@/lib/errorHandlers";

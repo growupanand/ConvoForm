@@ -37,25 +37,25 @@ export const ratelimit = redis
         prefix: "ratelimit",
         limiter: Ratelimit.fixedWindow(200, "60s"),
       }),
-      ["core:create"]: new Ratelimit({
+      "core:create": new Ratelimit({
         redis,
         analytics: true,
         prefix: "ratelimit:api",
         limiter: Ratelimit.fixedWindow(2, "10s"),
       }),
-      ["core:edit"]: new Ratelimit({
+      "core:edit": new Ratelimit({
         redis,
         analytics: true,
         prefix: "ratelimit:api",
         limiter: Ratelimit.fixedWindow(4, "10s"),
       }),
-      ["ai:unkown"]: new Ratelimit({
+      "ai:unkown": new Ratelimit({
         redis,
         analytics: true,
         prefix: "ratelimit:ai",
         limiter: Ratelimit.fixedWindow(400, "1d"),
       }),
-      ["ai:identified"]: new Ratelimit({
+      "ai:identified": new Ratelimit({
         redis,
         analytics: true,
         prefix: "ratelimit:ai",

@@ -1,8 +1,3 @@
-import { eq } from "drizzle-orm";
-
-import { db } from "./db";
-import { conversation } from "./schema";
-
 console.log("Running custom script...");
 
 async function main() {

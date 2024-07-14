@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Organization } from "@clerk/clerk-sdk-node";
+import type { Organization } from "@clerk/clerk-sdk-node";
 import {
-  FormField as FormFieldSchema,
-  Form as FormSchema,
+  type FormField as FormFieldSchema,
+  type Form as FormSchema,
   getSafeFormFieldsOrders,
   updateFormSchema,
 } from "@convoform/db/src/schema";
@@ -30,8 +29,9 @@ import { Textarea } from "@convoform/ui/components/ui/textarea";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";

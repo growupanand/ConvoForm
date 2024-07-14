@@ -1,5 +1,4 @@
-import React from "react";
-import { Form } from "@convoform/db/src/schema";
+import type { Form } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 
 import { montserrat, roboto } from "@/app/fonts";

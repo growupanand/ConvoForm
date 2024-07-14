@@ -24,5 +24,4 @@ node_modules/
 *.ico
 DONT_DELETE_FOLDER
 **/*.sql
-!package.json
 *.woff
