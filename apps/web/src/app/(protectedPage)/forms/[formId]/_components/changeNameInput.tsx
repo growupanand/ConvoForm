@@ -1,6 +1,6 @@
 "use client";
 
-import { Form } from "@convoform/db/src/schema";
+import type { Form } from "@convoform/db/src/schema";
 import { Input } from "@convoform/ui/components/ui/input";
 import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { toast } from "@convoform/ui/components/ui/use-toast";

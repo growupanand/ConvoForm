@@ -1,4 +1,4 @@
-import { TextInputConfigSchema } from "@convoform/db/src/schema";
+import type { TextInputConfigSchema } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   Form,
@@ -15,7 +15,7 @@ import { z } from "zod";
 
 import { montserrat } from "@/app/fonts";
 import { cn } from "@/lib/utils";
-import { InputProps } from "./";
+import type { InputProps } from "./";
 
 type Props = InputProps & {
   inputConfiguration: TextInputConfigSchema;

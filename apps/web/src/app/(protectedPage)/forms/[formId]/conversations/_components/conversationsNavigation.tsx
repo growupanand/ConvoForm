@@ -1,4 +1,4 @@
-import { Conversation } from "@convoform/db/src/schema";
+import type { Conversation } from "@convoform/db/src/schema";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 
 import { SecondaryNavigation } from "@/components/common/secondaryNavigation";
@@ -30,7 +30,7 @@ export function ConversationsNavigation({
                   ? "bg-primary"
                   : "border border-gray-500 ",
               )}
-            ></span>
+            />
           )}
           <span className="capitalize">
             {conversation.isInProgress ? "In progress..." : conversation.name}

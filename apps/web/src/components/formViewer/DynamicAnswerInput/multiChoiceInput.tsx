@@ -1,7 +1,7 @@
-import { MultipleChoiceInputConfigSchema } from "@convoform/db/src/schema";
+import type { MultipleChoiceInputConfigSchema } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 
-import { InputProps } from "./";
+import type { InputProps } from "./";
 
 type Props = InputProps & {
   inputConfiguration: MultipleChoiceInputConfigSchema;

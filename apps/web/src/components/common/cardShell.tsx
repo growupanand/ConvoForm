@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 export function CardShell({
   children,
   title,
-  secondaryText: secondaryText,
+  secondaryText,
   cardHeaderClassName,
 }: Readonly<{
   children: React.ReactNode;

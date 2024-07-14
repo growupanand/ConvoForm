@@ -1,5 +1,5 @@
-import { FormField } from "../formFields";
-import { Form } from "./validation";
+import type { FormField } from "../formFields";
+import type { Form } from "./validation";
 
 export function isValidFormFieldsOrders(
   form: Pick<Form, "formFieldsOrders">,

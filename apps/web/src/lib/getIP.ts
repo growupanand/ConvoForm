@@ -1,4 +1,4 @@
-import { NextApiRequest } from "next";
+import type { NextApiRequest } from "next";
 
 export default function getIP(request: Request | NextApiRequest) {
   const xff =

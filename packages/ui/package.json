@@ -6,7 +6,6 @@
   "types": "./src/index.tsx",
   "scripts": {
     "ui:add": "pnpm dlx shadcn-ui@latest add",
-    "lint": "eslint .",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -43,7 +42,6 @@
     "vaul": "^0.8.0"
   },
   "devDependencies": {
-    "@convoform/eslint-config": "workspace:*",
     "@convoform/tsconfig": "workspace:*",
     "@types/node": "^20",
     "@types/react": "^18",

@@ -1,7 +1,7 @@
-import { InputTypeSchema } from "@convoform/db/src/schema";
-import { UseFormReturn } from "react-hook-form";
+import type { InputTypeSchema } from "@convoform/db/src/schema";
+import type { UseFormReturn } from "react-hook-form";
 
-import { FormHookData } from "../editFieldSheet";
+import type { FormHookData } from "../editFieldSheet";
 import { MultiChoiceInputConfiguration } from "./multiChoiceInputConfiguration";
 import { TextInputConfigurationEditor } from "./textInputConfigurationEditor";
 

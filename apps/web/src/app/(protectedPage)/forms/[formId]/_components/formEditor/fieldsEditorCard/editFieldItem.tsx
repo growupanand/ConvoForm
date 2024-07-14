@@ -1,8 +1,7 @@
 "use client";
 
-import { KeyboardEvent, useEffect, useRef } from "react";
 import {
-  FormField as FormFieldSchema,
+  type FormField as FormFieldSchema,
   patchFormFieldSchema,
 } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
@@ -20,8 +19,9 @@ import { CSS } from "@dnd-kit/utilities";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Grip, Settings } from "lucide-react";
+import { type KeyboardEvent, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 
 import Spinner from "@/components/common/spinner";
 import { api } from "@/trpc/react";
@@ -47,7 +47,6 @@ export function EditFieldItem({
   isSavingForm,
   handleMoveFocusToNextField,
 }: Readonly<Props>) {
-  // eslint-disable-next-line
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const queryClient = useQueryClient();
   const patchFormFieldMutation = api.formField.patchFormField.useMutation({

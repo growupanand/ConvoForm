@@ -1,16 +1,16 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
-import { usePathname, useRouter } from "next/navigation";
 import { ClerkLoading, OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useMemo } from "react";
 
 import BrandName from "@/components/common/brandName";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
-import { NavigationConfig } from "@/lib/types/navigation";
+import type { NavigationConfig } from "@/lib/types/navigation";
 import { api } from "@/trpc/react";
 import { NavigationLinks } from "./mainNavigation/mainNavigation";
 

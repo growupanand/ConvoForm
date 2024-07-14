@@ -124,7 +124,6 @@ export const reducer = (state: State, action: Action): State => {
   }
 };
 
-// eslint-disable-next-line no-unused-vars
 const listeners: Array<(state: State) => void> = [];
 
 let memoryState: State = { toasts: [] };
@@ -173,7 +172,6 @@ export async function getErrorMessageFromResponse(
 ) {
   let errorMessage = fallbackMessage || "Something went wrong";
 
-  // eslint-disable-next-line no-prototype-builtins
   if (error?.hasOwnProperty("message") && error.message !== undefined) {
     errorMessage = error.message;
     return errorMessage;

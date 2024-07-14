@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { Button } from "@convoform/ui/components/ui/button";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { ExternalLink, RotateCw } from "lucide-react";
+import Link from "next/link";
 
 import { CopyLinkButton } from "./copyLinkButton";
 
@@ -101,9 +101,9 @@ export const AddressBar = ({ link }: { link?: string }) => (
 
 const WindowButtons = () => (
   <div className="flex gap-2">
-    <span className="h-3 w-3 rounded-full bg-red-400"></span>
-    <span className="h-3 w-3 rounded-full bg-yellow-400"></span>
-    <span className="h-3 w-3 rounded-full bg-green-400"></span>
+    <span className="h-3 w-3 rounded-full bg-red-400" />
+    <span className="h-3 w-3 rounded-full bg-yellow-400" />
+    <span className="h-3 w-3 rounded-full bg-green-400" />
   </div>
 );
 

@@ -36,8 +36,8 @@ export function AllConversationsTable({ formId }: Readonly<Props>) {
         return data.map((item) => {
           const tableData = getConversationTableData(item.collectedData);
           return {
-            ["Created"]: item.createdAt.toLocaleString(),
-            ["Response name"]: item.name,
+            Created: item.createdAt.toLocaleString(),
+            "Response name": item.name,
             ...tableData,
           };
         });

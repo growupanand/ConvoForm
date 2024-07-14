@@ -1,13 +1,13 @@
 import {
-  CollectedData,
-  CollectedFilledData,
-  generateFormSchema,
+  type CollectedData,
+  type CollectedFilledData,
+  type Transcript,
+  type generateFormSchema,
   selectFormFieldSchema,
   selectFormSchema,
-  Transcript,
 } from "@convoform/db/src/schema";
-import { ChatCompletionRequestMessage } from "openai-edge";
-import { z } from "zod";
+import type { ChatCompletionRequestMessage } from "openai-edge";
+import type { z } from "zod";
 
 const promtFormFieldSchema = selectFormFieldSchema.omit({
   createdAt: true,

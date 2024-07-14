@@ -113,7 +113,7 @@ function FormPageLoading({ formId }: { formId: string }) {
           </CardContent>
         </Card>
       </div>
-      <div className="flex grow items-center justify-center py-3 max-lg:hidden"></div>
+      <div className="flex grow items-center justify-center py-3 max-lg:hidden" />
     </div>
   );
 }

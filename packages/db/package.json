@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "main": "src/index.ts",
   "scripts": {
-    "lint": "eslint ./src/**/*.ts --fix",
     "type-check": "tsc --noEmit",
     "drizzle-kit": "drizzle-kit",
     "drizzle:generate-migration": "drizzle-kit generate",
@@ -20,10 +19,7 @@
   "devDependencies": {
     "@types/node": "^20",
     "@types/pg": "^8.11.0",
-    "@typescript-eslint/parser": "^6.18.0",
     "drizzle-kit": "^0.22.7",
-    "eslint": "^8.56.0",
-    "eslint-plugin-unused-imports": "^3.0.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"

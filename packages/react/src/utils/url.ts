@@ -4,7 +4,7 @@ export const getAPIDomainUrl = (): string => {
     process.env.NEXT_PUBLIC_PACKAGE_ENV &&
     process.env.NEXT_PUBLIC_PACKAGE_ENV === "development"
   ) {
-    return `http://localhost:3000`;
+    return "http://localhost:3000";
   }
   // If App url is defined (Production), return it
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;

@@ -1,8 +1,8 @@
 "use client";
 
-import { PropsWithChildren, useEffect } from "react";
 import Link from "next/link";
 import NProgress from "nprogress";
+import { type PropsWithChildren, useEffect } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -99,6 +99,7 @@ export const LinkN: React.FC<
   return (
     <Link href={href} legacyBehavior>
       <a
+        // biome-ignore lint: ignored
         onClick={handleClick}
         onKeyDown={handleKeyDown}
         tabIndex={0}

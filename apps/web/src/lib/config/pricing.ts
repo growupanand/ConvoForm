@@ -1,4 +1,4 @@
-import { Plan } from "../types/pricing";
+import type { Plan } from "../types/pricing";
 
 export const freePlan: Plan = {
   name: "Free plan",
@@ -6,12 +6,12 @@ export const freePlan: Plan = {
   features: [
     {
       name: "Create forms manually",
-      featureValue: Infinity,
+      featureValue: Number.POSITIVE_INFINITY,
       featureText: "Unlimited",
     },
     {
       name: "Generate forms using AI",
-      featureValue: Infinity,
+      featureValue: Number.POSITIVE_INFINITY,
       featureText: "Unlimited",
     },
     {

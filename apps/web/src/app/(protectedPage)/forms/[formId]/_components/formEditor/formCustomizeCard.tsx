@@ -1,9 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import Image from "next/image";
-import { Organization } from "@clerk/clerk-sdk-node";
-import { Form } from "@convoform/db/src/schema";
+import type { Organization } from "@clerk/clerk-sdk-node";
+import type { Form } from "@convoform/db/src/schema";
 import {
   Collapsible,
   CollapsibleContent,
@@ -13,6 +11,8 @@ import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { Switch } from "@convoform/ui/components/ui/switch";
 import { Textarea } from "@convoform/ui/components/ui/textarea";
 import { useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
+import { useRef } from "react";
 
 import { debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";

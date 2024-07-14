@@ -23,6 +23,7 @@ export const conversationRouter = createTRPCRouter({
         where: (conversation, { eq, and }) =>
           and(
             eq(conversation.formId, input.formId),
+            // biome-ignore lint/style/noNonNullAssertion: ignored
             eq(conversation.organizationId, ctx.auth.orgId!),
           ),
         orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
@@ -43,7 +44,7 @@ export const conversationRouter = createTRPCRouter({
   create: publicProcedure
     .input(insertConversationSchema)
     .mutation(async ({ input, ctx }) => {
-      let { transcript, collectedData, formOverview, ...newConversation } =
+      const { transcript, collectedData, formOverview, ...newConversation } =
         insertConversationSchema.parse(input);
 
       const [result] = await ctx.db
@@ -91,6 +92,7 @@ export const conversationRouter = createTRPCRouter({
         where: (conversation, { eq, and }) =>
           and(
             eq(conversation.formId, input.formId),
+            // biome-ignore lint/style/noNonNullAssertion: ignored
             eq(conversation.organizationId, ctx.auth.orgId!),
           ),
         columns: {
@@ -114,6 +116,7 @@ export const conversationRouter = createTRPCRouter({
         throw new Error("Organization ID is missing");
       }
       return await ctx.db.query.conversation.findMany({
+        // biome-ignore lint/style/noNonNullAssertion: ignored
         where: eq(conversation.organizationId, ctx.auth.orgId!),
         orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
         limit: input.take,

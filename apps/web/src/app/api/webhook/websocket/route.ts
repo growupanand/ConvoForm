@@ -1,6 +1,4 @@
-/* eslint-disable no-case-declarations */
-
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import { sendErrorResponse } from "@/lib/errorHandlers";

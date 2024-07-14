@@ -1,5 +1,5 @@
-import { Metadata } from "next";
 import { Badge } from "@convoform/ui/components/ui/badge";
+import type { Metadata } from "next";
 
 import BrandName from "@/components/common/brandName";
 import { RequestFeatureCard } from "@/components/requestFeatureCard";

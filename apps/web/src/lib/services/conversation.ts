@@ -1,10 +1,10 @@
-import {
+import type {
   CollectedData,
   CollectedFilledData,
   Transcript,
 } from "@convoform/db/src/schema";
 import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 import { OpenAIService } from "./openAI";
 
@@ -79,8 +79,8 @@ export class ConversationService extends OpenAIService {
     currentField: CollectedData;
     formOverview: string;
   }) {
-    let isAnswerExtracted: boolean = false;
-    let extractedAnswer: string = "";
+    let isAnswerExtracted = false;
+    let extractedAnswer = "";
     let reasonForFailure: string | null = null;
     let otherFieldsData: CollectedFilledData[] = [];
 

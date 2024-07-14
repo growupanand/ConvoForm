@@ -1,7 +1,7 @@
-import Image from "next/image";
-import Link from "next/link";
 import { AspectRatio } from "@convoform/ui/components/ui/aspect-ratio";
 import { ExternalLink } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export function NewFeature() {
   return (

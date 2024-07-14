@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   aiGeneratedFormSchema,
   generateFormSchema,
@@ -17,13 +16,14 @@ import {
 import { Textarea } from "@convoform/ui/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2, Sparkles } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 
 import { ResponsiveModal } from "@/components/common/responsiveModal";
 import Spinner from "@/components/common/spinner";
 import { apiClient } from "@/lib/apiClient";
-import { HandleCreateForm } from "./createFormButton";
+import type { HandleCreateForm } from "./createFormButton";
 
 type Props = {
   onFormGenerated: HandleCreateForm;
@@ -57,7 +57,7 @@ export function GenerateFormModal({
   });
 
   async function onSubmit(formData: z.infer<typeof generateFormSchema>) {
-    const apiEndpoint = `ai/generateForm`;
+    const apiEndpoint = "ai/generateForm";
     setState((cs) => ({
       ...cs,
       isGeneratingFormData: true,
