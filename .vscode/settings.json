@@ -1,7 +1,16 @@
+// biome-ignore lint: ignored
+
 {
   "editor.formatOnSave": true,
   "[typescriptreact]": {
     "editor.formatOnSave": true
+  },
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    // Fix lint errors on save. E.g unused import. Reference: https://biomejs.dev/reference/vscode/#fix-on-save
+    "quickfix.biome": "explicit",
+    // Sort imports on save. Reference: https://biomejs.dev/reference/vscode/#imports-sorting-experimental
+    "source.organizeImports.biome": "explicit"
   },
   "cSpell.words": [
     "Anand",
