@@ -1,25 +1,13 @@
-import Script from "next/script";
+import { GoogleTagManager } from "@next/third-parties/google";
 
-const GoogleAnalytics = ({ ga_id }: { ga_id: string }) => (
-  <>
-    <Script
-      async
-      src={`https://www.googletagmanager.com/gtag/js? 
-      id=${ga_id}`}
-    />
-    <Script
-      id="google-analytics"
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
-      dangerouslySetInnerHTML={{
-        __html: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
+export function Analytics() {
+  const gaId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
 
-          gtag('config', '${ga_id}');
-        `,
-      }}
-    />
-  </>
-);
-export default GoogleAnalytics;
+  console.log({ gaId });
+
+  if (!gaId || !gaId.length) {
+    return null;
+  }
+
+  return <GoogleTagManager gtmId={gaId} />;
+}

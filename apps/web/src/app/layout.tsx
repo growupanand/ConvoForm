@@ -5,12 +5,13 @@ import "nprogress/nprogress.css";
 
 import { Toaster as SonnerToaster } from "@convoform/ui/components/ui/sonner";
 import { Toaster } from "@convoform/ui/components/ui/toaster";
-import { TooltipProvider } from "@convoform/ui/components/ui/tooltip";
 import type { Viewport } from "next";
 
 import { AuthProvider } from "@/components/authProvider";
-import GoogleAnalytics from "@/components/googleAnalytics";
+import { Analytics } from "@/components/googleAnalytics";
+import { TestAnaylytics } from "@/components/testAnalytics";
 import { TRPCReactProvider } from "@/trpc/react";
+import { TooltipProvider } from "@convoform/ui/components/ui/tooltip";
 import { roboto } from "./fonts";
 
 export const viewport: Viewport = {
@@ -73,13 +74,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Analytics />
+
       <body className={roboto.className}>
-        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
-          <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
-        ) : null}
         <TRPCReactProvider>
           <AuthProvider>
-            <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
+            <TooltipProvider delayDuration={200}>
+              <TestAnaylytics />
+              {children}
+            </TooltipProvider>
           </AuthProvider>
         </TRPCReactProvider>
         <Toaster />
