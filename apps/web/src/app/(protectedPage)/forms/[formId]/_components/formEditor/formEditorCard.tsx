@@ -163,7 +163,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
       >
         <UIForm {...formHook}>
           <form onSubmit={formHook.handleSubmit(onSubmit)}>
-            <AccordionItem value="overview" className="">
+            <AccordionItem value="overview" className="border-b-muted">
               <AccordionTrigger
                 className={cn(
                   "text-muted-foreground group font-medium hover:text-black hover:no-underline data-[state=open]:text-black",
@@ -207,7 +207,10 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="landing-page-fields" className="">
+            <AccordionItem
+              value="landing-page-fields"
+              className="border-b-muted"
+            >
               <AccordionTrigger
                 className={cn(
                   "text-muted-foreground group font-medium hover:text-black hover:no-underline data-[state=open]:text-black",
@@ -277,7 +280,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
             </AccordionItem>
           </form>
         </UIForm>
-        <AccordionItem value="requirement-fields" className="">
+        <AccordionItem value="requirement-fields" className="border-b-muted">
           <AccordionTrigger
             className={cn(
               "text-muted-foreground group font-medium  hover:text-black hover:no-underline data-[state=open]:text-black",
