@@ -152,10 +152,32 @@ export const formRouter = createTRPCRouter({
 
       // Sort form fields
       const formFieldsOrders = getSafeFormFieldsOrders(restForm, formFields);
-      const sortedFormFields = formFieldsOrders.map(
-        // biome-ignore lint/style/noNonNullAssertion: ignored
-        (id) => formFields.find((field) => field.id === id)!,
-      );
+      const sortedFormFields = formFieldsOrders
+        .map(
+          // biome-ignore lint/style/noNonNullAssertion: ignored
+          (id) => formFields.find((field) => field.id === id)!,
+        )
+        .map((field) => {
+          /**
+           * TODO: Find a way to fix this
+           * Currently we are saving fieldConfiguration as jsonb in the database, and
+           * minDate and maxDate are saved as string in the database though they are Date objects passed while saving.
+           * So we need to convert them back to Date objects here, Because we have defined there types as Date objects in the schema.
+           */
+
+          if (field.fieldConfiguration.inputType === "datePicker") {
+            const minDate = field.fieldConfiguration.inputConfiguration.minDate;
+            field.fieldConfiguration.inputConfiguration.minDate = minDate
+              ? new Date(minDate)
+              : undefined;
+
+            const maxDate = field.fieldConfiguration.inputConfiguration.maxDate;
+            field.fieldConfiguration.inputConfiguration.maxDate = maxDate
+              ? new Date(maxDate)
+              : undefined;
+          }
+          return field;
+        });
 
       return {
         ...restForm,

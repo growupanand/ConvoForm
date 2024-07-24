@@ -5,27 +5,31 @@ import { inputTypeEnum } from "./constants";
 import { formField } from "./formField";
 
 export const inputTypeSchema = z.enum(inputTypeEnum.enumValues);
-
 export type InputTypeSchema = z.infer<typeof inputTypeSchema>;
 
 export const textInputConfigSchema = z.object({
   placeholder: z.string().optional(),
   maxLength: z.number().optional(),
 });
-
 export type TextInputConfigSchema = z.infer<typeof textInputConfigSchema>;
 
 const choiceOptionSchema = z.object({
   value: z.string().min(1),
 });
-
 export const multipleChoiceInputConfigSchema = z.object({
   options: choiceOptionSchema.array().min(2, "Must have at least 2 options"),
   allowMultiple: z.boolean().optional(),
 });
-
 export type MultipleChoiceInputConfigSchema = z.infer<
   typeof multipleChoiceInputConfigSchema
+>;
+
+export const datePickerInputConfigSchema = z.object({
+  minDate: z.date().optional(),
+  maxDate: z.date().optional(),
+});
+export type DatePickerInputConfigSchema = z.infer<
+  typeof datePickerInputConfigSchema
 >;
 
 export const fieldConfigurationSchema = z.union([
@@ -38,6 +42,10 @@ export const fieldConfigurationSchema = z.union([
       z.enum(inputTypeEnum.enumValues).Values.multipleChoice,
     ),
     inputConfiguration: multipleChoiceInputConfigSchema,
+  }),
+  z.object({
+    inputType: z.literal(z.enum(inputTypeEnum.enumValues).Values.datePicker),
+    inputConfiguration: datePickerInputConfigSchema,
   }),
 ]);
 
