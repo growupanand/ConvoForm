@@ -3,6 +3,7 @@ import {
   type CollectedFilledData,
   type Transcript,
   extraStreamDataSchema,
+  restoreDateFields,
   transcriptSchema,
 } from "@convoform/db/src/schema";
 import type { NextRequest } from "next/server";
@@ -39,6 +40,15 @@ export async function POST(
       params: { formId },
     } = routeContextSchema.parse(context);
     const requestJson = await req.json();
+
+    if (
+      requestJson.currentField?.fieldConfiguration?.inputType === "datePicker"
+    ) {
+      requestJson.currentField.fieldConfiguration = restoreDateFields(
+        requestJson.currentField.fieldConfiguration,
+      );
+    }
+
     const { conversationId, transcript, currentField } =
       requestSchema.parse(requestJson);
     const isInitialMessage = currentField === undefined;

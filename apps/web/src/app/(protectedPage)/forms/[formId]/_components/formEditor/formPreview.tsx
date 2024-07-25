@@ -4,7 +4,7 @@ import {
   EmptyCard,
   IllustrationImageEnum,
 } from "@/components/common/emptyCard";
-import { FormViewer } from "@/components/formViewer/formViewer";
+import { FormViewer } from "@/components/formViewer";
 
 export const FormPreview = ({ form }: { form: any }) => {
   const validForm = formSubmissionSchema.safeParse(form);

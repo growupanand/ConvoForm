@@ -1,8 +1,8 @@
 import {
   type CollectedData,
   type CollectedFilledData,
-  INPUT_TYPES_MAP,
   type Transcript,
+  shouldSkipValidation,
   transcriptSchema,
 } from "@convoform/db/src/schema";
 import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
@@ -91,8 +91,9 @@ export class ConversationService extends OpenAIService {
     let extractedAnswer = "";
     let reasonForFailure: string | null = null;
     let otherFieldsData: CollectedFilledData[] = [];
-    const shouldSkipValidation =
-      INPUT_TYPES_MAP[currentField.fieldConfiguration.inputType].saveExactValue;
+    const skipValidation = shouldSkipValidation(
+      currentField.fieldConfiguration.inputType,
+    );
 
     const isValidTranscript = transcriptSchema
       .array()
@@ -102,7 +103,7 @@ export class ConversationService extends OpenAIService {
       throw new Error("Does not have enough transcript data to extract answer");
     }
 
-    if (shouldSkipValidation) {
+    if (skipValidation) {
       return {
         isAnswerExtracted: true,
         // biome-ignore lint/style/noNonNullAssertion: Already checked above

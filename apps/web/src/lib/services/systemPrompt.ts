@@ -5,6 +5,7 @@ import {
   type generateFormSchema,
   selectFormFieldSchema,
   selectFormSchema,
+  shouldSkipValidation,
 } from "@convoform/db/src/schema";
 import type { ChatCompletionRequestMessage } from "openai-edge";
 import type { z } from "zod";
@@ -117,6 +118,7 @@ export class SystemPromptService {
         - Only pose questions pertaining to the provided form fields.
         - Validate field value. If a value appears invalid according to field name, ask for user confirmation.
         - Keep question concise and clear – not exceeding 25 words – as users can view only one line at a time.
+        - If any already collected field have saved exact value, then skip validation. Do not ask for confirmation.
         ${isFirstQuestion ? "- This is first question, So ask question with greeting message. Do not ask for confirmation from user to start form filling." : ""}
         
 
@@ -130,7 +132,9 @@ export class SystemPromptService {
         (item) => `
       fieldName: ${item.fieldName},
       fieldDescription: ${item.fieldDescription},
-      fieldValue: ${item.fieldValue}`,
+      fieldValue: ${item.fieldValue},
+      saveExactValue: ${shouldSkipValidation(item.fieldConfiguration.inputType)}
+      `,
       )
       .join("\n")}
 

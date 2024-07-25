@@ -6,6 +6,7 @@ import {
   type insertFormFieldSchema,
   newFormSchema,
   patchFormSchema,
+  restoreDateFields,
   updateFormSchema,
 } from "@convoform/db/src/schema";
 import { z } from "zod";
@@ -152,10 +153,15 @@ export const formRouter = createTRPCRouter({
 
       // Sort form fields
       const formFieldsOrders = getSafeFormFieldsOrders(restForm, formFields);
-      const sortedFormFields = formFieldsOrders.map(
-        // biome-ignore lint/style/noNonNullAssertion: ignored
-        (id) => formFields.find((field) => field.id === id)!,
-      );
+      const sortedFormFields = formFieldsOrders
+        .map(
+          // biome-ignore lint/style/noNonNullAssertion: ignored
+          (id) => formFields.find((field) => field.id === id)!,
+        )
+        .map((field) => ({
+          ...field,
+          fieldConfiguration: restoreDateFields(field.fieldConfiguration),
+        }));
 
       return {
         ...restForm,

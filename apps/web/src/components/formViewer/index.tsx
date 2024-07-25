@@ -5,7 +5,7 @@ import { useConvoForm } from "@convoform/react";
 import { useEffect, useState } from "react";
 
 import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
-import { FormFieldsViewer } from "./FormFieldsViewer";
+import { AskScreen } from "./askScreen";
 import { EndScreen } from "./endScreen";
 import { TopProgressBar } from "./topProgressBar";
 import { WelcomeScreen } from "./welcomeScreen";
@@ -81,7 +81,7 @@ export function FormViewer({ form, refresh }: Readonly<Props>) {
       )}
 
       {currentStage === "conversationFlow" && (
-        <FormFieldsViewer
+        <AskScreen
           currentQuestion={currentQuestion}
           isFormBusy={isBusy}
           submitAnswer={submitAnswer}
