@@ -40,7 +40,6 @@ export const createTRPCContext = async () => {
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => {
-    console.log({ shape, error: error.name });
     // Add rate limit error data into response
     let rateLimitErrorData: Record<string, any> = {};
     if (isRateLimitError(error) && typeof error.cause === "object") {
