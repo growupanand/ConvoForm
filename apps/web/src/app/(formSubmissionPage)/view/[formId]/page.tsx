@@ -2,7 +2,7 @@ import { formSubmissionSchema } from "@convoform/db/src/schema";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { FormViewer } from "@/components/formViewer/formViewer";
+import { FormViewer } from "@/components/formViewer";
 import { api } from "@/trpc/server";
 import { FormSubmissionPageHeader } from "./_components/header";
 

@@ -71,7 +71,6 @@ export function GenerateFormModal({
       });
       const responseJson = await response.json();
       const newFormData = aiGeneratedFormSchema.parse(responseJson);
-      console.log({ newFormData });
       setState((cs) => ({
         ...cs,
         isGeneratingFormData: false,

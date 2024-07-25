@@ -13,7 +13,7 @@ type Props = {
   currentField: ExtraStreamData["currentField"];
 };
 
-export const FormFieldsViewer = ({
+export const AskScreen = ({
   isFormBusy,
   currentQuestion,
   submitAnswer,

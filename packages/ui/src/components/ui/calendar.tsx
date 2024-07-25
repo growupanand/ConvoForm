@@ -8,6 +8,7 @@ import { buttonVariants } from "./button";
 
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
+export type Matcher = CalendarProps["disabled"];
 
 function Calendar({
   className,
