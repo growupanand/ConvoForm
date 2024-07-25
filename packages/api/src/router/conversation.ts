@@ -33,6 +33,10 @@ export const conversationRouter = createTRPCRouter({
       const existConversationsFormatted = existConversations.map(
         (conversation) => {
           const collectedData = conversation.collectedData.map((collection) => {
+            if (collection.fieldConfiguration === undefined) {
+              return collection;
+            }
+
             return {
               ...collection,
               fieldConfiguration: restoreDateFields(
