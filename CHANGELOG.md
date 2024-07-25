@@ -1,5 +1,17 @@
 
 
+## [0.12.0](https://github.com/growupanand/ConvoForm/compare/0.11.0...0.12.0) (2024-07-25)
+
+
+### Features
+
+* 🚀 added Answer Input - datepicker ([#339](https://github.com/growupanand/ConvoForm/issues/339)) ([8b71fb6](https://github.com/growupanand/ConvoForm/commit/8b71fb6842e4807ea60107a61aa863a07d88b78b)), closes [#335](https://github.com/growupanand/ConvoForm/issues/335) [#338](https://github.com/growupanand/ConvoForm/issues/338)
+
+
+### Improvements
+
+* ⚡️ Multi choice answer will save exact value WO validation ([27af2f1](https://github.com/growupanand/ConvoForm/commit/27af2f1a24610559809fe6da5c1f5309103815ed))
+
 ## [0.11.0](https://github.com/growupanand/ConvoForm/compare/0.10.0...0.11.0) (2024-07-14)
 
 
