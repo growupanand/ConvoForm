@@ -1,8 +1,31 @@
 export const changelog = [
   {
-    title: "0.11.0",
+    title: "0.12.0",
     tag: "",
-    isoDate: "2024-07-14",
+    isoDate: "2024-07-25",
+    commits: {
+      features: [
+        {
+          message: "feat: 🚀 added Answer Input - datepicker\n\n✅ Closes: 335",
+          shorthash: "8b71fb6",
+          href: "https://github.com/growupanand/ConvoForm/commit/8b71fb6842e4807ea60107a61aa863a07d88b78b",
+        },
+      ],
+      improvements: [
+        {
+          message:
+            "perf: ⚡️ Multi choice answer will save exact value WO validation\n\nWhen user will click on choice button to answer the question, this\nanswer will not be validate by AI, instead will be saved exact value in\ndatabase\n\n✅ Closes: 331",
+          shorthash: "27af2f1",
+          href: "https://github.com/growupanand/ConvoForm/commit/27af2f1a24610559809fe6da5c1f5309103815ed",
+        },
+      ],
+      fixes: [],
+    },
+  },
+  {
+    title: "0.11.0",
+    tag: "0.11.0",
+    isoDate: "2024-07-15",
     commits: {
       features: [
         {
@@ -20,11 +43,6 @@ export const changelog = [
         },
       ],
       improvements: [
-        {
-          message: "perf: ⚡️ Replaced eslint and prettier with the Biomejs",
-          shorthash: "f3ee459",
-          href: "https://github.com/growupanand/ConvoForm/commit/f3ee45931ef72a54c6778fdbc04bf70046b2be8c",
-        },
         {
           message: "perf: ⚡️ Upgraded Turborepo version@2",
           shorthash: "8b47847",
