@@ -4,6 +4,7 @@ import type {
 } from "@convoform/db/src/schema";
 import type { SubmitAnswer } from "@convoform/react";
 
+import { DatePicker } from "./datePicker";
 import { MultiChoiceInput } from "./multiChoiceInput";
 import { TextInput } from "./textInput";
 
@@ -28,6 +29,7 @@ export function DynamicAnswerInput({
           {...inputProps}
         />
       );
+
     case "multipleChoice":
       return (
         <MultiChoiceInput
@@ -35,6 +37,15 @@ export function DynamicAnswerInput({
           {...inputProps}
         />
       );
+
+    case "datePicker":
+      return (
+        <DatePicker
+          inputConfiguration={fieldConfiguration.inputConfiguration}
+          {...inputProps}
+        />
+      );
+
     default:
       return null;
   }
