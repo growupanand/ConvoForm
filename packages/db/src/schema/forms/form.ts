@@ -39,6 +39,7 @@ export const form = pgTable("Form", {
     .array()
     .default(sql`'{}'::text[]`)
     .notNull(),
+  endScreenCTAUrl: text("endScreenCTAUrl"),
 });
 
 export const formRelations = relations(form, ({ one, many }) => ({
