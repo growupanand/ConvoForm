@@ -71,6 +71,10 @@ export const conversationRouter = createTRPCRouter({
 
       const collectedData = existConversation.collectedData.map(
         (collection) => {
+          if (collection.fieldConfiguration === undefined) {
+            return collection;
+          }
+
           return {
             ...collection,
             fieldConfiguration: restoreDateFields(
@@ -107,6 +111,10 @@ export const conversationRouter = createTRPCRouter({
       }
 
       const parsedCollectedData = collectedData.map((collection) => {
+        if (collection.fieldConfiguration === undefined) {
+          return collection;
+        }
+
         return {
           ...collection,
           fieldConfiguration: restoreDateFields(collection.fieldConfiguration),
