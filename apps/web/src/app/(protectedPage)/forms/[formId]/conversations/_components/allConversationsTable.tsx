@@ -52,7 +52,7 @@ export function AllConversationsTable({ formId }: Readonly<Props>) {
             <InboxIcon className="text-muted-foreground h-16 w-16" />
           }
           actionButton={
-            <div className=" flex items-center gap-3 rounded-lg bg-gray-100 lg:px-5">
+            <div className=" flex items-center gap-3 rounded-lg bg-gray-100 px-5">
               <AddressBar link={formLink} />
               <CopyLinkButton onClick={copyLinkToClipboard} />
             </div>

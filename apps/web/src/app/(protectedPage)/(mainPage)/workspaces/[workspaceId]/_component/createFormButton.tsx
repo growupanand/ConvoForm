@@ -112,7 +112,7 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
               onClick={() => handleCreateForm(newFormData)}
             >
               <PenLine size={16} className="mr-2" />
-              <span>Create form Scratch</span>
+              <span>Blank form</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               disabled={isCreatingForm}
@@ -124,7 +124,7 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
             >
               <Sparkles size={16} className="mr-2" />
 
-              <span>Generate using AI</span>
+              <span>Generate by AI</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

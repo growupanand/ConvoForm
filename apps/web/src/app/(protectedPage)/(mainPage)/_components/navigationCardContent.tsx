@@ -136,13 +136,10 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
           <div>
             <BrandName className="text-xl lg:text-2xl" />
           </div>
-          <div className="flex items-center justify-between gap-2 lg:hidden lg:justify-evenly">
-            <UserActions />
-          </div>
         </div>
         <NavigationLinks navigationLinks={navigationLinks} />
       </div>
-      <div className="max-lg:hidden">
+      <div>
         <div className="flex items-center justify-between gap-2 lg:justify-evenly">
           <UserActions />
         </div>

@@ -128,7 +128,7 @@ export function EditFieldSheet({
 
   return (
     <Sheet open={open} onOpenChange={!isFormBusy ? onOpenChange : undefined}>
-      <SheetContent side="left" className="w-full lg:min-w-[400px]">
+      <SheetContent side="left" className="w-full min-w-[400px]">
         <SheetHeader>
           <SheetTitle>Edit form field</SheetTitle>
         </SheetHeader>

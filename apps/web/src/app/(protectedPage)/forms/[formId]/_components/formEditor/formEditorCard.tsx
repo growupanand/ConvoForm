@@ -181,7 +181,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
                 </div>
               </AccordionTrigger>
 
-              <AccordionContent className="lg:pe-1 lg:ps-10 lg:pt-1">
+              <AccordionContent className="pe-1 ps-10 pt-1">
                 <FormField
                   control={formHook.control}
                   name="overview"
@@ -227,7 +227,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
                   <span>Landing page</span>
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="space-y-4 lg:pe-1 lg:ps-10 lg:pt-1">
+              <AccordionContent className="space-y-4 pe-1 ps-10 pt-1">
                 <FormField
                   control={formHook.control}
                   name="welcomeScreenTitle"
@@ -297,7 +297,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
               <span>What you want to ask ?</span>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="lg:pe-1 lg:ps-10 lg:pt-1">
+          <AccordionContent className="pe-1 ps-10 pt-1">
             <FieldsEditorCard
               formFields={formFields}
               formFieldsOrders={fieldsOrders}
@@ -323,7 +323,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
               <span>Ending page</span>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="lg:pe-1 lg:ps-10 lg:pt-1">
+          <AccordionContent className="pe-1 ps-10 pt-1">
             <FormCustomizeCard form={form} organization={organization} />
           </AccordionContent>
         </AccordionItem>
