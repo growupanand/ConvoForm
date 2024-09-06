@@ -126,7 +126,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
         <Input
           ref={inputRef}
           className={cn(
-            "hover:border-input h-auto border-transparent bg-transparent text-xl font-medium ring-0 focus-visible:ring-0 lg:text-2xl",
+            "hover:border-input h-auto border-transparent bg-transparent font-medium ring-0 focus-visible:ring-0 text-2xl",
           )}
           type="text"
           onChange={handleWorkspaceNameInputChange}
@@ -190,7 +190,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
 export const WorkspaceHeaderSkeleton = () => {
   return (
     <div className="mb-5">
-      <div className="mb-3 flex items-center  justify-between lg:mb-10">
+      <div className=" flex items-center  justify-between mb-10">
         <div className="flex items-center gap-2">
           <Skeleton className="h-8 w-40" />
         </div>

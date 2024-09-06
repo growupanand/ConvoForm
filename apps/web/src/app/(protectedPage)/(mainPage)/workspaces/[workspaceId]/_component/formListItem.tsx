@@ -6,7 +6,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@convoform/ui/components/ui/dropdown-menu";
 import { toast } from "@convoform/ui/components/ui/use-toast";
@@ -76,7 +75,7 @@ export function FormListItem({ form }: Readonly<Props>) {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="max-lg:hidden">
+            <div>
               {form.isPublished ? (
                 <Link href={`/view/${form.id}`} target="_blank">
                   <Button variant="link">
@@ -105,17 +104,6 @@ export function FormListItem({ form }: Readonly<Props>) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {form.isPublished ? (
-                  <Link href={`/view/${form.id}`} target="_blank">
-                    <DropdownMenuItem className="cursor-pointer lg:hidden">
-                      <ExternalLink className="mr-2 h-4 w-4" /> View form
-                    </DropdownMenuItem>
-                  </Link>
-                ) : (
-                  <DropdownMenuLabel className="text-muted-foreground font-normal lg:hidden">
-                    Not published
-                  </DropdownMenuLabel>
-                )}
                 <ConfirmAction
                   title="Are you sure you want to delete this form?"
                   description="This action will delete all data related to this form. This action cannot be undone."

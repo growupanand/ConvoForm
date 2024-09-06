@@ -55,16 +55,16 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
   };
 
   return (
-    <div className="h-full lg:container">
-      <div className="mb-5 flex items-start justify-between px-3 lg:mb-10">
+    <div className="h-full container">
+      <div className=" flex items-start justify-between px-3 mb-10">
         <div className="flex flex-col items-start ">
           <div className="flex items-center gap-2">
             <FileText className=" " size={20} />
-            <h2 className="text-xl font-medium capitalize lg:text-2xl">
+            <h2 className=" font-medium capitalize text-2xl">
               {conversation.name}
             </h2>
           </div>
-          <div className="text-muted-foreground text-xs font-normal lg:text-sm">
+          <div className="text-muted-foreground  font-normal text-sm">
             <span className="">Started on - </span>
             <span className="font-medium">
               {conversation.createdAt.toLocaleString()}
@@ -73,7 +73,7 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
         </div>
         <div className="flex flex-col items-end">{getStatusBadge()}</div>
       </div>
-      <div className="grid  gap-3 lg:grid-cols-2">
+      <div className="grid  gap-3 grid-cols-2">
         {!isFormDataEmpty && (
           <SectionCard title="Collected data" titleClassName="font-medium">
             <div className="overflow-hidden rounded-md border bg-white">
@@ -109,7 +109,7 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
 
 const ConversationDetailSkeleton = () => {
   return (
-    <div className="h-full lg:container">
+    <div className="h-full container">
       <Card className="h-full border-none bg-transparent shadow-none">
         <CardHeader>
           <CardTitle>
@@ -127,7 +127,7 @@ const ConversationDetailSkeleton = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-10 lg:grid-cols-2">
+          <div className="grid gap-10 grid-cols-2">
             <div className="overflow-hidden rounded-md border bg-white">
               <Table>
                 <TableBody>

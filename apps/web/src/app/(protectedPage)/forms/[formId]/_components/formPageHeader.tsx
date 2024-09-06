@@ -3,7 +3,7 @@
 import { UserButton, useOrganization } from "@clerk/nextjs";
 import { Button } from "@convoform/ui/components/ui/button";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
-import { ChevronLeft, ChevronRight, Home } from "lucide-react";
+import { ChevronRight, Home } from "lucide-react";
 
 import { montserrat } from "@/app/fonts";
 import { LinkN } from "@/components/common/linkN";
@@ -33,7 +33,7 @@ function FormPageHeader({ formId }: Readonly<Props>) {
       <div className="flex items-center justify-between ">
         <div
           className={cn(
-            "flex w-full items-center overflow-hidden pe-5 text-xs max-lg:hidden",
+            "flex w-full items-center overflow-hidden pe-5 text-xs ",
             montserrat.className,
           )}
         >
@@ -70,21 +70,6 @@ function FormPageHeader({ formId }: Readonly<Props>) {
                 className="hover:border-input w-full text-base font-semibold ring-0 focus-visible:ring-0"
               />
             </>
-          ) : (
-            <span>Form not found</span>
-          )}
-        </div>
-        <div className="lg:hidden">
-          <LinkN href={data ? `/workspaces/${data.workspaceId}` : "/dashboard"}>
-            <Button size="sm" variant="link" className="px-0 text-sm">
-              <ChevronLeft className="mr-2" size={20} />
-              Back
-            </Button>
-          </LinkN>
-        </div>
-        <div className="overflow-hidden lg:hidden">
-          {data ? (
-            <ChangeNameInput form={data} className="text-xl font-medium" />
           ) : (
             <span>Form not found</span>
           )}

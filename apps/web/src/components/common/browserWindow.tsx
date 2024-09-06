@@ -22,19 +22,9 @@ const BrowserWindow = ({
 }: Props) => {
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 shadow-xl shadow-gray-100 ">
-      <div className="flex items-center justify-between bg-gray-200 px-3 py-1 max-lg:hidden">
+      <div className="flex items-center justify-between bg-gray-200 px-3 py-1">
         <WindowButtons />
         <AddressBar link={link} />
-        <ActionButtons
-          link={link}
-          actionsButton={actionsButton}
-          onRefresh={onRefresh}
-        />
-      </div>
-      <div className="flex items-center justify-between gap-3 bg-gray-200 px-3 py-1 lg:hidden">
-        <div className="self-stretch overflow-hidden">
-          <AddressBar link={link} />
-        </div>
         <ActionButtons
           link={link}
           actionsButton={actionsButton}
