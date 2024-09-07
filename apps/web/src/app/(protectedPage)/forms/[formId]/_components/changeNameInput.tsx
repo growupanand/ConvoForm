@@ -1,14 +1,14 @@
 "use client";
 
-import { Form } from "@convoform/db/src/schema";
+import type { Form } from "@convoform/db/src/schema";
 import { Input } from "@convoform/ui/components/ui/input";
+import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn, debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { ExtractFieldErrors } from "@/trpc/utils";
 
 type Props = {
   form: Form;
@@ -21,45 +21,47 @@ export default function ChangeNameInput({ form, className }: Props) {
   const queryClient = useQueryClient();
   const updateForm = api.form.patch.useMutation({
     onSuccess: () => {
-      toast({
-        title: "Form name updated.",
-        duration: 1500,
-      });
       queryClient.invalidateQueries({
         queryKey: [["form", "getOneWithWorkspace"]],
       });
     },
     throwOnError: false,
     onError: (error) => {
-      const { name: nameFieldError } = ExtractFieldErrors(error);
-      toast({
-        title: "Unable to update Form's Name",
-        duration: 2000,
-        variant: "destructive",
-        description: isRateLimitErrorResponse(error)
-          ? error.message
-          : nameFieldError ?? undefined,
-      });
+      if (isRateLimitErrorResponse(error)) {
+        toast({
+          title: "Rate limit exceeded",
+          duration: 1500,
+          variant: "destructive",
+          description: error.message,
+        });
+      }
     },
   });
   const isUpdating = updateForm.isPending;
 
-  const updateWorkspace = (name: string) =>
-    updateForm.mutate({
+  const handleUpdateForm = (name: string) => {
+    const updateFormPromise = updateForm.mutateAsync({
       id: form.id,
       name,
     });
 
+    sonnerToast.promise(updateFormPromise, {
+      loading: "Saving changes...",
+      success: "Form name saved successfully",
+      error: "Unable to update form name",
+    });
+  };
+
   const handleFormNameInputChange = (e: any) => {
     const updatedName = e.target.value as string;
-    debounce(() => updateWorkspace(updatedName), 1000);
+    debounce(() => handleUpdateForm(updatedName), 1000);
   };
 
   return (
     <Input
       disabled={isUpdating}
       className={cn(
-        " border-transparent  bg-transparent text-2xl font-bold  ",
+        " border-transparent  bg-transparent text-2xl font-bold hover:bg-white focus:bg-white  ",
         className,
       )}
       type="text"

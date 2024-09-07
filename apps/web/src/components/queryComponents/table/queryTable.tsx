@@ -1,4 +1,4 @@
-import { UseQueryResult } from "@tanstack/react-query";
+import type { UseQueryResult } from "@tanstack/react-query";
 
 import { QueryComponent } from "../queryComponent";
 import {

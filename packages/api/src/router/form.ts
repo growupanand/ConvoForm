@@ -2,9 +2,11 @@ import { and, count, eq } from "@convoform/db";
 import {
   form,
   formField,
-  insertFormFieldSchema,
+  getSafeFormFieldsOrders,
+  type insertFormFieldSchema,
   newFormSchema,
   patchFormSchema,
+  restoreDateFields,
   updateFormSchema,
 } from "@convoform/db/src/schema";
 import { z } from "zod";
@@ -13,6 +15,7 @@ import { checkRateLimitThrowTRPCError } from "../lib/rateLimit";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const formRouter = createTRPCRouter({
+  // Create form
   create: protectedProcedure
     .input(
       newFormSchema.extend({
@@ -25,7 +28,9 @@ export const formRouter = createTRPCRouter({
         identifier: ctx.userId,
         rateLimitType: "core:create",
       });
-      const [newForm] = await ctx.db
+
+      // Create new form
+      const [savedForm] = await ctx.db
         .insert(form)
         .values({
           userId: ctx.userId,
@@ -40,34 +45,44 @@ export const formRouter = createTRPCRouter({
           isPublished: input.isPublished,
         })
         .returning();
-      if (!newForm) {
+      if (!savedForm) {
         throw new Error("Failed to create form");
       }
 
+      // Create new form fields
       const emptyFormField: z.infer<typeof insertFormFieldSchema> = {
         fieldName: "",
-        formId: newForm.id,
+        formId: savedForm.id,
         fieldDescription: "",
         fieldConfiguration: {
           inputType: "text",
           inputConfiguration: {},
         },
       };
-
-      const formFields = input.formFields.map((field) => ({
+      const givenFormFields = input.formFields.map((field) => ({
         ...field,
-        formId: newForm.id,
+        formId: savedForm.id,
       }));
-
-      const newField = await ctx.db
+      const savedFormFields = await ctx.db
         .insert(formField)
-        .values(formFields.length > 0 ? formFields : [emptyFormField])
+        .values(givenFormFields.length > 0 ? givenFormFields : [emptyFormField])
         .returning();
+
+      // Add form fields order
+      const formFieldsOrders = savedFormFields.map((field) => field.id);
+      await ctx.db
+        .update(form)
+        .set({ formFieldsOrders })
+        .where(eq(form.id, savedForm.id))
+        .returning();
+
       return {
-        ...newForm,
-        formFields: [newField],
+        ...savedForm,
+        formFields: [savedFormFields],
       };
     }),
+
+  // Get all forms list
   getAll: protectedProcedure
     .input(
       z.object({
@@ -136,16 +151,22 @@ export const formRouter = createTRPCRouter({
 
       const { workspace, formFields, ...restForm } = formWithWorkspaceFields;
 
-      // Sort form fields by createdAt
-      const sortedFormFields = formFields.sort((a, b) => {
-        return (
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        );
-      });
+      // Sort form fields
+      const formFieldsOrders = getSafeFormFieldsOrders(restForm, formFields);
+      const sortedFormFields = formFieldsOrders
+        .map(
+          // biome-ignore lint/style/noNonNullAssertion: ignored
+          (id) => formFields.find((field) => field.id === id)!,
+        )
+        .map((field) => ({
+          ...field,
+          fieldConfiguration: restoreDateFields(field.fieldConfiguration),
+        }));
 
       return {
         ...restForm,
         workspace,
+        formFieldsOrders,
         formFields: sortedFormFields,
       };
     }),
@@ -160,6 +181,7 @@ export const formRouter = createTRPCRouter({
       return await ctx.db.delete(form).where(eq(form.id, input.id));
     }),
 
+  // Patch partial form
   patch: protectedProcedure
     .input(patchFormSchema)
     .mutation(async ({ input, ctx }) => {
@@ -167,13 +189,22 @@ export const formRouter = createTRPCRouter({
         identifier: ctx.userId,
         rateLimitType: "core:edit",
       });
-      return await ctx.db
+
+      const { id, ...updatedData } = input;
+      const [updatedForm] = await ctx.db
         .update(form)
-        .set({ name: input.name })
-        .where(eq(form.id, input.id))
+        .set({
+          ...updatedData,
+        })
+        .where(eq(form.id, id))
         .returning();
+
+      if (!updatedForm) {
+        throw new Error("Failed to update form");
+      }
     }),
 
+  // Update the whole form
   updateForm: protectedProcedure
     .input(updateFormSchema.omit({ formFields: true }))
     .mutation(async ({ input, ctx }) => {
@@ -191,6 +222,7 @@ export const formRouter = createTRPCRouter({
           welcomeScreenTitle: input.welcomeScreenTitle,
           welcomeScreenMessage: input.welcomeScreenMessage,
           updatedAt: new Date(),
+          formFieldsOrders: input.formFieldsOrders,
         })
         .where(eq(form.id, input.id))
         .returning();

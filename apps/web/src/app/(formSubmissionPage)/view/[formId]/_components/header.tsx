@@ -1,5 +1,5 @@
+import type { Form } from "@convoform/db/src/schema";
 import Image from "next/image";
-import { Form } from "@convoform/db/src/schema";
 
 export function FormSubmissionPageHeader({
   form,

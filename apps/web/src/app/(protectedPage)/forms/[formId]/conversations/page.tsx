@@ -10,10 +10,10 @@ export default async function ConversationPage({
 }: Readonly<Props>) {
   return (
     <>
-      <h2 className="mb-5 text-xl font-medium capitalize lg:text-2xl">
+      <h2 className="mb-5 font-medium capitalize text-2xl">
         All conversations
       </h2>
-      <div className="mb-5 lg:mb-10">
+      <div className="mb-10">
         <OverviewDataCard formId={formId} />
       </div>
       <div className="col-auto">

@@ -1,8 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { Workspace } from "@convoform/db/src/schema";
+import type { Workspace } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   DropdownMenu,
@@ -15,6 +13,8 @@ import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Check, Edit, MoreVertical, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCallback, useRef } from "react";
 
 import { ConfirmAction } from "@/components/common/confirmAction";
 import Spinner from "@/components/common/spinner";
@@ -126,11 +126,11 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
         <Input
           ref={inputRef}
           className={cn(
-            "hover:border-input h-auto border-transparent bg-transparent text-xl font-medium ring-0 focus-visible:ring-0 lg:text-2xl",
+            "hover:border-input h-auto border-transparent bg-transparent font-medium ring-0 focus-visible:ring-0 text-2xl",
           )}
           type="text"
           onChange={handleWorkspaceNameInputChange}
-          defaultValue={workspace!.name}
+          defaultValue={workspace?.name}
         />
         <div className="flex items-center gap-2 pl-5">
           {isUpdating && <Spinner />}
@@ -176,7 +176,12 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
         </div>
       </div>
       <div>
-        <CreateFormButton workspace={workspace!} />
+        <CreateFormButton
+          workspace={
+            // biome-ignore lint/style/noNonNullAssertion: ignored
+            workspace!
+          }
+        />
       </div>
     </div>
   );
@@ -185,7 +190,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
 export const WorkspaceHeaderSkeleton = () => {
   return (
     <div className="mb-5">
-      <div className="mb-3 flex items-center  justify-between lg:mb-10">
+      <div className=" flex items-center  justify-between mb-10">
         <div className="flex items-center gap-2">
           <Skeleton className="h-8 w-40" />
         </div>

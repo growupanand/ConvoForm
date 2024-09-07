@@ -20,7 +20,7 @@ export function ResponsiveModal({
   open: boolean;
   setOpen?: (open: boolean) => void;
 }>) {
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [isDesktop] = useMediaQuery("(min-width: 768px)");
 
   if (isDesktop) {
     return (

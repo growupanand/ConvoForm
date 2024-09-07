@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Form } from "@convoform/db/src/schema";
+import type { ExtraStreamData, Form } from "@convoform/db/src/schema";
 import { useConvoForm } from "@convoform/react";
+import { useEffect, useState } from "react";
 
 import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
+import { AskScreen } from "./askScreen";
 import { EndScreen } from "./endScreen";
-import { FormFieldsViewer } from "./FormFieldsViewer";
+import { TopProgressBar } from "./topProgressBar";
 import { WelcomeScreen } from "./welcomeScreen";
 
 type Props = {
@@ -36,16 +37,20 @@ export function FormViewer({ form, refresh }: Readonly<Props>) {
     endScreenMessage: generatedEndScreenMessage,
     resetForm,
     currentField,
+    collectedData,
   } = useConvoForm({
     formId: form.id,
   });
 
   const customEndScreenMessage = form.customEndScreenMessage || undefined;
-
   const endScreenMessage = form.showCustomEndScreenMessage
     ? customEndScreenMessage
     : generatedEndScreenMessage;
 
+  const totalSubmissionProgress = getSubmissionProgress(collectedData);
+  const shouldShowProgressBar = ["conversationFlow", "endScreen"].includes(
+    currentStage,
+  );
   const gotoStage = (newStage: FormStage) => {
     setState((cs) => ({ ...cs, formStage: newStage }));
   };
@@ -68,17 +73,17 @@ export function FormViewer({ form, refresh }: Readonly<Props>) {
 
   return (
     <div className="container max-w-[800px]">
+      {shouldShowProgressBar && (
+        <TopProgressBar totalProgress={totalSubmissionProgress} />
+      )}
       {currentStage === "welcomeScreen" && (
         <WelcomeScreen form={form} onCTAClick={handleCTAClick} />
       )}
 
       {currentStage === "conversationFlow" && (
-        <FormFieldsViewer
+        <AskScreen
           currentQuestion={currentQuestion}
           isFormBusy={isBusy}
-          // TODO: Implement this
-          // handleGoToPrevQuestion={handleGoToPrevQuestion}
-          // hidePrevQuestionButton={hidePrevQuestionButton}
           submitAnswer={submitAnswer}
           currentField={currentField}
         />
@@ -88,4 +93,14 @@ export function FormViewer({ form, refresh }: Readonly<Props>) {
       )}
     </div>
   );
+}
+
+function getSubmissionProgress(
+  collectedData: ExtraStreamData["collectedData"],
+) {
+  const totalFieldsRequired = collectedData?.length ?? 0;
+  const totalFieldsCollected =
+    collectedData?.filter(({ fieldValue }) => Boolean(fieldValue)).length ?? 0;
+  const totalProgress = (totalFieldsCollected / totalFieldsRequired) * 100;
+  return totalProgress;
 }

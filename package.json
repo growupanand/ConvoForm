@@ -1,6 +1,6 @@
 {
   "name": "convoform",
-  "version": "0.9.2",
+  "version": "0.12.0",
   "private": true,
   "author": "Utkarsh Anand",
   "repository": {
@@ -20,18 +20,18 @@
     "dev:staging": "dotenv -e .env.staging -- turbo run dev",
     "build": "dotenv -e .env.local -- turbo build",
     "prepare": "husky install",
-    "format:all": "prettier --write .",
-    "format:staged": "prettier --write $(git diff --staged --name-only --diff-filter d | xargs)",
+    "format": "biome format --write .",
     "release": "release-it",
     "commit": "git-cz",
-    "lint": "dotenv -e .env.local -- turbo lint",
-    "type-check": "dotenv -- turbo run type-check",
+    "lint": "dotenv -e .env.local -- biome lint --write . --unsafe",
+    "type-check": "dotenv -e .env.local -- biome check --staged --write . --unsafe --no-errors-on-unmatched",
     "ui:add": "pnpm --filter @convoform/ui ui:add",
     "drizzle-kit": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle-kit",
     "drizzle:generate-migration": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle:generate-migration",
     "drizzle:apply-migration": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle:apply-migration",
     "custom-script": "dotenv -e .env.local -- pnpm --filter @convoform/db custom-script",
-    "start": "dotenv -e .env.local -- turbo run start"
+    "start": "dotenv -e .env.local -- turbo run start",
+    "clean": "find . -name node_modules -o -name .next -o -name .turbo -o -name dist -type d -prune | xargs rm -rf"
   },
   "config": {
     "commitizen": {
@@ -39,21 +39,15 @@
     }
   },
   "devDependencies": {
-    "@convoform/eslint-config": "workspace:*",
+    "@biomejs/biome": "1.8.3",
     "@convoform/tsconfig": "workspace:*",
-    "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
-    "release-it": "^17.0.1",
     "@release-it/conventional-changelog": "^8.0.1",
     "auto-changelog": "^2.4.0",
     "dotenv-cli": "^7.3.0",
-    "@typescript-eslint/parser": "^6.18.0",
-    "eslint": "^8.56.0",
-    "eslint-plugin-unused-imports": "^3.0.0",
     "git-cz": "^4.9.0",
     "husky": "^8.0.0",
     "inquirer": "^8.2.6",
-    "prettier": "^3.1.1",
-    "prettier-plugin-tailwindcss": "^0.5.11",
-    "turbo": "^1.12.1"
+    "release-it": "^17.0.1",
+    "turbo": "^2.1.1"
   }
 }

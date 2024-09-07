@@ -1,11 +1,11 @@
 "use client";
 
-import { ReactNode } from "react";
-import dynamic from "next/dynamic";
 import { Alert, AlertTitle } from "@convoform/ui/components/ui/alert";
 import { Button } from "@convoform/ui/components/ui/button";
 import { Card, CardTitle } from "@convoform/ui/components/ui/card";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import dynamic from "next/dynamic";
+import type { ReactNode } from "react";
 
 import Spinner from "@/components/common/spinner";
 

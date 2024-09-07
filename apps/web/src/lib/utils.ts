@@ -1,4 +1,4 @@
-import { clsx, type ClassValue } from "clsx";
+import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -21,25 +21,25 @@ export function timeAgo(date: string | number | Date) {
   );
   let interval = seconds / 31536000;
   if (interval > 1) {
-    return Math.floor(interval) + " years ago";
+    return `${Math.floor(interval)} years ago`;
   }
   interval = seconds / 2592000;
   if (interval > 1) {
-    return Math.floor(interval) + " months ago";
+    return `${Math.floor(interval)} months ago`;
   }
   interval = seconds / 86400;
   if (interval > 1) {
-    return Math.floor(interval) + " days ago";
+    return `${Math.floor(interval)} days ago`;
   }
   interval = seconds / 3600;
   if (interval > 1) {
-    return Math.floor(interval) + " hours ago";
+    return `${Math.floor(interval)} hours ago`;
   }
   interval = seconds / 60;
   if (interval > 1) {
-    return Math.floor(interval) + " minutes ago";
+    return `${Math.floor(interval)} minutes ago`;
   }
-  return Math.floor(seconds) + " seconds ago";
+  return `${Math.floor(seconds)} seconds ago`;
 }
 
 let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -52,7 +52,7 @@ export const isValidJSON = (str: string) => {
   try {
     JSON.parse(str);
     return true;
-  } catch (e) {
+  } catch (_) {
     return false;
   }
 };

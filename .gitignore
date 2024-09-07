@@ -39,6 +39,7 @@ yarn-error.log*
 
 # Sentry Config File
 .sentryclirc
+.env.sentry-build-plugin
 
 .turbo
 

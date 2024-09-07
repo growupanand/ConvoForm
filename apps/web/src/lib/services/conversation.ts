@@ -1,10 +1,12 @@
 import {
-  CollectedData,
-  CollectedFilledData,
-  Transcript,
+  type CollectedData,
+  type CollectedFilledData,
+  type Transcript,
+  shouldSkipValidation,
+  transcriptSchema,
 } from "@convoform/db/src/schema";
 import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 import { OpenAIService } from "./openAI";
 
@@ -70,7 +72,13 @@ export class ConversationService extends OpenAIService {
     );
   }
 
-  public async extractAnswerFromMessage({
+  /**
+   * There should be at least 3 transcript messages in the conversation to extract answer,
+   * 1. Initial user message e.g. "Hi", "start the form submission"
+   * 2. AI assistant message e.g. "Hello! To start with, may I have your full name for the job application as a full stack engineer?"
+   * 3. User message e.g. "My name is Utkarsh Anand"
+   */
+  public async extractAnswer({
     transcript,
     currentField,
     formOverview,
@@ -79,10 +87,31 @@ export class ConversationService extends OpenAIService {
     currentField: CollectedData;
     formOverview: string;
   }) {
-    let isAnswerExtracted: boolean = false;
-    let extractedAnswer: string = "";
+    let isAnswerExtracted = false;
+    let extractedAnswer = "";
     let reasonForFailure: string | null = null;
     let otherFieldsData: CollectedFilledData[] = [];
+    const skipValidation = shouldSkipValidation(
+      currentField.fieldConfiguration.inputType,
+    );
+
+    const isValidTranscript = transcriptSchema
+      .array()
+      .min(3)
+      .safeParse(transcript).success;
+    if (!isValidTranscript) {
+      throw new Error("Does not have enough transcript data to extract answer");
+    }
+
+    if (skipValidation) {
+      return {
+        isAnswerExtracted: true,
+        // biome-ignore lint/style/noNonNullAssertion: Already checked above
+        extractedAnswer: transcript[transcript.length - 1]!.content,
+        reasonForFailure,
+        otherFieldsData,
+      };
+    }
 
     const systemMessage = this.getExtractAnswerPromptMessage({
       transcript,

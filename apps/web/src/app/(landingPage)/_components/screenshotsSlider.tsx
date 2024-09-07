@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
 import { AspectRatio } from "@convoform/ui/components/ui/aspect-ratio";
 import {
   Carousel,
-  CarouselApi,
+  type CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
 } from "@convoform/ui/components/ui/carousel";
 import { useAnimate } from "framer-motion";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const screenshotsData = [
   {

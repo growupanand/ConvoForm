@@ -1,16 +1,16 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
-import { usePathname, useRouter } from "next/navigation";
 import { ClerkLoading, OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useMemo } from "react";
 
 import BrandName from "@/components/common/brandName";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
-import { NavigationConfig } from "@/lib/types/navigation";
+import type { NavigationConfig } from "@/lib/types/navigation";
 import { api } from "@/trpc/react";
 import { NavigationLinks } from "./mainNavigation/mainNavigation";
 
@@ -136,13 +136,10 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
           <div>
             <BrandName className="text-xl lg:text-2xl" />
           </div>
-          <div className="flex items-center justify-between gap-2 lg:hidden lg:justify-evenly">
-            <UserActions />
-          </div>
         </div>
         <NavigationLinks navigationLinks={navigationLinks} />
       </div>
-      <div className="max-lg:hidden">
+      <div>
         <div className="flex items-center justify-between gap-2 lg:justify-evenly">
           <UserActions />
         </div>

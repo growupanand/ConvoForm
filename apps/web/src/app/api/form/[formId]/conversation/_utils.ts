@@ -1,4 +1,4 @@
-import { CollectedData, Form, FormField } from "@convoform/db/src/schema";
+import type { CollectedData, Form, FormField } from "@convoform/db/src/schema";
 
 import { formSubmissionLimit } from "@/lib/config/pricing";
 import { api } from "@/trpc/server";
@@ -9,14 +9,19 @@ import { api } from "@/trpc/server";
  * @param conversationId
  * @returns
  */
-export const getConversation = async (
+export const getORCreateConversation = async (
   form: Form & { formFields: FormField[] },
   conversationId?: string,
 ) => {
   if (conversationId) {
-    return await api.conversation.getOne({
+    const existConversation = await api.conversation.getOne({
       id: conversationId,
     });
+    if (!existConversation) {
+      throw new Error("Conversation not found");
+    }
+
+    return existConversation;
   }
 
   const fieldsWithEmptyData: CollectedData[] = form.formFields.map((field) => ({

@@ -1,9 +1,5 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDotEnv": [
-    ".env",
-    ".env.local"
-  ],
   "globalEnv": [
     "NODE_ENV",
     "NEXT_PUBLIC_GOOGLE_ANALYTICS",
@@ -16,9 +12,14 @@
     "UPSTASH_REDIS_REST_TOKEN",
     "SHOW_NO_RATE_LIMIT_LOG",
     "NEXT_PUBLIC_WEBSOCKET_URL",
-    "NEXT_PUBLIC_PACKAGE_ENV"
+    "NEXT_PUBLIC_PACKAGE_ENV",
+    "CLERK_SECRET_KEY"
   ],
-  "pipeline": {
+  "globalDependencies": [
+    ".env",
+    ".env.local"
+  ],
+  "tasks": {
     "build": {
       "dependsOn": [
         "^build"
@@ -28,7 +29,7 @@
         ".next/**"
       ]
     },
-    "start" : {
+    "start": {
       "dependsOn": [
         "^start"
       ]
@@ -47,5 +48,6 @@
       "cache": false,
       "persistent": true
     }
-  }
+  },
+  "ui" : "tui"
 }

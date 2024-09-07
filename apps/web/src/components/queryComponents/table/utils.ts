@@ -1,4 +1,4 @@
-import { CollectedData } from "@convoform/db/src/schema";
+import type { CollectedData } from "@convoform/db/src/schema";
 
 /**
  * Format conversation fields data for TableComponent,

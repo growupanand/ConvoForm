@@ -2,14 +2,12 @@ import { auth } from "@clerk/nextjs";
 
 import { getBackendBaseUrl } from "./url";
 
-// eslint-disable-next-line no-undef
 type ApiClientOptions = RequestInit & {
   data?: Record<string, any>;
   queryParams?: Record<string, string>;
 };
 
 type ApiClient = (
-  // eslint-disable-next-line no-undef
   url: RequestInfo,
   fetchOptions: ApiClientOptions,
 ) => Promise<Response>;
@@ -24,7 +22,7 @@ export const apiClient: ApiClient = async (url, fetchOptions) => {
   if (typeof window === "undefined") {
     const { getToken } = auth();
     const token = await getToken();
-    headers["Authorization"] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
   let finalUrl = `${baseURl}/api/${url}`;

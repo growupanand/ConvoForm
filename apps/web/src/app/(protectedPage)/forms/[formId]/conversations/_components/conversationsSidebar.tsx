@@ -1,17 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import { Button } from "@convoform/ui/components/ui/button";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTrigger,
-} from "@convoform/ui/components/ui/sheet";
 import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { socket } from "@convoform/websocket-client";
-import { GanttChartSquare, List } from "lucide-react";
+import { GanttChartSquare } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { SecondaryNavigation } from "@/components/common/secondaryNavigation";
 import { api } from "@/trpc/react";
@@ -83,55 +76,7 @@ export function ConversationsSidebar({ formId }: Props) {
 
   return (
     <div className="">
-      <div className="lg:hidden">
-        <MainNavTab formId={formId} />
-        <Sheet
-          open={open}
-          onOpenChange={(status) => setState((cs) => ({ ...cs, open: status }))}
-        >
-          <div className="flex items-center justify-start py-3">
-            <SheetTrigger asChild>
-              <Button variant="outline">
-                <List size={20} className="mr-2" />
-                <span>Conversations</span>
-              </Button>
-            </SheetTrigger>
-          </div>
-          <SheetContent side="left" className="w-[90%] overflow-auto">
-            <SheetClose />
-            <div className="mb-5">
-              <SecondaryNavigation
-                items={[
-                  {
-                    href: `/forms/${formId}/conversations`,
-                    title: (
-                      <div className="flex w-full items-center justify-between">
-                        <span className="text-lg">All conversations</span>
-                        <GanttChartSquare
-                          className="text-muted-foreground"
-                          size={20}
-                        />
-                      </div>
-                    ),
-                  },
-                ]}
-              />
-            </div>
-            <div className="text-muted-foreground mb-2 px-4 text-sm">
-              Recent conversations
-            </div>
-            {isLoadingConversations || !formId ? (
-              <ConversationsNavigation.ConversationsCardSkelton />
-            ) : (
-              <ConversationsNavigation
-                conversations={conversations}
-                formId={formId}
-              />
-            )}
-          </SheetContent>
-        </Sheet>
-      </div>
-      <div className="relative flex flex-col px-3 max-lg:hidden lg:max-h-[calc(100vh-100px)]">
+      <div className="relative flex flex-col px-3 max-h-[calc(100vh-100px)]">
         <div>
           <div className="mb-5">
             <MainNavTab formId={formId} />

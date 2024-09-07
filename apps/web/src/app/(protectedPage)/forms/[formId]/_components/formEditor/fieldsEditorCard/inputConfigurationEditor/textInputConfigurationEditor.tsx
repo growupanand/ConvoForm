@@ -6,9 +6,10 @@ import {
   FormMessage,
 } from "@convoform/ui/components/ui/form";
 import { Input } from "@convoform/ui/components/ui/input";
-import { UseFormReturn } from "react-hook-form";
+import type { UseFormReturn } from "react-hook-form";
 
-import { FormHookData } from "../editFieldSheet";
+import { OptionalText } from ".";
+import type { FormHookData } from "../editFieldSheet";
 
 type Props = {
   formHook: UseFormReturn<FormHookData>;
@@ -22,9 +23,11 @@ export function TextInputConfigurationEditor({ formHook }: Readonly<Props>) {
         name="fieldConfiguration.inputConfiguration.placeholder"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Placeholder (optional)</FormLabel>
+            <FormLabel>
+              Placeholder <OptionalText />
+            </FormLabel>
             <FormControl>
-              <Input {...field} placeholder="Custom placeholder text" />
+              <Input {...field} placeholder="Type placeholder text" />
             </FormControl>
             <FormMessage />
           </FormItem>

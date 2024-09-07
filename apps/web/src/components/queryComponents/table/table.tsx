@@ -103,6 +103,7 @@ export function TableComponentLoading() {
       <TableHeader>
         <TableRow>
           {Array.from({ length: 4 }).map((_, i) => (
+            // biome-ignore lint: ignored
             <TableHead key={i}>
               <Skeleton className="h-2 w-full bg-gray-400" />
             </TableHead>
@@ -111,8 +112,10 @@ export function TableComponentLoading() {
       </TableHeader>
       <TableBody>
         {Array.from({ length: 2 }).map((_, i) => (
+          // biome-ignore lint: ignored
           <TableRow key={i}>
             {Array.from({ length: 4 }).map((_, i) => (
+              // biome-ignore lint: ignored
               <TableCell key={i}>
                 <Skeleton className="h-2 w-full" />
               </TableCell>

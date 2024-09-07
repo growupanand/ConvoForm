@@ -1,7 +1,7 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-import { fieldConfigurationSchema, insertFormFieldSchema } from "../formFields";
+import { insertFormFieldSchema } from "../formFields";
 import { conversation } from "./conversation";
 
 export const collectedDataSchema = insertFormFieldSchema

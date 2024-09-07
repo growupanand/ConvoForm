@@ -1,9 +1,9 @@
 import { relations } from "drizzle-orm";
-import { jsonb, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
+import { jsonb, pgTable, text } from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
 import { form } from "../forms/form";
-import { FieldConfiguration } from "./validation";
+import type { FieldConfiguration } from "./validation";
 
 export const formField = pgTable("FormField", {
   ...getBaseSchema(),

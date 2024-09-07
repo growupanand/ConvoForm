@@ -7,3 +7,5 @@ export type JSONValue =
       [x: string]: JSONValue;
     }
   | Array<JSONValue>;
+
+export type SubmitAnswer = (answer: string) => Promise<void>;

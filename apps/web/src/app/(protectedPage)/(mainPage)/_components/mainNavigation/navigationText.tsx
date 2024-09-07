@@ -1,6 +1,6 @@
 import { Button } from "@convoform/ui/components/ui/button";
 
-import { NavItemAction } from "@/lib/types/navigation";
+import type { NavItemAction } from "@/lib/types/navigation";
 import { cn } from "@/lib/utils";
 
 type Props = {

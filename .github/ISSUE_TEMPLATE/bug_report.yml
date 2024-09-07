@@ -1,7 +1,7 @@
-name: Bug report 🐛
-description: File a bug report
-title: "🐛[Bug]: "
-labels: 'bug'
+name: 🐛 Bug report
+description: Report a bug for ConvoForm
+labels:
+  - bug
 body:
   - type: checkboxes
     id: existing-issue
@@ -9,28 +9,32 @@ body:
       label: Is there an existing issue for this?
       description: Please search to see if an issue already exists for the bug you encountered.
       options:
-        - label: No, I have searched the existing issues
+        - label: No, I have searched but did'nt found any existing issues
           required: true
+
   - type: textarea
-    id: what-happened
+    id: description
     attributes:
       label: Describe the bug
       description: A concise description of what you are experiencing.
       placeholder: Tell us what you see!
     validations:
       required: true
+
   - type: textarea
-    id: expected-behaviour
+    id: expected-behavior
     attributes:
       label: Expected behavior
       description: A clear and concise description of what you expected to happen.
     validations:
       required: true
+
   - type: textarea
     id: screenshots
     attributes:
-      label: Add ScreenShots
+      label: Screenshots
       description: Add sufficient ScreenShots to explain your issue.
+
   - type: dropdown
     id: browsers
     attributes:
@@ -41,14 +45,14 @@ body:
         - Chrome
         - Safari
         - Microsoft Edge
+  
   - type: checkboxes
     id: terms
     attributes:
-      label: Record
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/growupanand/ConvoForm/blob/main/CODE_OF_CONDUCT.md)
       options:
-        - label: "I have read the Contributing Guidelines"
+        - label: I agree to be friendly and polite to people in this repository
           required: true
-        - label: "I'm a GSSOC'24 contributor"
-          required: false
-        - label: "I want to work on this issue"
+        - label: "I want to work on this issue and already read the [Contributing Guidelines](https://github.com/growupanand/ConvoForm/blob/main/CONTRIBUTING.md)"
           required: false

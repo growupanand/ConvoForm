@@ -3,9 +3,10 @@ import type { Metadata } from "next";
 import "../globals.css";
 import "nprogress/nprogress.css";
 
-import type { Viewport } from "next";
 import { Toaster as SonnerToaster } from "@convoform/ui/components/ui/sonner";
 import { Toaster } from "@convoform/ui/components/ui/toaster";
+import { TooltipProvider } from "@convoform/ui/components/ui/tooltip";
+import type { Viewport } from "next";
 
 import { AuthProvider } from "@/components/authProvider";
 import GoogleAnalytics from "@/components/googleAnalytics";
@@ -61,7 +62,7 @@ export const metadata: Metadata = {
       "Transform your standard forms into engaging conversations with ConvoForm. Our easy-to-use, secure, and responsive form builder makes data collection more interactive.",
     url: "https://www.convoform.com",
     type: "website",
-    images: [`/api/og`],
+    images: ["/api/og"],
   },
 };
 
@@ -77,7 +78,9 @@ export default function RootLayout({
           <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
         <TRPCReactProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
+          </AuthProvider>
         </TRPCReactProvider>
         <Toaster />
         <SonnerToaster />

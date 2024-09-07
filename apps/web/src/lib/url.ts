@@ -12,7 +12,7 @@ export const getFrontendBaseUrl = () => {
   }
 
   // else return localhost url
-  return `http://localhost:3000`;
+  return "http://localhost:3000";
 };
 
 export const getBackendBaseUrl = () => {
@@ -25,5 +25,5 @@ export const getBackendBaseUrl = () => {
 };
 
 export const getTRPCUrl = () => {
-  return getBackendBaseUrl() + "/api/trpc";
+  return `${getBackendBaseUrl()}/api/trpc`;
 };

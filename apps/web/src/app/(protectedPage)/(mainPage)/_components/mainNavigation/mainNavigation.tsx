@@ -1,6 +1,6 @@
 import { ScrollArea } from "@convoform/ui/components/ui/scroll-area";
 
-import { NavigationConfig } from "@/lib/types/navigation";
+import type { NavigationConfig } from "@/lib/types/navigation";
 import { NavigationActionButton } from "./navigationActionButton";
 import NavigationLinkItem from "./navigationLinkItem";
 import { NavigationText } from "./navigationText";

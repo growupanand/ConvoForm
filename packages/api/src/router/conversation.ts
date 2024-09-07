@@ -2,6 +2,7 @@ import { count, eq } from "@convoform/db";
 import {
   conversation,
   insertConversationSchema,
+  restoreDateFields,
   updateConversationSchema,
 } from "@convoform/db/src/schema";
 import { z } from "zod";
@@ -19,14 +20,38 @@ export const conversationRouter = createTRPCRouter({
       if (!ctx.auth.orgId) {
         throw new Error("Organization ID is missing");
       }
-      return await ctx.db.query.conversation.findMany({
+      const existConversations = await ctx.db.query.conversation.findMany({
         where: (conversation, { eq, and }) =>
           and(
             eq(conversation.formId, input.formId),
+            // biome-ignore lint/style/noNonNullAssertion: ignored
             eq(conversation.organizationId, ctx.auth.orgId!),
           ),
         orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
       });
+
+      const existConversationsFormatted = existConversations.map(
+        (conversation) => {
+          const collectedData = conversation.collectedData.map((collection) => {
+            if (collection.fieldConfiguration === undefined) {
+              return collection;
+            }
+
+            return {
+              ...collection,
+              fieldConfiguration: restoreDateFields(
+                collection.fieldConfiguration,
+              ),
+            };
+          });
+          return {
+            ...conversation,
+            collectedData,
+          };
+        },
+      );
+
+      return existConversationsFormatted;
     }),
 
   getOne: publicProcedure
@@ -36,14 +61,39 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.db.query.conversation.findFirst({
+      const existConversation = await ctx.db.query.conversation.findFirst({
         where: eq(conversation.id, input.id),
       });
+
+      if (!existConversation) {
+        return undefined;
+      }
+
+      const collectedData = existConversation.collectedData.map(
+        (collection) => {
+          if (collection.fieldConfiguration === undefined) {
+            return collection;
+          }
+
+          return {
+            ...collection,
+            fieldConfiguration: restoreDateFields(
+              collection.fieldConfiguration,
+            ),
+          };
+        },
+      );
+
+      return {
+        ...existConversation,
+        collectedData,
+      };
     }),
+
   create: publicProcedure
     .input(insertConversationSchema)
     .mutation(async ({ input, ctx }) => {
-      let { transcript, collectedData, formOverview, ...newConversation } =
+      const { transcript, collectedData, formOverview, ...newConversation } =
         insertConversationSchema.parse(input);
 
       const [result] = await ctx.db
@@ -60,7 +110,21 @@ export const conversationRouter = createTRPCRouter({
         throw new Error("Failed to create conversation");
       }
 
-      return result;
+      const parsedCollectedData = collectedData.map((collection) => {
+        if (collection.fieldConfiguration === undefined) {
+          return collection;
+        }
+
+        return {
+          ...collection,
+          fieldConfiguration: restoreDateFields(collection.fieldConfiguration),
+        };
+      });
+
+      return {
+        ...result,
+        collectedData: parsedCollectedData,
+      };
     }),
 
   getResponseCountByOrganization: publicProcedure
@@ -91,6 +155,7 @@ export const conversationRouter = createTRPCRouter({
         where: (conversation, { eq, and }) =>
           and(
             eq(conversation.formId, input.formId),
+            // biome-ignore lint/style/noNonNullAssertion: ignored
             eq(conversation.organizationId, ctx.auth.orgId!),
           ),
         columns: {
@@ -114,6 +179,7 @@ export const conversationRouter = createTRPCRouter({
         throw new Error("Organization ID is missing");
       }
       return await ctx.db.query.conversation.findMany({
+        // biome-ignore lint/style/noNonNullAssertion: ignored
         where: eq(conversation.organizationId, ctx.auth.orgId!),
         orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
         limit: input.take,

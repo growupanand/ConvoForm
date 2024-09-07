@@ -11,11 +11,11 @@ import {
   FormMessage,
 } from "@convoform/ui/components/ui/form";
 import { Input } from "@convoform/ui/components/ui/input";
+import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { Textarea } from "@convoform/ui/components/ui/textarea";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@convoform/ui/components/ui/tooltip";
 import { toast } from "@convoform/ui/components/ui/use-toast";
@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Info } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 
 import Spinner from "@/components/common/spinner";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
@@ -40,7 +40,7 @@ const formHookSchema = insertFormFieldSchema.pick({
 });
 type FormHookData = z.infer<typeof formHookSchema>;
 
-export function AddFieldItem({ onFieldAdded, formId }: Readonly<Props>) {
+export function AddFieldItemEditor({ onFieldAdded, formId }: Readonly<Props>) {
   const queryClient = useQueryClient();
 
   const formHook = useForm({
@@ -57,28 +57,24 @@ export function AddFieldItem({ onFieldAdded, formId }: Readonly<Props>) {
         queryKey: [["form"]],
       });
       formHook.reset();
-      toast({
-        title: "Changes saved successfully",
-        duration: 1500,
-      });
       onFieldAdded();
     },
     onError: (error) => {
-      toast({
-        title: "Unable to save changes",
-        duration: 1500,
-        variant: "destructive",
-        description: isRateLimitErrorResponse(error)
-          ? error.message
-          : undefined,
-      });
+      if (isRateLimitErrorResponse(error)) {
+        toast({
+          title: "Rate limit exceeded",
+          duration: 1500,
+          variant: "destructive",
+          description: error.message,
+        });
+      }
     },
   });
 
   const isCreatingForm = createFormFieldMutation.isPending;
 
   const onSubmit = (formData: FormHookData) => {
-    createFormFieldMutation.mutate({
+    const createFormFieldPromise = createFormFieldMutation.mutateAsync({
       formId,
       ...formData,
       fieldConfiguration: {
@@ -86,36 +82,41 @@ export function AddFieldItem({ onFieldAdded, formId }: Readonly<Props>) {
         inputConfiguration: {},
       },
     });
+
+    sonnerToast.promise(createFormFieldPromise, {
+      loading: "Adding field...",
+      success: "Field added successfully",
+      error: "Failed to add field",
+    });
   };
 
   return (
     <Form {...formHook}>
       <form onSubmit={formHook.handleSubmit(onSubmit)}>
-        <div className="grid space-y-4">
+        <div className="grid space-y-8">
           <FormField
             control={formHook.control}
-            name="fieldDescription"
+            name="fieldName"
             render={({ field }) => (
               <FormItem>
                 <div className="flex items-center gap-2">
-                  <FormLabel>Field description</FormLabel>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-4 w-4 " />
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" align="start">
-                        Will be used by AI for question generation
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <FormLabel>Internal name</FormLabel>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 " />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" align="start">
+                      This field is used for CSV export, as the column name in
+                      the table, and as the field name in the form submission
+                      page to show current field.
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
                 <FormControl>
                   <div className="flex items-center justify-between gap-x-3">
-                    <Textarea
-                      placeholder={`Information you would like to collect.\nE.g. Your email address, Your work experience in years etc...`}
+                    <Input
+                      placeholder="Enter a human-readable name for the field"
                       {...field}
-                      rows={4}
                       disabled={isCreatingForm}
                     />
                   </div>
@@ -126,27 +127,29 @@ export function AddFieldItem({ onFieldAdded, formId }: Readonly<Props>) {
           />
           <FormField
             control={formHook.control}
-            name="fieldName"
+            name="fieldDescription"
             render={({ field }) => (
               <FormItem>
                 <div className="flex items-center gap-2">
-                  <FormLabel>Field name</FormLabel>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-4 w-4 " />
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" align="start">
-                        Used for CSV export, Column name in Table etc...
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <FormLabel>Field description</FormLabel>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 " />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" align="start">
+                      This text will be utilized by the AI to generate
+                      questions.
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
                 <FormControl>
                   <div className="flex items-center justify-between gap-x-3">
-                    <Input
-                      placeholder="Human readable name for the field"
+                    <Textarea
+                      placeholder={
+                        "Information you would like to collect.\nE.g. Your email address, Your work experience in years etc..."
+                      }
                       {...field}
+                      rows={4}
                       disabled={isCreatingForm}
                     />
                   </div>

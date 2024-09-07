@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 import { ConversationsSidebar } from "./_components/conversationsSidebar";
 
@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 
 export default function Layout({ children, params: { formId } }: Props) {
   return (
-    <div className="flex h-full max-lg:flex-col">
-      <div className="lg:w-[400px] lg:min-w-[400px]">
+    <div className="flex h-full">
+      <div className="w-[400px] min-w-[400px]">
         <ConversationsSidebar formId={formId} />
       </div>
       <div className="grow p-3">{children}</div>

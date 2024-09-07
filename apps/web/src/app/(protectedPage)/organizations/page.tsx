@@ -29,7 +29,7 @@ export default function Page() {
           </div>
         </ClerkLoading>
       </div>
-      <div></div>
+      <div />
     </div>
   );
 }

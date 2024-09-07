@@ -7,7 +7,7 @@ export function PageShell({
 }) {
   return (
     <div className="pb-5">
-      <div className="mb-5 lg:mb-10 ">
+      <div className="mb-10 ">
         {typeof title === "string" ? (
           <h1 className="px-3 py-2 text-xl font-medium lg:text-2xl">{title}</h1>
         ) : (

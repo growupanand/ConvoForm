@@ -6,9 +6,10 @@ const GoogleAnalytics = ({ ga_id }: { ga_id: string }) => (
       async
       src={`https://www.googletagmanager.com/gtag/js? 
       id=${ga_id}`}
-    ></Script>
+    />
     <Script
       id="google-analytics"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: ignored
       dangerouslySetInnerHTML={{
         __html: `
           window.dataLayer = window.dataLayer || [];
@@ -18,7 +19,7 @@ const GoogleAnalytics = ({ ga_id }: { ga_id: string }) => (
           gtag('config', '${ga_id}');
         `,
       }}
-    ></Script>
+    />
   </>
 );
 export default GoogleAnalytics;

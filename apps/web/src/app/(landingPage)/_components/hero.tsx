@@ -1,5 +1,3 @@
-import Image from "next/image";
-import Link from "next/link";
 import { Badge } from "@convoform/ui/components/ui/badge";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
@@ -8,6 +6,8 @@ import {
   CardHeader,
 } from "@convoform/ui/components/ui/card";
 import { ChevronRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 import { montserrat, nohemi } from "@/app/fonts";
 import { LinkN } from "@/components/common/linkN";
@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import { GithubStars } from "./githubStar";
 
 export function Hero() {
-  const demoFormLink = getFrontendBaseUrl() + "/view/demo";
+  const demoFormLink = `${getFrontendBaseUrl()}/view/demo`;
 
   return (
     <section className="flex w-full flex-col justify-center gap-1 text-center">
@@ -60,7 +60,7 @@ export function Hero() {
             Your <br />
             <span className="bg-brand-500 convo-word me-1 rounded-full px-5 pb-1 pt-2 text-white lg:me-3 lg:pe-5 lg:ps-8 lg:pt-4 ">
               Convo
-              <span className="convo-arrow bg-brand-500"></span>
+              <span className="convo-arrow bg-brand-500" />
             </span>{" "}
             Form
           </h1>

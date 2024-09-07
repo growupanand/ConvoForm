@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { newFormSchema, Workspace } from "@convoform/db/src/schema";
+import { type Workspace, newFormSchema } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   DropdownMenu,
@@ -11,9 +9,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@convoform/ui/components/ui/dropdown-menu";
+import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { Loader2, PenLine, Plus, Sparkles } from "lucide-react";
-import { z } from "zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import type { z } from "zod";
 
 import { montserrat } from "@/app/fonts";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
@@ -56,30 +57,32 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
   const router = useRouter();
   const createForm = api.form.create.useMutation({
     onSuccess: async (newForm) => {
-      toast({
-        title: "Form created",
-        duration: 1500,
-      });
       router.push(`/forms/${newForm.id}`);
     },
     onError: (error) => {
-      toast({
-        title: "Unable to create form",
-        duration: 2000,
-        variant: "destructive",
-        description: isRateLimitErrorResponse(error)
-          ? error.message
-          : undefined,
-      });
+      if (isRateLimitErrorResponse(error)) {
+        toast({
+          title: "Rate limit exceeded",
+          duration: 1500,
+          variant: "destructive",
+          description: error.message,
+        });
+      }
     },
   });
   const { isPending: isCreatingForm } = createForm;
 
   const handleCreateForm: HandleCreateForm = (formData) => {
-    createForm.mutate({
+    const createFormPromise = createForm.mutateAsync({
       ...formData,
       workspaceId: workspace.id,
       organizationId: workspace.organizationId,
+    });
+
+    sonnerToast.promise(createFormPromise, {
+      loading: "Creating form...",
+      success: "Form created successfully",
+      error: "Failed to create form",
     });
   };
 
@@ -109,7 +112,7 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
               onClick={() => handleCreateForm(newFormData)}
             >
               <PenLine size={16} className="mr-2" />
-              <span>Create form Scratch</span>
+              <span>Blank form</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               disabled={isCreatingForm}
@@ -121,7 +124,7 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
             >
               <Sparkles size={16} className="mr-2" />
 
-              <span>Generate using AI</span>
+              <span>Generate by AI</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

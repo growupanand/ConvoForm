@@ -39,9 +39,9 @@ export const metricsRouter = createTRPCRouter({
       });
 
       const currentMonthDaysArray = getCurrentMonthDaysArray();
-      currentMonthDaysArray.forEach((day) => {
+      for (const day of currentMonthDaysArray) {
         formCountsDataDayWise[day] = 0;
-      });
+      }
       for (const element of forms) {
         const form = element;
         const formCreatedAtDay = form.createdAt.getDate();
@@ -124,9 +124,9 @@ export const metricsRouter = createTRPCRouter({
       });
 
       const currentMonthDaysArray = getCurrentMonthDaysArray();
-      currentMonthDaysArray.forEach((day) => {
+      for (const day of currentMonthDaysArray) {
         conversationCountsDataDayWise[day] = 0;
-      });
+      }
       for (const element of conversations) {
         const conversation = element;
         const conversationCreatedAtDay = conversation.createdAt.getDate();

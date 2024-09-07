@@ -16,7 +16,7 @@ export function Dot({ className, size = "md" }: Readonly<Props>) {
         SIZES_MAP[size],
         className,
       )}
-    ></div>
+    />
   );
 }
 

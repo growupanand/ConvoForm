@@ -1,18 +1,22 @@
-import { NextRequest } from "next/server";
 import { checkRateLimitThrowError } from "@convoform/api";
 import {
-  CollectedFilledData,
+  type CollectedFilledData,
+  type Transcript,
   extraStreamDataSchema,
-  Transcript,
+  restoreDateFields,
   transcriptSchema,
 } from "@convoform/db/src/schema";
+import type { NextRequest } from "next/server";
 import { z } from "zod";
 
 import { sendErrorMessage, sendErrorResponse } from "@/lib/errorHandlers";
 import getIP from "@/lib/getIP";
 import { ConversationService } from "@/lib/services/conversation";
 import { api } from "@/trpc/server";
-import { checkNThrowErrorFormSubmissionLimit, getConversation } from "./_utils";
+import {
+  checkNThrowErrorFormSubmissionLimit,
+  getORCreateConversation,
+} from "./_utils";
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -36,67 +40,76 @@ export async function POST(
       params: { formId },
     } = routeContextSchema.parse(context);
     const requestJson = await req.json();
+
+    if (
+      requestJson.currentField?.fieldConfiguration?.inputType === "datePicker"
+    ) {
+      requestJson.currentField.fieldConfiguration = restoreDateFields(
+        requestJson.currentField.fieldConfiguration,
+      );
+    }
+
     const { conversationId, transcript, currentField } =
       requestSchema.parse(requestJson);
+    const isInitialMessage = currentField === undefined;
 
+    const conversationService = new ConversationService();
     const clientIp = getIP(req);
+
     await checkRateLimitThrowError({
       identifier: clientIp ?? "unknown",
       rateLimitType: clientIp ? "ai:identified" : "ai:unkown",
     });
 
-    const form = await api.form.getOneWithFields({
+    const existForm = await api.form.getOneWithFields({
       id: formId,
     });
-
-    if (form === undefined) {
+    if (existForm === undefined) {
       return sendErrorMessage("Form not found", 404);
     }
+    await checkNThrowErrorFormSubmissionLimit(existForm);
 
-    await checkNThrowErrorFormSubmissionLimit(form);
+    const existConversation = await getORCreateConversation(
+      existForm,
+      conversationId,
+    );
 
-    const conversation = await getConversation(form, conversationId);
-
-    if (conversation === undefined) {
-      return sendErrorMessage("Conversation not found", 404);
-    }
-
-    if (conversation.isFinished) {
+    if (existConversation.isFinished) {
       return sendErrorMessage("Conversation already finished", 400);
     }
 
-    const conversationService = new ConversationService();
-
-    // Try to extract the answer from the current conversation messages, and Update conversation with the extracted answer
-    if (currentField !== undefined) {
+    if (!isInitialMessage) {
+      // Try to extract the answer from the current conversation messages, and Update conversation with the extracted answer
       const {
         isAnswerExtracted,
         extractedAnswer,
         reasonForFailure,
         otherFieldsData,
-      } = await conversationService.extractAnswerFromMessage({
+      } = await conversationService.extractAnswer({
         transcript,
         currentField,
-        formOverview: conversation.formOverview,
+        formOverview: existConversation.formOverview,
       });
 
       // If user provided valid answer for current field
       if (isAnswerExtracted) {
-        const updatedFieldsData = conversation.collectedData.map((field) => {
-          if (field.fieldName === currentField.fieldName) {
-            return {
-              ...field,
-              fieldValue: extractedAnswer,
-            };
-          }
-          return field;
-        });
+        const updatedFieldsData = existConversation.collectedData.map(
+          (field) => {
+            if (field.fieldName === currentField.fieldName) {
+              return {
+                ...field,
+                fieldValue: extractedAnswer,
+              };
+            }
+            return field;
+          },
+        );
 
         await api.conversation.updateCollectedData({
-          id: conversation.id,
+          id: existConversation.id,
           collectedData: updatedFieldsData,
         });
-        conversation.collectedData = updatedFieldsData;
+        existConversation.collectedData = updatedFieldsData;
       }
 
       // If user provided valid answer for other than current field (E.g user provided answer for previous field)
@@ -106,14 +119,14 @@ export async function POST(
         otherFieldsData.length > 0
       ) {
         // update valid fields data only
-        const validFields = conversation.collectedData.map(
+        const validFields = existConversation.collectedData.map(
           ({ fieldName }) => fieldName,
         );
         const validOtherFieldsData = otherFieldsData.filter(({ fieldName }) =>
           validFields.includes(fieldName),
         );
         if (validOtherFieldsData.length > 0) {
-          const updatedFieldsData = [...conversation.collectedData].map(
+          const updatedFieldsData = [...existConversation.collectedData].map(
             (field) => {
               const updatedFieldValue = validOtherFieldsData.find(
                 (f) => f.fieldName === field.fieldName,
@@ -129,23 +142,22 @@ export async function POST(
           );
 
           await api.conversation.updateCollectedData({
-            id: conversation.id,
+            id: existConversation.id,
             collectedData: updatedFieldsData,
           });
-          conversation.collectedData = updatedFieldsData;
+          existConversation.collectedData = updatedFieldsData;
         }
       }
     }
 
-    const requiredField = conversationService.getNextEmptyField(
-      conversation.collectedData,
+    const nextRequiredField = conversationService.getNextEmptyField(
+      existConversation.collectedData,
     );
-
-    const isFormSubmissionFinished = requiredField === undefined;
+    const isFormSubmissionFinished = nextRequiredField === undefined;
 
     const { data } = extraStreamDataSchema.safeParse({
-      ...conversation,
-      currentField: requiredField,
+      ...existConversation,
+      currentField: nextRequiredField,
       isFormSubmissionFinished,
     });
     const extraCustomStreamData = data ?? {};
@@ -155,42 +167,42 @@ export async function POST(
       const generatedQuestionMessage: Transcript = transcriptSchema.parse({
         role: "assistant",
         content: generatedQuestionString,
-        fieldName: requiredField?.fieldName,
+        fieldName: nextRequiredField?.fieldName,
       });
 
       api.conversation.updateTranscript({
-        id: conversation.id,
+        id: existConversation.id,
         transcript: [...transcript, generatedQuestionMessage],
       });
     };
 
-    // If all fields are filled, mark the conversation as finished, and generate the end message
     if (isFormSubmissionFinished) {
       const { conversationName } =
         await conversationService.generateConversationName({
-          formOverview: conversation.formOverview,
-          fieldsWithData: conversation.collectedData as CollectedFilledData[],
+          formOverview: existConversation.formOverview,
+          fieldsWithData:
+            existConversation.collectedData as CollectedFilledData[],
         });
 
       await api.conversation.updateFinishedStatus({
-        id: conversation.id,
+        id: existConversation.id,
         isFinished: true,
         name: conversationName,
       });
 
       return conversationService.generateEndMessage({
-        formOverview: conversation.formOverview,
-        fieldsWithData: conversation.collectedData as CollectedFilledData[],
+        formOverview: existConversation.formOverview,
+        fieldsWithData:
+          existConversation.collectedData as CollectedFilledData[],
         extraCustomStreamData,
         onStreamFinish,
       });
     }
 
-    // Generate the next question
     return conversationService.generateQuestion({
-      formOverview: conversation.formOverview,
-      currentField: requiredField,
-      collectedData: conversation.collectedData,
+      formOverview: existConversation.formOverview,
+      currentField: nextRequiredField,
+      collectedData: existConversation.collectedData,
       extraCustomStreamData,
       transcript,
       onStreamFinish,

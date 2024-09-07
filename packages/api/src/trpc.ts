@@ -2,11 +2,11 @@
  * Reference - https://github.com/t3-oss/create-t3-turbo
  */
 
-import { headers } from "next/headers";
-import { NextRequest } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import { db } from "@convoform/db";
-import { initTRPC, TRPCError } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
+import { headers } from "next/headers";
+import { NextRequest } from "next/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -40,7 +40,6 @@ export const createTRPCContext = async () => {
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => {
-    console.log({ shape, error: error.name });
     // Add rate limit error data into response
     let rateLimitErrorData: Record<string, any> = {};
     if (isRateLimitError(error) && typeof error.cause === "object") {

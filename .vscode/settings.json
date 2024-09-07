@@ -1,26 +1,17 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "eslint.rules.customizations": [{ "rule": "*", "severity": "warn" }],
-  "eslint.workingDirectories": [
-    { "pattern": "apps/*/" },
-    { "pattern": "packages/*/" }
-  ],
-"[typescriptreact]": { // for .tsx files
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[typescriptreact]": {
     "editor.formatOnSave": true
-},
-"cSpell.words": [
-  "Anand",
-  "convoform",
-  "Gantt",
-  "paralleldrive",
-  "treeshake",
-  "trpc",
-  "unkown",
-  "Utkarsh"
-],
+  },
+  "cSpell.words": [
+    "Anand",
+    "convoform",
+    "Gantt",
+    "paralleldrive",
+    "sonner",
+    "treeshake",
+    "trpc",
+    "unkown",
+    "Utkarsh"
+  ]
 }
