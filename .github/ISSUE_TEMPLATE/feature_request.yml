@@ -1,63 +1,33 @@
-name: Feature Request 🚀
-description: Suggest a feature
-title: "🚀[Feat]: "
-labels: "enhancement"
+name: 💡 Features & Ideas
+description: Describe a new feature or capability you would like to see in ConvoForm.
+labels:
+  - Feature request
 body:
-  - type: checkboxes
-    id: existing-issue
+  - type: markdown
     attributes:
-      label: Is there an existing issue for this?
-      description: Please search to see if an issue already exists for this feature.
-      options:
-        - label: No, I have searched the existing issues
-          required: true
+      value: |
+        ## Welcome 👋🏻
+
+        Thank you for taking the time to write up a feature request. Please fill out the information below to be able to help you faster. If you have a question or need general help, please join our [Discord community](https://discord.gg/73Q9gdPX).
   - type: textarea
-    id: feature-description
     attributes:
-      label: Feature Description
-      description: Please provide a detailed description of the feature you are requesting.
-      placeholder: Describe the new feature or enhancement you'd like to see.
+      label: Description
+      description:
+        Describe the feature or capability you would like to see in OpenStatus'
+        offering.
+      placeholder:
+        Make sure it's unique, describe your use case, and explain the problem
+        and proposed solution.
     validations:
       required: true
-  - type: textarea
-    id: use-case
-    attributes:
-      label: Use Case
-      description: How would this feature enhance your use of the project?
-      placeholder: Describe a specific use case or scenario where this feature would be beneficial.
-    validations:
-      required: true
-  - type: textarea
-    id: benefits
-    attributes:
-      label: Benefits
-      description: What benefits would this feature bring to the project or community?
-      placeholder: Explain the advantages of implementing this feature.
-  - type: textarea
-    id: screenShots
-    attributes:
-      label: Add ScreenShots
-      description: If any...
-  - type: dropdown
-    id: priority
-    attributes:
-      label: Priority
-      description: How important is this feature to you?
-      options:
-        - High
-        - Medium
-        - Low
-      default: 0
-    validations:
-      required: true
+    
   - type: checkboxes
     id: terms
     attributes:
-      label: Record
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/growupanand/ConvoForm/blob/main/CODE_OF_CONDUCT.md)
       options:
-        - label: "I have read the Contributing Guidelines"
+        - label: I agree to be friendly and polite to people in this repository
           required: true
-        - label: "I'm a GSSOC'24 contributor"
-          required: false
-        - label: "I want to work on this issue"
+        - label: "I want to work on this issue and already read the [Contributing Guidelines](https://github.com/growupanand/ConvoForm/blob/main/CONTRIBUTING.md)"
           required: false
