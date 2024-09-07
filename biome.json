@@ -10,7 +10,9 @@
     "ignore": [
       "packages/ui/src/components/*.tsx",
       "packages/ui/src/components/*.ts",
-      "**/*.yml"
+      "**/*.yml",
+      "**/*.yaml",
+      "**/*.md"
     ]
   },
   "formatter": {
