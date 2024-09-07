@@ -24,7 +24,7 @@
     "release": "release-it",
     "commit": "git-cz",
     "lint": "dotenv -e .env.local -- biome lint --write . --unsafe",
-    "type-check": "dotenv -e .env.local -- biome check --staged --write .",
+    "type-check": "dotenv -e .env.local -- biome check --staged --write . --unsafe --no-errors-on-unmatched",
     "ui:add": "pnpm --filter @convoform/ui ui:add",
     "drizzle-kit": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle-kit",
     "drizzle:generate-migration": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle:generate-migration",
