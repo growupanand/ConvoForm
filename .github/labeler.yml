@@ -2,35 +2,24 @@
 
 
 Frontend:
-- changed-files:
-  - any-glob-to-any-file:
-    - packages/ui/**
-    - packages/react/**
-    - apps/web/src/components/**
-    - apps/web/src/app/**
+  - "packages/ui/**"
+  - "packages/react/**"
+  - "apps/web/src/components/**"
+  - "apps/web/src/app/**"
 
 UI:
-- changed-files:
-  - any-glob-to-any-file:
-    - packages/ui/**
+  - "packages/ui/**"
 
 Backend:
-- changed-files:
-  - any-glob-to-any-file:
-    - packages/api/**
+  - "packages/api/**"
 
 Database migration:
-- changed-files:
-  - any-glob-to-any-file:
-    - packages/db/drizzle/migrations/**
+  - "packages/db/drizzle/migrations/**"
 
 Database schema:
-- changed-files:
-  - any-glob-to-any-file:
-    - packages/db/src/schema/**
+  - "packages/db/src/schema/**"
 
 Infrastructure:
-- changed-files:
-  - any-glob-to-any-file:
-    - .github/**
-    - .husky/**
+  - ".github/**"
+  - ".husky/**"
+
