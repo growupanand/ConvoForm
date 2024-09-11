@@ -41,7 +41,7 @@ export default function FormList({ workspace }: Readonly<Props>) {
 
   useEffect(() => {
     loadListItems();
-  }, [isLoading, emptyForms]);
+  }, [forms.length]);
 
   if (isLoading) {
     return <FormListLoading />;
