@@ -2,38 +2,20 @@
 
 import type { Organization } from "@clerk/clerk-sdk-node";
 import type { Form } from "@convoform/db/src/schema";
-import {
-  Collapsible,
-  CollapsibleContent,
-} from "@convoform/ui/components/ui/collapsible";
 import { Label } from "@convoform/ui/components/ui/label";
 import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { Switch } from "@convoform/ui/components/ui/switch";
-import { Textarea } from "@convoform/ui/components/ui/textarea";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import { useRef } from "react";
 
-import { debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
 
 type Props = {
-  form: Pick<
-    Form,
-    | "id"
-    | "showOrganizationName"
-    | "showOrganizationLogo"
-    | "showCustomEndScreenMessage"
-    | "customEndScreenMessage"
-  >;
+  form: Pick<Form, "id" | "showOrganizationName" | "showOrganizationLogo">;
   organization: Pick<Organization, "name" | "imageUrl">;
 };
 
-export function FormCustomizeCard({ form, organization }: Readonly<Props>) {
-  const customEndScreenMessageRef = useRef<string>(
-    form.customEndScreenMessage || "",
-  );
-
+export function CustomizeFormCard({ form, organization }: Readonly<Props>) {
   const queryClient = useQueryClient();
 
   const params = new URLSearchParams();
@@ -91,38 +73,6 @@ export function FormCustomizeCard({ form, organization }: Readonly<Props>) {
       }),
     );
 
-  const updateShowCustomEndScreenMessage =
-    api.form.updateShowCustomEndScreenMessage.useMutation({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: [["form"]],
-        });
-      },
-    });
-  const { isPending: isPendingCustomEndScreenMessage } =
-    updateShowCustomEndScreenMessage;
-
-  const handleToggleShowCustomEndScreenMessage = async (checked: boolean) =>
-    showPromiseSonner(
-      updateShowCustomEndScreenMessage.mutateAsync({
-        formId: form.id,
-        showCustomEndScreenMessage: checked,
-        customEndScreenMessage: customEndScreenMessageRef.current,
-      }),
-    );
-
-  const handleChangeCustomEndScreenMessage = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    const updatedCustomEndMessage = e.target.value as string;
-    customEndScreenMessageRef.current = updatedCustomEndMessage;
-    debounce(() => {
-      if (customEndScreenMessageRef.current !== form.customEndScreenMessage) {
-        handleToggleShowCustomEndScreenMessage(form.showCustomEndScreenMessage);
-      }
-    }, 1000);
-  };
-
   return (
     <div className="grid space-y-8">
       <div>
@@ -173,37 +123,6 @@ export function FormCustomizeCard({ form, organization }: Readonly<Props>) {
             defaultChecked={form.showOrganizationLogo}
             onCheckedChange={handleToggleShowOrganizationLogo}
             id="showOrganizationLogoSwitch"
-          />
-        </div>
-      </div>
-      <div className="grid space-y-2">
-        <div className="flex items-start justify-between gap-3">
-          <div className="grid space-y-2">
-            <Label
-              htmlFor="showCustomEndScreenMessageSwitch"
-              className="cursor-pointer"
-            >
-              End screen message
-            </Label>
-            <div className="text-muted-foreground text-sm">
-              Display custom message after form submission
-            </div>
-            <Collapsible open={form.showCustomEndScreenMessage}>
-              <CollapsibleContent>
-                <Textarea
-                  disabled={isPendingCustomEndScreenMessage}
-                  onChange={handleChangeCustomEndScreenMessage}
-                  placeholder="Thank you for filling the form!"
-                  defaultValue={customEndScreenMessageRef.current}
-                />
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
-          <Switch
-            disabled={isPendingCustomEndScreenMessage}
-            defaultChecked={form.showCustomEndScreenMessage}
-            onCheckedChange={handleToggleShowCustomEndScreenMessage}
-            id="showCustomEndScreenMessageSwitch"
           />
         </div>
       </div>
