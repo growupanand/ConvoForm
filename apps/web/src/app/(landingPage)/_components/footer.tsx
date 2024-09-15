@@ -1,10 +1,11 @@
 import { Button } from "@convoform/ui/components/ui/button";
 import { Card } from "@convoform/ui/components/ui/card";
-import { ExternalLink, Github, Instagram, Mail, Twitter } from "lucide-react";
+import { ExternalLink, Mail } from "lucide-react";
 import Link from "next/link";
 
 import { marck_script, montserrat } from "@/app/fonts";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export function Footer() {
   return (
@@ -39,7 +40,12 @@ const SocialIcons = () => {
           rel="noopener noreferrer nofollow"
           aria-label="Visit Github Repo"
         >
-          <Github size={20} />
+          <Image
+            src="images/icons/github.svg"
+            alt="github"
+            width={20}
+            height={20}
+          />
         </Link>
       </Button>
 
@@ -50,7 +56,12 @@ const SocialIcons = () => {
           rel="noopener noreferrer nofollow"
           aria-label="Visit Instagram page"
         >
-          <Instagram size="20px" />
+          <Image
+            src="images/icons/instagram.svg"
+            alt="github"
+            width={20}
+            height={20}
+          />
         </Link>
       </Button>
       <Button variant="link" className="px-0" asChild>
@@ -60,7 +71,12 @@ const SocialIcons = () => {
           rel="noopener noreferrer nofollow"
           aria-label="Visit Twitter page"
         >
-          <Twitter size="20px" />
+          <Image
+            src="images/icons/twitter.svg"
+            alt="github"
+            width={20}
+            height={20}
+          />
         </Link>
       </Button>
       <Button variant="link" className="px-0" asChild>

@@ -33,7 +33,12 @@ export function Hero() {
             className="flex items-center"
           >
             <span className="mr-2">
-              <Image src="/github.svg" alt="github" width={15} height={15} />
+              <Image
+                src="images/icons/github.svg"
+                alt="github"
+                width={15}
+                height={15}
+              />
             </span>
             <span>Proudly Open Source</span>
             <ChevronRight
