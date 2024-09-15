@@ -22,17 +22,19 @@ export const EndScreen = (props: Props) => {
           {message}
         </h1>
         {showCTAButton ? (
-          <Button>
-            <Link
-              // biome-ignore lint/style/noNonNullAssertion: <explanation>
-              href={props.endScreenCTAUrl!}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              aria-label="Form submission completed"
-            >
-              {ctaButtonLabel}
-            </Link>
-          </Button>
+          <div className="flex items-center justify-center">
+            <Button size="lg">
+              <Link
+                // biome-ignore lint/style/noNonNullAssertion: <explanation>
+                href={props.endScreenCTAUrl!}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                aria-label="Form submission completed"
+              >
+                {ctaButtonLabel}
+              </Link>
+            </Button>
+          </div>
         ) : (
           <p className="text-muted-foreground text-center">
             You can now close this window.
