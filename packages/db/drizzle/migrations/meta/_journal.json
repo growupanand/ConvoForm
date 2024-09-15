@@ -113,6 +113,20 @@
       "when": 1720810319708,
       "tag": "0015_regular_nekra",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1724342637085,
+      "tag": "0016_old_gateway",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1726217244200,
+      "tag": "0017_blue_cerebro",
+      "breakpoints": true
     }
   ]
 }

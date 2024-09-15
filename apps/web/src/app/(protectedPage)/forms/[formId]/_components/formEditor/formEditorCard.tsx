@@ -19,6 +19,7 @@ import {
   FormDescription,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
   Form as UIForm,
 } from "@convoform/ui/components/ui/form";
@@ -36,8 +37,10 @@ import type { z } from "zod";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { Label } from "@convoform/ui/components/ui/label";
+import { CustomizeEndScreenCard } from "./customizeEndScreenCard";
+import { CustomizeFormCard } from "./customizeFormCard";
 import { FieldsEditorCard } from "./fieldsEditorCard";
-import { FormCustomizeCard } from "./formCustomizeCard";
 
 export type HandleUpdateFieldsOrder = (newFieldsOrder: string[]) => void;
 
@@ -100,7 +103,6 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
     defaultValues: form,
   });
 
-  const isErrorInOverviewFields = formHook.formState.errors.overview;
   const isErrorInLandingPageFields =
     formHook.formState.errors.welcomeScreenTitle ||
     formHook.formState.errors.welcomeScreenMessage ||
@@ -161,78 +163,32 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
         className="w-full"
         defaultValue="overview"
       >
-        <UIForm {...formHook}>
-          <form onSubmit={formHook.handleSubmit(onSubmit)}>
-            <AccordionItem value="overview" className="border-b-muted">
-              <AccordionTrigger
-                className={cn(
-                  "text-muted-foreground group font-medium hover:text-black hover:no-underline data-[state=open]:text-black",
-                  isErrorInOverviewFields && "text-red-500",
-                )}
+        <AccordionItem value="landing-page-fields" className="border-b-muted">
+          <AccordionTrigger
+            className={cn(
+              "text-muted-foreground group font-medium hover:text-black hover:no-underline data-[state=open]:text-black",
+              isErrorInLandingPageFields && "text-red-500",
+            )}
+          >
+            <div className="flex items-center gap-3">
+              <Badge
+                variant="outline"
+                className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
               >
-                <div className="flex items-center gap-3">
-                  <Badge
-                    variant="outline"
-                    className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
-                  >
-                    1
-                  </Badge>
-                  <span>Overview</span>
-                </div>
-              </AccordionTrigger>
-
-              <AccordionContent className="pe-1 ps-10 pt-1">
-                <FormField
-                  control={formHook.control}
-                  name="overview"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormDescription>
-                        This text will be utilized by the AI to generate
-                        questions.
-                      </FormDescription>
-                      <FormControl>
-                        <Textarea
-                          {...field}
-                          placeholder="Write a brief description of what this form is for"
-                          disabled={isSavingForm}
-                          rows={5}
-                        />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem
-              value="landing-page-fields"
-              className="border-b-muted"
-            >
-              <AccordionTrigger
-                className={cn(
-                  "text-muted-foreground group font-medium hover:text-black hover:no-underline data-[state=open]:text-black",
-                  isErrorInLandingPageFields && "text-red-500",
-                )}
-              >
-                <div className="flex items-center gap-3">
-                  <Badge
-                    variant="outline"
-                    className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
-                  >
-                    2
-                  </Badge>{" "}
-                  <span>Landing page</span>
-                </div>
-              </AccordionTrigger>
+                1
+              </Badge>{" "}
+              <span>Landing screen</span>
+            </div>
+          </AccordionTrigger>
+          <UIForm {...formHook}>
+            <form onSubmit={formHook.handleSubmit(onSubmit)}>
               <AccordionContent className="space-y-4 pe-1 ps-10 pt-1">
                 <FormField
                   control={formHook.control}
                   name="welcomeScreenTitle"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel>Title</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -249,6 +205,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
                   name="welcomeScreenMessage"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel>Message</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -265,6 +222,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
                   name="welcomeScreenCTALabel"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel>Button text</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -277,9 +235,10 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
                   )}
                 />
               </AccordionContent>
-            </AccordionItem>
-          </form>
-        </UIForm>
+            </form>
+          </UIForm>
+        </AccordionItem>
+
         <AccordionItem value="requirement-fields" className="border-b-muted">
           <AccordionTrigger
             className={cn(
@@ -292,19 +251,50 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
                 variant="outline"
                 className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
               >
-                3
+                2
               </Badge>{" "}
-              <span>What you want to ask ?</span>
+              <span>Questions screen</span>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="pe-1 ps-10 pt-1">
-            <FieldsEditorCard
-              formFields={formFields}
-              formFieldsOrders={fieldsOrders}
-              formId={form.id}
-              handleUpdateFieldsOrder={handleUpdateFieldsOrder}
-              isSavingForm={isSavingForm}
-            />
+          <AccordionContent className="pe-1 ps-10 pt-1 space-y-4">
+            <div>
+              <UIForm {...formHook}>
+                <form onSubmit={formHook.handleSubmit(onSubmit)}>
+                  <FormField
+                    control={formHook.control}
+                    name="overview"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Overview</FormLabel>
+                        <FormDescription>
+                          This will help AI while generating questions.
+                        </FormDescription>
+                        <FormControl>
+                          <Textarea
+                            {...field}
+                            placeholder="Write a brief description of what this form is for"
+                            disabled={isSavingForm}
+                            rows={5}
+                          />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </form>
+              </UIForm>
+            </div>
+            <div>
+              <Label className="mb-4 block">Form fields</Label>
+              <FieldsEditorCard
+                formFields={formFields}
+                formFieldsOrders={fieldsOrders}
+                formId={form.id}
+                handleUpdateFieldsOrder={handleUpdateFieldsOrder}
+                isSavingForm={isSavingForm}
+              />
+            </div>
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="ending-page" className="border-none">
@@ -318,13 +308,33 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
                 variant="outline"
                 className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
               >
-                4
+                3
               </Badge>
-              <span>Ending page</span>
+              <span>Ending screen</span>
             </div>
           </AccordionTrigger>
           <AccordionContent className="pe-1 ps-10 pt-1">
-            <FormCustomizeCard form={form} organization={organization} />
+            <CustomizeEndScreenCard form={form} />
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="customize-page" className="border-none">
+          <AccordionTrigger
+            className={cn(
+              "text-muted-foreground group font-medium  hover:text-black hover:no-underline data-[state=open]:text-black",
+            )}
+          >
+            <div className="flex items-center gap-3">
+              <Badge
+                variant="outline"
+                className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
+              >
+                4
+              </Badge>
+              <span>Customize page</span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="pe-1 ps-10 pt-1">
+            <CustomizeFormCard form={form} organization={organization} />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
