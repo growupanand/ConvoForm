@@ -256,8 +256,8 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
               <span>Questions screen</span>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="pe-1 ps-10 pt-1">
-            <div className="mb-4">
+          <AccordionContent className="pe-1 ps-10 pt-1 space-y-4">
+            <div>
               <UIForm {...formHook}>
                 <form onSubmit={formHook.handleSubmit(onSubmit)}>
                   <FormField
@@ -285,7 +285,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
                 </form>
               </UIForm>
             </div>
-            <div className="">
+            <div>
               <Label className="mb-4 block">Form fields</Label>
               <FieldsEditorCard
                 formFields={formFields}
@@ -317,7 +317,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
             <CustomizeEndScreenCard form={form} />
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="customize-form" className="border-none">
+        <AccordionItem value="customize-page" className="border-none">
           <AccordionTrigger
             className={cn(
               "text-muted-foreground group font-medium  hover:text-black hover:no-underline data-[state=open]:text-black",
@@ -330,7 +330,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
               >
                 4
               </Badge>
-              <span>Customize form</span>
+              <span>Customize page</span>
             </div>
           </AccordionTrigger>
           <AccordionContent className="pe-1 ps-10 pt-1">

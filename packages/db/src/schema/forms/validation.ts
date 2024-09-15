@@ -11,6 +11,7 @@ export const insertFormSchema = createInsertSchema(form, {
   name: z.string().min(1),
   overview: z.string().min(1),
   formFieldsOrders: z.string().array(),
+  endScreenCTAUrl: z.string().url(),
 });
 export const selectFormSchema = createSelectSchema(form, {
   formFieldsOrders: z.string().array(),

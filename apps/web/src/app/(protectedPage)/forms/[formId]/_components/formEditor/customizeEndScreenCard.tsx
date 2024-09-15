@@ -1,6 +1,6 @@
 "use client";
 
-import type { Form } from "@convoform/db/src/schema";
+import { type Form, patchFormSchema } from "@convoform/db/src/schema";
 import {
   Collapsible,
   CollapsibleContent,
@@ -10,17 +10,36 @@ import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { Switch } from "@convoform/ui/components/ui/switch";
 import { Textarea } from "@convoform/ui/components/ui/textarea";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
-import { debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Form as UIForm,
+} from "@convoform/ui/components/ui/form";
+import { Input } from "@convoform/ui/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import type { z } from "zod";
 
 type Props = {
   form: Pick<
     Form,
-    "id" | "showCustomEndScreenMessage" | "customEndScreenMessage"
+    | "id"
+    | "showCustomEndScreenMessage"
+    | "customEndScreenMessage"
+    | "endScreenCTAUrl"
+    | "endScreenCTALabel"
   >;
 };
+
+const formHookSchema = patchFormSchema.omit({ id: true });
+type FormHookData = z.infer<typeof formHookSchema>;
 
 export function CustomizeEndScreenCard({ form }: Readonly<Props>) {
   const customEndScreenMessageRef = useRef<string>(
@@ -28,8 +47,17 @@ export function CustomizeEndScreenCard({ form }: Readonly<Props>) {
   );
 
   const queryClient = useQueryClient();
+  const patchForm = api.form.patch.useMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [["form"]],
+      });
+    },
+  });
+  const { isPending: isSavingForm } = patchForm;
 
-  function showPromiseSonner(promise: Promise<unknown>) {
+  function handlePatchPromise(promise: Promise<unknown>) {
+    // Show a toast while saving changes
     sonnerToast.promise(promise, {
       loading: "Saving changes...",
       success: "Changes saved successfully",
@@ -37,71 +65,154 @@ export function CustomizeEndScreenCard({ form }: Readonly<Props>) {
     });
   }
 
-  const updateShowCustomEndScreenMessage =
-    api.form.updateShowCustomEndScreenMessage.useMutation({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: [["form"]],
-        });
-      },
+  const handleToggleShowCustomEndScreenMessage = async (checked: boolean) => {
+    const patchPromise = patchForm.mutateAsync({
+      id: form.id,
+      showCustomEndScreenMessage: checked,
+      customEndScreenMessage: customEndScreenMessageRef.current,
     });
-  const { isPending: isPendingCustomEndScreenMessage } =
-    updateShowCustomEndScreenMessage;
-
-  const handleToggleShowCustomEndScreenMessage = async (checked: boolean) =>
-    showPromiseSonner(
-      updateShowCustomEndScreenMessage.mutateAsync({
-        formId: form.id,
-        showCustomEndScreenMessage: checked,
-        customEndScreenMessage: customEndScreenMessageRef.current,
-      }),
-    );
-
-  const handleChangeCustomEndScreenMessage = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    const updatedCustomEndMessage = e.target.value as string;
-    customEndScreenMessageRef.current = updatedCustomEndMessage;
-    debounce(() => {
-      if (customEndScreenMessageRef.current !== form.customEndScreenMessage) {
-        handleToggleShowCustomEndScreenMessage(form.showCustomEndScreenMessage);
-      }
-    }, 1000);
+    handlePatchPromise(patchPromise);
   };
 
+  const formHook = useForm({
+    defaultValues: {
+      endScreenCTAUrl: form.endScreenCTAUrl || "",
+      endScreenCTALabel: form.endScreenCTALabel || "",
+      customEndScreenMessage: form.customEndScreenMessage || "",
+    },
+    resolver: zodResolver(formHookSchema),
+  });
+
+  const onSubmit = (data: FormHookData) => {
+    const patchPromise = patchForm.mutateAsync({
+      id: form.id,
+      ...data,
+    });
+    sonnerToast.promise(patchPromise, {
+      loading: "Saving changes...",
+      success: "Changes saved successfully",
+      error: "Unable to save changes",
+    });
+  };
+
+  const endScreenCTAUrlValue = formHook.watch("endScreenCTAUrl");
+  const showEndScreenCTAButtonField = !!endScreenCTAUrlValue;
+
+  useEffect(() => {
+    if (endScreenCTAUrlValue === "") {
+      // If we want to clear the value we need to set it to null,
+      // Otherwise ZOD will throw invalid URL error for empty string
+      formHook.setValue("endScreenCTAUrl", null as unknown as string);
+    }
+    const timeout = setTimeout(() => {
+      if (formHook.formState.isDirty) {
+        formHook.handleSubmit(onSubmit)();
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [
+    endScreenCTAUrlValue,
+    formHook.watch("endScreenCTALabel"),
+    formHook.watch("customEndScreenMessage"),
+  ]);
+
   return (
-    <div className="grid space-y-8">
-      <div className="grid space-y-2">
-        <div className="flex items-start justify-between gap-3">
+    <UIForm {...formHook}>
+      <form onSubmit={formHook.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="grid space-y-4">
           <div className="grid space-y-2">
-            <Label
-              htmlFor="showCustomEndScreenMessageSwitch"
-              className="cursor-pointer"
-            >
-              Custom message
-            </Label>
-            <div className="text-muted-foreground text-sm">
-              Display custom text after form submission
+            <div className="flex items-start justify-between gap-3">
+              <div className="grid space-y-2">
+                <Label
+                  htmlFor="showCustomEndScreenMessageSwitch"
+                  className="cursor-pointer"
+                >
+                  Custom message
+                </Label>
+                <div className="text-muted-foreground text-sm">
+                  Display custom text after form submission
+                </div>
+              </div>
+              <Switch
+                disabled={isSavingForm}
+                defaultChecked={form.showCustomEndScreenMessage}
+                onCheckedChange={handleToggleShowCustomEndScreenMessage}
+                id="showCustomEndScreenMessageSwitch"
+              />
             </div>
             <Collapsible open={form.showCustomEndScreenMessage}>
               <CollapsibleContent>
-                <Textarea
-                  disabled={isPendingCustomEndScreenMessage}
-                  onChange={handleChangeCustomEndScreenMessage}
-                  placeholder="Thank you for filling the form!"
-                  defaultValue={customEndScreenMessageRef.current}
+                <FormField
+                  control={formHook.control}
+                  name="customEndScreenMessage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          disabled={isSavingForm}
+                          placeholder="Thank you for filling the form!"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
+                {/* <Textarea
+              disabled={isSavingForm}
+              // onChange={handleChangeCustomEndScreenMessage}
+              placeholder="Thank you for filling the form!"
+              defaultValue={customEndScreenMessageRef.current}
+            /> */}
               </CollapsibleContent>
             </Collapsible>
           </div>
-          <Switch
-            disabled={isPendingCustomEndScreenMessage}
-            defaultChecked={form.showCustomEndScreenMessage}
-            onCheckedChange={handleToggleShowCustomEndScreenMessage}
-            id="showCustomEndScreenMessageSwitch"
-          />
+          <div>
+            <FormField
+              control={formHook.control}
+              name="endScreenCTAUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>CTA Button URL (Optional)</FormLabel>
+                  <FormDescription>
+                    Navigate to your website after form submission
+                  </FormDescription>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="E.g https://yoursite.com"
+                      disabled={isSavingForm}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {showEndScreenCTAButtonField && (
+              <FormField
+                control={formHook.control}
+                name="endScreenCTALabel"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormDescription>
+                      CTA Button Text (Optional)
+                    </FormDescription>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Default: Done"
+                        disabled={isSavingForm}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+          </div>
         </div>
-      </div>
-    </div>
+      </form>
+    </UIForm>
   );
 }
