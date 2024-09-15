@@ -1,5 +1,28 @@
 
 
+## [0.13.0](https://github.com/growupanand/ConvoForm/compare/0.12.0...0.13.0) (2024-09-15)
+
+
+### Features
+
+* 🚀 Added report bug floating button ([f8f7a02](https://github.com/growupanand/ConvoForm/commit/f8f7a0255bca84c3b010d5388a7801d84a7935d6))
+* 🚀add custom link option on final form submission screen ([#361](https://github.com/growupanand/ConvoForm/issues/361)) ([eb22113](https://github.com/growupanand/ConvoForm/commit/eb2211340d04292239c9c5b5e83621f6783766bf))
+
+
+### Bug Fixes
+
+* 🐛 In workspace page new form not showing without reload ([f71c458](https://github.com/growupanand/ConvoForm/commit/f71c4585835a759c904354a743099200797ce5dd))
+* 🐛 Internal error after open old conversation page ([bdd5e5c](https://github.com/growupanand/ConvoForm/commit/bdd5e5cbfd1d0b5e313c4d742ae488a04eba497b))
+
+
+### Improvements
+
+* 💄 Restricted App UI for desktop screen only ([72a5890](https://github.com/growupanand/ConvoForm/commit/72a5890cdba86f8d12df297305e700c67ca9eb18))
+* 💡 Changes related to issue templates and workflows ([40cf360](https://github.com/growupanand/ConvoForm/commit/40cf360819bfd9e669a2994bf9122e3c8575f6ba))
+* 💡 fixed discord link ([b890b8f](https://github.com/growupanand/ConvoForm/commit/b890b8f3587880aa3cf4b111377580d5b629e1e4))
+* 💡 Git action for lableing PR bases on changes ([c21546a](https://github.com/growupanand/ConvoForm/commit/c21546aa58bfd6d62ca05d6b185647a17236af4c))
+* 💡 Removed mobile only components ([bef0c47](https://github.com/growupanand/ConvoForm/commit/bef0c47a44f8278b64733deecd7509af9aba7d46))
+
 ## [0.12.0](https://github.com/growupanand/ConvoForm/compare/0.11.0...0.12.0) (2024-07-25)
 
 

@@ -1,16 +1,80 @@
 export const changelog = [
   {
-    title: "0.12.0",
+    title: "0.13.0",
     tag: "",
-    isoDate: "2024-07-25",
+    isoDate: "2024-09-15",
     commits: {
       features: [
         {
-          message: "feat: 🚀 added Answer Input - datepicker\n\n✅ Closes: 335",
-          shorthash: "8b71fb6",
-          href: "https://github.com/growupanand/ConvoForm/commit/8b71fb6842e4807ea60107a61aa863a07d88b78b",
+          message:
+            "feat: 🚀 add custom link option on final form submission screen\n\n✅ Closes: 361",
+          shorthash: "eb22113",
+          href: "https://github.com/growupanand/ConvoForm/commit/eb2211340d04292239c9c5b5e83621f6783766bf",
+        },
+        {
+          message:
+            "feat: 🚀 Added report bug floating button\n\nuser can report any bug or suggestion while using the app\n\n✅ Closes: 345",
+          shorthash: "f8f7a02",
+          href: "https://github.com/growupanand/ConvoForm/commit/f8f7a0255bca84c3b010d5388a7801d84a7935d6",
         },
       ],
+      improvements: [
+        {
+          message:
+            "refactor: 💡 Changes related to issue templates and workflows\n\n✅ Closes: 355",
+          shorthash: "40cf360",
+          href: "https://github.com/growupanand/ConvoForm/commit/40cf360819bfd9e669a2994bf9122e3c8575f6ba",
+        },
+
+        {
+          message:
+            "refactor: 💡 Removed mobile only components\n\nRemoved mobile only components, exect: landing page, form submission\npage components",
+          shorthash: "bef0c47",
+          href: "https://github.com/growupanand/ConvoForm/commit/bef0c47a44f8278b64733deecd7509af9aba7d46",
+        },
+
+        {
+          message:
+            "style: 💄 Restricted App UI for desktop screen only\n\n✅ Closes: 353",
+          shorthash: "72a5890",
+          href: "https://github.com/growupanand/ConvoForm/commit/72a5890cdba86f8d12df297305e700c67ca9eb18",
+        },
+
+        {
+          message: "refactor: 💡 Git action for lableing PR bases on changes",
+          shorthash: "c21546a",
+          href: "https://github.com/growupanand/ConvoForm/commit/c21546aa58bfd6d62ca05d6b185647a17236af4c",
+        },
+
+        {
+          message: "refactor: 💡 fixed discord link",
+          shorthash: "b890b8f",
+          href: "https://github.com/growupanand/ConvoForm/commit/b890b8f3587880aa3cf4b111377580d5b629e1e4",
+        },
+      ],
+      fixes: [
+        {
+          message:
+            "fix: 🐛 Internal error after open old conversation page\n\n✅ Closes: 349",
+          shorthash: "bdd5e5c",
+          href: "https://github.com/growupanand/ConvoForm/commit/bdd5e5cbfd1d0b5e313c4d742ae488a04eba497b",
+        },
+
+        {
+          message:
+            "fix: 🐛 In workspace page new form not showing without reload\n\n✅ Closes: 297",
+          shorthash: "f71c458",
+          href: "https://github.com/growupanand/ConvoForm/commit/f71c4585835a759c904354a743099200797ce5dd",
+        },
+      ],
+    },
+  },
+  {
+    title: "0.12.0",
+    tag: "0.12.0",
+    isoDate: "2024-07-26",
+    commits: {
+      features: [],
       improvements: [
         {
           message:
