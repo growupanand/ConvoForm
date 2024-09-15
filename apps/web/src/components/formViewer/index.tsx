@@ -89,7 +89,11 @@ export function FormViewer({ form, refresh }: Readonly<Props>) {
         />
       )}
       {currentStage === "endScreen" && (
-        <EndScreen endScreenMessage={endScreenMessage} />
+        <EndScreen
+          endScreenMessage={endScreenMessage}
+          endScreenCTALabel={form.endScreenCTALabel || undefined}
+          endScreenCTAUrl={form.endScreenCTAUrl || undefined}
+        />
       )}
     </div>
   );

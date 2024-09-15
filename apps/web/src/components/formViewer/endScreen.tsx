@@ -1,21 +1,44 @@
 import Image from "next/image";
 
+import { Button } from "@convoform/ui/components/ui/button";
+import Link from "next/link";
 import BrandName from "../common/brandName";
 
 type Props = {
   endScreenMessage?: string;
+  endScreenCTAUrl?: string;
+  endScreenCTALabel?: string;
 };
 
 export const EndScreen = (props: Props) => {
   const message = props.endScreenMessage || "Thank you for filling the form!";
+  const ctaButtonLabel = props.endScreenCTALabel || "Done";
+  const showCTAButton =
+    props.endScreenCTAUrl && props.endScreenCTAUrl.trim().length > 0;
   return (
     <div className="flex flex-col items-center justify-center">
-      <p className="text-muted-foreground text-center">
-        You can now close this window.
-      </p>
-      <h1 className="whitespace-break-spaces break-words text-center text-2xl font-semibold lg:text-4xl">
-        {message}
-      </h1>
+      <div>
+        <h1 className="whitespace-break-spaces break-words text-center text-2xl font-semibold lg:text-4xl mb-4">
+          {message}
+        </h1>
+        {showCTAButton ? (
+          <Button>
+            <Link
+              // biome-ignore lint/style/noNonNullAssertion: <explanation>
+              href={props.endScreenCTAUrl!}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              aria-label="Form submission completed"
+            >
+              {ctaButtonLabel}
+            </Link>
+          </Button>
+        ) : (
+          <p className="text-muted-foreground text-center">
+            You can now close this window.
+          </p>
+        )}
+      </div>
       <div className="relative mt-10 h-[200px] w-full">
         <Image
           src="/images/GroovySittingDoodle.svg"
