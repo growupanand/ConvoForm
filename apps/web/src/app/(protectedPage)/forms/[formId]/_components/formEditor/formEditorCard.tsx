@@ -38,6 +38,11 @@ import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { Label } from "@convoform/ui/components/ui/label";
+import {
+  FORM_EDITOR_SECTIONS_ENUMS,
+  defaultFormEditorSection,
+  useFormEditor,
+} from "../formEditorContext";
 import { CustomizeEndScreenCard } from "./customizeEndScreenCard";
 import { CustomizeFormCard } from "./customizeFormCard";
 import { FieldsEditorCard } from "./fieldsEditorCard";
@@ -76,6 +81,8 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
       fieldsOrders: getSafeFormFieldsOrders(form, form.formFields),
     }));
   }, [form.formFields]);
+
+  const { setCurrentSection } = useFormEditor();
 
   const queryClient = useQueryClient();
   const updateForm = api.form.updateForm.useMutation({
@@ -161,9 +168,13 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
         type="single"
         collapsible
         className="w-full"
-        defaultValue="overview"
+        defaultValue={defaultFormEditorSection}
+        onValueChange={setCurrentSection}
       >
-        <AccordionItem value="landing-page-fields" className="border-b-muted">
+        <AccordionItem
+          value={FORM_EDITOR_SECTIONS_ENUMS.landingScreen}
+          className="border-b-muted"
+        >
           <AccordionTrigger
             className={cn(
               "text-muted-foreground group font-medium hover:text-black hover:no-underline data-[state=open]:text-black",
@@ -239,7 +250,10 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
           </UIForm>
         </AccordionItem>
 
-        <AccordionItem value="requirement-fields" className="border-b-muted">
+        <AccordionItem
+          value={FORM_EDITOR_SECTIONS_ENUMS.questionsScreen}
+          className="border-b-muted"
+        >
           <AccordionTrigger
             className={cn(
               "text-muted-foreground group font-medium  hover:text-black hover:no-underline data-[state=open]:text-black",
@@ -297,7 +311,10 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
             </div>
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="ending-page" className="border-none">
+        <AccordionItem
+          value={FORM_EDITOR_SECTIONS_ENUMS.endingScreen}
+          className="border-none"
+        >
           <AccordionTrigger
             className={cn(
               "text-muted-foreground group font-medium  hover:text-black hover:no-underline data-[state=open]:text-black",
@@ -317,7 +334,10 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
             <CustomizeEndScreenCard form={form} />
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="customize-page" className="border-none">
+        <AccordionItem
+          value={FORM_EDITOR_SECTIONS_ENUMS.customizePage}
+          className="border-none"
+        >
           <AccordionTrigger
             className={cn(
               "text-muted-foreground group font-medium  hover:text-black hover:no-underline data-[state=open]:text-black",
