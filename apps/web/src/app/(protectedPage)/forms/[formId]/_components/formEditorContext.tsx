@@ -1,17 +1,24 @@
 "use client";
 
+import {
+  FORM_SECTIONS_ENUMS,
+  type FormSections,
+} from "@convoform/db/src/schema/formDesigns/constants";
 import { createContext, useContext, useState } from "react";
 
 type FormEditorContextType = {
-  currentSection: FormEditorSections | null;
+  currentSection: FormSections | null;
   currentField: string | null;
-  setCurrentSection: (section: FormEditorSections) => void;
+  setCurrentSection: (section: FormSections) => void;
   setCurrentField: (field: string) => void;
 };
 
 const FormEditorContext = createContext<FormEditorContextType | undefined>(
   undefined,
 );
+
+export const defaultFormEditorSection =
+  FORM_SECTIONS_ENUMS.landingScreen as FormSections;
 
 export function FormEditorProvider({
   children,
@@ -42,16 +49,3 @@ export function useFormEditor() {
   }
   return context;
 }
-
-export const FORM_EDITOR_SECTIONS_ENUMS = {
-  landingScreen: "landing-screen" as const,
-  questionsScreen: "questions-screen" as const,
-  endingScreen: "ending-screen" as const,
-  customizePage: "customize-page" as const,
-};
-
-export const defaultFormEditorSection =
-  FORM_EDITOR_SECTIONS_ENUMS.landingScreen as FormEditorSections;
-
-export type FormEditorSections =
-  (typeof FORM_EDITOR_SECTIONS_ENUMS)[keyof typeof FORM_EDITOR_SECTIONS_ENUMS];

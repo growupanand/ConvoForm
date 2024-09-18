@@ -39,3 +39,5 @@ export const generateFormSchema = z.object({
 });
 
 export type Form = z.infer<typeof selectFormSchema>;
+
+// Color schema
