@@ -3,6 +3,7 @@ import {
   formDesign,
   insertFormDesignSchema,
   patchFormDesignSchema,
+  selectFormDesignSchema,
 } from "@convoform/db/src/schema";
 import { z } from "zod";
 
@@ -50,18 +51,34 @@ export const formDesignRouter = createTRPCRouter({
 
   getOne: protectedProcedure
     .input(
-      z.object({
-        id: z.string().min(1),
-        organizationId: z.string().min(1),
-      }),
+      selectFormDesignSchema
+        .pick({
+          formId: true,
+          id: true,
+          screenType: true,
+        })
+        .partial()
+        .required({
+          screenType: true,
+        }),
     )
     .query(async ({ input, ctx }) => {
+      if (!input.id && !input.formId) {
+        throw new Error("id or formId is required");
+      }
+
+      const conditions = [eq(formDesign.screenType, input.screenType)];
+
+      if (input.id) {
+        conditions.push(eq(formDesign.id, input.id));
+      }
+
+      if (input.formId) {
+        conditions.push(eq(formDesign.formId, input.formId));
+      }
+
       return await ctx.db.query.formDesign.findFirst({
-        where: (formDesign, { eq, and }) =>
-          and(
-            eq(formDesign.id, input.id),
-            eq(formDesign.organizationId, input.organizationId),
-          ),
+        where: (_, { and }) => and(...conditions),
       });
     }),
 

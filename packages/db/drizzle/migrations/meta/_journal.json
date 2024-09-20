@@ -127,6 +127,13 @@
       "when": 1726217244200,
       "tag": "0017_blue_cerebro",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1726834413975,
+      "tag": "0018_flaky_hemingway",
+      "breakpoints": true
     }
   ]
 }

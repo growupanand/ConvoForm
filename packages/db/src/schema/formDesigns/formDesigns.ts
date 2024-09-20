@@ -3,20 +3,22 @@ import { pgEnum, pgTable, text } from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
 import { form } from "../forms/form";
-import { FORM_SECTIONS_ENUMS } from "./constants";
+import { DEFAULT_FORM_DESIGN, FORM_SECTIONS_ENUMS } from "./constants";
 
-const formSectionsEnum = pgEnum("formSectionsEnum", [
+export const formSectionsEnum = pgEnum("formsectionsenum", [
   FORM_SECTIONS_ENUMS.landingScreen,
   FORM_SECTIONS_ENUMS.questionsScreen,
   FORM_SECTIONS_ENUMS.endingScreen,
   FORM_SECTIONS_ENUMS.defaultScreen,
 ]);
 
-export const formDesign = pgTable("Conversation", {
+export const formDesign = pgTable("FormDesign", {
   ...getBaseSchema(),
   screenType: formSectionsEnum("screenType").notNull(),
-  backgroundColor: text("backgroundColor"),
-  fontColor: text("fontColor"),
+  backgroundColor: text("backgroundColor")
+    .notNull()
+    .default(DEFAULT_FORM_DESIGN.backgroundColor),
+  fontColor: text("fontColor").notNull().default(DEFAULT_FORM_DESIGN.fontColor),
   formId: text("formId")
     .notNull()
     .references(() => form.id, { onDelete: "cascade", onUpdate: "cascade" }),

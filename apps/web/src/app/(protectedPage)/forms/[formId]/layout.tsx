@@ -27,7 +27,7 @@ export default async function Layout({
     return <NotFound />;
   }
   return (
-    <FormEditorProvider>
+    <FormEditorProvider formId={formId}>
       <div className="relative flex h-screen flex-col gap-3 ">
         <FormEditorPageHeader formId={formId} />
         <div className="grow">{children}</div>

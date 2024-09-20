@@ -7,10 +7,11 @@ import {
 import { createContext, useContext, useState } from "react";
 
 type FormEditorContextType = {
-  currentSection: FormSections | null;
+  currentSection: FormSections;
   currentField: string | null;
   setCurrentSection: (section: FormSections) => void;
   setCurrentField: (field: string) => void;
+  formId: string;
 };
 
 const FormEditorContext = createContext<FormEditorContextType | undefined>(
@@ -22,7 +23,8 @@ export const defaultFormEditorSection =
 
 export function FormEditorProvider({
   children,
-}: { children: React.ReactNode }) {
+  formId,
+}: { children: React.ReactNode; formId: string }) {
   const [currentSection, setCurrentSection] = useState<
     FormEditorContextType["currentSection"]
   >(defaultFormEditorSection);
@@ -35,6 +37,7 @@ export function FormEditorProvider({
         currentField,
         setCurrentSection,
         setCurrentField,
+        formId,
       }}
     >
       {children}

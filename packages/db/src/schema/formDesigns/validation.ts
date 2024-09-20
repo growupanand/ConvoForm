@@ -1,8 +1,14 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
+import { colorCodeSchema } from "../lib";
 import { formDesign } from "./formDesigns";
 
-export const insertFormDesignSchema = createInsertSchema(formDesign, {});
+export const insertFormDesignSchema = createInsertSchema(formDesign, {}).extend(
+  {
+    backgroundColor: colorCodeSchema,
+    fontColor: colorCodeSchema,
+  },
+);
 
 export const selectFormDesignSchema = createSelectSchema(formDesign, {});
 
@@ -13,3 +19,10 @@ export const patchFormDesignSchema = insertFormDesignSchema.partial().extend({
 });
 
 export type FormDesign = z.infer<typeof selectFormDesignSchema>;
+
+export const formDesignRenderSchema = selectFormDesignSchema.pick({
+  backgroundColor: true,
+  fontColor: true,
+});
+
+export type FormDesignRenderSchema = z.infer<typeof formDesignRenderSchema>;

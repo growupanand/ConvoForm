@@ -1,6 +1,7 @@
 import { and, count, eq } from "@convoform/db";
 import {
   form,
+  formDesign,
   formField,
   getSafeFormFieldsOrders,
   type insertFormFieldSchema,
@@ -11,6 +12,10 @@ import {
 } from "@convoform/db/src/schema";
 import { z } from "zod";
 
+import {
+  DEFAULT_FORM_DESIGN,
+  FORM_SECTIONS_ENUMS_VALUES,
+} from "@convoform/db/src/schema/formDesigns/constants";
 import { checkRateLimitThrowTRPCError } from "../lib/rateLimit";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
@@ -78,9 +83,20 @@ export const formRouter = createTRPCRouter({
         .where(eq(form.id, savedForm.id))
         .returning();
 
+      // Create form Design configuration
+      const savedFormDesigns = FORM_SECTIONS_ENUMS_VALUES.map((screenType) => ({
+        formId: savedForm.id,
+        organizationId: input.organizationId,
+        screenType,
+        ...DEFAULT_FORM_DESIGN,
+      }));
+
+      await ctx.db.insert(formDesign).values(savedFormDesigns);
+
       return {
         ...savedForm,
         formFields: [savedFormFields],
+        formDesigns: savedFormDesigns,
       };
     }),
 

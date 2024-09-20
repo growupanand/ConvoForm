@@ -61,7 +61,7 @@ export default function FormPage({ params: { formId } }: Props) {
       </div>
       {/* Form customize section */}
       <div className="w-[400px] min-w-[400px] py-3">
-        <FormCustomizeSection />
+        <FormCustomizeSection organizationId={organization.id} />
       </div>
     </div>
   );

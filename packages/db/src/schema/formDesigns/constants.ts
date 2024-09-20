@@ -5,5 +5,12 @@ export const FORM_SECTIONS_ENUMS = {
   defaultScreen: "default-screen" as const,
 };
 
+export const FORM_SECTIONS_ENUMS_VALUES = Object.values(FORM_SECTIONS_ENUMS);
+
 export type FormSections =
   (typeof FORM_SECTIONS_ENUMS)[keyof typeof FORM_SECTIONS_ENUMS];
+
+export const DEFAULT_FORM_DESIGN = {
+  backgroundColor: "#4fff42",
+  fontColor: "#ff4242",
+};
