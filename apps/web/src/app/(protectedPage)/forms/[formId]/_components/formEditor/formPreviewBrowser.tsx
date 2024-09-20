@@ -9,7 +9,7 @@ import {
 
 import BrowserWindow from "@/components/common/browserWindow";
 import Spinner from "@/components/common/spinner";
-import { getFrontendBaseUrl } from "@/lib/url";
+import { getFormSubmissionLink } from "@/lib/url";
 import { api } from "@/trpc/react";
 import { FormPreview } from "./formPreview";
 
@@ -30,7 +30,7 @@ export default function FormPreviewBrowser({
     id: formId,
   });
 
-  const formViewLink = form ? `${getFrontendBaseUrl()}/view/${form.id}` : "";
+  const formViewLink = form ? getFormSubmissionLink(form.id) : "";
   const refreshPreview = () => refetch();
 
   const Toolbar = (

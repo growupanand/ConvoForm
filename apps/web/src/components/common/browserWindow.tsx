@@ -3,6 +3,7 @@ import { toast } from "@convoform/ui/components/ui/use-toast";
 import { ExternalLink, RotateCw } from "lucide-react";
 import Link from "next/link";
 
+import { copyLinkToClipboard } from "@/lib/url";
 import { CopyLinkButton } from "./copyLinkButton";
 
 type Props = {
@@ -50,16 +51,18 @@ const ActionButtons = ({
   actionsButton?: React.ReactNode;
   onRefresh?: () => void;
 }) => {
-  const copyLinkToClipboard = () => {
-    navigator.clipboard.writeText(link ?? "");
+  const handleCopyLinkToClipboard = () => {
+    if (!link) return;
+    copyLinkToClipboard(link);
     toast({
-      title: "Link copied to clipboard",
+      description: "Link copied to clipboard",
     });
   };
+
   return (
     <div className="flex items-center gap-2 ">
       {actionsButton}
-      {link && <CopyLinkButton onClick={copyLinkToClipboard} />}
+      {link && <CopyLinkButton onClick={handleCopyLinkToClipboard} />}
       {onRefresh && (
         <Button
           variant="ghost"

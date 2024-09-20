@@ -18,7 +18,7 @@ type Props = {
   workspace: Workspace;
 };
 
-export default function FormList({ workspace }: Readonly<Props>) {
+export function FormList({ workspace }: Readonly<Props>) {
   const [scope, animate] = useAnimate();
 
   const { isLoading, data } = api.form.getAll.useQuery({
@@ -28,6 +28,19 @@ export default function FormList({ workspace }: Readonly<Props>) {
 
   const forms = data ?? [];
   const emptyForms = forms.length === 0;
+
+  const { data: formWithConversationsCount } =
+    api.conversation.getCountByFormIds.useQuery({
+      organizationId: workspace.organizationId,
+      formIds: forms.map((form) => form.id),
+    });
+
+  const getConversationsCount = (formId: string) => {
+    return (
+      formWithConversationsCount?.find((form) => form.id === formId)
+        ?.conversationCount ?? 0
+    );
+  };
 
   const loadListItems = async () => {
     if (!isLoading && !emptyForms) {
@@ -65,7 +78,10 @@ export default function FormList({ workspace }: Readonly<Props>) {
               initial={{ opacity: 0, translate: "0 -0.5rem" }}
               key={form.id}
             >
-              <FormListItem form={form} />
+              <FormListItem
+                form={form}
+                conversationsCount={getConversationsCount(form.id)}
+              />
             </motion.div>
           ))}
         </ListCard>

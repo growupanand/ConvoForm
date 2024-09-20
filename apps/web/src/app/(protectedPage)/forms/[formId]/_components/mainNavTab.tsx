@@ -7,15 +7,29 @@ import { usePathname } from "next/navigation";
 
 import { montserrat } from "@/app/fonts";
 import type { NavLink } from "@/lib/types/navigation";
+import { api } from "@/trpc/react";
 
 type Props = {
   formId: string;
+  organizationId: string;
 };
 
-export default function MainNavTab({ formId }: Readonly<Props>) {
+export default function MainNavTab({
+  formId,
+  organizationId,
+}: Readonly<Props>) {
   const pathName = usePathname();
   const currentFormId = formId;
   const isAlreadyOnConversationsPage = pathName.includes("conversations");
+
+  const { data: formsWithConversationsCount } =
+    api.conversation.getCountByFormIds.useQuery({
+      formIds: [currentFormId],
+      organizationId,
+    });
+
+  const conversationsCount =
+    formsWithConversationsCount?.[0]?.conversationCount ?? 0;
 
   const tabLinks = [
     {
@@ -24,7 +38,7 @@ export default function MainNavTab({ formId }: Readonly<Props>) {
       isActive: pathName === `/forms/${currentFormId}`,
     },
     {
-      name: "Responses",
+      name: `Responses ${conversationsCount}`,
       path: isAlreadyOnConversationsPage
         ? ""
         : `/forms/${currentFormId}/conversations`,

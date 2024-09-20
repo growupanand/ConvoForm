@@ -1,4 +1,4 @@
-import { count, eq } from "@convoform/db";
+import { count, eq, inArray } from "@convoform/db";
 import {
   conversation,
   insertConversationSchema,
@@ -275,5 +275,40 @@ export const conversationRouter = createTRPCRouter({
       }
 
       return result;
+    }),
+
+  getCountByFormIds: protectedProcedure
+    .input(
+      z.object({
+        organizationId: z.string().min(1),
+        formIds: z.array(z.string().min(1)),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const formsWithConversations = await ctx.db.query.form.findMany({
+        where: (form, { eq, and }) =>
+          and(
+            eq(form.organizationId, input.organizationId),
+            inArray(form.id, input.formIds),
+          ),
+        columns: {
+          id: true,
+        },
+        with: {
+          conversations: {
+            columns: {
+              id: true,
+            },
+          },
+        },
+        orderBy: (form, { asc }) => [asc(form.createdAt)],
+      });
+
+      return formsWithConversations.map((form) => {
+        return {
+          id: form.id,
+          conversationCount: form.conversations.length,
+        };
+      });
     }),
 });

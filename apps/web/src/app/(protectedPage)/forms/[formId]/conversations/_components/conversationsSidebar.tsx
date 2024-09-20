@@ -13,13 +13,14 @@ import { ConversationsNavigation } from "./conversationsNavigation";
 
 type Props = {
   formId: string;
+  organizationId: string;
 };
 
 type State = {
   open: boolean;
 };
 
-export function ConversationsSidebar({ formId }: Props) {
+export function ConversationsSidebar({ formId, organizationId }: Props) {
   const pathname = usePathname();
 
   const [state, setState] = useState<State>({
@@ -79,7 +80,7 @@ export function ConversationsSidebar({ formId }: Props) {
       <div className="relative flex flex-col px-3 max-h-[calc(100vh-100px)]">
         <div>
           <div className="mb-5">
-            <MainNavTab formId={formId} />
+            <MainNavTab formId={formId} organizationId={organizationId} />
           </div>
 
           <div className="mb-5">
