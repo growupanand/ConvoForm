@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getOrganizationId } from "@/lib/getOrganizationId";
 import { api } from "@/trpc/server";
 import { PageShell } from "../../_components/pageShell";
-import FormList from "./_component/formList";
+import { FormList } from "./_component/formList";
 import { WorkspaceHeader } from "./_component/pageHeader";
 
 export const dynamic = "force-dynamic";

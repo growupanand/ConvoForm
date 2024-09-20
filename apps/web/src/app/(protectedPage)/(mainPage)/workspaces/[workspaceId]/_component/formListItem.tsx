@@ -6,24 +6,43 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@convoform/ui/components/ui/dropdown-menu";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, useAnimate } from "framer-motion";
-import { ExternalLink, Loader2, MoreVertical, Trash } from "lucide-react";
+import {
+  BookDashed,
+  Copy,
+  ExternalLink,
+  Loader2,
+  MessageCircle,
+  MoreVertical,
+  Trash,
+} from "lucide-react";
 import Link from "next/link";
 
 import { ConfirmAction } from "@/components/common/confirmAction";
 import { LinkN } from "@/components/common/linkN";
 import { ListItem } from "@/components/common/listItem";
+import { copyLinkToClipboard, getFormSubmissionLink } from "@/lib/url";
 import { api } from "@/trpc/react";
 
 type Props = {
   form: Form;
+  conversationsCount: number;
 };
 
-export function FormListItem({ form }: Readonly<Props>) {
+export function FormListItem({ form, conversationsCount }: Readonly<Props>) {
+  const formSubmissionLink = getFormSubmissionLink(form.id);
+  const handleCopyLinkToClipboard = () => {
+    copyLinkToClipboard(formSubmissionLink);
+    toast({
+      description: "Link copied to clipboard",
+    });
+  };
+
   const [scope, animate] = useAnimate();
   const queryClient = useQueryClient();
   const deleteForm = api.form.delete.useMutation({
@@ -67,7 +86,7 @@ export function FormListItem({ form }: Readonly<Props>) {
             <LinkN href={`/forms/${form.id}`}>
               <Button
                 variant="link"
-                className="w-full justify-start ps-0 font-normal  hover:no-underline "
+                className="w-full justify-start ps-0 font-normal text-base  hover:no-underline "
               >
                 <span className="form-name">{form.name}</span>
               </Button>
@@ -75,18 +94,9 @@ export function FormListItem({ form }: Readonly<Props>) {
           </div>
 
           <div className="flex items-center gap-3">
-            <div>
-              {form.isPublished ? (
-                <Link href={`/view/${form.id}`} target="_blank">
-                  <Button variant="link">
-                    View form <ExternalLink className="ms-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              ) : (
-                <Button variant="link" disabled>
-                  Not published
-                </Button>
-              )}
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <MessageCircle className="size-4" />
+              <span>{conversationsCount}</span>
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger disabled={isDeleting}>
@@ -104,6 +114,29 @@ export function FormListItem({ form }: Readonly<Props>) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                {form.isPublished ? (
+                  <>
+                    <Link href={`/view/${form.id}`} target="_blank">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <ExternalLink className="mr-2 h-4 w-4" /> Open link
+                      </DropdownMenuItem>
+                    </Link>
+
+                    <DropdownMenuItem
+                      onSelect={handleCopyLinkToClipboard}
+                      className="cursor-pointer"
+                    >
+                      <Copy className="h-4 w-4 mr-2" />
+                      <span>Copy link</span>
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuLabel className="text-muted-foreground font-normal flex items-center">
+                    <BookDashed className="mr-2 size-4" />
+                    <span>Not published</span>
+                  </DropdownMenuLabel>
+                )}
+
                 <ConfirmAction
                   title="Are you sure you want to delete this form?"
                   description="This action will delete all data related to this form. This action cannot be undone."

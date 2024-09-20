@@ -27,3 +27,10 @@ export const getBackendBaseUrl = () => {
 export const getTRPCUrl = () => {
   return `${getBackendBaseUrl()}/api/trpc`;
 };
+
+export const getFormSubmissionLink = (formId: string) =>
+  `${getFrontendBaseUrl()}/view/${formId}`;
+
+export const copyLinkToClipboard = (link: string) => {
+  navigator.clipboard.writeText(link);
+};

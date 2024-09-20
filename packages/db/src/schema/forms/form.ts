@@ -2,6 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
+import { conversation } from "../conversations";
 import { formField } from "../formFields";
 import { workspace } from "../workspaces/workspace";
 
@@ -49,4 +50,5 @@ export const formRelations = relations(form, ({ one, many }) => ({
     references: [workspace.id],
   }),
   formFields: many(formField),
+  conversations: many(conversation),
 }));
