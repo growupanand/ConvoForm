@@ -19,7 +19,7 @@ export function FormSubmissionPageHeader({
     organizationLogoUrl,
   } = form;
   return (
-    <header className="border-b bg-white">
+    <header className="border-b bg-white/80 shadow-sm backdrop-blur-2xl ">
       <div className=" flex items-center justify-start gap-3 p-3 lg:container">
         {showOrganizationLogo && organizationLogoUrl && (
           <Image

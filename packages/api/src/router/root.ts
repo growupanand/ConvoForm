@@ -1,6 +1,7 @@
 import { createTRPCRouter } from "../trpc";
 import { conversationRouter } from "./conversation";
 import { formRouter } from "./form";
+import { formDesignRouter } from "./formDesign";
 import { formFieldRouter } from "./formField";
 import { metricsRouter } from "./metrics";
 import { organizationRouter } from "./organization";
@@ -20,6 +21,7 @@ export const appRouter = createTRPCRouter({
   webhook: webhookRouter,
   organization: organizationRouter,
   formField: formFieldRouter,
+  formDesign: formDesignRouter,
 });
 
 // export type definition of API

@@ -1,11 +1,10 @@
 "use client";
 
 import type { Form } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui/components/ui/button";
-import { Label } from "@convoform/ui/components/ui/label";
-import { sonnerToast } from "@convoform/ui/components/ui/sonner";
-import { Switch } from "@convoform/ui/components/ui/switch";
 
+import { sonnerToast } from "@convoform/ui/components/ui/sonner";
+
+import { ToggleButton } from "@/components/common/toggleButton";
 import { api } from "@/trpc/react";
 
 type Props = {
@@ -30,23 +29,12 @@ export function FormPublishToggle({ form }: Readonly<Props>) {
     });
   }
   return (
-    <Label htmlFor="isFormPublished">
-      <Button
-        size="lg"
-        variant="ghost"
-        className="text-md cursor-pointer rounded-full"
-        asChild
-      >
-        <div className="flex w-full items-center justify-between">
-          Make form public
-          <Switch
-            defaultChecked={form.isPublished}
-            onCheckedChange={toggleIsFormPublished}
-            id="isFormPublished"
-            disabled={isPendingUpdateFormIsPublished}
-          />
-        </div>
-      </Button>
-    </Label>
+    <ToggleButton
+      label="Make form public"
+      id="isFormPublished"
+      defaultChecked={form.isPublished}
+      disabled={isPendingUpdateFormIsPublished}
+      onCheckedChange={toggleIsFormPublished}
+    />
   );
 }

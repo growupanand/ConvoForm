@@ -1,3 +1,5 @@
+import { ComingSoonCard } from ".";
+
 export function CustomizeEndingScreenCard() {
-  return <div className="text-muted-foreground text-xl">Coming soon</div>;
+  return <ComingSoonCard />;
 }

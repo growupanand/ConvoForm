@@ -12,6 +12,8 @@ type Props = {
   link?: string;
   onRefresh?: () => void;
   toolbar?: React.ReactNode;
+  backgroundColor?: string;
+  fontColor?: string;
 };
 
 const BrowserWindow = ({
@@ -20,6 +22,8 @@ const BrowserWindow = ({
   link,
   onRefresh,
   toolbar,
+  backgroundColor,
+  fontColor,
 }: Props) => {
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 shadow-xl shadow-gray-100 ">
@@ -37,7 +41,12 @@ const BrowserWindow = ({
           {toolbar}
         </div>
       )}
-      <div className="grow overflow-auto bg-white ">{children}</div>
+      <div
+        className="grow overflow-auto "
+        style={{ background: backgroundColor, color: fontColor }}
+      >
+        {children}
+      </div>
     </div>
   );
 };

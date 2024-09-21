@@ -34,15 +34,12 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
+import { useFormDesign } from "@/components/formViewer/formDesignContext";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { FORM_SECTIONS_ENUMS } from "@convoform/db/src/schema/formDesigns/constants";
 import { Label } from "@convoform/ui/components/ui/label";
-import {
-  FORM_EDITOR_SECTIONS_ENUMS,
-  defaultFormEditorSection,
-  useFormEditor,
-} from "../formEditorContext";
 import { CustomizeEndScreenCard } from "./customizeEndScreenCard";
 import { CustomizeFormCard } from "./customizeFormCard";
 import { FieldsEditorCard } from "./fieldsEditorCard";
@@ -82,7 +79,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
     }));
   }, [form.formFields]);
 
-  const { setCurrentSection } = useFormEditor();
+  const { setCurrentSection, currentSection } = useFormDesign();
 
   const queryClient = useQueryClient();
   const updateForm = api.form.updateForm.useMutation({
@@ -168,11 +165,11 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
         type="single"
         collapsible
         className="w-full"
-        defaultValue={defaultFormEditorSection}
+        value={currentSection}
         onValueChange={setCurrentSection}
       >
         <AccordionItem
-          value={FORM_EDITOR_SECTIONS_ENUMS.landingScreen}
+          value={FORM_SECTIONS_ENUMS.landingScreen}
           className="border-b-muted"
         >
           <AccordionTrigger
@@ -251,7 +248,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
         </AccordionItem>
 
         <AccordionItem
-          value={FORM_EDITOR_SECTIONS_ENUMS.questionsScreen}
+          value={FORM_SECTIONS_ENUMS.questionsScreen}
           className="border-b-muted"
         >
           <AccordionTrigger
@@ -312,7 +309,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem
-          value={FORM_EDITOR_SECTIONS_ENUMS.endingScreen}
+          value={FORM_SECTIONS_ENUMS.endingScreen}
           className="border-none"
         >
           <AccordionTrigger
@@ -335,7 +332,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem
-          value={FORM_EDITOR_SECTIONS_ENUMS.customizePage}
+          value={FORM_SECTIONS_ENUMS.defaultScreen}
           className="border-none"
         >
           <AccordionTrigger
@@ -350,7 +347,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
               >
                 4
               </Badge>
-              <span>Customize page</span>
+              <span>Default screen</span>
             </div>
           </AccordionTrigger>
           <AccordionContent className="pe-1 ps-10 pt-1">

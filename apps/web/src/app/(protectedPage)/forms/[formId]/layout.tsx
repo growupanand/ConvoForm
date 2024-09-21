@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { FormEditorPageHeader } from "@/app/(protectedPage)/forms/[formId]/_components/formPageHeader";
 import { getOrganizationId } from "@/lib/getOrganizationId";
 import { api } from "@/trpc/server";
-import { FormEditorProvider } from "./_components/formEditorContext";
 import NotFound from "./not-found";
 
 type Props = {
@@ -27,11 +26,9 @@ export default async function Layout({
     return <NotFound />;
   }
   return (
-    <FormEditorProvider>
-      <div className="relative flex h-screen flex-col gap-3 ">
-        <FormEditorPageHeader formId={formId} />
-        <div className="grow">{children}</div>
-      </div>
-    </FormEditorProvider>
+    <div className="relative flex h-screen flex-col gap-3 ">
+      <FormEditorPageHeader formId={formId} />
+      <div className="grow">{children}</div>
+    </div>
   );
 }

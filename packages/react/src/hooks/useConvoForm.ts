@@ -18,6 +18,7 @@ type State = {
   extraStreamData: ExtraStreamData;
   isBusy: boolean;
   transcript: Transcript[];
+  isConversationStarted: boolean;
 };
 
 const initialState: State = {
@@ -25,6 +26,7 @@ const initialState: State = {
   extraStreamData: {},
   isBusy: false,
   transcript: [],
+  isConversationStarted: false,
 };
 
 export function useConvoForm({
@@ -36,8 +38,13 @@ export function useConvoForm({
   const apiEndpoint = `${API_DOMAIN}/api/form/${formId}/conversation`;
 
   const [state, setState] = useState<State>(initialState);
-  const { currentQuestion, extraStreamData, isBusy, transcript } = state;
-
+  const {
+    currentQuestion,
+    extraStreamData,
+    isBusy,
+    transcript,
+    isConversationStarted,
+  } = state;
   const {
     id: conversationId,
     collectedData,
@@ -54,22 +61,31 @@ export function useConvoForm({
     setState(initialState);
   }, [conversationId]);
 
-  const submitAnswer: SubmitAnswer = async (answer) => {
-    setState((cs) => ({ ...cs, isBusy: true, currentQuestion: "" }));
+  const submitAnswer: SubmitAnswer = async (answer, initialMessage = false) => {
+    setState((cs) => ({
+      ...cs,
+      isBusy: true,
+      currentQuestion: "",
+      isConversationStarted: true,
+    }));
 
     const answerMessage: Transcript = {
       role: "user",
       content: answer,
     };
 
+    const requestPayload = {
+      conversationId: initialMessage ? undefined : conversationId,
+      transcript: initialMessage
+        ? [answerMessage]
+        : [...transcript, answerMessage],
+      currentField: initialMessage ? undefined : currentField,
+    };
+
     // This is first api call to fetch form fields, conversationId and currentQuestion
     const response = await fetch(apiEndpoint, {
       method: "POST",
-      body: JSON.stringify({
-        conversationId,
-        transcript: [...transcript, answerMessage],
-        currentField,
-      }),
+      body: JSON.stringify(requestPayload),
     });
 
     if (!response.ok || !response.body) {
@@ -160,5 +176,8 @@ export function useConvoForm({
 
     /** Function to reset the form state */
     resetForm,
+
+    /** Boolean indicating whether the conversation is started */
+    isConversationStarted,
   };
 }
