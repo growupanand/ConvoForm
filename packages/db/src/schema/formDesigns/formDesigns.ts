@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgEnum, pgTable, text } from "drizzle-orm/pg-core";
+import { boolean, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
 import { form } from "../forms/form";
@@ -23,6 +23,7 @@ export const formDesign = pgTable("FormDesign", {
     .notNull()
     .references(() => form.id, { onDelete: "cascade", onUpdate: "cascade" }),
   organizationId: text("organizationId").notNull(),
+  useDefaultDesign: boolean("useDefaultDesign").default(true).notNull(),
 });
 
 export const formDesignsRelations = relations(formDesign, ({ one }) => ({

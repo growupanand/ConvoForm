@@ -9,6 +9,7 @@ import {
 } from "@/app/(protectedPage)/forms/[formId]/_components/formEditor/formEditorCard";
 import FormPreviewBrowser from "@/app/(protectedPage)/forms/[formId]/_components/formEditor/formPreviewBrowser";
 import MainNavTab from "@/app/(protectedPage)/forms/[formId]/_components/mainNavTab";
+import { FormDesignProvider } from "@/components/formViewer/formDesignContext";
 import { api } from "@/trpc/react";
 import { FormCustomizeSection } from "./_components/formCustomizeSection";
 import { FormPublishToggle } from "./_components/formPublishToggle";
@@ -38,32 +39,34 @@ export default function FormPage({ params: { formId } }: Props) {
   }
 
   return (
-    <div className="h-full flex">
-      {/* Form editor section */}
-      <div className=" flex flex-col space-y-2 px-5 max-h-[calc(100vh-100px)] w-[400px] min-w-[400px] overflow-auto">
-        <MainNavTab formId={formId} organizationId={organization.id} />
-        <Card className="relative flex-grow overflow-auto border-0 bg-transparent shadow-none">
-          {isLoading ? (
-            <FormEditorFormSkeleton />
-          ) : (
-            <FormEditorCard form={data} organization={organization} />
-          )}
-        </Card>
-        <div className="py-4">
-          <FormPublishToggle form={data} />
+    <FormDesignProvider formId={formId}>
+      <div className="h-full flex">
+        {/* Form editor section */}
+        <div className=" flex flex-col space-y-2 px-5 max-h-[calc(100vh-100px)] w-[400px] min-w-[400px] overflow-auto">
+          <MainNavTab formId={formId} organizationId={organization.id} />
+          <Card className="relative flex-grow overflow-auto border-0 bg-transparent shadow-none">
+            {isLoading ? (
+              <FormEditorFormSkeleton />
+            ) : (
+              <FormEditorCard form={data} organization={organization} />
+            )}
+          </Card>
+          <div className="py-4">
+            <FormPublishToggle form={data} />
+          </div>
+        </div>
+        {/* Form preview section */}
+        <div className="flex grow items-center justify-center py-3 ">
+          <div className="h-[100%] w-full pr-3">
+            <FormPreviewBrowser formId={formId} />
+          </div>
+        </div>
+        {/* Form customize section */}
+        <div className="w-[400px] min-w-[400px] py-3">
+          <FormCustomizeSection organizationId={organization.id} />
         </div>
       </div>
-      {/* Form preview section */}
-      <div className="flex grow items-center justify-center py-3 ">
-        <div className="h-[100%] w-full pr-3">
-          <FormPreviewBrowser formId={formId} />
-        </div>
-      </div>
-      {/* Form customize section */}
-      <div className="w-[400px] min-w-[400px] py-3">
-        <FormCustomizeSection organizationId={organization.id} />
-      </div>
-    </div>
+    </FormDesignProvider>
   );
 }
 

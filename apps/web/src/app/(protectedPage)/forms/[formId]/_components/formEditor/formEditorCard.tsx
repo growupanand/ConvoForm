@@ -34,12 +34,12 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
+import { useFormDesign } from "@/components/formViewer/formDesignContext";
 import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { FORM_SECTIONS_ENUMS } from "@convoform/db/src/schema/formDesigns/constants";
 import { Label } from "@convoform/ui/components/ui/label";
-import { defaultFormEditorSection, useFormEditor } from "../formEditorContext";
 import { CustomizeEndScreenCard } from "./customizeEndScreenCard";
 import { CustomizeFormCard } from "./customizeFormCard";
 import { FieldsEditorCard } from "./fieldsEditorCard";
@@ -79,7 +79,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
     }));
   }, [form.formFields]);
 
-  const { setCurrentSection } = useFormEditor();
+  const { setCurrentSection, currentSection } = useFormDesign();
 
   const queryClient = useQueryClient();
   const updateForm = api.form.updateForm.useMutation({
@@ -165,7 +165,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
         type="single"
         collapsible
         className="w-full"
-        defaultValue={defaultFormEditorSection}
+        value={currentSection}
         onValueChange={setCurrentSection}
       >
         <AccordionItem
@@ -347,7 +347,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
               >
                 4
               </Badge>
-              <span>Customize page</span>
+              <span>Default screen</span>
             </div>
           </AccordionTrigger>
           <AccordionContent className="pe-1 ps-10 pt-1">

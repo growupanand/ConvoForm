@@ -2,32 +2,24 @@
 
 import type { ExtraStreamData, Form } from "@convoform/db/src/schema";
 import { useConvoForm } from "@convoform/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
+import type { FormSections } from "@convoform/db/src/schema/formDesigns/constants";
 import { AskScreen } from "./askScreen";
 import { EndScreen } from "./endScreen";
+import { useFormDesign } from "./formDesignContext";
 import { TopProgressBar } from "./topProgressBar";
 import { WelcomeScreen } from "./welcomeScreen";
 
 type Props = {
   form: Form;
-  refresh?: boolean;
   isPreview?: boolean;
 };
 
-type State = {
-  formStage: FormStage;
-};
-
-export type FormStage = "welcomeScreen" | "conversationFlow" | "endScreen";
-
-export function FormViewer({ form, refresh }: Readonly<Props>) {
-  const [state, setState] = useState<State>({
-    formStage: "welcomeScreen",
-  });
-
-  const { formStage: currentStage } = state;
+export function FormViewer({ form, isPreview }: Readonly<Props>) {
+  const { currentSection, setCurrentSection, activeFormDesign } =
+    useFormDesign();
 
   const {
     submitAnswer,
@@ -38,6 +30,7 @@ export function FormViewer({ form, refresh }: Readonly<Props>) {
     resetForm,
     currentField,
     collectedData,
+    isConversationStarted,
   } = useConvoForm({
     formId: form.id,
   });
@@ -48,26 +41,38 @@ export function FormViewer({ form, refresh }: Readonly<Props>) {
     : generatedEndScreenMessage;
 
   const totalSubmissionProgress = getSubmissionProgress(collectedData);
-  const shouldShowProgressBar = ["conversationFlow", "endScreen"].includes(
-    currentStage,
-  );
-  const gotoStage = (newStage: FormStage) => {
-    setState((cs) => ({ ...cs, formStage: newStage }));
+  const shouldShowProgressBar =
+    !isPreview &&
+    (currentSection === "questions-screen" ||
+      currentSection === "ending-screen");
+
+  const gotoStage = (section: FormSections) => {
+    setCurrentSection(section);
   };
 
   const handleCTAClick = () => {
-    submitAnswer(CONVERSATION_START_MESSAGE);
-    gotoStage("conversationFlow");
+    submitAnswer(CONVERSATION_START_MESSAGE, true);
+    gotoStage("questions-screen");
   };
 
   useEffect(() => {
-    gotoStage("welcomeScreen");
-    resetForm();
-  }, [form, refresh]);
+    if (
+      currentSection === "questions-screen" &&
+      (!isConversationStarted || isFormSubmissionFinished)
+    ) {
+      submitAnswer(CONVERSATION_START_MESSAGE, true);
+    }
+  }, [currentSection, form]);
+
+  useEffect(() => {
+    if (currentSection !== "questions-screen") {
+      resetForm();
+    }
+  }, [form]);
 
   useEffect(() => {
     if (isFormSubmissionFinished) {
-      gotoStage("endScreen");
+      gotoStage("ending-screen");
     }
   }, [isFormSubmissionFinished]);
 
@@ -76,23 +81,31 @@ export function FormViewer({ form, refresh }: Readonly<Props>) {
       {shouldShowProgressBar && (
         <TopProgressBar totalProgress={totalSubmissionProgress} />
       )}
-      {currentStage === "welcomeScreen" && (
-        <WelcomeScreen form={form} onCTAClick={handleCTAClick} />
+      {((currentSection as string) === "" ||
+        currentSection === "landing-screen" ||
+        currentSection === "default-screen") && (
+        <WelcomeScreen
+          form={form}
+          onCTAClick={handleCTAClick}
+          formDesign={activeFormDesign}
+        />
       )}
 
-      {currentStage === "conversationFlow" && (
+      {currentSection === "questions-screen" && (
         <AskScreen
           currentQuestion={currentQuestion}
           isFormBusy={isBusy}
           submitAnswer={submitAnswer}
           currentField={currentField}
+          formDesign={activeFormDesign}
         />
       )}
-      {currentStage === "endScreen" && (
+      {currentSection === "ending-screen" && (
         <EndScreen
           endScreenMessage={endScreenMessage}
           endScreenCTALabel={form.endScreenCTALabel || undefined}
           endScreenCTAUrl={form.endScreenCTAUrl || undefined}
+          formDesign={activeFormDesign}
         />
       )}
     </div>

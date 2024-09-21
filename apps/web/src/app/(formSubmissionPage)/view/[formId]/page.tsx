@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { FormViewer } from "@/components/formViewer";
 import { api } from "@/trpc/server";
+import { FormDesignLayout } from "./_components/formDesignLayout";
 import { FormSubmissionPageHeader } from "./_components/header";
 
 interface FormViewerPageProps {
@@ -30,12 +31,14 @@ export default async function FormViewPage({
   const showHeader = showOrganizationName || showOrganizationLogo;
 
   return (
-    <div className="flex min-h-screen flex-col">
-      {showHeader && <FormSubmissionPageHeader form={formData} />}
+    <FormDesignLayout>
+      <div className="min-h-screen flex flex-col">
+        {showHeader && <FormSubmissionPageHeader form={formData} />}
 
-      <div className="flex flex-grow items-center justify-center">
-        <FormViewer form={formData} />
+        <div className="flex flex-grow items-center justify-center">
+          <FormViewer form={formData} />
+        </div>
       </div>
-    </div>
+    </FormDesignLayout>
   );
 }

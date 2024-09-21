@@ -8,7 +8,7 @@ import {
 import { z } from "zod";
 
 import { checkRateLimitThrowTRPCError } from "../lib/rateLimit";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const formDesignRouter = createTRPCRouter({
   create: protectedProcedure
@@ -35,21 +35,20 @@ export const formDesignRouter = createTRPCRouter({
 
       return result;
     }),
-  getAll: protectedProcedure
+  getAll: publicProcedure
     .input(
-      z.object({
-        organizationId: z.string().min(1),
+      selectFormDesignSchema.pick({
+        formId: true,
       }),
     )
     .query(async ({ input, ctx }) => {
       return await ctx.db.query.formDesign.findMany({
-        where: (formDesign, { eq }) =>
-          eq(formDesign.organizationId, input.organizationId),
+        where: (formDesign, { eq }) => eq(formDesign.formId, input.formId),
         orderBy: (formDesign, { asc }) => [asc(formDesign.createdAt)],
       });
     }),
 
-  getOne: protectedProcedure
+  getOne: publicProcedure
     .input(
       selectFormDesignSchema
         .pick({

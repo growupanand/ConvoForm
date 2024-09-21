@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import type { FormDesignRenderSchema } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import Link from "next/link";
 import BrandName from "../common/brandName";
@@ -8,9 +9,11 @@ type Props = {
   endScreenMessage?: string;
   endScreenCTAUrl?: string;
   endScreenCTALabel?: string;
+  formDesign: FormDesignRenderSchema;
 };
 
 export const EndScreen = (props: Props) => {
+  const { formDesign } = props;
   const message = props.endScreenMessage || "Thank you for filling the form!";
   const ctaButtonLabel = props.endScreenCTALabel || "Done";
   const showCTAButton =
@@ -18,7 +21,10 @@ export const EndScreen = (props: Props) => {
   return (
     <div className="flex flex-col items-center justify-center">
       <div>
-        <h1 className="whitespace-break-spaces break-words text-center text-2xl font-semibold lg:text-4xl mb-4">
+        <h1
+          style={{ color: formDesign.fontColor }}
+          className="whitespace-break-spaces break-words text-center text-2xl font-semibold lg:text-4xl mb-4 transition-colors duration-500"
+        >
           {message}
         </h1>
         {showCTAButton ? (

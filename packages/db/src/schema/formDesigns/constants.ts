@@ -11,6 +11,6 @@ export type FormSections =
   (typeof FORM_SECTIONS_ENUMS)[keyof typeof FORM_SECTIONS_ENUMS];
 
 export const DEFAULT_FORM_DESIGN = {
-  backgroundColor: "#4fff42",
-  fontColor: "#ff4242",
+  backgroundColor: "#F9FAFB",
+  fontColor: "#020817",
 };

@@ -1,42 +1,40 @@
 "use client";
 
 import Spinner from "@/components/common/spinner";
+import { useFormDesign } from "@/components/formViewer/formDesignContext";
 import { api } from "@/trpc/react";
-import type { FormDesignRenderSchema } from "@convoform/db/src/schema";
 import { DEFAULT_FORM_DESIGN } from "@convoform/db/src/schema/formDesigns/constants";
 import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { useEffect } from "react";
-import { useFormEditor } from "../formEditorContext";
 import { CustomizeDefaultScreenCard } from "./customizeDefaultScreen";
 import { CustomizeEndingScreenCard } from "./customizeEndingScreen";
 import { CustomizeLandingScreenCard } from "./customizeLandingScreen";
 import { CustomizeQuestionsScreenCard } from "./customizeQuestionsScreen";
-import { CustomizeScreenBasicCard } from "./customizeScreenBasic";
+import {
+  CustomizeScreenBasicCard,
+  type FormHookData,
+} from "./customizeScreenBasic";
 
 type Props = {
   organizationId: string;
 };
 
 export function FormCustomizeSection({ organizationId }: Readonly<Props>) {
-  const { formId, currentSection } = useFormEditor();
+  const {
+    formId,
+    currentSection,
+    currentSectionFormDesign,
+    isLoadingFormDesign,
+    defaultFormDesign,
+  } = useFormDesign();
   const isSectionSelected = (currentSection as string) !== "";
 
   const apiUtils = api.useUtils();
 
-  const { isLoading, data } = api.formDesign.getOne.useQuery(
-    {
-      formId,
-      screenType: currentSection,
-    },
-    {
-      queryHash: `formDesign-${formId}-${currentSection}`,
-    },
-  );
-
   const patchFormDesign = api.formDesign.patch.useMutation({
     onSuccess: () => {
       apiUtils.invalidate(undefined, {
-        queryKey: [[`formDesign-${formId}-${currentSection}`]],
+        queryKey: [[`formDesign-${formId}`]],
       });
     },
   });
@@ -46,7 +44,7 @@ export function FormCustomizeSection({ organizationId }: Readonly<Props>) {
   const createFormDesign = api.formDesign.create.useMutation({
     onSuccess: () => {
       apiUtils.invalidate(undefined, {
-        queryKey: [[`formDesign-${formId}-${currentSection}`]],
+        queryKey: [[`formDesign-${formId}`]],
       });
     },
   });
@@ -66,21 +64,20 @@ export function FormCustomizeSection({ organizationId }: Readonly<Props>) {
   };
 
   useEffect(() => {
-    if (!isLoading && !data && isSectionSelected) {
+    if (
+      !isLoadingFormDesign &&
+      !currentSectionFormDesign &&
+      isSectionSelected
+    ) {
       handleCreateDefaultFormDesign();
     }
-  }, [data, currentSection, isLoading]);
-
-  const formDesign: FormDesignRenderSchema = {
-    ...DEFAULT_FORM_DESIGN,
-    ...data,
-  };
+  }, [currentSectionFormDesign, currentSection, isLoadingFormDesign]);
 
   if (!isSectionSelected) {
     return null;
   }
 
-  if (isLoading) {
+  if (isLoadingFormDesign) {
     return (
       <div className="text-muted-foreground flex items-center gap-2 px-5">
         <Spinner size="sm" />
@@ -89,7 +86,7 @@ export function FormCustomizeSection({ organizationId }: Readonly<Props>) {
     );
   }
 
-  if (!data) {
+  if (!currentSectionFormDesign) {
     return (
       <div className="text-muted-foreground flex items-center gap-2 px-5">
         <Spinner size="sm" />
@@ -98,12 +95,9 @@ export function FormCustomizeSection({ organizationId }: Readonly<Props>) {
     );
   }
 
-  const handleUpdateFormDesign = async (
-    updatedFormDesign: FormDesignRenderSchema,
-  ) => {
-    console.log({ updatedFormDesign });
+  const handleUpdateFormDesign = async (updatedFormDesign: FormHookData) => {
     const updatePromise = patchFormDesign.mutateAsync({
-      id: data.id,
+      id: currentSectionFormDesign.id,
       ...updatedFormDesign,
     });
     sonnerToast.promise(updatePromise, {
@@ -133,9 +127,11 @@ export function FormCustomizeSection({ organizationId }: Readonly<Props>) {
       <div className="font-medium text-lg mb-4">Design</div>
       <div className="space-y-10">
         <CustomizeScreenBasicCard
-          formDesign={formDesign}
+          formDesign={currentSectionFormDesign}
           onUpdateFormDesign={handleUpdateFormDesign}
           isSavingFormDesign={isSavingFormDesign}
+          currentSection={currentSection}
+          defaultFormDesign={defaultFormDesign}
         />
         {renderSection()}
       </div>

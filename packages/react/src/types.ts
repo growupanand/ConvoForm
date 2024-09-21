@@ -8,4 +8,7 @@ export type JSONValue =
     }
   | Array<JSONValue>;
 
-export type SubmitAnswer = (answer: string) => Promise<void>;
+export type SubmitAnswer = (
+  answer: string,
+  initialMessage?: boolean,
+) => Promise<void>;
