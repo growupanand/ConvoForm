@@ -21,7 +21,7 @@
     "build": "dotenv -e .env.local -- turbo build",
     "prepare": "husky install",
     "format": "biome format --write .",
-    "release": "release-it",
+    "release": "release-it --config ./config/.release-it.js",
     "commit": "czg",
     "lint": "dotenv -e .env.local -- biome lint --write . --unsafe",
     "type-check": "dotenv -e .env.local -- biome check --staged --write . --unsafe --no-errors-on-unmatched",
