@@ -46,7 +46,16 @@ module.exports = {
             type: "perf",
             section: "Improvements",
             hidden: false,
+          }
+          ,
+          {
+            type: "ci",
+            hidden: true,
           },
+          {
+            type: "docs",
+            hidden: true,
+          }
         ],
       },
     },

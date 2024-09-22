@@ -22,7 +22,7 @@
     "prepare": "husky install",
     "format": "biome format --write .",
     "release": "release-it",
-    "commit": "git-cz",
+    "commit": "czg",
     "lint": "dotenv -e .env.local -- biome lint --write . --unsafe",
     "type-check": "dotenv -e .env.local -- biome check --staged --write . --unsafe --no-errors-on-unmatched",
     "ui:add": "pnpm --filter @convoform/ui ui:add",
@@ -35,7 +35,7 @@
   },
   "config": {
     "commitizen": {
-      "path": "git-cz"
+      "czConfig": "./config/.commitlintrc.js"
     }
   },
   "devDependencies": {
@@ -43,8 +43,8 @@
     "@convoform/tsconfig": "workspace:*",
     "@release-it/conventional-changelog": "^8.0.1",
     "auto-changelog": "^2.4.0",
+    "czg": "^1.9.4",
     "dotenv-cli": "^7.3.0",
-    "git-cz": "^4.9.0",
     "husky": "^8.0.0",
     "inquirer": "^8.2.6",
     "release-it": "^17.0.1",
