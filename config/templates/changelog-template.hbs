@@ -8,12 +8,19 @@ export const changelog = [
     "isoDate": "{{isoDate}}",
     "commits": {
       "features": [
-          {{#commit-list commits heading="" subject="feat: "}}
+          {{#commit-list commits heading="" message="feat: "}}
              {
                 "message": "{{jsonSafeString message}}",
-                "shorthash": "{{shorthash}}",
                 "href": "{{href}}"
              }{{#unless @last}},{{/unless}}
+            
+          {{/commit-list}}
+         
+         {{#commit-list merges heading="" message="feat: "}}
+            {
+               "message": "{{jsonSafeString message}}",
+               "href": "{{href}}"
+            }{{#unless @last}},{{/unless}}
             
           {{/commit-list}}
       ],
@@ -21,7 +28,6 @@ export const changelog = [
           {{#commit-list commits heading="" subject="(refactor|style|perf): "}}
              {
                 "message": "{{jsonSafeString message}}",
-                "shorthash": "{{shorthash}}",
                 "href": "{{href}}"
              }{{#unless @last}},{{/unless}}
 
@@ -31,7 +37,6 @@ export const changelog = [
           {{#commit-list commits heading="" subject="fix: "}}
               {
                 "message": "{{jsonSafeString message}}",
-                "shorthash": "{{shorthash}}",
                 "href": "{{href}}"
              }{{#unless @last}},{{/unless}}
 

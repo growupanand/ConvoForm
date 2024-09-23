@@ -1,10 +1,11 @@
 import { z } from "zod";
 
-export type CommitSections = "features" | "improvements" | "fixes";
+export const commitCategories = ["features", "improvements", "fixes"] as const;
+
+export type CommitCategory = (typeof commitCategories)[number];
 
 export const commitSchema = z.object({
   message: z.string(),
-  shorthash: z.string(),
   href: z.string(),
 });
 

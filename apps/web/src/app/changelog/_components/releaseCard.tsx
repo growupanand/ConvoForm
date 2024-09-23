@@ -1,34 +1,53 @@
-import { SectionCard } from "@/components/sectionCard";
-import { formatDate } from "@/lib/utils";
-import type { CommitSections, Release } from "@/lib/validations/changeLog";
-import { CommitSection } from "./commitSection";
+import { type Release, commitCategories } from "@/lib/validations/changeLog";
+import { Badge } from "@convoform/ui/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+} from "@convoform/ui/components/ui/card";
+import { CommitList } from "./commitList";
 
-export const commitsSections = [
-  "features",
-  "improvements",
-  "fixes",
-] as CommitSections[];
+const categoryBadgeVariants = {
+  features: "customSuccess",
+  improvements: "customInfo",
+  fixes: "customDanger",
+} as const;
 
 export const ReleaseCard = ({ release }: { release: Release }) => {
-  const commitSectionsWithCommits = commitsSections.filter(
-    (section) => release.commits[section].length > 0,
+  // filter out categories that have no commits
+  const categories = commitCategories.filter(
+    (category) => release.commits[category].length > 0,
   );
 
   return (
-    <SectionCard
-      stickyHeader
-      headerClassName="border-b mb-5"
-      title={`${release.title} - ${formatDate(release.isoDate)}`}
-    >
-      <div className="grid gap-3 lg:ps-20">
-        {commitSectionsWithCommits.map((section) => (
-          <CommitSection
-            key={section}
-            section={section}
-            commits={release.commits[section]}
-          />
-        ))}
-      </div>
-    </SectionCard>
+    <Card>
+      <CardHeader>
+        <div className="flex gap-4 items-center justify-between">
+          <div className="font-bold text-xl ">{release.title}</div>
+          <div className="flex items-center gap-1 flex-wrap">
+            {categories.map((category) => (
+              <Badge
+                key={category}
+                variant={categoryBadgeVariants[category]}
+                className="font-normal text-sm capitalize"
+              >
+                {category}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-3">
+          {categories.map((category) => (
+            <CommitList
+              key={category}
+              commitCategory={category}
+              commits={release.commits[category]}
+            />
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
