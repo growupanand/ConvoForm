@@ -20,7 +20,7 @@ export const ReleaseCard = ({ release }: { release: Release }) => {
   );
 
   return (
-    <Card>
+    <Card className="max-lg:rounded-none w-full">
       <CardHeader>
         <div className="flex gap-4 items-center justify-between">
           <div className="font-bold text-xl ">{release.title}</div>
