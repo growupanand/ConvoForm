@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import BrandName from "@/components/common/brandName";
 import { TimeLine, TimelineItem } from "@/components/common/timeline";
-import { RequestFeatureCard } from "@/components/requestFeatureCard";
 import { changelog } from "@/lib/data/changelog";
 import { formatDate } from "@/lib/utils";
 import { changeLogSchema } from "@/lib/validations/changeLog";
@@ -42,17 +41,28 @@ export default function Page() {
           <BrandName className="text-xl lg:text-2xl" />
         </div>
       </div>
-      <main className="py-5 lg:container pt-10">
-        <div className="text-center bg-background sticky top-0 py-5 z-50 ">
-          <h1 className="text-xl font-bold lg:text-3xl  ">Changelog</h1>
+      <main className="lg:container pb-14">
+        <div className="my-4 lg:my-12">
+          <h1 className="text-xl font-bold lg:text-3xl  text-center bg-background py-2 lg:py-5 ">
+            Changelog
+          </h1>
+          <p className="text-lg lg:text-2xl text-muted-foreground text-center lg:mb-5">
+            Product updates and new features
+          </p>
         </div>
-        <p className="text-md text-muted-foreground text-center mb-5">
-          Product updates and new features
-        </p>
         <div className="mx-auto grid ">
           <TimeLine>
             <TimelineItem timelineTitle="">
-              <RequestFeatureCard />
+              <div className="flex items-center py-6 max-lg:justify-center">
+                <Button asChild variant="default" size="lg">
+                  <Link
+                    target="_blank"
+                    href="https://convoform.canny.io/feature-requests"
+                  >
+                    Request new feature
+                  </Link>
+                </Button>
+              </div>
             </TimelineItem>
             {removedEmptyReleases.map((release) => (
               <TimelineItem
