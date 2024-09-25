@@ -1,0 +1,65 @@
+name: Prepare Release
+
+on:
+  pull_request:
+    types: 
+      - labeled
+
+permissions:
+  contents: write
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    if: contains(github.event.label.name, 'prepare-release')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch full history to avoid detached head state
+        
+      - name: Checkout the PR branch
+        id: get_branch
+        run: |
+          git checkout ${{ github.head_ref }}
+          echo "branch=$(git symbolic-ref --short HEAD)" >> $GITHUB_ENV
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+
+      - name: Cache pnpm modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store # Cache the pnpm store path
+          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }} # Cache key based on OS and lock file
+          restore-keys: |
+            pnpm-${{ runner.os }}-
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare release
+        run: |
+          pnpm run prepare:release
+      
+      - name: Get updated package version
+        id: get_version
+        run: echo "PACKAGE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'git-workflow-prepare-release'
+          git config --global user.email 'growupanand@gmail.com'
+          git add .
+          git commit -m "release: changelog for release note v${{ env.PACKAGE_VERSION }}" || echo "No changes to commit"
+
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git push origin ${{ env.branch }}
