@@ -1,5 +1,32 @@
 export const releases = [
   {
+    version: "0.14.0",
+    isoDate: "2024-09-25",
+    commits: [
+      {
+        type: "features",
+        message: "feat: 🚀 Added form design editor",
+        href: "https://github.com/growupanand/ConvoForm/pull/370",
+      },
+      {
+        type: "improvements",
+        message: "style: 💄 changelog page have new UI",
+        href: "https://github.com/growupanand/ConvoForm/commit/9540f86f7a3c2233ee5596539e8ab9e06dfc9ef2",
+      },
+      {
+        type: "improvements",
+        message:
+          "style: 💄 Each form's Responses count will be shown in workspace\n\n✅ Closes: 367",
+        href: "https://github.com/growupanand/ConvoForm/commit/c3f411f0457bfc23524f821110df2ccfe3038b26",
+      },
+      {
+        type: "improvements",
+        message: "style: 💄 New form editor layout\n\n✅ Closes: 364",
+        href: "https://github.com/growupanand/ConvoForm/commit/7cdba9979eaccc211be1e0e8982d9449122c62a4",
+      },
+    ],
+  },
+  {
     version: "0.13.0",
     isoDate: "2024-09-15",
     commits: [

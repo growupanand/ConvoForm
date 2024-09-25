@@ -1,5 +1,19 @@
 
 
+## [0.14.0](https://github.com/growupanand/ConvoForm/compare/0.13.0...0.14.0) (2024-09-25)
+
+
+### Features
+
+* 🚀 Added form design editor ([#370](https://github.com/growupanand/ConvoForm/issues/370)) ([511d281](https://github.com/growupanand/ConvoForm/commit/511d28135fd4a8c60e64477d0fd69dff589052ba))
+
+
+### Improvements
+
+* 💄 changelog page have new UI ([9540f86](https://github.com/growupanand/ConvoForm/commit/9540f86f7a3c2233ee5596539e8ab9e06dfc9ef2))
+* 💄 Each form's Responses count will be shown in workspace ([c3f411f](https://github.com/growupanand/ConvoForm/commit/c3f411f0457bfc23524f821110df2ccfe3038b26))
+* 💄 New form editor layout ([7cdba99](https://github.com/growupanand/ConvoForm/commit/7cdba9979eaccc211be1e0e8982d9449122c62a4))
+
 ## [0.13.0](https://github.com/growupanand/ConvoForm/compare/0.12.0...0.13.0) (2024-09-15)
 
 
