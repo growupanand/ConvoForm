@@ -11,6 +11,7 @@ export default authMiddleware({
     "/api/form/(.*)/new-conversation",
     "/api/webhook(.*)",
     "/auth/(.*)",
+    "/api/trpc/formDesign.get(.*)",
     // Added for sentry
     "/monitoring(.*)",
     "/changelog",
