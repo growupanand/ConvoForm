@@ -22,7 +22,7 @@
     "prepare": "husky install",
     "format": "biome format --write .",
     "release-it": "release-it --config ./.release-it.ts",
-    "commit": "czg",
+    "commit": "git add . && czg",
     "lint": "dotenv -e .env.local -- biome lint --write . --unsafe",
     "type-check": "dotenv -e .env.local -- biome check --staged --write . --unsafe --no-errors-on-unmatched",
     "ui:add": "pnpm --filter @convoform/ui ui:add",
