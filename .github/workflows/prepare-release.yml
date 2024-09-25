@@ -4,6 +4,8 @@ on:
   pull_request:
     types: 
       - labeled
+    branches:
+      - production
 
 permissions:
   contents: write
@@ -11,7 +13,10 @@ permissions:
 jobs:
   prepare-release:
     runs-on: ubuntu-latest
-    if: contains(github.event.label.name, 'prepare-release')
+    if: >
+      github.event.action == 'labeled' && 
+      contains(github.event.label.name, 'prepare-release') || 
+      (github.event.pull_request.base.ref == 'production' && github.event.pull_request.head.ref == 'main')
 
     steps:
       - name: Checkout code
