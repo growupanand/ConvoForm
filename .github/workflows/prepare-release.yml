@@ -4,8 +4,6 @@ on:
   pull_request:
     types: 
       - labeled
-    branches:
-      - production
 
 permissions:
   contents: write
@@ -16,7 +14,7 @@ jobs:
     if: >
       github.event.action == 'labeled' && 
       contains(github.event.label.name, 'prepare-release') || 
-      (github.event.pull_request.base.ref == 'production' && github.event.pull_request.head.ref == 'main')
+      github.event.pull_request.base.ref == 'main'
 
     steps:
       - name: Checkout code
@@ -67,4 +65,4 @@ jobs:
       - name: Push changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: git push origin ${{ env.branch }} -f
+        run: git push origin ${{ env.branch }}
