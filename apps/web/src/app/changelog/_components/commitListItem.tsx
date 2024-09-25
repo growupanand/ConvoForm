@@ -2,7 +2,7 @@ import { Dot } from "lucide-react";
 import Link from "next/link";
 
 import { extractCommitMessage } from "@/lib/github";
-import type { Commit } from "@/lib/validations/changeLog";
+import type { Commit } from "@convoform/release";
 import { Button } from "@convoform/ui/components/ui/button";
 
 export const CommitItem = ({ commit }: { commit: Commit }) => {

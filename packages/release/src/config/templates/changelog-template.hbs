@@ -1,15 +1,13 @@
 
 
-export const changelog = [ 
+export const releases = [ 
   {{#each releases}}
   {
-    "title": "{{title}}",
-    "tag": "{{tag}}",
+    "version": "{{title}}",
     "isoDate": "{{isoDate}}",
-    "commits": {
-      "features": [
+    "commits": [
           {{#commit-list commits heading="" message="feat: "}}
-             {
+             { "type": "features",
                 "message": "{{jsonSafeString message}}",
                 "href": "{{href}}"
              }{{#unless @last}},{{/unless}}
@@ -18,31 +16,50 @@ export const changelog = [
          
          {{#commit-list merges heading="" message="feat: "}}
             {
+               "type": "features",
                "message": "{{jsonSafeString message}}",
                "href": "{{href}}"
             }{{#unless @last}},{{/unless}}
             
           {{/commit-list}}
-      ],
-      "improvements": [
+
           {{#commit-list commits heading="" subject="(refactor|style|perf): "}}
              {
+               "type" : "improvements",
                 "message": "{{jsonSafeString message}}",
                 "href": "{{href}}"
              }{{#unless @last}},{{/unless}}
 
           {{/commit-list}}
-      ],
-      "fixes": [
+
+           {{#commit-list merges heading="" subject="(refactor|style|perf): "}}
+             {
+               "type" : "improvements",
+                "message": "{{jsonSafeString message}}",
+                "href": "{{href}}"
+             }{{#unless @last}},{{/unless}}
+
+          {{/commit-list}}
+ 
           {{#commit-list commits heading="" subject="fix: "}}
               {
+               "type" : "fixes",
+                "message": "{{jsonSafeString message}}",
+                "href": "{{href}}"
+             }{{#unless @last}},{{/unless}}
+
+          {{/commit-list}}
+
+           {{#commit-list merges heading="" subject="fix: "}}
+              {
+               "type" : "fixes",
                 "message": "{{jsonSafeString message}}",
                 "href": "{{href}}"
              }{{#unless @last}},{{/unless}}
 
           {{/commit-list}}
       ]
-    }
+    
   }{{#unless @last}},{{/unless}}
   {{/each}}
 ]

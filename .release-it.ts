@@ -1,6 +1,11 @@
-module.exports = {
+import type { Config } from "release-it";
+
+export default {
   git: {
-    commitMessage: "release: changelog for release note v${version}",
+    // commitMessage: "release: changelog for release note v${version}",
+    commit: false,
+    push: false,
+    tag: false,
   },
   github: {
     release: false,
@@ -46,8 +51,7 @@ module.exports = {
             type: "perf",
             section: "Improvements",
             hidden: false,
-          }
-          ,
+          },
           {
             type: "ci",
             hidden: true,
@@ -55,14 +59,9 @@ module.exports = {
           {
             type: "docs",
             hidden: true,
-          }
+          },
         ],
       },
     },
   },
-  hooks: {
-    "before:release": [
-      "npx auto-changelog --stdout --commit-limit false -p --template ./config/templates/changelog-template.hbs --handlebars-setup ./config/templates/handlebars-setup.js > ./apps/web/src/lib/data/changelog.ts",
-    ],
-  },
-};
+} satisfies Config;

@@ -1,4 +1,4 @@
-import type { Commit, CommitCategory } from "@/lib/validations/changeLog";
+import type { Commit, CommitCategory } from "@convoform/release";
 import { CommitItem } from "./commitListItem";
 
 export const CommitList = ({
