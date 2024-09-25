@@ -1,0 +1,37 @@
+name: Update Tag Version
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]  # Trigger on PR events
+    branches:
+      - production  # Target branch for the PR
+
+permissions:
+  contents: write  # Allow the workflow to create tags
+
+jobs:
+  update-tag:
+    runs-on: ubuntu-latest
+    if: contains(github.event.label.name, 'accept-release') && github.event.pull_request.base.ref == 'production' && github.event.pull_request.head.ref == 'main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history to get tags
+
+      - name: Get package version
+        id: get_version
+        run: echo "PACKAGE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+
+      - name: Create and push tag and merge main to production
+        run: |
+          TAG_NAME="${{ env.PACKAGE_VERSION }}"
+          git checkout main
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+          git checkout production
+          git reset --hard origin/main
+          git push origin production -f
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
