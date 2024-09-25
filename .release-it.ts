@@ -6,6 +6,7 @@ export default {
     commit: false,
     push: false,
     tag: false,
+    requireCleanWorkingDir: false,
   },
   github: {
     release: false,
