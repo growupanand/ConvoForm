@@ -42,7 +42,7 @@ const BrowserWindow = ({
         </div>
       )}
       <div
-        className="grow overflow-auto "
+        className="grow overflow-auto transition-all"
         style={{ background: backgroundColor, color: fontColor }}
       >
         {children}
