@@ -5,6 +5,7 @@ export const commitCategories = ["features", "improvements", "fixes"] as const;
 export type CommitCategory = (typeof commitCategories)[number];
 
 export const commitSchema = z.object({
+  type: z.enum(commitCategories),
   message: z.string(),
   href: z.string(),
 });
@@ -12,14 +13,9 @@ export const commitSchema = z.object({
 export type Commit = z.infer<typeof commitSchema>;
 
 export const releaseSchema = z.object({
-  title: z.string(),
-  tag: z.string(),
+  version: z.string(),
   isoDate: z.string(),
-  commits: z.object({
-    features: z.array(commitSchema),
-    improvements: z.array(commitSchema),
-    fixes: z.array(commitSchema),
-  }),
+  commits: z.array(commitSchema),
 });
 
 export type Release = z.infer<typeof releaseSchema>;

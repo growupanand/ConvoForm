@@ -1,4 +1,11 @@
-import { type Release, commitCategories } from "@/lib/validations/changeLog";
+import {
+  type Commit,
+  type CommitCategory,
+  type Release,
+  generateMDXComponentFileName,
+  generateReleaseMDXFileName,
+  releaseMDXComponents,
+} from "@convoform/release";
 import { Badge } from "@convoform/ui/components/ui/badge";
 import {
   Card,
@@ -13,17 +20,38 @@ const categoryBadgeVariants = {
   fixes: "customDanger",
 } as const;
 
+const mdxFileNames = Object.keys(releaseMDXComponents ?? {});
+
 export const ReleaseCard = ({ release }: { release: Release }) => {
-  // filter out categories that have no commits
-  const categories = commitCategories.filter(
-    (category) => release.commits[category].length > 0,
+  const releaseCategories = release.commits.reduce<
+    Record<CommitCategory, Commit[]>
+  >(
+    (acc, commit) => {
+      if (!acc[commit.type]) {
+        acc[commit.type] = [];
+      }
+      acc[commit.type].push(commit);
+      return acc;
+    },
+    {} as Record<CommitCategory, Commit[]>,
   );
+
+  const categories = Object.keys(releaseCategories) as CommitCategory[];
+
+  const releaseMDXFileName = generateReleaseMDXFileName(release.version);
+  const releaseMDXComponentName = generateMDXComponentFileName(
+    releaseMDXFileName,
+  ) as keyof typeof releaseMDXComponents;
+  const isMDXComponentExist = mdxFileNames.includes(releaseMDXComponentName);
+  const MDXComponent = isMDXComponentExist
+    ? releaseMDXComponents[releaseMDXComponentName]
+    : () => null;
 
   return (
     <Card className="max-lg:rounded-none w-full">
       <CardHeader>
         <div className="flex gap-4 items-center justify-between">
-          <div className="font-bold text-xl ">{release.title}</div>
+          <div className="font-bold text-xl ">{release.version}</div>
           <div className="flex items-center gap-1 flex-wrap">
             {categories.map((category) => (
               <Badge
@@ -38,12 +66,18 @@ export const ReleaseCard = ({ release }: { release: Release }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-3">
+        <div className="grid space-y-4">
+          {isMDXComponentExist && (
+            <div>
+              <MDXComponent />
+            </div>
+          )}
+
           {categories.map((category) => (
             <CommitList
               key={category}
               commitCategory={category}
-              commits={release.commits[category]}
+              commits={release.commits.filter((i) => i.type === category)}
             />
           ))}
         </div>

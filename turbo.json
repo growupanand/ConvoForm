@@ -48,6 +48,10 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "prepare:release" : {
+      "dependsOn": ["^prepare:release"],
+      "cache": false
     }
   },
   "ui" : "tui"

@@ -1,0 +1,20 @@
+{
+  "name": "@convoform/release",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "generate:changelogs": "tsx ./src/scripts/generateChangelogs.ts",
+    "update:releaseList": "tsx ./src/scripts/updateReleaseList.ts",
+    "prepare:release": "pnpm run generate:changelogs && pnpm run update:releaseList"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "auto-changelog": "^2.5.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5",
+    "zod": "^3.22.4"
+  }
+}

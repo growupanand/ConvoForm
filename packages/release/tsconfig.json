@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2018",             // Target a modern JavaScript version
+    "module": "commonjs",           // Node.js compatible module format
+    "lib": ["es2018", "dom"],       // Standard libraries (client-side Socket.IO may need "dom")
+    "declaration": true,            // Generate .d.ts type definition files
+    "outDir": "./dist",             // Output directory for compiled code
+    "rootDir": "./src",             // Source code location
+    "strict": true,                 // Enforce stricter type checking
+    "esModuleInterop": true,        // Improved interoperability with CommonJS modules 
+    "resolveJsonModule": true       // Allow importing JSON modules 
+  },
+  "include": ["src"],               // Include only the "src" directory for compilation
+  "exclude": ["node_modules"] // Standard exclusions
+}

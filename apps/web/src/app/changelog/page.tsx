@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 
 import BrandName from "@/components/common/brandName";
 import { TimeLine, TimelineItem } from "@/components/common/timeline";
-import { changelog } from "@/lib/data/changelog";
 import { formatDate } from "@/lib/utils";
-import { changeLogSchema } from "@/lib/validations/changeLog";
+import { releaseSchema, releases } from "@convoform/release";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   Card,
@@ -22,18 +21,15 @@ export const metadata: Metadata = {
 const firstCommitLink =
   "https://github.com/growupanand/ConvoForm/commit/386b516dc3f86c32113c114592cc22dca7f549c8";
 
-export default function Page() {
-  const changeLogValidation = changeLogSchema.safeParse(changelog);
-  const changeLogs = changeLogValidation.success
-    ? changeLogValidation.data
-    : [];
-  const removedEmptyReleases = changeLogs.filter(
-    (release) =>
-      release.commits.features.length > 0 ||
-      release.commits.improvements.length > 0 ||
-      release.commits.fixes.length > 0,
-  );
+const changeLogValidation = releaseSchema.array().safeParse(releases);
+const parsedReleases = changeLogValidation.success
+  ? changeLogValidation.data
+  : [];
+const removedEmptyReleases = parsedReleases.filter(
+  (release) => release.commits.length > 0,
+);
 
+export default async function Page() {
   return (
     <div>
       <div className="w-full border-b shadow-sm backdrop-blur-lg">
@@ -66,7 +62,7 @@ export default function Page() {
             </TimelineItem>
             {removedEmptyReleases.map((release) => (
               <TimelineItem
-                key={release.title}
+                key={release.version}
                 timelineTitle={formatDate(release.isoDate)}
               >
                 <ReleaseCard release={release} />
