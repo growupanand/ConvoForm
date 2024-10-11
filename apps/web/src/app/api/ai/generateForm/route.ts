@@ -1,4 +1,3 @@
-import { checkRateLimitThrowError } from "@convoform/api";
 import {
   type FormField,
   aiGeneratedFormSchema,
@@ -12,6 +11,7 @@ import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getOrganizationId } from "@/lib/getOrganizationId";
 import { GenerateFormService } from "@/lib/services/generateForm";
 import { api } from "@/trpc/server";
+import { checkRateLimitThrowError } from "@convoform/rate-limiter";
 
 export async function POST(req: NextRequest) {
   try {

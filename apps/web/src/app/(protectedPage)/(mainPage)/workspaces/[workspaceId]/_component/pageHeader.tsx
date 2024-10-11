@@ -18,9 +18,9 @@ import { useCallback, useRef } from "react";
 
 import { ConfirmAction } from "@/components/common/confirmAction";
 import Spinner from "@/components/common/spinner";
-import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn, debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 import CreateFormButton from "./createFormButton";
 
 type Props = {

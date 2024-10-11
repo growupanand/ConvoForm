@@ -1,3 +1,5 @@
+import type { Conversation } from "@convoform/db/src/schema";
+
 export type JSONValue =
   | null
   | string
@@ -10,5 +12,5 @@ export type JSONValue =
 
 export type SubmitAnswer = (
   answer: string,
-  initialMessage?: boolean,
+  newConversation?: Conversation,
 ) => Promise<void>;

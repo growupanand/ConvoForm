@@ -4,7 +4,6 @@ import type { ExtraStreamData, Form } from "@convoform/db/src/schema";
 import { useConvoForm } from "@convoform/react";
 import { useEffect } from "react";
 
-import { CONVERSATION_START_MESSAGE } from "@/lib/constants";
 import type { FormSections } from "@convoform/db/src/schema/formDesigns/constants";
 import { AskScreen } from "./askScreen";
 import { EndScreen } from "./endScreen";
@@ -31,6 +30,7 @@ export function FormViewer({ form, isPreview }: Readonly<Props>) {
     currentField,
     collectedData,
     isConversationStarted,
+    startConversation,
   } = useConvoForm({
     formId: form.id,
   });
@@ -51,7 +51,6 @@ export function FormViewer({ form, isPreview }: Readonly<Props>) {
   };
 
   const handleCTAClick = () => {
-    submitAnswer(CONVERSATION_START_MESSAGE, true);
     gotoStage("questions-screen");
   };
 
@@ -60,7 +59,7 @@ export function FormViewer({ form, isPreview }: Readonly<Props>) {
       currentSection === "questions-screen" &&
       (!isConversationStarted || isFormSubmissionFinished)
     ) {
-      submitAnswer(CONVERSATION_START_MESSAGE, true);
+      startConversation();
     }
   }, [currentSection, form]);
 

@@ -17,9 +17,9 @@ import { useState } from "react";
 import type { z } from "zod";
 
 import { montserrat } from "@/app/fonts";
-import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 import { GenerateFormModal } from "./generateFormModal";
 
 type Props = {
