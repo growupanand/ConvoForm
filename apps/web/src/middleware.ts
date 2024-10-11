@@ -7,8 +7,7 @@ export default authMiddleware({
   publicRoutes: [
     "/",
     "/view/(.*)",
-    "/api/form/(.*)/conversation",
-    "/api/form/(.*)/new-conversation",
+    "/api/form/(.*)",
     "/api/webhook(.*)",
     "/auth/(.*)",
     "/api/trpc/formDesign.get(.*)",

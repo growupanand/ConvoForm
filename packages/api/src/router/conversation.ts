@@ -2,6 +2,7 @@ import { count, eq, inArray } from "@convoform/db";
 import {
   conversation,
   insertConversationSchema,
+  patchConversationSchema,
   restoreDateFields,
   updateConversationSchema,
 } from "@convoform/db/src/schema";
@@ -310,5 +311,22 @@ export const conversationRouter = createTRPCRouter({
           conversationCount: form.conversations.length,
         };
       });
+    }),
+  // Patch partial form
+  patch: publicProcedure
+    .input(patchConversationSchema)
+    .mutation(async ({ input, ctx }) => {
+      const { id, ...updatedData } = input;
+      const [updatedConversation] = await ctx.db
+        .update(conversation)
+        .set({
+          ...updatedData,
+        })
+        .where(eq(conversation.id, id))
+        .returning();
+
+      if (!updatedConversation) {
+        throw new Error("Failed to update conversation");
+      }
     }),
 });
