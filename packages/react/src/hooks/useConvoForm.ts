@@ -163,6 +163,7 @@ export function useConvoForm({
       collectedData: updatedExtraSteamData?.collectedData,
       transcript: updatedTranscript,
       isFinished: !!updatedExtraSteamData?.isFormSubmissionFinished,
+      name: updatedExtraSteamData?.conversationName,
     });
 
     setState((cs) => ({
