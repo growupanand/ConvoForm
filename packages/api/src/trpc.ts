@@ -4,13 +4,12 @@
 
 import { getAuth } from "@clerk/nextjs/server";
 import { db } from "@convoform/db";
+import { isRateLimitError } from "@convoform/rate-limiter";
 import { TRPCError, initTRPC } from "@trpc/server";
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-
-import { isRateLimitError } from "./lib/rateLimit";
 
 /**
  * 1. CONTEXT

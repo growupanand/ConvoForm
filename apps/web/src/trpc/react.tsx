@@ -8,8 +8,8 @@ import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 import SuperJSON from "superjson";
 
-import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { getTRPCUrl } from "@/lib/url";
+import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 
 export const api = createTRPCReact<AppRouter>();
 

@@ -1,0 +1,19 @@
+{
+  "name": "@convoform/rate-limiter",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./index.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@upstash/ratelimit": "^1.0.1",
+    "@upstash/redis": "^1.28.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "typescript": "^5"
+  }
+}

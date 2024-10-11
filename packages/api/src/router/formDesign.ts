@@ -7,7 +7,7 @@ import {
 } from "@convoform/db/src/schema";
 import { z } from "zod";
 
-import { checkRateLimitThrowTRPCError } from "../lib/rateLimit";
+import { checkRateLimitThrowTRPCError } from "../lib/utils";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const formDesignRouter = createTRPCRouter({

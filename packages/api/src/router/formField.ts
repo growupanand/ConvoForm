@@ -7,7 +7,7 @@ import {
   updateFormFieldSchema,
 } from "@convoform/db/src/schema";
 
-import { checkRateLimitThrowTRPCError } from "../lib/rateLimit";
+import { checkRateLimitThrowTRPCError } from "../lib/utils";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const formFieldRouter = createTRPCRouter({

@@ -35,10 +35,10 @@ import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
 import { useFormDesign } from "@/components/formViewer/formDesignContext";
-import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { FORM_SECTIONS_ENUMS } from "@convoform/db/src/schema/formDesigns/constants";
+import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 import { Label } from "@convoform/ui/components/ui/label";
 import { CustomizeEndScreenCard } from "./customizeEndScreenCard";
 import { CustomizeFormCard } from "./customizeFormCard";
