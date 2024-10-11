@@ -1,4 +1,4 @@
-import { checkRateLimitThrowError } from "@convoform/api";
+// import { checkRateLimitThrowError } from "@convoform/api";
 import {
   type CollectedData,
   type CollectedFilledData,
@@ -13,6 +13,8 @@ import { z } from "zod";
 import { sendErrorMessage, sendErrorResponse } from "@/lib/errorHandlers";
 import getIP from "@/lib/getIP";
 import { ConversationService } from "@/lib/services/conversation";
+
+export const runtime = "edge";
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -75,12 +77,14 @@ export async function POST(
     const isInitialMessage = currentField === undefined;
 
     const conversationService = new ConversationService();
-    const clientIp = getIP(req);
+    const _clientIp = getIP(req);
 
-    await checkRateLimitThrowError({
-      identifier: clientIp ?? "unknown",
-      rateLimitType: clientIp ? "ai:identified" : "ai:unkown",
-    });
+    // FIXME: Getting vercel edge runtime error for upstash/redis
+
+    // await checkRateLimitThrowError({
+    //   identifier: clientIp ?? "unknown",
+    //   rateLimitType: clientIp ? "ai:identified" : "ai:unkown",
+    // });
 
     if (!isInitialMessage) {
       // Try to extract the answer from the current conversation messages, and Update conversation with the extracted answer
