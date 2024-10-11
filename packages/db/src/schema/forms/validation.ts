@@ -40,4 +40,8 @@ export const generateFormSchema = z.object({
 
 export type Form = z.infer<typeof selectFormSchema>;
 
-// Color schema
+export const formWithFormFieldsSchema = selectFormSchema.extend({
+  formFields: insertFormFieldSchema.array().min(1),
+});
+
+export type FormWithFormFields = z.infer<typeof formWithFormFieldsSchema>;

@@ -1,4 +1,8 @@
-import type { CollectedData, Form, FormField } from "@convoform/db/src/schema";
+import type {
+  CollectedData,
+  CreateConversation,
+  Form,
+} from "@convoform/db/src/schema";
 
 import { formSubmissionLimit } from "@/lib/config/pricing";
 import { api } from "@/trpc/server";
@@ -10,7 +14,7 @@ import { api } from "@/trpc/server";
  * @returns
  */
 export const getORCreateConversation = async (
-  form: Form & { formFields: FormField[] },
+  form: CreateConversation,
   conversationId?: string,
 ) => {
   if (conversationId) {
@@ -46,7 +50,9 @@ export const getORCreateConversation = async (
  * @param form
  * @returns
  */
-export const checkNThrowErrorFormSubmissionLimit = async (form: Form) => {
+export const checkNThrowErrorFormSubmissionLimit = async (
+  form: Pick<Form, "id" | "organizationId">,
+) => {
   // No limit for demo form
   if (form.id === "demo") {
     return;

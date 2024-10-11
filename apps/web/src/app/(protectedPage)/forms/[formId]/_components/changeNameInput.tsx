@@ -6,9 +6,9 @@ import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { cn, debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 
 type Props = {
   form: Form;

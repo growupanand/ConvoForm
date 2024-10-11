@@ -26,8 +26,8 @@ import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
 import Spinner from "@/components/common/spinner";
-import { isRateLimitErrorResponse } from "@/lib/errorHandlers";
 import { api } from "@/trpc/react";
+import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 
 type Props = {
   onFieldAdded: () => void;

@@ -19,6 +19,7 @@
     "@convoform/api": "workspace:*",
     "@convoform/db": "workspace:*",
     "@convoform/release": "workspace:*",
+    "@convoform/rate-limiter": "workspace:*",
     "@convoform/react": "workspace:*",
     "@convoform/ui": "workspace:*",
     "@convoform/websocket-client": "workspace:*",

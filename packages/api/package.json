@@ -11,9 +11,8 @@
   "dependencies": {
     "@clerk/nextjs": "^4.29.5",
     "@convoform/db": "workspace:*",
+    "@convoform/rate-limiter": "workspace:*",
     "@trpc/server": "11.0.0-next-beta.264",
-    "@upstash/ratelimit": "^1.0.1",
-    "@upstash/redis": "^1.28.4",
     "next": "^14.2.5",
     "superjson": "^2.2.1",
     "zod": "^3.22.4"

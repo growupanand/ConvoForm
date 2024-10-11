@@ -1,7 +1,8 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-import { insertFormFieldSchema } from "../formFields";
+import { insertFormFieldSchema, selectFormFieldSchema } from "../formFields";
+import { selectFormSchema } from "../forms";
 import { conversation } from "./conversation";
 
 export const collectedDataSchema = insertFormFieldSchema
@@ -46,17 +47,43 @@ export const updateConversationSchema = insertConversationSchema.extend({
   isInProgress: z.boolean(),
 });
 
+export const patchConversationSchema = insertConversationSchema
+  .partial()
+  .extend({
+    id: z.string().min(1),
+  });
+
 export type Conversation = z.infer<typeof selectConversationSchema>;
 
 // Open AI flow related
 
 export const extraStreamDataSchema = z
   .object({
-    id: z.string().min(1),
-    collectedData: collectedDataSchema.array(),
+    conversationId: z.string().min(1),
+    collectedData: collectedDataSchema.array().min(1),
     currentField: collectedDataSchema,
     isFormSubmissionFinished: z.boolean(),
+    conversationName: z.string().min(1),
   })
   .partial();
 
 export type ExtraStreamData = z.infer<typeof extraStreamDataSchema>;
+
+export const createConversationSchema = selectFormSchema
+  .pick({
+    id: true,
+    organizationId: true,
+    overview: true,
+  })
+  .extend({
+    formFields: selectFormFieldSchema
+      .pick({
+        fieldName: true,
+        fieldDescription: true,
+        fieldConfiguration: true,
+      })
+      .array()
+      .min(1),
+  });
+
+export type CreateConversation = z.infer<typeof createConversationSchema>;

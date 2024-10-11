@@ -1,7 +1,5 @@
-import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-
 import { timeAhead } from "./utils";
 
 const isRateLimiterAvailable =
@@ -18,7 +16,7 @@ if (!isRateLimiterAvailable) {
 
 const redis = isRateLimiterAvailable ? Redis.fromEnv() : undefined;
 
-type LimitType =
+export type LimitType =
   | "common"
   | "core:create"
   | "core:edit"
@@ -112,36 +110,6 @@ export const checkRateLimitThrowError = async ({
     error.cause = {
       resetTimeStamp,
     };
-    throw error;
-  }
-};
-
-export const checkRateLimitThrowTRPCError = async ({
-  identifier,
-  message,
-  rateLimitType,
-}: {
-  /** A unique string value to identify user */
-  identifier: string;
-  /** Custom message to send in response */
-  message?: string;
-  /** Limit type E.g. `core`, `AI` etc */
-  rateLimitType?: LimitType;
-}) => {
-  try {
-    await checkRateLimitThrowError({
-      identifier,
-      message,
-      rateLimitType,
-    });
-  } catch (error) {
-    if (error instanceof Error && isRateLimitError(error)) {
-      throw new TRPCError({
-        code: RATE_LIMIT_ERROR_NAME,
-        message: error.message,
-        cause: error.cause,
-      });
-    }
     throw error;
   }
 };

@@ -1,6 +1,7 @@
 import {
   type CollectedData,
   type CollectedFilledData,
+  type ExtraStreamData,
   type Transcript,
   shouldSkipValidation,
   transcriptSchema,
@@ -8,6 +9,7 @@ import {
 import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
+import { CONVERSATION_END_MESSAGE } from "@convoform/react";
 import { OpenAIService } from "./openAI";
 
 export class ConversationService extends OpenAIService {
@@ -26,7 +28,7 @@ export class ConversationService extends OpenAIService {
     formOverview: string;
     currentField: CollectedData;
     collectedData: CollectedData[];
-    extraCustomStreamData: Record<string, any>;
+    extraCustomStreamData: ExtraStreamData;
     transcript: Transcript[];
     onStreamFinish?: (completion: string) => void;
   }) {
@@ -52,7 +54,10 @@ export class ConversationService extends OpenAIService {
 
     // Instantiate the StreamData. This is used to send extra custom data in the response stream
     const data = new StreamData();
-    data.append(extraCustomStreamData);
+
+    // Without safeJsonString this it will throw type error for Date type used in JSON
+    const safeJsonString = JSON.stringify({ ...extraCustomStreamData });
+    data.append(JSON.parse(safeJsonString));
 
     // Convert the response into a friendly text-stream
     const stream = OpenAIStream(openAiResponse, {
@@ -150,39 +155,22 @@ export class ConversationService extends OpenAIService {
   }
 
   public async generateEndMessage({
-    formOverview,
-    fieldsWithData,
     extraCustomStreamData,
-    onStreamFinish,
   }: {
-    formOverview: string;
-    fieldsWithData: CollectedFilledData[];
     extraCustomStreamData: Record<string, any>;
     onStreamFinish?: (completion: string) => void;
   }) {
-    const systemMessage = this.getGenerateEndMessagePromptMessage({
-      formOverview,
-      fieldsWithData,
-    });
-
-    const openAiResponse = await this.getOpenAIResponseStream([
-      systemMessage,
-      {
-        role: "user",
-        content: "End conversation",
-      },
-    ]);
-
     // Instantiate the StreamData. This is used to send extra custom data in the response stream
     const data = new StreamData();
     data.append(extraCustomStreamData);
 
     // Convert the response into a friendly text-stream
-    const stream = OpenAIStream(openAiResponse, {
-      onFinal(completion) {
-        // IMPORTANT! you must close StreamData manually or the response will never finish.
+    const endMessage = CONVERSATION_END_MESSAGE;
+    const stream = new ReadableStream({
+      async pull(controller) {
+        controller.enqueue(`0:"${endMessage}"`);
         data.close();
-        onStreamFinish?.(completion);
+        controller.close();
       },
     });
     // Respond with the stream
