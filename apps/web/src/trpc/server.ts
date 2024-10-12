@@ -1,12 +1,29 @@
-import { createCaller, createTRPCContext } from "@convoform/api";
+"use server";
+
+import {
+  type AppRouter,
+  appRouter,
+  createCaller,
+  createTRPCContext,
+} from "@convoform/api";
+import { createHydrationHelpers } from "@trpc/react-query/rsc";
 import { cache } from "react";
+import { makeQueryClient } from "./react";
 
 /**
- * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
- * handling a tRPC call from a React Server Component.
+ * Create a server-side caller
+ * @see https://trpc.io/docs/server/server-side-calls
  */
-const createContext = cache(async () => {
-  return createTRPCContext();
-});
+const caller = createCaller(appRouter);
+export const trpcClient = caller(createTRPCContext);
 
-export const api = createCaller(createContext);
+// IMPORTANT: Create a stable getter for the query client that
+//            will return the same client during the same request.
+
+export const getQueryClient = cache(makeQueryClient);
+export const { trpc, HydrateClient } = createHydrationHelpers<AppRouter>(
+  trpcClient,
+  getQueryClient,
+);
+
+export const api = trpc;

@@ -2,12 +2,10 @@
  * Reference - https://github.com/t3-oss/create-t3-turbo
  */
 
-import { getAuth } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { db } from "@convoform/db";
 import { isRateLimitError } from "@convoform/rate-limiter";
 import { TRPCError, initTRPC } from "@trpc/server";
-import { headers } from "next/headers";
-import { NextRequest } from "next/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -26,9 +24,11 @@ import { ZodError } from "zod";
 export const createTRPCContext = async () => {
   return {
     db,
-    auth: getAuth(new NextRequest(getBaseUrl(), { headers: headers() })),
+    auth: auth(),
   };
 };
+
+export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
 
 /**
  * 2. INITIALIZATION
@@ -36,7 +36,7 @@ export const createTRPCContext = async () => {
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
+const t = initTRPC.context<TRPCContext>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => {
     // Add rate limit error data into response
@@ -63,7 +63,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
  * Create a server-side caller
  * @see https://trpc.io/docs/server/server-side-calls
  */
-export const createCallerFactory = t.createCallerFactory;
+export const createCaller = t.createCallerFactory;
 
 /**
  * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
@@ -77,6 +77,7 @@ export const createCallerFactory = t.createCallerFactory;
  * @see https://trpc.io/docs/router
  */
 export const createTRPCRouter = t.router;
+export const mergeRouters = t.mergeRouters;
 
 /**
  * Public (unauthed) procedure
@@ -102,10 +103,3 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   // Make ctx.userId non-nullable in protected procedures
   return next({ ctx: { userId: ctx.auth.userId, auth: ctx.auth } });
 });
-
-function getBaseUrl() {
-  if (typeof window !== "undefined") return window.location.origin;
-  if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return `http://localhost:${process.env.PORT ?? 3000}`;
-}

@@ -54,7 +54,7 @@ export const checkNThrowErrorFormSubmissionLimit = async (
   form: Pick<Form, "id" | "organizationId">,
 ) => {
   // No limit for demo form
-  if (form.id === "demo") {
+  if (form.id === "demo" || process.env.NODE_ENV === "development") {
     return;
   }
 
