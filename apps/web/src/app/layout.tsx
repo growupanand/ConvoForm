@@ -8,10 +8,9 @@ import { Toaster } from "@convoform/ui/components/ui/toaster";
 import { TooltipProvider } from "@convoform/ui/components/ui/tooltip";
 import type { Viewport } from "next";
 
-import { AuthProvider } from "@/components/authProvider";
 import GoogleAnalytics from "@/components/googleAnalytics";
-import { TRPCReactProvider } from "@/trpc/react";
 import { roboto } from "./fonts";
+import { TRPCReactProvider } from "@/trpc/react";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -77,11 +76,11 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
-        <TRPCReactProvider>
-          <AuthProvider>
-            <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
-          </AuthProvider>
-        </TRPCReactProvider>
+
+        <TooltipProvider delayDuration={200}>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </TooltipProvider>
+
         <Toaster />
         <SonnerToaster />
       </body>

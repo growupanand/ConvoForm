@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthProvider } from "@/components/authProvider";
 import Spinner from "@/components/common/spinner";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import dynamic from "next/dynamic";
@@ -27,8 +28,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <DesktopLayout>{children}</DesktopLayout>
-    </Suspense>
+    <AuthProvider>
+      <Suspense fallback={<div>Loading...</div>}>
+        <DesktopLayout>{children}</DesktopLayout>
+      </Suspense>
+    </AuthProvider>
   );
 }
