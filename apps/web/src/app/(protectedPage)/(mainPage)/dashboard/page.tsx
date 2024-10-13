@@ -15,14 +15,17 @@ export default function DashboardPage() {
 
   return (
     <PageShell title="Dashboard">
-      <div className="grid gap-5 grid-cols-6">
-        <div className=" col-span-2">
-          <div className="grid gap-5">
+      <div className="grid gap-10 grid-cols-8">
+        <div className=" col-span-5">
+          <div className="grid space-y-10">
             <ResponseDataCard orgId={orgId} />
-            <ResponseUsageCard organizationId={orgId} />
+
+            <div className="grid grid-cols-2 gap-5">
+              <ResponseUsageCard organizationId={orgId} />
+            </div>
           </div>
         </div>
-        <div className="col-span-4">
+        <div className="col-span-3">
           <RecentResponsesCard take={10} />
         </div>
       </div>

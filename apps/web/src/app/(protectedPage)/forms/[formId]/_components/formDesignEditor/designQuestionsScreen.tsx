@@ -1,5 +1,5 @@
 import { ComingSoonCard } from ".";
 
-export function CustomizeDefaultScreenCard() {
+export function DesignQuestionsScreenCard() {
   return <ComingSoonCard />;
 }

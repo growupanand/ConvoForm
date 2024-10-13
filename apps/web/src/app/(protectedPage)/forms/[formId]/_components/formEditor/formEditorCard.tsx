@@ -267,7 +267,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
               <span>Questions screen</span>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="pe-1 ps-10 pt-1 space-y-4">
+          <AccordionContent className="pe-0 ps-10 pt-1 space-y-4">
             <div>
               <UIForm {...formHook}>
                 <form onSubmit={formHook.handleSubmit(onSubmit)}>
@@ -276,7 +276,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
                     name="overview"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Overview</FormLabel>
+                        <FormLabel>Form Overview</FormLabel>
                         <FormDescription>
                           This will help AI while generating questions.
                         </FormDescription>
@@ -296,8 +296,11 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
                 </form>
               </UIForm>
             </div>
-            <div>
-              <Label className="mb-4 block">Form fields</Label>
+            <div className="grid space-y-2">
+              <Label className="block">Questions</Label>
+              <div className="text-muted-foreground text-sm">
+                Use shift + up or down to jump between questions
+              </div>
               <FieldsEditorCard
                 formFields={formFields}
                 formFieldsOrders={fieldsOrders}

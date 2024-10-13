@@ -6,7 +6,6 @@ import { InboxIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 
-import { CardShell } from "@/components/common/cardShell";
 import { EmptyCard } from "@/components/common/emptyCard";
 import { ListCard } from "@/components/common/list";
 import { ListItem } from "@/components/common/listItem";
@@ -92,12 +91,12 @@ function RecentResponsesCardShell({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <CardShell
-      title="Recent responses"
-      secondaryText="As you receive responses, they'll appear here."
-    >
+    <div>
+      <div className="text-muted-foreground font-medium lg:text-xl mb-2">
+        Recent responses
+      </div>
       {children}
-    </CardShell>
+    </div>
   );
 }
 

@@ -1,4 +1,3 @@
-import { montserrat } from "@/app/fonts";
 import { LinkN } from "@/components/common/linkN";
 import { cn } from "@/lib/utils";
 
@@ -6,14 +5,13 @@ type Props = {
   className?: string;
 };
 
-export default function BrandName({ className = "" }: Props) {
+export default function BrandName({ className }: Props) {
   return (
     <LinkN href="/">
       <span
         className={cn(
-          "text-foreground font-semibold",
+          "text-foreground font-semibold font-montserrat",
           className,
-          montserrat.className,
         )}
       >
         <span className="flex items-center justify-start gap-0">

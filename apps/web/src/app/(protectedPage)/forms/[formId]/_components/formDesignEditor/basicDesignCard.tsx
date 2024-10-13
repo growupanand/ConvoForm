@@ -52,7 +52,7 @@ const basicFields = [
   },
 ] as const;
 
-export function CustomizeScreenBasicCard({
+export function BasicDesignCard({
   formDesign,
   onUpdateFormDesign,
   isSavingFormDesign,

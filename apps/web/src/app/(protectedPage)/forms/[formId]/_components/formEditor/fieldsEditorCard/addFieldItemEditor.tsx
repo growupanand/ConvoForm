@@ -26,6 +26,7 @@ import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
 import Spinner from "@/components/common/spinner";
+import { useAutoHeightHook } from "@/hooks/auto-height-hook";
 import { api } from "@/trpc/react";
 import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 
@@ -50,6 +51,10 @@ export function AddFieldItemEditor({ onFieldAdded, formId }: Readonly<Props>) {
     },
     resolver: zodResolver(formHookSchema),
   });
+
+  const fieldDescription = formHook.watch("fieldDescription");
+
+  const { inputRef } = useAutoHeightHook({ value: fieldDescription });
 
   const createFormFieldMutation = api.formField.createFormField.useMutation({
     onSuccess: () => {
@@ -93,6 +98,7 @@ export function AddFieldItemEditor({ onFieldAdded, formId }: Readonly<Props>) {
   return (
     <Form {...formHook}>
       <form onSubmit={formHook.handleSubmit(onSubmit)}>
+        <div className="font-semibold text-lg mb-4">New question</div>
         <div className="grid space-y-8">
           <FormField
             control={formHook.control}
@@ -115,7 +121,7 @@ export function AddFieldItemEditor({ onFieldAdded, formId }: Readonly<Props>) {
                 <FormControl>
                   <div className="flex items-center justify-between gap-x-3">
                     <Input
-                      placeholder="Enter a human-readable name for the field"
+                      placeholder="Field name (e.g. Name, Email, etc.)"
                       {...field}
                       disabled={isCreatingForm}
                     />
@@ -146,11 +152,21 @@ export function AddFieldItemEditor({ onFieldAdded, formId }: Readonly<Props>) {
                   <div className="flex items-center justify-between gap-x-3">
                     <Textarea
                       placeholder={
-                        "Information you would like to collect.\nE.g. Your email address, Your work experience in years etc..."
+                        "Information you would like to collect (e.g. Tell me your full name, etc.)"
                       }
                       {...field}
-                      rows={4}
+                      rows={3}
                       disabled={isCreatingForm}
+                      ref={(e) => {
+                        field.ref(e);
+                        inputRef.current = e;
+                      }}
+                      onKeyDown={(e) => {
+                        // disable enter key from submitting the form or inserting a new line
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                        }
+                      }}
                     />
                   </div>
                 </FormControl>

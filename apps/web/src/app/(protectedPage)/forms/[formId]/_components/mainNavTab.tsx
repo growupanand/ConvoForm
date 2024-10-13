@@ -5,7 +5,6 @@ import { Tabs, TabsList, TabsTrigger } from "@convoform/ui/components/ui/tabs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { montserrat } from "@/app/fonts";
 import type { NavLink } from "@/lib/types/navigation";
 import { api } from "@/trpc/react";
 
@@ -55,7 +54,7 @@ export default function MainNavTab({
           <TabsTrigger
             value={link.name}
             key={`${link.path}-${link.name}`}
-            className={montserrat.className}
+            className="font-montserrat"
             asChild
             disabled={link.disabled}
           >

@@ -113,12 +113,13 @@ export function FieldsEditorCard({
   };
 
   const handleMoveFocusToNextField = (
-    event: KeyboardEvent<HTMLInputElement>,
+    event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
     currentFieldId: string,
   ) => {
     if (
       !editFieldsListRef.current ||
-      (event.key !== "ArrowDown" && event.key !== "ArrowUp")
+      (event.key !== "ArrowDown" && event.key !== "ArrowUp") ||
+      !event.shiftKey
     ) {
       return;
     }
@@ -129,12 +130,12 @@ export function FieldsEditorCard({
     let nextFieldIndex = 0;
 
     // If user presses down arrow key, move focus to the next field
-    if (event.key === "ArrowDown") {
+    if (event.key === "ArrowDown" && event.shiftKey) {
       nextFieldIndex = currentFieldIndex + 1;
     }
 
     // If user presses up arrow key, move focus to the previous field
-    if (event.key === "ArrowUp") {
+    if (event.key === "ArrowUp" && event.shiftKey) {
       nextFieldIndex = currentFieldIndex - 1;
     }
 
@@ -143,7 +144,7 @@ export function FieldsEditorCard({
       const nextFieldId = formFieldsOrders[nextFieldIndex];
       if (nextFieldId) {
         const inputElement = editFieldsListRef.current.querySelector(
-          `input[id="${nextFieldId}"]`,
+          `textarea[id="${nextFieldId}"]`,
         ) as HTMLInputElement | HTMLTextAreaElement;
         if (inputElement) {
           inputElement.focus();
@@ -186,17 +187,17 @@ export function FieldsEditorCard({
       {/* Add Field Button/Editor */}
 
       {showAddFieldEditor ? (
-        <div className="mt-10">
+        <div className="pt-10">
           <AddFieldItemEditor
             onFieldAdded={handleHideAddFieldEditor}
             formId={formId}
           />
         </div>
       ) : (
-        <div className="mt-4">
+        <div className="pt-4">
           <Button size="sm" type="button" onClick={handleShowAddFieldEditor}>
             <Plus className="mr-2 size-4" />
-            Add field
+            Add question
           </Button>
         </div>
       )}

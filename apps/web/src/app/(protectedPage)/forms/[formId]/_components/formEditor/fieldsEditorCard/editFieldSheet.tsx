@@ -47,6 +47,7 @@ import type { z } from "zod";
 import { ConfirmAction } from "@/components/common/confirmAction";
 import { api } from "@/trpc/react";
 import { InputConfigurationEditor } from "./inputConfigurationEditor";
+import { useAutoHeightHook } from "@/hooks/auto-height-hook";
 
 type Props = {
   formField: FormFieldSchema;
@@ -108,6 +109,9 @@ export function EditFieldSheet({
   });
 
   const selectedInputType = formHook.watch("fieldConfiguration.inputType");
+  const fieldDescription = formHook.watch("fieldDescription");
+
+  const { inputRef } = useAutoHeightHook({ value: fieldDescription });
 
   const onSubmit = (formData: FormHookData) => {
     const updatePromise = updateFormFieldMutation.mutateAsync({
@@ -191,11 +195,21 @@ export function EditFieldSheet({
                       <FormControl>
                         <Textarea
                           placeholder={
-                            "Information you would like to collect.\nE.g. Your email address, Your work experience in years etc..."
+                            "Information you would like to collect (e.g. Tell me your full name, etc.)"
                           }
                           {...field}
                           rows={4}
                           disabled={isFormBusy}
+                          ref={(e) => {
+                            field.ref(e);
+                            inputRef.current = e;
+                          }}
+                          onKeyDown={(e) => {
+                            // disable enter key from submitting the form or inserting a new line
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                            }
+                          }}
                         />
                       </FormControl>
                       <FormMessage />

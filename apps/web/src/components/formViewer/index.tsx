@@ -50,7 +50,8 @@ export function FormViewer({ form, isPreview }: Readonly<Props>) {
     setCurrentSection(section);
   };
 
-  const handleCTAClick = () => {
+  const handleCTAClick = async () => {
+    await startConversation();
     gotoStage("questions-screen");
   };
 
@@ -87,6 +88,7 @@ export function FormViewer({ form, isPreview }: Readonly<Props>) {
           form={form}
           onCTAClick={handleCTAClick}
           formDesign={activeFormDesign}
+          gotoStage={gotoStage}
         />
       )}
 

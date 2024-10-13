@@ -1,3 +1,5 @@
+"use client";
+
 import type { TextInputConfigSchema } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
@@ -9,12 +11,10 @@ import {
 } from "@convoform/ui/components/ui/form";
 import { Textarea } from "@convoform/ui/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CornerDownLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { montserrat } from "@/app/fonts";
-import { cn } from "@/lib/utils";
+import { useAutoHeightHook } from "@/hooks/auto-height-hook";
 import type { InputProps } from "./";
 
 type Props = InputProps & {
@@ -31,8 +31,7 @@ export function TextInput({
   submitAnswer,
   inputConfiguration,
 }: Readonly<Props>) {
-  const textPlaceHolder =
-    inputConfiguration.placeholder ?? "Type answer here...";
+  const textPlaceHolder = inputConfiguration.placeholder ?? "Type here...";
 
   const formHook = useForm({
     resolver: zodResolver(formSchema),
@@ -41,11 +40,15 @@ export function TextInput({
     },
   });
 
+  const answerText = formHook.watch("answer");
+
   const handleFormSubmit = async (formData: FormData) => {
     await submitAnswer(formData.answer);
     formHook.reset();
     formHook.setFocus("answer");
   };
+
+  const { inputRef } = useAutoHeightHook({ value: answerText });
 
   return (
     <Form {...formHook}>
@@ -60,38 +63,30 @@ export function TextInput({
                   <Textarea
                     autoFocus
                     rows={1}
-                    className="w-full rounded-none border-0 border-b bg-transparent ps-0	text-xl focus-visible:ring-0 focus-visible:ring-transparent  focus-visible:ring-offset-0 lg:text-2xl"
+                    className="w-full rounded-none border-0 bg-transparent ps-0	 focus-visible:ring-0 focus-visible:ring-transparent  focus-visible:ring-offset-0 text-2xl"
                     placeholder={textPlaceHolder}
                     onKeyDown={(event) => {
-                      if (event.key === "Enter" && !event.shiftKey) {
+                      if (event.key === "Enter") {
                         event.preventDefault();
                         formHook.handleSubmit(handleFormSubmit)();
                       }
                     }}
                     {...field}
+                    ref={(e) => {
+                      field.ref(e);
+                      inputRef.current = e;
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div
-            className={cn(
-              "text-muted-foreground flex items-center justify-end pt-1 text-sm font-light max-lg:hidden",
-              montserrat.className,
-            )}
-          >
-            Press{" "}
-            <span className="mx-1 flex items-center font-semibold">
-              Shift + Enter <CornerDownLeft className="h-3 w-3 " />
-            </span>{" "}
-            for new line
-          </div>
           <div className="mt-8 lg:hidden">
             <Button
               type="submit"
               size="lg"
-              className="w-full rounded-lg text-xl font-semibold uppercase"
+              className="w-full rounded-lg text-xl h-auto py-2 font-medium"
             >
               Answer
             </Button>

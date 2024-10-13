@@ -11,6 +11,8 @@ export function ToggleButton({
   labelSide = "left",
   noHorizontalPadding,
   description,
+  labelClass,
+  icon,
   ...switchProps
 }: Readonly<
   {
@@ -19,6 +21,8 @@ export function ToggleButton({
     labelSide?: "left" | "right";
     noHorizontalPadding?: boolean;
     description?: string;
+    labelClass?: string;
+    icon?: React.ReactNode;
   } & SwitchProps
 >) {
   const leftSide = labelSide === "left";
@@ -37,7 +41,10 @@ export function ToggleButton({
       >
         <div>
           <div className="grid space-y-2">
-            <span>{label}</span>
+            <span className={cn("flex items-center gap-2", labelClass)}>
+              {icon && icon}
+              {label}
+            </span>
             {description && (
               <span className="text-muted-foreground text-sm font-normal text-wrap">
                 {description}
