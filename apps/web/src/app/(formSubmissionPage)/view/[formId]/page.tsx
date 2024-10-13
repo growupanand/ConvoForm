@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { FormViewer } from "@/components/formViewer";
 import { api } from "@/trpc/server";
 import { FormDesignLayout } from "./_components/formDesignLayout";
+import { FormNotPublishedScreen } from "./_components/formNotPublishedScreen";
 import { FormSubmissionPageHeader } from "./_components/header";
 
 interface FormViewerPageProps {
@@ -23,8 +24,12 @@ export default async function FormViewPage({
 
   const isValidForm = formSubmissionSchema.safeParse(formData).success;
 
-  if (!formData || !formData.isPublished || !isValidForm) {
+  if (!formData || !isValidForm) {
     notFound();
+  }
+
+  if (!formData.isPublished) {
+    return <FormNotPublishedScreen />;
   }
 
   const { showOrganizationName, showOrganizationLogo } = formData;

@@ -6,11 +6,12 @@ export type NavItemAction = {
 };
 
 export type NavLink = {
-  path: string;
+  link: string;
   name: string;
   isActive?: boolean;
-  getIsActive?: (path: string) => boolean;
+  getIsActive?: (link: string) => boolean;
   disabled?: boolean;
+  activeClassName?: string;
 };
 
 export type NavText = {

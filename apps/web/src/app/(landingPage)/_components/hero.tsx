@@ -9,7 +9,7 @@ import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { montserrat, nohemi } from "@/app/fonts";
+import { nohemi } from "@/app/fonts/customFonts";
 import { LinkN } from "@/components/common/linkN";
 import { AnimatedTypingDots } from "@/components/common/typingDots";
 import { getFrontendBaseUrl } from "@/lib/url";
@@ -81,10 +81,7 @@ export function Hero() {
       <div className="flex items-center justify-center gap-3">
         <Button
           size="lg"
-          className={cn(
-            "rounded-full lg:py-7 lg:text-lg",
-            montserrat.className,
-          )}
+          className="rounded-full lg:py-7 lg:text-lg font-montserrat"
           asChild
         >
           <LinkN href="/auth/register" rel="noreferrer nofollow noopener">
@@ -94,10 +91,7 @@ export function Hero() {
         <Button
           size="lg"
           variant="outline"
-          className={cn(
-            "rounded-full lg:py-7 lg:text-lg",
-            montserrat.className,
-          )}
+          className="rounded-full lg:py-7 lg:text-lg font-montserrat"
           asChild
         >
           <LinkN href={demoFormLink} target="_blank">

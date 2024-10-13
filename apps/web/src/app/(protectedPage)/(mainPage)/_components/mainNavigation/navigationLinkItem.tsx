@@ -3,16 +3,16 @@ import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
+import type { NavLink } from "@/lib/types/navigation";
 
-type Props = {
-  isActive?: boolean;
-  href: string;
-  name: string;
-};
-
-const NavigationLinkItem = ({ isActive, href, name }: Props) => {
+const NavigationLinkItem = ({
+  isActive,
+  link,
+  name,
+  activeClassName,
+}: NavLink) => {
   return (
-    <Link href={href}>
+    <Link href={link}>
       <Button
         variant="link"
         className={cn(
@@ -20,7 +20,7 @@ const NavigationLinkItem = ({ isActive, href, name }: Props) => {
           isActive && "font-medium text-gray-900",
         )}
       >
-        {name}
+        <span className={activeClassName}>{name}</span>
       </Button>
     </Link>
   );

@@ -1,6 +1,7 @@
 import type { Transcript } from "@convoform/db/src/schema";
 
 import { AnimatedTypingDots } from "@/components/common/typingDots";
+import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 
 type Props = {
   transcript: Transcript[];
@@ -43,3 +44,18 @@ const SystemMessageBox = ({ message }: { message: string }) => (
 const UserMessageBox = ({ message }: { message: string }) => (
   <p className="mb-2">{message}</p>
 );
+
+const SystemMessageSkeleton = () => <Skeleton className="h-2 w-40 bg-muted " />;
+
+const UserMessageSkeleton = () => (
+  <Skeleton className="h-2 w-20 bg-muted-foreground " />
+);
+
+const TranscriptCardSkeleton = () => (
+  <div className="space-y-2 ps-4">
+    <UserMessageSkeleton />
+    <SystemMessageSkeleton />
+  </div>
+);
+
+TranscriptCard.Skeleton = TranscriptCardSkeleton;

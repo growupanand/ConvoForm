@@ -70,6 +70,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -87,15 +88,13 @@
   left: -10px;
   width: 50px;
   height: 30px;
-  clip-path: polygon(
-    37.9% 0%,
-    100% 30%,
-    72.7% 51.5%,
-    36.9% 77.5%,
-    0% 100%,
-    21% 55%,
-    30.6% 28%
-  );
+  clip-path: polygon(37.9% 0%,
+      100% 30%,
+      72.7% 51.5%,
+      36.9% 77.5%,
+      0% 100%,
+      21% 55%,
+      30.6% 28%);
 }
 
 @media only screen and (max-width: 1024px) {
@@ -105,4 +104,11 @@
     bottom: -8px;
     left: -4px;
   }
+}
+
+
+.transition-all-conversation-heading {
+  view-transition-name: all-conversation-heading;
+  height: min-content;
+  width: max-content;
 }

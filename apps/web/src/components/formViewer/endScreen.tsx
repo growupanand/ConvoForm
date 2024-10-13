@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import type { FormDesignRenderSchema } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import BrandName from "../common/brandName";
 
@@ -15,36 +16,58 @@ type Props = {
 export const EndScreen = (props: Props) => {
   const { formDesign } = props;
   const message = props.endScreenMessage || "Thank you for filling the form!";
-  const ctaButtonLabel = props.endScreenCTALabel || "Done";
+  const ctaButtonLabel = props.endScreenCTALabel || "Close window";
   const showCTAButton =
     props.endScreenCTAUrl && props.endScreenCTAUrl.trim().length > 0;
   return (
     <div className="flex flex-col items-center justify-center">
       <div>
-        <h1
-          style={{ color: formDesign.fontColor }}
-          className="whitespace-break-spaces break-words text-center text-2xl font-semibold lg:text-4xl mb-4 transition-colors duration-500"
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
-          {message}
-        </h1>
+          <h1
+            style={{ color: formDesign.fontColor }}
+            className="whitespace-break-spaces break-words text-center font-extrabold text-4xl   transition-colors duration-500"
+          >
+            {message}
+          </h1>
+        </motion.div>
+
         {showCTAButton ? (
-          <div className="flex items-center justify-center">
-            <Button size="lg">
-              <Link
-                // biome-ignore lint/style/noNonNullAssertion: <explanation>
-                href={props.endScreenCTAUrl!}
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-                aria-label="Form submission completed"
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", bounce: 0.5, delay: 0.6 }}
+          >
+            <div className="flex items-center justify-center mt-10">
+              <Button
+                size="lg"
+                className="font-montserrat whitespace-break-spaces rounded-full  font-medium transition-all hover:scale-110 active:scale-100 text-xl h-auto py-2 gap-2"
               >
-                {ctaButtonLabel}
-              </Link>
-            </Button>
-          </div>
+                <Link
+                  // biome-ignore lint/style/noNonNullAssertion: <explanation>
+                  href={props.endScreenCTAUrl!}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  aria-label="Form submission completed"
+                >
+                  {ctaButtonLabel}
+                </Link>
+              </Button>
+            </div>
+          </motion.div>
         ) : (
-          <p className="text-muted-foreground text-center">
-            You can now close this window.
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
+            <p className="text-muted-foreground text-center text-lg mt-6">
+              You can now close this window.
+            </p>
+          </motion.div>
         )}
       </div>
       <div className="relative mt-10 h-[200px] w-full">
@@ -55,8 +78,8 @@ export const EndScreen = (props: Props) => {
         />
       </div>
       <div className="mt-2 flex items-center">
-        <p className="text-muted-foreground mr-2 text-sm">Form created using</p>
-        <BrandName />
+        <p className="text-muted-foreground mr-2 text-lg">Created using</p>
+        <BrandName className="text-lg font-bold" />
       </div>
     </div>
   );

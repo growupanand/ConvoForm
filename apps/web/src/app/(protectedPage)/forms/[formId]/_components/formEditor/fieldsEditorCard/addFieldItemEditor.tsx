@@ -26,12 +26,21 @@ import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
 import Spinner from "@/components/common/spinner";
+import { useAutoHeightHook } from "@/hooks/auto-height-hook";
 import { api } from "@/trpc/react";
 import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@convoform/ui/components/ui/sheet";
 
 type Props = {
   onFieldAdded: () => void;
   formId: string;
+  showAddFieldEditor: boolean;
+  handleHideAddFieldSheet: () => void;
 };
 
 const formHookSchema = insertFormFieldSchema.pick({
@@ -40,7 +49,12 @@ const formHookSchema = insertFormFieldSchema.pick({
 });
 type FormHookData = z.infer<typeof formHookSchema>;
 
-export function AddFieldItemEditor({ onFieldAdded, formId }: Readonly<Props>) {
+export function AddFieldItemEditor({
+  onFieldAdded,
+  formId,
+  showAddFieldEditor,
+  handleHideAddFieldSheet,
+}: Readonly<Props>) {
   const queryClient = useQueryClient();
 
   const formHook = useForm({
@@ -50,6 +64,10 @@ export function AddFieldItemEditor({ onFieldAdded, formId }: Readonly<Props>) {
     },
     resolver: zodResolver(formHookSchema),
   });
+
+  const fieldDescription = formHook.watch("fieldDescription");
+
+  const { inputRef } = useAutoHeightHook({ value: fieldDescription });
 
   const createFormFieldMutation = api.formField.createFormField.useMutation({
     onSuccess: () => {
@@ -91,92 +109,104 @@ export function AddFieldItemEditor({ onFieldAdded, formId }: Readonly<Props>) {
   };
 
   return (
-    <Form {...formHook}>
-      <form onSubmit={formHook.handleSubmit(onSubmit)}>
-        <div className="grid space-y-8">
-          <FormField
-            control={formHook.control}
-            name="fieldName"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-center gap-2">
-                  <FormLabel>Internal name</FormLabel>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-4 w-4 " />
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" align="start">
-                      This field is used for CSV export, as the column name in
-                      the table, and as the field name in the form submission
-                      page to show current field.
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-                <FormControl>
-                  <div className="flex items-center justify-between gap-x-3">
-                    <Input
-                      placeholder="Enter a human-readable name for the field"
-                      {...field}
-                      disabled={isCreatingForm}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={formHook.control}
-            name="fieldDescription"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-center gap-2">
-                  <FormLabel>Field description</FormLabel>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-4 w-4 " />
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" align="start">
-                      This text will be utilized by the AI to generate
-                      questions.
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-                <FormControl>
-                  <div className="flex items-center justify-between gap-x-3">
-                    <Textarea
-                      placeholder={
-                        "Information you would like to collect.\nE.g. Your email address, Your work experience in years etc..."
-                      }
-                      {...field}
-                      rows={4}
-                      disabled={isCreatingForm}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="mt-4 grid w-full grid-cols-2 gap-x-4">
-          <Button
-            className="relative w-full"
-            type="submit"
-            disabled={isCreatingForm}
+    <Sheet open={showAddFieldEditor} onOpenChange={handleHideAddFieldSheet}>
+      <SheetContent side="left" className="w-full min-w-[400px] flex flex-col">
+        <SheetHeader className="mb-4">
+          <SheetTitle>New question</SheetTitle>
+        </SheetHeader>
+        <Form {...formHook}>
+          <form
+            onSubmit={formHook.handleSubmit(onSubmit)}
+            className="grow flex flex-col "
           >
-            {isCreatingForm ? <Spinner size="sm" label="Saving" /> : "save"}
-          </Button>
-          <Button
-            variant="secondary"
-            className="w-full"
-            onClick={onFieldAdded}
-            disabled={isCreatingForm}
-          >
-            Cancel
-          </Button>
-        </div>
-      </form>
-    </Form>
+            <div className="grid space-y-8 mb-10">
+              <FormField
+                control={formHook.control}
+                name="fieldName"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-2">
+                      <FormLabel>Internal name</FormLabel>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 " />
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" align="start">
+                          This field is used for CSV export, as the column name
+                          in the table, and as the field name in the form
+                          submission page to show current field.
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                    <FormControl>
+                      <div className="flex items-center justify-between gap-x-3">
+                        <Input
+                          placeholder="Field name (e.g. Name, Email, etc.)"
+                          {...field}
+                          disabled={isCreatingForm}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={formHook.control}
+                name="fieldDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-2">
+                      <FormLabel>Field description</FormLabel>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 " />
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" align="start">
+                          This text will be utilized by the AI to generate
+                          questions.
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                    <FormControl>
+                      <div className="flex items-center justify-between gap-x-3">
+                        <Textarea
+                          placeholder={
+                            "Information you would like to collect (e.g. Tell me your full name, etc.)"
+                          }
+                          {...field}
+                          rows={3}
+                          disabled={isCreatingForm}
+                          ref={(e) => {
+                            field.ref(e);
+                            inputRef.current = e;
+                          }}
+                          onKeyDown={(e) => {
+                            // disable enter key from submitting the form or inserting a new line
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                            }
+                          }}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div>
+              <Button
+                className="relative w-full"
+                type="submit"
+                disabled={isCreatingForm}
+              >
+                {isCreatingForm ? <Spinner size="sm" label="Saving" /> : "save"}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </SheetContent>
+    </Sheet>
   );
 }

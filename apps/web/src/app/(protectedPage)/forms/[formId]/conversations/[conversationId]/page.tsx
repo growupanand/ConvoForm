@@ -7,7 +7,6 @@ import { useEffect } from "react";
 
 import ConversationDetail from "@/app/(protectedPage)/forms/[formId]/conversations/_components/conversationDetail";
 import { api } from "@/trpc/react";
-import Loading from "./loading";
 
 type Props = {
   params: { conversationId: string };
@@ -48,7 +47,7 @@ export default function ConversationDetailPage(props: Readonly<Props>) {
   }, [conversation?.id]);
 
   if (isLoading) {
-    return <Loading />;
+    return <ConversationDetail.ConversationDetailSkeleton />;
   }
 
   if (!conversation || !canAccessConversation) {

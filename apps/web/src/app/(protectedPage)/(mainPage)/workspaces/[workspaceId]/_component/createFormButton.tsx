@@ -16,8 +16,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { z } from "zod";
 
-import { montserrat } from "@/app/fonts";
-import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 import { GenerateFormModal } from "./generateFormModal";
@@ -92,7 +90,7 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
         <DropdownMenuTrigger asChild>
           <Button
             variant="secondary"
-            className={cn(montserrat.className, "cursor-pointer font-semibold")}
+            className="cursor-pointer font-semibold font-montserrat"
           >
             {isCreatingForm && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -104,10 +102,7 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
         <DropdownMenuContent className=" p-3" align="start">
           <DropdownMenuGroup className="grid gap-2">
             <DropdownMenuItem
-              className={cn(
-                montserrat.className,
-                "cursor-pointer px-3 font-semibold",
-              )}
+              className="cursor-pointer px-3 font-semibold font-montserrat"
               disabled={isCreatingForm}
               onClick={() => handleCreateForm(newFormData)}
             >
@@ -116,10 +111,7 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
             </DropdownMenuItem>
             <DropdownMenuItem
               disabled={isCreatingForm}
-              className={cn(
-                montserrat.className,
-                "cursor-pointer px-3 font-semibold",
-              )}
+              className="cursor-pointer px-3 font-semibold font-montserrat"
               onClick={() => setOpen(true)}
             >
               <Sparkles size={16} className="mr-2" />

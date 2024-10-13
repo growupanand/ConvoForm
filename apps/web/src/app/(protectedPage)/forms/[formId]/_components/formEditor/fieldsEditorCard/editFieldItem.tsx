@@ -12,7 +12,6 @@ import {
   FormItem,
   FormMessage,
 } from "@convoform/ui/components/ui/form";
-import { Input } from "@convoform/ui/components/ui/input";
 import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -24,7 +23,9 @@ import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
 import Spinner from "@/components/common/spinner";
+import { useAutoHeightHook } from "@/hooks/auto-height-hook";
 import { api } from "@/trpc/react";
+import { Textarea } from "@convoform/ui/components/ui/textarea";
 
 type Props = {
   formField: FormFieldSchema;
@@ -32,7 +33,7 @@ type Props = {
   orderId: string;
   isSavingForm: boolean;
   handleMoveFocusToNextField: (
-    event: KeyboardEvent<HTMLInputElement>,
+    event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
     currentFieldId: string,
   ) => void;
 };
@@ -48,6 +49,7 @@ export function EditFieldItem({
   handleMoveFocusToNextField,
 }: Readonly<Props>) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const queryClient = useQueryClient();
   const patchFormFieldMutation = api.formField.patchFormField.useMutation({
     onSuccess: () => {
@@ -65,6 +67,10 @@ export function EditFieldItem({
     },
     resolver: zodResolver(formHookSchema),
   });
+
+  const fieldDescription = formHook.watch("fieldDescription");
+
+  const { inputRef } = useAutoHeightHook({ value: fieldDescription });
 
   const {
     attributes,
@@ -97,6 +103,16 @@ export function EditFieldItem({
     });
   };
 
+  const handleOnBlur = () => {
+    timeoutRef.current = setTimeout(() => {
+      if (formHook.formState.isDirty) {
+        formHook.handleSubmit((formData) => {
+          handleSaveField(formData);
+        })();
+      }
+    }, 1000);
+  };
+
   // Auto save description
   useEffect(() => {
     timeoutRef.current = setTimeout(() => {
@@ -105,14 +121,14 @@ export function EditFieldItem({
           handleSaveField(formData);
         })();
       }
-    }, 1000);
+    }, 2000);
 
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [formHook.watch("fieldDescription")]);
+  }, [fieldDescription]);
 
   // Reset form in react-hook-form when props change
   useEffect(() => {
@@ -131,21 +147,33 @@ export function EditFieldItem({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <div className="relative flex items-center justify-between gap-x-3">
-                    <Input
-                      placeholder="Field description"
-                      {...field}
-                      disabled={isSavingFormField || isDragging}
-                      className="grow"
-                      id={formField.id}
-                      onKeyDown={(event) =>
-                        handleMoveFocusToNextField(event, formField.id)
-                      }
-                    />
+                  <div className="relative flex items-start justify-between gap-x-1">
+                    <div className="grow me-2">
+                      <Textarea
+                        placeholder="Field description"
+                        {...field}
+                        disabled={isSavingFormField || isDragging}
+                        rows={1}
+                        className="overflow-hidden"
+                        id={formField.id}
+                        onBlur={handleOnBlur}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") {
+                            event.preventDefault();
+                          }
+                          handleMoveFocusToNextField(event, formField.id);
+                        }}
+                        ref={(e) => {
+                          field.ref(e);
+                          inputRef.current = e;
+                        }}
+                      />
+                    </div>
                     <Button
                       type="button"
-                      variant="ghost"
-                      size="sm"
+                      variant="secondary"
+                      size="icon"
+                      className="size-8 h-auto p-2 rounded-lg"
                       disabled={isSavingFormField || isDragging}
                       onClick={() => onEdit(formField)}
                     >
@@ -155,7 +183,11 @@ export function EditFieldItem({
                         <Settings className="size-4 " />
                       )}
                     </Button>
-                    <span
+                    <Button
+                      variant="secondary"
+                      type="button"
+                      size="icon"
+                      className="size-8 h-auto p-2 rounded-lg"
                       style={{
                         cursor: isSavingForm
                           ? "not-allowed"
@@ -167,7 +199,7 @@ export function EditFieldItem({
                       {...attributes}
                     >
                       <Grip className="stroke-muted-foreground size-4" />
-                    </span>
+                    </Button>
                   </div>
                 </FormControl>
                 <FormMessage />

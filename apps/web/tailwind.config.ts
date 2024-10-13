@@ -78,6 +78,17 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "bounce-lg": "bounce-lg 1s ease-out infinite",
       },
+      fontFamily: {
+        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"], // Add generic fallbacks
+        montserrat: [
+          "var(--font-montserrat)",
+          "system-ui",
+          "-apple-system",
+          "Segoe UI",
+          "Roboto",
+          "sans-serif",
+        ], // Add generic sans-serif fallback
+      },
     },
   },
   plugins: [tailwindcss_typography, tailwindcssAnimate],

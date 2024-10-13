@@ -5,12 +5,12 @@ type Props = {
   params: { formId: string };
 };
 
-export default async function ConversationPage({
+export default function ConversationPage({
   params: { formId },
 }: Readonly<Props>) {
   return (
     <>
-      <h2 className="mb-5 font-medium capitalize text-2xl">
+      <h2 className="mb-5 font-medium capitalize text-2xl transition-all-conversation-heading">
         All conversations
       </h2>
       <div className="mb-10">

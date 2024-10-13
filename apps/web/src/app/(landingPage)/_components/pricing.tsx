@@ -9,12 +9,10 @@ import {
 } from "@convoform/ui/components/ui/card";
 import { CheckCircle } from "lucide-react";
 
-import { montserrat } from "@/app/fonts";
 import { LinkN } from "@/components/common/linkN";
 import { SectionCard } from "@/components/sectionCard";
 import { freePlan } from "@/lib/config/pricing";
 import type { Plan } from "@/lib/types/pricing";
-import { cn } from "@/lib/utils";
 
 export function Pricing() {
   return (
@@ -41,12 +39,7 @@ const FeatureListItem = ({
         </div>
         <div className="text-md text-gray-500">{featureName}</div>
       </div>
-      <div
-        className={cn(
-          "text-md whitespace-nowrap font-medium text-black",
-          montserrat.className,
-        )}
-      >
+      <div className="text-md whitespace-nowrap font-medium text-black font-montserrat">
         {featureText}
       </div>
     </div>
@@ -59,9 +52,7 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
       <CardHeader>
         <CardTitle>
           <div className="flex items-center justify-between">
-            <span className={cn("text-xl", montserrat.className)}>
-              {plan.name}
-            </span>
+            <span className="text-xl font-montserrat">{plan.name}</span>
             <Badge variant="secondary" className="text-sm">
               {plan.price}
             </Badge>
@@ -81,7 +72,7 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
       </CardContent>
       <CardFooter>
         <Button
-          className={cn("w-full rounded-full font-bold", montserrat.className)}
+          className="w-full rounded-full font-bold font-montserrat"
           asChild
         >
           <LinkN href="/auth/register">Sign up now</LinkN>

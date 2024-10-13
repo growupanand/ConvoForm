@@ -2,26 +2,26 @@
 
 import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { socket } from "@convoform/websocket-client";
-import { GanttChartSquare } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { SecondaryNavigation } from "@/components/common/secondaryNavigation";
 import { api } from "@/trpc/react";
 import MainNavTab from "../../_components/mainNavTab";
 import { ConversationsNavigation } from "./conversationsNavigation";
+import { useOrganization } from "@clerk/nextjs";
 
 type Props = {
   formId: string;
-  organizationId: string;
 };
 
 type State = {
   open: boolean;
 };
 
-export function ConversationsSidebar({ formId, organizationId }: Props) {
+export function ConversationsSidebar({ formId }: Props) {
   const pathname = usePathname();
+  const { organization, isLoaded } = useOrganization();
+  const organizationId = organization?.id;
 
   const [state, setState] = useState<State>({
     open: false,
@@ -71,7 +71,7 @@ export function ConversationsSidebar({ formId, organizationId }: Props) {
     }
   }, [pathname]);
 
-  if (isLoadingConversations) {
+  if (isLoadingConversations || !isLoaded || !organizationId) {
     return <ConversationsSidebarSkeleton />;
   }
 
@@ -82,36 +82,12 @@ export function ConversationsSidebar({ formId, organizationId }: Props) {
           <div className="mb-5">
             <MainNavTab formId={formId} organizationId={organizationId} />
           </div>
-
-          <div className="mb-5">
-            <SecondaryNavigation
-              items={[
-                {
-                  href: `/forms/${formId}/conversations`,
-                  title: (
-                    <div className="flex w-full items-center justify-between">
-                      <span className="text-lg">All conversations</span>
-                      <GanttChartSquare
-                        className="text-muted-foreground"
-                        size={20}
-                      />
-                    </div>
-                  ),
-                },
-              ]}
-            />
-          </div>
         </div>
         <div className="relative h-full grow overflow-auto pb-5">
-          <div className="text-muted-foreground mb-2 px-4 text-sm">
-            Recent conversations
-          </div>
-          <div>
-            <ConversationsNavigation
-              conversations={conversations}
-              formId={formId}
-            />
-          </div>
+          <ConversationsNavigation
+            conversations={conversations}
+            formId={formId}
+          />
         </div>
       </div>
     </div>

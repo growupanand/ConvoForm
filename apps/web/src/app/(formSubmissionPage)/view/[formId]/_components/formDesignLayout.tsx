@@ -23,6 +23,6 @@ export function FormDesignLayout({ children }: Readonly<Props>) {
 
 const LoadingForm = () => (
   <div className="min-h-screen grid items-center justify-center">
-    <Spinner label="Loading form" />
+    <Spinner label="Initializing form" labelClassName="text-lg font-medium" />
   </div>
 );

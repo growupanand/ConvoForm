@@ -9,7 +9,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 
 import BrandName from "@/components/common/brandName";
-import type { NavigationConfig } from "@/lib/types/navigation";
+import type { NavigationConfig, NavLink } from "@/lib/types/navigation";
 import { api } from "@/trpc/react";
 import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 import { NavigationLinks } from "./mainNavigation/mainNavigation";
@@ -79,11 +79,11 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
 
   const workspacesLinks = useMemo(() => {
     return workspaces.length > 0
-      ? workspaces.map((workspace) => ({
+      ? (workspaces.map((workspace) => ({
           name: workspace.name,
-          path: `/workspaces/${workspace.id}`,
+          link: `/workspaces/${workspace.id}`,
           isActive: pathname.includes(`${workspace.id}`),
-        }))
+        })) as NavLink[])
       : [workspaceLink];
   }, [workspaces, pathname, workspaceLink]);
 
@@ -92,7 +92,7 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
       [
         {
           name: "Dashboard",
-          path: "/dashboard",
+          link: "/dashboard",
           isActive: pathname.includes("dashboard"),
         },
         {
@@ -115,7 +115,7 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
   );
 
   const UserActions = () => (
-    <>
+    <div className="flex items-center justify-between">
       <ClerkLoading>
         <Skeleton className="h-10 w-full animate-pulse rounded-full" />
         <Skeleton className="h-10 w-10 animate-pulse rounded-full" />
@@ -126,7 +126,7 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
         afterLeaveOrganizationUrl="/organizations"
       />
       <UserButton />
-    </>
+    </div>
   );
 
   return (
@@ -140,9 +140,7 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
         <NavigationLinks navigationLinks={navigationLinks} />
       </div>
       <div>
-        <div className="flex items-center justify-between gap-2 lg:justify-evenly">
-          <UserActions />
-        </div>
+        <UserActions />
       </div>
     </nav>
   );

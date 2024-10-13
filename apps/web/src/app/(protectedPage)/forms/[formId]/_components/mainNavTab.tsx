@@ -2,10 +2,9 @@
 
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@convoform/ui/components/ui/tabs";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
 
-import { montserrat } from "@/app/fonts";
 import type { NavLink } from "@/lib/types/navigation";
 import { api } from "@/trpc/react";
 
@@ -33,15 +32,13 @@ export default function MainNavTab({
 
   const tabLinks = [
     {
-      path: `/forms/${currentFormId}`,
+      link: `/forms/${currentFormId}`,
       name: "Editor",
       isActive: pathName === `/forms/${currentFormId}`,
     },
     {
       name: `Responses ${conversationsCount}`,
-      path: isAlreadyOnConversationsPage
-        ? ""
-        : `/forms/${currentFormId}/conversations`,
+      link: `/forms/${currentFormId}/conversations`,
       isActive: isAlreadyOnConversationsPage,
     },
   ] as NavLink[];
@@ -54,12 +51,12 @@ export default function MainNavTab({
         {tabLinks.map((link) => (
           <TabsTrigger
             value={link.name}
-            key={`${link.path}-${link.name}`}
-            className={montserrat.className}
+            key={`${link.link}-${link.name}`}
+            className="font-montserrat"
             asChild
             disabled={link.disabled}
           >
-            <Link href={link.path}>{link.name}</Link>
+            <Link href={link.link}>{link.name}</Link>
           </TabsTrigger>
         ))}
       </TabsList>
@@ -70,7 +67,7 @@ export default function MainNavTab({
 const MainNavTabSkeleton = () => {
   return (
     <div className="w-full py-3">
-      <div className="grid h-8 grid-cols-2 gap-1">
+      <div className="grid h-8 grid-cols-2 gap-4">
         <Skeleton className=" w-full" />
         <Skeleton className="w-full" />
       </div>

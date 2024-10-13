@@ -12,16 +12,18 @@ export function CardShell({
   title,
   secondaryText,
   cardHeaderClassName,
+  cardClassName,
 }: Readonly<{
   children: React.ReactNode;
   title?: string;
   secondaryText?: string;
   cardHeaderClassName?: string;
+  cardClassName?: string;
 }>) {
   const showCardHeader = title || secondaryText;
 
   return (
-    <Card>
+    <Card className={cardClassName}>
       {showCardHeader && (
         <CardHeader className={cn("space-y-0 pb-3", cardHeaderClassName)}>
           {title && (

@@ -11,7 +11,7 @@ import FormPreviewBrowser from "@/app/(protectedPage)/forms/[formId]/_components
 import MainNavTab from "@/app/(protectedPage)/forms/[formId]/_components/mainNavTab";
 import { FormDesignProvider } from "@/components/formViewer/formDesignContext";
 import { api } from "@/trpc/react";
-import { FormCustomizeSection } from "./_components/formCustomizeSection";
+import { FormDesignEditor } from "./_components/formDesignEditor";
 import { FormPublishToggle } from "./_components/formPublishToggle";
 import NotFound from "./not-found";
 
@@ -42,8 +42,9 @@ export default function FormPage({ params: { formId } }: Props) {
     <FormDesignProvider formId={formId}>
       <div className="h-full flex">
         {/* Form editor section */}
-        <div className=" flex flex-col space-y-2 px-5 max-h-[calc(100vh-100px)] w-[400px] min-w-[400px] overflow-auto">
+        <div className=" flex flex-col space-y-2 px-5 max-h-[calc(100vh-100px)] w-[450px] min-w-[450px] overflow-auto">
           <MainNavTab formId={formId} organizationId={organization.id} />
+
           <Card className="relative flex-grow overflow-auto border-0 bg-transparent shadow-none">
             {isLoading ? (
               <FormEditorFormSkeleton />
@@ -51,7 +52,7 @@ export default function FormPage({ params: { formId } }: Props) {
               <FormEditorCard form={data} organization={organization} />
             )}
           </Card>
-          <div className="py-4">
+          <div>
             <FormPublishToggle form={data} />
           </div>
         </div>
@@ -63,7 +64,7 @@ export default function FormPage({ params: { formId } }: Props) {
         </div>
         {/* Form customize section */}
         <div className="w-[400px] min-w-[400px] py-3">
-          <FormCustomizeSection organizationId={organization.id} />
+          <FormDesignEditor organizationId={organization.id} />
         </div>
       </div>
     </FormDesignProvider>

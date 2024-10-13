@@ -3,7 +3,7 @@ import { Card } from "@convoform/ui/components/ui/card";
 import { ExternalLink, Mail } from "lucide-react";
 import Link from "next/link";
 
-import { marck_script, montserrat } from "@/app/fonts";
+import { marck_script } from "@/app/fonts/customFonts";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
@@ -119,9 +119,7 @@ const OtherLinks = () => {
 const MadeBy = () => {
   return (
     <div className="">
-      <span className={cn("text-sm font-light", montserrat.className)}>
-        Made with ❤️ by
-      </span>
+      <span className={cn("text-sm font-light")}>Made with ❤️ by</span>
       <Link
         href="https://www.linkedin.com/in/utkarshanand93/"
         target="_blank"

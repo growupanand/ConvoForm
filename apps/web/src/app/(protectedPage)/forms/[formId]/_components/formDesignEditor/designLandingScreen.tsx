@@ -1,5 +1,5 @@
 import { ComingSoonCard } from ".";
 
-export function CustomizeEndingScreenCard() {
+export function DesignLandingScreenCard() {
   return <ComingSoonCard />;
 }

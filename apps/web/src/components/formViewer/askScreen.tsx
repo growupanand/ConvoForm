@@ -25,26 +25,28 @@ export const AskScreen = ({
   formDesign,
 }: Props) => {
   return (
-    <div className="flex min-h-full w-full flex-col justify-center px-3 ">
-      <div className="text-muted-foreground mb-4 text-lg capitalize">
-        {currentField?.fieldName}
-      </div>
-      <h1
-        style={{ color: formDesign.fontColor }}
-        className="mb-10 w-full whitespace-break-spaces text-justify text-xl leading-6 lg:text-2xl lg:leading-7 transition-colors duration-500"
-      >
-        <TypingEffect text={currentQuestion} />
-      </h1>
-
-      {!isFormBusy && currentField && (
-        <div className="w-full">
-          <DynamicAnswerInput
-            fieldConfiguration={currentField.fieldConfiguration}
-            currentField={currentField}
-            submitAnswer={submitAnswer}
-          />
+    <div className="flex w-full flex-col items-center justify-center">
+      <div className="w-full py-20 h-full relative">
+        <div className="text-muted-foreground mb-4 text-xl capitalize text-left">
+          {currentField?.fieldName}
         </div>
-      )}
+        <div
+          style={{ color: formDesign.fontColor }}
+          className="mb-10 w-full whitespace-pre-line text-justify leading-6 text-2xl lg:leading-7 transition-colors duration-500"
+        >
+          <TypingEffect text={currentQuestion} />
+        </div>
+
+        {!isFormBusy && currentField && (
+          <div className="w-full">
+            <DynamicAnswerInput
+              fieldConfiguration={currentField.fieldConfiguration}
+              currentField={currentField}
+              submitAnswer={submitAnswer}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

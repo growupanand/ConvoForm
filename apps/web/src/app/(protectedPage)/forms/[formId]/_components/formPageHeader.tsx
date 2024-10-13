@@ -5,9 +5,7 @@ import { Button } from "@convoform/ui/components/ui/button";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { ChevronRight, Home } from "lucide-react";
 
-import { montserrat } from "@/app/fonts";
 import { LinkN } from "@/components/common/linkN";
-import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import ChangeNameInput from "./changeNameInput";
 
@@ -31,27 +29,12 @@ function FormPageHeader({ formId }: Readonly<Props>) {
   return (
     <div className="p-3">
       <div className="flex items-center justify-between ">
-        <div
-          className={cn(
-            "flex w-full items-center overflow-hidden pe-5 text-xs ",
-            montserrat.className,
-          )}
-        >
+        <div className="flex w-full items-center overflow-hidden pe-5 text-xs font-montserrat">
           <Button size="sm" variant="link" asChild>
             <LinkN href={"/dashboard"}>
               <Home size={20} />
             </LinkN>
           </Button>
-          <ChevronRight size={20} />
-          <LinkN href={"/dashboard"}>
-            <Button
-              size="sm"
-              variant="link"
-              className="text-muted-foreground hover:text-primary"
-            >
-              Dashboard
-            </Button>
-          </LinkN>
           <ChevronRight size={20} />
           {data ? (
             <>
@@ -61,7 +44,7 @@ function FormPageHeader({ formId }: Readonly<Props>) {
                   variant="link"
                   className="text-muted-foreground hover:text-primary"
                 >
-                  {data.workspace.name}
+                  <span className="workspace-name">{data.workspace.name}</span>
                 </Button>
               </LinkN>
               <ChevronRight size={20} />

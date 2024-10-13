@@ -4,7 +4,6 @@ import {
   CardHeader,
 } from "@convoform/ui/components/ui/card";
 
-import { montserrat } from "@/app/fonts";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -42,8 +41,7 @@ export function SectionCard({
         >
           <h2
             className={cn(
-              " text-xl font-semibold tracking-tight drop-shadow-[0px_0px_4px_white]",
-              montserrat.className,
+              "font-montserrat text-xl font-semibold tracking-tight drop-shadow-[0px_0px_4px_white]",
               titleClassName,
             )}
           >

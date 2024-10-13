@@ -41,9 +41,9 @@ function MainNavigation({
                       />
                     ) : (
                       <NavigationLinkItem
-                        key={`${link.path}-${link.name}`}
+                        key={`${link.link}-${link.name}`}
                         isActive={link.isActive}
-                        href={link.path}
+                        link={link.link}
                         name={link.name}
                       />
                     ),
@@ -67,9 +67,9 @@ function MainNavigation({
 
         return (
           <NavigationLinkItem
-            key={`${navLink.path}-${navLink.name}`}
+            key={`${navLink.link}-${navLink.name}`}
             isActive={navLink.isActive}
-            href={navLink.path}
+            link={navLink.link}
             name={navLink.name}
           />
         );

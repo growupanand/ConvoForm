@@ -7,9 +7,15 @@ type Props = {
   className?: string;
   label?: string;
   size?: SpinnerSize;
+  labelClassName?: string;
 };
 
-export function Spinner({ className, label, size = "md" }: Readonly<Props>) {
+export function Spinner({
+  className,
+  label,
+  size = "md",
+  labelClassName,
+}: Readonly<Props>) {
   return (
     <div className="flex items-center justify-start gap-2">
       <svg
@@ -31,7 +37,7 @@ export function Spinner({ className, label, size = "md" }: Readonly<Props>) {
           fill="currentFill"
         />
       </svg>
-      {label && <span>{label}</span>}
+      {label && <span className={labelClassName}>{label}</span>}
     </div>
   );
 }

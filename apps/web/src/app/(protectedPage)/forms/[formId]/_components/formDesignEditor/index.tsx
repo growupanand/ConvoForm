@@ -6,20 +6,17 @@ import { api } from "@/trpc/react";
 import { DEFAULT_FORM_DESIGN } from "@convoform/db/src/schema/formDesigns/constants";
 import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { useEffect } from "react";
-import { CustomizeDefaultScreenCard } from "./customizeDefaultScreen";
-import { CustomizeEndingScreenCard } from "./customizeEndingScreen";
-import { CustomizeLandingScreenCard } from "./customizeLandingScreen";
-import { CustomizeQuestionsScreenCard } from "./customizeQuestionsScreen";
-import {
-  CustomizeScreenBasicCard,
-  type FormHookData,
-} from "./customizeScreenBasic";
+import { BasicDesignCard, type FormHookData } from "./basicDesignCard";
+import { DesignDefaultScreenCard } from "./designDefaultScreen";
+import { DesignEndingScreenCard } from "./designEndingScreen";
+import { DesignLandingScreenCard } from "./designLandingScreen";
+import { DesignQuestionsScreenCard } from "./designQuestionsScreen";
 
 type Props = {
   organizationId: string;
 };
 
-export function FormCustomizeSection({ organizationId }: Readonly<Props>) {
+export function FormDesignEditor({ organizationId }: Readonly<Props>) {
   const {
     formId,
     currentSection,
@@ -107,16 +104,16 @@ export function FormCustomizeSection({ organizationId }: Readonly<Props>) {
     });
   };
 
-  const renderSection = () => {
+  const getSectionDesignCard = () => {
     switch (currentSection) {
       case "landing-screen":
-        return <CustomizeLandingScreenCard />;
+        return <DesignLandingScreenCard />;
       case "questions-screen":
-        return <CustomizeQuestionsScreenCard />;
+        return <DesignQuestionsScreenCard />;
       case "ending-screen":
-        return <CustomizeEndingScreenCard />;
+        return <DesignEndingScreenCard />;
       case "default-screen":
-        return <CustomizeDefaultScreenCard />;
+        return <DesignDefaultScreenCard />;
       default:
         return null;
     }
@@ -126,14 +123,14 @@ export function FormCustomizeSection({ organizationId }: Readonly<Props>) {
     <div className="px-5">
       <div className="font-medium text-lg mb-4">Design</div>
       <div className="space-y-10">
-        <CustomizeScreenBasicCard
+        <BasicDesignCard
           formDesign={currentSectionFormDesign}
           onUpdateFormDesign={handleUpdateFormDesign}
           isSavingFormDesign={isSavingFormDesign}
           currentSection={currentSection}
           defaultFormDesign={defaultFormDesign}
         />
-        {renderSection()}
+        {getSectionDesignCard()}
       </div>
     </div>
   );
@@ -142,8 +139,7 @@ export function FormCustomizeSection({ organizationId }: Readonly<Props>) {
 export function ComingSoonCard() {
   return (
     <div>
-      <div className=" text-xl">More options</div>
-      <p className="text-muted-foreground ">Coming soon</p>
+      <p className="text-muted-foreground ">More options coming soon</p>
     </div>
   );
 }
