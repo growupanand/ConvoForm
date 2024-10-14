@@ -15,14 +15,27 @@ import {
 } from "@convoform/ui/components/ui/form";
 import { Textarea } from "@convoform/ui/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckCircle2, Sparkles } from "lucide-react";
+import { Check, CheckCircle2, Pen, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
-import { ResponsiveModal } from "@/components/common/responsiveModal";
 import Spinner from "@/components/common/spinner";
+import { useAutoHeightHook } from "@/hooks/auto-height-hook";
 import { apiClient } from "@/lib/apiClient";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@convoform/ui/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@convoform/ui/components/ui/dropdown-menu";
 import type { HandleCreateForm } from "./createFormButton";
 
 type Props = {
@@ -33,9 +46,38 @@ type Props = {
 };
 
 type State = {
+  isGeneratingForm: boolean;
   isGeneratingFormData: boolean;
-  isGeneratedSuccessfully: boolean;
+  isSavingForm: boolean;
+  isGeneratedForm: boolean;
 };
+
+const initialState = {
+  isGeneratingFormData: false,
+  isGeneratingForm: false,
+  isSavingForm: false,
+  isGeneratedForm: false,
+} as State;
+
+const formGenerationTemplates = [
+  {
+    name: "Job application form",
+    description:
+      "This is job application form for the role of full stack engineer. We required at least 2 years of work experience.",
+  },
+  {
+    name: "Contact form",
+    description:
+      "This is an contact form, where customer can contact us. He can provide his name, email, mobile number and message.",
+  },
+  {
+    name: "Feedback form",
+    description:
+      "This is a feedback form, where customer can submit feedback for my product. I would like to know his name, contact detail and feedback.",
+  },
+];
+
+const apiEndpoint = "ai/generateForm";
 
 export function GenerateFormModal({
   onFormGenerated,
@@ -43,12 +85,15 @@ export function GenerateFormModal({
   open,
   setOpen,
 }: Readonly<Props>) {
-  const [state, setState] = useState<State>({
-    isGeneratingFormData: false,
-    isGeneratedSuccessfully: false,
-  });
-  const { isGeneratingFormData, isGeneratedSuccessfully } = state;
-  const isBusy = isCreatingForm || isGeneratingFormData;
+  const [state, setState] = useState<State>(initialState);
+  const {
+    isGeneratingFormData,
+    isGeneratingForm,
+    isSavingForm,
+    isGeneratedForm,
+  } = state;
+  const isBusy =
+    isCreatingForm || isGeneratingFormData || isSavingForm || isGeneratingForm;
   const form = useForm<z.infer<typeof generateFormSchema>>({
     resolver: zodResolver(generateFormSchema),
     defaultValues: {
@@ -56,13 +101,16 @@ export function GenerateFormModal({
     },
   });
 
+  const formOverview = form.watch("formOverview");
+  const { inputRef } = useAutoHeightHook({ value: formOverview });
+
   async function onSubmit(formData: z.infer<typeof generateFormSchema>) {
-    const apiEndpoint = "ai/generateForm";
-    setState((cs) => ({
-      ...cs,
+    setState({
+      ...initialState,
+      isGeneratingForm: true,
       isGeneratingFormData: true,
-      isGeneratedSuccessfully: false,
-    }));
+      isSavingForm: true,
+    });
     try {
       // Get AI generated form data to create new form
       const response = await apiClient(apiEndpoint, {
@@ -74,14 +122,18 @@ export function GenerateFormModal({
       setState((cs) => ({
         ...cs,
         isGeneratingFormData: false,
-        isGeneratedSuccessfully: true,
       }));
-      onFormGenerated({
+      await onFormGenerated({
         ...newFormData,
         formFields: newFormData.formFields,
         isAIGenerated: true,
         isPublished: true,
       });
+      setState((cs) => ({
+        ...cs,
+        isSavingForm: false,
+        isGeneratedForm: true,
+      }));
     } catch (error: any) {
       let errorMessage =
         "This could be some server issue OR please check again provided form overview.";
@@ -93,63 +145,119 @@ export function GenerateFormModal({
         type: "manual",
         message: errorMessage,
       });
-      setState((cs) => ({
-        ...cs,
-        isGeneratingFormData: false,
-        isGeneratedSuccessfully: false,
-      }));
+      setState(initialState);
     }
   }
 
   return (
-    <ResponsiveModal
-      title="Generate Form using AI"
+    <Dialog
       open={open}
-      setOpen={isGeneratingFormData ? undefined : setOpen}
+      onOpenChange={isGeneratingFormData ? undefined : setOpen}
     >
-      {isGeneratingFormData && (
-        <div className="flex justify-center">
-          <Spinner label="Generating form" />
-        </div>
-      )}
-      {isGeneratedSuccessfully && (
-        <div className="flex items-center justify-center gap-2">
-          <CheckCircle2 className="size-6 fill-green-100 stroke-green-500" />
-          <span>Generated form successfully</span>
-        </div>
-      )}
-      {!isBusy && !isGeneratedSuccessfully && (
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Sparkles className="text-brand-500" /> Generate by AI
+          </DialogTitle>
+        </DialogHeader>
+        {isBusy && (
+          <div className="grid gap-2">
+            <div className="flex items-center gap-2">
+              {isGeneratingFormData ? (
+                <Spinner />
+              ) : (
+                <Check className="text-brand-500" />
+              )}
+              Generate fields
+            </div>
+            <div className="flex items-center gap-2">
+              {isSavingForm ? (
+                <Spinner />
+              ) : (
+                <Check className="text-brand-500" />
+              )}
+              Save form
+            </div>
+          </div>
+        )}
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-3">
-            <FormField
-              control={form.control}
-              name="formOverview"
-              render={({ field }) => (
-                <FormItem>
-                  <FormDescription>
-                    Form fields will be auto-generated based on your brief
-                    description
-                  </FormDescription>
-                  <FormMessage />
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      maxLength={500}
-                      rows={10}
-                      placeholder="Example: This is job application form for the role of full stack engineer. We required at least 2 years of work experience."
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            {!isBusy && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="formOverview"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormDescription>
+                        Form fields will be auto-generated based on your brief
+                        description
+                      </FormDescription>
+                      <FormMessage />
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          maxLength={500}
+                          rows={5}
+                          className="overflow-hidden"
+                          placeholder="Explain here or choose one of the templates"
+                          ref={(e) => {
+                            field.ref(e);
+                            inputRef.current = e;
+                          }}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <div className="flex items-center mb-4">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline">
+                        <Pen className="mr-2 size-4" />
+                        Choose Template
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent side="right" align="start">
+                      <DropdownMenuGroup>
+                        {formGenerationTemplates.map(
+                          ({ name, description }) => (
+                            <DropdownMenuItem
+                              key={name}
+                              className="cursor-pointer"
+                              onClick={() => {
+                                form.setValue("formOverview", description);
+                              }}
+                            >
+                              {name}
+                            </DropdownMenuItem>
+                          ),
+                        )}
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </>
+            )}
 
-            <Button type="submit" disabled={isBusy}>
-              <Sparkles className="mr-2 h-4 w-4" />
-              <span>{isBusy ? "Generating..." : "Generate Form"}</span>
-            </Button>
+            {isGeneratedForm && (
+              <div className="flex items-center justify-center gap-2">
+                <CheckCircle2 className="size-6 fill-green-100 stroke-green-500" />
+                <span>Generated form successfully</span>
+              </div>
+            )}
+
+            {!isGeneratedForm && (
+              <Button type="submit" disabled={isBusy}>
+                <span>
+                  {isGeneratingForm ? "Generating..." : "Generate Form"}
+                </span>
+              </Button>
+            )}
           </form>
         </Form>
-      )}
-    </ResponsiveModal>
+      </DialogContent>
+    </Dialog>
   );
 }
