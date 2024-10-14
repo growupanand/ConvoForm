@@ -26,7 +26,7 @@ type Props = {
 
 export type HandleCreateForm = (
   formData: z.infer<typeof newFormSchema>,
-) => void;
+) => Promise<void>;
 
 const newFormFields: z.infer<typeof newFormSchema>["formFields"] = [
   {
@@ -70,7 +70,7 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
   });
   const { isPending: isCreatingForm } = createForm;
 
-  const handleCreateForm: HandleCreateForm = (formData) => {
+  const handleCreateForm: HandleCreateForm = async (formData) => {
     const createFormPromise = createForm.mutateAsync({
       ...formData,
       workspaceId: workspace.id,
