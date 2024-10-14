@@ -27,12 +27,13 @@ const releaseMDXListIndexFilePath = path.join(releaseMDXFolderPath, "index.ts");
 
 
 export const releaseMDXComponents = {
-${mdxFiles.length > 0 &&
-      mdxFiles
-        .map(generateMDXComponentFileName)
-        .map((fileName) => `${fileName}: ${fileName}`)
-        .join(",\n")
-      }
+${
+  mdxFiles.length > 0 &&
+  mdxFiles
+    .map(generateMDXComponentFileName)
+    .map((fileName) => `${fileName}: ${fileName}`)
+    .join(",\n")
+}
 }
 `;
 
