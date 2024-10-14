@@ -1,5 +1,49 @@
 export const releases = [
   {
+    version: "0.15.0",
+    isoDate: "2024-10-14",
+    commits: [
+      {
+        type: "features",
+        message:
+          "feat: 🚀 fill text from templates for generate form by AI\n\n✅ Closes: 298",
+        href: "https://github.com/growupanand/ConvoForm/commit/dbbec90549b717cb6a58a74d21a48ad503c49686",
+      },
+      {
+        type: "improvements",
+        message:
+          "refactor: 💡 upgraded clerk, trpc versions and refactored as per latest usage",
+        href: "https://github.com/growupanand/ConvoForm/commit/610080917345e1b88e49beac58bdff3f0b490c03",
+      },
+      {
+        type: "improvements",
+        message: "refactor: 💡 minor refactor for making home page SSG",
+        href: "https://github.com/growupanand/ConvoForm/commit/1731dfa9335e57a8e2cc4839420661e8ab27b927",
+      },
+      {
+        type: "improvements",
+        message:
+          "style: 💄 improve typing effect while showing question\n\n✅ Closes: 149",
+        href: "https://github.com/growupanand/ConvoForm/commit/c08790434ba71052beec02101684e76e533dc67a",
+      },
+      {
+        type: "improvements",
+        message: "style: 💄 UI improvements and added some animations",
+        href: "https://github.com/growupanand/ConvoForm/pull/380",
+      },
+      {
+        type: "improvements",
+        message: "perf: ⚡️improved form submission API request",
+        href: "https://github.com/growupanand/ConvoForm/pull/378",
+      },
+      {
+        type: "fixes",
+        message: "fix: 🐛 form design changes not showing in incognito mode",
+        href: "https://github.com/growupanand/ConvoForm/commit/12980a5b002dfe08743aabafab238dba7bc52b10",
+      },
+    ],
+  },
+  {
     version: "0.14.0",
     isoDate: "2024-09-25",
     commits: [

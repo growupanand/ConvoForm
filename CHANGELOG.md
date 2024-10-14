@@ -1,5 +1,26 @@
 
 
+## [0.15.0](https://github.com/growupanand/ConvoForm/compare/0.14.0...0.15.0) (2024-10-14)
+
+
+### Features
+
+* 🚀 fill text from templates for generate form by AI ([dbbec90](https://github.com/growupanand/ConvoForm/commit/dbbec90549b717cb6a58a74d21a48ad503c49686))
+
+
+### Bug Fixes
+
+* 🐛 form design changes not showing in incognito mode ([12980a5](https://github.com/growupanand/ConvoForm/commit/12980a5b002dfe08743aabafab238dba7bc52b10))
+
+
+### Improvements
+
+* ⚡️improved form submission API request ([#378](https://github.com/growupanand/ConvoForm/issues/378)) ([3f268a1](https://github.com/growupanand/ConvoForm/commit/3f268a1283dcbae0c5119549dd58d4680ff2cc70))
+* 💄 improve typing effect while showing question ([c087904](https://github.com/growupanand/ConvoForm/commit/c08790434ba71052beec02101684e76e533dc67a))
+* 💄 UI improvements and added some animations ([#380](https://github.com/growupanand/ConvoForm/issues/380)) ([9950773](https://github.com/growupanand/ConvoForm/commit/9950773b47f30fa498cc637dc2a4d64040dc3242))
+* 💡 minor refactor for making home page SSG ([1731dfa](https://github.com/growupanand/ConvoForm/commit/1731dfa9335e57a8e2cc4839420661e8ab27b927))
+* 💡 upgraded clerk, trpc versions and refactored as per latest usage ([6100809](https://github.com/growupanand/ConvoForm/commit/610080917345e1b88e49beac58bdff3f0b490c03))
+
 ## [0.14.0](https://github.com/growupanand/ConvoForm/compare/0.13.0...0.14.0) (2024-09-25)
 
 
