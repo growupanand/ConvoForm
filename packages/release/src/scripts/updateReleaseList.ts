@@ -23,17 +23,16 @@ const releaseMDXListIndexFilePath = path.join(releaseMDXFolderPath, "index.ts");
     );
 
     const listFileContent = `
- ${mdxFiles.length > 0 && mdxFiles.map((fileName) => `import { default as ${generateMDXComponentFileName(fileName)} } from "./${fileName}"`).join(",\n")}
+ ${mdxFiles.length > 0 && mdxFiles.map((fileName) => `import { default as ${generateMDXComponentFileName(fileName)} } from "./${fileName}";`).join("\n")}
 
 
 export const releaseMDXComponents = {
-${
-  mdxFiles.length > 0 &&
-  mdxFiles
-    .map(generateMDXComponentFileName)
-    .map((fileName) => `${fileName}: ${fileName}`)
-    .join(",\n")
-}
+${mdxFiles.length > 0 &&
+      mdxFiles
+        .map(generateMDXComponentFileName)
+        .map((fileName) => `${fileName}: ${fileName}`)
+        .join(",\n")
+      }
 }
 `;
 
