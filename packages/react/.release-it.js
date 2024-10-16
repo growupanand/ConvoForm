@@ -47,6 +47,14 @@ module.exports = {
             section: "Improvements",
             hidden: false,
           },
+          {
+            type: "ci",
+            hidden: true,
+          },
+          {
+            type: "docs",
+            hidden: true,
+          },
         ],
       },
     },
