@@ -25,19 +25,9 @@ const screenshotsData = [
       </p>
     ),
   },
+
   {
     id: 2,
-    alt: "screenshot of form editor",
-    src: "/screenshots/aiGeneratedForm.png",
-    description: (
-      <p>
-        <span className="font-medium">AI form generation</span> in action!
-        Describe your needs, get a ready-to-edit form.
-      </p>
-    ),
-  },
-  {
-    id: 3,
     alt: "screenshot of form response page",
     src: "/screenshots/responses.png",
     description: (
@@ -48,13 +38,24 @@ const screenshotsData = [
     ),
   },
   {
-    id: 4,
+    id: 3,
     alt: "screenshot of responses overview page",
     src: "/screenshots/responsesOverview.png",
     description: (
       <p>
         Manage all your data at a glance.{" "}
         <span className="font-medium">Export</span> as needed.
+      </p>
+    ),
+  },
+  {
+    id: 4,
+    alt: "screenshot of Generate form by AI",
+    src: "/screenshots/aiGeneratedForm.png",
+    description: (
+      <p>
+        <span className="font-medium">AI form generation</span> in action!
+        Describe your needs, get a ready-to-edit form.
       </p>
     ),
   },

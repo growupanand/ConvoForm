@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 
 export function Features() {
   return (
-    <SectionCard stickyHeader title="Features">
+    <SectionCard title="Features">
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <FeatureListItem
           title="AI-Powered Form Generation"

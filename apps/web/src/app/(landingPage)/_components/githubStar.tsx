@@ -15,7 +15,7 @@ async function GithubStars() {
         size={15}
         className=" fill-yellow-500 stroke-yellow-600 transition-all group-[:active]:-translate-y-10 group-[:hover]:-rotate-90 group-[:active]:scale-150"
       />
-      <span>{stars} Stars</span>
+      <span className="font-bold">{stars} Stars</span>
     </Badge>
   );
 }

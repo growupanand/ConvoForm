@@ -8,7 +8,6 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { Button } from "@convoform/ui/components/ui/button";
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { LayoutDashboard } from "lucide-react";
 
 import { AuthProvider } from "@/components/authProvider";
@@ -19,13 +18,14 @@ export function UserSignInButton() {
   return (
     <AuthProvider>
       <ClerkLoading>
-        <Skeleton className="h-10 w-10 animate-pulse rounded-full" />
+        <SignInButton />
       </ClerkLoading>
       <ClerkLoaded>
         <SignedIn>
           <LinkN href="/dashboard">
             <Button variant="secondary">
-              <LayoutDashboard className="mr-2" size={20} /> Go to Dashboard
+              <LayoutDashboard className="" size={20} />
+              <span className="ml-2 max-lg:hidden">Go to Dashboard</span>
             </Button>
           </LinkN>
           <UserButton />

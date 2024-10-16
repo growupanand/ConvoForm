@@ -16,7 +16,7 @@ import type { Plan } from "@/lib/types/pricing";
 
 export function Pricing() {
   return (
-    <SectionCard stickyHeader title="Pricing">
+    <SectionCard title="Pricing">
       <div className="grid grid-cols-1">
         <PlanCard plan={freePlan} />
       </div>

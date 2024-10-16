@@ -76,35 +76,9 @@
   }
 }
 
-.convo-word {
-  position: relative;
-  z-index: 1;
-}
 
-.convo-arrow {
-  z-index: -1;
-  position: absolute;
-  bottom: -12px;
-  left: -10px;
-  width: 50px;
-  height: 30px;
-  clip-path: polygon(37.9% 0%,
-      100% 30%,
-      72.7% 51.5%,
-      36.9% 77.5%,
-      0% 100%,
-      21% 55%,
-      30.6% 28%);
-}
 
-@media only screen and (max-width: 1024px) {
-  .convo-arrow {
-    width: 25px;
-    height: 15px;
-    bottom: -8px;
-    left: -4px;
-  }
-}
+
 
 
 .transition-all-conversation-heading {
