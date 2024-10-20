@@ -1,5 +1,10 @@
 export const releases = [
   {
+    version: "0.15.1",
+    isoDate: "2024-10-20",
+    commits: [],
+  },
+  {
     version: "0.15.0",
     isoDate: "2024-10-14",
     commits: [
@@ -7,7 +12,7 @@ export const releases = [
         type: "features",
         message:
           "feat: 🚀 fill text from templates for generate form by AI\n\n✅ Closes: 298",
-        href: "https://github.com/growupanand/ConvoForm/commit/dbbec90549b717cb6a58a74d21a48ad503c49686",
+        href: "https://github.com/growupanand/ConvoForm/commit/0b312160efbf19fa3362bce9a11aff27a079c210",
       },
       {
         type: "improvements",
