@@ -2,7 +2,7 @@ name: Prepare Release
 
 on:
   pull_request:
-    types: 
+    types:
       - labeled
 
 permissions:
@@ -20,8 +20,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Fetch full history to avoid detached head state
-        
+          fetch-depth: 0 # Fetch full history to avoid detached head state
+
       - name: Checkout the PR branch
         id: get_branch
         run: |
@@ -31,7 +31,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 'lts/*'
+          node-version: "lts/*"
 
       - name: Cache pnpm modules
         uses: actions/cache@v3
@@ -45,12 +45,12 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
       - name: Prepare release
         run: |
           pnpm run prepare:release
-      
+
       - name: Get updated package version
         id: get_version
         run: echo "PACKAGE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
