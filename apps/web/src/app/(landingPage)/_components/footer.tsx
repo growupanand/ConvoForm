@@ -66,13 +66,13 @@ const SocialIcons = () => {
       </Button>
       <Button variant="link" className="px-0" asChild>
         <Link
-          href="https://twitter.com/growupanand"
+          href="https://x.com/growupanand"
           target="_blank"
           rel="noopener noreferrer nofollow"
-          aria-label="Visit Twitter page"
+          aria-label="Visit X page"
         >
           <Image
-            src="images/icons/twitter.svg"
+            src="images/icons/x.svg"
             alt="github"
             width={20}
             height={20}
