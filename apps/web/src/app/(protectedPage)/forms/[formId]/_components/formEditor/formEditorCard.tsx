@@ -69,6 +69,9 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
     fieldsOrders: getSafeFormFieldsOrders(form, form.formFields),
     formFields: form.formFields,
   });
+  const [currentInputRef, setCurrentInputRef] =
+    useState<React.FocusEvent<HTMLInputElement> | null>(null);
+
   const { fieldsOrders, formFields } = state;
 
   useEffect(() => {
@@ -145,6 +148,16 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
     const timeoutId = setTimeout(() => {
       if (formHook.formState.isDirty) {
         formHook.handleSubmit(onSubmit)();
+      } else {
+        if (currentInputRef) {
+          const targetInput = document.querySelector(
+            `input[name="${currentInputRef.target.name}"]`,
+          );
+
+          if (targetInput as HTMLInputElement) {
+            (targetInput as HTMLInputElement)?.focus();
+          }
+        }
       }
     }, 1000);
 
@@ -155,6 +168,10 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
   useEffect(() => {
     formHook.reset(form);
   }, [form]);
+
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+    setCurrentInputRef(event);
+  };
 
   return (
     <div
@@ -202,6 +219,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
                           {...field}
                           placeholder="Page Heading"
                           disabled={isSavingForm}
+                          onFocus={handleFocus}
                         />
                       </FormControl>
                       <FormMessage />
@@ -219,6 +237,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
                           {...field}
                           placeholder="Short message to display below heading"
                           disabled={isSavingForm}
+                          onFocus={handleFocus}
                         />
                       </FormControl>
                       <FormMessage />
@@ -236,6 +255,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
                           {...field}
                           placeholder="Button text (E.g. Fill form, Get started)"
                           disabled={isSavingForm}
+                          onFocus={handleFocus}
                         />
                       </FormControl>
                       <FormMessage />
