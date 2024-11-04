@@ -5,7 +5,10 @@ import { Suspense } from "react";
 import BrandName from "./brandName";
 import { LinkN } from "./linkN";
 
-export function TopHeader({ className }: { className?: string }) {
+export function TopHeader({
+  className,
+  hideSignIn = false,
+}: { className?: string; hideSignIn?: boolean }) {
   return (
     <div
       className={cn(
@@ -17,11 +20,13 @@ export function TopHeader({ className }: { className?: string }) {
         <header>
           <div className="flex w-full flex-nowrap items-center justify-between gap-3 p-3">
             <BrandName className="text-xl lg:text-2xl" />
-            <nav className="flex items-center gap-3">
-              <Suspense fallback={<SignInButton />}>
-                <UserSignInButton />
-              </Suspense>
-            </nav>
+            {!hideSignIn && (
+              <nav className="flex items-center gap-3">
+                <Suspense fallback={<SignInButton />}>
+                  <UserSignInButton />
+                </Suspense>
+              </nav>
+            )}
           </div>
         </header>
       </div>
