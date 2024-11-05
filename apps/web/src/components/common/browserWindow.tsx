@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@convoform/ui/components/ui/button";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { ExternalLink, RotateCw } from "lucide-react";
@@ -14,6 +16,7 @@ type Props = {
   toolbar?: React.ReactNode;
   backgroundColor?: string;
   fontColor?: string;
+  hideCopyButton?: boolean;
 };
 
 const BrowserWindow = ({
@@ -24,6 +27,7 @@ const BrowserWindow = ({
   toolbar,
   backgroundColor,
   fontColor,
+  hideCopyButton,
 }: Props) => {
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 shadow-xl shadow-gray-100 ">
@@ -34,6 +38,7 @@ const BrowserWindow = ({
           link={link}
           actionsButton={actionsButton}
           onRefresh={onRefresh}
+          hideCopyButton={hideCopyButton}
         />
       </div>
       {toolbar && (
@@ -55,10 +60,12 @@ const ActionButtons = ({
   link,
   actionsButton,
   onRefresh,
+  hideCopyButton = false,
 }: {
   link?: string;
   actionsButton?: React.ReactNode;
   onRefresh?: () => void;
+  hideCopyButton?: boolean;
 }) => {
   const handleCopyLinkToClipboard = () => {
     if (!link) return;
@@ -71,7 +78,9 @@ const ActionButtons = ({
   return (
     <div className="flex items-center gap-2 ">
       {actionsButton}
-      {link && <CopyLinkButton onClick={handleCopyLinkToClipboard} />}
+      {!hideCopyButton && link && (
+        <CopyLinkButton onClick={handleCopyLinkToClipboard} />
+      )}
       {onRefresh && (
         <Button
           variant="ghost"

@@ -85,7 +85,7 @@ export function FormDesignProvider({
 export function useFormDesign() {
   const context = useContext(FormViewerContext);
   if (context === undefined) {
-    throw new Error("useFormViewer must be used within a FormViewerProvider");
+    throw new Error("useFormViewer must be used within a FormDesignProvider");
   }
   return context;
 }

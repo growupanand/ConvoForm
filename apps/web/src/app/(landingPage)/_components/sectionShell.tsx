@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export function SectionShell({
+export function SectionContainer({
   children,
   className,
 }: {
