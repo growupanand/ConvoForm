@@ -6,7 +6,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/form/(.*)",
   "/api/webhook(.*)",
   "/auth/(.*)",
-  "/api/trpc/formDesign.get(.*)",
+  "/api/trpc/(.*)",
   // Added for sentry
   "/monitoring(.*)",
   "/changelog",
