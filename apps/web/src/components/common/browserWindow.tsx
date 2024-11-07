@@ -6,6 +6,7 @@ import { ExternalLink, RotateCw } from "lucide-react";
 import Link from "next/link";
 
 import { copyLinkToClipboard } from "@/lib/url";
+import { cn } from "@convoform/ui/lib/utils";
 import { CopyLinkButton } from "./copyLinkButton";
 
 type Props = {
@@ -17,6 +18,7 @@ type Props = {
   backgroundColor?: string;
   fontColor?: string;
   hideCopyButton?: boolean;
+  className?: string;
 };
 
 const BrowserWindow = ({
@@ -28,9 +30,15 @@ const BrowserWindow = ({
   backgroundColor,
   fontColor,
   hideCopyButton,
+  className,
 }: Props) => {
   return (
-    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 shadow-xl shadow-gray-100 ">
+    <div
+      className={cn(
+        "relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 shadow-xl shadow-gray-100 ",
+        className,
+      )}
+    >
       <div className="flex items-center justify-between bg-gray-200 px-3 py-1">
         <WindowButtons />
         <AddressBar link={link} />
