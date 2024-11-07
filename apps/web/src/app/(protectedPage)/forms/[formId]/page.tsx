@@ -9,7 +9,7 @@ import {
 } from "@/app/(protectedPage)/forms/[formId]/_components/formEditor/formEditorCard";
 import FormPreviewBrowser from "@/app/(protectedPage)/forms/[formId]/_components/formEditor/formPreviewBrowser";
 import MainNavTab from "@/app/(protectedPage)/forms/[formId]/_components/mainNavTab";
-import { FormDesignProvider } from "@/components/formViewer/formDesignContext";
+import { FormContextProvider } from "@/components/formViewer/formContext";
 import { api } from "@/trpc/react";
 import { FormDesignEditor } from "./_components/formDesignEditor";
 import { FormPublishToggle } from "./_components/formPublishToggle";
@@ -39,7 +39,7 @@ export default function FormPage({ params: { formId } }: Props) {
   }
 
   return (
-    <FormDesignProvider formId={formId}>
+    <FormContextProvider form={data}>
       <div className="h-full flex">
         {/* Form editor section */}
         <div className=" flex flex-col space-y-2 px-5 max-h-[calc(100vh-100px)] w-[450px] min-w-[450px] overflow-auto">
@@ -64,10 +64,10 @@ export default function FormPage({ params: { formId } }: Props) {
         </div>
         {/* Form customize section */}
         <div className="w-[400px] min-w-[400px] py-3">
-          <FormDesignEditor organizationId={organization.id} />
+          <FormDesignEditor organizationId={organization.id} formId={formId} />
         </div>
       </div>
-    </FormDesignProvider>
+    </FormContextProvider>
   );
 }
 

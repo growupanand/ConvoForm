@@ -65,8 +65,6 @@ export function useConvoForm({
   const { collectedData, currentField, isFormSubmissionFinished } =
     extraStreamData;
 
-  const endScreenMessage = isFormSubmissionFinished ? currentQuestion : "";
-
   const resetForm = useCallback(() => {
     if (conversation !== undefined) {
       socket.emit("conversation:stopped", {
@@ -230,9 +228,6 @@ export function useConvoForm({
     /** Boolean indicating whether the form submission is finished */
     isFormSubmissionFinished,
 
-    /** Message to display at the end screen */
-    endScreenMessage,
-
     /** Function to reset the form state */
     resetForm,
 
@@ -243,3 +238,5 @@ export function useConvoForm({
     startConversation,
   };
 }
+
+export type UseConvoFormReturnType = ReturnType<typeof useConvoForm>;

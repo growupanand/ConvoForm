@@ -34,7 +34,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
-import { useFormDesign } from "@/components/formViewer/formDesignContext";
+import { useFormContext } from "@/components/formViewer/formContext";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { FORM_SECTIONS_ENUMS } from "@convoform/db/src/schema/formDesigns/constants";
@@ -79,7 +79,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
     }));
   }, [form.formFields]);
 
-  const { setCurrentSection, currentSection } = useFormDesign();
+  const { setCurrentSection, currentSection } = useFormContext();
 
   const queryClient = useQueryClient();
   const updateForm = api.form.updateForm.useMutation({

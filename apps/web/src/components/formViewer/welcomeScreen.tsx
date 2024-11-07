@@ -1,26 +1,28 @@
 "use client";
 
-import type { Form, FormDesignRenderSchema } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import { motion, stagger, useAnimate } from "framer-motion";
 
 import { cn } from "@/lib/utils";
-import type { FormSections } from "@convoform/db/src/schema/formDesigns/constants";
 import { useEffect, useState } from "react";
 import Spinner from "../common/spinner";
 
 type Props = {
-  form: Form;
   onCTAClick: () => Promise<void>;
-  formDesign: FormDesignRenderSchema;
-  gotoStage: (section: FormSections) => void;
+  postCTAClick: () => void;
+  title: string;
+  message: string;
+  CTALabel: string;
+  fontColor?: string;
 };
 
 export const WelcomeScreen = ({
-  form,
   onCTAClick,
-  formDesign,
-  gotoStage,
+  postCTAClick,
+  title,
+  message,
+  CTALabel,
+  fontColor,
 }: Props) => {
   const [isStartingConversation, setIsStartingConversation] = useState(false);
   const [scope, animate] = useAnimate();
@@ -29,7 +31,7 @@ export const WelcomeScreen = ({
     setIsStartingConversation(true);
     await onCTAClick();
     await animate(scope.current, { opacity: 0 }, { duration: 1 });
-    gotoStage("questions-screen");
+    postCTAClick();
     setIsStartingConversation(false);
   };
 
@@ -54,10 +56,10 @@ export const WelcomeScreen = ({
           initial={{ opacity: 0, y: 10 }}
         >
           <h2
-            style={{ color: formDesign.fontColor }}
+            style={{ color: fontColor }}
             className=" whitespace-break-spaces break-words  font-extrabold text-4xl lg:text-5xl transition-colors duration-500 mb-6"
           >
-            {form.welcomeScreenTitle}
+            {title}
           </h2>
         </motion.span>
         <motion.span
@@ -65,10 +67,10 @@ export const WelcomeScreen = ({
           initial={{ opacity: 0, y: 10 }}
         >
           <p
-            style={{ color: formDesign.fontColor }}
+            style={{ color: fontColor }}
             className="welcome-screen-text mb-20 whitespace-break-spaces break-words tracking-tight font-medium text-xl lg:text-2xl transition-colors duration-500"
           >
-            {form.welcomeScreenMessage}
+            {message}
           </p>
         </motion.span>
         <div>
@@ -87,8 +89,7 @@ export const WelcomeScreen = ({
               className="font-montserrat whitespace-break-spaces rounded-full  font-medium transition-all hover:scale-110 active:scale-100 text-2xl h-auto py-4 gap-2"
               onClick={handleCTAClick}
             >
-              {isStartingConversation && <Spinner />}{" "}
-              {form.welcomeScreenCTALabel}
+              {isStartingConversation && <Spinner />} {CTALabel}
             </Button>
           </motion.div>
         </div>

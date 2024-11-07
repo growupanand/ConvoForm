@@ -2,6 +2,7 @@
 
 import BrowserWindow from "@/components/common/browserWindow";
 import Spinner from "@/components/common/spinner";
+import { useFormContext } from "@/components/formViewer/formContext";
 import { useFormDesign } from "@/components/formViewer/formDesignContext";
 import { getFormSubmissionLink } from "@/lib/url";
 import { api } from "@/trpc/react";
@@ -16,7 +17,10 @@ export default function FormPreviewBrowser({
   noToolbar,
   formId,
 }: Readonly<Props>) {
-  const { setCurrentSection, activeFormDesign } = useFormDesign();
+  const { setCurrentSection, currentSection } = useFormContext();
+  const { getCurrentSectionFormDesign } = useFormDesign();
+
+  const activeFormDesign = getCurrentSectionFormDesign(currentSection);
   const browserPageBackgroundColor = activeFormDesign.backgroundColor;
 
   const {
@@ -33,30 +37,10 @@ export default function FormPreviewBrowser({
     setCurrentSection("landing-screen");
   };
 
-  // const Toolbar = (
-  //   <Tooltip>
-  //     <TooltipTrigger asChild>
-  //       <div className="flex items-center space-x-2">
-  //         <Checkbox id="savePreviewSubmission" checked />
-  //         <label
-  //           htmlFor="savePreviewSubmission"
-  //           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-  //         >
-  //           Save response in preview mode
-  //         </label>
-  //       </div>
-  //     </TooltipTrigger>
-  //     <TooltipContent side="right">
-  //       <p>Cannot change in free plan</p>
-  //     </TooltipContent>
-  //   </Tooltip>
-  // );
-
   return (
     <BrowserWindow
       onRefresh={refreshPreview}
       link={noToolbar ? undefined : formViewLink}
-      // toolbar={Toolbar}
       backgroundColor={browserPageBackgroundColor}
     >
       <div className="flex h-full flex-col items-center justify-center">
