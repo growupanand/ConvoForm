@@ -1,6 +1,7 @@
 "use client";
 
 import Spinner from "@/components/common/spinner";
+import { useFormContext } from "@/components/formViewer/formContext";
 import { useFormDesign } from "@/components/formViewer/formDesignContext";
 import { api } from "@/trpc/react";
 import { DEFAULT_FORM_DESIGN } from "@convoform/db/src/schema/formDesigns/constants";
@@ -14,16 +15,17 @@ import { DesignQuestionsScreenCard } from "./designQuestionsScreen";
 
 type Props = {
   organizationId: string;
+  formId: string;
 };
 
-export function FormDesignEditor({ organizationId }: Readonly<Props>) {
-  const {
-    formId,
-    currentSection,
-    currentSectionFormDesign,
-    isLoadingFormDesign,
-    defaultFormDesign,
-  } = useFormDesign();
+export function FormDesignEditor({ organizationId, formId }: Readonly<Props>) {
+  const { currentSection } = useFormContext();
+  const { isLoadingFormDesign, defaultFormDesign, formDesigns } =
+    useFormDesign();
+
+  const currentSectionFormDesign = formDesigns?.find(
+    (formDesign) => formDesign.screenType === currentSection,
+  );
   const isSectionSelected = (currentSection as string) !== "";
 
   const apiUtils = api.useUtils();

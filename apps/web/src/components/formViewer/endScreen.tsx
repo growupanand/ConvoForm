@@ -1,21 +1,20 @@
 import Image from "next/image";
 
-import type { FormDesignRenderSchema } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui/components/ui/button";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import BrandName from "../common/brandName";
 
 type Props = {
-  endScreenMessage?: string;
+  endScreenMessage: string;
   endScreenCTAUrl?: string;
   endScreenCTALabel?: string;
-  formDesign: FormDesignRenderSchema;
+  fontColor?: string;
 };
 
 export const EndScreen = (props: Props) => {
-  const { formDesign } = props;
-  const message = props.endScreenMessage || "Thank you for filling the form!";
+  const { fontColor } = props;
+  const message = props.endScreenMessage;
   const ctaButtonLabel = props.endScreenCTALabel || "Close window";
   const showCTAButton =
     props.endScreenCTAUrl && props.endScreenCTAUrl.trim().length > 0;
@@ -28,7 +27,7 @@ export const EndScreen = (props: Props) => {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <h1
-            style={{ color: formDesign.fontColor }}
+            style={{ color: fontColor }}
             className="whitespace-break-spaces break-words text-center font-extrabold text-4xl   transition-colors duration-500"
           >
             {message}

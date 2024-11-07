@@ -5,6 +5,9 @@ export const FORM_SECTIONS_ENUMS = {
   defaultScreen: "default-screen" as const,
 };
 
+export const DEFAULT_FORM_SECTION =
+  FORM_SECTIONS_ENUMS.landingScreen as FormSections;
+
 export const FORM_SECTIONS_ENUMS_VALUES = Object.values(FORM_SECTIONS_ENUMS);
 
 export type FormSections =

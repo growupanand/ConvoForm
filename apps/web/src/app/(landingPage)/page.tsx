@@ -2,39 +2,19 @@ import { Features } from "@/app/(landingPage)/_components/features";
 import { Hero } from "@/app/(landingPage)/_components/hero";
 import { HowToUseSection } from "@/app/(landingPage)/_components/howToUse";
 import { Pricing } from "@/app/(landingPage)/_components/pricing";
-import BrowserWindow from "@/components/common/browserWindow";
-import { getFrontendBaseUrl } from "@/lib/url";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { DEMO_FORM_ID } from "./_components/constants";
-import { DemoCardSkeleton } from "./_components/demoCard";
+import { DemoSection } from "./_components/demoSection";
 import { ScreenshotSlider } from "./_components/screenshotsSlider";
 import { SectionContainer } from "./_components/sectionShell";
 
-const LazyDemoCard = dynamic(
-  () => import("./_components/demoCard").then((mod) => mod.DemoCard),
-  {
-    ssr: false,
-    loading: () => <DemoCardSkeleton />,
-  },
-);
-
 export default function Home() {
-  const demoFormLink = `${getFrontendBaseUrl()}/view/${DEMO_FORM_ID}`;
-
   return (
     <div className="mt-5 grid space-y-5 lg:mt-32 lg:space-y-32">
       <SectionContainer>
         <Hero />
       </SectionContainer>
-      <SectionContainer className="max-lg:hidden">
-        <BrowserWindow link={demoFormLink} hideCopyButton>
-          <div className="min-h-[500px] flex items-center justify-center">
-            <LazyDemoCard />
-          </div>
-        </BrowserWindow>
-      </SectionContainer>
+      <DemoSection />
 
       {/* <SectionShell>
         <SectionCard title="What's New">

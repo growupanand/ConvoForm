@@ -10,33 +10,32 @@ import {
   FORM_SECTIONS_ENUMS,
   type FormSections,
 } from "@convoform/db/src/schema/formDesigns/constants";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
 
-type FormViewerContextType = {
-  currentSection: FormSections;
-  setCurrentSection: (section: FormSections) => void;
-  formId: string;
-  currentSectionFormDesign?: FormDesign;
+type FormDesignContext = {
   isLoadingFormDesign: boolean;
   defaultFormDesign: FormDesignRenderSchema;
-  activeFormDesign: FormDesignRenderSchema;
+  getCurrentSectionFormDesign: (
+    currentSection: FormSections,
+  ) => FormDesignRenderSchema;
+  formDesigns?: FormDesign[];
 };
 
-const FormViewerContext = createContext<FormViewerContextType | undefined>(
+const FormViewerContext = createContext<FormDesignContext | undefined>(
   undefined,
 );
 
-export const defaultFormViewerSection =
-  FORM_SECTIONS_ENUMS.landingScreen as FormSections;
+type FormDesignProviderProps = {
+  formId: string;
+  children: React.ReactNode;
+  disableFetchFormDesign?: boolean;
+};
 
 export function FormDesignProvider({
   children,
   formId,
-}: { children: React.ReactNode; formId: string }) {
-  const [currentSection, setCurrentSection] = useState<FormSections>(
-    defaultFormViewerSection,
-  );
-
+  disableFetchFormDesign,
+}: Readonly<FormDesignProviderProps>) {
   const { data: formDesigns, isLoading: isLoadingFormDesign } =
     api.formDesign.getAll.useQuery(
       {
@@ -44,37 +43,41 @@ export function FormDesignProvider({
       },
       {
         queryHash: `formDesign-${formId}`,
+        enabled: !disableFetchFormDesign,
       },
     );
 
-  // If User have set default colors setting on for current section
   const defaultFormDesign =
     formDesigns?.find(
       (formDesign) =>
         formDesign.screenType === FORM_SECTIONS_ENUMS.defaultScreen,
     ) || DEFAULT_FORM_DESIGN;
 
-  const currentSectionFormDesign = formDesigns?.find(
-    (formDesign) => formDesign.screenType === currentSection,
-  );
+  const getCurrentSectionFormDesign = (
+    currentSection: FormSections,
+  ): FormDesignRenderSchema => {
+    const currentSectionFormDesign = formDesigns?.find(
+      (formDesign) => formDesign.screenType === currentSection,
+    );
 
-  // To avoid unnecessary logics handling to determine which form design to use
-  const activeFormDesign =
-    currentSectionFormDesign !== undefined &&
-    currentSectionFormDesign.useDefaultDesign === false
-      ? currentSectionFormDesign
-      : defaultFormDesign;
+    if (
+      !currentSectionFormDesign ||
+      currentSectionFormDesign?.useDefaultDesign ||
+      disableFetchFormDesign
+    ) {
+      return defaultFormDesign;
+    }
+
+    return currentSectionFormDesign;
+  };
 
   return (
     <FormViewerContext.Provider
       value={{
-        currentSection,
-        setCurrentSection,
-        formId,
-        currentSectionFormDesign,
         isLoadingFormDesign,
         defaultFormDesign,
-        activeFormDesign,
+        getCurrentSectionFormDesign,
+        formDesigns,
       }}
     >
       {children}
