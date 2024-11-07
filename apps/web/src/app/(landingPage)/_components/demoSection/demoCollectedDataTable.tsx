@@ -44,7 +44,7 @@ export function DemoCollectedDataTable({ isInView }: { isInView: boolean }) {
           animate(".animated-text", textAnimationVariants.visible, {
             delay: stagger(0.2),
           }),
-        2000,
+        1500,
       );
     }
   }, [isInView]);

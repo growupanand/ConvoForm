@@ -12,7 +12,6 @@ type Props = {
   headerClassName?: string;
   sectionClassName?: string;
   stickyHeader?: boolean;
-  titleClassName?: string;
 };
 
 export function SectionCard({
@@ -21,7 +20,6 @@ export function SectionCard({
   headerClassName,
   sectionClassName,
   stickyHeader,
-  titleClassName,
 }: Props) {
   return (
     <section>
@@ -39,17 +37,20 @@ export function SectionCard({
             headerClassName,
           )}
         >
-          <h2
-            className={cn(
-              "font-montserrat text-xl font-semibold tracking-tight drop-shadow-[0px_0px_4px_white]",
-              titleClassName,
-            )}
-          >
-            {title}
-          </h2>
+          <SectionCardTitle>{title}</SectionCardTitle>
         </CardHeader>
         <CardContent className="z-40">{children}</CardContent>
       </Card>
     </section>
   );
 }
+
+export const SectionCardTitle = ({
+  children,
+}: { children: React.ReactNode }) => {
+  return (
+    <h2 className="font-montserrat text-xl font-semibold tracking-tight">
+      {children}
+    </h2>
+  );
+};

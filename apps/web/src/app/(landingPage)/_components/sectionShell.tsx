@@ -8,7 +8,7 @@ export function SectionContainer({
   className?: string;
 }) {
   return (
-    <div className={cn("lg:container lg:max-w-[900px]", className)}>
+    <div className={cn("lg:container lg:max-w-[1200px]", className)}>
       {children}
     </div>
   );
