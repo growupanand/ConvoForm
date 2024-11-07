@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default function Layout({ children }: Readonly<Props>) {
   return (
     <main className="min-h-screen">
-      <TopHeader className="sticky top-0 z-50" />
+      <TopHeader className="lg:fixed max-lg:mb-10 top-0 z-50" />
       {children}
       <div className="lg:container">
         <Footer />

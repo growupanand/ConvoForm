@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 import { DEMO_FORM_ID } from "../constants";
 
 const LazyDemoSectionCard = dynamic(
-  () => import("./demoCard").then((mod) => mod.DemoSectionCard),
+  () => import("./demoSectionCard").then((mod) => mod.DemoSectionCard),
   {
     loading: () => <DemoSectionSkeleton />,
   },
@@ -43,7 +43,11 @@ function DemoSectionInner() {
 export const DemoSectionSkeleton = () => {
   return (
     <div className="flex items-center justify-center h-full">
-      <Spinner label="Loading demo" />
+      <Spinner
+        size="lg"
+        label="Initializing Live Demo"
+        labelClassName="text-xl"
+      />
     </div>
   );
 };

@@ -6,21 +6,16 @@ import {
   CardTitle,
 } from "@convoform/ui/components/ui/card";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "@convoform/ui/components/ui/table";
+
 import { FileText } from "lucide-react";
 
-import { getConversationTableData } from "@/components/queryComponents/table/utils";
 import { timeAgo } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@convoform/ui/components/ui/tooltip";
+import { CollectedDataTable } from "./collectedDataTable";
 import TranscriptCard from "./transcriptCard";
 
 type Props = {
@@ -28,9 +23,6 @@ type Props = {
 };
 
 export default function ConversationDetail({ conversation }: Readonly<Props>) {
-  const tableData = getConversationTableData(conversation.collectedData);
-  const tableColumns = Object.keys(tableData);
-  const isFormDataEmpty = tableColumns.length === 0;
   const transcript: Transcript[] = conversation.transcript ?? [];
 
   const getStatusBadge = () => {
@@ -93,26 +85,7 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
               <h2 className="font-montserrat text-muted-foreground mb-2 text-xl">
                 Collected data
               </h2>
-              {!isFormDataEmpty && (
-                <div className="overflow-hidden rounded-md border bg-white">
-                  <Table className="">
-                    <TableBody>
-                      {tableColumns.map((columnName, index) => {
-                        return (
-                          <TableRow
-                            key={`${index}-${conversation.id}-${columnName}`}
-                          >
-                            <TableCell className="py-2">{columnName}</TableCell>
-                            <TableCell className="py-2 font-medium">
-                              {tableData[columnName]}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
+              <CollectedDataTable collectedData={conversation.collectedData} />
             </div>
           </div>
           <div className="col-span-3">
@@ -158,20 +131,7 @@ const ConversationDetailSkeleton = () => {
               <h2 className="font-montserrat text-muted-foreground mb-2 text-xl">
                 Collected data
               </h2>
-              <div className="overflow-hidden rounded-md border bg-white">
-                <Table className="">
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="py-2">
-                        <Skeleton className="h-4 w-full" />
-                      </TableCell>
-                      <TableCell className="py-2 font-medium">
-                        <Skeleton className="h-4 w-full" />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
+              <CollectedDataTable.Skeleton />
             </div>
           </div>
           <div className="col-span-3">

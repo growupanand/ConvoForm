@@ -10,8 +10,8 @@ import { SectionContainer } from "./_components/sectionShell";
 
 export default function Home() {
   return (
-    <div className="mt-5 grid space-y-5 lg:mt-32 lg:space-y-32">
-      <SectionContainer>
+    <div className="grid space-y-5 lg:space-y-32">
+      <SectionContainer className="lg:min-h-screen flex items-center justify-center">
         <Hero />
       </SectionContainer>
       <DemoSection />
