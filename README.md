@@ -22,6 +22,15 @@ In the course of building it from scratch, I penned down some insightful pieces 
 - **AI Integration**: [GPT-3.5-Turbo](https://platform.openai.com/docs/models/gpt-3-5-turbo) for dynamic form generation and response analysis.
 - **Real-time updates**: [Socket.io](https://socket.io/) for live form progress tracking.
 
+## Community and Support
+
+Join our community on [Discord](https://discord.gg/aeYtKyn2E2) to get support, share feedback, and connect with other users and developers:
+
+## Contributing
+
+Feel free to contribute to the development by opening issues, providing feedback, or submitting pull requests. see the [CONTRIBUTING.md](https://github.com/growupanand/ConvoForm/blob/main/CONTRIBUTING.md) for more details.
+
+
 ## Local Setup
 
 Follow these steps to set up the project locally on your machine.
@@ -34,42 +43,39 @@ Follow these steps to set up the project locally on your machine.
   - [pnpm](https://pnpm.io/) (v8.14.3 or higher)
   - [Git](https://git-scm.com/)
 
-- You need a PostgreSQL database instance to store the customer data. Create a free superbase Postgres instance at [Supabase](https://supabase.com).
-
-- [Clerk](clerk.com) is used for Authentication and User Management. Please make sure you Enable organizations in Organizations Settings within Clerk settings.
+- Make sure you [Enable organizations](https://clerk.com/docs/organizations/overview#enable-organizations-in-your-application) in Clerk settings.
 
 - Get your OpenAI key at [OpenAI Dashboard](https://platform.openai.com/api-keys)
 
-- You need a Redis Database from [Upstash](https://upstash.com) (Optional if you want rate limiting)
+### Steps
 
-- Application Performance Monitoring & Error Tracking is done using [Sentry](https://sentry.io)
-
-1. #### Clone the Repository
+1. Clone the Repository
 
 ```bash
 git clone https://github.com/growupanand/ConvoForm.git
 cd ConvoForm
 ```
 
-2. #### Install Dependencies
+2. Install Dependencies
 
 ```bash
 pnpm install
 ```
 
-3. #### Configuration environment
+3. Configuration environment
 
-   1. Copy the .env.example file to .env.local file.
-      ```bash
-      cp .env.example .env.local
-      ```
-   2. Open the `.env.local` file and update the necessary environment variables.
-   3. Setup database by running migrations
-      ```
-      pnpm drizzle:apply-migration
-      ```
+Copy the .env.example file to .env.local file and open the `.env.local` file and update the necessary environment variables.
+```bash
+cp .env.example .env.local
+```
 
-4. #### Run the Development Server
+4. Setup Database
+```bash
+pnpm drizzle:apply-migration
+```
+### Once all steps done
+
+#### Run the Development Server
 
 ```bash
 pnpm run dev
@@ -78,19 +84,11 @@ pnpm run dev
 Visit [http://localhost:3000](http://localhost:3000/) in your browser to see the
 application.
 
-5. #### Build for Production
+#### Build for Production
 
 ```bash
 pnpm run build
 ```
-
-## Community and Support
-
-Join our community on [Discord](https://discord.gg/aeYtKyn2E2) to get support, share feedback, and connect with other users and developers:
-
-## Contributing
-
-Feel free to contribute to the development by opening issues, providing feedback, or submitting pull requests. see the [CONTRIBUTING.md](https://github.com/growupanand/ConvoForm/blob/main/CONTRIBUTING.md) for more details.
 
 ## License
 
