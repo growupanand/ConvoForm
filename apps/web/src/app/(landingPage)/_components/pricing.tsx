@@ -17,9 +17,7 @@ import type { Plan } from "@/lib/types/pricing";
 export function Pricing() {
   return (
     <SectionCard title="Pricing">
-      <div className="grid grid-cols-1">
-        <PlanCard plan={freePlan} />
-      </div>
+      <PlanCard plan={freePlan} />
     </SectionCard>
   );
 }
@@ -32,27 +30,25 @@ const FeatureListItem = ({
   featureText: string;
 }) => {
   return (
-    <div className="flex items-start justify-between space-x-2">
+    <div className="flex items-start justify-between space-x-10">
       <div className="flex items-start gap-2">
         <div className="mt-1">
           <CheckCircle color="green" size={15} />
         </div>
-        <div className="text-md text-gray-500">{featureName}</div>
+        <div className="text-lg">{featureName}</div>
       </div>
-      <div className="text-md whitespace-nowrap font-medium text-black font-montserrat">
-        {featureText}
-      </div>
+      <div className="text-lg whitespace-nowrap font-medium">{featureText}</div>
     </div>
   );
 };
 
 const PlanCard = ({ plan }: { plan: Plan }) => {
   return (
-    <Card className="  w-full rounded-xl  shadow-xl">
+    <Card className="w-fit font-montserrat">
       <CardHeader>
         <CardTitle>
           <div className="flex items-center justify-between">
-            <span className="text-xl font-montserrat">{plan.name}</span>
+            <span className="text-2xl font-medium capitalize">{plan.name}</span>
             <Badge variant="secondary" className="text-sm">
               {plan.price}
             </Badge>
@@ -75,7 +71,7 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
           className="w-full rounded-full font-bold font-montserrat"
           asChild
         >
-          <LinkN href="/auth/register">Sign up now</LinkN>
+          <LinkN href="/auth/register">Sign up</LinkN>
         </Button>
       </CardFooter>
     </Card>

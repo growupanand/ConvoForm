@@ -1,6 +1,7 @@
 "use client";
 
 import Spinner from "@/components/common/spinner";
+import { SectionCard } from "@/components/sectionCard";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { api } from "@/trpc/react";
 import dynamic from "next/dynamic";
@@ -59,7 +60,9 @@ const DemoSectionContainer = ({ children }: { children: React.ReactNode }) => {
 export function DemoSection() {
   return (
     <DemoSectionContainer>
-      <DemoSectionInner />
+      <SectionCard title="Live Demo">
+        <DemoSectionInner />
+      </SectionCard>
     </DemoSectionContainer>
   );
 }

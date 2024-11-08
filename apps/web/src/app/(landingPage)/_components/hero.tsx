@@ -12,7 +12,6 @@ import Link from "next/link";
 import { nohemi } from "@/app/fonts/customFonts";
 import { LinkN } from "@/components/common/linkN";
 import { AnimatedTypingDots } from "@/components/common/typingDots";
-import { TypingEffect } from "@/components/common/typingEffect";
 import { cn } from "@/lib/utils";
 import { GithubStars } from "./githubStar";
 
@@ -70,11 +69,8 @@ export function Hero() {
         </CardHeader>
         <CardContent>
           <div className=" mx-auto text-2xl lg:text-nowrap text-left font-normal leading-7">
-            <TypingEffect
-              typingSpeed={40}
-              text="AI-powered conversational forms that are easy, engaging, and
-            fun to use."
-            />
+            AI-powered conversational forms that are easy, engaging, and fun to
+            use.
           </div>
         </CardContent>
       </Card>

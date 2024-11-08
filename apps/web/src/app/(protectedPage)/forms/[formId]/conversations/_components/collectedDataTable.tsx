@@ -39,19 +39,24 @@ export function CollectedDataTable({ collectedData }: Readonly<Props>) {
   );
 }
 
-const CollectedDataTableSkeleton = () => {
+const CollectedDataTableSkeleton = ({
+  rowsCount = 1,
+}: { rowsCount?: number }) => {
   return (
     <div className="overflow-hidden rounded-md border bg-white">
       <Table className="">
         <TableBody>
-          <TableRow>
-            <TableCell className="py-2">
-              <Skeleton className="h-4 w-full" />
-            </TableCell>
-            <TableCell className="py-2 font-medium">
-              <Skeleton className="h-4 w-full" />
-            </TableCell>
-          </TableRow>
+          {Array.from({ length: rowsCount }).map((_, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+            <TableRow key={index}>
+              <TableCell className="py-2">
+                <Skeleton className="h-4 w-full" />
+              </TableCell>
+              <TableCell className="py-2 font-medium">
+                <Skeleton className="h-4 w-full" />
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>

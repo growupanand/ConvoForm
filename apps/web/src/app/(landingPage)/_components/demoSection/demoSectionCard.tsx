@@ -13,7 +13,7 @@ function DemoSectionCardInner() {
     once: true,
   });
   return (
-    <div className=" gap-10 flex justify-center" ref={demoSectionRef}>
+    <div className=" flex justify-center gap-10 " ref={demoSectionRef}>
       <DemoFormCard isInView={isInView} />
       <DemoCollectedDataTable isInView={isInView} />
     </div>
@@ -22,7 +22,7 @@ function DemoSectionCardInner() {
 
 export function DemoSectionCard({ form }: Readonly<{ form: Form }>) {
   return (
-    <FormContextProvider form={form} disableFetchFormDesign>
+    <FormContextProvider form={form}>
       <DemoSectionCardInner />
     </FormContextProvider>
   );

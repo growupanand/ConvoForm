@@ -31,7 +31,7 @@ export function SectionCard({
       >
         <CardHeader
           className={cn(
-            "pb-4 ",
+            "mb-2 ",
             stickyHeader &&
               " sticky top-14 z-30 bg-white/30   backdrop-blur-md",
             headerClassName,
@@ -49,7 +49,7 @@ export const SectionCardTitle = ({
   children,
 }: { children: React.ReactNode }) => {
   return (
-    <h2 className="font-montserrat text-xl font-semibold tracking-tight">
+    <h2 className="font-montserrat text-xl lg:text-2xl font-semibold tracking-tight text-muted-foreground">
       {children}
     </h2>
   );

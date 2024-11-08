@@ -8,7 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@convoform/ui/components/ui/card";
+
 import { type Variants, animate, motion, stagger } from "framer-motion";
+import { Redo } from "lucide-react";
 import { useEffect } from "react";
 
 const textAnimationVariants = {
@@ -20,12 +22,14 @@ const textAnimationVariants = {
 };
 
 const tableAnimationVariants: Variants = {
-  hidden: { scale: 0.8 },
+  hidden: { scale: 0 },
   visible: {
     scale: 1,
     transition: {
       type: "spring",
       bounce: 0.5,
+      duration: 1,
+      delay: 0.5,
     },
   },
 };
@@ -50,39 +54,48 @@ export function DemoCollectedDataTable({ isInView }: { isInView: boolean }) {
   }, [isInView]);
 
   return (
-    <div>
-      <Card className="w-[400px] min-h-[250px] bg-transparent border-none shadow-none">
-        <motion.div
-          variants={textAnimationVariants}
-          initial="hidden"
-          className="animated-text"
-        >
-          <CardHeader>
-            <CardTitle className="text-center">Form response</CardTitle>
-          </CardHeader>
-        </motion.div>
-        <CardContent>
-          {!showTable && (
-            <motion.p
-              className="text-muted-foreground text-lg animated-text"
+    <div className="flex items-start gap-4">
+      <motion.div
+        className="text-muted-foreground text-xl text-nowrap animated-text"
+        variants={textAnimationVariants}
+        initial="hidden"
+      >
+        <Redo className="size-10 text-muted-foreground" />
+      </motion.div>
+      <div>
+        {!showTable && (
+          <motion.p
+            className="text-muted-foreground text-xl text-nowrap animated-text"
+            variants={textAnimationVariants}
+            initial="hidden"
+          >
+            Try demo form to see live parsed data
+          </motion.p>
+        )}
+        {showTable && (
+          <motion.div
+            variants={tableAnimationVariants}
+            initial="hidden"
+            viewport={{ once: true }}
+            whileInView="visible"
+          >
+            <Card className="w-[400px] ">
+              {/* <motion.div
               variants={textAnimationVariants}
               initial="hidden"
-            >
-              Try filling form to see live collected data here
-            </motion.p>
-          )}
-          {showTable && (
-            <motion.div
-              variants={tableAnimationVariants}
-              initial="hidden"
-              viewport={{ once: true }}
-              whileInView="visible"
-            >
-              <CollectedDataTable collectedData={collectedData} />
-            </motion.div>
-          )}
-        </CardContent>
-      </Card>
+              className="animated-text"
+            > */}
+              <CardHeader>
+                <CardTitle className="">Form response</CardTitle>
+              </CardHeader>
+              {/* </motion.div> */}
+              <CardContent>
+                <CollectedDataTable collectedData={collectedData} />
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }

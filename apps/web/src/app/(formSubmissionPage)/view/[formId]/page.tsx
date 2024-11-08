@@ -41,7 +41,6 @@ export default async function FormViewPage({
       <FormDesignLayout>
         <div className="min-h-screen flex flex-col">
           {showHeader && <FormSubmissionPageHeader form={formData} />}
-
           <div className="flex flex-grow items-center justify-center">
             <FormViewer />
           </div>
