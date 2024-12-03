@@ -159,12 +159,6 @@ export const conversationRouter = createTRPCRouter({
             // biome-ignore lint/style/noNonNullAssertion: ignored
             eq(conversation.organizationId, ctx.auth.orgId!),
           ),
-        columns: {
-          id: true,
-          collectedData: true,
-          createdAt: true,
-          name: true,
-        },
         orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
       });
     }),

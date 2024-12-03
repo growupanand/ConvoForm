@@ -91,7 +91,13 @@
         "useValidForDirection": "error",
         "useYield": "error"
       },
-      "style": { "useBlockStatements": "off" },
+      "style": {
+        "useBlockStatements": "off",
+        "useImportType": {
+          "fix": "safe",
+          "level": "error"
+        }
+      },
       "suspicious": {
         "noAssignInExpressions": "error",
         "noAsyncPromiseExecutor": "error",

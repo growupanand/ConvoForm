@@ -13,9 +13,11 @@ function DemoSectionCardInner() {
     once: true,
   });
   return (
-    <div className=" flex justify-center gap-10 " ref={demoSectionRef}>
+    <div className=" relative flex justify-center gap-10 " ref={demoSectionRef}>
       <DemoFormCard isInView={isInView} />
-      <DemoCollectedDataTable isInView={isInView} />
+      <div className="absolute -right-40 -top-10">
+        <DemoCollectedDataTable isInView={isInView} />
+      </div>
     </div>
   );
 }

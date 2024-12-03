@@ -2,24 +2,8 @@
 
 import { CollectedDataTable } from "@/app/(protectedPage)/forms/[formId]/conversations/_components/collectedDataTable";
 import { useFormContext } from "@/components/formViewer/formContext";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@convoform/ui/components/ui/card";
 
-import { type Variants, animate, motion, stagger } from "framer-motion";
-import { Redo } from "lucide-react";
-import { useEffect } from "react";
-
-const textAnimationVariants = {
-  hidden: { opacity: 0, y: 5 },
-  visible: {
-    opacity: 1,
-    y: 0,
-  },
-};
+import { type Variants, motion } from "framer-motion";
 
 const tableAnimationVariants: Variants = {
   hidden: { scale: 0 },
@@ -34,68 +18,27 @@ const tableAnimationVariants: Variants = {
   },
 };
 
-export function DemoCollectedDataTable({ isInView }: { isInView: boolean }) {
+export function DemoCollectedDataTable({ isInView: _ }: { isInView: boolean }) {
   const {
     convoFormHook: { collectedData = [], isConversationStarted },
   } = useFormContext();
 
   const showTable = isConversationStarted && collectedData.length > 0;
 
-  useEffect(() => {
-    if (isInView) {
-      setTimeout(
-        () =>
-          animate(".animated-text", textAnimationVariants.visible, {
-            delay: stagger(0.2),
-          }),
-        1500,
-      );
-    }
-  }, [isInView]);
+  if (!showTable) return null;
 
-  return (
-    <div className="flex items-start gap-4">
+  if (showTable) {
+    return (
       <motion.div
-        className="text-muted-foreground text-xl text-nowrap animated-text"
-        variants={textAnimationVariants}
+        variants={tableAnimationVariants}
         initial="hidden"
+        viewport={{ once: true }}
+        whileInView="visible"
       >
-        <Redo className="size-10 text-muted-foreground" />
+        <div className="min-w-[250px] max-w-[400px] shadow-xl overflow-hidden rounded-3xl border bg-white/40 p-2 backdrop-blur-lg">
+          <CollectedDataTable collectedData={collectedData} />
+        </div>
       </motion.div>
-      <div>
-        {!showTable && (
-          <motion.p
-            className="text-muted-foreground text-xl text-nowrap animated-text"
-            variants={textAnimationVariants}
-            initial="hidden"
-          >
-            Try demo form to see live parsed data
-          </motion.p>
-        )}
-        {showTable && (
-          <motion.div
-            variants={tableAnimationVariants}
-            initial="hidden"
-            viewport={{ once: true }}
-            whileInView="visible"
-          >
-            <Card className="w-[400px] ">
-              {/* <motion.div
-              variants={textAnimationVariants}
-              initial="hidden"
-              className="animated-text"
-            > */}
-              <CardHeader>
-                <CardTitle className="">Form response</CardTitle>
-              </CardHeader>
-              {/* </motion.div> */}
-              <CardContent>
-                <CollectedDataTable collectedData={collectedData} />
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-      </div>
-    </div>
-  );
+    );
+  }
 }

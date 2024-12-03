@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   children: React.ReactNode;
-  title: string;
+  title?: string;
   headerClassName?: string;
   sectionClassName?: string;
   stickyHeader?: boolean;
@@ -29,16 +29,18 @@ export function SectionCard({
           sectionClassName,
         )}
       >
-        <CardHeader
-          className={cn(
-            "mb-2 ",
-            stickyHeader &&
-              " sticky top-14 z-30 bg-white/30   backdrop-blur-md",
-            headerClassName,
-          )}
-        >
-          <SectionCardTitle>{title}</SectionCardTitle>
-        </CardHeader>
+        {title && (
+          <CardHeader
+            className={cn(
+              "mb-2 ",
+              stickyHeader &&
+                " sticky top-14 z-30 bg-white/30   backdrop-blur-md",
+              headerClassName,
+            )}
+          >
+            <SectionCardTitle>{title}</SectionCardTitle>
+          </CardHeader>
+        )}
         <CardContent className="z-40">{children}</CardContent>
       </Card>
     </section>

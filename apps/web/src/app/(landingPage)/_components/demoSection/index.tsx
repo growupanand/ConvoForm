@@ -44,23 +44,23 @@ function DemoSectionInner() {
 export const DemoSectionSkeleton = () => {
   return (
     <div className="flex items-center justify-center h-full">
-      <Spinner
-        size="lg"
-        label="Initializing Live Demo"
-        labelClassName="text-xl"
-      />
+      <Spinner size="lg" label="Initializing Demo" labelClassName="text-xl" />
     </div>
   );
 };
 
 const DemoSectionContainer = ({ children }: { children: React.ReactNode }) => {
-  return <div className="min-h-[500px] max-lg:hidden">{children}</div>;
+  return (
+    <div className="min-h-[500px] flex items-center justify-center max-lg:hidden">
+      {children}
+    </div>
+  );
 };
 
 export function DemoSection() {
   return (
     <DemoSectionContainer>
-      <SectionCard title="Live Demo">
+      <SectionCard>
         <DemoSectionInner />
       </SectionCard>
     </DemoSectionContainer>

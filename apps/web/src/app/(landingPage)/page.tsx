@@ -30,7 +30,7 @@ export default function Home() {
       <div className="grid space-y-5 lg:space-y-32">
         <SectionContainer className="lg:min-h-screen relative flex items-center justify-center">
           <Hero />
-          <div className="absolute bottom-10 animate-bounce max-lg:hidden">
+          <div className="absolute bottom-10 max-lg:hidden">
             <div className="flex flex-col items-center text-muted-foreground">
               <span className="text-2xl font-medium">Live Demo</span>
               <ChevronDown className="size-10 " />

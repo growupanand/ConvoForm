@@ -97,7 +97,7 @@ export function TableComponent({
   );
 }
 
-export function TableComponentLoading() {
+export function TableComponentLoading({ rows = 2 }: { rows?: number }) {
   return (
     <Table>
       <TableHeader>
@@ -111,7 +111,7 @@ export function TableComponentLoading() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {Array.from({ length: 2 }).map((_, i) => (
+        {Array.from({ length: rows }).map((_, i) => (
           // biome-ignore lint: ignored
           <TableRow key={i}>
             {Array.from({ length: 4 }).map((_, i) => (

@@ -17,31 +17,27 @@ export function CollectedDataTable({ collectedData }: Readonly<Props>) {
   const tableColumns = Object.keys(tableData);
 
   return (
-    <div className="overflow-hidden rounded-md border bg-white">
-      <Table className="">
-        <TableBody>
-          {tableColumns.map((columnName, index) => {
-            const value = tableData[columnName];
-            return (
-              <TableRow key={`${index}-${columnName}-${value}`}>
-                <TableCell className="py-2 align-text-top whitespace-pre-line text-justify">
-                  {columnName}
-                </TableCell>
-                <TableCell className="py-2 font-medium align-text-top whitespace-pre-line text-justify">
-                  {tableData[columnName]}
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </div>
+    <Table>
+      <TableBody>
+        {tableColumns.map((columnName, index) => {
+          const value = tableData[columnName];
+          return (
+            <TableRow key={`${index}-${columnName}-${value}`}>
+              <TableCell className="py-2 align-text-top whitespace-pre-line text-justify">
+                {columnName}
+              </TableCell>
+              <TableCell className="py-2 font-medium align-text-top whitespace-pre-line text-justify">
+                {tableData[columnName]}
+              </TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
   );
 }
 
-const CollectedDataTableSkeleton = ({
-  rowsCount = 1,
-}: { rowsCount?: number }) => {
+const TableSkeleton = ({ rowsCount = 1 }: { rowsCount?: number }) => {
   return (
     <div className="overflow-hidden rounded-md border bg-white">
       <Table className="">
@@ -63,4 +59,4 @@ const CollectedDataTableSkeleton = ({
   );
 };
 
-CollectedDataTable.Skeleton = CollectedDataTableSkeleton;
+CollectedDataTable.Skeleton = TableSkeleton;

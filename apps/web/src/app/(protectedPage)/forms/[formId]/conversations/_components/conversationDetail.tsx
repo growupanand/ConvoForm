@@ -9,12 +9,6 @@ import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 
 import { FileText } from "lucide-react";
 
-import { timeAgo } from "@/lib/utils";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@convoform/ui/components/ui/tooltip";
 import { CollectedDataTable } from "./collectedDataTable";
 import TranscriptCard from "./transcriptCard";
 
@@ -56,29 +50,22 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
   return (
     <div className="h-full">
       <CardHeader className="">
-        <div className="flex items-center justify-between">
-          <div className=" flex items-center gap-2">
-            <FileText className=" " size={32} />
-            <div className="flex flex-col items-start ">
-              <CardTitle className=" font-normal capitalize ">
+        <div className="flex items-start justify-between">
+          <div className=" flex items-start gap-2">
+            <FileText className="size-10" />
+            <div className="flex flex-col items-start gap-2">
+              <CardTitle className=" font-normal capitalize">
                 {conversation.name}
               </CardTitle>
+              <div className="text-sm text-muted-foreground">
+                {conversation.createdAt.toLocaleString()}
+              </div>
             </div>
           </div>
-          <Tooltip>
-            <TooltipTrigger>
-              <div className="text-xl font-normal">
-                {timeAgo(conversation.createdAt)}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="left">
-              {conversation.createdAt.toLocaleString()}
-            </TooltipContent>
-          </Tooltip>
+          {getStatusBadge()}
         </div>
       </CardHeader>
       <CardContent>
-        <div className="mb-10 flex"> {getStatusBadge()}</div>
         <div className="grid  gap-10 grid-cols-5">
           <div className="col-span-2">
             <div>
@@ -111,7 +98,7 @@ const ConversationDetailSkeleton = () => {
           <div className=" flex items-center gap-2">
             <FileText className=" " size={32} />
             <div className="flex flex-col items-start ">
-              <CardTitle className=" font-normal capitalize ">
+              <CardTitle className=" font-normal capitalize">
                 <Skeleton className="h-4 w-40" />
               </CardTitle>
             </div>
