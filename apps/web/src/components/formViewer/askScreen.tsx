@@ -1,9 +1,4 @@
-"use client";
-
-import type {
-  ExtraStreamData,
-  FormDesignRenderSchema,
-} from "@convoform/db/src/schema";
+import type { ExtraStreamData } from "@convoform/db/src/schema";
 import type { SubmitAnswer } from "@convoform/react";
 
 import { TypingEffect } from "../common/typingEffect";
@@ -14,7 +9,7 @@ type Props = {
   currentQuestion: string;
   submitAnswer: SubmitAnswer;
   currentField: ExtraStreamData["currentField"];
-  formDesign: FormDesignRenderSchema;
+  fontColor?: string;
 };
 
 export const AskScreen = ({
@@ -22,7 +17,7 @@ export const AskScreen = ({
   currentQuestion,
   submitAnswer,
   currentField,
-  formDesign,
+  fontColor,
 }: Props) => {
   return (
     <div className="flex w-full flex-col items-center justify-center">
@@ -31,7 +26,7 @@ export const AskScreen = ({
           {currentField?.fieldName}
         </div>
         <div
-          style={{ color: formDesign.fontColor }}
+          style={{ color: fontColor }}
           className="mb-10 w-full whitespace-pre-line text-justify leading-6 text-2xl lg:leading-7 transition-colors duration-500"
         >
           <TypingEffect text={currentQuestion} />

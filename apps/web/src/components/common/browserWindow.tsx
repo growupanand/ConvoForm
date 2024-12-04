@@ -1,9 +1,12 @@
+"use client";
+
 import { Button } from "@convoform/ui/components/ui/button";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { ExternalLink, RotateCw } from "lucide-react";
 import Link from "next/link";
 
 import { copyLinkToClipboard } from "@/lib/url";
+import { cn } from "@convoform/ui/lib/utils";
 import { CopyLinkButton } from "./copyLinkButton";
 
 type Props = {
@@ -14,6 +17,8 @@ type Props = {
   toolbar?: React.ReactNode;
   backgroundColor?: string;
   fontColor?: string;
+  hideCopyButton?: boolean;
+  className?: string;
 };
 
 const BrowserWindow = ({
@@ -24,9 +29,16 @@ const BrowserWindow = ({
   toolbar,
   backgroundColor,
   fontColor,
+  hideCopyButton,
+  className,
 }: Props) => {
   return (
-    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 shadow-xl shadow-gray-100 ">
+    <div
+      className={cn(
+        "relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 shadow-xl shadow-gray-100 ",
+        className,
+      )}
+    >
       <div className="flex items-center justify-between bg-gray-200 px-3 py-1">
         <WindowButtons />
         <AddressBar link={link} />
@@ -34,6 +46,7 @@ const BrowserWindow = ({
           link={link}
           actionsButton={actionsButton}
           onRefresh={onRefresh}
+          hideCopyButton={hideCopyButton}
         />
       </div>
       {toolbar && (
@@ -55,10 +68,12 @@ const ActionButtons = ({
   link,
   actionsButton,
   onRefresh,
+  hideCopyButton = false,
 }: {
   link?: string;
   actionsButton?: React.ReactNode;
   onRefresh?: () => void;
+  hideCopyButton?: boolean;
 }) => {
   const handleCopyLinkToClipboard = () => {
     if (!link) return;
@@ -71,7 +86,9 @@ const ActionButtons = ({
   return (
     <div className="flex items-center gap-2 ">
       {actionsButton}
-      {link && <CopyLinkButton onClick={handleCopyLinkToClipboard} />}
+      {!hideCopyButton && link && (
+        <CopyLinkButton onClick={handleCopyLinkToClipboard} />
+      )}
       {onRefresh && (
         <Button
           variant="ghost"

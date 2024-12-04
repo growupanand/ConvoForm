@@ -1,56 +1,61 @@
-import { Features } from "@/app/(landingPage)/_components/features";
 import { Hero } from "@/app/(landingPage)/_components/hero";
 import { HowToUseSection } from "@/app/(landingPage)/_components/howToUse";
 import { Pricing } from "@/app/(landingPage)/_components/pricing";
-import Image from "next/image";
-import Link from "next/link";
-// import { NewFeature } from "./_components/newFeature";
+import { TopHeader } from "@/components/common/topHeader";
+import type { Metadata } from "next";
+
+import { ChevronDown } from "lucide-react";
+import { Achievements } from "./_components/achievements";
+import { DemoSection } from "./_components/demoSection";
+import { Footer } from "./_components/footer";
 import { ScreenshotSlider } from "./_components/screenshotsSlider";
-import { SectionShell } from "./_components/sectionShell";
+import { SectionContainer } from "./_components/sectionShell";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "ConvoForm | Create Conversational Forms",
+  },
+  openGraph: {
+    title: {
+      absolute: "ConvoForm | Create Conversational Forms",
+    },
+    images: ["/api/og"],
+  },
+};
 
 export default function Home() {
   return (
-    <div className="mt-5 grid space-y-5 lg:mt-10 lg:space-y-20">
-      <SectionShell>
-        <Hero />
-      </SectionShell>
-
-      {/* <SectionShell>
-        <SectionCard title="What's New">
-          <NewFeature />
-        </SectionCard>
-      </SectionShell> */}
-      <SectionShell className="max-lg:hidden">
-        <ScreenshotSlider />
-      </SectionShell>
-
-      <SectionShell>
-        <Features />
-      </SectionShell>
-      <SectionShell>
-        <div className="grid gap-1 lg:grid-cols-2">
-          <HowToUseSection />
-          <Pricing />
-        </div>
-      </SectionShell>
-      <div className="flex items-center justify-center">
-        <Link
-          href="https://peerlist.io/growupanand/project/convoform?utm_source=convoform.com"
-          target="_blank"
-          rel="noopener noreferrer nofollow"
-          aria-label="Visit project page on Peerlist"
-        >
-          <div className="overflow-hidden rounded-full bg-white p-4 shadow-md outline outline-gray-100">
-            <Image
-              src="/images/winnerPeerlist.svg"
-              alt="winner project of the month"
-              width={130}
-              height={128}
-              quality={100}
-            />
+    <main>
+      <TopHeader className="lg:fixed max-lg:mb-10 top-0 z-50" />
+      <div className="grid space-y-5 lg:space-y-32">
+        <SectionContainer className="lg:min-h-screen relative flex items-center justify-center">
+          <Hero />
+          <div className="absolute bottom-10 max-lg:hidden">
+            <div className="flex flex-col items-center text-muted-foreground">
+              <span className="text-2xl font-medium">Live Demo</span>
+              <ChevronDown className="size-10 " />
+            </div>
           </div>
-        </Link>
+        </SectionContainer>
+        <SectionContainer>
+          <DemoSection />
+        </SectionContainer>
+        <SectionContainer className="max-lg:hidden ">
+          <ScreenshotSlider />
+        </SectionContainer>
+        <SectionContainer>
+          <div className="grid gap-1 lg:grid-cols-2">
+            <HowToUseSection />
+            <Pricing />
+          </div>
+          <div className="mt-10">
+            <Achievements />
+          </div>
+        </SectionContainer>
       </div>
-    </div>
+      <SectionContainer>
+        <Footer />
+      </SectionContainer>
+    </main>
   );
 }

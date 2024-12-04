@@ -1,5 +1,6 @@
 "use client";
 
+import { SectionCard } from "@/components/sectionCard";
 import { AspectRatio } from "@convoform/ui/components/ui/aspect-ratio";
 import {
   Carousel,
@@ -83,7 +84,7 @@ export function ScreenshotSlider() {
   }, [api]);
 
   return (
-    <div>
+    <SectionCard title="Features">
       <Carousel setApi={setApi} className="w-full ">
         <div className="overflow-hidden rounded-xl border shadow-lg ">
           <CarouselContent>
@@ -111,6 +112,6 @@ export function ScreenshotSlider() {
           {currentScreenshotData?.description}
         </div>
       </div>
-    </div>
+    </SectionCard>
   );
 }

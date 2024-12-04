@@ -21,7 +21,7 @@ export default function Layout({ children, params }: Readonly<Props>) {
           <Link href={`/forms/${params.formId}/conversations`}>
             <ChevronLeft />{" "}
             <span className="transition-all-conversation-heading">
-              All conversations
+              All Responses
             </span>
           </Link>
         </Button>

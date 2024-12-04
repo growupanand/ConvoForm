@@ -1,80 +1,50 @@
 "use client";
 
-import type { ExtraStreamData, Form } from "@convoform/db/src/schema";
-import { useConvoForm } from "@convoform/react";
-import { useEffect } from "react";
+import { useCallback } from "react";
 
-import type { FormSections } from "@convoform/db/src/schema/formDesigns/constants";
-import { AskScreen } from "./askScreen";
-import { EndScreen } from "./endScreen";
-import { useFormDesign } from "./formDesignContext";
-import { TopProgressBar } from "./topProgressBar";
-import { WelcomeScreen } from "./welcomeScreen";
+import { AskScreen } from "@/components/formViewer/askScreen";
+import { EndScreen } from "@/components/formViewer/endScreen";
+import { TopProgressBar } from "@/components/formViewer/topProgressBar";
+import { WelcomeScreen } from "@/components/formViewer/welcomeScreen";
+import { useFormContext } from "./formContext";
 
 type Props = {
-  form: Form;
   isPreview?: boolean;
 };
 
-export function FormViewer({ form, isPreview }: Readonly<Props>) {
-  const { currentSection, setCurrentSection, activeFormDesign } =
-    useFormDesign();
+export function FormViewer({ isPreview }: Readonly<Props>) {
+  const {
+    currentSection,
+    setCurrentSection,
+    convoFormHook,
+    currentFormDesign,
+    endScreenMessage,
+    totalSubmissionProgress,
+    form,
+  } = useFormContext();
 
   const {
     submitAnswer,
     currentQuestion,
     isBusy,
-    isFormSubmissionFinished,
-    endScreenMessage: generatedEndScreenMessage,
-    resetForm,
     currentField,
-    collectedData,
-    isConversationStarted,
     startConversation,
-  } = useConvoForm({
-    formId: form.id,
-  });
+  } = convoFormHook;
 
-  const customEndScreenMessage = form.customEndScreenMessage || undefined;
-  const endScreenMessage = form.showCustomEndScreenMessage
-    ? customEndScreenMessage
-    : generatedEndScreenMessage;
-
-  const totalSubmissionProgress = getSubmissionProgress(collectedData);
   const shouldShowProgressBar =
     !isPreview &&
     (currentSection === "questions-screen" ||
       currentSection === "ending-screen");
 
-  const gotoStage = (section: FormSections) => {
-    setCurrentSection(section);
-  };
-
-  const handleCTAClick = async () => {
+  const handleCTAClick = useCallback(async () => {
     await startConversation();
-    gotoStage("questions-screen");
-  };
+    setCurrentSection("questions-screen");
+  }, []);
 
-  useEffect(() => {
-    if (
-      currentSection === "questions-screen" &&
-      (!isConversationStarted || isFormSubmissionFinished)
-    ) {
-      startConversation();
-    }
-  }, [currentSection, form]);
-
-  useEffect(() => {
-    if (currentSection !== "questions-screen") {
-      resetForm();
-    }
-  }, [form]);
-
-  useEffect(() => {
-    if (isFormSubmissionFinished) {
-      gotoStage("ending-screen");
-    }
-  }, [isFormSubmissionFinished]);
+  const handlePostCTAClick = useCallback(
+    () => setCurrentSection("questions-screen"),
+    [],
+  );
 
   return (
     <div className="container max-w-[800px]">
@@ -85,10 +55,12 @@ export function FormViewer({ form, isPreview }: Readonly<Props>) {
         currentSection === "landing-screen" ||
         currentSection === "default-screen") && (
         <WelcomeScreen
-          form={form}
           onCTAClick={handleCTAClick}
-          formDesign={activeFormDesign}
-          gotoStage={gotoStage}
+          postCTAClick={handlePostCTAClick}
+          title={form.welcomeScreenTitle}
+          message={form.welcomeScreenMessage}
+          CTALabel={form.welcomeScreenCTALabel}
+          fontColor={currentFormDesign.fontColor}
         />
       )}
 
@@ -98,7 +70,7 @@ export function FormViewer({ form, isPreview }: Readonly<Props>) {
           isFormBusy={isBusy}
           submitAnswer={submitAnswer}
           currentField={currentField}
-          formDesign={activeFormDesign}
+          fontColor={currentFormDesign.fontColor}
         />
       )}
       {currentSection === "ending-screen" && (
@@ -106,19 +78,9 @@ export function FormViewer({ form, isPreview }: Readonly<Props>) {
           endScreenMessage={endScreenMessage}
           endScreenCTALabel={form.endScreenCTALabel || undefined}
           endScreenCTAUrl={form.endScreenCTAUrl || undefined}
-          formDesign={activeFormDesign}
+          fontColor={currentFormDesign.fontColor}
         />
       )}
     </div>
   );
-}
-
-function getSubmissionProgress(
-  collectedData: ExtraStreamData["collectedData"],
-) {
-  const totalFieldsRequired = collectedData?.length ?? 0;
-  const totalFieldsCollected =
-    collectedData?.filter(({ fieldValue }) => Boolean(fieldValue)).length ?? 0;
-  const totalProgress = (totalFieldsCollected / totalFieldsRequired) * 100;
-  return totalProgress;
 }

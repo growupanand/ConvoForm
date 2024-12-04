@@ -20,10 +20,10 @@ const dotVariants: Variants = {
     y: 0,
   },
   animate: (index: number) => ({
-    y: [0, -10, 0], // Move up and back down
+    y: [0, -5, 0], // Move up and back down
     transition: {
-      delay: index * 0.3, // Stagger each dot with a small delay
-      duration: 0.5,
+      delay: index * 0.2, // Stagger each dot with a small delay
+      duration: 0.3,
       repeat: Number.POSITIVE_INFINITY,
       repeatType: "loop",
       repeatDelay: 0.9, // Ensure only one dot is animating at a time

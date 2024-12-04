@@ -6,21 +6,10 @@ import {
   CardTitle,
 } from "@convoform/ui/components/ui/card";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "@convoform/ui/components/ui/table";
+
 import { FileText } from "lucide-react";
 
-import { getConversationTableData } from "@/components/queryComponents/table/utils";
-import { timeAgo } from "@/lib/utils";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@convoform/ui/components/ui/tooltip";
+import { CollectedDataTable } from "./collectedDataTable";
 import TranscriptCard from "./transcriptCard";
 
 type Props = {
@@ -28,9 +17,6 @@ type Props = {
 };
 
 export default function ConversationDetail({ conversation }: Readonly<Props>) {
-  const tableData = getConversationTableData(conversation.collectedData);
-  const tableColumns = Object.keys(tableData);
-  const isFormDataEmpty = tableColumns.length === 0;
   const transcript: Transcript[] = conversation.transcript ?? [];
 
   const getStatusBadge = () => {
@@ -64,55 +50,29 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
   return (
     <div className="h-full">
       <CardHeader className="">
-        <div className="flex items-center justify-between">
-          <div className=" flex items-center gap-2">
-            <FileText className=" " size={32} />
-            <div className="flex flex-col items-start ">
-              <CardTitle className=" font-normal capitalize ">
+        <div className="flex items-start justify-between">
+          <div className=" flex items-start gap-2">
+            <FileText className="size-10" />
+            <div className="flex flex-col items-start gap-2">
+              <CardTitle className=" font-normal capitalize">
                 {conversation.name}
               </CardTitle>
+              <div className="text-sm text-muted-foreground">
+                {conversation.createdAt.toLocaleString()}
+              </div>
             </div>
           </div>
-          <Tooltip>
-            <TooltipTrigger>
-              <div className="text-xl font-normal">
-                {timeAgo(conversation.createdAt)}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="left">
-              {conversation.createdAt.toLocaleString()}
-            </TooltipContent>
-          </Tooltip>
+          {getStatusBadge()}
         </div>
       </CardHeader>
       <CardContent>
-        <div className="mb-10 flex"> {getStatusBadge()}</div>
         <div className="grid  gap-10 grid-cols-5">
           <div className="col-span-2">
             <div>
               <h2 className="font-montserrat text-muted-foreground mb-2 text-xl">
                 Collected data
               </h2>
-              {!isFormDataEmpty && (
-                <div className="overflow-hidden rounded-md border bg-white">
-                  <Table className="">
-                    <TableBody>
-                      {tableColumns.map((columnName, index) => {
-                        return (
-                          <TableRow
-                            key={`${index}-${conversation.id}-${columnName}`}
-                          >
-                            <TableCell className="py-2">{columnName}</TableCell>
-                            <TableCell className="py-2 font-medium">
-                              {tableData[columnName]}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
+              <CollectedDataTable collectedData={conversation.collectedData} />
             </div>
           </div>
           <div className="col-span-3">
@@ -138,7 +98,7 @@ const ConversationDetailSkeleton = () => {
           <div className=" flex items-center gap-2">
             <FileText className=" " size={32} />
             <div className="flex flex-col items-start ">
-              <CardTitle className=" font-normal capitalize ">
+              <CardTitle className=" font-normal capitalize">
                 <Skeleton className="h-4 w-40" />
               </CardTitle>
             </div>
@@ -158,20 +118,7 @@ const ConversationDetailSkeleton = () => {
               <h2 className="font-montserrat text-muted-foreground mb-2 text-xl">
                 Collected data
               </h2>
-              <div className="overflow-hidden rounded-md border bg-white">
-                <Table className="">
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="py-2">
-                        <Skeleton className="h-4 w-full" />
-                      </TableCell>
-                      <TableCell className="py-2 font-medium">
-                        <Skeleton className="h-4 w-full" />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
+              <CollectedDataTable.Skeleton />
             </div>
           </div>
           <div className="col-span-3">

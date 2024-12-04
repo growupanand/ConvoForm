@@ -12,14 +12,10 @@ import Link from "next/link";
 import { nohemi } from "@/app/fonts/customFonts";
 import { LinkN } from "@/components/common/linkN";
 import { AnimatedTypingDots } from "@/components/common/typingDots";
-import { getFrontendBaseUrl } from "@/lib/url";
 import { cn } from "@/lib/utils";
 import { GithubStars } from "./githubStar";
-import { TypingEffect } from "@/components/common/typingEffect";
 
 export function Hero() {
-  const demoFormLink = `${getFrontendBaseUrl()}/view/demo`;
-
   return (
     <section className="flex w-full flex-col justify-center items-center gap-1 text-center">
       <div className="flex flex-col items-center justify-center gap-3">
@@ -73,11 +69,8 @@ export function Hero() {
         </CardHeader>
         <CardContent>
           <div className=" mx-auto text-2xl lg:text-nowrap text-left font-normal leading-7">
-            <TypingEffect
-              typingSpeed={40}
-              text="AI-powered conversational forms that are easy, engaging, and
-            fun to use."
-            />
+            AI-powered conversational forms that are easy, engaging, and fun to
+            use.
           </div>
         </CardContent>
       </Card>
@@ -90,16 +83,6 @@ export function Hero() {
         >
           <LinkN href="/auth/register" rel="noreferrer nofollow noopener">
             Get started
-          </LinkN>
-        </Button>
-        <Button
-          size="lg"
-          variant="outline"
-          className="rounded-full lg:py-7 lg:text-lg font-montserrat"
-          asChild
-        >
-          <LinkN href={demoFormLink} target="_blank">
-            Try demo form
           </LinkN>
         </Button>
       </div>

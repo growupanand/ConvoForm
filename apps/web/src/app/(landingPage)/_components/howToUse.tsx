@@ -5,43 +5,53 @@ import { SectionCard } from "@/components/sectionCard";
 export function HowToUseSection() {
   return (
     <SectionCard title="How to use">
-      <div className="space-y-6 ">
-        <div className="flex items-start">
-          <Badge variant="outline" className="bg-white text-lg font-extrabold">
-            1
-          </Badge>
-          <div className="ml-3">
-            <h3 className="text-black-500 text-xl ">Craft Your Form</h3>
-            <p className="text-md mt-2 max-w-screen-sm font-light">
-              {`Quickly design a personalized form by including desired fields such as 'Name', 'Email', or 'Phone Number'.`}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-start">
-          <Badge variant="outline" className="bg-white text-lg font-extrabold ">
-            2
-          </Badge>
-          <div className="ml-3">
-            <h3 className="text-black-500 text-xl">Share with Ease</h3>
-            <p className="text-md mt-2 max-w-screen-sm font-light">
-              Once your form is ready, share it effortlessly with peers,
-              colleagues, or clients through email or social media.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-start">
-          <Badge variant="outline" className="bg-white text-lg font-extrabold">
-            3
-          </Badge>
-          <div className="ml-3">
-            <h3 className="text-black-500 text-xl">Check Out the Responses</h3>
-            <p className="text-md mt-2 max-w-screen-sm font-light">
-              Stay in the loop with the responses. View neatly organized details
-              and transcripts from conversations in a simple, structured table.{" "}
-            </p>
-          </div>
-        </div>
+      <div className="space-y-6 text-xl">
+        <StepListItem stepNumber={1}>
+          <h3 className="font-semibold">Craft Your Form</h3>
+          <p className="max-w-screen-sm font-light">
+            Generate using AI by explaining your needs or create from scratch by
+            just providing the required fields
+          </p>
+        </StepListItem>
+        <StepListItem stepNumber={2}>
+          <h3 className="font-semibold">Share with Ease</h3>
+          <p className="max-w-screen-sm font-light">
+            Once satisfied with your form design, share the link. Watch
+            ConvoForm do the conversation with the respondents for you
+          </p>
+        </StepListItem>
+        <StepListItem stepNumber={3}>
+          <h3 className="font-semibold">Check Out the Responses</h3>
+          <p className="max-w-screen-sm font-light">
+            View neatly parsed collected data in structured table format with
+            transcripts
+          </p>
+        </StepListItem>
       </div>
     </SectionCard>
   );
 }
+
+const StepBadge = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <Badge variant="secondary" className=" text-xl font-normal">
+      {children}
+    </Badge>
+  );
+};
+
+const StepListItem = ({
+  children,
+  stepNumber,
+}: { children: React.ReactNode; stepNumber: number }) => {
+  return (
+    <div className="flex items-start gap-4">
+      <StepBadge>{stepNumber}</StepBadge>
+      <div className="">{children}</div>
+    </div>
+  );
+};

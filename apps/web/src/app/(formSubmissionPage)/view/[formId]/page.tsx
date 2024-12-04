@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { FormViewer } from "@/components/formViewer";
+import { FormContextProvider } from "@/components/formViewer/formContext";
 import { api } from "@/trpc/server";
 import { FormDesignLayout } from "./_components/formDesignLayout";
 import { FormNotPublishedScreen } from "./_components/formNotPublishedScreen";
@@ -36,14 +37,15 @@ export default async function FormViewPage({
   const showHeader = showOrganizationName || showOrganizationLogo;
 
   return (
-    <FormDesignLayout>
-      <div className="min-h-screen flex flex-col">
-        {showHeader && <FormSubmissionPageHeader form={formData} />}
-
-        <div className="flex flex-grow items-center justify-center">
-          <FormViewer form={formData} />
+    <FormContextProvider form={formData}>
+      <FormDesignLayout>
+        <div className="min-h-screen flex flex-col">
+          {showHeader && <FormSubmissionPageHeader form={formData} />}
+          <div className="flex flex-grow items-center justify-center">
+            <FormViewer />
+          </div>
         </div>
-      </div>
-    </FormDesignLayout>
+      </FormDesignLayout>
+    </FormContextProvider>
   );
 }

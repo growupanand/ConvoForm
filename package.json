@@ -16,7 +16,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "NEXT_PUBLIC_PACKAGE_ENV=development dotenv -e .env.local -- turbo run dev",
+    "dev": "dotenv -v NEXT_PUBLIC_PACKAGE_ENV=development -e .env.local -- turbo run dev",
     "dev:staging": "dotenv -e .env.staging -- turbo run dev",
     "build": "dotenv -e .env.local -- turbo build",
     "prepare": "husky install",
@@ -25,7 +25,7 @@
     "commit": "git add . && czg",
     "lint": "dotenv -e .env.local -- biome lint --write . --unsafe",
     "lint-ci": "biome lint .",
-    "type-check": "dotenv -e .env.local -- biome check --staged --write . --unsafe --no-errors-on-unmatched",
+    "type-check": "dotenv -e .env.local -- biome check --write . --unsafe --no-errors-on-unmatched",
     "type-check-ci": "biome check .",
     "ui:add": "pnpm --filter @convoform/ui ui:add",
     "drizzle-kit": "dotenv -e .env.local -- pnpm --filter @convoform/db drizzle-kit",

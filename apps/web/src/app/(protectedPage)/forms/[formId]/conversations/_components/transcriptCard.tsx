@@ -13,12 +13,12 @@ export default function TranscriptCard({ transcript, isBusy }: Props) {
     return <SystemMessageBox message="No messages yet" />;
   }
   return (
-    <div className="space-y-2 ps-4">
+    <div className="space-y-1 ps-4">
       {transcript.map((message) => {
         return (
           <div
             key={`${message.role}-${message.content}`}
-            className="flex flex-col items-start transition-all hover:scale-105"
+            className="flex flex-col items-start"
           >
             {message.role === "user" ? (
               <UserMessageBox message={message.content} />
@@ -38,11 +38,11 @@ export default function TranscriptCard({ transcript, isBusy }: Props) {
 }
 
 const SystemMessageBox = ({ message }: { message: string }) => (
-  <p className="text-muted-foreground font-light">{message}</p>
+  <p className="text-muted-foreground font-light ">{message}</p>
 );
 
 const UserMessageBox = ({ message }: { message: string }) => (
-  <p className="mb-2">{message}</p>
+  <p className="mb-4 ">{message}</p>
 );
 
 const SystemMessageSkeleton = () => <Skeleton className="h-2 w-40 bg-muted " />;

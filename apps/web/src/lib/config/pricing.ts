@@ -1,7 +1,7 @@
 import type { Plan } from "../types/pricing";
 
 export const freePlan: Plan = {
-  name: "Free plan",
+  name: "Free forever",
   price: "$0/month",
   features: [
     {

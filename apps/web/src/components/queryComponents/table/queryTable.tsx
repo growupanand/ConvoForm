@@ -1,40 +1,53 @@
 import type { UseQueryResult } from "@tanstack/react-query";
 
-import { QueryComponent } from "../queryComponent";
-import {
-  TableComponent,
-  TableComponentLoading,
-  TableEmpty,
-  TableError,
-} from "./table";
+import { TableComponentLoading, TableEmpty, TableError } from "./table";
 
-type Props<TData, TError> = {
+type PropsBase<TData, TError> = {
   query: UseQueryResult<TData, TError>;
-  getTableData: (data: TData) => Record<string, string>[];
-  showExportButton?: boolean;
-  exportFileName?: string;
   emptyComponent?: React.ReactNode;
+  loadingComponent?: React.ReactNode;
+  errorComponent?: React.ReactNode;
 };
 
-export function QueryTable<TData, TError>(props: Props<TData, TError>) {
-  return (
-    <QueryComponent
-      query={props.query}
-      loadingComponent={<TableComponentLoading />}
-      errorComponent={(refetch) => <TableError onRetry={refetch} />}
-    >
-      {(data) => {
-        const tableData = props.getTableData(data);
-        return tableData.length > 0 ? (
-          <TableComponent
-            tableData={tableData}
-            showExportButton={props.showExportButton}
-            exportFileName={props.exportFileName}
-          />
-        ) : (
-          props.emptyComponent ?? <TableEmpty />
-        );
-      }}
-    </QueryComponent>
-  );
+type PropsSuccessWithParsedData<TData, PData> = {
+  getTableData: (data: TData) => PData;
+  successComponent: (data: PData) => React.ReactNode;
+};
+
+type PropsSuccess<TData> = {
+  getTableData?: undefined;
+  successComponent: (data: TData) => React.ReactNode;
+};
+
+type Props<TData, TError, PData> = PropsBase<TData, TError> &
+  (PropsSuccessWithParsedData<TData, PData> | PropsSuccess<TData>);
+
+export function QueryTable<TData, TError, PData>(
+  props: Props<TData, TError, PData>,
+) {
+  const { query } = props;
+
+  if (query.isLoading) {
+    return props.loadingComponent ?? <TableComponentLoading />;
+  }
+
+  if (query.isError) {
+    return props.errorComponent ?? <TableError onRetry={query.refetch} />;
+  }
+
+  if (query.isSuccess) {
+    if (
+      query.data === null ||
+      (Array.isArray(query.data) && query.data.length === 0)
+    ) {
+      return props.emptyComponent ?? <TableEmpty />;
+    }
+
+    if (props.getTableData) {
+      const parsedData = props.getTableData(query.data);
+      return props.successComponent(parsedData);
+    }
+
+    return props.successComponent(query.data);
+  }
 }

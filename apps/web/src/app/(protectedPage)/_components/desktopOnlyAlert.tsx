@@ -3,8 +3,7 @@ import { AlertCircle } from "lucide-react";
 
 export function DesktopOnlyAlert() {
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-      <div className="absolute inset-0 bg-white/70" aria-hidden="true" />
+    <div className="fixed inset-0 bg-gray-100 flex items-center justify-center">
       <div className="relative z-10 text-center p-6 max-w-md">
         <AlertCircle
           className="h-24 w-24 mx-auto mb-6 text-blue-500"
