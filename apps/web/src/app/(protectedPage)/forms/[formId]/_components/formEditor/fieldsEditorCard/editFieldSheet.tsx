@@ -45,9 +45,9 @@ import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
 import { ConfirmAction } from "@/components/common/confirmAction";
+import { useAutoHeightHook } from "@/hooks/auto-height-hook";
 import { api } from "@/trpc/react";
 import { InputConfigurationEditor } from "./inputConfigurationEditor";
-import { useAutoHeightHook } from "@/hooks/auto-height-hook";
 
 type Props = {
   formField: FormFieldSchema;

@@ -6,9 +6,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { api } from "@/trpc/react";
+import { useOrganization } from "@clerk/nextjs";
 import MainNavTab from "../../_components/mainNavTab";
 import { ConversationsNavigation } from "./conversationsNavigation";
-import { useOrganization } from "@clerk/nextjs";
 
 type Props = {
   formId: string;

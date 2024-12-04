@@ -9,7 +9,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 
 import BrandName from "@/components/common/brandName";
-import type { NavigationConfig, NavLink } from "@/lib/types/navigation";
+import type { NavLink, NavigationConfig } from "@/lib/types/navigation";
 import { api } from "@/trpc/react";
 import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 import { NavigationLinks } from "./mainNavigation/mainNavigation";
