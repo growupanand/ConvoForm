@@ -6,11 +6,14 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
+export type SecondaryNavigationItem = {
+  href: string;
+  title: string | React.ReactNode;
+  icon?: React.ReactNode;
+};
+
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
-  items: {
-    href: string;
-    title: string | React.ReactNode;
-  }[];
+  items: SecondaryNavigationItem[];
   heading?: string;
 }
 
@@ -25,7 +28,7 @@ export function SecondaryNavigation({
   return (
     <div>
       {heading && (
-        <h3 className="mb-5 px-4 text-lg font-medium tracking-tight ">
+        <h3 className="mb-2 px-3 text-base font-medium tracking-tight ">
           {heading}
         </h3>
       )}
@@ -38,7 +41,9 @@ export function SecondaryNavigation({
                 " w-full justify-start font-normal",
                 pathname === item.href && "font-medium",
               )}
+              size="sm"
             >
+              {item.icon && <span className="me-2">{item.icon}</span>}
               {item.title}
             </Button>
           </Link>

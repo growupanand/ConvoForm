@@ -323,4 +323,37 @@ export const conversationRouter = createTRPCRouter({
         throw new Error("Failed to update conversation");
       }
     }),
+
+  stats: publicProcedure
+    .input(
+      z.object({
+        formId: z.string().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const formId = input.formId;
+
+      const result = await ctx.db.query.conversation.findMany({
+        columns: {
+          id: true,
+          isFinished: true,
+          isInProgress: true,
+        },
+        where: (conversation, { eq }) => eq(conversation.formId, formId),
+      });
+
+      return {
+        totalCount: result.length,
+        finishedTotalCount: result.filter(
+          (conversation) => conversation.isFinished,
+        ).length,
+        partialTotalCount: result.filter(
+          (conversation) =>
+            !conversation.isFinished && !conversation.isInProgress,
+        ).length,
+        liveTotalCount: result.filter(
+          (conversation) => conversation.isInProgress,
+        ).length,
+      };
+    }),
 });

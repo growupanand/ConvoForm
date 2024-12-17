@@ -170,25 +170,13 @@ export function ConversationsDataTable({ data }: { data: Conversation[] }) {
   return (
     <div className="pb-10 ">
       <div className="mb-4 flex items-center justify-between">
-        <CSVLink data={tableData} filename={exportFileName}>
-          <Button size="sm" variant="secondary">
-            <Download size={20} className="mr-2" /> <span>Export CSV</span>
-          </Button>
-        </CSVLink>
-        <div className="flex items-center justify-end space-x-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              setPageIndex(table.getState().pagination.pageIndex - 1)
-            }
-            disabled={table.getState().pagination.pageIndex === 0}
-          >
-            <ChevronLeft />
-          </Button>
+        <div className="flex items-center justify-end gap-4 text-sm">
           <Select defaultValue={perPage} onValueChange={setPerPage}>
-            <SelectTrigger>
+            <SelectTrigger className="gap-1 font-semibold">
               <SelectValue placeholder="Select a page size" />
+              <span className="text-nowrap text-muted-foreground">
+                per page
+              </span>
             </SelectTrigger>
             <SelectContent align="end">
               <SelectItem value="10">10</SelectItem>
@@ -197,19 +185,47 @@ export function ConversationsDataTable({ data }: { data: Conversation[] }) {
               <SelectItem value="100">100</SelectItem>
             </SelectContent>
           </Select>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              setPageIndex(table.getState().pagination.pageIndex + 1)
-            }
-            disabled={
-              table.getState().pagination.pageIndex >= table.getPageCount() - 1
-            }
-          >
-            <ChevronRight />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="px-2"
+              onClick={() =>
+                setPageIndex(table.getState().pagination.pageIndex - 1)
+              }
+              disabled={table.getState().pagination.pageIndex === 0}
+            >
+              <ChevronLeft className="size-4" />
+            </Button>
+            <span className="text-nowrap">
+              Page{" "}
+              <span className="font-semibold">
+                {table.getState().pagination.pageIndex + 1}
+              </span>{" "}
+              of {table.getPageCount()}
+            </span>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="px-2"
+              onClick={() =>
+                setPageIndex(table.getState().pagination.pageIndex + 1)
+              }
+              disabled={
+                table.getState().pagination.pageIndex >=
+                table.getPageCount() - 1
+              }
+            >
+              <ChevronRight className="size-4" />
+            </Button>
+          </div>
         </div>
+        <CSVLink data={tableData} filename={exportFileName}>
+          <Button size="sm" variant="ghost">
+            <Download size={20} className="mr-2" /> <span>Export CSV</span>
+          </Button>
+        </CSVLink>
       </div>
       <div className=" rounded-md border max-h-[calc(100vh-250px)] overflow-y-scroll relative">
         <Table className="">
