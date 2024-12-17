@@ -50,7 +50,7 @@ export function ConversationsNavigation({
           <p className="text-sm text-gray-500">No Conversations</p>
         </div>
       ) : (
-        <SecondaryNavigation items={navigationItems} />
+        <SecondaryNavigation heading="Recent" items={navigationItems} />
       )}
     </>
   );

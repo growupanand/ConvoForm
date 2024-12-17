@@ -5,8 +5,13 @@ import { socket } from "@convoform/websocket-client";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import {
+  SecondaryNavigation,
+  type SecondaryNavigationItem,
+} from "@/components/common/secondaryNavigation";
 import { api } from "@/trpc/react";
 import { useOrganization } from "@clerk/nextjs";
+import { ChartColumnIncreasing, Sheet } from "lucide-react";
 import MainNavTab from "../../_components/mainNavTab";
 import { ConversationsNavigation } from "./conversationsNavigation";
 
@@ -19,6 +24,19 @@ type State = {
 };
 
 export function ConversationsSidebar({ formId }: Props) {
+  const secondaryNavigationItems: SecondaryNavigationItem[] = [
+    {
+      title: "Stats",
+      href: `/forms/${formId}/conversations`,
+      icon: <ChartColumnIncreasing className="size-4" />,
+    },
+    {
+      title: "Table View",
+      href: `/forms/${formId}/conversations/table`,
+      icon: <Sheet className="size-4" />,
+    },
+  ];
+
   const pathname = usePathname();
   const { organization, isLoaded } = useOrganization();
   const organizationId = organization?.id;
@@ -77,10 +95,13 @@ export function ConversationsSidebar({ formId }: Props) {
 
   return (
     <div className="">
-      <div className="relative flex flex-col px-3 max-h-[calc(100vh-100px)]">
+      <div className="relative flex flex-col gap-4 px-3 max-h-[calc(100vh-100px)]">
         <div>
-          <div className="mb-5">
+          <div>
             <MainNavTab formId={formId} organizationId={organizationId} />
+          </div>
+          <div>
+            <SecondaryNavigation items={secondaryNavigationItems} />
           </div>
         </div>
         <div className="relative h-full grow overflow-auto pb-5">

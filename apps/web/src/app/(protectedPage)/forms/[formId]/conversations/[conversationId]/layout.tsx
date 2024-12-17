@@ -19,9 +19,9 @@ export default function Layout({ children, params }: Readonly<Props>) {
       <div className="pt-2">
         <Button variant="link" asChild>
           <Link href={`/forms/${params.formId}/conversations`}>
-            <ChevronLeft />{" "}
+            <ChevronLeft className="size-4" />{" "}
             <span className="transition-all-conversation-heading">
-              All Responses
+              Responses
             </span>
           </Link>
         </Button>
