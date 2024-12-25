@@ -11,6 +11,7 @@ import { ViewTransitions } from "next-view-transitions";
 
 import "../globals.css";
 import "nprogress/nprogress.css";
+import { CSPostHogProvider } from "@/components/analyticsProvider";
 import { cn } from "@/lib/utils";
 import { montserrat } from "./fonts";
 
@@ -75,14 +76,16 @@ export default function RootLayout({
   return (
     <ViewTransitions>
       <html lang="en" className={cn(GeistSans.variable, montserrat.variable)}>
-        <body className="antialiased font-sans">
-          <TooltipProvider delayDuration={200}>
-            <TRPCReactProvider>{children}</TRPCReactProvider>
-          </TooltipProvider>
+        <CSPostHogProvider>
+          <body className="antialiased font-sans">
+            <TooltipProvider delayDuration={200}>
+              <TRPCReactProvider>{children}</TRPCReactProvider>
+            </TooltipProvider>
 
-          <Toaster />
-          <SonnerToaster />
-        </body>
+            <Toaster />
+            <SonnerToaster />
+          </body>
+        </CSPostHogProvider>
       </html>
     </ViewTransitions>
   );

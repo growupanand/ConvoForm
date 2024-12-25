@@ -52,6 +52,7 @@
     "nprogress": "^0.2.0",
     "openai": "^4.24.2",
     "openai-edge": "^1.2.2",
+    "posthog-js": "^1.203.1",
     "react": "^18",
     "react-csv": "^2.2.2",
     "react-dom": "^18",
