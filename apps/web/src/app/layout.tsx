@@ -6,7 +6,6 @@ import { TooltipProvider } from "@convoform/ui/components/ui/tooltip";
 import { GeistSans } from "geist/font/sans";
 import type { Viewport } from "next";
 
-import GoogleAnalytics from "@/components/googleAnalytics";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ViewTransitions } from "next-view-transitions";
 
@@ -77,10 +76,6 @@ export default function RootLayout({
     <ViewTransitions>
       <html lang="en" className={cn(GeistSans.variable, montserrat.variable)}>
         <body className="antialiased font-sans">
-          {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
-            <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
-          ) : null}
-
           <TooltipProvider delayDuration={200}>
             <TRPCReactProvider>{children}</TRPCReactProvider>
           </TooltipProvider>

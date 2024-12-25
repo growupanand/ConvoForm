@@ -2,7 +2,6 @@
   "$schema": "https://turbo.build/schema.json",
   "globalEnv": [
     "NODE_ENV",
-    "NEXT_PUBLIC_GOOGLE_ANALYTICS",
     "NEXT_PUBLIC_APP_URL",
     "VERCEL_URL",
     "OPEN_AI_MODEL",
