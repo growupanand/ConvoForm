@@ -2,7 +2,8 @@ import { eq } from "@convoform/db";
 import { organization } from "@convoform/db/src/schema";
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { protectedProcedure } from "../middlewares/protectedRoutes";
+import { createTRPCRouter } from "../trpc";
 
 export const organizationRouter = createTRPCRouter({
   getOne: protectedProcedure

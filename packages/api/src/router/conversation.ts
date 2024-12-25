@@ -8,7 +8,9 @@ import {
 } from "@convoform/db/src/schema";
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { protectedProcedure } from "../middlewares/protectedRoutes";
+import { publicProcedure } from "../middlewares/publicRoutes";
+import { createTRPCRouter } from "../trpc";
 
 export const conversationRouter = createTRPCRouter({
   getAll: protectedProcedure

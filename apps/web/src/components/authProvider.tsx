@@ -1,5 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 
+import { PosthogUserInit } from "./posthogUserInit";
 import { SentryUserInit } from "./sentryUserInit";
 
 export function AuthProvider({
@@ -13,6 +14,7 @@ export function AuthProvider({
       signUpUrl="/auth/register"
     >
       <SentryUserInit />
+      <PosthogUserInit />
       {children}
     </ClerkProvider>
   );

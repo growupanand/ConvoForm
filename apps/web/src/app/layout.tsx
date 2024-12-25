@@ -11,7 +11,7 @@ import { ViewTransitions } from "next-view-transitions";
 
 import "../globals.css";
 import "nprogress/nprogress.css";
-import { CSPostHogProvider } from "@/components/analyticsProvider";
+import { CSPostHogProvider } from "@/components/analytics/analyticsProvider";
 import { cn } from "@/lib/utils";
 import { montserrat } from "./fonts";
 

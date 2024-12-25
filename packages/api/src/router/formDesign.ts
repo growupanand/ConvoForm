@@ -8,7 +8,9 @@ import {
 import { z } from "zod";
 
 import { checkRateLimitThrowTRPCError } from "../lib/utils";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { protectedProcedure } from "../middlewares/protectedRoutes";
+import { publicProcedure } from "../middlewares/publicRoutes";
+import { createTRPCRouter } from "../trpc";
 
 export const formDesignRouter = createTRPCRouter({
   create: protectedProcedure

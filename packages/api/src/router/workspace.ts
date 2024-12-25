@@ -7,7 +7,8 @@ import {
 import { z } from "zod";
 
 import { checkRateLimitThrowTRPCError } from "../lib/utils";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { protectedProcedure } from "../middlewares/protectedRoutes";
+import { createTRPCRouter } from "../trpc";
 
 export const workspaceRouter = createTRPCRouter({
   create: protectedProcedure
@@ -29,6 +30,8 @@ export const workspaceRouter = createTRPCRouter({
       if (!result) {
         throw new Error("Unable to create workspace");
       }
+
+      ctx.analytics.track("workspace_created");
 
       return result;
     }),

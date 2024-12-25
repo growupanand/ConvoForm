@@ -1,3 +1,4 @@
+import { analytics } from "@convoform/analytics";
 import { eq } from "@convoform/db";
 import {
   insertOrganizationMemberSchema,
@@ -9,14 +10,18 @@ import {
 } from "@convoform/db/src/schema";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { publicProcedure } from "../middlewares/publicRoutes";
+import { createTRPCRouter } from "../trpc";
 
 export const webhookRouter = createTRPCRouter({
   userCreated: publicProcedure
     .input(insertUserSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        await ctx.db.insert(user).values(input);
+        const [newUser] = await ctx.db.insert(user).values(input).returning();
+        if (newUser?.email) {
+          analytics.alias(newUser.email, newUser.id);
+        }
       } catch (e: any) {
         console.error({
           message: "Webhook event error: Unable to save user data",

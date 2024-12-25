@@ -3,7 +3,9 @@ import { conversation, form } from "@convoform/db/src/schema";
 import { z } from "zod";
 
 import { getCurrentMonthDaysArray } from "../lib/utils";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { protectedProcedure } from "../middlewares/protectedRoutes";
+import { publicProcedure } from "../middlewares/publicRoutes";
+import { createTRPCRouter } from "../trpc";
 
 export const metricsRouter = createTRPCRouter({
   getFormMetrics: protectedProcedure

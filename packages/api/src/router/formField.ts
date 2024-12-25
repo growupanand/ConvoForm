@@ -8,7 +8,8 @@ import {
 } from "@convoform/db/src/schema";
 
 import { checkRateLimitThrowTRPCError } from "../lib/utils";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { protectedProcedure } from "../middlewares/protectedRoutes";
+import { createTRPCRouter } from "../trpc";
 
 export const formFieldRouter = createTRPCRouter({
   // Create form field
