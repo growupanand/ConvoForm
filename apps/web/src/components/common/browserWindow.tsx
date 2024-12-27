@@ -55,7 +55,7 @@ const BrowserWindow = ({
         </div>
       )}
       <div
-        className="grow overflow-auto transition-all"
+        className="grow overflow-auto transition-all relative"
         style={{ background: backgroundColor, color: fontColor }}
       >
         {children}

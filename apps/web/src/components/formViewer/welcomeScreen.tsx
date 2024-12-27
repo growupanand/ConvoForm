@@ -82,15 +82,18 @@ export const WelcomeScreen = ({
               delay: 0.4,
               bounce: 0.5,
             }}
+            layoutId="start-conversation"
           >
-            <Button
-              disabled={isStartingConversation}
-              size="lg"
-              className="font-montserrat whitespace-break-spaces rounded-full  font-medium transition-all hover:scale-110 active:scale-100 text-2xl h-auto py-4 gap-2"
-              onClick={handleCTAClick}
-            >
-              {isStartingConversation && <Spinner />} {CTALabel}
-            </Button>
+            <motion.span>
+              <Button
+                disabled={isStartingConversation}
+                size="lg"
+                className="font-montserrat whitespace-break-spaces rounded-full  font-medium transition-all hover:scale-110 active:scale-100 text-2xl h-auto py-4 gap-2"
+                onClick={handleCTAClick}
+              >
+                {isStartingConversation && <Spinner />} {CTALabel}
+              </Button>
+            </motion.span>
           </motion.div>
         </div>
       </div>
