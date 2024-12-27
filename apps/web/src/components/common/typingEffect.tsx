@@ -1,7 +1,7 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-
 interface TypingEffectProps {
   text: string;
   typingSpeed?: number;
@@ -44,11 +44,18 @@ export function TypingEffect({ text, typingSpeed = 15 }: TypingEffectProps) {
   return (
     <span className="inline">
       {displayedText}
-      {isTyping && (
-        <span className="inline text-muted-foreground font-extrabold animate-ping">
-          {" |"}
-        </span>
-      )}
+      {isTyping && <TypingCursor />}
     </span>
+  );
+}
+
+export function TypingCursor() {
+  return (
+    <motion.span
+      layoutId="typing-cursor"
+      className="inline text-muted-foreground font-extrabold animate-ping"
+    >
+      {" |"}
+    </motion.span>
   );
 }
