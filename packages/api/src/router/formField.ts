@@ -8,7 +8,8 @@ import {
 } from "@convoform/db/src/schema";
 
 import { checkRateLimitThrowTRPCError } from "../lib/utils";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { protectedProcedure } from "../middlewares/protectedRoutes";
+import { createTRPCRouter } from "../trpc";
 
 export const formFieldRouter = createTRPCRouter({
   // Create form field
@@ -43,6 +44,10 @@ export const formFieldRouter = createTRPCRouter({
       if (!savedFormField) {
         throw new Error("Failed to create form field");
       }
+
+      ctx.analytics.track("formField:create", {
+        properties: savedFormField,
+      });
 
       // Update form fields orders
       let updatedFormFieldsOrders: string[] = [];
@@ -90,6 +95,10 @@ export const formFieldRouter = createTRPCRouter({
       if (!updatedFormField) {
         throw new Error("Failed to update form field");
       }
+
+      ctx.analytics.track("formField:update", {
+        properties: input,
+      });
     }),
 
   // Update the whole form field
@@ -113,6 +122,10 @@ export const formFieldRouter = createTRPCRouter({
       if (!updatedFormField) {
         throw new Error("Failed to update form field");
       }
+
+      ctx.analytics.track("formField:update", {
+        properties: input,
+      });
     }),
 
   // Delete form field
@@ -127,6 +140,10 @@ export const formFieldRouter = createTRPCRouter({
       if (!deletedFormField) {
         throw new Error("Failed to delete form field");
       }
+
+      ctx.analytics.track("formField:delete", {
+        properties: deletedFormField,
+      });
 
       // Update form fields orders
       const existForm = await ctx.db.query.form.findFirst({

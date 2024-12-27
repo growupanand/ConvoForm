@@ -6,12 +6,12 @@ import { TooltipProvider } from "@convoform/ui/components/ui/tooltip";
 import { GeistSans } from "geist/font/sans";
 import type { Viewport } from "next";
 
-import GoogleAnalytics from "@/components/googleAnalytics";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ViewTransitions } from "next-view-transitions";
 
 import "../globals.css";
 import "nprogress/nprogress.css";
+import { CSPostHogProvider } from "@/components/analytics/analyticsProvider";
 import { cn } from "@/lib/utils";
 import { montserrat } from "./fonts";
 
@@ -76,18 +76,16 @@ export default function RootLayout({
   return (
     <ViewTransitions>
       <html lang="en" className={cn(GeistSans.variable, montserrat.variable)}>
-        <body className="antialiased font-sans">
-          {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
-            <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
-          ) : null}
+        <CSPostHogProvider>
+          <body className="antialiased font-sans">
+            <TooltipProvider delayDuration={200}>
+              <TRPCReactProvider>{children}</TRPCReactProvider>
+            </TooltipProvider>
 
-          <TooltipProvider delayDuration={200}>
-            <TRPCReactProvider>{children}</TRPCReactProvider>
-          </TooltipProvider>
-
-          <Toaster />
-          <SonnerToaster />
-        </body>
+            <Toaster />
+            <SonnerToaster />
+          </body>
+        </CSPostHogProvider>
       </html>
     </ViewTransitions>
   );

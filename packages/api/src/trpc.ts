@@ -2,10 +2,10 @@
  * Reference - https://github.com/t3-oss/create-t3-turbo
  */
 
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@convoform/db";
 import { isRateLimitError } from "@convoform/rate-limiter";
-import { TRPCError, initTRPC } from "@trpc/server";
+import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -25,6 +25,7 @@ export const createTRPCContext = async () => {
   return {
     db,
     auth: auth(),
+    user: await currentUser(),
   };
 };
 
@@ -36,7 +37,7 @@ export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
-const t = initTRPC.context<TRPCContext>().create({
+export const t = initTRPC.context<TRPCContext>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => {
     // Add rate limit error data into response
@@ -78,28 +79,3 @@ export const createCaller = t.createCallerFactory;
  */
 export const createTRPCRouter = t.router;
 export const mergeRouters = t.mergeRouters;
-
-/**
- * Public (unauthed) procedure
- *
- * This is the base piece you use to build new queries and mutations on your
- * tRPC API. It does not guarantee that a user querying is authorized, but you
- * can still access user session data if they are logged in
- */
-export const publicProcedure = t.procedure;
-
-/**
- * Protected (authenticated) procedure
- *
- * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
- * the session is valid and guarantees `ctx.session.user` is not null.
- *
- * @see https://trpc.io/docs/procedures
- */
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.auth?.userId) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-  // Make ctx.userId non-nullable in protected procedures
-  return next({ ctx: { userId: ctx.auth.userId, auth: ctx.auth } });
-});

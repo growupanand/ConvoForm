@@ -1,10 +1,5 @@
 import { type AppRouter, appRouter } from "./src/router/root";
-import {
-  type TRPCContext,
-  createCaller,
-  createTRPCContext,
-  protectedProcedure,
-} from "./src/trpc";
+import { type TRPCContext, createCaller, createTRPCContext } from "./src/trpc";
 
 export type { AppRouter, TRPCContext };
-export { createTRPCContext, appRouter, protectedProcedure, createCaller };
+export { createTRPCContext, appRouter, createCaller };

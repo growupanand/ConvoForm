@@ -1,3 +1,4 @@
+import { analytics } from "@convoform/analytics";
 import { eq } from "@convoform/db";
 import {
   insertOrganizationMemberSchema,
@@ -9,14 +10,23 @@ import {
 } from "@convoform/db/src/schema";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { publicProcedure } from "../middlewares/publicRoutes";
+import { createTRPCRouter } from "../trpc";
 
 export const webhookRouter = createTRPCRouter({
   userCreated: publicProcedure
     .input(insertUserSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        await ctx.db.insert(user).values(input);
+        const [newUser] = await ctx.db.insert(user).values(input).returning();
+
+        analytics.track("user:create", {
+          properties: newUser,
+        });
+
+        if (newUser?.email) {
+          analytics.alias(newUser.email, newUser.id);
+        }
       } catch (e: any) {
         console.error({
           message: "Webhook event error: Unable to save user data",
@@ -33,7 +43,13 @@ export const webhookRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       try {
-        await ctx.db.delete(user).where(eq(user.id, input.userId));
+        const [deletedUser] = await ctx.db
+          .delete(user)
+          .where(eq(user.id, input.userId))
+          .returning();
+        analytics.track("user:delete", {
+          properties: deletedUser,
+        });
       } catch (e: any) {
         console.error({
           message: "Webhook event error: Unable to delete user data",
@@ -46,7 +62,13 @@ export const webhookRouter = createTRPCRouter({
     .input(insertOrganizationMemberSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        await ctx.db.insert(organizationMember).values(input);
+        const [data] = await ctx.db
+          .insert(organizationMember)
+          .values(input)
+          .returning();
+        analytics.track("organizationMember:create", {
+          properties: data,
+        });
       } catch (e: any) {
         console.error({
           message: "Webhook event error: Unable to save organization data",
@@ -63,9 +85,14 @@ export const webhookRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       try {
-        await ctx.db
+        const [data] = await ctx.db
           .delete(organizationMember)
-          .where(eq(organizationMember.memberId, input.membershipId));
+          .where(eq(organizationMember.memberId, input.membershipId))
+          .returning();
+
+        analytics.track("organizationMember:delete", {
+          properties: data,
+        });
       } catch (e: any) {
         console.error({
           message: "Webhook event error: Unable to delete organization data",
@@ -87,10 +114,15 @@ export const webhookRouter = createTRPCRouter({
         await ctx.db
           .delete(organizationMember)
           .where(eq(organizationMember.organizationId, input.organizationId));
+
         // delete the organization
-        await ctx.db
+        const [data] = await ctx.db
           .delete(organization)
-          .where(eq(organization.organizationId, input.organizationId));
+          .where(eq(organization.organizationId, input.organizationId))
+          .returning();
+        analytics.track("organization:delete", {
+          properties: data,
+        });
       } catch (e: any) {
         console.error({
           message: "Webhook event error: Unable to save organization data",
@@ -103,7 +135,13 @@ export const webhookRouter = createTRPCRouter({
     .input(insertOrganizationSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        await ctx.db.insert(organization).values(input);
+        const [data] = await ctx.db
+          .insert(organization)
+          .values(input)
+          .returning();
+        analytics.track("organization:create", {
+          properties: data,
+        });
       } catch (e: any) {
         console.error({
           message: "Webhook event error: Unable to save organization data",

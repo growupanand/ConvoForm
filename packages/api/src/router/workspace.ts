@@ -7,7 +7,8 @@ import {
 import { z } from "zod";
 
 import { checkRateLimitThrowTRPCError } from "../lib/utils";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { protectedProcedure } from "../middlewares/protectedRoutes";
+import { createTRPCRouter } from "../trpc";
 
 export const workspaceRouter = createTRPCRouter({
   create: protectedProcedure
@@ -29,6 +30,10 @@ export const workspaceRouter = createTRPCRouter({
       if (!result) {
         throw new Error("Unable to create workspace");
       }
+
+      ctx.analytics.track("workspace:create", {
+        properties: result,
+      });
 
       return result;
     }),
@@ -70,7 +75,14 @@ export const workspaceRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.db.delete(workspace).where(eq(workspace.id, input.id));
+      const [deletedWorkspace] = await ctx.db
+        .delete(workspace)
+        .where(eq(workspace.id, input.id))
+        .returning();
+      ctx.analytics.track("workspace:delete", {
+        properties: deletedWorkspace,
+      });
+      return deletedWorkspace;
     }),
 
   patch: protectedProcedure
@@ -85,6 +97,10 @@ export const workspaceRouter = createTRPCRouter({
         .set({ name: input.name })
         .where(eq(workspace.id, input.id))
         .returning();
+
+      ctx.analytics.track("workspace:update", {
+        properties: input,
+      });
 
       return updatedWorkspace;
     }),
