@@ -1,5 +1,27 @@
 
 
+## [0.16.0](https://github.com/growupanand/ConvoForm/compare/0.15.0...0.16.0) (2024-12-27)
+
+
+### Features
+
+* 🚀 add start over button in form submit page ([1379738](https://github.com/growupanand/ConvoForm/commit/137973897491cb50131bb8c8acbc012b392aa965)), closes [#403](https://github.com/growupanand/ConvoForm/issues/403)
+* 🚀 add stats page for form responses ([4c57c22](https://github.com/growupanand/ConvoForm/commit/4c57c22b34b608f695844f6dbef244d081d88aed)), closes [#375](https://github.com/growupanand/ConvoForm/issues/375)
+
+
+### Bug Fixes
+
+* 🐛 public tRPC routes is not working if not provided in middle ([ba92c33](https://github.com/growupanand/ConvoForm/commit/ba92c334cef89253c7e4abf907efeabc9ae09a48))
+
+
+### Improvements
+
+* ⚡️Improved platform analytics event tracking ([#406](https://github.com/growupanand/ConvoForm/issues/406)) ([b3359b7](https://github.com/growupanand/ConvoForm/commit/b3359b77d7bf1d3ba797b69c95e428ab8a1c1b68))
+* 💄 added demo section in landing page ([44deea2](https://github.com/growupanand/ConvoForm/commit/44deea22f889b9ddd25f8d97f04ca0f31f0ac01c))
+* 💄 added response card in landing page for demo form ([de69e75](https://github.com/growupanand/ConvoForm/commit/de69e7570c9e43acfb94c32f7e6246710e8c04ff))
+* 💄 improve responses table ([2033b24](https://github.com/growupanand/ConvoForm/commit/2033b24ce6e0ec68301666f12b47324fdd612cd6))
+* 💡 added FormContextProvider for handling FormViewer flow easy ([abb8422](https://github.com/growupanand/ConvoForm/commit/abb8422a23e755a3c13b45f2f2097269cb01f1b4))
+
 ## [0.15.0](https://github.com/growupanand/ConvoForm/compare/0.14.0...0.15.0) (2024-10-14)
 
 

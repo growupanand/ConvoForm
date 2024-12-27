@@ -1,5 +1,57 @@
 export const releases = [
   {
+    version: "0.16.0",
+    isoDate: "2024-12-27",
+    commits: [
+      {
+        type: "features",
+        message:
+          "feat: 🚀 add stats page for form responses\n\nas form creator, i can see form responses related stats, E.g Total count, completed count, partial\ncount, live count\n\n✅ Closes: #375",
+        href: "https://github.com/growupanand/ConvoForm/commit/4c57c22b34b608f695844f6dbef244d081d88aed",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 add start over button in form submit page\n\nrespondant can reset form and start from beginning\n\n✅ Closes: #403",
+        href: "https://github.com/growupanand/ConvoForm/commit/137973897491cb50131bb8c8acbc012b392aa965",
+      },
+      {
+        type: "improvements",
+        message: "style: 💄 improve responses table",
+        href: "https://github.com/growupanand/ConvoForm/commit/2033b24ce6e0ec68301666f12b47324fdd612cd6",
+      },
+      {
+        type: "improvements",
+        message:
+          "refactor: 💡 added FormContextProvider for handling FormViewer flow easy\n\nMoved useConvoForm and useFormDesign into FormContextProvider",
+        href: "https://github.com/growupanand/ConvoForm/commit/abb8422a23e755a3c13b45f2f2097269cb01f1b4",
+      },
+      {
+        type: "improvements",
+        message:
+          "style: 💄 added response card in landing page for demo form\n\n✅ Closes: 395",
+        href: "https://github.com/growupanand/ConvoForm/commit/de69e7570c9e43acfb94c32f7e6246710e8c04ff",
+      },
+      {
+        type: "improvements",
+        message:
+          "style: 💄 added demo section in landing page\n\nDemo section will show an live demo form, it will render only on desktop screen\n\n✅ Closes: 363",
+        href: "https://github.com/growupanand/ConvoForm/commit/44deea22f889b9ddd25f8d97f04ca0f31f0ac01c",
+      },
+      {
+        type: "improvements",
+        message: "perf: ⚡️Improved platform analytics event tracking",
+        href: "https://github.com/growupanand/ConvoForm/pull/406",
+      },
+      {
+        type: "fixes",
+        message:
+          "fix: 🐛 public tRPC routes is not working if not provided in middle",
+        href: "https://github.com/growupanand/ConvoForm/commit/ba92c334cef89253c7e4abf907efeabc9ae09a48",
+      },
+    ],
+  },
+  {
     version: "0.15.0",
     isoDate: "2024-10-14",
     commits: [
@@ -7,7 +59,7 @@ export const releases = [
         type: "features",
         message:
           "feat: 🚀 fill text from templates for generate form by AI\n\n✅ Closes: 298",
-        href: "https://github.com/growupanand/ConvoForm/commit/dbbec90549b717cb6a58a74d21a48ad503c49686",
+        href: "https://github.com/growupanand/ConvoForm/commit/0b312160efbf19fa3362bce9a11aff27a079c210",
       },
       {
         type: "improvements",
