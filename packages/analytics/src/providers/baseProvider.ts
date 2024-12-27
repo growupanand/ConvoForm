@@ -1,4 +1,9 @@
-import type { UserIdentity } from "../schema";
+import type {
+  EventGroupName,
+  EventName,
+  EventProperties,
+  UserIdentity,
+} from "../schema";
 
 // packages/analytics/src/providers/baseProvider.ts
 export abstract class BaseProvider {
@@ -9,8 +14,11 @@ export abstract class BaseProvider {
 export type Identify = (user: UserIdentity) => void;
 
 export type Track = (
-  eventName: string,
-  properties?: Record<string, any> & {
-    userId?: string;
+  eventName: EventName,
+  eventDetails: {
+    properties?: EventProperties;
+    groups?: {
+      [key in EventGroupName]?: string;
+    };
   },
 ) => void;

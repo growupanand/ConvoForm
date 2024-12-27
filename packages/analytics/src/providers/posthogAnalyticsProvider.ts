@@ -1,4 +1,6 @@
 import { PostHog } from "posthog-node";
+import { repoPackageVersion } from "../constants";
+import { isUserEmployee } from "../utils";
 import { BaseProvider, type Identify, type Track } from "./baseProvider";
 
 export class PosthogAnalyticsProvider extends BaseProvider {
@@ -32,10 +34,18 @@ export class PosthogAnalyticsProvider extends BaseProvider {
     this.distinctId = userId;
   };
 
-  track: Track = (eventName, properties) => {
+  track: Track = (eventName, { properties, groups }) => {
+    const userId = properties?.userId ?? this.distinctId;
+
     this.client?.capture({
-      distinctId: properties?.userId ?? this.distinctId,
+      distinctId: userId,
       event: eventName,
+      properties: {
+        ...properties,
+        appVersion: repoPackageVersion,
+        isUserEmployee: isUserEmployee(userId),
+      },
+      groups,
     });
   };
 

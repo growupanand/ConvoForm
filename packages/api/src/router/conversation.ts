@@ -8,6 +8,7 @@ import {
 } from "@convoform/db/src/schema";
 import { z } from "zod";
 
+import { analytics } from "@convoform/analytics";
 import { protectedProcedure } from "../middlewares/protectedRoutes";
 import { publicProcedure } from "../middlewares/publicRoutes";
 import { createTRPCRouter } from "../trpc";
@@ -109,9 +110,16 @@ export const conversationRouter = createTRPCRouter({
           updatedAt: new Date(),
         })
         .returning();
+
       if (!result) {
         throw new Error("Failed to create conversation");
       }
+
+      analytics.track("conversation:create", {
+        properties: {
+          ...result,
+        },
+      });
 
       const parsedCollectedData = collectedData.map((collection) => {
         if (collection.fieldConfiguration === undefined) {
@@ -230,27 +238,6 @@ export const conversationRouter = createTRPCRouter({
 
       return result;
     }),
-
-  updateFinishedStatus: publicProcedure
-    .input(
-      updateConversationSchema.pick({ id: true, name: true, isFinished: true }),
-    )
-    .mutation(async ({ input, ctx }) => {
-      const [result] = await ctx.db
-        .update(conversation)
-        .set({
-          isFinished: input.isFinished,
-          name: input.name,
-          updatedAt: new Date(),
-        })
-        .where(eq(conversation.id, input.id))
-        .returning();
-      if (!result) {
-        throw new Error("Failed to update conversation");
-      }
-
-      return result;
-    }),
   updateInProgressStatus: publicProcedure
     .input(
       updateConversationSchema.pick({
@@ -324,6 +311,10 @@ export const conversationRouter = createTRPCRouter({
       if (!updatedConversation) {
         throw new Error("Failed to update conversation");
       }
+
+      analytics.track("conversation:update", {
+        properties: input,
+      });
     }),
 
   stats: publicProcedure

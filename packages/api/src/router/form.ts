@@ -58,6 +58,16 @@ export const formRouter = createTRPCRouter({
         throw new Error("Failed to create form");
       }
 
+      ctx.analytics.track("form:create", {
+        properties: {
+          ...savedForm,
+        },
+        groups: {
+          workspace: savedForm.workspaceId,
+          organization: savedForm.organizationId,
+        },
+      });
+
       // Create new form fields
       const emptyFormField: z.infer<typeof insertFormFieldSchema> = {
         fieldName: "",
@@ -76,6 +86,24 @@ export const formRouter = createTRPCRouter({
         .insert(formField)
         .values(givenFormFields.length > 0 ? givenFormFields : [emptyFormField])
         .returning();
+
+      if (!savedFormFields) {
+        throw new Error("Failed to create form fields");
+      }
+
+      if (givenFormFields.length > 0) {
+        for (const field of savedFormFields) {
+          ctx.analytics.track("formField:create", {
+            properties: {
+              ...field,
+            },
+            groups: {
+              workspace: savedForm.workspaceId,
+              organization: savedForm.organizationId,
+            },
+          });
+        }
+      }
 
       // Add form fields order
       const formFieldsOrders = savedFormFields.map((field) => field.id);
@@ -198,7 +226,23 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.db.delete(form).where(eq(form.id, input.id));
+      const [result] = await ctx.db
+        .delete(form)
+        .where(eq(form.id, input.id))
+        .returning();
+
+      if (result) {
+        ctx.analytics.track("form:delete", {
+          properties: {
+            ...result,
+          },
+          groups: {
+            workspace: result.workspaceId,
+          },
+        });
+      }
+
+      return result;
     }),
 
   // Patch partial form
@@ -222,6 +266,16 @@ export const formRouter = createTRPCRouter({
       if (!updatedForm) {
         throw new Error("Failed to update form");
       }
+
+      ctx.analytics.track("form:update", {
+        properties: input,
+        groups: {
+          workspace: updatedForm.workspaceId,
+          organization: updatedForm.organizationId,
+        },
+      });
+
+      return updatedForm;
     }),
 
   // Update the whole form
@@ -247,6 +301,18 @@ export const formRouter = createTRPCRouter({
         .where(eq(form.id, input.id))
         .returning();
 
+      if (!updatedForm) {
+        throw new Error("Failed to update form");
+      }
+
+      ctx.analytics.track("form:update", {
+        properties: input,
+        groups: {
+          workspace: updatedForm.workspaceId,
+          organization: updatedForm.organizationId,
+        },
+      });
+
       return updatedForm;
     }),
 
@@ -257,7 +323,19 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.db.delete(form).where(eq(form.id, input.id));
+      const [deletedForm] = await ctx.db
+        .delete(form)
+        .where(eq(form.id, input.id))
+        .returning();
+      if (deletedForm) {
+        ctx.analytics.track("form:delete", {
+          properties: {
+            ...deletedForm,
+          },
+        });
+      }
+
+      return deletedForm;
     }),
 
   getAIGeneratedCountByOrganization: publicProcedure
