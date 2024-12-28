@@ -19,6 +19,20 @@ type Props = {
   params: { formId: string };
 };
 
+function FormPageLoading() {
+  return (
+    <div className="h-full flex">
+      <div className="px-3 max-h-[calc(100vh-100px)] w-[400px] min-w-[400px] overflow-auto">
+        <MainNavTab.Skeleton />
+        <Card className="border-0 bg-transparent shadow-none">
+          <CardContent className="p-0 pt-6" />
+        </Card>
+      </div>
+      <div className="flex grow items-center justify-center py-3 " />
+    </div>
+  );
+}
+
 export default function FormPage({ params: { formId } }: Props) {
   const { organization, isLoaded } = useOrganization();
   const { isLoading, data, isError } = api.form.getOneWithFields.useQuery(
@@ -68,21 +82,5 @@ export default function FormPage({ params: { formId } }: Props) {
         </div>
       </div>
     </FormContextProvider>
-  );
-}
-
-function FormPageLoading() {
-  return (
-    <div className="h-full flex">
-      <div className="px-3 max-h-[calc(100vh-100px)] w-[400px] min-w-[400px] overflow-auto">
-        <MainNavTab.Skeleton />
-        <Card className="border-0 bg-transparent shadow-none">
-          <CardContent className="p-0 pt-6">
-            <FormEditorFormSkeleton />
-          </CardContent>
-        </Card>
-      </div>
-      <div className="flex grow items-center justify-center py-3 " />
-    </div>
   );
 }
