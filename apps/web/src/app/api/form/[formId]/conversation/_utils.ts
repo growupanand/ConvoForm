@@ -4,7 +4,8 @@ import type {
   Form,
 } from "@convoform/db/src/schema";
 
-import { formSubmissionLimit } from "@/lib/config/pricing";
+import { formSubmissionLimit } from "@convoform/common";
+
 import { api } from "@/trpc/server";
 
 /**
@@ -59,10 +60,11 @@ export const checkNThrowErrorFormSubmissionLimit = async (
   }
 
   // get all conversations count for current organization
-  const totalSubmissionsCount =
-    await api.conversation.getResponseCountByOrganization({
+  const totalSubmissionsCount = await api.conversation.getCountByOrganizationId(
+    {
       organizationId: form.organizationId,
-    });
+    },
+  );
 
   if (!totalSubmissionsCount) {
     console.error("Unable to get total submissions count", {

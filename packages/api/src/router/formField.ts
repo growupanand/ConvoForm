@@ -8,12 +8,12 @@ import {
 } from "@convoform/db/src/schema";
 
 import { checkRateLimitThrowTRPCError } from "../lib/utils";
-import { protectedProcedure } from "../middlewares/protectedRoutes";
+import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { createTRPCRouter } from "../trpc";
 
 export const formFieldRouter = createTRPCRouter({
   // Create form field
-  createFormField: protectedProcedure
+  createFormField: authProtectedProcedure
     .input(insertFormFieldSchema)
     .mutation(async ({ input, ctx }) => {
       await checkRateLimitThrowTRPCError({
@@ -74,7 +74,7 @@ export const formFieldRouter = createTRPCRouter({
     }),
 
   // Patch partial form field
-  patchFormField: protectedProcedure
+  patchFormField: authProtectedProcedure
     .input(patchFormFieldSchema)
     .mutation(async ({ input, ctx }) => {
       await checkRateLimitThrowTRPCError({
@@ -102,7 +102,7 @@ export const formFieldRouter = createTRPCRouter({
     }),
 
   // Update the whole form field
-  updateFormField: protectedProcedure
+  updateFormField: authProtectedProcedure
     .input(updateFormFieldSchema)
     .mutation(async ({ input, ctx }) => {
       await checkRateLimitThrowTRPCError({
@@ -129,7 +129,7 @@ export const formFieldRouter = createTRPCRouter({
     }),
 
   // Delete form field
-  deleteFormField: protectedProcedure
+  deleteFormField: authProtectedProcedure
     .input(updateFormFieldSchema.pick({ id: true }))
     .mutation(async ({ input, ctx }) => {
       const { id } = input;

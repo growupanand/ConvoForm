@@ -8,12 +8,12 @@ import {
 import { z } from "zod";
 
 import { checkRateLimitThrowTRPCError } from "../lib/utils";
-import { protectedProcedure } from "../middlewares/protectedRoutes";
-import { publicProcedure } from "../middlewares/publicRoutes";
+import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
+import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
 
 export const formDesignRouter = createTRPCRouter({
-  create: protectedProcedure
+  create: authProtectedProcedure
     .input(insertFormDesignSchema)
     .mutation(async ({ input, ctx }) => {
       await checkRateLimitThrowTRPCError({
@@ -83,7 +83,7 @@ export const formDesignRouter = createTRPCRouter({
       });
     }),
 
-  delete: protectedProcedure
+  delete: authProtectedProcedure
     .input(
       z.object({
         id: z.string().min(1),
@@ -93,7 +93,7 @@ export const formDesignRouter = createTRPCRouter({
       return await ctx.db.delete(formDesign).where(eq(formDesign.id, input.id));
     }),
 
-  patch: protectedProcedure
+  patch: authProtectedProcedure
     .input(patchFormDesignSchema)
     .mutation(async ({ input, ctx }) => {
       await checkRateLimitThrowTRPCError({

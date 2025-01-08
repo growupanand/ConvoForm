@@ -1,4 +1,3 @@
-import { Badge } from "@convoform/ui/components/ui/badge";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   Card,
@@ -11,8 +10,7 @@ import { CheckCircle } from "lucide-react";
 
 import { LinkN } from "@/components/common/linkN";
 import { SectionCard } from "@/components/sectionCard";
-import { freePlan } from "@/lib/config/pricing";
-import type { Plan } from "@/lib/types/pricing";
+import { type Plan, freePlan } from "@convoform/common";
 
 export function Pricing() {
   return (
@@ -30,28 +28,29 @@ const FeatureListItem = ({
   featureText: string;
 }) => {
   return (
-    <div className="flex items-start justify-between space-x-10">
+    <div className="flex items-start justify-between space-x-10 text-sm">
       <div className="flex items-start gap-2">
         <div className="mt-1">
           <CheckCircle color="green" size={15} />
         </div>
-        <div className="text-lg">{featureName}</div>
+        <div className="">{featureName}</div>
       </div>
-      <div className="text-lg whitespace-nowrap font-medium">{featureText}</div>
+      <div className=" whitespace-nowrap font-medium">{featureText}</div>
     </div>
   );
 };
 
 const PlanCard = ({ plan }: { plan: Plan }) => {
   return (
-    <Card className="w-fit font-montserrat">
+    <Card className="w-fit font-montserrat shadow-lg">
       <CardHeader>
         <CardTitle>
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-medium capitalize">{plan.name}</span>
-            <Badge variant="secondary" className="text-sm">
-              {plan.price}
-            </Badge>
+            <span className="text-lg font-medium capitalize">{plan.name}</span>
+            <span className="text-xl">
+              {plan.price}{" "}
+              <span className="text-sm text-muted-foreground">/month</span>
+            </span>
           </div>
         </CardTitle>
       </CardHeader>

@@ -2,11 +2,11 @@ import { eq } from "@convoform/db";
 import { organization } from "@convoform/db/src/schema";
 import { z } from "zod";
 
-import { protectedProcedure } from "../middlewares/protectedRoutes";
+import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { createTRPCRouter } from "../trpc";
 
 export const organizationRouter = createTRPCRouter({
-  getOne: protectedProcedure
+  getOne: authProtectedProcedure
     .input(
       z.object({
         organizationId: z.string().min(1),

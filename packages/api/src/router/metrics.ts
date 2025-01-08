@@ -3,12 +3,11 @@ import { conversation, form } from "@convoform/db/src/schema";
 import { z } from "zod";
 
 import { getCurrentMonthDaysArray } from "../lib/utils";
-import { protectedProcedure } from "../middlewares/protectedRoutes";
-import { publicProcedure } from "../middlewares/publicRoutes";
+import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { createTRPCRouter } from "../trpc";
 
 export const metricsRouter = createTRPCRouter({
-  getFormMetrics: protectedProcedure
+  getFormMetrics: authProtectedProcedure
     .input(
       z.object({
         organizationId: z.string().min(1),
@@ -79,7 +78,7 @@ export const metricsRouter = createTRPCRouter({
       };
     }),
 
-  getConversationMetrics: protectedProcedure
+  getConversationMetrics: authProtectedProcedure
     .input(
       z.object({
         organizationId: z.string().min(1).optional(),
@@ -169,20 +168,5 @@ export const metricsRouter = createTRPCRouter({
         data: conversationCountDataArray,
         lastCreatedAt,
       };
-    }),
-
-  getResponsesCount: publicProcedure
-    .input(
-      z.object({
-        organizationId: z.string().min(1),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      const [result] = await ctx.db
-        .select({ value: count() })
-        .from(conversation)
-        .where(eq(conversation.organizationId, input.organizationId));
-
-      return result?.value ?? 0;
     }),
 });

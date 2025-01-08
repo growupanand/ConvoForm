@@ -17,13 +17,13 @@ import {
   FORM_SECTIONS_ENUMS_VALUES,
 } from "@convoform/db/src/schema/formDesigns/constants";
 import { checkRateLimitThrowTRPCError } from "../lib/utils";
-import { protectedProcedure } from "../middlewares/protectedRoutes";
-import { publicProcedure } from "../middlewares/publicRoutes";
+import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
+import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
 
 export const formRouter = createTRPCRouter({
   // Create form
-  create: protectedProcedure
+  create: authProtectedProcedure
     .input(
       newFormSchema.extend({
         workspaceId: z.string().min(1),
@@ -131,7 +131,7 @@ export const formRouter = createTRPCRouter({
     }),
 
   // Get all forms list
-  getAll: protectedProcedure
+  getAll: authProtectedProcedure
     .input(
       z.object({
         organizationId: z.string().min(1),
@@ -219,7 +219,7 @@ export const formRouter = createTRPCRouter({
       };
     }),
 
-  delete: protectedProcedure
+  delete: authProtectedProcedure
     .input(
       z.object({
         id: z.string().min(1),
@@ -246,7 +246,7 @@ export const formRouter = createTRPCRouter({
     }),
 
   // Patch partial form
-  patch: protectedProcedure
+  patch: authProtectedProcedure
     .input(patchFormSchema)
     .mutation(async ({ input, ctx }) => {
       await checkRateLimitThrowTRPCError({
@@ -279,7 +279,7 @@ export const formRouter = createTRPCRouter({
     }),
 
   // Update the whole form
-  updateForm: protectedProcedure
+  updateForm: authProtectedProcedure
     .input(updateFormSchema.omit({ formFields: true }))
     .mutation(async ({ input, ctx }) => {
       await checkRateLimitThrowTRPCError({
@@ -316,7 +316,7 @@ export const formRouter = createTRPCRouter({
       return updatedForm;
     }),
 
-  deleteForm: protectedProcedure
+  deleteForm: authProtectedProcedure
     .input(
       z.object({
         id: z.string().min(1),
@@ -358,7 +358,7 @@ export const formRouter = createTRPCRouter({
       return result?.value;
     }),
 
-  updateShowOrganizationName: protectedProcedure
+  updateShowOrganizationName: authProtectedProcedure
     .input(
       z.object({
         formId: z.string().min(1),
@@ -382,7 +382,7 @@ export const formRouter = createTRPCRouter({
         .where(eq(form.id, input.formId));
     }),
 
-  updateShowOrganizationLogo: protectedProcedure
+  updateShowOrganizationLogo: authProtectedProcedure
     .input(
       z.object({
         formId: z.string().min(1),
@@ -406,7 +406,7 @@ export const formRouter = createTRPCRouter({
         .where(eq(form.id, input.formId));
     }),
 
-  updateShowCustomEndScreenMessage: protectedProcedure
+  updateShowCustomEndScreenMessage: authProtectedProcedure
     .input(
       z.object({
         formId: z.string().min(1),
@@ -427,7 +427,7 @@ export const formRouter = createTRPCRouter({
         .where(eq(form.id, input.formId));
     }),
 
-  updateIsPublished: protectedProcedure
+  updateIsPublished: authProtectedProcedure
     .input(
       z.object({
         formId: z.string().min(1),

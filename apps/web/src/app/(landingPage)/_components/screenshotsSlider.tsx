@@ -108,7 +108,7 @@ export function ScreenshotSlider() {
         <CarouselNext />
       </Carousel>
       <div className="mt-5 ">
-        <div className="text-2xl font-light" ref={scope}>
+        <div className="text-lg font-light" ref={scope}>
           {currentScreenshotData?.description}
         </div>
       </div>

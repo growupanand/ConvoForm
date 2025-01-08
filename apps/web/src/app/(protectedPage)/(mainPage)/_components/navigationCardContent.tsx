@@ -13,6 +13,7 @@ import type { NavLink, NavigationConfig } from "@/lib/types/navigation";
 import { api } from "@/trpc/react";
 import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 import { NavigationLinks } from "./mainNavigation/mainNavigation";
+import { UsageCard } from "./usageCard";
 
 type Props = {
   orgId: string;
@@ -115,7 +116,7 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
   );
 
   const UserActions = () => (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between py-4">
       <ClerkLoading>
         <Skeleton className="h-10 w-full animate-pulse rounded-full" />
         <Skeleton className="h-10 w-10 animate-pulse rounded-full" />
@@ -139,7 +140,8 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
         </div>
         <NavigationLinks navigationLinks={navigationLinks} />
       </div>
-      <div>
+      <div className="grid gap-y-4">
+        <UsageCard key={orgId} />
         <UserActions />
       </div>
     </nav>

@@ -9,12 +9,12 @@ import {
 import { z } from "zod";
 
 import { analytics } from "@convoform/analytics";
-import { protectedProcedure } from "../middlewares/protectedRoutes";
-import { publicProcedure } from "../middlewares/publicRoutes";
+import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
+import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
 
 export const conversationRouter = createTRPCRouter({
-  getAll: protectedProcedure
+  getAll: authProtectedProcedure
     .input(
       z.object({
         formId: z.string().min(1),
@@ -138,7 +138,7 @@ export const conversationRouter = createTRPCRouter({
       };
     }),
 
-  getResponseCountByOrganization: publicProcedure
+  getCountByOrganizationId: publicProcedure
     .input(
       z.object({
         organizationId: z.string().min(1),
@@ -152,7 +152,7 @@ export const conversationRouter = createTRPCRouter({
 
       return result?.value;
     }),
-  getFormResponsesData: protectedProcedure
+  getFormResponsesData: authProtectedProcedure
     .input(
       z.object({
         formId: z.string().min(1),
@@ -173,7 +173,7 @@ export const conversationRouter = createTRPCRouter({
       });
     }),
 
-  getRecentResponses: protectedProcedure
+  getRecentResponses: authProtectedProcedure
     .input(
       z.object({
         take: z.number().int().positive(),
@@ -261,7 +261,7 @@ export const conversationRouter = createTRPCRouter({
       return result;
     }),
 
-  getCountByFormIds: protectedProcedure
+  getCountByFormIds: authProtectedProcedure
     .input(
       z.object({
         organizationId: z.string().min(1),
