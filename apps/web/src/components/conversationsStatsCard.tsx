@@ -7,37 +7,27 @@ import { api } from "@/trpc/react";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 
 type ConversationsStatsCardProps = {
-  formId: string;
+  formId?: string;
+  title?: string;
 };
 
 export const ConversationsStatsCard = ({
   formId,
+  title = "Total responses",
 }: ConversationsStatsCardProps) => {
   const statsQuery = api.conversation.stats.useQuery({ formId });
   return (
     <QueryComponent
       query={statsQuery}
-      loadingComponent={
-        <div>
-          <div className="flex items-center gap-2 text-xl font-bold mb-4">
-            <span>Total</span> <Skeleton className="h-5 w-10" />
-          </div>
-
-          <div className="grid grid-cols-4 gap-4">
-            <StatsCard.Skeleton />
-            <StatsCard.Skeleton />
-            <StatsCard.Skeleton />
-          </div>
-        </div>
-      }
+      loadingComponent={<ConversationsStatsCardSkeleton title={title} />}
     >
       {(data) => (
         <div>
-          <div className="flex items-center gap-2 text-xl font-bold mb-4">
-            <span>Total</span>
-            <span className="text-muted-foreground">{data.totalCount}</span>
+          <div className="flex items-center gap-2 text-lg  font-medium mb-4">
+            <span className=" text-muted-foreground">{title}</span>
+            <span className="font-bold">{data.totalCount}</span>
           </div>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <StatsCard
               title="Completed"
               primaryValue={data.finishedTotalCount.toString()}
@@ -59,3 +49,21 @@ export const ConversationsStatsCard = ({
     </QueryComponent>
   );
 };
+
+function ConversationsStatsCardSkeleton({
+  title,
+}: Pick<ConversationsStatsCardProps, "title">) {
+  return (
+    <div>
+      <div className="flex items-center gap-2 text-xl font-bold mb-4">
+        <span>{title}</span> <Skeleton className="h-5 w-10" />
+      </div>
+
+      <div className="grid grid-cols-3 gap-4">
+        <StatsCard.Skeleton />
+        <StatsCard.Skeleton />
+        <StatsCard.Skeleton />
+      </div>
+    </div>
+  );
+}

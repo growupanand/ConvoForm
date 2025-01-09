@@ -1,4 +1,4 @@
-import { ConversationsStatsCard } from "./_components/conversationsStatsCard";
+import { ConversationsStatsCard } from "@/components/conversationsStatsCard";
 
 type Props = {
   params: { formId: string };

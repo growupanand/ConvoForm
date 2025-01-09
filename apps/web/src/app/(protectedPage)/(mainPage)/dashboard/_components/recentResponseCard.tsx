@@ -92,7 +92,7 @@ function RecentResponsesCardShell({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div>
-      <div className="text-muted-foreground font-medium lg:text-xl mb-2">
+      <div className="text-muted-foreground text-lg  font-medium mb-4">
         Recent responses
       </div>
       {children}
