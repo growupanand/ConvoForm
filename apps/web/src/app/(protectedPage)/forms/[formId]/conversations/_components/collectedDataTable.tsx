@@ -1,4 +1,5 @@
 import { getConversationTableData } from "@/components/queryComponents/table/utils";
+import { cn } from "@/lib/utils";
 import type { Conversation } from "@convoform/db/src/schema";
 
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
@@ -23,12 +24,12 @@ export function CollectedDataTable({ collectedData }: Readonly<Props>) {
           const value = tableData[columnName];
           return (
             <TableRow key={`${index}-${columnName}-${value}`}>
-              <TableCell className="py-2 align-text-top whitespace-pre-line text-justify">
+              <CollectedDataTableCell className="text-muted-foreground">
                 {columnName}
-              </TableCell>
-              <TableCell className="py-2 font-medium align-text-top whitespace-pre-line text-justify">
+              </CollectedDataTableCell>
+              <CollectedDataTableCell>
                 {tableData[columnName]}
-              </TableCell>
+              </CollectedDataTableCell>
             </TableRow>
           );
         })}
@@ -37,26 +38,41 @@ export function CollectedDataTable({ collectedData }: Readonly<Props>) {
   );
 }
 
-const TableSkeleton = ({ rowsCount = 1 }: { rowsCount?: number }) => {
+CollectedDataTable.Skeleton = ({ rowsCount = 3 }: { rowsCount?: number }) => {
   return (
-    <div className="overflow-hidden rounded-md border bg-white">
-      <Table className="">
-        <TableBody>
-          {Array.from({ length: rowsCount }).map((_, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            <TableRow key={index}>
-              <TableCell className="py-2">
-                <Skeleton className="h-4 w-full" />
-              </TableCell>
-              <TableCell className="py-2 font-medium">
-                <Skeleton className="h-4 w-full" />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    <Table className="">
+      <TableBody>
+        {Array.from({ length: rowsCount }).map((_, index) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+          <TableRow key={index}>
+            <CollectedDataTableCell>
+              <Skeleton className="h-4 w-full" />
+            </CollectedDataTableCell>
+            <CollectedDataTableCell>
+              <Skeleton className="h-4 w-full" />
+            </CollectedDataTableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 };
 
-CollectedDataTable.Skeleton = TableSkeleton;
+function CollectedDataTableCell({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: HTMLTableCellElement["className"];
+}) {
+  return (
+    <TableCell
+      className={cn(
+        "py-2 font-medium align-text-top whitespace-pre-line text-justify",
+        className,
+      )}
+    >
+      {children as string}
+    </TableCell>
+  );
+}

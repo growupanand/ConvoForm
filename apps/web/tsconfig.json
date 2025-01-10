@@ -29,7 +29,7 @@
     "**/*.jsx",
     ".next/types/**/*.ts",
     "**/*.mjs",
-    "tailwind.config.js", "../../packages/api/src/validators/form.ts",
+    "tailwind.config.js", "../../packages/api/src/validators/form.ts", "../../packages/common/src/config/bmp/pricing.ts",
   ],
   "exclude": ["node_modules"],
 }

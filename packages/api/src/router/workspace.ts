@@ -7,11 +7,11 @@ import {
 import { z } from "zod";
 
 import { checkRateLimitThrowTRPCError } from "../lib/utils";
-import { protectedProcedure } from "../middlewares/protectedRoutes";
+import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { createTRPCRouter } from "../trpc";
 
 export const workspaceRouter = createTRPCRouter({
-  create: protectedProcedure
+  create: authProtectedProcedure
     .input(insertWorkspaceSchema)
     .mutation(async ({ input, ctx }) => {
       await checkRateLimitThrowTRPCError({
@@ -37,7 +37,7 @@ export const workspaceRouter = createTRPCRouter({
 
       return result;
     }),
-  getAll: protectedProcedure
+  getAll: authProtectedProcedure
     .input(
       z.object({
         organizationId: z.string().min(1),
@@ -51,7 +51,7 @@ export const workspaceRouter = createTRPCRouter({
       });
     }),
 
-  getOne: protectedProcedure
+  getOne: authProtectedProcedure
     .input(
       z.object({
         id: z.string().min(1),
@@ -68,7 +68,7 @@ export const workspaceRouter = createTRPCRouter({
       });
     }),
 
-  delete: protectedProcedure
+  delete: authProtectedProcedure
     .input(
       z.object({
         id: z.string().min(1),
@@ -85,7 +85,7 @@ export const workspaceRouter = createTRPCRouter({
       return deletedWorkspace;
     }),
 
-  patch: protectedProcedure
+  patch: authProtectedProcedure
     .input(updateWorkspaceSchema)
     .mutation(async ({ input, ctx }) => {
       await checkRateLimitThrowTRPCError({

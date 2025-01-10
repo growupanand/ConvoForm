@@ -21,16 +21,21 @@ export const AskScreen = ({
   fontColor,
 }: Props) => {
   const isEmptyQuestion = currentQuestion.trim().length === 0;
+  const shouldShowAnswerInput = !isFormBusy && currentField;
   return (
-    <div className="flex w-full flex-col items-center justify-center">
+    <motion.div
+      className="flex w-full flex-col items-center justify-center"
+      layout="position"
+      layoutDependency={isEmptyQuestion}
+    >
       <div className="w-full py-20 h-full relative">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           <motion.div
+            key={currentField?.fieldName}
             initial={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
             exit={{ opacity: 0, translateY: -20 }}
-            transition={{ duration: 0.5 }}
-            key={currentField?.fieldName}
+            transition={{ duration: 0.75, ease: "easeInOut" }}
             className="text-muted-foreground mb-4 text-xl capitalize text-left"
           >
             {currentField?.fieldName}
@@ -41,26 +46,44 @@ export const AskScreen = ({
             {!isEmptyQuestion && (
               <motion.div
                 style={{ color: fontColor }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.25 }}
               >
                 <TypingEffect text={currentQuestion} />
               </motion.div>
             )}
           </AnimatePresence>
-          {isEmptyQuestion && <TypingCursor />}
+          {isEmptyQuestion && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.25 }}
+            >
+              <TypingCursor />
+            </motion.div>
+          )}
         </div>
-
-        {!isFormBusy && currentField && (
-          <div className="w-full">
-            <DynamicAnswerInput
-              fieldConfiguration={currentField.fieldConfiguration}
-              currentField={currentField}
-              submitAnswer={submitAnswer}
-            />
-          </div>
-        )}
+        <AnimatePresence mode="wait">
+          {shouldShowAnswerInput && (
+            <motion.div
+              className="w-full"
+              variants={{
+                hidden: { opacity: 0, translateY: -20 },
+                visible: { opacity: 1, translateY: 0 },
+              }}
+              initial="hidden"
+              animate="visible"
+              transition={{ duration: 0.25 }}
+            >
+              <DynamicAnswerInput
+                fieldConfiguration={currentField.fieldConfiguration}
+                currentField={currentField}
+                submitAnswer={submitAnswer}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 };

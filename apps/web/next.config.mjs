@@ -30,7 +30,12 @@ const nextConfig = {
   },
   // Configure `pageExtensions` to include MDX files
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
-  transpilePackages: ["@convoform/ui", "@convoform/db", "@convoform/api"],
+  transpilePackages: [
+    "@convoform/ui",
+    "@convoform/db",
+    "@convoform/api",
+    "@convoform/common",
+  ],
 
   /** We already do linting and typechecking as separate tasks in CI */
   eslint: { ignoreDuringBuilds: false },

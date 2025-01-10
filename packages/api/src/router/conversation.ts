@@ -1,4 +1,4 @@
-import { count, eq, inArray } from "@convoform/db";
+import { and, count, eq, inArray } from "@convoform/db";
 import {
   conversation,
   insertConversationSchema,
@@ -9,12 +9,13 @@ import {
 import { z } from "zod";
 
 import { analytics } from "@convoform/analytics";
-import { protectedProcedure } from "../middlewares/protectedRoutes";
-import { publicProcedure } from "../middlewares/publicRoutes";
+import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
+import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
+import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
 
 export const conversationRouter = createTRPCRouter({
-  getAll: protectedProcedure
+  getAll: authProtectedProcedure
     .input(
       z.object({
         formId: z.string().min(1),
@@ -138,7 +139,7 @@ export const conversationRouter = createTRPCRouter({
       };
     }),
 
-  getResponseCountByOrganization: publicProcedure
+  getCountByOrganizationId: publicProcedure
     .input(
       z.object({
         organizationId: z.string().min(1),
@@ -152,7 +153,7 @@ export const conversationRouter = createTRPCRouter({
 
       return result?.value;
     }),
-  getFormResponsesData: protectedProcedure
+  getFormResponsesData: authProtectedProcedure
     .input(
       z.object({
         formId: z.string().min(1),
@@ -173,7 +174,7 @@ export const conversationRouter = createTRPCRouter({
       });
     }),
 
-  getRecentResponses: protectedProcedure
+  getRecentResponses: authProtectedProcedure
     .input(
       z.object({
         take: z.number().int().positive(),
@@ -261,7 +262,7 @@ export const conversationRouter = createTRPCRouter({
       return result;
     }),
 
-  getCountByFormIds: protectedProcedure
+  getCountByFormIds: authProtectedProcedure
     .input(
       z.object({
         organizationId: z.string().min(1),
@@ -317,14 +318,20 @@ export const conversationRouter = createTRPCRouter({
       });
     }),
 
-  stats: publicProcedure
+  stats: orgProtectedProcedure
     .input(
       z.object({
-        formId: z.string().min(1),
+        formId: z.string().min(1).optional(),
       }),
     )
     .query(async ({ input, ctx }) => {
       const formId = input.formId;
+
+      const filters = [eq(conversation.organizationId, ctx.orgId)];
+
+      if (formId) {
+        filters.push(eq(conversation.formId, formId));
+      }
 
       const result = await ctx.db.query.conversation.findMany({
         columns: {
@@ -332,7 +339,7 @@ export const conversationRouter = createTRPCRouter({
           isFinished: true,
           isInProgress: true,
         },
-        where: (conversation, { eq }) => eq(conversation.formId, formId),
+        where: and(...filters),
       });
 
       return {

@@ -11,13 +11,13 @@ function MainNavigation({
   navigationLinks: NavigationConfig;
 }) {
   return (
-    <div className="grid gap-2">
+    <div className="grid gap-y-6">
       {navigationLinks.map((navLink) => {
         if ("links" in navLink) {
           return (
             <div key={navLink.title}>
-              <div className="flex items-center justify-between ">
-                <span className="text-muted-foreground ps-4 text-sm font-medium">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-muted-foreground font-semibold ">
                   {navLink.title}
                 </span>
                 {navLink.action && (
@@ -30,7 +30,7 @@ function MainNavigation({
                 )}
               </div>
               <ScrollArea className="h-96">
-                <div className="grid">
+                <div className="grid gap-y-1">
                   {navLink.links.map((link) =>
                     "text" in link ? (
                       <NavigationText

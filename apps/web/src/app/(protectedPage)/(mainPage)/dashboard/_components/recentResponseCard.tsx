@@ -1,37 +1,26 @@
 "use client";
 
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
-import { motion, stagger, useAnimate } from "framer-motion";
+import { motion } from "framer-motion";
 import { InboxIcon } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
 
 import { EmptyCard } from "@/components/common/emptyCard";
 import { ListCard } from "@/components/common/list";
 import { ListItem } from "@/components/common/listItem";
 import { timeAgo } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@convoform/ui/components/ui/card";
 
 export function RecentResponsesCard({ take }: Readonly<{ take: number }>) {
-  const [scope, animate] = useAnimate();
   const { data, isLoading } = api.conversation.getRecentResponses.useQuery({
     take: take,
   });
-  const emptyData = data?.length === 0;
-
-  const loadListItems = async () => {
-    if (!isLoading && !emptyData) {
-      animate(
-        ".slide-down-list-item",
-        { opacity: 1, translate: 0 },
-        { delay: stagger(0.05), duration: 0.2 },
-      );
-    }
-  };
-
-  useEffect(() => {
-    loadListItems();
-  }, [isLoading, emptyData]);
 
   if (isLoading) {
     return (
@@ -44,35 +33,29 @@ export function RecentResponsesCard({ take }: Readonly<{ take: number }>) {
   if (data && data.length > 0) {
     return (
       <RecentResponsesCardShell>
-        <motion.div ref={scope}>
-          <ListCard>
-            {data.map((response) => (
-              <motion.div
-                className="slide-down-list-item"
-                key={response.id}
-                initial={{ opacity: 0, translate: "0 -0.5rem" }}
-              >
-                <ListItem>
-                  <Link
-                    href={`/forms/${response.formId}/conversations/${response.id}`}
-                  >
-                    <div className="flex items-center justify-between py-2">
-                      <div className="grid">
-                        <span>{response.name}</span>
-                        <span className="text-muted-foreground text-xs">
-                          {response.form.name}
-                        </span>
-                      </div>
-                      <span className="text-muted-foreground text-sm">
-                        {timeAgo(response.createdAt)}
+        <ListCard>
+          {data.map((response) => (
+            <motion.div key={response.id}>
+              <ListItem>
+                <Link
+                  href={`/forms/${response.formId}/conversations/${response.id}`}
+                >
+                  <div className="grid py-2">
+                    <span className="text-muted-foreground text-xs text-nowrap">
+                      {timeAgo(response.createdAt)}
+                    </span>
+                    <div className="flex items-baseline justify-between gap-4  w-full overflow-hidden">
+                      <span className="truncate">{response.name}</span>
+                      <span className="text-muted-foreground text-xs truncate">
+                        {response.form.name}
                       </span>
                     </div>
-                  </Link>
-                </ListItem>
-              </motion.div>
-            ))}
-          </ListCard>
-        </motion.div>
+                  </div>
+                </Link>
+              </ListItem>
+            </motion.div>
+          ))}
+        </ListCard>
       </RecentResponsesCardShell>
     );
   }
@@ -91,12 +74,12 @@ function RecentResponsesCardShell({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div>
-      <div className="text-muted-foreground font-medium lg:text-xl mb-2">
-        Recent responses
-      </div>
-      {children}
-    </div>
+    <Card className="rounded-3xl bg-background" noShadow>
+      <CardHeader className="pb-2">
+        <CardTitle>Recent responses</CardTitle>
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </Card>
   );
 }
 
@@ -106,7 +89,7 @@ function RecentResponsesListLoading() {
       {[...Array(3)].map((_, i) => (
         // biome-ignore lint: ignored
         <ListItem key={i}>
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-start justify-between py-2">
             <div className="grid gap-1">
               <Skeleton className="h-[10px] w-[150px]" />
               <Skeleton className="h-[8px] w-[100px]" />

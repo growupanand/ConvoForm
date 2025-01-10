@@ -1,0 +1,19 @@
+{
+    "name": "@convoform/common",
+    "version": "0.0.0",
+    "private": true,
+    "exports": {
+      ".": "./src/index.ts"
+    },
+    "scripts": {
+      "type-check": "tsc --noEmit"
+    },
+    "dependencies": {
+     
+    },
+    "devDependencies": {
+      "@types/node": "^20",
+      "typescript": "^5"
+    }
+  }
+  

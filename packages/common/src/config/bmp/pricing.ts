@@ -1,8 +1,18 @@
-import type { Plan } from "../types/pricing";
+export type PlanFeature = {
+  name: string;
+  featureValue: number;
+  featureText: string;
+};
+
+export type Plan = {
+  name: string;
+  price: string;
+  features: PlanFeature[];
+};
 
 export const freePlan: Plan = {
-  name: "Free forever",
-  price: "$0/month",
+  name: "Free",
+  price: "$0",
   features: [
     {
       name: "Create forms manually",

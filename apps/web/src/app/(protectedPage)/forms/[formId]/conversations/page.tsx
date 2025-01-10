@@ -1,4 +1,4 @@
-import { ConversationsStatsCard } from "./_components/conversationsStatsCard";
+import { ConversationsStats } from "@/components/conversationsStats";
 
 type Props = {
   params: { formId: string };
@@ -14,7 +14,7 @@ export default function ConversationsStatsPage({
         Stats
       </h2>
       <div className="grid gap-y-10">
-        <ConversationsStatsCard formId={formId} />
+        <ConversationsStats formId={formId} />
       </div>
     </div>
   );

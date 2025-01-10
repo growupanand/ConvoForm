@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "allowJs": false,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "Node16",
+    "moduleResolution": "node16",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "incremental": true,
+    "noUncheckedIndexedAccess": true,
+    "declaration": true, // Generate declaration files for better tooling support
+    "sourceMap": true, // Generate source maps for better debugging
+    "removeComments": true // Remove comments from the output
+  },
+  "include": ["src"], // Only include the source files
+  "exclude": ["node_modules", "dist"] // Exclude the node_modules and dist folders
+}

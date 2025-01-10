@@ -20,3 +20,6 @@ export * from "./components/ui/use-toast";
 export * from "./components/ui/tooltip";
 export * from "./components/ui/tabs";
 export * from "./components/ui/sheet";
+
+// Custome components
+export * from "./components/headingInput";

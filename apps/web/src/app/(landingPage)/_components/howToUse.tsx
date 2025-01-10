@@ -5,7 +5,7 @@ import { SectionCard } from "@/components/sectionCard";
 export function HowToUseSection() {
   return (
     <SectionCard title="How to use">
-      <div className="space-y-6 text-xl">
+      <div className="space-y-6 text-base">
         <StepListItem stepNumber={1}>
           <h3 className="font-semibold">Craft Your Form</h3>
           <p className="max-w-screen-sm font-light">
@@ -38,7 +38,7 @@ const StepBadge = ({
   children: React.ReactNode;
 }) => {
   return (
-    <Badge variant="secondary" className=" text-xl font-normal">
+    <Badge variant="secondary" className=" text-base font-normal">
       {children}
     </Badge>
   );

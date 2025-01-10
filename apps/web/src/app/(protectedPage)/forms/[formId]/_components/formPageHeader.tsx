@@ -35,7 +35,7 @@ function FormPageHeader({ formId }: Readonly<Props>) {
               <Home size={20} />
             </LinkN>
           </Button>
-          <ChevronRight size={20} />
+          <ChevronRight className="size-5" />
           {data ? (
             <>
               <LinkN href={`/workspaces/${data.workspaceId}`}>
@@ -47,11 +47,8 @@ function FormPageHeader({ formId }: Readonly<Props>) {
                   <span className="workspace-name">{data.workspace.name}</span>
                 </Button>
               </LinkN>
-              <ChevronRight size={20} />
-              <ChangeNameInput
-                form={data}
-                className="hover:border-input w-full text-base font-semibold ring-0 focus-visible:ring-0"
-              />
+              <ChevronRight className="size-5" />
+              <ChangeNameInput form={data} className="ms-2" />
             </>
           ) : (
             <span>Form not found</span>

@@ -10,7 +10,7 @@ import {
 } from "@convoform/db/src/schema";
 import { z } from "zod";
 
-import { publicProcedure } from "../middlewares/publicRoutes";
+import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
 
 export const webhookRouter = createTRPCRouter({

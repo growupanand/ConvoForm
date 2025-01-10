@@ -1,6 +1,7 @@
 "use client";
 
 import type { Workspace } from "@convoform/db/src/schema";
+import { HeadingInput } from "@convoform/ui/components/headingInput";
 import { Button } from "@convoform/ui/components/ui/button";
 import {
   DropdownMenu,
@@ -8,7 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@convoform/ui/components/ui/dropdown-menu";
-import { Input } from "@convoform/ui/components/ui/input";
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
@@ -18,10 +18,9 @@ import { useCallback, useRef } from "react";
 
 import { ConfirmAction } from "@/components/common/confirmAction";
 import Spinner from "@/components/common/spinner";
-import { cn, debounce } from "@/lib/utils";
+import { debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
-import CreateFormButton from "./createFormButton";
 
 type Props = {
   workspace: Workspace;
@@ -121,67 +120,50 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
   };
 
   return (
-    <div>
-      <div className="mb-5 flex items-center justify-between">
-        <Input
-          ref={inputRef}
-          className={cn(
-            "hover:border-input h-auto border-transparent bg-transparent font-medium ring-0 focus-visible:ring-0 text-2xl",
-          )}
-          type="text"
-          onChange={handleWorkspaceNameInputChange}
-          defaultValue={workspace?.name}
-        />
-        <div className="flex items-center gap-2 pl-5">
-          {isUpdating && <Spinner />}
-          <DropdownMenu>
-            <DropdownMenuTrigger disabled={isDeleting} asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 focus-visible:ring-transparent"
-                disabled={isDeleting}
-              >
-                {isDeleting ? (
-                  <Spinner />
-                ) : (
-                  <MoreVertical className="h-4 w-4" />
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+    <div className="mb-5 flex items-center justify-between">
+      <HeadingInput
+        ref={inputRef}
+        type="text"
+        onChange={handleWorkspaceNameInputChange}
+        defaultValue={workspace?.name}
+      />
+      <div className="flex items-center gap-2 pl-5">
+        {isUpdating && <Spinner />}
+        <DropdownMenu>
+          <DropdownMenuTrigger disabled={isDeleting} asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 focus-visible:ring-transparent"
+              disabled={isDeleting}
+            >
+              {isDeleting ? <Spinner /> : <MoreVertical className="h-4 w-4" />}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={handleFocusInput}
+            >
+              <Edit className="mr-2 h-4 w-4" />
+              Edit workspace
+            </DropdownMenuItem>
+            <ConfirmAction
+              onConfirm={handleDeleteWorkspace}
+              title="Are you sure you want to delete this workspace?"
+              description="This action will delete all data related to this workspace. This action cannot be undone."
+              confirmText="Yes, delete workspace"
+            >
               <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={handleFocusInput}
+                className="text-destructive focus:text-destructive cursor-pointer"
+                onSelect={(e) => e.preventDefault()}
               >
-                <Edit className="mr-2 h-4 w-4" />
-                Edit workspace
+                <Trash className="mr-2 h-4 w-4" />
+                Delete workspace
               </DropdownMenuItem>
-              <ConfirmAction
-                onConfirm={handleDeleteWorkspace}
-                title="Are you sure you want to delete this workspace?"
-                description="This action will delete all data related to this workspace. This action cannot be undone."
-                confirmText="Yes, delete workspace"
-              >
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive cursor-pointer"
-                  onSelect={(e) => e.preventDefault()}
-                >
-                  <Trash className="mr-2 h-4 w-4" />
-                  Delete workspace
-                </DropdownMenuItem>
-              </ConfirmAction>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
-      <div>
-        <CreateFormButton
-          workspace={
-            // biome-ignore lint/style/noNonNullAssertion: ignored
-            workspace!
-          }
-        />
+            </ConfirmAction>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

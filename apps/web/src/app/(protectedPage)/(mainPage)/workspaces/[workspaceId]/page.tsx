@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getOrganizationId } from "@/lib/getOrganizationId";
 import { api } from "@/trpc/server";
 import { PageShell } from "../../_components/pageShell";
+import CreateFormButton from "./_component/createFormButton";
 import { FormList } from "./_component/formList";
 import { WorkspaceHeader } from "./_component/pageHeader";
 
@@ -33,7 +34,10 @@ export default async function WorkspacePage({
   }
 
   return (
-    <PageShell title={<WorkspaceHeader workspace={workspace} />}>
+    <PageShell
+      title={<WorkspaceHeader workspace={workspace} />}
+      actionButtonBottom={<CreateFormButton workspace={workspace} />}
+    >
       <FormList workspace={workspace} />
     </PageShell>
   );
