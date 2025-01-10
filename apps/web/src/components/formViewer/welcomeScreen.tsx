@@ -91,7 +91,16 @@ export const WelcomeScreen = ({
                 className="font-montserrat whitespace-break-spaces rounded-full  font-medium transition-all hover:scale-110 active:scale-100 text-2xl h-auto py-4 gap-2"
                 onClick={handleCTAClick}
               >
-                {isStartingConversation && <Spinner />} {CTALabel}
+                {isStartingConversation && (
+                  <motion.span
+                    initial={{ width: 0 }}
+                    animate={{ width: "auto" }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <Spinner />
+                  </motion.span>
+                )}{" "}
+                {CTALabel}
               </Button>
             </motion.span>
           </motion.div>

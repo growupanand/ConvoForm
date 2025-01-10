@@ -2,6 +2,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CardTitle,
 } from "@convoform/ui/components/ui/card";
 
 import { cn } from "@/lib/utils";
@@ -50,8 +51,8 @@ export const SectionCardTitle = ({
   children,
 }: { children: React.ReactNode }) => {
   return (
-    <h2 className="font-montserrat text-lg lg:text-xl font-semibold tracking-tight text-muted-foreground">
+    <CardTitle className="font-montserrat text-lg lg:text-xl font-semibold tracking-tight text-muted-foreground">
       {children}
-    </h2>
+    </CardTitle>
   );
 };

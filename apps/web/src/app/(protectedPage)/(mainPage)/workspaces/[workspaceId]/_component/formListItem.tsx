@@ -11,7 +11,6 @@ import {
 } from "@convoform/ui/components/ui/dropdown-menu";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import { motion, useAnimate } from "framer-motion";
 import {
   BookDashed,
   Copy,
@@ -43,7 +42,6 @@ export function FormListItem({ form, conversationsCount }: Readonly<Props>) {
     });
   };
 
-  const [scope, animate] = useAnimate();
   const queryClient = useQueryClient();
   const deleteForm = api.form.delete.useMutation({
     onSuccess: () => {
@@ -73,13 +71,7 @@ export function FormListItem({ form, conversationsCount }: Readonly<Props>) {
     });
 
   return (
-    <motion.div
-      ref={scope}
-      onHoverStart={() =>
-        animate(".form-name", { translate: "0.5rem" }, { duration: 0.2 })
-      }
-      onHoverEnd={() => animate(".form-name", { translate: "0" })}
-    >
+    <div className="group">
       <ListItem>
         <div className="flex items-center justify-between">
           <div className="grow">
@@ -88,7 +80,9 @@ export function FormListItem({ form, conversationsCount }: Readonly<Props>) {
                 variant="link"
                 className="w-full justify-start ps-0 font-normal text-base  hover:no-underline "
               >
-                <span className="form-name">{form.name}</span>
+                <span className="form-name group-hover:translate-x-1 transition-all">
+                  {form.name}
+                </span>
               </Button>
             </LinkN>
           </div>
@@ -156,6 +150,6 @@ export function FormListItem({ form, conversationsCount }: Readonly<Props>) {
           </div>
         </div>
       </ListItem>
-    </motion.div>
+    </div>
   );
 }

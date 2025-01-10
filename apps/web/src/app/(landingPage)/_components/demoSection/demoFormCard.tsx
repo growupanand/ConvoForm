@@ -35,7 +35,7 @@ export const DemoFormCard = ({ isInView }: { isInView: boolean }) => {
           <FormDesignLayout>
             {animationFinished && (
               <div className="h-full flex flex-col items-center justify-center">
-                <FormViewer isPreview />
+                <FormViewer />
               </div>
             )}
           </FormDesignLayout>

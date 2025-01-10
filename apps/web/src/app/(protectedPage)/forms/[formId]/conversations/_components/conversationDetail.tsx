@@ -48,16 +48,16 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
   };
 
   return (
-    <div className="h-full">
-      <CardHeader className="">
-        <div className="flex items-start justify-between">
+    <div className="h-full ">
+      <CardHeader className="mb-10">
+        <div className="flex items-start justify-between ">
           <div className=" flex items-start gap-2">
             <FileText className="size-10" />
-            <div className="flex flex-col items-start gap-2">
-              <CardTitle className=" font-normal capitalize">
+            <div className="flex flex-col items-start gap-1">
+              <CardTitle className=" text-xl capitalize">
                 {conversation.name}
               </CardTitle>
-              <div className="text-sm text-muted-foreground">
+              <div className="text-xs text-muted-foreground">
                 {conversation.createdAt.toLocaleString()}
               </div>
             </div>
@@ -93,25 +93,25 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
 const ConversationDetailSkeleton = () => {
   return (
     <div className="h-full">
-      <CardHeader className="">
+      <CardHeader className="mb-10">
         <div className="flex items-center justify-between">
           <div className=" flex items-center gap-2">
-            <FileText className=" " size={32} />
-            <div className="flex flex-col items-start ">
-              <CardTitle className=" font-normal capitalize">
+            <FileText className="size-10" />
+            <div className="flex flex-col items-start gap-1">
+              <CardTitle>
                 <Skeleton className="h-4 w-40" />
               </CardTitle>
+              <div>
+                <Skeleton className="h-2 w-20" />
+              </div>
             </div>
           </div>
-          <div className="text-xl font-normal">
-            <Skeleton className="h-4 w-20" />
+          <div className="">
+            <Skeleton className="h-4 w-12" />
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="mb-10 flex">
-          <Skeleton className="h-4 w-12" />
-        </div>
         <div className="grid  gap-10 grid-cols-5">
           <div className="col-span-2">
             <div>

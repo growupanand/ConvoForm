@@ -1,6 +1,6 @@
 "use client";
 
-import { StatsCard } from "@/components/common/statsCard";
+import { StatsCard, type StatsCardProps } from "@/components/common/statsCard";
 import { QueryComponent } from "@/components/queryComponents/queryComponent";
 import { api } from "@/trpc/react";
 
@@ -11,7 +11,7 @@ type ConversationsStatsCardProps = {
   title?: string;
 };
 
-export const ConversationsStatsCard = ({
+export const ConversationsStats = ({
   formId,
   title = "Total responses",
 }: ConversationsStatsCardProps) => {
@@ -23,22 +23,22 @@ export const ConversationsStatsCard = ({
     >
       {(data) => (
         <div>
-          <div className="flex items-center gap-2 text-lg  font-medium mb-4">
+          <div className="flex items-center gap-2 text-lg  mb-4">
             <span className=" text-muted-foreground">{title}</span>
-            <span className="font-bold">{data.totalCount}</span>
+            <span className=" font-medium">{data.totalCount}</span>
           </div>
-          <div className="grid grid-cols-3 gap-4">
-            <StatsCard
+          <div className="grid grid-cols-[repeat(3,_minmax(auto,200px))]  grid-rows-[auto_min-content] gap-x-4">
+            <ConversationsStatsCard
               title="Completed"
               primaryValue={data.finishedTotalCount.toString()}
               description="All questions have been answered"
             />
-            <StatsCard
+            <ConversationsStatsCard
               title="Partially completed"
               primaryValue={data.partialTotalCount.toString()}
               description="Some questions have not been answered"
             />
-            <StatsCard
+            <ConversationsStatsCard
               title="Live"
               primaryValue={data.liveTotalCount.toString()}
               description="Submission is in-progress"
@@ -55,11 +55,12 @@ function ConversationsStatsCardSkeleton({
 }: Pick<ConversationsStatsCardProps, "title">) {
   return (
     <div>
-      <div className="flex items-center gap-2 text-xl font-bold mb-4">
-        <span>{title}</span> <Skeleton className="h-5 w-10" />
+      <div className="flex items-center gap-2 text-lg mb-4">
+        <span className="text-muted-foreground">{title}</span>{" "}
+        <Skeleton className="h-5 w-10" />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-[repeat(3,_minmax(auto,200px))] gap-x-4">
         <StatsCard.Skeleton />
         <StatsCard.Skeleton />
         <StatsCard.Skeleton />
@@ -67,3 +68,7 @@ function ConversationsStatsCardSkeleton({
     </div>
   );
 }
+
+export const ConversationsStatsCard = (props: StatsCardProps) => {
+  return <StatsCard className="grid grid-rows-subgrid row-span-2" {...props} />;
+};

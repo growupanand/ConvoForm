@@ -16,7 +16,7 @@ const NavigationLinkItem = ({
       <Button
         variant="link"
         className={cn(
-          "w-full justify-start py-0 text-base font-normal text-gray-500 hover:font-medium hover:text-gray-900 hover:no-underline ",
+          "w-full justify-start py-1 h-auto px-0 text-sm  font-normal text-gray-500 hover:font-medium hover:text-gray-900 hover:no-underline ",
           isActive && "font-medium text-gray-900",
         )}
       >

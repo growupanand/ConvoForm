@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { ConversationsStatsCard } from "@/components/conversationsStatsCard";
+import { ConversationsStats } from "@/components/conversationsStats";
 import { getOrganizationId } from "@/lib/getOrganizationId";
 import { PageShell } from "../_components/pageShell";
 import { RecentResponsesCard } from "./_components/recentResponseCard";
@@ -16,7 +16,7 @@ export default function DashboardPage() {
     <PageShell title="Dashboard">
       <div className="grid gap-10 grid-cols-10">
         <div className="col-span-7 ">
-          <ConversationsStatsCard key={orgId} />
+          <ConversationsStats key={orgId} />
         </div>
         <div className="col-span-3">
           <RecentResponsesCard key={orgId} take={10} />

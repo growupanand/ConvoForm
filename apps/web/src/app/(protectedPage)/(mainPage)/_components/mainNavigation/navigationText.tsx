@@ -21,7 +21,7 @@ function NavigationText({ text, variant, action }: Readonly<Props>) {
   const NavText = () => (
     <span
       className={cn(
-        "text-muted-foreground ps-4 text-sm font-normal",
+        "text-muted-foreground text-sm font-normal ps-2",
         variant && navigationTextVariantsClasses[variant],
       )}
     >

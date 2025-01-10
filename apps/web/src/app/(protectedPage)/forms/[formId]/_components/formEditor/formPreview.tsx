@@ -16,7 +16,7 @@ export const FormPreview = ({ form }: { form: any }) => {
   if (!isValidForm) {
     return <InvalidForm />;
   }
-  return <FormViewer isPreview={true} />;
+  return <FormViewer />;
 };
 
 const InvalidForm = () => (

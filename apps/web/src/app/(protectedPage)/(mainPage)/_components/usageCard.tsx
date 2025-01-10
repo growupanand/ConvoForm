@@ -25,7 +25,7 @@ export function UsageCard() {
               key={`${usage.label}-${usage.value}-${usage.limit}`}
               className="grid gap-2"
             >
-              <div className="flex grid-cols-2 items-center justify-between gap-4">
+              <div className="flex grid-cols-2 items-center justify-between gap-4 text-sm">
                 <span className="">{usage.label}</span>
                 <span className="text-muted-foreground">
                   {usage.value}/{usage.limit}
@@ -47,8 +47,8 @@ export function UsageCard() {
 
 function UsageCardShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-sm">
-      <h4 className="text-base mb-3 text-muted-foreground">Usage</h4>
+    <div className="">
+      <h4 className="mb-3 text-xs text-muted-foreground">Usage</h4>
       {children}
     </div>
   );

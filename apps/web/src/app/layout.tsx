@@ -75,17 +75,21 @@ export default function RootLayout({
 }>) {
   return (
     <ViewTransitions>
-      <html lang="en" className={cn(GeistSans.variable, montserrat.variable)}>
-        <CSPostHogProvider>
-          <body className="antialiased font-sans">
+      <html
+        lang="en"
+        className={cn(GeistSans.variable, montserrat.variable)}
+        suppressHydrationWarning
+      >
+        <body className="antialiased font-sans">
+          <CSPostHogProvider>
             <TooltipProvider delayDuration={200}>
               <TRPCReactProvider>{children}</TRPCReactProvider>
             </TooltipProvider>
 
             <Toaster />
             <SonnerToaster />
-          </body>
-        </CSPostHogProvider>
+          </CSPostHogProvider>
+        </body>
       </html>
     </ViewTransitions>
   );

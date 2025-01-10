@@ -9,10 +9,11 @@ type Props = {
 function NavigationActionButton({ disabled, onClick, children }: Props) {
   return (
     <Button
-      variant="link"
-      className="pe-0 hover:no-underline"
+      variant="outline"
+      className="p-1 rounded-full  hover:no-underline h-auto"
       disabled={disabled}
       onClick={onClick}
+      size="sm"
     >
       {children}
     </Button>

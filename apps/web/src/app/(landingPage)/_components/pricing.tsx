@@ -44,15 +44,19 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
   return (
     <Card className="w-fit font-montserrat shadow-lg">
       <CardHeader>
-        <CardTitle>
-          <div className="flex items-center justify-between">
-            <span className="text-lg font-medium capitalize">{plan.name}</span>
-            <span className="text-xl">
-              {plan.price}{" "}
-              <span className="text-sm text-muted-foreground">/month</span>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-xl capitalize text-secondary-foreground">
+            {plan.name}
+          </CardTitle>
+          <span className="">
+            <span className="me-1 text-2xl text-foreground font-bold">
+              {plan.price}
             </span>
-          </div>
-        </CardTitle>
+            <span className="text-sm text-muted-foreground font-medium">
+              / month
+            </span>
+          </span>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="mb-5 space-y-2">

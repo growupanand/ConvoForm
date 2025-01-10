@@ -1,7 +1,6 @@
 "use client";
 
 import type { Form } from "@convoform/db/src/schema";
-import { Input } from "@convoform/ui/components/ui/input";
 import { sonnerToast } from "@convoform/ui/components/ui/sonner";
 import { toast } from "@convoform/ui/components/ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
@@ -9,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { cn, debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
+import { HeadingInput } from "@convoform/ui/components/headingInput";
 
 type Props = {
   form: Form;
@@ -58,12 +58,9 @@ export default function ChangeNameInput({ form, className }: Props) {
   };
 
   return (
-    <Input
+    <HeadingInput
       disabled={isUpdating}
-      className={cn(
-        " border-transparent  bg-transparent text-2xl font-bold hover:bg-white focus:bg-white  ",
-        className,
-      )}
+      className={cn(className)}
       type="text"
       defaultValue={form.name}
       onChange={handleFormNameInputChange}

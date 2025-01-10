@@ -17,7 +17,7 @@ export default function Layout({ children, params: { formId } }: Props) {
       <div className="w-[400px] min-w-[400px]">
         <ConversationsSidebar formId={formId} />
       </div>
-      <div className="p-3 grow">{children}</div>
+      <div className="p-3 grow container ms-0">{children}</div>
     </div>
   );
 }

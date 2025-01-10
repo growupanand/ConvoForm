@@ -60,9 +60,9 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
   const router = useRouter();
 
   const createWorkspaceActionIcon = isCreatingWorkspace ? (
-    <Loader2 className=" h-4 w-4 animate-spin" />
+    <Loader2 className=" size-4 animate-spin" />
   ) : (
-    <Plus className="h-5 w-5" />
+    <Plus className="size-4" />
   );
 
   const pathname = usePathname();
@@ -133,7 +133,7 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
   return (
     <nav className="flex h-full flex-col justify-between lg:p-5">
       <div>
-        <div className="mb-5 flex flex-col gap-3 ps-4">
+        <div className="mb-5 flex flex-col gap-3">
           <div>
             <BrandName className="text-xl lg:text-2xl" />
           </div>
