@@ -75,18 +75,107 @@ export function useConvoForm({
     resetStates();
   }, [conversation]);
 
+  const setError = useCallback(
+    (errorMessage: string) => {
+      setState((cs) => ({
+        ...cs,
+        errorMessage: errorMessage,
+      }));
+      onError?.(new Error(errorMessage));
+    },
+    [onError],
+  );
+
+  const fetchNextQuestion = async (
+    answer: string,
+    conversation: Conversation,
+    isNewConversation: boolean,
+  ) => {
+    const answerMessage: Transcript = {
+      role: "user",
+      content: answer,
+    };
+    const requestPayload = {
+      ...conversation,
+      transcript: isNewConversation
+        ? [answerMessage]
+        : [...transcript, answerMessage],
+      currentField: isNewConversation ? undefined : currentField,
+      collectedData: isNewConversation
+        ? conversation.collectedData
+        : collectedData,
+    };
+
+    const response = await fetch(apiEndpoint, {
+      method: "POST",
+      body: JSON.stringify(requestPayload),
+    });
+
+    if (!response.ok || !response.body) {
+      throw new Error("Failed to fetch question");
+    }
+
+    const reader = response.body.getReader();
+    let generatedQuestion = "";
+    let updatedCurrentField: string | undefined;
+    let updatedExtraSteamData: ExtraStreamData | undefined;
+
+    for await (const {
+      textValue,
+      data: streamData,
+    } of readResponseStream<ExtraStreamData>(reader)) {
+      if (textValue) {
+        generatedQuestion += textValue;
+      }
+
+      updatedCurrentField = streamData?.currentField?.fieldName;
+
+      updatedExtraSteamData = { ...extraStreamData, ...streamData };
+      setState((cs) => ({
+        ...cs,
+        currentQuestion: generatedQuestion,
+        extraStreamData: updatedExtraSteamData ?? {},
+      }));
+    }
+
+    const questionMessage: Transcript = {
+      role: "assistant",
+      content: generatedQuestion,
+      fieldName: updatedCurrentField,
+    };
+
+    const updatedTranscript = transcript.concat([
+      answerMessage,
+      questionMessage,
+    ]);
+
+    return {
+      generatedQuestion,
+      updatedTranscript,
+      updatedCurrentField,
+      updatedExtraSteamData: updatedExtraSteamData ?? {},
+    };
+  };
+
+  /**
+   * Submit the answer to the current question and get the next question.
+   * If newConversation is provided, it will be used to generate the next question.
+   * Otherwise, the existing conversation will be used.
+   * @param answer The answer to the current question.
+   * @param newConversation Optional. The new conversation to use.
+   * @returns nothing
+   */
   const submitAnswer: SubmitAnswer = async (
     answer,
     newConversation?: Conversation,
   ) => {
-    const initialMessage = newConversation !== undefined;
-    const currentConversation = initialMessage ? newConversation : conversation;
+    const isNewConversation = newConversation !== undefined;
+    const currentConversation = isNewConversation
+      ? newConversation
+      : conversation;
 
     if (!currentConversation) {
-      return setState((cs) => ({
-        ...cs,
-        errorMessage: "Conversation not found",
-      }));
+      return setError("Conversation not found");
     }
 
     setState((cs) => ({
@@ -97,65 +186,8 @@ export function useConvoForm({
       conversation: currentConversation,
     }));
 
-    const answerMessage: Transcript = {
-      role: "user",
-      content: answer,
-    };
-
-    const requestPayload = {
-      ...currentConversation,
-      transcript: initialMessage
-        ? [answerMessage]
-        : [...transcript, answerMessage],
-      currentField: initialMessage ? undefined : currentField,
-      collectedData: initialMessage
-        ? currentConversation.collectedData
-        : collectedData,
-    };
-
-    const response = await fetch(apiEndpoint, {
-      method: "POST",
-      body: JSON.stringify(requestPayload),
-    });
-
-    if (!response.ok || !response.body) {
-      onError?.(new Error("Failed to fetch question"));
-      return;
-    }
-
-    let currentQuestionText = "";
-    let updatedCurrentField: string | undefined;
-
-    const reader = response.body.getReader();
-    let updatedExtraSteamData: ExtraStreamData | undefined;
-    for await (const {
-      textValue,
-      data: streamData,
-    } of readResponseStream<ExtraStreamData>(reader)) {
-      if (textValue) {
-        currentQuestionText += textValue;
-      }
-
-      updatedCurrentField = streamData?.currentField?.fieldName;
-
-      updatedExtraSteamData = { ...extraStreamData, ...streamData };
-      setState((cs) => ({
-        ...cs,
-        currentQuestion: currentQuestionText,
-        extraStreamData: updatedExtraSteamData ?? {},
-      }));
-    }
-
-    const questionMessage: Transcript = {
-      role: "assistant",
-      content: currentQuestionText,
-      fieldName: updatedCurrentField,
-    };
-
-    const updatedTranscript = transcript.concat([
-      answerMessage,
-      questionMessage,
-    ]);
+    const { updatedExtraSteamData, updatedTranscript } =
+      await fetchNextQuestion(answer, currentConversation, isNewConversation);
 
     await patchConversation(formId, currentConversation.id, {
       collectedData: updatedExtraSteamData?.collectedData,
@@ -171,6 +203,9 @@ export function useConvoForm({
     }));
   };
 
+  /**
+   * Start a new conversation
+   */
   const startConversation = useCallback(async () => {
     const newConversation = await createConversation(formId);
     submitAnswer(CONVERSATION_START_MESSAGE, newConversation);
