@@ -22,7 +22,7 @@ const routeContextSchema = z.object({
   }),
 });
 
-const requestSchema = selectConversationSchema
+export const requestSchema = selectConversationSchema
   .pick({
     formOverview: true,
     isFinished: true,
@@ -38,33 +38,8 @@ export async function POST(
   context: z.infer<typeof routeContextSchema>,
 ) {
   try {
-    const {
-      params: { formId },
-    } = routeContextSchema.parse(context);
-    const requestJson = await req.json();
-
-    if (
-      requestJson.currentField?.fieldConfiguration?.inputType === "datePicker"
-    ) {
-      requestJson.currentField.fieldConfiguration = restoreDateFields(
-        requestJson.currentField.fieldConfiguration,
-      );
-    }
-
-    const parsedCollectedData = [] as CollectedData[];
-
-    for (const field of requestJson.collectedData) {
-      const parsedFieldConfiguration = restoreDateFields(
-        field.fieldConfiguration,
-      );
-      parsedCollectedData.push({
-        ...field,
-        fieldConfiguration: parsedFieldConfiguration,
-      });
-    }
-    requestJson.collectedData = parsedCollectedData;
-
-    const { currentField, ...conversation } = requestSchema.parse(requestJson);
+    const formId = routeContextSchema.parse(context).params.formId;
+    const { currentField, ...conversation } = await getParsedRequestJson(req);
 
     if (conversation.formId !== formId) {
       return sendErrorMessage("Conversation not found", 400);
@@ -184,3 +159,30 @@ export async function POST(
     return sendErrorResponse(error);
   }
 }
+
+export const getParsedRequestJson = async (req: NextRequest) => {
+  const requestJson = await req.json();
+
+  if (
+    requestJson.currentField?.fieldConfiguration?.inputType === "datePicker"
+  ) {
+    requestJson.currentField.fieldConfiguration = restoreDateFields(
+      requestJson.currentField.fieldConfiguration,
+    );
+  }
+
+  const parsedCollectedData = [] as CollectedData[];
+
+  for (const field of requestJson.collectedData) {
+    const parsedFieldConfiguration = restoreDateFields(
+      field.fieldConfiguration,
+    );
+    parsedCollectedData.push({
+      ...field,
+      fieldConfiguration: parsedFieldConfiguration,
+    });
+  }
+  requestJson.collectedData = parsedCollectedData;
+
+  return requestSchema.parse(requestJson);
+};
