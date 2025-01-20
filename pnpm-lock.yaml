@@ -315,6 +315,9 @@ importers:
 
   packages/common:
     devDependencies:
+      '@convoform/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       '@types/node':
         specifier: ^20
         version: 20.17.9
@@ -390,6 +393,9 @@ importers:
       '@convoform/db':
         specifier: ../db
         version: link:../db
+      '@convoform/tsconfig':
+        specifier: ../tsconfig
+        version: link:../tsconfig
       '@convoform/websocket-client':
         specifier: ../websocket-client
         version: link:../websocket-client
