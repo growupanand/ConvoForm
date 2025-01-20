@@ -42,7 +42,8 @@
     "release-it": "^17.0.1",
     "@release-it/conventional-changelog": "^8.0.1",
     "@convoform/websocket-client": "../websocket-client",
-    "@convoform/db": "../db"
+    "@convoform/db": "../db",
+    "@convoform/tsconfig": "../tsconfig"
   },
   "peerDependencies": {
     "react": "^18",

@@ -1,4 +1,6 @@
 {
+  "extends": "@convoform/tsconfig/react-library.json",
+
     "compilerOptions": {
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,

@@ -11,4 +11,5 @@ export default defineConfig({
   noExternal: ["@convoform/websocket-client", "@convoform/db"],
   minify: true,
   treeshake: true,
+  splitting: false,
 });
