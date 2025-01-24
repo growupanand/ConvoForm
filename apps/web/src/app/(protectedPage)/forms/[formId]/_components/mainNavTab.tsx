@@ -2,11 +2,11 @@
 
 import { Skeleton } from "@convoform/ui/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@convoform/ui/components/ui/tabs";
-import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
 
 import type { NavLink } from "@/lib/types/navigation";
 import { api } from "@/trpc/react";
+import Link from "next/link";
 
 type Props = {
   formId: string;
