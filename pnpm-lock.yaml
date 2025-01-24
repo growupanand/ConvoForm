@@ -47,6 +47,9 @@ importers:
       '@clerk/nextjs':
         specifier: ^5.7.2
         version: 5.7.5(next@14.2.18)(react-dom@18.3.1)(react@18.3.1)
+      '@convoform/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
       '@convoform/api':
         specifier: workspace:*
         version: link:../../packages/api
@@ -260,6 +263,34 @@ importers:
         specifier: ^5.1.4
         version: 5.1.4(webpack@5.96.1)
 
+  packages/ai:
+    dependencies:
+      '@convoform/common':
+        specifier: workspace:*
+        version: link:../common
+      '@convoform/db':
+        specifier: workspace:*
+        version: link:../db
+      ai:
+        specifier: ^3.0.34
+        version: 3.4.33(openai@4.73.1)(react@18.3.1)(svelte@5.16.0)(vue@3.5.13)(zod@3.23.8)
+      openai:
+        specifier: ^4.24.2
+        version: 4.73.1(zod@3.23.8)
+      openai-edge:
+        specifier: ^1.2.2
+        version: 1.2.2
+      zod:
+        specifier: ^3.22.4
+        version: 3.23.8
+    devDependencies:
+      '@convoform/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: latest
+        version: 5.7.3
+
   packages/analytics:
     dependencies:
       posthog-node:
@@ -269,6 +300,9 @@ importers:
         specifier: ^3.22.4
         version: 3.23.8
     devDependencies:
+      '@convoform/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       '@types/node':
         specifier: ^20
         version: 20.17.9
@@ -343,6 +377,9 @@ importers:
         specifier: ^3.22.4
         version: 3.23.8
     devDependencies:
+      '@convoform/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       '@types/node':
         specifier: ^20
         version: 20.17.9
@@ -371,6 +408,9 @@ importers:
         specifier: ^1.28.4
         version: 1.34.3
     devDependencies:
+      '@convoform/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       '@types/node':
         specifier: ^20.12.12
         version: 20.17.9
@@ -390,6 +430,9 @@ importers:
         specifier: ^4.7.5
         version: 4.8.1
     devDependencies:
+      '@convoform/common':
+        specifier: ../common
+        version: link:../common
       '@convoform/db':
         specifier: ../db
         version: link:../db
@@ -562,6 +605,9 @@ importers:
         specifier: ^4.7.5
         version: 4.8.1
     devDependencies:
+      '@convoform/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       typescript:
         specifier: ^5
         version: 5.7.2
@@ -11352,6 +11398,12 @@ packages:
     resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  /typescript@5.7.3:
+    resolution: {integrity: sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: true
 
   /uglify-js@3.19.3:
     resolution: {integrity: sha512-v3Xu+yuwBXisp6QYTcH4UbH+xYJXqnq2m/LtQVWKWzYc1iehYnLixoQDN9FH6/j9/oybfd6W9Ghwkl8+UMKTKQ==}

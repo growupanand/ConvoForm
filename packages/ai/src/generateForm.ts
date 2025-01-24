@@ -1,5 +1,4 @@
-import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-
+import type { ChatCompletionMessageParam } from "openai/resources";
 import { OpenAIService } from "./openAI";
 
 export class GenerateFormService extends OpenAIService {

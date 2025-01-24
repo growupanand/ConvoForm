@@ -7,9 +7,9 @@ import {
   transcriptSchema,
 } from "@convoform/db/src/schema";
 import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
-import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
-import { CONVERSATION_END_MESSAGE } from "@convoform/react";
+import { CONVERSATION_END_MESSAGE } from "@convoform/common";
+import type { ChatCompletionMessageParam } from "openai/resources";
 import { OpenAIService } from "./openAI";
 
 export class ConversationService extends OpenAIService {

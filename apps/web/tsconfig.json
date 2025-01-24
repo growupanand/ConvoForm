@@ -23,4 +23,5 @@
     ".next/types/**/*.ts",
     "**/*.mjs",
   ],
+  "exclude": ["node_modules"]
 }

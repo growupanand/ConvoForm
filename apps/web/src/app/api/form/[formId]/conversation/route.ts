@@ -12,7 +12,7 @@ import { z } from "zod";
 
 import { sendErrorMessage, sendErrorResponse } from "@/lib/errorHandlers";
 import getIP from "@/lib/getIP";
-import { ConversationService } from "@/lib/services/conversation";
+import { ConversationService } from "@convoform/ai";
 
 export const runtime = "edge";
 

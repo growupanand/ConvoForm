@@ -1,16 +1,5 @@
 {
-    "compilerOptions": {
-      "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true,
-      "isolatedModules": true,
-      "module": "ESNext",
-      "moduleResolution": "Bundler",
-      "preserveWatchOutput": true,
-      "skipLibCheck": true,
-      "noEmit": false,
-      "strict": true,
-      "target": "ES2022",
-    },
-    "exclude": ["node_modules"],
-    "include": ["."]
+  "extends": "@convoform/tsconfig/base.json",
+  "exclude": ["node_modules"],
+  "include": ["src/**/*.ts", "index.ts"]
   }

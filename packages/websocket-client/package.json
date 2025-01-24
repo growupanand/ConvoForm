@@ -6,13 +6,11 @@
   "scripts": {
     "type-check": "tsc --noEmit"
   },
-  "exports": {
-    ".": "./src/index.ts"
-  },
   "dependencies": {
     "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
-    "typescript": "^5"
+    "typescript": "^5",
+    "@convoform/tsconfig": "workspace:*"
   }
 }

@@ -8,8 +8,8 @@ import type { z } from "zod";
 
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getOrganizationId } from "@/lib/getOrganizationId";
-import { GenerateFormService } from "@/lib/services/generateForm";
 import { api } from "@/trpc/server";
+import { GenerateFormService } from "@convoform/ai";
 import { aiGeneratedFormLimit } from "@convoform/common";
 import { checkRateLimitThrowError } from "@convoform/rate-limiter";
 
