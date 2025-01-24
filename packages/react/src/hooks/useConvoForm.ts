@@ -8,7 +8,8 @@ import type {
 import { socket } from "@convoform/websocket-client";
 import { useCallback, useEffect, useState } from "react";
 
-import { API_DOMAIN, CONVERSATION_START_MESSAGE } from "../constants";
+import { CONVERSATION_START_MESSAGE } from "@convoform/common";
+import { API_DOMAIN } from "../constants";
 import {
   createConversation,
   patchConversation,

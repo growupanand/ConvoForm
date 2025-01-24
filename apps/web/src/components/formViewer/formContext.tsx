@@ -1,15 +1,12 @@
 "use client";
 
+import { CONVERSATION_END_MESSAGE } from "@convoform/common";
 import type { Form, FormDesignRenderSchema } from "@convoform/db/src/schema";
 import {
   DEFAULT_FORM_SECTION,
   type FormSections,
 } from "@convoform/db/src/schema/formDesigns/constants";
-import {
-  CONVERSATION_END_MESSAGE,
-  type UseConvoFormReturnType,
-  useConvoForm,
-} from "@convoform/react";
+import { type UseConvoFormReturnType, useConvoForm } from "@convoform/react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { FormDesignProvider, useFormDesign } from "./formDesignContext";
 import { getSubmissionProgress } from "./utils";

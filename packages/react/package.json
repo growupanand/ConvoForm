@@ -23,15 +23,11 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "module": "./dist/index.esm.js",
-  "files": [
-    "./dist/**"
-  ],
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "module": "./index.ts",
   "scripts": {
     "build": "tsup",
-    "dev": "pnpm run build --watch",
     "release": "release-it",
     "type-check": "tsc --noEmit"
   },
@@ -43,7 +39,8 @@
     "@release-it/conventional-changelog": "^8.0.1",
     "@convoform/websocket-client": "../websocket-client",
     "@convoform/db": "../db",
-    "@convoform/tsconfig": "../tsconfig"
+    "@convoform/tsconfig": "../tsconfig",
+    "@convoform/common": "../common"
   },
   "peerDependencies": {
     "react": "^18",

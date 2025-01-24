@@ -1,0 +1,20 @@
+{
+  "name": "@convoform/ai",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./index.ts"
+  },
+  "dependencies": {
+    "@convoform/common": "workspace:*",
+    "@convoform/db": "workspace:*",
+    "ai": "^3.0.34",
+    "openai": "^4.24.2",
+    "openai-edge": "^1.2.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@convoform/tsconfig": "workspace:*",
+    "typescript": "latest"
+  }
+}

@@ -26,11 +26,21 @@ const nextConfig = {
     ],
   },
   experimental: {
-    optimizePackageImports: ["@tremor/react"],
+    optimizePackageImports: [
+      "@tremor/react",
+      "@convoform/ai",
+      "@convoform/react",
+      "@convoform/ui",
+      "@convoform/db",
+      "@convoform/api",
+      "@convoform/common",
+    ],
   },
   // Configure `pageExtensions` to include MDX files
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   transpilePackages: [
+    "@convoform/ai",
+    "@convoform/react",
     "@convoform/ui",
     "@convoform/db",
     "@convoform/api",
