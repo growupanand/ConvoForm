@@ -3,14 +3,14 @@
 import { getConversationTableData } from "@/components/queryComponents/table/utils";
 import { timeAgo } from "@/lib/utils";
 import type { Conversation } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@convoform/ui/components/ui/select";
+} from "@convoform/ui";
 import {
   Table,
   TableBody,
@@ -18,12 +18,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@convoform/ui/components/ui/table";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@convoform/ui/components/ui/tooltip";
+} from "@convoform/ui";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@convoform/ui";
 import {
   type ColumnDef,
   flexRender,

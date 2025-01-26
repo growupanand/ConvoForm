@@ -4,7 +4,7 @@ import { StatsCard, type StatsCardProps } from "@/components/common/statsCard";
 import { QueryComponent } from "@/components/queryComponents/queryComponent";
 import { api } from "@/trpc/react";
 
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import { Skeleton } from "@convoform/ui";
 
 type ConversationsStatsCardProps = {
   formId?: string;

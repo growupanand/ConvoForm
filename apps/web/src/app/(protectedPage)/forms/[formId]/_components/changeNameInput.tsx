@@ -1,14 +1,14 @@
 "use client";
 
 import type { Form } from "@convoform/db/src/schema";
-import { sonnerToast } from "@convoform/ui/components/ui/sonner";
-import { toast } from "@convoform/ui/components/ui/use-toast";
+import { sonnerToast } from "@convoform/ui";
+import { toast } from "@convoform/ui";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { cn, debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
-import { HeadingInput } from "@convoform/ui/components/headingInput";
+import { HeadingInput } from "@convoform/ui";
 
 type Props = {
   form: Form;

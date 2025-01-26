@@ -1,16 +1,16 @@
 "use client";
 
 import type { Workspace } from "@convoform/db/src/schema";
-import { HeadingInput } from "@convoform/ui/components/headingInput";
-import { Button } from "@convoform/ui/components/ui/button";
+import { HeadingInput } from "@convoform/ui";
+import { Button } from "@convoform/ui";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@convoform/ui/components/ui/dropdown-menu";
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
-import { toast } from "@convoform/ui/components/ui/use-toast";
+} from "@convoform/ui";
+import { Skeleton } from "@convoform/ui";
+import { toast } from "@convoform/ui";
 import { useQueryClient } from "@tanstack/react-query";
 import { Check, Edit, MoreVertical, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";

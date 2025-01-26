@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import { motion, stagger, useAnimate } from "framer-motion";
 
 import { cn } from "@/lib/utils";

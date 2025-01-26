@@ -1,7 +1,7 @@
 "use client";
 
 import { SectionCard } from "@/components/sectionCard";
-import { AspectRatio } from "@convoform/ui/components/ui/aspect-ratio";
+import { AspectRatio } from "@convoform/ui";
 import {
   Carousel,
   type CarouselApi,
@@ -9,7 +9,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@convoform/ui/components/ui/carousel";
+} from "@convoform/ui";
 import { useAnimate } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -18,6 +18,7 @@ const screenshotsData = [
   {
     id: 1,
     alt: "screenshot of form editor",
+
     src: "/screenshots/formEditor.png",
     description: (
       <p>

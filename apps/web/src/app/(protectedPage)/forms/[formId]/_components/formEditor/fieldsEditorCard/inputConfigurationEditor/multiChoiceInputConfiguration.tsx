@@ -1,13 +1,8 @@
 "use client";
 
-import { Button } from "@convoform/ui/components/ui/button";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@convoform/ui/components/ui/form";
-import { Input } from "@convoform/ui/components/ui/input";
+import { Button } from "@convoform/ui";
+import { FormControl, FormField, FormItem, FormMessage } from "@convoform/ui";
+import { Input } from "@convoform/ui";
 import { Plus, X } from "lucide-react";
 import { useEffect } from "react";
 import { type UseFormReturn, useFieldArray } from "react-hook-form";

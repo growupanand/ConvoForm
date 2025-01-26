@@ -1,9 +1,5 @@
-import { Button } from "@convoform/ui/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@convoform/ui/components/ui/tooltip";
+import { Button } from "@convoform/ui";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@convoform/ui";
 import { Copy } from "lucide-react";
 
 export const CopyLinkButton = ({ onClick }: { onClick: () => void }) => {

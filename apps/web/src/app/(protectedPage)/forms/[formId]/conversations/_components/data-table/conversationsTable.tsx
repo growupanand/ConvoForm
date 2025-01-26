@@ -1,6 +1,6 @@
 "use client";
 
-import { toast } from "@convoform/ui/components/ui/use-toast";
+import { toast } from "@convoform/ui";
 import { InboxIcon } from "lucide-react";
 
 import { AddressBar } from "@/components/common/browserWindow";

@@ -1,4 +1,4 @@
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 
 import { LinkN } from "@/components/common/linkN";
 

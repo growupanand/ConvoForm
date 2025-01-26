@@ -1,11 +1,11 @@
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@convoform/ui/components/ui/card";
+} from "@convoform/ui";
 import { CheckCircle } from "lucide-react";
 
 import { LinkN } from "@/components/common/linkN";

@@ -1,15 +1,15 @@
 "use client";
 
 import type { Form } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@convoform/ui/components/ui/dropdown-menu";
-import { toast } from "@convoform/ui/components/ui/use-toast";
+} from "@convoform/ui";
+import { toast } from "@convoform/ui";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   BookDashed,

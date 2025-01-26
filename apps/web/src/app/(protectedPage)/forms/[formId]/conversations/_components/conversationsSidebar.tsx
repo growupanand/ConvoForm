@@ -1,6 +1,6 @@
 "use client";
 
-import { sonnerToast } from "@convoform/ui/components/ui/sonner";
+import { sonnerToast } from "@convoform/ui";
 import { socket } from "@convoform/websocket-client";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";

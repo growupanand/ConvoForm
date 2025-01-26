@@ -7,7 +7,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import { LayoutDashboard } from "lucide-react";
 
 import { AuthProvider } from "@/components/authProvider";

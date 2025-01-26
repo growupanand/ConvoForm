@@ -5,8 +5,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@convoform/ui/components/ui/card";
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+} from "@convoform/ui";
+import { Skeleton } from "@convoform/ui";
 
 export type StatsCardProps = {
   title: string;

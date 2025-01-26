@@ -1,14 +1,11 @@
 "use client";
 
 import { type Form, patchFormSchema } from "@convoform/db/src/schema";
-import {
-  Collapsible,
-  CollapsibleContent,
-} from "@convoform/ui/components/ui/collapsible";
-import { Label } from "@convoform/ui/components/ui/label";
-import { sonnerToast } from "@convoform/ui/components/ui/sonner";
-import { Switch } from "@convoform/ui/components/ui/switch";
-import { Textarea } from "@convoform/ui/components/ui/textarea";
+import { Collapsible, CollapsibleContent } from "@convoform/ui";
+import { Label } from "@convoform/ui";
+import { sonnerToast } from "@convoform/ui";
+import { Switch } from "@convoform/ui";
+import { Textarea } from "@convoform/ui";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 
@@ -21,8 +18,8 @@ import {
   FormLabel,
   FormMessage,
   Form as UIForm,
-} from "@convoform/ui/components/ui/form";
-import { Input } from "@convoform/ui/components/ui/input";
+} from "@convoform/ui";
+import { Input } from "@convoform/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";

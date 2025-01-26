@@ -6,12 +6,8 @@ import {
   generateReleaseMDXFileName,
   releaseMDXComponents,
 } from "@convoform/release";
-import { Badge } from "@convoform/ui/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@convoform/ui/components/ui/card";
+import { Badge } from "@convoform/ui";
+import { Card, CardContent, CardHeader } from "@convoform/ui";
 import { CommitList } from "./commitList";
 
 const categoryBadgeVariants = {

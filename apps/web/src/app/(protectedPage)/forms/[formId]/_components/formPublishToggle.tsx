@@ -2,7 +2,7 @@
 
 import type { Form } from "@convoform/db/src/schema";
 
-import { sonnerToast } from "@convoform/ui/components/ui/sonner";
+import { sonnerToast } from "@convoform/ui";
 
 import { ToggleButton } from "@/components/common/toggleButton";
 import { api } from "@/trpc/react";

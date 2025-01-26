@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { extractCommitMessage } from "@/lib/github";
 import type { Commit } from "@convoform/release";
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 
 export const CommitItem = ({ commit }: { commit: Commit }) => {
   const commitMessage = extractCommitMessage(commit.message);

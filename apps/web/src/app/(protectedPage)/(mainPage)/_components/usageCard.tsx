@@ -1,9 +1,9 @@
 "use client";
 
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import { Skeleton } from "@convoform/ui";
 
 import { api } from "@/trpc/react";
-import { Progress } from "@convoform/ui/components/ui/progress";
+import { Progress } from "@convoform/ui";
 
 export function UsageCard() {
   const { data, isLoading } = api.usage.getUsgae.useQuery();

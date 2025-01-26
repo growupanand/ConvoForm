@@ -2,20 +2,11 @@
 
 import type { UseFormReturn } from "react-hook-form";
 
-import { Button } from "@convoform/ui/components/ui/button";
-import { Calendar } from "@convoform/ui/components/ui/calendar";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@convoform/ui/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@convoform/ui/components/ui/popover";
-import { cn } from "@convoform/ui/lib/utils";
+import { cn } from "@/lib/utils";
+import { Button } from "@convoform/ui";
+import { Calendar } from "@convoform/ui";
+import { FormControl, FormField, FormItem, FormLabel } from "@convoform/ui";
+import { Popover, PopoverContent, PopoverTrigger } from "@convoform/ui";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { OptionalText } from ".";

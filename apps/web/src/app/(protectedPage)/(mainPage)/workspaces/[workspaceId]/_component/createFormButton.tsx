@@ -1,16 +1,16 @@
 "use client";
 
 import { type Workspace, newFormSchema } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@convoform/ui/components/ui/dropdown-menu";
-import { sonnerToast } from "@convoform/ui/components/ui/sonner";
-import { toast } from "@convoform/ui/components/ui/use-toast";
+} from "@convoform/ui";
+import { sonnerToast } from "@convoform/ui";
+import { toast } from "@convoform/ui";
 import { Loader2, PenLine, Plus, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

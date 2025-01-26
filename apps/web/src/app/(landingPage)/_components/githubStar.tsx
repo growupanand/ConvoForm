@@ -1,4 +1,4 @@
-import { Badge } from "@convoform/ui/components/ui/badge";
+import { Badge } from "@convoform/ui";
 import { Star } from "lucide-react";
 
 import { getGitHubStars } from "@/lib/github";

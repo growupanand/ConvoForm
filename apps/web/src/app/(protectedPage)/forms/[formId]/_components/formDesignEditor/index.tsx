@@ -5,7 +5,7 @@ import { useFormContext } from "@/components/formViewer/formContext";
 import { useFormDesign } from "@/components/formViewer/formDesignContext";
 import { api } from "@/trpc/react";
 import { DEFAULT_FORM_DESIGN } from "@convoform/db/src/schema/formDesigns/constants";
-import { sonnerToast } from "@convoform/ui/components/ui/sonner";
+import { sonnerToast } from "@convoform/ui";
 import { useEffect } from "react";
 import { BasicDesignCard, type FormHookData } from "./basicDesignCard";
 import { DesignDefaultScreenCard } from "./designDefaultScreen";

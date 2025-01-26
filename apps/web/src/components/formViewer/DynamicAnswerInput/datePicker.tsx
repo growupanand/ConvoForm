@@ -1,17 +1,13 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import {
   type DatePickerInputConfigSchema,
   restoreDateFields,
 } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui/components/ui/button";
-import { Calendar, type Matcher } from "@convoform/ui/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@convoform/ui/components/ui/popover";
-import { cn } from "@convoform/ui/lib/utils";
+import { Button } from "@convoform/ui";
+import { Calendar, type Matcher } from "@convoform/ui";
+import { Popover, PopoverContent, PopoverTrigger } from "@convoform/ui";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import type { InputProps } from ".";

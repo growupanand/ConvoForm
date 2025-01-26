@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@convoform/ui/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@convoform/ui";
 
 import { cn } from "@/lib/utils";
 

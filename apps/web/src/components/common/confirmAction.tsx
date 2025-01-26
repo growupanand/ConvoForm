@@ -8,7 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@convoform/ui/components/ui/alert-dialog";
+} from "@convoform/ui";
 
 type Props = {
   onConfirm: () => void;

@@ -1,4 +1,4 @@
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import type { UseQueryResult } from "@tanstack/react-query";
 
 import Spinner from "../common/spinner";
