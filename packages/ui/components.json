@@ -4,8 +4,8 @@
   "rsc": true,
   "tsx": true,
   "tailwind": {
-    "config": "../../apps/web/tailwind.config.ts",
-    "css": "../../apps/web/src/globals.css",
+    "config": "@convoform/tailwind-config/src/tailwind.config.ts",
+    "css": "@convoform/tailwind-config/src/globals.css",
     "baseColor": "slate",
     "cssVariables": true,
     "prefix": ""

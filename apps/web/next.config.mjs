@@ -33,6 +33,7 @@ const nextConfig = {
       "@convoform/db",
       "@convoform/api",
       "@convoform/common",
+      "@convoform/tailwind-config",
     ],
   },
   // Configure `pageExtensions` to include MDX files
