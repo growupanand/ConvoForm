@@ -3,8 +3,6 @@ import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
 import colors from "tailwindcss/colors";
 
-import { withTremorConfig } from "./src/lib/config/tailwind.config/tremor.chart";
-
 const config = {
   darkMode: ["class"],
   content: ["./src/**/*.{ts,tsx}", "../../packages/ui/src/**/*.{ts,tsx}"],
@@ -94,4 +92,4 @@ const config = {
   plugins: [tailwindcss_typography, tailwindcssAnimate],
 } satisfies Config;
 
-export default withTremorConfig(config);
+export default config;
