@@ -1,9 +1,8 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-
+import { drizzle } from "drizzle-orm/neon-serverless";
 import * as schema from "./schema";
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+export const db = drizzle({
+  schema,
+  // biome-ignore lint/style/noNonNullAssertion: <explanation>
+  connection: process.env.DATABASE_URL!,
+  ws: WebSocket,
 });
-export const db = drizzle(pool, { schema: schema });
