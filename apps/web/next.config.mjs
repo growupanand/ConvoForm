@@ -27,7 +27,6 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: [
-      "@tremor/react",
       "@convoform/ai",
       "@convoform/react",
       "@convoform/ui",
