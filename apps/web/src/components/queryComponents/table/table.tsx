@@ -1,6 +1,6 @@
-import { Alert } from "@convoform/ui/components/ui/alert";
-import { Button } from "@convoform/ui/components/ui/button";
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import { Alert } from "@convoform/ui";
+import { Button } from "@convoform/ui";
+import { Skeleton } from "@convoform/ui";
 import {
   Table,
   TableBody,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@convoform/ui/components/ui/table";
+} from "@convoform/ui";
 import {
   createColumnHelper,
   flexRender,

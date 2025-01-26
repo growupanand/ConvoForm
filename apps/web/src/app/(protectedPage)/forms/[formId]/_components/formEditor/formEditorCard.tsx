@@ -12,8 +12,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@convoform/ui/components/ui/accordion";
-import { Badge } from "@convoform/ui/components/ui/badge";
+} from "@convoform/ui";
+import { Badge } from "@convoform/ui";
 import {
   FormControl,
   FormDescription,
@@ -22,12 +22,12 @@ import {
   FormLabel,
   FormMessage,
   Form as UIForm,
-} from "@convoform/ui/components/ui/form";
-import { Input } from "@convoform/ui/components/ui/input";
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
-import { sonnerToast } from "@convoform/ui/components/ui/sonner";
-import { Textarea } from "@convoform/ui/components/ui/textarea";
-import { toast } from "@convoform/ui/components/ui/use-toast";
+} from "@convoform/ui";
+import { Input } from "@convoform/ui";
+import { Skeleton } from "@convoform/ui";
+import { sonnerToast } from "@convoform/ui";
+import { Textarea } from "@convoform/ui";
+import { toast } from "@convoform/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -39,7 +39,7 @@ import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { FORM_SECTIONS_ENUMS } from "@convoform/db/src/schema/formDesigns/constants";
 import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
-import { Label } from "@convoform/ui/components/ui/label";
+import { Label } from "@convoform/ui";
 import { CustomizeEndScreenCard } from "./customizeEndScreenCard";
 import { CustomizeFormCard } from "./customizeFormCard";
 import { FieldsEditorCard } from "./fieldsEditorCard";

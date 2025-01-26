@@ -1,4 +1,4 @@
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 
 import type { NavItemAction } from "@/lib/types/navigation";
 import { cn } from "@/lib/utils";

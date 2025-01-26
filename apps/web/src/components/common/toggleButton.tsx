@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
-import { Button } from "@convoform/ui/components/ui/button";
-import { Label } from "@convoform/ui/components/ui/label";
-import { Switch } from "@convoform/ui/components/ui/switch";
+import { Button } from "@convoform/ui";
+import { Label } from "@convoform/ui";
+import { Switch } from "@convoform/ui";
 
 type SwitchProps = Parameters<typeof Switch>[0];
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useOrganization } from "@clerk/nextjs";
-import { Card, CardContent } from "@convoform/ui/components/ui/card";
+import { Card, CardContent } from "@convoform/ui";
 
 import {
   FormEditorCard,

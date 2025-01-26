@@ -1,7 +1,7 @@
 "use client";
 
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
-import { Tabs, TabsList, TabsTrigger } from "@convoform/ui/components/ui/tabs";
+import { Skeleton } from "@convoform/ui";
+import { Tabs, TabsList, TabsTrigger } from "@convoform/ui";
 import { usePathname } from "next/navigation";
 
 import type { NavLink } from "@/lib/types/navigation";

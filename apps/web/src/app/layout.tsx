@@ -1,9 +1,7 @@
-import type { Metadata } from "next";
-
-import { Toaster as SonnerToaster } from "@convoform/ui/components/ui/sonner";
-import { Toaster } from "@convoform/ui/components/ui/toaster";
-import { TooltipProvider } from "@convoform/ui/components/ui/tooltip";
+import { SonnerToaster } from "@convoform/ui";
+import { TooltipProvider } from "@convoform/ui";
 import { GeistSans } from "geist/font/sans";
+import type { Metadata } from "next";
 import type { Viewport } from "next";
 
 import { TRPCReactProvider } from "@/trpc/react";
@@ -86,7 +84,7 @@ export default function RootLayout({
               <TRPCReactProvider>{children}</TRPCReactProvider>
             </TooltipProvider>
 
-            <Toaster />
+            <SonnerToaster />
             <SonnerToaster />
           </CSPostHogProvider>
         </body>

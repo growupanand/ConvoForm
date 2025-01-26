@@ -1,7 +1,7 @@
 "use client";
 
 import type { AppRouter } from "@convoform/api";
-import { toast } from "@convoform/ui/components/ui/use-toast";
+import { toast } from "@convoform/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loggerLink } from "@trpc/client";
 import { httpBatchLink } from "@trpc/client";

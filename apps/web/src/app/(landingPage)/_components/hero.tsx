@@ -1,10 +1,6 @@
-import { Badge } from "@convoform/ui/components/ui/badge";
-import { Button } from "@convoform/ui/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@convoform/ui/components/ui/card";
+import { Badge } from "@convoform/ui";
+import { Button } from "@convoform/ui";
+import { Card, CardContent, CardHeader } from "@convoform/ui";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

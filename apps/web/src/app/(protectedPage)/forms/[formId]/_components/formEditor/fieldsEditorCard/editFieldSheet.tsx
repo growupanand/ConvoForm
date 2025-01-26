@@ -6,7 +6,7 @@ import {
   inputTypeEnum,
   updateFormFieldSchema,
 } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import {
   Form,
   FormControl,
@@ -15,28 +15,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@convoform/ui/components/ui/form";
-import { Input } from "@convoform/ui/components/ui/input";
+} from "@convoform/ui";
+import { Input } from "@convoform/ui";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@convoform/ui/components/ui/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@convoform/ui/components/ui/sheet";
-import { sonnerToast } from "@convoform/ui/components/ui/sonner";
-import { Textarea } from "@convoform/ui/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@convoform/ui/components/ui/tooltip";
+} from "@convoform/ui";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@convoform/ui";
+import { sonnerToast } from "@convoform/ui";
+import { Textarea } from "@convoform/ui";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@convoform/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Info } from "lucide-react";

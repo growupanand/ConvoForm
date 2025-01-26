@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
 

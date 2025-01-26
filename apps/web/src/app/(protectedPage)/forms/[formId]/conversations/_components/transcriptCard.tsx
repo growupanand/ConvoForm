@@ -1,7 +1,7 @@
 import type { Transcript } from "@convoform/db/src/schema";
 
 import { AnimatedTypingDots } from "@/components/common/typingDots";
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import { Skeleton } from "@convoform/ui";
 
 type Props = {
   transcript: Transcript[];

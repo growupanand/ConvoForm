@@ -1,5 +1,5 @@
-import { Button } from "@convoform/ui/components/ui/button";
-import { Card } from "@convoform/ui/components/ui/card";
+import { Button } from "@convoform/ui";
+import { Card } from "@convoform/ui";
 import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 import { Link } from "next-view-transitions";

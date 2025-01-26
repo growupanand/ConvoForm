@@ -1,11 +1,11 @@
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@convoform/ui/components/ui/dialog";
-import { Drawer, DrawerContent } from "@convoform/ui/components/ui/drawer";
+} from "@convoform/ui";
+import { Drawer, DrawerContent } from "@convoform/ui";
 
 import { useMediaQuery } from "@/hooks/use-media-query";
 

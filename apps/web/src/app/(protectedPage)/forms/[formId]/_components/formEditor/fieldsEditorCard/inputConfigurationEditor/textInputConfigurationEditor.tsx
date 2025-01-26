@@ -4,8 +4,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@convoform/ui/components/ui/form";
-import { Input } from "@convoform/ui/components/ui/input";
+} from "@convoform/ui";
+import { Input } from "@convoform/ui";
 import type { UseFormReturn } from "react-hook-form";
 
 import { OptionalText } from ".";

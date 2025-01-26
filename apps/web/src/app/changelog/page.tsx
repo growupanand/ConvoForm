@@ -4,12 +4,8 @@ import BrandName from "@/components/common/brandName";
 import { TimeLine, TimelineItem } from "@/components/common/timeline";
 import { formatDate } from "@/lib/utils";
 import { releaseSchema, releases } from "@convoform/release";
-import { Button } from "@convoform/ui/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@convoform/ui/components/ui/card";
+import { Button } from "@convoform/ui";
+import { Card, CardContent, CardHeader } from "@convoform/ui";
 import { Dot } from "lucide-react";
 import Link from "next/link";
 import { ReleaseCard } from "./_components/releaseCard";

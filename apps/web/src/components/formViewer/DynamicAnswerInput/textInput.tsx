@@ -1,15 +1,15 @@
 "use client";
 
 import type { TextInputConfigSchema } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@convoform/ui/components/ui/form";
-import { Textarea } from "@convoform/ui/components/ui/textarea";
+} from "@convoform/ui";
+import { Textarea } from "@convoform/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

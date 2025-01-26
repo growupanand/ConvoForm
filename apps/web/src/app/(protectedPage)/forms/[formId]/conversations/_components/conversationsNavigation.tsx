@@ -1,5 +1,5 @@
 import type { Conversation } from "@convoform/db/src/schema";
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import { Skeleton } from "@convoform/ui";
 
 import { SecondaryNavigation } from "@/components/common/secondaryNavigation";
 import Spinner from "@/components/common/spinner";

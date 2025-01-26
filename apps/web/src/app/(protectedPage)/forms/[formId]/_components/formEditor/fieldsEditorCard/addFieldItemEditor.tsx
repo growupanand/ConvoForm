@@ -1,7 +1,7 @@
 "use client";
 
 import { insertFormFieldSchema } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import {
   Form,
   FormControl,
@@ -9,16 +9,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@convoform/ui/components/ui/form";
-import { Input } from "@convoform/ui/components/ui/input";
-import { sonnerToast } from "@convoform/ui/components/ui/sonner";
-import { Textarea } from "@convoform/ui/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@convoform/ui/components/ui/tooltip";
-import { toast } from "@convoform/ui/components/ui/use-toast";
+} from "@convoform/ui";
+import { Input } from "@convoform/ui";
+import { sonnerToast } from "@convoform/ui";
+import { Textarea } from "@convoform/ui";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@convoform/ui";
+import { toast } from "@convoform/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Info } from "lucide-react";
@@ -29,12 +25,7 @@ import Spinner from "@/components/common/spinner";
 import { useAutoHeightHook } from "@/hooks/auto-height-hook";
 import { api } from "@/trpc/react";
 import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@convoform/ui/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@convoform/ui";
 
 type Props = {
   onFieldAdded: () => void;

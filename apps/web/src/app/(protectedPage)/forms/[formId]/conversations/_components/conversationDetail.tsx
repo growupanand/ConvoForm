@@ -1,11 +1,7 @@
 import type { Conversation, Transcript } from "@convoform/db/src/schema";
-import { Badge } from "@convoform/ui/components/ui/badge";
-import {
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@convoform/ui/components/ui/card";
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import { Badge } from "@convoform/ui";
+import { CardContent, CardHeader, CardTitle } from "@convoform/ui";
+import { Skeleton } from "@convoform/ui";
 
 import { FileText } from "lucide-react";
 

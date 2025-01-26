@@ -4,15 +4,15 @@ import {
   type FormField as FormFieldSchema,
   patchFormFieldSchema,
 } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@convoform/ui/components/ui/form";
-import { sonnerToast } from "@convoform/ui/components/ui/sonner";
+} from "@convoform/ui";
+import { sonnerToast } from "@convoform/ui";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,7 +25,7 @@ import type { z } from "zod";
 import Spinner from "@/components/common/spinner";
 import { useAutoHeightHook } from "@/hooks/auto-height-hook";
 import { api } from "@/trpc/react";
-import { Textarea } from "@convoform/ui/components/ui/textarea";
+import { Textarea } from "@convoform/ui";
 
 type Props = {
   formField: FormFieldSchema;

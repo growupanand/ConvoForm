@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@convoform/ui/components/ui/button";
-import { toast } from "@convoform/ui/components/ui/use-toast";
+import { Button } from "@convoform/ui";
+import { toast } from "@convoform/ui";
 import { ExternalLink, RotateCw } from "lucide-react";
 import Link from "next/link";
 
 import { copyLinkToClipboard } from "@/lib/url";
-import { cn } from "@convoform/ui/lib/utils";
+import { cn } from "@/lib/utils";
 import { CopyLinkButton } from "./copyLinkButton";
 
 type Props = {

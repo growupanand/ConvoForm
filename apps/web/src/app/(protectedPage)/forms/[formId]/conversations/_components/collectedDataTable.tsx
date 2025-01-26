@@ -2,13 +2,8 @@ import { getConversationTableData } from "@/components/queryComponents/table/uti
 import { cn } from "@/lib/utils";
 import type { Conversation } from "@convoform/db/src/schema";
 
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "@convoform/ui/components/ui/table";
+import { Skeleton } from "@convoform/ui";
+import { Table, TableBody, TableCell, TableRow } from "@convoform/ui";
 type Props = {
   collectedData: Conversation["collectedData"];
 };

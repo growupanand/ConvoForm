@@ -1,6 +1,6 @@
 import { UserSignInButton } from "@/app/(landingPage)/_components/userButton";
 import { cn } from "@/lib/utils";
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import { Suspense } from "react";
 import BrandName from "./brandName";
 import { LinkN } from "./linkN";

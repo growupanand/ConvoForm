@@ -1,4 +1,4 @@
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import { Skeleton } from "@convoform/ui";
 
 export default function FormListLoading() {
   return (

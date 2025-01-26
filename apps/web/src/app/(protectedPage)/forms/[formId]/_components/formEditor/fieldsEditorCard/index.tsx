@@ -1,7 +1,7 @@
 "use client";
 
 import type { Form, FormField } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import {
   DndContext,
   type DragEndEvent,

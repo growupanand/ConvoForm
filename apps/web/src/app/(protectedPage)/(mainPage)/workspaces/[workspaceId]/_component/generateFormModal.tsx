@@ -4,7 +4,7 @@ import {
   aiGeneratedFormSchema,
   generateFormSchema,
 } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui/components/ui/button";
+import { Button } from "@convoform/ui";
 import {
   Form,
   FormControl,
@@ -12,8 +12,8 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from "@convoform/ui/components/ui/form";
-import { Textarea } from "@convoform/ui/components/ui/textarea";
+} from "@convoform/ui";
+import { Textarea } from "@convoform/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, CheckCircle2, Pen, Sparkles } from "lucide-react";
 import { useState } from "react";
@@ -28,14 +28,14 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@convoform/ui/components/ui/dialog";
+} from "@convoform/ui";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@convoform/ui/components/ui/dropdown-menu";
+} from "@convoform/ui";
 import type { HandleCreateForm } from "./createFormButton";
 
 type Props = {

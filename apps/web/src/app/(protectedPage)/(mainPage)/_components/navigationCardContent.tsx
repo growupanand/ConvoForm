@@ -1,8 +1,8 @@
 "use client";
 
 import { ClerkLoading, OrganizationSwitcher, UserButton } from "@clerk/nextjs";
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
-import { toast } from "@convoform/ui/components/ui/use-toast";
+import { Skeleton } from "@convoform/ui";
+import { toast } from "@convoform/ui";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";

@@ -1,6 +1,6 @@
 "use client";
 
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import { Skeleton } from "@convoform/ui";
 import { motion } from "framer-motion";
 import { InboxIcon } from "lucide-react";
 import Link from "next/link";
@@ -10,12 +10,7 @@ import { ListCard } from "@/components/common/list";
 import { ListItem } from "@/components/common/listItem";
 import { timeAgo } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@convoform/ui/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@convoform/ui";
 
 export function RecentResponsesCard({ take }: Readonly<{ take: number }>) {
   const { data, isLoading } = api.conversation.getRecentResponses.useQuery({

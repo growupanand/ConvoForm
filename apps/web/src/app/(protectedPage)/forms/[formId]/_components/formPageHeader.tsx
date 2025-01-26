@@ -1,8 +1,8 @@
 "use client";
 
 import { UserButton, useOrganization } from "@clerk/nextjs";
-import { Button } from "@convoform/ui/components/ui/button";
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import { Button } from "@convoform/ui";
+import { Skeleton } from "@convoform/ui";
 import { ChevronRight, Home } from "lucide-react";
 
 import { LinkN } from "@/components/common/linkN";

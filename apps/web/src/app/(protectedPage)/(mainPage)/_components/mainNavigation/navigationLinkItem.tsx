@@ -1,5 +1,5 @@
-import { Button } from "@convoform/ui/components/ui/button";
-import { Skeleton } from "@convoform/ui/components/ui/skeleton";
+import { Button } from "@convoform/ui";
+import { Skeleton } from "@convoform/ui";
 import Link from "next/link";
 
 import type { NavLink } from "@/lib/types/navigation";
