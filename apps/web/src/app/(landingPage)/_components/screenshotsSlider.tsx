@@ -10,7 +10,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@convoform/ui";
-import { useAnimate } from "framer-motion";
+import { useAnimate } from "motion/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 

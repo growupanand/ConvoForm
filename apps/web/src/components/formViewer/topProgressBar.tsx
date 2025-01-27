@@ -2,8 +2,8 @@
 
 import { Button } from "@convoform/ui";
 import { Progress } from "@convoform/ui";
-import { motion } from "framer-motion";
 import { RotateCcw } from "lucide-react";
+import { motion } from "motion/react";
 import { ConfirmAction } from "../common/confirmAction";
 
 export function TopProgressBar({

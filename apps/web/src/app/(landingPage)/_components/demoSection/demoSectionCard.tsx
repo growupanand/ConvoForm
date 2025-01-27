@@ -2,7 +2,7 @@
 
 import { FormContextProvider } from "@/components/formViewer/formContext";
 import type { Form } from "@convoform/db/src/schema";
-import { useInView } from "framer-motion";
+import { useInView } from "motion/react";
 import { useRef } from "react";
 import { DemoCollectedDataTable } from "./demoCollectedDataTable";
 import { DemoFormCard } from "./demoFormCard";

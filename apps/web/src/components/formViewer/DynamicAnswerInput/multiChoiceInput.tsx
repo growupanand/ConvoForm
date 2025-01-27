@@ -3,7 +3,7 @@
 import type { MultipleChoiceInputConfigSchema } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui";
 
-import { type Variants, motion } from "framer-motion";
+import { type Variants, motion } from "motion/react";
 import type { InputProps } from "./";
 
 type Props = InputProps & {

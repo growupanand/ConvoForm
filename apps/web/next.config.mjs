@@ -2,7 +2,6 @@ import createMDX from "@next/mdx";
 // Injected content via Sentry wizard below
 
 import { withSentryConfig } from "@sentry/nextjs";
-import remarkGfm from "remark-gfm";
 
 import("./env.js");
 
@@ -52,10 +51,13 @@ const nextConfig = {
   typescript: { ignoreBuildErrors: true },
 };
 
+/** @type {import('remark-gfm').Options} */
+const remarkGFMOptions = {};
+
 const withMDX = createMDX({
   // Add markdown plugins here, as desired
   options: {
-    remarkPlugins: [remarkGfm],
+    remarkPlugins: [["remark-gfm", remarkGFMOptions]],
     rehypePlugins: [],
   },
 });

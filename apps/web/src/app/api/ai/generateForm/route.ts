@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     const requestJson = await req.json();
     const { formOverview } = generateFormSchema.parse(requestJson);
 
-    const orgId = getOrganizationId();
+    const orgId = await getOrganizationId();
 
     // TODO: After moving AI related routes to tRPC, we can use userId as identifier
 

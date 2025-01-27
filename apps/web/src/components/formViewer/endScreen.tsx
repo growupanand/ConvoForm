@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { Button } from "@convoform/ui";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import Link from "next/link";
 import BrandName from "../common/brandName";
 

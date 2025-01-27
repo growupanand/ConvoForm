@@ -1,8 +1,8 @@
 "use client";
 
 import { Skeleton } from "@convoform/ui";
-import { motion } from "framer-motion";
 import { InboxIcon } from "lucide-react";
+import { motion } from "motion/react";
 import Link from "next/link";
 
 import { EmptyCard } from "@/components/common/emptyCard";

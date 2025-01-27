@@ -1,7 +1,7 @@
 import type { ExtraStreamData } from "@convoform/db/src/schema";
 import type { SubmitAnswer } from "@convoform/react";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { TypingCursor, TypingEffect } from "../common/typingEffect";
 import { DynamicAnswerInput } from "./DynamicAnswerInput";
 

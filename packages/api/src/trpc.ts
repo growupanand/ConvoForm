@@ -24,7 +24,7 @@ import { ZodError } from "zod";
 export const createTRPCContext = async () => {
   return {
     db,
-    auth: auth(),
+    auth: await auth(),
     user: await currentUser(),
   };
 };

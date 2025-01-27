@@ -4,9 +4,11 @@ type Props = {
   params: { formId: string };
 };
 
-export default function ConversationsStatsPage({
-  params: { formId },
-}: Readonly<Props>) {
+export default async function ConversationsStatsPage(props: Readonly<Props>) {
+  const params = await props.params;
+
+  const { formId } = params;
+
   return (
     <div>
       <h2 className="mb-5 font-medium capitalize text-2xl ">

@@ -6,7 +6,7 @@ type Props = {
 };
 
 export default async function Layout({ children }: Readonly<Props>) {
-  const orgId = getOrganizationId();
+  const orgId = await getOrganizationId();
 
   return (
     <div className="flex h-screen flex-row">

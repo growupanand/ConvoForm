@@ -4,18 +4,18 @@ import type { NextRequest } from "next/server";
 import { z } from "zod";
 
 const routeContextSchema = z.object({
-  params: z.object({
-    formId: z.string(),
-  }),
+  params: z.promise(
+    z.object({
+      formId: z.string(),
+    }),
+  ),
 });
 
 export async function GET(
   _req: NextRequest,
   context: z.infer<typeof routeContextSchema>,
 ) {
-  const {
-    params: { formId },
-  } = routeContextSchema.parse(context);
+  const { formId } = await routeContextSchema.parse(context).params;
   const existForm = await api.form.getOneWithFields({ id: formId });
   if (!existForm) {
     return Response.json(

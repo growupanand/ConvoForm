@@ -32,15 +32,15 @@
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/react": "^18",
-    "tsup": "^8.0.2",
-    "typescript": "^5",
-    "release-it": "^17.0.1",
-    "@release-it/conventional-changelog": "^8.0.1",
-    "@convoform/websocket-client": "../websocket-client",
+    "@convoform/common": "../common",
     "@convoform/db": "../db",
     "@convoform/tsconfig": "../tsconfig",
-    "@convoform/common": "../common"
+    "@convoform/websocket-client": "../websocket-client",
+    "@release-it/conventional-changelog": "^8.0.1",
+    "@types/react": "^19.0.8",
+    "release-it": "^17.0.1",
+    "tsup": "^8.0.2",
+    "typescript": "^5"
   },
   "peerDependencies": {
     "react": "^18",

@@ -3,17 +3,18 @@
 import { useOrganization } from "@clerk/nextjs";
 import { socket } from "@convoform/websocket-client";
 import { notFound } from "next/navigation";
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 
 import ConversationDetail from "@/app/(protectedPage)/forms/[formId]/conversations/_components/conversationDetail";
 import { api } from "@/trpc/react";
 
 type Props = {
-  params: { conversationId: string };
+  params: Promise<{ conversationId: string }>;
 };
 
 export default function ConversationDetailPage(props: Readonly<Props>) {
-  const { conversationId } = props.params;
+  const params = use(props.params);
+  const { conversationId } = params;
   const { organization, isLoaded: isOrganizationLoaded } = useOrganization();
 
   const {
