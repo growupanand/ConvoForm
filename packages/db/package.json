@@ -6,6 +6,7 @@
   "scripts": {
     "type-check": "tsc --noEmit",
     "drizzle-kit": "drizzle-kit",
+    "dev": "drizzle-kit studio --config drizzle.config.ts",
     "drizzle:generate-migration": "drizzle-kit generate",
     "drizzle:apply-migration": "drizzle-kit migrate",
     "custom-script": "tsx ./src/script.ts"
@@ -20,8 +21,7 @@
   "devDependencies": {
     "@convoform/tsconfig": "workspace:*",
     "@types/node": "^20",
-    "@types/pg": "^8.11.0",
-    "drizzle-kit": "^0.22.7",
+    "drizzle-kit": "^0.30.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"
