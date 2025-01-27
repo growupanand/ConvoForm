@@ -29,7 +29,6 @@ import {
 } from "@tanstack/react-table";
 import { ChevronLeft, ChevronRight, Download, FileText } from "lucide-react";
 import { Link } from "next-view-transitions";
-import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
 
@@ -45,8 +44,12 @@ type ConversationTableData = Omit<
   status: string;
 };
 
-export function ConversationsDataTable({ data }: { data: Conversation[] }) {
-  const { formId } = useParams();
+export function ConversationsDataTable(props: {
+  data: Conversation[];
+  formId: string;
+}) {
+  const [data] = useState(props.data);
+  const { formId } = props;
   const [perPage, setPerPage] = useState("10");
   const [pageIndex, setPageIndex] = useState(0);
 
@@ -91,62 +94,66 @@ export function ConversationsDataTable({ data }: { data: Conversation[] }) {
     };
   }, [data]);
 
-  const baseColumnsDefs: ColumnDef<ConversationTableData>[] = [
-    {
-      accessorKey: "name",
-      header: "Conversation Name",
-      cell: (info) => (
-        <span>
-          <Button
-            variant="link"
-            size="sm"
-            className="font-medium h-auto"
-            asChild
-          >
-            <Link
-              href={`/forms/${formId}/conversations/${info.row.original.id}`}
+  const baseColumnsDefs: ColumnDef<ConversationTableData>[] = useMemo(() => {
+    return [
+      {
+        accessorKey: "name",
+        header: "Conversation Name",
+        cell: (info) => (
+          <span>
+            <Button
+              variant="link"
+              size="sm"
+              className="font-medium h-auto"
+              asChild
             >
-              <FileText className="size-4 me-2 " />
-              <span>{info.row.original.name}</span>
-            </Link>
-          </Button>
-        </span>
-      ),
-    },
-    {
-      accessorKey: "createdAt",
-      header: "Submitted At",
-      cell: (info) => (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="text-muted-foreground ">
-              {timeAgo(info.row.original.createdAt)}
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{info.row.original.createdAt.toLocaleString()}</p>
-          </TooltipContent>
-        </Tooltip>
-      ),
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-    },
-  ];
+              <Link
+                href={`/forms/${formId}/conversations/${info.row.original.id}`}
+              >
+                <FileText className="size-4 me-2 " />
+                <span>{info.row.original.name}</span>
+              </Link>
+            </Button>
+          </span>
+        ),
+      },
+      {
+        accessorKey: "createdAt",
+        header: "Submitted At",
+        cell: (info) => (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="text-muted-foreground ">
+                {timeAgo(info.row.original.createdAt)}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{info.row.original.createdAt.toLocaleString()}</p>
+            </TooltipContent>
+          </Tooltip>
+        ),
+      },
+      {
+        accessorKey: "status",
+        header: "Status",
+      },
+    ];
+  }, [formId]);
 
   const uniqueCollectedDataColumnsDefs: ColumnDef<ConversationTableData>[] =
-    uniqueCollectedDataColumns.map((column) => {
-      return {
-        accessorKey: column,
-        header: column,
-        cell: (info) => (
-          <div className="min-w-[50px] max-w-[200px]">
-            {info.getValue() as string}
-          </div>
-        ),
-      };
-    });
+    useMemo(() => {
+      return uniqueCollectedDataColumns.map((column) => {
+        return {
+          accessorKey: column,
+          header: column,
+          cell: (info) => (
+            <div className="min-w-[50px] max-w-[200px]">
+              {info.getValue() as string}
+            </div>
+          ),
+        };
+      });
+    }, [uniqueCollectedDataColumns]);
 
   const columnDefs = [...baseColumnsDefs, ...uniqueCollectedDataColumnsDefs];
 

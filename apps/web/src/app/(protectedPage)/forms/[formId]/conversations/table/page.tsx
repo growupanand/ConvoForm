@@ -1,7 +1,7 @@
 import { AllConversationsTable } from "../_components/allConversationsTable";
 
 type Props = {
-  params: { formId: string };
+  params: Promise<{ formId: string }>;
 };
 
 export default async function ConversationsTablePage(props: Readonly<Props>) {
