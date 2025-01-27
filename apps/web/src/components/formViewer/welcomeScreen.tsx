@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@convoform/ui";
-import { motion, stagger, useAnimate } from "framer-motion";
+import { motion, stagger, useAnimate } from "motion/react";
 
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";

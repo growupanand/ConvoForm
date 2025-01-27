@@ -20,10 +20,12 @@ export const metadata: Metadata = {
   title: "Workspaces",
 };
 
-export default async function WorkspacePage({
-  params: { workspaceId },
-}: Readonly<Props>) {
-  const orgId = getOrganizationId();
+export default async function WorkspacePage(props: Readonly<Props>) {
+  const params = await props.params;
+
+  const { workspaceId } = params;
+
+  const orgId = await getOrganizationId();
   const workspace = await api.workspace.getOne({
     id: workspaceId,
     organizationId: orgId,

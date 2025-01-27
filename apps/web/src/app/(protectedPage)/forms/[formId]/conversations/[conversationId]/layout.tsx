@@ -13,7 +13,11 @@ export const metadata: Metadata = {
   title: "Conversation page",
 };
 
-export default function Layout({ children, params }: Readonly<Props>) {
+export default async function Layout(props: Readonly<Props>) {
+  const params = await props.params;
+
+  const { children } = props;
+
   return (
     <Card className="h-full">
       <div className="pt-2">

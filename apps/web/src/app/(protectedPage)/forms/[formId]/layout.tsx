@@ -14,11 +14,14 @@ export const metadata: Metadata = {
   title: "Form editor",
 };
 
-export default async function Layout({
-  children,
-  params: { formId },
-}: Readonly<Props>) {
-  const orgId = getOrganizationId();
+export default async function Layout(props: Readonly<Props>) {
+  const params = await props.params;
+
+  const { formId } = params;
+
+  const { children } = props;
+
+  const orgId = await getOrganizationId();
 
   const form = await api.form.getOne({ id: formId });
 

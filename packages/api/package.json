@@ -8,20 +8,20 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@clerk/nextjs": "^5.7.2",
-    "@convoform/db": "workspace:*",
+    "@clerk/nextjs": "^6.10.2",
     "@convoform/analytics": "workspace:*",
     "@convoform/common": "workspace:*",
+    "@convoform/db": "workspace:*",
     "@convoform/rate-limiter": "workspace:*",
     "@trpc/server": "11.0.0-rc.571",
     "superjson": "^2.2.1",
-    "zod": "^3.22.4"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^20",
     "typescript": "^5"
   },
   "peerDependencies": {
-    "next": "14.2.23"
+    "next": "15.1.6"
   }
 }

@@ -4,14 +4,20 @@ import { ConversationsSidebar } from "./_components/conversationsSidebar";
 
 type Props = {
   children: React.ReactNode;
-  params: { formId: string };
+  params: Promise<{ formId: string }>;
 };
 
 export const metadata: Metadata = {
   title: "Responses",
 };
 
-export default function Layout({ children, params: { formId } }: Props) {
+export default async function Layout(props: Props) {
+  const params = await props.params;
+
+  const { formId } = params;
+
+  const { children } = props;
+
   return (
     <div className="flex h-full">
       <div className="w-[400px] min-w-[400px]">

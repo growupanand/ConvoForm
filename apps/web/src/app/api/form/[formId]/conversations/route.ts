@@ -12,21 +12,19 @@ import {
 } from "../conversation/_utils";
 
 const routeContextSchema = z.object({
-  params: z.object({
-    formId: z.string(),
-  }),
+  params: z.promise(
+    z.object({
+      formId: z.string(),
+    }),
+  ),
 });
 
 export async function POST(
   _request: NextRequest,
   context: z.infer<typeof routeContextSchema>,
 ) {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
   try {
-    const {
-      params: { formId },
-    } = routeContextSchema.parse(context);
+    const { formId } = await routeContextSchema.parse(context).params;
 
     const formWithFormFields = await api.form.getOneWithFields({ id: formId });
 

@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   title: "Dashboard",
 };
 
-export default function DashboardPage() {
-  const orgId = getOrganizationId();
+export default async function DashboardPage() {
+  const orgId = await getOrganizationId();
 
   return (
     <PageShell title="Dashboard">

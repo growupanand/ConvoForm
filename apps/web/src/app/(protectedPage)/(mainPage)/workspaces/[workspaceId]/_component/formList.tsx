@@ -1,7 +1,7 @@
 "use client";
 
 import type { Workspace } from "@convoform/db/src/schema";
-import { motion, stagger, useAnimate } from "framer-motion";
+import { motion, stagger, useAnimate } from "motion/react";
 import { useEffect } from "react";
 
 import {

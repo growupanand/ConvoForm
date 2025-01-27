@@ -4,7 +4,7 @@ import { FormDesignLayout } from "@/app/(formSubmissionPage)/view/[formId]/_comp
 import BrowserWindow from "@/components/common/browserWindow";
 import { FormViewer } from "@/components/formViewer";
 import { getFrontendBaseUrl } from "@/lib/url";
-import { animate, motion } from "framer-motion";
+import { animate, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { DEMO_FORM_ID } from "../constants";
 

@@ -17,9 +17,11 @@ import { ConversationService } from "@convoform/ai";
 export const runtime = "edge";
 
 const routeContextSchema = z.object({
-  params: z.object({
-    formId: z.string(),
-  }),
+  params: z.promise(
+    z.object({
+      formId: z.string(),
+    }),
+  ),
 });
 
 export const requestSchema = selectConversationSchema
@@ -38,7 +40,7 @@ export async function POST(
   context: z.infer<typeof routeContextSchema>,
 ) {
   try {
-    const formId = routeContextSchema.parse(context).params.formId;
+    const { formId } = await routeContextSchema.parse(context).params;
     const { currentField, ...conversation } = await getParsedRequestJson(req);
 
     if (conversation.formId !== formId) {

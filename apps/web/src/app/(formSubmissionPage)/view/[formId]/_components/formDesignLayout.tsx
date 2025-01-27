@@ -3,7 +3,7 @@
 import Spinner from "@/components/common/spinner";
 import { useFormContext } from "@/components/formViewer/formContext";
 import { useFormDesign } from "@/components/formViewer/formDesignContext";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 
 type Props = {
   children: React.ReactNode;

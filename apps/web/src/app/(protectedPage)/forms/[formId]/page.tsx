@@ -1,4 +1,5 @@
 "use client";
+import { use } from "react";
 
 import { useOrganization } from "@clerk/nextjs";
 import { Card, CardContent } from "@convoform/ui";
@@ -16,10 +17,14 @@ import { FormPublishToggle } from "./_components/formPublishToggle";
 import NotFound from "./not-found";
 
 type Props = {
-  params: { formId: string };
+  params: Promise<{ formId: string }>;
 };
 
-export default function FormPage({ params: { formId } }: Props) {
+export default function FormPage(props: Props) {
+  const params = use(props.params);
+
+  const { formId } = params;
+
   const { organization, isLoaded } = useOrganization();
   const { isLoading, data, isError } = api.form.getOneWithFields.useQuery(
     {

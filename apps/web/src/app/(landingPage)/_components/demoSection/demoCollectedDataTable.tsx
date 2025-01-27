@@ -3,7 +3,7 @@
 import { CollectedDataTable } from "@/app/(protectedPage)/forms/[formId]/conversations/_components/collectedDataTable";
 import { useFormContext } from "@/components/formViewer/formContext";
 
-import { type Variants, motion } from "framer-motion";
+import { type Variants, motion } from "motion/react";
 
 const tableAnimationVariants: Variants = {
   hidden: { scale: 0 },

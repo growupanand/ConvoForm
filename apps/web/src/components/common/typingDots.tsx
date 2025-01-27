@@ -13,7 +13,7 @@ type Props = {
   className?: string;
 };
 
-import { type Variants, motion } from "framer-motion";
+import { type Variants, motion } from "motion/react";
 
 const dotVariants: Variants = {
   initial: {
