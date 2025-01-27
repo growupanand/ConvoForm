@@ -9,10 +9,13 @@ import { EmptyCard } from "@/components/common/emptyCard";
 import { TableComponentLoading } from "@/components/queryComponents/table/table";
 import { getFrontendBaseUrl } from "@/lib/url";
 import type { Conversation } from "@convoform/db/src/schema";
+import { useParams } from "next/navigation";
 import { ConversationsDataTable } from "./conversations-data-table";
 
 function ConversationsTable({ data }: { data: Conversation[] }) {
-  return <ConversationsDataTable data={data} />;
+  const { formId } = useParams<{ formId: string }>();
+
+  return <ConversationsDataTable data={data} formId={formId} />;
 }
 
 function ConversationsTableSkeleton() {

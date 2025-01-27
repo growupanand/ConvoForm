@@ -105,17 +105,17 @@ importers:
         specifier: ^8.51.0
         version: 8.51.0(@opentelemetry/core@1.30.1)(@opentelemetry/instrumentation@0.56.0)(@opentelemetry/sdk-trace-base@1.30.1)(next@15.1.6)(react@19.0.0)(webpack@5.97.1)
       '@tanstack/react-query':
-        specifier: ^5.59.12
-        version: 5.62.0(react@19.0.0)
+        specifier: ^5.65.0
+        version: 5.65.0(react@19.0.0)
       '@tanstack/react-table':
-        specifier: ^8.11.8
-        version: 8.20.5(react-dom@19.0.0)(react@19.0.0)
+        specifier: ^8.20.6
+        version: 8.20.6(react-dom@19.0.0)(react@19.0.0)
       '@trpc/client':
         specifier: 11.0.0-rc.571
         version: 11.0.0-rc.571(@trpc/server@11.0.0-rc.571)
       '@trpc/react-query':
         specifier: 11.0.0-rc.571
-        version: 11.0.0-rc.571(@tanstack/react-query@5.62.0)(@trpc/client@11.0.0-rc.571)(@trpc/server@11.0.0-rc.571)(react-dom@19.0.0)(react@19.0.0)
+        version: 11.0.0-rc.571(@tanstack/react-query@5.65.0)(@trpc/client@11.0.0-rc.571)(@trpc/server@11.0.0-rc.571)(react-dom@19.0.0)(react@19.0.0)
       '@trpc/server':
         specifier: 11.0.0-rc.571
         version: 11.0.0-rc.571
@@ -162,8 +162,8 @@ importers:
         specifier: 19.0.0
         version: 19.0.0
       react-csv:
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.2.2
+        version: 2.2.2
       react-dom:
         specifier: 19.0.0
         version: 19.0.0(react@19.0.0)
@@ -187,8 +187,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/tsconfig
       '@tanstack/react-query-devtools':
-        specifier: ^5.17.21
-        version: 5.62.0(@tanstack/react-query@5.62.0)(react@19.0.0)
+        specifier: ^5.65.0
+        version: 5.65.0(@tanstack/react-query@5.65.0)(react@19.0.0)
       '@types/mdx':
         specifier: ^2.0.13
         version: 2.0.13
@@ -4656,34 +4656,34 @@ packages:
       tailwindcss: 3.4.15
     dev: true
 
-  /@tanstack/query-core@5.62.0:
-    resolution: {integrity: sha512-sx38bGrqF9bop92AXOvzDr0L9fWDas5zXdPglxa9cuqeVSWS7lY6OnVyl/oodfXjgOGRk79IfCpgVmxrbHuFHg==}
+  /@tanstack/query-core@5.65.0:
+    resolution: {integrity: sha512-Bnnq/1axf00r2grRT6gUyIkZRKzhHs+p4DijrCQ3wMlA3D3TTT71gtaSLtqnzGddj73/7X5JDGyjiSLdjvQN4w==}
 
-  /@tanstack/query-devtools@5.61.4:
-    resolution: {integrity: sha512-21Tw+u8E3IJJj4A/Bct4H0uBaDTEu7zBrR79FeSyY+mS2gx5/m316oDtJiKkILc819VSTYt+sFzODoJNcpPqZQ==}
+  /@tanstack/query-devtools@5.65.0:
+    resolution: {integrity: sha512-g5y7zc07U9D3esMdqUfTEVu9kMHoIaVBsD0+M3LPdAdD710RpTcLiNvJY1JkYXqkq9+NV+CQoemVNpQPBXVsJg==}
     dev: true
 
-  /@tanstack/react-query-devtools@5.62.0(@tanstack/react-query@5.62.0)(react@19.0.0):
-    resolution: {integrity: sha512-9NWUgpfRPiUpsPdYopddbQLjWXbMBNaxM7K5VXPZIPfcfJJ4mG6VqrEJysL/79zgl7hC9kJlP+zXA0r5niomdg==}
+  /@tanstack/react-query-devtools@5.65.0(@tanstack/react-query@5.65.0)(react@19.0.0):
+    resolution: {integrity: sha512-xKoeWpHs6DcPqYmydIl+juWmZ2j4e4DaQEA/ju9PylhLI/X5eV5JG4IsI0ZrjtGwAEb4+lJv3SFwU/m6cmrljA==}
     peerDependencies:
-      '@tanstack/react-query': ^5.62.0
+      '@tanstack/react-query': ^5.65.0
       react: ^18 || ^19
     dependencies:
-      '@tanstack/query-devtools': 5.61.4
-      '@tanstack/react-query': 5.62.0(react@19.0.0)
+      '@tanstack/query-devtools': 5.65.0
+      '@tanstack/react-query': 5.65.0(react@19.0.0)
       react: 19.0.0
     dev: true
 
-  /@tanstack/react-query@5.62.0(react@19.0.0):
-    resolution: {integrity: sha512-tj2ltjAn2a3fs+Dqonlvs6GyLQ/LKVJE2DVSYW+8pJ3P6/VCVGrfqv5UEchmlP7tLOvvtZcOuSyI2ooVlR5Yqw==}
+  /@tanstack/react-query@5.65.0(react@19.0.0):
+    resolution: {integrity: sha512-qXdHj3SCT2xkFxgrBIe6y9Lkowlwm+tGcV++PBLFtyvEJR5Q+biTnzm5p0tdVwqA603xlju9mtV2Kd/2brobgA==}
     peerDependencies:
       react: ^18 || ^19
     dependencies:
-      '@tanstack/query-core': 5.62.0
+      '@tanstack/query-core': 5.65.0
       react: 19.0.0
 
-  /@tanstack/react-table@8.20.5(react-dom@19.0.0)(react@19.0.0):
-    resolution: {integrity: sha512-WEHopKw3znbUZ61s9i0+i9g8drmDo6asTWbrQh8Us63DAk/M0FkmIqERew6P71HI75ksZ2Pxyuf4vvKh9rAkiA==}
+  /@tanstack/react-table@8.20.6(react-dom@19.0.0)(react@19.0.0):
+    resolution: {integrity: sha512-w0jluT718MrOKthRcr2xsjqzx+oEM7B7s/XXyfs19ll++hlId3fjTm+B2zrR3ijpANpkzBAr15j1XGVOMxpggQ==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=16.8'
@@ -4726,7 +4726,7 @@ packages:
       '@trpc/server': 11.0.0-rc.571
     dev: false
 
-  /@trpc/react-query@11.0.0-rc.571(@tanstack/react-query@5.62.0)(@trpc/client@11.0.0-rc.571)(@trpc/server@11.0.0-rc.571)(react-dom@19.0.0)(react@19.0.0):
+  /@trpc/react-query@11.0.0-rc.571(@tanstack/react-query@5.65.0)(@trpc/client@11.0.0-rc.571)(@trpc/server@11.0.0-rc.571)(react-dom@19.0.0)(react@19.0.0):
     resolution: {integrity: sha512-+LNIou3JQ/wQybTk1Vt90cKWk8LGGHrhsHiTWJFRiApaNgl/y7EkOfoOZ/we8jY3hPnyG5CXcqXx9SDbrmy8lg==}
     peerDependencies:
       '@tanstack/react-query': ^5.54.1
@@ -4735,7 +4735,7 @@ packages:
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
     dependencies:
-      '@tanstack/react-query': 5.62.0(react@19.0.0)
+      '@tanstack/react-query': 5.65.0(react@19.0.0)
       '@trpc/client': 11.0.0-rc.571(@trpc/server@11.0.0-rc.571)
       '@trpc/server': 11.0.0-rc.571
       react: 19.0.0
@@ -9936,8 +9936,8 @@ packages:
       strip-json-comments: 2.0.1
     dev: true
 
-  /react-csv@2.0.3:
-    resolution: {integrity: sha512-exyAdFLAxtuM4wNwLYrlKyPYLiJ7e0mv9tqPAd3kq+k1CiJFtznevR3yP0icv5q/y200w+lzNgi7TQn1Wrhu0w==}
+  /react-csv@2.2.2:
+    resolution: {integrity: sha512-RG5hOcZKZFigIGE8LxIEV/OgS1vigFQT4EkaHeKgyuCbUAu9Nbd/1RYq++bJcJJ9VOqO/n9TZRADsXNDR4VEpw==}
     dev: false
 
   /react-day-picker@9.5.1(react@19.0.0):
