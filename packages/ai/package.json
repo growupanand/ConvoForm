@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@convoform/tsconfig": "workspace:*",
+    "@types/node": "^22.10.10",
     "typescript": "latest"
   }
 }
