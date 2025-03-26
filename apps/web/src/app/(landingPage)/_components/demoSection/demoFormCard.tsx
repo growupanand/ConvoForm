@@ -34,7 +34,7 @@ export const DemoFormCard = ({ isInView }: { isInView: boolean }) => {
         >
           <FormDesignLayout>
             {animationFinished && (
-              <div className="h-full flex flex-col items-center justify-center">
+              <div className="container max-w-[800px]  absolute inset-0">
                 <FormViewer />
               </div>
             )}

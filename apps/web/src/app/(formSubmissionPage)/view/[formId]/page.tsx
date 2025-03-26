@@ -40,11 +40,9 @@ export default async function FormViewPage(
   return (
     <FormContextProvider form={formData}>
       <FormDesignLayout>
-        <div className="min-h-screen flex flex-col">
-          {showHeader && <FormSubmissionPageHeader form={formData} />}
-          <div className="flex flex-grow items-center justify-center relative">
-            <FormViewer />
-          </div>
+        {showHeader && <FormSubmissionPageHeader form={formData} />}
+        <div className="container max-w-[800px]  absolute inset-0">
+          <FormViewer />
         </div>
       </FormDesignLayout>
     </FormContextProvider>

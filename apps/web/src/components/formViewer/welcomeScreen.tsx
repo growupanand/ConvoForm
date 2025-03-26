@@ -44,10 +44,10 @@ export const WelcomeScreen = ({
   }, []);
 
   return (
-    <div ref={scope} id="welcome-screen">
+    <div ref={scope} id="welcome-screen" className="absolute inset-0">
       <div
         className={cn(
-          "flex flex-col gap-4 items-center justify-center text-center",
+          "h-full flex flex-col gap-4 items-center justify-center text-center",
           "max-lg:py-20",
         )}
       >
@@ -57,7 +57,7 @@ export const WelcomeScreen = ({
         >
           <h2
             style={{ color: fontColor }}
-            className=" whitespace-break-spaces break-words  font-extrabold text-4xl lg:text-5xl transition-colors duration-500 mb-6"
+            className=" whitespace-break-spaces break-words  font-extrabold text-4xl lg:text-5xl transition-colors duration-500"
           >
             {title}
           </h2>
@@ -73,38 +73,36 @@ export const WelcomeScreen = ({
             {message}
           </p>
         </motion.span>
-        <div>
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{
-              type: "spring",
-              delay: 0.4,
-              bounce: 0.5,
-            }}
-            layoutId="start-conversation"
-          >
-            <motion.span>
-              <Button
-                disabled={isStartingConversation}
-                size="lg"
-                className="font-montserrat whitespace-break-spaces rounded-full  font-medium transition-all hover:scale-110 active:scale-100 text-2xl h-auto py-4 gap-2"
-                onClick={handleCTAClick}
-              >
-                {isStartingConversation && (
-                  <motion.span
-                    initial={{ width: 0 }}
-                    animate={{ width: "auto" }}
-                    transition={{ duration: 0.25 }}
-                  >
-                    <Spinner />
-                  </motion.span>
-                )}{" "}
-                {CTALabel}
-              </Button>
-            </motion.span>
-          </motion.div>
-        </div>
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{
+            type: "spring",
+            delay: 0.4,
+            bounce: 0.5,
+          }}
+          layoutId="start-conversation"
+        >
+          <motion.span>
+            <Button
+              disabled={isStartingConversation}
+              size="lg"
+              className="font-montserrat whitespace-break-spaces rounded-full  font-medium transition-all hover:scale-110 active:scale-100 text-2xl h-auto py-4 gap-2"
+              onClick={handleCTAClick}
+            >
+              {isStartingConversation && (
+                <motion.span
+                  initial={{ width: 0 }}
+                  animate={{ width: "auto" }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <Spinner />
+                </motion.span>
+              )}{" "}
+              {CTALabel}
+            </Button>
+          </motion.span>
+        </motion.div>
       </div>
     </div>
   );

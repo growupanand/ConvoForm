@@ -43,7 +43,7 @@ export default function FormPreviewBrowser({
       link={noToolbar ? undefined : formViewLink}
       backgroundColor={browserPageBackgroundColor}
     >
-      <div className="flex h-full flex-col items-center justify-center">
+      <div className="w-full h-full container">
         {isLoading ? (
           <Spinner label="Loading form..." />
         ) : (

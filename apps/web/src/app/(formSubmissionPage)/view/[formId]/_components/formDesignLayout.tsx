@@ -19,7 +19,7 @@ export function FormDesignLayout({ children }: Readonly<Props>) {
   return (
     <div
       style={{ background: pageBackgroundColor }}
-      className="h-full transition-colors duration-500"
+      className="absolute inset-0  transition-colors duration-500"
     >
       <AnimatePresence mode="wait">
         {isLoadingFormDesign ? (
@@ -30,6 +30,7 @@ export function FormDesignLayout({ children }: Readonly<Props>) {
             exit={{ opacity: 0 }}
             transition={{ duration: 1 }}
             layout={isLoadingFormDesign}
+            className="w-full h-full flex items-center justify-center"
           >
             <LoadingForm />
           </motion.div>
@@ -42,7 +43,5 @@ export function FormDesignLayout({ children }: Readonly<Props>) {
 }
 
 const LoadingForm = () => (
-  <div className=" pt-10 flex items-center justify-center">
-    <Spinner label="Initializing form" labelClassName="text-lg font-medium" />
-  </div>
+  <Spinner label="Initializing form" labelClassName="text-lg font-medium" />
 );
