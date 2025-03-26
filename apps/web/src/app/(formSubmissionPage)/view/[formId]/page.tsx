@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { FormViewer } from "@/components/formViewer";
 import { FormContextProvider } from "@/components/formViewer/formContext";
+import { cn } from "@/lib/utils";
 import { api } from "@/trpc/server";
 import { FormDesignLayout } from "./_components/formDesignLayout";
 import { FormNotPublishedScreen } from "./_components/formNotPublishedScreen";
@@ -40,11 +41,9 @@ export default async function FormViewPage(
   return (
     <FormContextProvider form={formData}>
       <FormDesignLayout>
-        <div className="min-h-screen flex flex-col">
-          {showHeader && <FormSubmissionPageHeader form={formData} />}
-          <div className="flex flex-grow items-center justify-center relative">
-            <FormViewer />
-          </div>
+        {showHeader && <FormSubmissionPageHeader form={formData} />}
+        <div className={cn("container max-w-[800px]  absolute inset-0")}>
+          <FormViewer />
         </div>
       </FormDesignLayout>
     </FormContextProvider>

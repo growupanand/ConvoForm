@@ -19,7 +19,7 @@ export const EndScreen = (props: Props) => {
   const showCTAButton =
     props.endScreenCTAUrl && props.endScreenCTAUrl.trim().length > 0;
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="absolute inset-0 flex flex-col items-center justify-center">
       <div>
         <motion.div
           initial={{ opacity: 0, y: -10 }}

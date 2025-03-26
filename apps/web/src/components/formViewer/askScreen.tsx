@@ -24,35 +24,24 @@ export const AskScreen = ({
   const shouldShowAnswerInput = !isFormBusy && currentField;
   return (
     <motion.div
-      className="flex w-full flex-col items-center justify-center"
+      className="h-full flex flex-col justify-center gap-y-4 max-lg:justify-start"
       layout="position"
       layoutDependency={isEmptyQuestion}
     >
-      <div className="w-full py-20 h-full relative">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={currentField?.fieldName}
-            initial={{ opacity: 0, translateY: 20 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            exit={{ opacity: 0, translateY: -20 }}
-            transition={{ duration: 0.75, ease: "easeInOut" }}
-            className="text-muted-foreground mb-4 text-xl capitalize text-left"
-          >
-            {currentField?.fieldName}
-          </motion.div>
-        </AnimatePresence>
-        <div className="mb-10 w-full whitespace-pre-line text-justify leading-6 text-2xl lg:leading-7 transition-colors duration-500">
-          <AnimatePresence mode="wait">
-            {!isEmptyQuestion && (
-              <motion.div
-                style={{ color: fontColor }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                <TypingEffect text={currentQuestion} />
-              </motion.div>
-            )}
-          </AnimatePresence>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={currentField?.fieldName}
+          initial={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          exit={{ opacity: 0, translateY: -20 }}
+          transition={{ duration: 0.75, ease: "easeInOut" }}
+          className="text-muted-foreground max-lg:mt-10 text-xl capitalize text-left"
+        >
+          {currentField?.fieldName}
+        </motion.div>
+      </AnimatePresence>
+      <div className="mb-10 w-full whitespace-pre-line text-justify leading-6 text-2xl lg:leading-7 transition-colors duration-500">
+        <AnimatePresence mode="wait">
           {isEmptyQuestion && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -62,28 +51,38 @@ export const AskScreen = ({
               <TypingCursor />
             </motion.div>
           )}
-        </div>
-        <AnimatePresence mode="wait">
-          {shouldShowAnswerInput && (
+          {!isEmptyQuestion && (
             <motion.div
-              className="w-full"
-              variants={{
-                hidden: { opacity: 0, translateY: -20 },
-                visible: { opacity: 1, translateY: 0 },
-              }}
-              initial="hidden"
-              animate="visible"
+              style={{ color: fontColor }}
+              exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25 }}
+              className="min-h-fit"
             >
-              <DynamicAnswerInput
-                fieldConfiguration={currentField.fieldConfiguration}
-                currentField={currentField}
-                submitAnswer={submitAnswer}
-              />
+              <TypingEffect text={currentQuestion} />
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+      <AnimatePresence mode="wait">
+        {shouldShowAnswerInput && (
+          <motion.div
+            className="w-full max-lg:mt-auto max-lg:pb-4"
+            variants={{
+              hidden: { opacity: 0, translateY: -20 },
+              visible: { opacity: 1, translateY: 0 },
+            }}
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.25 }}
+          >
+            <DynamicAnswerInput
+              fieldConfiguration={currentField.fieldConfiguration}
+              currentField={currentField}
+              submitAnswer={submitAnswer}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
