@@ -32,7 +32,9 @@ export default function Home() {
           <Hero />
           <div className="absolute bottom-10 max-lg:hidden">
             <div className="flex flex-col items-center text-muted-foreground">
-              <span className="text-2xl font-medium">Live Demo</span>
+              <span className="text-2xl font-medium">
+                Live Demo TEst preview
+              </span>
               <ChevronDown className="size-10 " />
             </div>
           </div>
