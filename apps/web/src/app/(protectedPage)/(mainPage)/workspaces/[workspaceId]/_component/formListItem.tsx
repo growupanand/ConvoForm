@@ -93,7 +93,7 @@ export function FormListItem({ form, conversationsCount }: Readonly<Props>) {
               <span>{conversationsCount}</span>
             </div>
             <DropdownMenu>
-              <DropdownMenuTrigger disabled={isDeleting}>
+              <DropdownMenuTrigger disabled={isDeleting} asChild>
                 <Button
                   variant="link"
                   size="icon"

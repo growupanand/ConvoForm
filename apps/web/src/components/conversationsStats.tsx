@@ -4,7 +4,9 @@ import { StatsCard, type StatsCardProps } from "@/components/common/statsCard";
 import { QueryComponent } from "@/components/queryComponents/queryComponent";
 import { api } from "@/trpc/react";
 
-import { Skeleton } from "@convoform/ui";
+import { Badge, Skeleton } from "@convoform/ui";
+import { Inbox } from "lucide-react";
+import { StatsGrid } from "./statsComponents/statsGrid";
 
 type ConversationsStatsCardProps = {
   formId?: string;
@@ -13,7 +15,7 @@ type ConversationsStatsCardProps = {
 
 export const ConversationsStats = ({
   formId,
-  title = "Total responses",
+  title = "Responses",
 }: ConversationsStatsCardProps) => {
   const statsQuery = api.conversation.stats.useQuery({ formId });
   return (
@@ -24,10 +26,13 @@ export const ConversationsStats = ({
       {(data) => (
         <div>
           <div className="flex items-center gap-2 text-lg  mb-4">
-            <span className=" text-muted-foreground">{title}</span>
-            <span className=" font-medium">{data.totalCount}</span>
+            <span className=" text-muted-foreground">
+              <Inbox className="mr-2 h-4 w-4 inline" />
+              {title}
+            </span>
+            <Badge variant="secondary">{data.totalCount} total</Badge>
           </div>
-          <div className="grid grid-cols-[repeat(3,_minmax(auto,200px))]  grid-rows-[auto_min-content] gap-x-4">
+          <StatsGrid className="gap-x-6">
             <ConversationsStatsCard
               title="Completed"
               primaryValue={data.finishedTotalCount.toString()}
@@ -43,7 +48,7 @@ export const ConversationsStats = ({
               primaryValue={data.liveTotalCount.toString()}
               description="Submission is in-progress"
             />
-          </div>
+          </StatsGrid>
         </div>
       )}
     </QueryComponent>
@@ -56,11 +61,14 @@ function ConversationsStatsCardSkeleton({
   return (
     <div>
       <div className="flex items-center gap-2 text-lg mb-4">
-        <span className="text-muted-foreground">{title}</span>{" "}
+        <span className="text-muted-foreground">
+          <Inbox className="mr-2 h-4 w-4 inline" />
+          {title}
+        </span>{" "}
         <Skeleton className="h-5 w-10" />
       </div>
 
-      <div className="grid grid-cols-[repeat(3,_minmax(auto,200px))] gap-x-4">
+      <div className="grid grid-cols-[repeat(3,_minmax(auto,200px))] gap-x-6">
         <StatsCard.Skeleton />
         <StatsCard.Skeleton />
         <StatsCard.Skeleton />

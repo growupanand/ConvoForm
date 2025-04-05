@@ -85,7 +85,6 @@ export default function RootLayout({
             </TooltipProvider>
 
             <SonnerToaster />
-            <SonnerToaster />
           </CSPostHogProvider>
         </body>
       </html>
