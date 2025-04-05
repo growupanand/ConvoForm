@@ -11,7 +11,7 @@ import {
 } from "@/components/common/secondaryNavigation";
 import { api } from "@/trpc/react";
 import { useOrganization } from "@clerk/nextjs";
-import { ChartColumnIncreasing, Sheet } from "lucide-react";
+import { ChartColumnIncreasing, Table } from "lucide-react";
 import MainNavTab from "../../_components/mainNavTab";
 import { ConversationsNavigation } from "./conversationsNavigation";
 
@@ -33,7 +33,7 @@ export function ConversationsSidebar({ formId }: Props) {
     {
       title: "Table View",
       href: `/forms/${formId}/conversations/table`,
-      icon: <Sheet className="size-4" />,
+      icon: <Table className="size-4" />,
     },
   ];
 

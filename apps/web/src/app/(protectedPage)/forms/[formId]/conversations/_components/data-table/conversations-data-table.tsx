@@ -232,17 +232,19 @@ export function ConversationsDataTable(props: {
       </div>
       <div className=" rounded-md border max-h-[calc(100vh-250px)] overflow-y-scroll relative">
         <Table className="">
-          <TableHeader className="sticky top-0 bg-background">
+          <TableHeader className="sticky top-0 bg-background ">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="h-10">
+                  <TableHead key={header.id}>
+                    {/* <div className="h-10 overflow-hidden resize"> */}
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
+                    {/* </div> */}
                   </TableHead>
                 ))}
               </TableRow>

@@ -333,7 +333,7 @@ export const conversationRouter = createTRPCRouter({
         filters.push(eq(conversation.formId, formId));
       }
 
-      const result = await ctx.db.query.conversation.findMany({
+      const conversations = await ctx.db.query.conversation.findMany({
         columns: {
           id: true,
           isFinished: true,
@@ -342,18 +342,112 @@ export const conversationRouter = createTRPCRouter({
         where: and(...filters),
       });
 
-      return {
-        totalCount: result.length,
-        finishedTotalCount: result.filter(
-          (conversation) => conversation.isFinished,
-        ).length,
-        partialTotalCount: result.filter(
-          (conversation) =>
-            !conversation.isFinished && !conversation.isInProgress,
-        ).length,
-        liveTotalCount: result.filter(
-          (conversation) => conversation.isInProgress,
-        ).length,
-      };
+      // Calculate all counts in a single pass through the array
+      const stats = conversations.reduce(
+        (acc, conv) => {
+          acc.totalCount++;
+
+          if (conv.isFinished) {
+            acc.finishedTotalCount++;
+          } else if (conv.isInProgress) {
+            acc.liveTotalCount++;
+          } else {
+            acc.partialTotalCount++;
+          }
+
+          return acc;
+        },
+        {
+          totalCount: 0,
+          finishedTotalCount: 0,
+          partialTotalCount: 0,
+          liveTotalCount: 0,
+        },
+      );
+
+      return stats;
+    }),
+  multiChoiceStats: orgProtectedProcedure
+    .input(
+      z.object({
+        formId: z.string().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const formId = input.formId;
+
+      // Get all conversations for this form
+      const conversations = await ctx.db.query.conversation.findMany({
+        where: and(
+          eq(conversation.organizationId, ctx.orgId),
+          eq(conversation.formId, formId),
+        ),
+        columns: {
+          collectedData: true,
+        },
+      });
+
+      // Create a map to store stats for each field and option
+      const fieldStats: Record<
+        string,
+        {
+          fieldName: string;
+          options: Record<string, number>;
+          total: number;
+        }
+      > = {};
+
+      // Process all conversations to count options for multiple choice fields
+      for (const conv of conversations) {
+        if (conv.collectedData?.length) {
+          for (const field of conv.collectedData) {
+            // Check if this is a multiple choice field with a value
+            if (
+              field.fieldConfiguration?.inputType === "multipleChoice" &&
+              field.fieldValue
+            ) {
+              const fieldName = field.fieldName;
+              const selectedOption = field.fieldValue;
+
+              // Initialize field in the stats if it doesn't exist
+              if (!fieldStats[fieldName]) {
+                fieldStats[fieldName] = {
+                  fieldName: field.fieldName,
+                  options: {},
+                  total: 0,
+                };
+              }
+
+              // Initialize option counter if it doesn't exist
+              if (!fieldStats[fieldName].options[selectedOption]) {
+                fieldStats[fieldName].options[selectedOption] = 0;
+              }
+
+              // Increment the counter for this option
+              fieldStats[fieldName].options[selectedOption]++;
+              fieldStats[fieldName].total++;
+            }
+          }
+        }
+      }
+
+      // Format the results with percentages
+      const results = Object.values(fieldStats).map((field) => {
+        const optionsWithStats = Object.entries(field.options).map(
+          ([option, count]) => ({
+            option,
+            count,
+            percentage: Math.round((count / field.total) * 100),
+          }),
+        );
+
+        return {
+          fieldName: field.fieldName,
+          totalResponses: field.total,
+          options: optionsWithStats,
+        };
+      });
+
+      return results;
     }),
 });
