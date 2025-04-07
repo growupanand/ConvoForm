@@ -9,7 +9,7 @@ import Image from "next/image";
 
 export function Footer() {
   return (
-    <Card className="bg-brand-50 shadow-brand-100 mt-10 rounded-none px-5 py-10 lg:mb-10 lg:mt-20 lg:px-24">
+    <Card className="bg-brand-50 shadow-brand-100 mt-10 rounded-full px-5 py-10 lg:mb-10 lg:mt-20 lg:px-24">
       <footer>
         <div className="flex  items-start justify-between ">
           <div className="flex flex-col items-start lg:flex-row lg:gap-5">

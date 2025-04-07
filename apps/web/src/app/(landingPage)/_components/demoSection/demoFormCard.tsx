@@ -28,7 +28,7 @@ export const DemoFormCard = ({ isInView }: { isInView: boolean }) => {
     <div>
       <motion.div initial={{ opacity: 0 }} className="form-card">
         <BrowserWindow
-          className="shadow-none w-[800px] h-[600px]"
+          className="shadow-none w-[600px] h-[600px]"
           link={demoFormLink}
           hideCopyButton
         >
