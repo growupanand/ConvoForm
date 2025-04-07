@@ -1,6 +1,4 @@
 import { Hero } from "@/app/(landingPage)/_components/hero";
-import { HowToUseSection } from "@/app/(landingPage)/_components/howToUse";
-import { Pricing } from "@/app/(landingPage)/_components/pricing";
 import { TopHeader } from "@/components/common/topHeader";
 import type { Metadata } from "next";
 import { Achievements } from "./_components/achievements";
@@ -29,15 +27,9 @@ export default function Home() {
           <Hero />
           <DemoSection />
         </div>
-        <SectionContainer>
-          <div className="grid gap-1 lg:grid-cols-2">
-            <HowToUseSection />
-            <Pricing />
-          </div>
-          <div className="mt-10">
-            <Achievements />
-          </div>
-        </SectionContainer>
+      </div>
+      <div className="max-lg:py-10">
+        <Achievements />
       </div>
       <SectionContainer>
         <Footer />

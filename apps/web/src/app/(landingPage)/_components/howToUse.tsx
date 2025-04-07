@@ -7,24 +7,22 @@ export function HowToUseSection() {
     <SectionCard title="How to use">
       <div className="space-y-6 text-base">
         <StepListItem stepNumber={1}>
-          <h3 className="font-semibold">Craft Your Form</h3>
+          <h3 className="font-semibold">Design Your Form</h3>
           <p className="max-w-screen-sm font-light">
-            Generate using AI by explaining your needs or create from scratch by
-            just providing the required fields
+            Use AI or build from scratch. Your perfect form in minutes!
           </p>
         </StepListItem>
         <StepListItem stepNumber={2}>
-          <h3 className="font-semibold">Share with Ease</h3>
+          <h3 className="font-semibold">Share Instantly</h3>
           <p className="max-w-screen-sm font-light">
-            Once satisfied with your form design, share the link. Watch
-            ConvoForm do the conversation with the respondents for you
+            Send your link and let ConvoForm handle the conversations naturally.
           </p>
         </StepListItem>
         <StepListItem stepNumber={3}>
-          <h3 className="font-semibold">Check Out the Responses</h3>
+          <h3 className="font-semibold">Collect Insights</h3>
           <p className="max-w-screen-sm font-light">
-            View neatly parsed collected data in structured table format with
-            transcripts
+            View organized responses with full transcripts. Simple, powerful
+            data.
           </p>
         </StepListItem>
       </div>

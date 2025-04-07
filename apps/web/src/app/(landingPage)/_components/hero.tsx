@@ -1,7 +1,7 @@
 import { Badge } from "@convoform/ui";
 import { Button } from "@convoform/ui";
 import { Card, CardContent, CardHeader } from "@convoform/ui";
-import { ChevronRight, Circle } from "lucide-react";
+import { CheckCircle2, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,41 +14,39 @@ import { GithubStars } from "./githubStar";
 export function Hero() {
   return (
     <section className="flex w-full flex-col justify-start items-center lg:items-start gap-2 lg:gap-3 text-center lg:text-left">
-      <div className="flex flex-col items-center lg:items-start justify-start gap-2 lg:gap-3">
-        <Badge
-          variant="outline"
-          className="group text-xs font-medium px-3 py-1 lg:px-4 lg:py-3 lg:text-base"
+      <Badge
+        variant="outline"
+        className="group text-xs font-medium px-3 py-1 lg:px-4 lg:py-3 lg:text-base"
+      >
+        <Link
+          href="https://github.com/growupanand/ConvoForm"
+          target="_blank"
+          rel="noreferrer nofollow noopener"
+          className="flex items-center"
         >
-          <Link
-            href="https://github.com/growupanand/ConvoForm"
-            target="_blank"
-            rel="noreferrer nofollow noopener"
-            className="flex items-center"
-          >
-            <span className="mr-1 lg:mr-2">
-              <Image
-                src="images/icons/github.svg"
-                alt="github"
-                width={12}
-                height={12}
-                className="lg:size-[15px] size-[12px]"
-              />
-            </span>
-            <span className="font-normal">Proudly Open Source</span>
-            <ChevronRight
-              className="ml-1 transition-all group-hover:translate-x-0.5"
-              size="12px"
+          <span className="mr-1 lg:mr-2">
+            <Image
+              src="images/icons/github.svg"
+              alt="github"
+              width={12}
+              height={12}
+              className="lg:size-[15px] size-[12px]"
             />
-            <GithubStars />
-          </Link>
-        </Badge>
-      </div>
+          </span>
+          <span className="font-normal">Proudly Open Source</span>
+          <ChevronRight
+            className="ml-1 transition-all group-hover:translate-x-0.5"
+            size="12px"
+          />
+          <GithubStars />
+        </Link>
+      </Badge>
 
       <Card className="border-none bg-transparent shadow-none w-full">
-        <CardHeader className="mb-6 lg:mb-10 px-0">
+        <CardHeader className="mb-6 px-0">
           <h1
             className={cn(
-              "text-3xl lg:text-5xl font-normal leading-tight text-gray-800 lg:leading-snug",
+              "text-3xl lg:text-5xl font-normal text-gray-800 leading-normal lg:leading-normal",
               nohemi.className,
             )}
           >
@@ -66,24 +64,25 @@ export function Hero() {
             Forms
           </h1>
         </CardHeader>
-        <CardContent className="px-0">
-          <div className="text-xl lg:text-2xl text-center lg:text-left font-normal leading-7 lg:leading-7 text-muted-foreground max-w-xl mx-auto lg:mx-0">
-            <p>Forms that pass the vibe check 😎</p>
-            <div className="flex flex-wrap justify-center lg:justify-start gap-3 lg:gap-3 mt-4 lg:mt-3 font-medium text-sm text-muted-foreground">
-              <span className="flex items-center gap-1 bg-gray-50 rounded-full px-3 py-1">
-                <Circle className="size-3 lg:size-4 fill-brand-500 text-brand-500" />
-                No coding required
-              </span>
-              <span className="flex items-center gap-1 bg-gray-50 rounded-full px-3 py-1">
-                <Circle className="size-3 lg:size-4 fill-brand-500 text-brand-500" />
-                No credit card required
-              </span>
-            </div>
+        <CardContent className="px-0 flex justify-center lg:justify-start">
+          <div className="flex flex-wrap max-lg:flex-col max-lg:items-start justify-start gap-2 font-medium text-base text-muted-foreground">
+            <span className="flex items-center gap-1 bg-gray-50 rounded-full">
+              <CheckCircle2 className="size-6  fill-brand-500 text-white" />
+              No coding required
+            </span>
+            <span className="flex items-center gap-1 bg-gray-50 rounded-full">
+              <CheckCircle2 className="size-6  fill-brand-500 text-white" />
+              No credit card required
+            </span>
+            <span className="flex items-center gap-1 bg-gray-50 rounded-full">
+              <CheckCircle2 className="size-6  fill-brand-500 text-white" />
+              Cheapest pricing
+            </span>
           </div>
         </CardContent>
       </Card>
 
-      <div className="flex items-center gap-3 mt-6 lg:mt-4">
+      <div className="flex max-lg:flex-col max-lg:justify-center items-center gap-3 mt-6 lg:mt-4">
         <Button
           size="lg"
           className="rounded-full py-3 lg:py-5 text-base lg:text-base font-montserrat shadow-md hover:shadow-lg transition-all hover:translate-y-[-2px]"
@@ -97,7 +96,7 @@ export function Hero() {
         <Button
           variant="outline"
           size="lg"
-          className="lg:hidden rounded-full py-3 lg:py-5 text-base font-montserrat hover:bg-gray-50 w-11/12 lg:w-auto"
+          className="lg:hidden rounded-full py-3 lg:py-5 text-base font-montserrat hover:bg-gray-50"
           asChild
         >
           <LinkN
