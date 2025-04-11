@@ -4,8 +4,9 @@ import { StatsCard, type StatsCardProps } from "@/components/common/statsCard";
 import { QueryComponent } from "@/components/queryComponents/queryComponent";
 import { api } from "@/trpc/react";
 
+import { cn, formatDuration } from "@/lib/utils";
 import { Badge, Skeleton } from "@convoform/ui";
-import { Inbox } from "lucide-react";
+import { Inbox, Radio } from "lucide-react";
 import { StatsGrid } from "./statsComponents/statsGrid";
 
 type ConversationsStatsCardProps = {
@@ -15,7 +16,7 @@ type ConversationsStatsCardProps = {
 
 export const ConversationsStats = ({
   formId,
-  title = "Responses",
+  title = "Response Metrics",
 }: ConversationsStatsCardProps) => {
   const statsQuery = api.conversation.stats.useQuery({ formId });
   return (
@@ -30,23 +31,39 @@ export const ConversationsStats = ({
               <Inbox className="mr-2 h-4 w-4 inline" />
               {title}
             </span>
-            <Badge variant="secondary">{data.totalCount} total</Badge>
+            <Badge variant="secondary">{data.totalCount} total responses</Badge>
           </div>
-          <StatsGrid className="gap-x-6">
+          <StatsGrid className="gap-x-6 mb-6">
             <ConversationsStatsCard
               title="Completed"
               primaryValue={data.finishedTotalCount.toString()}
-              description="All questions have been answered"
+              description="Respondents answered all questions"
             />
             <ConversationsStatsCard
-              title="Partially completed"
+              title="Incomplete"
               primaryValue={data.partialTotalCount.toString()}
-              description="Some questions have not been answered"
+              description="Respondents skipped some questions"
             />
             <ConversationsStatsCard
-              title="Live"
+              title="Active Now"
               primaryValue={data.liveTotalCount.toString()}
-              description="Submission is in-progress"
+              description="Respondents currently filling out form"
+              icon={
+                <Radio
+                  className={cn(
+                    "text-muted-foreground size-5",
+                    data.liveTotalCount > 0 &&
+                      "visible animate-pulse text-brand-500",
+                  )}
+                />
+              }
+            />
+          </StatsGrid>
+          <StatsGrid className="gap-x-6">
+            <ConversationsStatsCard
+              title="Average completion time"
+              primaryValue={formatDuration(data.averageFinishTimeMs)}
+              description="Typical time to submit all answers"
             />
           </StatsGrid>
         </div>

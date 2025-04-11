@@ -193,7 +193,9 @@ export function useConvoForm({
     await patchConversation(formId, currentConversation.id, {
       collectedData: updatedExtraSteamData?.collectedData,
       transcript: updatedTranscript,
-      finishedAt: updatedExtraSteamData?.isFormSubmissionFinished ? new Date() : null,
+      finishedAt: updatedExtraSteamData?.isFormSubmissionFinished
+        ? new Date()
+        : null,
       name: updatedExtraSteamData?.conversationName,
     });
 

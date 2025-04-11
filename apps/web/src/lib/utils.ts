@@ -65,3 +65,25 @@ export function numberFormatter(value: number) {
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
   return formatter.format(value);
 }
+
+// Format a duration in milliseconds to a readable string
+export function formatDuration(milliseconds: number) {
+  const seconds = Math.floor(milliseconds / 1000);
+
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 1) {
+    return `${seconds} seconds`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 1) {
+    return `${minutes} minutes${seconds % 60 > 0 ? ` ${seconds % 60} seconds` : ""}`;
+  }
+
+  const days = Math.floor(hours / 24);
+  if (days < 1) {
+    return `${hours} hours${minutes % 60 > 0 ? ` ${minutes % 60} minutes` : ""}`;
+  }
+
+  return `${days} days${hours % 24 > 0 ? ` ${hours % 24} hours` : ""}`;
+}
