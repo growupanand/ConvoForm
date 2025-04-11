@@ -34,12 +34,12 @@ import { CSVLink } from "react-csv";
 
 type ConversationData = Pick<
   Conversation,
-  "id" | "name" | "createdAt" | "isFinished" | "isInProgress"
+  "id" | "name" | "createdAt" | "finishedAt" | "isInProgress"
 >;
 
 type ConversationTableData = Omit<
   ConversationData,
-  "isFinished" | "isInProgress"
+  "finishedAt" | "isInProgress"
 > & {
   status: string;
 };
@@ -64,7 +64,7 @@ export function ConversationsDataTable(props: {
     const tableData = [];
 
     for (const conversation of data) {
-      const { collectedData, id, name, createdAt, isFinished, isInProgress } =
+      const { collectedData, id, name, createdAt, finishedAt, isInProgress } =
         conversation;
       const sanitizedCollectedData = getConversationTableData(collectedData);
       collectedDataColumns = collectedDataColumns.concat(
@@ -75,7 +75,7 @@ export function ConversationsDataTable(props: {
         id,
         name,
         createdAt,
-        status: isFinished
+        status: finishedAt
           ? "Finished"
           : isInProgress
             ? "In Progress"

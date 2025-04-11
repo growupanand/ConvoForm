@@ -27,7 +27,7 @@ const routeContextSchema = z.object({
 export const requestSchema = selectConversationSchema
   .pick({
     formOverview: true,
-    isFinished: true,
+    finishedAt: true,
     formId: true,
     collectedData: true,
     id: true,
@@ -47,7 +47,7 @@ export async function POST(
       return sendErrorMessage("Conversation not found", 400);
     }
 
-    if (conversation.isFinished) {
+    if (conversation.finishedAt) {
       return sendErrorMessage("Conversation already finished", 400);
     }
 

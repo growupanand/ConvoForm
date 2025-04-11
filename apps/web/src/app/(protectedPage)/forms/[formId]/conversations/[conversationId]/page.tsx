@@ -31,7 +31,7 @@ export default function ConversationDetailPage(props: Readonly<Props>) {
     organization && organization.id === conversation?.organizationId;
 
   useEffect(() => {
-    if (conversation && conversation.isFinished === false) {
+    if (conversation && conversation.finishedAt === null) {
       socket.on(eventListener, (data) => {
         const { event } = data;
         if (typeof event === "string" && event === "updated") {
@@ -55,5 +55,12 @@ export default function ConversationDetailPage(props: Readonly<Props>) {
     return notFound();
   }
 
-  return <ConversationDetail conversation={conversation} />;
+  return (
+    <ConversationDetail
+      conversation={{
+        ...conversation,
+        transcript: conversation.transcript ?? [],
+      }}
+    />
+  );
 }
