@@ -19,7 +19,7 @@ export default async function ConversationsStatsPage(props: Readonly<Props>) {
         <span>Analytics</span>
       </h2>
       <div className="space-y-20">
-        <ConversationsStats formId={formId} />
+        <ConversationsStats formId={formId} showExtendedStats />
         <MultiChoiceStats formId={formId} />
       </div>
     </div>

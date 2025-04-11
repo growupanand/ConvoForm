@@ -12,11 +12,13 @@ import { StatsGrid } from "./statsComponents/statsGrid";
 type ConversationsStatsCardProps = {
   formId?: string;
   title?: string;
+  showExtendedStats?: boolean;
 };
 
 export const ConversationsStats = ({
   formId,
   title = "Response Metrics",
+  showExtendedStats = false,
 }: ConversationsStatsCardProps) => {
   const statsQuery = api.conversation.stats.useQuery({ formId });
   return (
@@ -59,13 +61,20 @@ export const ConversationsStats = ({
               }
             />
           </StatsGrid>
-          <StatsGrid className="gap-x-6">
-            <ConversationsStatsCard
-              title="Average completion time"
-              primaryValue={formatDuration(data.averageFinishTimeMs)}
-              description="Typical time to submit all answers"
-            />
-          </StatsGrid>
+          {showExtendedStats && (
+            <StatsGrid className="gap-x-6">
+              <ConversationsStatsCard
+                title="Average completion time"
+                primaryValue={formatDuration(data.averageFinishTimeMs)}
+                description="Typical time to submit all answers"
+              />
+              <ConversationsStatsCard
+                title="Bounce Rate"
+                primaryValue={`${data.bounceRate}%`}
+                description="Users who leave without answering any questions"
+              />
+            </StatsGrid>
+          )}
         </div>
       )}
     </QueryComponent>
