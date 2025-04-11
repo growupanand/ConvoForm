@@ -72,6 +72,7 @@ export async function POST(req: NextRequest) {
       welcomeScreenTitle: welcomeScreenData?.pageTitle,
       welcomeScreenMessage: welcomeScreenData?.pageDescription,
       formFields,
+      formFieldsOrders: [],
     };
 
     const validAIGeneratedForm = aiGeneratedFormSchema.parse(aiGeneratedForm);

@@ -52,6 +52,7 @@ export const conversationRouter = createTRPCRouter({
           return {
             ...conversation,
             collectedData,
+            transcript: conversation.transcript ?? [],
           };
         },
       );
@@ -338,6 +339,7 @@ export const conversationRouter = createTRPCRouter({
           id: true,
           finishedAt: true,
           isInProgress: true,
+          createdAt: true,
         },
         where: and(...filters),
       });
@@ -349,6 +351,12 @@ export const conversationRouter = createTRPCRouter({
 
           if (conv.finishedAt) {
             acc.finishedTotalCount++;
+
+            // Calculate the finish time for this conversation (in milliseconds)
+            const finishTime =
+              new Date(conv.finishedAt).getTime() -
+              new Date(conv.createdAt).getTime();
+            acc.totalFinishTime += finishTime;
           } else if (conv.isInProgress) {
             acc.liveTotalCount++;
           } else {
@@ -362,10 +370,18 @@ export const conversationRouter = createTRPCRouter({
           finishedTotalCount: 0,
           partialTotalCount: 0,
           liveTotalCount: 0,
+          totalFinishTime: 0,
         },
       );
 
-      return stats;
+      // Calculate average finish time if there are any finished conversations
+      let averageFinishTimeMs = 0;
+      if (stats.finishedTotalCount > 0) {
+        averageFinishTimeMs = Math.floor(
+          stats.totalFinishTime / stats.finishedTotalCount,
+        );
+      }
+      return { ...stats, averageFinishTimeMs };
     }),
   multiChoiceStats: orgProtectedProcedure
     .input(

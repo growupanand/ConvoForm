@@ -21,7 +21,7 @@ type MultiChoiceStatsProps = {
 
 export const MultiChoiceStats = ({
   formId,
-  title = "Multiple Choice Questions",
+  title = "Choice Question Analysis",
 }: MultiChoiceStatsProps) => {
   const multiChoiceStatsQuery = api.conversation.multiChoiceStats.useQuery({
     formId,

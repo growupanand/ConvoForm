@@ -13,6 +13,7 @@ export type StatsCardProps = {
   primaryValue: string;
   description?: string;
   className?: HTMLDivElement["className"];
+  icon?: React.ReactNode;
 };
 
 export const StatsCard = ({
@@ -20,21 +21,23 @@ export const StatsCard = ({
   title,
   description,
   className,
+  icon,
 }: StatsCardProps) => {
   return (
     <Card
       className={cn("overflow-hidden bg-muted p-0.5 rounded-xl ", className)}
     >
       <div className="rounded-xl overflow-hidden bg-white border flex flex-col">
-        <CardHeader className="py-2 flex-1">
+        <CardHeader className="py-2 flex-1 flex-row justify-between items-center">
           <CardTitle className="text-sm">{title}</CardTitle>
+          {icon}
         </CardHeader>
         <CardContent className="px-4 pb-2 text-xl font-bold ">
           {primaryValue}
         </CardContent>
       </div>
       {description && (
-        <CardFooter className="px-4 py-2 text-xs text-muted-foreground bg-muted self-start">
+        <CardFooter className="px-4 py-2 text-xs text-muted-foreground bg-muted items-start self-start">
           {description}
         </CardFooter>
       )}

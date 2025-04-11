@@ -26,7 +26,7 @@ type State = {
 export function ConversationsSidebar({ formId }: Props) {
   const secondaryNavigationItems: SecondaryNavigationItem[] = [
     {
-      title: "Stats",
+      title: "Analytics",
       href: `/forms/${formId}/conversations`,
       icon: <ChartColumnIncreasing className="size-4" />,
     },

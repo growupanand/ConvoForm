@@ -33,7 +33,7 @@ export const insertConversationSchema = createInsertSchema(conversation, {
   collectedData: collectedDataSchema.array().min(1),
   name: z.string().min(1),
   formOverview: z.string().min(1),
-  finishedAt: z.coerce.date().nullable().optional()
+  finishedAt: z.coerce.date().nullable().optional(),
 });
 export const selectConversationSchema = createSelectSchema(conversation, {
   transcript: transcriptSchema.array(),
@@ -44,18 +44,17 @@ export const updateConversationSchema = insertConversationSchema.extend({
   id: z.string().min(1),
   transcript: transcriptSchema.array().min(1),
   isInProgress: z.boolean(),
-  finishedAt: z.coerce.date().nullable()
+  finishedAt: z.coerce.date().nullable(),
 });
 
 export const patchConversationSchema = insertConversationSchema
   .partial()
   .extend({
     id: z.string().min(1),
-    finishedAt: z.coerce.date().nullable().optional()
+    finishedAt: z.coerce.date().nullable().optional(),
   });
 
 export type Conversation = z.infer<typeof selectConversationSchema>;
-
 
 // =============================================================
 // ========== Open AI flow related =============================
