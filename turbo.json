@@ -13,7 +13,11 @@
     "NEXT_PUBLIC_WEBSOCKET_URL",
     "NEXT_PUBLIC_PACKAGE_ENV",
     "CLERK_SECRET_KEY",
-    "SENTRY_AUTH_TOKEN"
+    "SENTRY_AUTH_TOKEN",
+    "REDIS_URL",
+    "SENTRY_ORG",
+    "SENTRY_PROJECT"
+
   ],
   "globalDependencies": [
     ".env",
