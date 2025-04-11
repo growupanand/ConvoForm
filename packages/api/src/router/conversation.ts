@@ -340,6 +340,7 @@ export const conversationRouter = createTRPCRouter({
           finishedAt: true,
           isInProgress: true,
           createdAt: true,
+          collectedData: true,
         },
         where: and(...filters),
       });
@@ -363,6 +364,16 @@ export const conversationRouter = createTRPCRouter({
             acc.partialTotalCount++;
           }
 
+          // Check for bounce - conversations with no collected data
+          const hasNoCollectedData =
+            !conv.collectedData ||
+            conv.collectedData.filter((i) => i.fieldValue !== null).length ===
+              0;
+
+          if (hasNoCollectedData) {
+            acc.bouncedCount++;
+          }
+
           return acc;
         },
         {
@@ -371,6 +382,7 @@ export const conversationRouter = createTRPCRouter({
           partialTotalCount: 0,
           liveTotalCount: 0,
           totalFinishTime: 0,
+          bouncedCount: 0,
         },
       );
 
@@ -381,7 +393,14 @@ export const conversationRouter = createTRPCRouter({
           stats.totalFinishTime / stats.finishedTotalCount,
         );
       }
-      return { ...stats, averageFinishTimeMs };
+
+      // Calculate bounce rate
+      const bounceRate =
+        stats.totalCount > 0
+          ? Math.round((stats.bouncedCount / stats.totalCount) * 100)
+          : 0;
+
+      return { ...stats, averageFinishTimeMs, bounceRate };
     }),
   multiChoiceStats: orgProtectedProcedure
     .input(
