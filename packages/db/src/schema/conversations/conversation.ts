@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { boolean, jsonb, pgTable, text } from "drizzle-orm/pg-core";
+import { boolean, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
 import { form } from "../forms/form";
@@ -18,7 +18,7 @@ export const conversation = pgTable("Conversation", {
     .notNull()
     .references(() => form.id, { onDelete: "cascade", onUpdate: "cascade" }),
   organizationId: text("organizationId").notNull(),
-  isFinished: boolean("isFinished").default(false).notNull(),
+  finishedAt: timestamp("finishedAt"),
   isInProgress: boolean("isInProgress").default(false).notNull(),
 });
 

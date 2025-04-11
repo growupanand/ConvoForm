@@ -26,7 +26,7 @@ export function ConversationsNavigation({
             <span
               className={cn(
                 "flex size-2 rounded-full",
-                conversation.isFinished
+                conversation.finishedAt
                   ? "bg-primary"
                   : "border border-gray-500 ",
               )}

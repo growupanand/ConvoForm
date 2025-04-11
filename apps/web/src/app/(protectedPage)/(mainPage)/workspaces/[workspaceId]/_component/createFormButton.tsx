@@ -47,6 +47,7 @@ const newFormData: z.infer<typeof newFormSchema> = newFormSchema.parse({
   overview:
     "This is brief description about the form, which will be used while generating questions.",
   formFields: newFormFields,
+  formFieldsOrders: [],
 });
 
 export default function CreateFormButton({ workspace }: Readonly<Props>) {

@@ -336,7 +336,7 @@ export const conversationRouter = createTRPCRouter({
       const conversations = await ctx.db.query.conversation.findMany({
         columns: {
           id: true,
-          isFinished: true,
+          finishedAt: true,
           isInProgress: true,
         },
         where: and(...filters),
@@ -347,7 +347,7 @@ export const conversationRouter = createTRPCRouter({
         (acc, conv) => {
           acc.totalCount++;
 
-          if (conv.isFinished) {
+          if (conv.finishedAt) {
             acc.finishedTotalCount++;
           } else if (conv.isInProgress) {
             acc.liveTotalCount++;

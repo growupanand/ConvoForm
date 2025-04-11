@@ -16,7 +16,7 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
   const transcript: Transcript[] = conversation.transcript ?? [];
 
   const getStatusBadge = () => {
-    if (conversation.isFinished) {
+    if (conversation.finishedAt) {
       return (
         <Badge variant="customSuccess" className="text-sm">
           Finished
