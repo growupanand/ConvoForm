@@ -37,14 +37,14 @@
     "@convoform/tsconfig": "../tsconfig",
     "@convoform/websocket-client": "../websocket-client",
     "@release-it/conventional-changelog": "^8.0.1",
-    "@types/react": "^19.0.8",
+    "@types/react": "19.0.8",
     "release-it": "^17.0.1",
     "tsup": "^8.0.2",
     "typescript": "^5"
   },
   "peerDependencies": {
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
     "socket.io-client": "^4.7.5"
   },
   "funding": {

@@ -97,18 +97,16 @@ export const LinkN: React.FC<
   };
 
   return (
-    <Link href={href} legacyBehavior>
-      <a
-        // biome-ignore lint: ignored
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        tabIndex={0}
-        className={cn(className)} // Ensure the link is keyboard focusable
-        target={target}
-        rel={rel}
-      >
-        {children}
-      </a>
+    <Link
+      href={href}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      className={cn(className)}
+      target={target}
+      rel={rel}
+    >
+      {children}
     </Link>
   );
 };

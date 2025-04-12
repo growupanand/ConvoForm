@@ -47,7 +47,7 @@
   "devDependencies": {
     "@convoform/tsconfig": "workspace:*",
     "@types/node": "^20",
-    "@types/react": "^19.0.8",
+    "@types/react": "19.0.8",
     "@types/react-dom": "^19.0.3",
     "typescript": "^5"
   }
