@@ -1,6 +1,6 @@
 "use client";
 
-import type { Organization } from "@clerk/clerk-sdk-node";
+import type { Organization } from "@clerk/nextjs/server";
 import {
   type FormField as FormFieldSchema,
   type Form as FormSchema,

@@ -53,5 +53,11 @@
     "inquirer": "^8.2.6",
     "release-it": "^17.0.1",
     "turbo": "^2.1.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.0.8",
+      "@types/react-dom": "19.0.3"
+    }
   }
 }

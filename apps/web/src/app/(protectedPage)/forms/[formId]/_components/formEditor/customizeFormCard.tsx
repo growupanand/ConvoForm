@@ -1,6 +1,5 @@
 "use client";
 
-import type { Organization } from "@clerk/clerk-sdk-node";
 import type { Form } from "@convoform/db/src/schema";
 import { Label } from "@convoform/ui";
 import { sonnerToast } from "@convoform/ui";
@@ -9,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 
 import { api } from "@/trpc/react";
+import type { Organization } from "@clerk/nextjs/server";
 
 type Props = {
   form: Pick<Form, "id" | "showOrganizationName" | "showOrganizationLogo">;

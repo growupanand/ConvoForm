@@ -8,7 +8,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.10.2",
+    "@clerk/nextjs": "^6.14.3",
     "@convoform/analytics": "workspace:*",
     "@convoform/common": "workspace:*",
     "@convoform/db": "workspace:*",

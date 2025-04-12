@@ -1,4 +1,4 @@
-import type { WebhookEvent } from "@clerk/clerk-sdk-node";
+import type { WebhookEvent } from "@clerk/nextjs/server";
 import { insertUserSchema } from "@convoform/db/src/schema";
 import { type NextRequest, NextResponse } from "next/server";
 
