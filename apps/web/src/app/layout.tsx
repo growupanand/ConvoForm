@@ -5,12 +5,12 @@ import type { Metadata } from "next";
 import type { Viewport } from "next";
 
 import { TRPCReactProvider } from "@/trpc/react";
-import { ViewTransitions } from "next-view-transitions";
 
 import "@convoform/tailwind-config/src/globals.css";
 import "nprogress/nprogress.css";
 import { CSPostHogProvider } from "@/components/analytics/analyticsProvider";
 import { cn } from "@/lib/utils";
+import { unstable_ViewTransition as ViewTransition } from "react";
 import { montserrat } from "./fonts";
 
 export const viewport: Viewport = {
@@ -72,7 +72,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ViewTransitions>
+    <ViewTransition>
       <html
         lang="en"
         className={cn(GeistSans.variable, montserrat.variable)}
@@ -88,6 +88,6 @@ export default function RootLayout({
           </CSPostHogProvider>
         </body>
       </html>
-    </ViewTransitions>
+    </ViewTransition>
   );
 }

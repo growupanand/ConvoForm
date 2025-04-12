@@ -2,7 +2,7 @@ import { Button } from "@convoform/ui";
 import { Card } from "@convoform/ui";
 import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
-import { Link } from "next-view-transitions";
+import Link from "next/link";
 
 type Props = {
   children: React.ReactNode;

@@ -28,7 +28,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ChevronLeft, ChevronRight, Download, FileText } from "lucide-react";
-import { Link } from "next-view-transitions";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
 
