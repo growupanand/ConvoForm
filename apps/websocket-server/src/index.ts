@@ -1,8 +1,4 @@
-import { createServer } from "node:http";
-import express from "express";
-import { Server } from "socket.io";
-
-import { IS_PROD } from "./constants";
+import { type ServerWebSocket, serve } from "bun";
 import { conversationStarted, conversationStopped } from "./controller";
 import {
   getConversationRoom,
@@ -11,179 +7,173 @@ import {
 } from "./utils/socket.utils";
 
 const PORT = 4000;
-/**
- * ============ HTTP SERVER ============
- */
-const app = express();
-const server = createServer(app);
-app.use(express.json());
-
-app.get("/", (_, res) => {
-  res.send("Working");
-});
 
 /**
  * ============ WEBSOCKET SERVER ============
  */
 
-const io = new Server(server, {
-  cors: {
-    origin: IS_PROD ? /https:\/\/(.+?)\.convoform.com/ : "*",
+// Map to store active socket connections and their metadata
+const clients = new Map();
+
+// Room management - map room names to sets of WebSocket clients
+const rooms = new Map();
+
+// Helper to join a room
+function joinRoom(roomName: string, socket: ServerWebSocket<unknown>) {
+  if (!rooms.has(roomName)) {
+    rooms.set(roomName, new Set());
+  }
+  rooms.get(roomName).add(socket);
+}
+
+// Helper to broadcast to a room
+function broadcastToRoom(roomName: string, message: Record<string, any>) {
+  if (!rooms.has(roomName)) return;
+
+  for (const client of rooms.get(roomName)) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(message));
+    }
+  }
+}
+
+// Start the Bun WebSocket server
+serve({
+  port: PORT,
+  fetch(req, server) {
+    // upgrade the request to a WebSocket
+    if (server.upgrade(req)) {
+      return; // do not return a Response
+    }
+    return new Response("Upgrade failed", { status: 500 });
   },
-});
+  websocket: {
+    open(ws) {
+      // Initialize client data
+      clients.set(ws, {
+        activeConversationId: null,
+        activeFormId: null,
+      });
+    },
+    message(ws, message) {
+      try {
+        if (typeof message !== "string") return;
+        const { type, data } = JSON.parse(message);
+        const socketContext = clients.get(ws);
 
-type ActiveSocketContext = {
-  activeConversationId: string | null;
-  activeFormId: string | null;
-};
+        switch (type) {
+          case "join-room-form": {
+            const { formId } = data;
+            if (!isValidId(formId)) return;
+            joinRoom(getFormRoom(formId), ws);
+            break;
+          }
 
-io.on("connection", async (socket) => {
-  /**
-   * Create an context for current connect socket client,
-   * This is useful if you want to save any state for current socket client which you need after client disconnect
-   * E.g. you cannot get any data from client if client disconnected by closing the browser
-   */
-  const activeSocketContext: ActiveSocketContext = {
-    activeConversationId: null,
-    activeFormId: null,
-  };
+          case "join-room-conversation": {
+            const { conversationId } = data;
+            if (!isValidId(conversationId)) return;
+            joinRoom(getConversationRoom(conversationId), ws);
+            break;
+          }
 
-  /**
-   * Note: In socket.io rooms can be joined only server side, we can't join room from client side
-   * So we will use this event to help client to join the room
-   */
+          case "conversation:started": {
+            const { conversationId, formId } = data;
 
-  // Handle joining a form-specific room to receive updates for a particular form
-  // This allows clients to subscribe to events related to a specific form (e.g., notifications for new submissions)
-  socket.on("join-room-form", (data) => {
-    const { formId } = data;
-    if (!isValidId(formId)) {
-      return;
-    }
-    socket.join(getFormRoom(formId));
-  });
+            if (!isValidId(formId) || !isValidId(conversationId)) return;
 
-  // Handle joining a conversation-specific room to receive updates for a particular conversation
-  // This allows clients to subscribe to events related to a specific conversation (e.g., update conversation detail page for showing live transcript)
-  socket.on("join-room-conversation", (data) => {
-    const { conversationId } = data;
-    if (!isValidId(conversationId)) {
-      return;
-    }
-    socket.join(getConversationRoom(conversationId));
-  });
+            // Store active conversation in socket context
+            socketContext.activeConversationId = conversationId;
+            socketContext.activeFormId = formId;
 
-  // =============== Conversation started ===============================
+            // Update database
+            conversationStarted(conversationId).catch((error) => {
+              console.log(
+                `conversationId:${conversationId}> Error sending conversation:started event`,
+                error,
+              );
+            });
 
-  // when a new form submission started
-  socket.on("conversation:started", async (data) => {
-    const { conversationId, formId } = data;
+            // Notify the form room
+            broadcastToRoom(getFormRoom(formId), {
+              type: "conversation:started",
+            });
+            break;
+          }
 
-    if (!isValidId(formId) || !isValidId(conversationId)) {
-      return;
-    }
+          case "conversation:updated": {
+            const { conversationId } = data;
+            if (!isValidId(conversationId)) return;
 
-    // Lets store the active conversation and form details in socket context data
-    activeSocketContext.activeConversationId = conversationId;
-    activeSocketContext.activeFormId = formId;
+            // Join the conversation room if not already
+            joinRoom(getConversationRoom(conversationId), ws);
 
-    // First change conversation status to in-progress in the database
-    try {
-      await conversationStarted(conversationId);
-    } catch (error) {
-      // if we failed to change the conversation status to in-progress
-      console.log(
-        `conversationId:${conversationId}> Error sending conversation:started event`,
-        error,
-      );
-    }
+            // Notify the conversation room
+            broadcastToRoom(getConversationRoom(conversationId), {
+              type: "conversation:updated",
+            });
+            break;
+          }
 
-    // Now lets first notify the form creator that an new form submission started
-    io.to(getFormRoom(formId)).emit("conversation:started");
+          case "conversation:stopped": {
+            const { conversationId, formId } = data;
+            if (!isValidId(conversationId) || !isValidId(formId)) return;
 
-    return;
-  });
+            // Update database
+            conversationStopped(conversationId).catch((error) => {
+              console.log(
+                `conversationId:${conversationId}> Error sending conversation:stopped event`,
+                error,
+              );
+            });
 
-  // ============== Conversation updated ===============================
+            // Notify both rooms
+            broadcastToRoom(getFormRoom(formId), {
+              type: "conversation:stopped",
+            });
+            broadcastToRoom(getConversationRoom(conversationId), {
+              type: "conversation:stopped",
+            });
+            break;
+          }
+        }
+      } catch (err) {
+        console.error("Error processing WebSocket message:", err);
+      }
+    },
+    close(ws) {
+      const socketContext = clients.get(ws);
+      if (!socketContext) return;
 
-  // when a user answer a question in form
-  socket.on("conversation:updated", (data) => {
-    const { conversationId } = data;
-    if (!isValidId(conversationId)) {
-      return;
-    }
+      const { activeConversationId, activeFormId } = socketContext;
 
-    // We will notify in the conversation room
-    socket.join(getConversationRoom(conversationId));
+      // Handle disconnect similar to Socket.io
+      if (activeConversationId && activeFormId) {
+        if (isValidId(activeConversationId) && isValidId(activeFormId)) {
+          // Update database
+          conversationStopped(activeConversationId).catch((error) => {
+            console.log(
+              `conversationId:${activeConversationId}> Error handling disconnect event`,
+              error,
+            );
+          });
 
-    // Now lets notify the form creator that user has answered a question or form submission progress updated
-    io.to(getConversationRoom(conversationId)).emit("conversation:updated");
-  });
-
-  // ============== Conversation stopped ===============================
-
-  // when user answered all questions of form
-  socket.on("conversation:stopped", async (data) => {
-    const { conversationId, formId } = data;
-    if (!isValidId(conversationId) || !isValidId(formId)) {
-      return;
-    }
-
-    // First change conversation status to in-progress in the database
-    try {
-      await conversationStopped(conversationId);
-    } catch (error) {
-      // if we failed to change the conversation status to in-progress
-      console.log(
-        `conversationId:${conversationId}> Error sending conversation:stopped event`,
-        error,
-      );
-    }
-
-    // Now notify the form creator that an form submission has finished
-    io.to(getFormRoom(formId)).emit("conversation:stopped");
-
-    // Now notify the conversation room that this conversation has finished
-    io.to(getConversationRoom(conversationId)).emit("conversation:stopped");
-  });
-
-  // when user left form submission without answering all questions,
-  // E.g. closed the browser or disconnected due to network issue
-  socket.on("disconnect", async () => {
-    // If this socket was participating in an active conversation
-    if (
-      activeSocketContext.activeConversationId &&
-      activeSocketContext.activeFormId
-    ) {
-      const conversationId = activeSocketContext.activeConversationId;
-      const formId = activeSocketContext.activeFormId;
-
-      // Only stop conversation if it exists and is valid
-      if (isValidId(conversationId) && isValidId(formId)) {
-        try {
-          // Update conversation status to stopped
-          await conversationStopped(conversationId);
-
-          // Notify the form room
-          io.to(getFormRoom(formId)).emit("conversation:stopped");
-
-          // Notify the conversation room
-          io.to(getConversationRoom(conversationId)).emit(
-            "conversation:stopped",
-          );
-        } catch (error) {
-          console.log(
-            `conversationId:${conversationId}> Error handling disconnect event`,
-            error,
-          );
+          // Notify both rooms
+          broadcastToRoom(getFormRoom(activeFormId), {
+            type: "conversation:stopped",
+          });
+          broadcastToRoom(getConversationRoom(activeConversationId), {
+            type: "conversation:stopped",
+          });
         }
       }
-    }
-  });
-});
 
-server.listen(PORT, () => {
-  console.log(
-    `WEBSOCKET Server (${IS_PROD ? "Production" : "Development"}) started on port ${PORT}\n`,
-  );
+      // Clean up
+      clients.delete(ws);
+
+      // Remove from all rooms
+      for (const roomClients of rooms.values()) {
+        roomClients.delete(ws);
+      }
+    },
+  },
 });

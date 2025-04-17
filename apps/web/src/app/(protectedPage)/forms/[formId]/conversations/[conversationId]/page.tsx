@@ -1,7 +1,11 @@
 "use client";
 
 import { useOrganization } from "@clerk/nextjs";
-import { socket } from "@convoform/websocket-client";
+import {
+  registerEventHandler,
+  removeEventHandler,
+  sendMessage,
+} from "@convoform/websocket-client";
 import { notFound } from "next/navigation";
 import { use, useEffect } from "react";
 
@@ -30,20 +34,22 @@ export default function ConversationDetailPage(props: Readonly<Props>) {
     organization && organization.id === conversation?.organizationId;
 
   useEffect(() => {
-    socket.emit("join-room-conversation", { conversationId });
-    socket.on("conversation:updated", () => {
+    // Join the conversation room using sendMessage instead of socket.emit
+    sendMessage("join-room-conversation", { conversationId });
+
+    // Handle conversation updates
+    const handleConversationUpdate = () => {
       refetchConversationDetails();
-    });
+    };
+
+    // Register the event handler
+    registerEventHandler("conversation:updated", handleConversationUpdate);
+    registerEventHandler("conversation:stopped", handleConversationUpdate);
 
     return () => {
-      /**
-       * Note: It is important to remove listener before unmount,
-       * otherwise the handler of the listener will be called multiple times,
-       * E.g. you will see multiple toasts or the refetch will be called multiple times
-       */
-      if (socket.hasListeners("conversation:updated")) {
-        socket.off("conversation:updated");
-      }
+      // Clean up by removing the event handler
+      removeEventHandler("conversation:updated", handleConversationUpdate);
+      removeEventHandler("conversation:stopped", handleConversationUpdate);
     };
   }, [conversationId]);
 

@@ -1,3 +1,2 @@
-import { socket } from "./src/socket";
-
-export { socket };
+export { socket, sendMessage, cleanup } from "./src/socket";
+export { registerEventHandler, removeEventHandler } from "./src/messageHandler";

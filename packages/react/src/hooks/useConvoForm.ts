@@ -5,7 +5,7 @@ import type {
   ExtraStreamData,
   Transcript,
 } from "@convoform/db/src/schema";
-import { socket } from "@convoform/websocket-client";
+import { sendMessage } from "@convoform/websocket-client";
 import { useCallback, useEffect, useState } from "react";
 
 import { CONVERSATION_START_MESSAGE } from "@convoform/common";
@@ -65,16 +65,6 @@ export function useConvoForm({
   } = state;
   const { collectedData, currentField, isFormSubmissionFinished } =
     extraStreamData;
-
-  const resetForm = useCallback(() => {
-    if (conversation !== undefined) {
-      socket.emit("conversation:stopped", {
-        conversationId: conversation.id,
-        formId,
-      });
-    }
-    resetStates();
-  }, [conversation]);
 
   const setError = useCallback(
     (errorMessage: string) => {
@@ -218,7 +208,7 @@ export function useConvoForm({
     // When a new form submission is started
     if (conversation !== undefined) {
       // Notify the form creator that a new conversation has started
-      socket.emit("conversation:started", {
+      sendMessage("conversation:started", {
         conversationId: conversation.id,
         formId,
       });
@@ -228,7 +218,7 @@ export function useConvoForm({
   useEffect(() => {
     // If conversation is already in-progress, and user has answered an question
     if (conversation !== undefined && isBusy === false) {
-      socket.emit("conversation:updated", {
+      sendMessage("conversation:updated", {
         conversationId: conversation.id,
       });
     }
@@ -236,12 +226,22 @@ export function useConvoForm({
 
   useEffect(() => {
     if (conversation !== undefined && isFormSubmissionFinished === true) {
-      socket.emit("conversation:stopped", {
+      sendMessage("conversation:stopped", {
         conversationId: conversation.id,
         formId,
       });
     }
   }, [isFormSubmissionFinished]);
+
+  const resetForm = useCallback(() => {
+    if (conversation !== undefined) {
+      sendMessage("conversation:stopped", {
+        conversationId: conversation.id,
+        formId,
+      });
+    }
+    resetStates();
+  }, [conversation]);
 
   return {
     /** Function to submit an answer to the current question */

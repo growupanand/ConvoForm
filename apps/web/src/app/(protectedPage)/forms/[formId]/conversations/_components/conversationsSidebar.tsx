@@ -1,7 +1,11 @@
 "use client";
 
 import { sonnerToast } from "@convoform/ui";
-import { socket } from "@convoform/websocket-client";
+import {
+  registerEventHandler,
+  removeEventHandler,
+  sendMessage,
+} from "@convoform/websocket-client";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -58,30 +62,32 @@ export function ConversationsSidebar({ formId }: Props) {
   const closeSheet = () => setState((cs) => ({ ...cs, open: false }));
 
   useEffect(() => {
-    socket.emit("join-room-form", { formId });
+    // Use sendMessage instead of socket.emit
+    sendMessage("join-room-form", { formId });
 
-    socket.on("conversation:started", () => {
+    // Handler for conversation started events
+    const handleConversationStarted = () => {
       sonnerToast.info("New form submission started!", {
         position: "top-left",
         dismissible: true,
         duration: 1500,
       });
       refetchConversationsList();
-    });
+    };
 
-    socket.on("conversation:stopped", () => {
+    // Handler for conversation stopped events
+    const handleConversationStopped = () => {
       refetchConversationsList();
-    });
+    };
+
+    // Register event handlers
+    registerEventHandler("conversation:started", handleConversationStarted);
+    registerEventHandler("conversation:stopped", handleConversationStopped);
 
     return () => {
-      /**
-       * Note: It is important to remove listener before unmount,
-       * otherwise the handler of the listener will be called multiple times,
-       * E.g. you will see multiple toasts or the refetch will be called multiple times
-       */
-      if (socket.hasListeners("conversation:started")) {
-        socket.off("conversation:started");
-      }
+      // Clean up event handlers when component unmounts
+      removeEventHandler("conversation:started", handleConversationStarted);
+      removeEventHandler("conversation:stopped", handleConversationStopped);
     };
   }, [formId]);
 

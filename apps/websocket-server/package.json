@@ -3,26 +3,22 @@
   "version": "1.0.0",
   "description": "This is websocket server for convoform.",
   "scripts": {
-    "dev": "nodemon --exec ts-node src/index.ts",
-    "dev:turbo": "nodemon --exec ts-node src/index.ts",
-    "build": "rm -rf ./build && export NODE_ENV=production && webpack",
-    "start": "export NODE_ENV=production && node ./build/index.js"
+    "dev": "bun --watch src/index.ts",
+    "start": "bun run src/index.ts",
+    "build": "bun build src/index.ts --outdir ./dist --target bun"
   },
   "keywords": [],
   "author": "Utkarsh Anand",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2",
-    "socket.io": "^4.7.5"
+    "bun": "1.2.10"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
     "@types/node": "^20",
-    "nodemon": "^3.1.0",
-    "ts-loader": "^9.5.1",
-    "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
-    "webpack": "^5.91.0",
-    "webpack-cli": "^5.1.4"
-  }
+    "@types/bun": "latest"
+  },
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true
 }
