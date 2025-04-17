@@ -55,7 +55,7 @@ serve({
         activeFormId: null,
       });
     },
-    message(ws, message) {
+    async message(ws, message) {
       try {
         if (typeof message !== "string") return;
         const { type, data } = JSON.parse(message);
@@ -86,7 +86,7 @@ serve({
             socketContext.activeFormId = formId;
 
             // Update database
-            conversationStarted(conversationId).catch((error) => {
+            await conversationStarted(conversationId).catch((error) => {
               console.log(
                 `conversationId:${conversationId}> Error sending conversation:started event`,
                 error,
@@ -119,7 +119,7 @@ serve({
             if (!isValidId(conversationId) || !isValidId(formId)) return;
 
             // Update database
-            conversationStopped(conversationId).catch((error) => {
+            await conversationStopped(conversationId).catch((error) => {
               console.log(
                 `conversationId:${conversationId}> Error sending conversation:stopped event`,
                 error,
@@ -140,7 +140,7 @@ serve({
         console.error("Error processing WebSocket message:", err);
       }
     },
-    close(ws) {
+    async close(ws) {
       const socketContext = clients.get(ws);
       if (!socketContext) return;
 
@@ -150,7 +150,7 @@ serve({
       if (activeConversationId && activeFormId) {
         if (isValidId(activeConversationId) && isValidId(activeFormId)) {
           // Update database
-          conversationStopped(activeConversationId).catch((error) => {
+          await conversationStopped(activeConversationId).catch((error) => {
             console.log(
               `conversationId:${activeConversationId}> Error handling disconnect event`,
               error,
