@@ -23,12 +23,18 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "./index.ts",
-  "types": "./index.ts",
-  "module": "./index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "build": "tsup",
-    "release": "release-it",
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
@@ -36,9 +42,7 @@
     "@convoform/db": "../db",
     "@convoform/tsconfig": "../tsconfig",
     "@convoform/websocket-client": "../websocket-client",
-    "@release-it/conventional-changelog": "^8.0.1",
     "@types/react": "19.0.8",
-    "release-it": "^17.0.1",
     "tsup": "^8.0.2",
     "typescript": "^5"
   },
