@@ -1,5 +1,23 @@
 
 
+## [0.17.0](https://github.com/growupanand/ConvoForm/compare/0.16.0...0.17.0) (2025-04-17)
+
+
+### Features
+
+* 🚀 add Bounce Rate in response analytics ([1ad6bce](https://github.com/growupanand/ConvoForm/commit/1ad6bce80bb8ffa62517035c44a2f33acdc20d82)), closes [#426](https://github.com/growupanand/ConvoForm/issues/426)
+* 🚀 added average completion time in response analytics ([022ef90](https://github.com/growupanand/ConvoForm/commit/022ef906c55f673228e16ec549a25679d0c6dd34)), closes [#424](https://github.com/growupanand/ConvoForm/issues/424)
+* 🚀 enhanced ConversationsStatsPage with MultiChoiceStats ([db4a4a5](https://github.com/growupanand/ConvoForm/commit/db4a4a51f4831b4195374778060d4dab60f257c4)), closes [#422](https://github.com/growupanand/ConvoForm/issues/422)
+
+
+### Improvements
+
+* ⚡️ migrated from socket.io to bun websocket server ([4861631](https://github.com/growupanand/ConvoForm/commit/4861631ec1c952fc650dc6874e5b60aa17d1250a))
+* ⚡️ upgraded nextjs from 14 to 15 ([291e9f5](https://github.com/growupanand/ConvoForm/commit/291e9f515e22ff90c41a7ac892cdbb2fbae75b3b)), closes [#417](https://github.com/growupanand/ConvoForm/issues/417)
+* 💄 formviewer is more responsive for different screen ([a7e97e6](https://github.com/growupanand/ConvoForm/commit/a7e97e67c75b8d30354903ab2e8cafc527584051)), closes [#419](https://github.com/growupanand/ConvoForm/issues/419)
+* 💡 move ai logic into @convoform/ai, optimized tsconfig ([bf49a31](https://github.com/growupanand/ConvoForm/commit/bf49a317adae8e614ca610c211c42254b7da722f))
+* 💡 refactore useconvoform react hook ([1f46ddb](https://github.com/growupanand/ConvoForm/commit/1f46ddb03b241e1fae433814f513902857b65648))
+
 ## [0.16.0](https://github.com/growupanand/ConvoForm/compare/0.15.0...0.16.0) (2024-12-27)
 
 

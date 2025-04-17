@@ -1,7 +1,59 @@
 export const releases = [
   {
+    version: "0.17.0",
+    isoDate: "2025-04-17",
+    commits: [
+      {
+        type: "features",
+        message:
+          "feat: 🚀 enhanced ConversationsStatsPage with MultiChoiceStats\n\n✅ Closes: #422",
+        href: "https://github.com/growupanand/ConvoForm/commit/db4a4a51f4831b4195374778060d4dab60f257c4",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 added average completion time in response analytics\n\n✅ Closes: #424",
+        href: "https://github.com/growupanand/ConvoForm/commit/022ef906c55f673228e16ec549a25679d0c6dd34",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 add Bounce Rate in response analytics\n\nUsers who leave without answering any questions\n\n✅ Closes: #426",
+        href: "https://github.com/growupanand/ConvoForm/commit/1ad6bce80bb8ffa62517035c44a2f33acdc20d82",
+      },
+      {
+        type: "improvements",
+        message: "perf: ⚡️ migrated from socket.io to bun websocket server",
+        href: "https://github.com/growupanand/ConvoForm/commit/4861631ec1c952fc650dc6874e5b60aa17d1250a",
+      },
+      {
+        type: "improvements",
+        message:
+          "perf: ⚡️ upgraded nextjs from 14 to 15\n\nupgraded nextjs to 15 with all peer depedecies and other packages\n\n✅ Closes: #417",
+        href: "https://github.com/growupanand/ConvoForm/commit/291e9f515e22ff90c41a7ac892cdbb2fbae75b3b",
+      },
+      {
+        type: "improvements",
+        message:
+          "refactor: 💡 move ai logic into @convoform/ai, optimized tsconfig",
+        href: "https://github.com/growupanand/ConvoForm/commit/bf49a317adae8e614ca610c211c42254b7da722f",
+      },
+      {
+        type: "improvements",
+        message:
+          "style: 💄 formviewer is more responsive for different screen\n\n✅ Closes: #419",
+        href: "https://github.com/growupanand/ConvoForm/commit/a7e97e67c75b8d30354903ab2e8cafc527584051",
+      },
+      {
+        type: "improvements",
+        message: "refactor: 💡 refactore useconvoform react hook",
+        href: "https://github.com/growupanand/ConvoForm/commit/1f46ddb03b241e1fae433814f513902857b65648",
+      },
+    ],
+  },
+  {
     version: "0.16.0",
-    isoDate: "2024-12-27",
+    isoDate: "2024-12-28",
     commits: [
       {
         type: "features",
@@ -13,7 +65,7 @@ export const releases = [
         type: "features",
         message:
           "feat: 🚀 add start over button in form submit page\n\nrespondant can reset form and start from beginning\n\n✅ Closes: #403",
-        href: "https://github.com/growupanand/ConvoForm/commit/137973897491cb50131bb8c8acbc012b392aa965",
+        href: "https://github.com/growupanand/ConvoForm/commit/91aee2e87df5c822ee65d5e8c8cb280c62d7b1b1",
       },
       {
         type: "improvements",
