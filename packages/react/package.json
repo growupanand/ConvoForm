@@ -3,7 +3,7 @@
   "description": "React hook for creating conversational forms with ConvoForm.",
   "homepage": "https://www.convoform.com",
   "private": false,
-  "version": "0.2.3",
+  "version": "0.3.0",
   "license": "MIT",
   "type": "module",
   "author": {
