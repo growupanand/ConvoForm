@@ -9,7 +9,7 @@
             }
         ],
         "module": "ESNext",
-        "target": "ES6",
+        "target": "ESNext",
         "moduleResolution": "Bundler",
         "jsx": "preserve",
         "incremental": true,

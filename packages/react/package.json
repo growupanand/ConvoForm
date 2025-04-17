@@ -5,6 +5,7 @@
   "private": false,
   "version": "0.2.3",
   "license": "MIT",
+  "type": "module",
   "author": {
     "name": "Utkarsh Anand",
     "email": "growupanand@gmail.com"
@@ -23,14 +24,14 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "default": "./dist/index.mjs"
     }
   },
   "scripts": {
