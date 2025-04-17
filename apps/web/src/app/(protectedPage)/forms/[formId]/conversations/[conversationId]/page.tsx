@@ -20,32 +20,32 @@ export default function ConversationDetailPage(props: Readonly<Props>) {
   const {
     data,
     isLoading: isLoadingConversations,
-    refetch,
+    refetch: refetchConversationDetails,
   } = api.conversation.getOne.useQuery({
     id: conversationId,
   });
   const conversation = data;
-  const eventListener = `conversation:${conversationId}`;
   const isLoading = isLoadingConversations || !isOrganizationLoaded;
   const canAccessConversation =
     organization && organization.id === conversation?.organizationId;
 
   useEffect(() => {
-    if (conversation && conversation.finishedAt === null) {
-      socket.on(eventListener, (data) => {
-        const { event } = data;
-        if (typeof event === "string" && event === "updated") {
-          refetch();
-        }
-      });
-    }
+    socket.emit("join-room-conversation", { conversationId });
+    socket.on("conversation:updated", () => {
+      refetchConversationDetails();
+    });
 
     return () => {
-      if (socket.hasListeners(eventListener)) {
-        socket.off(eventListener);
+      /**
+       * Note: It is important to remove listener before unmount,
+       * otherwise the handler of the listener will be called multiple times,
+       * E.g. you will see multiple toasts or the refetch will be called multiple times
+       */
+      if (socket.hasListeners("conversation:updated")) {
+        socket.off("conversation:updated");
       }
     };
-  }, [conversation?.id]);
+  }, [conversationId]);
 
   if (isLoading) {
     return <ConversationDetail.ConversationDetailSkeleton />;

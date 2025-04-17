@@ -215,8 +215,9 @@ export function useConvoForm({
   }, [formId]);
 
   useEffect(() => {
-    // If new conversation started
+    // When a new form submission is started
     if (conversation !== undefined) {
+      // Notify the form creator that a new conversation has started
       socket.emit("conversation:started", {
         conversationId: conversation.id,
         formId,
@@ -225,13 +226,11 @@ export function useConvoForm({
   }, [conversation]);
 
   useEffect(() => {
-    // If conversation is already started, then update the conversation
+    // If conversation is already in-progress, and user has answered an question
     if (conversation !== undefined && isBusy === false) {
-      setTimeout(() => {
-        socket.emit("conversation:updated", {
-          conversationId: conversation.id,
-        });
-      }, 2000);
+      socket.emit("conversation:updated", {
+        conversationId: conversation.id,
+      });
     }
   }, [isBusy]);
 

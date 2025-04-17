@@ -49,39 +49,41 @@ export function ConversationsSidebar({ formId }: Props) {
   const {
     isLoading: isLoadingConversations,
     data,
-    refetch,
+    refetch: refetchConversationsList,
   } = api.conversation.getAll.useQuery({
     formId,
   });
 
   const conversations = data ?? [];
-  const eventListener = `form:${formId}`;
   const closeSheet = () => setState((cs) => ({ ...cs, open: false }));
 
-  // Update conversations list when a new conversation is created
   useEffect(() => {
-    socket.on(eventListener, (data) => {
-      const { event } = data;
-      if (typeof event === "string") {
-        if (event === "conversations:started") {
-          sonnerToast.info("New conversation started", {
-            position: "top-left",
-            dismissible: true,
-            duration: 1500,
-          });
-        }
-        if (event === "conversations:updated") {
-          refetch();
-        }
-      }
+    socket.emit("join-room-form", { formId });
+
+    socket.on("conversation:started", () => {
+      sonnerToast.info("New form submission started!", {
+        position: "top-left",
+        dismissible: true,
+        duration: 1500,
+      });
+      refetchConversationsList();
+    });
+
+    socket.on("conversation:stopped", () => {
+      refetchConversationsList();
     });
 
     return () => {
-      if (socket.hasListeners(eventListener)) {
-        socket.off(eventListener);
+      /**
+       * Note: It is important to remove listener before unmount,
+       * otherwise the handler of the listener will be called multiple times,
+       * E.g. you will see multiple toasts or the refetch will be called multiple times
+       */
+      if (socket.hasListeners("conversation:started")) {
+        socket.off("conversation:started");
       }
     };
-  }, []);
+  }, [formId]);
 
   useEffect(() => {
     if (open) {
