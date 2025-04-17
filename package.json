@@ -38,7 +38,7 @@
     "prepare:release": "pnpm run release-it && turbo run prepare:release",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "pnpm build && changeset publish"
+    "release:react": "pnpm --filter @convoform/react build && cd packages/react && npm publish"
   },
   "config": {
     "commitizen": {
