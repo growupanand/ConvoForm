@@ -49,13 +49,13 @@
     "@convoform/db": "../db",
     "@convoform/tsconfig": "../tsconfig",
     "@convoform/websocket-client": "../websocket-client",
-    "@types/react": "19.0.8",
+    "@types/react": "catalog:",
     "tsup": "^8.0.2",
-    "typescript": "^5"
+    "typescript": "catalog:"
   },
   "peerDependencies": {
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "funding": {
     "type": "individual",

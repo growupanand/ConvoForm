@@ -2,7 +2,7 @@ import { WEBSOCKET_URL } from "./constants";
 import { eventHandlers } from "./messageHandler";
 
 // Create WebSocket connection
-let socket: WebSocket | null = null;
+export let socket: WebSocket | null = null;
 
 // Reconnection parameters
 const RECONNECT_INTERVAL = 2000; // 2 seconds between reconnection attempts
@@ -54,7 +54,7 @@ function initializeSocket() {
     });
 
     socket.addEventListener("error", (error) => {
-      console.error("WebSocket error:", error);
+      console.log("WebSocket error:", error);
     });
 
     socket.addEventListener("message", (event) => {
@@ -66,13 +66,13 @@ function initializeSocket() {
           eventHandlers[type].forEach((handler) => handler(data));
         }
       } catch (err) {
-        console.error("Error parsing WebSocket message:", err);
+        console.log("Error parsing WebSocket message:", err);
       }
     });
 
     return socket;
   } catch (error) {
-    console.error("Failed to create WebSocket connection:", error);
+    console.log("Failed to create WebSocket connection:", error);
     return null;
   }
 }
@@ -83,7 +83,7 @@ if (typeof window !== "undefined") {
 }
 
 // Function to send message to server
-function sendMessage(type: string, data: any) {
+export function sendMessage(type: string, data: any) {
   if (!socket || socket.readyState !== WebSocket.OPEN) {
     // Queue message for when connection is established
     messageQueue.push({ type, data });
@@ -102,7 +102,7 @@ function sendMessage(type: string, data: any) {
 }
 
 // Clean up function for component unmount
-function cleanup() {
+export function cleanup() {
   if (reconnectTimer) {
     clearTimeout(reconnectTimer);
     reconnectTimer = null;
@@ -112,5 +112,3 @@ function cleanup() {
     socket.close(1000, "Component unmounted");
   }
 }
-
-export { socket, sendMessage, cleanup };
