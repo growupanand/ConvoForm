@@ -1,9 +1,11 @@
 import { env } from "@/env";
+import { getFrontendBaseUrl } from "@/lib/url";
 import { redirect } from "next/navigation";
 
 // Replace with your actual credentials
 const GOOGLE_CLIENT_ID = env.GOOGLE_CLIENT_ID;
-const GOOGLE_REDIRECT_URI = env.GOOGLE_REDIRECT_URI;
+const GOOGLE_REDIRECT_URI =
+  env.GOOGLE_REDIRECT_URI ?? `${getFrontendBaseUrl()}/api/auth/google/callback`;
 
 export async function GET() {
   if (!GOOGLE_CLIENT_ID || !GOOGLE_REDIRECT_URI) {
