@@ -9,6 +9,13 @@ import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
+
+export type QueryClientMeta = {
+  allowRetry?: boolean;
+};
+
+
+
 /**
  * 1. CONTEXT
  *
@@ -37,7 +44,7 @@ export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
-export const t = initTRPC.context<TRPCContext>().create({
+export const t = initTRPC.context<TRPCContext>().meta<QueryClientMeta>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => {
     // Add rate limit error data into response

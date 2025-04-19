@@ -3,6 +3,7 @@ import { conversationRouter } from "./conversation";
 import { formRouter } from "./form";
 import { formDesignRouter } from "./formDesign";
 import { formFieldRouter } from "./formField";
+import { googleRouter } from "./google";
 import { metricsRouter } from "./metrics";
 import { organizationRouter } from "./organization";
 import { usageRouter } from "./usage";
@@ -24,6 +25,7 @@ export const appRouter = createTRPCRouter({
   formField: formFieldRouter,
   formDesign: formDesignRouter,
   usage: usageRouter,
+  google: googleRouter,
 });
 
 // export type definition of API

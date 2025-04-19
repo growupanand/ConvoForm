@@ -4,13 +4,14 @@
   "main": "index.ts",
   "types": "index.ts",
   "scripts": {
-    "type-check": "tsc --noEmit",
-    "drizzle-kit": "drizzle-kit",
     "dev": "drizzle-kit studio --config drizzle.config.ts",
+    "dev:turbo": "drizzle-kit studio --config drizzle.config.ts",
+    "drizzle-kit": "drizzle-kit",
     "drizzle:generate-migration": "drizzle-kit generate",
     "drizzle:apply-migration": "drizzle-kit migrate",
     "drizzle:push": "drizzle-kit push",
-    "custom-script": "tsx ./src/script.ts"
+    "custom-script": "tsx ./src/script.ts",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
