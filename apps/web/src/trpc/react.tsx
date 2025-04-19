@@ -2,7 +2,11 @@
 
 import type { AppRouter } from "@convoform/api";
 import { toast } from "@convoform/ui";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { loggerLink } from "@trpc/client";
 import { httpBatchLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
@@ -22,17 +26,16 @@ export function makeQueryClient() {
         refetchInterval: false,
         retry: false,
       },
-      mutations: {
-        onError: (err) => {
-          if (isRateLimitErrorResponse(err)) {
-            toast.error(err.message ?? "Too many requests", {
-              duration: 1500,
-            });
-          }
-        },
-        throwOnError: false,
-      },
     },
+    queryCache: new QueryCache({
+      onError: (err) => {
+        if (isRateLimitErrorResponse(err)) {
+          toast.error(err.message ?? "Too many requests");
+        } else {
+          toast.error(err.message ?? "Something went wrong");
+        }
+      },
+    }),
   });
 }
 

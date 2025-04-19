@@ -7,6 +7,7 @@ interface GoogleAuthContextType {
   isAuthenticating: boolean;
   getAccessToken: () => Promise<string>;
   clearToken: () => void;
+  accessToken: string | null;
 }
 
 const GoogleAuthContext = createContext<GoogleAuthContextType | undefined>(
@@ -120,6 +121,7 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
         isAuthenticating,
         getAccessToken,
         clearToken,
+        accessToken,
       }}
     >
       {children}

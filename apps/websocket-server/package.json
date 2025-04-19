@@ -4,6 +4,7 @@
   "description": "This is websocket server for convoform.",
   "scripts": {
     "dev": "bun --watch src/index.ts",
+    "dev:turbo": "bun --watch src/index.ts",
     "start": "bun run src/index.ts",
     "build": "bun build src/index.ts --outdir ./dist --target bun"
   },
