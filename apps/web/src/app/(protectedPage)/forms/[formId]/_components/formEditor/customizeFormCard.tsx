@@ -1,8 +1,7 @@
 "use client";
 
 import type { Form } from "@convoform/db/src/schema";
-import { Label } from "@convoform/ui";
-import { sonnerToast } from "@convoform/ui";
+import { Label, toast } from "@convoform/ui";
 import { Switch } from "@convoform/ui";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -28,7 +27,7 @@ export function CustomizeFormCard({ form, organization }: Readonly<Props>) {
   const organizationLogoUrl = `${organization.imageUrl}?${params.toString()}`;
 
   function showPromiseSonner(promise: Promise<unknown>) {
-    sonnerToast.promise(promise, {
+    toast.promise(promise, {
       loading: "Saving changes...",
       success: "Changes saved successfully",
       error: "Unable to save changes",

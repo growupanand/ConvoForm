@@ -26,9 +26,7 @@ function ConversationsTableEmpty({ formId }: { formId: string }) {
   const formLink = `${getFrontendBaseUrl()}/view/${formId}`;
   const copyLinkToClipboard = () => {
     navigator.clipboard.writeText(formLink);
-    toast({
-      title: "Link copied to clipboard",
-    });
+    toast.info("Link copied to clipboard");
   };
   return (
     <EmptyCard

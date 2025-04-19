@@ -25,7 +25,6 @@ import {
 } from "@convoform/ui";
 import { Input } from "@convoform/ui";
 import { Skeleton } from "@convoform/ui";
-import { sonnerToast } from "@convoform/ui";
 import { Textarea } from "@convoform/ui";
 import { toast } from "@convoform/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -90,10 +89,8 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
     },
     onError: (error) => {
       if (isRateLimitErrorResponse(error)) {
-        toast({
-          title: "Rate limit exceeded",
+        toast.error("Rate limit exceeded", {
           duration: 1500,
-          variant: "destructive",
           description: error.message,
         });
       }
@@ -121,7 +118,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
       ...form,
       formFieldsOrders: newFieldsOrder,
     });
-    sonnerToast.promise(updateFormPromise, {
+    toast.promise(updateFormPromise, {
       loading: "Saving order...",
       success: "Saved successfully",
       error: "Failed to save fields order",
@@ -133,7 +130,7 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
       ...formData,
     });
 
-    sonnerToast.promise(updateFormPromise, {
+    toast.promise(updateFormPromise, {
       loading: "Saving changes...",
       success: "Changes saved successfully",
       error: "Failed to save changes",

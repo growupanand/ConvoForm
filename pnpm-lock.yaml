@@ -71,7 +71,7 @@ importers:
     dependencies:
       '@clerk/nextjs':
         specifier: ^6.14.3
-        version: 6.16.0(next@15.3.0(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 6.16.0(next@15.3.0(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@convoform/ai':
         specifier: workspace:*
         version: link:../../packages/ai
@@ -243,10 +243,6 @@ importers:
         version: 5.8.3
 
   apps/websocket-server:
-    dependencies:
-      bun:
-        specifier: 1.2.10
-        version: 1.2.10
     devDependencies:
       '@types/bun':
         specifier: latest
@@ -312,7 +308,7 @@ importers:
     dependencies:
       '@clerk/nextjs':
         specifier: ^6.14.3
-        version: 6.16.0(next@15.3.0(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 6.16.0(next@15.3.0(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@convoform/analytics':
         specifier: workspace:*
         version: link:../analytics
@@ -1941,61 +1937,6 @@ packages:
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
 
-  '@oven/bun-darwin-aarch64@1.2.10':
-    resolution: {integrity: sha512-pEpjQ9JrMMpBZywrZo/+M5ygfnYLCvQLIQWNRaukmd+9oNxHg28kvSLwD8zvYS/us8eAgeCXEwW05MAmHytlJA==}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@oven/bun-darwin-x64-baseline@1.2.10':
-    resolution: {integrity: sha512-RYtPL9JxxxEmLpoPidh26jgQgjM1WcK6BeCfJdp/HQcJ8mzvWqO4pOcAyYBf9v5Xsfl1pd1g7nakt8vcR7irPg==}
-    cpu: [x64]
-    os: [darwin]
-
-  '@oven/bun-darwin-x64@1.2.10':
-    resolution: {integrity: sha512-xNQ+rpIaa/qvaB6k+BsvQ0CTIG0HUTgrg1NlgUTY6dxn7IHqj2YZxHtvTi6/d2Tsy1kq/0QAKXQcD9gFofcgMw==}
-    cpu: [x64]
-    os: [darwin]
-
-  '@oven/bun-linux-aarch64-musl@1.2.10':
-    resolution: {integrity: sha512-YFSSLdeBjoztJQ4/fiInBkj/9Uh4QLdrgEO1IYZXKs146+6B/IC1S912IhyhSI1dbZAEukUCPS+1h6tILhLwHQ==}
-    cpu: [aarch64]
-    os: [linux]
-
-  '@oven/bun-linux-aarch64@1.2.10':
-    resolution: {integrity: sha512-tFDLXmaw7R3QQcRdIVUO0cxKFvBgqxS6mMr8huaEEPpeq2jop4Ti29BRlL9+K42RE8QvrLwz0cV2vgAFUz6hRw==}
-    cpu: [arm64]
-    os: [linux]
-
-  '@oven/bun-linux-x64-baseline@1.2.10':
-    resolution: {integrity: sha512-TlFNRDCRkKySsOHolBx/urWvldcIBQHkMpZH+YrJIPX5m8c1tyGmhT79s3GKT+n/bCxMPJXdxquJcXn+o2dNgg==}
-    cpu: [x64]
-    os: [linux]
-
-  '@oven/bun-linux-x64-musl-baseline@1.2.10':
-    resolution: {integrity: sha512-vLBefuSZVHvtwhega+U1bITLr2kmnzF2PjQiM3H/bxmT3Ltp+ZSNnx30tU9Ot+kRFqd48a6rFJz2r+encQTDMw==}
-    cpu: [x64]
-    os: [linux]
-
-  '@oven/bun-linux-x64-musl@1.2.10':
-    resolution: {integrity: sha512-QuIoz1J0FvbdkkERRNdTPmRiT7PFVtC/UKxVjVaAvppsQkkBw0r18JovCJjwR8d7SiR8L8ouaKQpAtLBG/e6FQ==}
-    cpu: [x64]
-    os: [linux]
-
-  '@oven/bun-linux-x64@1.2.10':
-    resolution: {integrity: sha512-90WdCFqQIVTCtcqm92PhtFi0qY56675Iccx5mw8d7fH//ZEmj6z29sfU9CrDR1KN7gqJg8FOyiKeI2lVa/dFjA==}
-    cpu: [x64]
-    os: [linux]
-
-  '@oven/bun-windows-x64-baseline@1.2.10':
-    resolution: {integrity: sha512-0wFKLOkNu+bv4gF+ipL32aAJSnV2/XM9cebBD8ZSptPDL86GL87HUkIY4aLzuiLVRCYHXw3bYs1n0ju/9MBKlw==}
-    cpu: [x64]
-    os: [win32]
-
-  '@oven/bun-windows-x64@1.2.10':
-    resolution: {integrity: sha512-jLo8HCPqlaj1O4P6LJkRZ91gZhSZRPQKWQ0A8g4ysxxXRhuXdpMyeIEqMYzRLCNFwOfhPIl6oVkNDATJ2behAQ==}
-    cpu: [x64]
-    os: [win32]
-
   '@paralleldrive/cuid2@2.2.2':
     resolution: {integrity: sha512-ZOBkgDwEdoYVlSeRbYYXs0S9MejQofiVYoTbKzy/6GQa39/q5tQU2IX46+shYnUkpEl3wc+J6wRlar7r2EK2xA==}
 
@@ -3514,12 +3455,6 @@ packages:
 
   bun-types@1.2.10:
     resolution: {integrity: sha512-b5ITZMnVdf3m1gMvJHG+gIfeJHiQPJak0f7925Hxu6ZN5VKA8AGy4GZ4lM+Xkn6jtWxg5S3ldWvfmXdvnkp3GQ==}
-
-  bun@1.2.10:
-    resolution: {integrity: sha512-7KZgjyJQh/nJaU8av0/2Ld9jDPdrVmQb/gAQKuhr796pKLSONJw+mbshme78viR9jbL4q+sgLNW6HOLwYhL0rg==}
-    cpu: [arm64, x64, aarch64]
-    os: [darwin, linux, win32]
-    hasBin: true
 
   bundle-name@4.1.0:
     resolution: {integrity: sha512-tjwM5exMg6BGRI+kNmTntNsvdZS1X8BFYS6tnJ2hdH0kVxM6/eVZ2xy+FqStSWvYmtfFMDLIxurorHwDKfDz5Q==}
@@ -6999,7 +6934,7 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
       tslib: 2.8.1
 
-  '@clerk/nextjs@6.16.0(next@15.3.0(@babel/core@7.26.10)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@clerk/nextjs@6.16.0(next@15.3.0(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@clerk/backend': 1.29.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@clerk/clerk-react': 5.28.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -7926,39 +7861,6 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.30.1(@opentelemetry/api@1.9.0)
-
-  '@oven/bun-darwin-aarch64@1.2.10':
-    optional: true
-
-  '@oven/bun-darwin-x64-baseline@1.2.10':
-    optional: true
-
-  '@oven/bun-darwin-x64@1.2.10':
-    optional: true
-
-  '@oven/bun-linux-aarch64-musl@1.2.10':
-    optional: true
-
-  '@oven/bun-linux-aarch64@1.2.10':
-    optional: true
-
-  '@oven/bun-linux-x64-baseline@1.2.10':
-    optional: true
-
-  '@oven/bun-linux-x64-musl-baseline@1.2.10':
-    optional: true
-
-  '@oven/bun-linux-x64-musl@1.2.10':
-    optional: true
-
-  '@oven/bun-linux-x64@1.2.10':
-    optional: true
-
-  '@oven/bun-windows-x64-baseline@1.2.10':
-    optional: true
-
-  '@oven/bun-windows-x64@1.2.10':
-    optional: true
 
   '@paralleldrive/cuid2@2.2.2':
     dependencies:
@@ -9569,20 +9471,6 @@ snapshots:
   bun-types@1.2.10:
     dependencies:
       '@types/node': 22.14.1
-
-  bun@1.2.10:
-    optionalDependencies:
-      '@oven/bun-darwin-aarch64': 1.2.10
-      '@oven/bun-darwin-x64': 1.2.10
-      '@oven/bun-darwin-x64-baseline': 1.2.10
-      '@oven/bun-linux-aarch64': 1.2.10
-      '@oven/bun-linux-aarch64-musl': 1.2.10
-      '@oven/bun-linux-x64': 1.2.10
-      '@oven/bun-linux-x64-baseline': 1.2.10
-      '@oven/bun-linux-x64-musl': 1.2.10
-      '@oven/bun-linux-x64-musl-baseline': 1.2.10
-      '@oven/bun-windows-x64': 1.2.10
-      '@oven/bun-windows-x64-baseline': 1.2.10
 
   bundle-name@4.1.0:
     dependencies:

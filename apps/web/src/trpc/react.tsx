@@ -25,8 +25,7 @@ export function makeQueryClient() {
       mutations: {
         onError: (err) => {
           if (isRateLimitErrorResponse(err)) {
-            toast({
-              title: err.message ?? "Too many requests",
+            toast.error(err.message ?? "Too many requests", {
               duration: 1500,
             });
           }

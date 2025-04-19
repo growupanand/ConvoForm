@@ -1,7 +1,6 @@
 "use client";
 
 import type { Form } from "@convoform/db/src/schema";
-import { sonnerToast } from "@convoform/ui";
 import { toast } from "@convoform/ui";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -28,10 +27,8 @@ export default function ChangeNameInput({ form, className }: Props) {
     throwOnError: false,
     onError: (error) => {
       if (isRateLimitErrorResponse(error)) {
-        toast({
-          title: "Rate limit exceeded",
+        toast.error("Rate limit exceeded", {
           duration: 1500,
-          variant: "destructive",
           description: error.message,
         });
       }
@@ -45,7 +42,7 @@ export default function ChangeNameInput({ form, className }: Props) {
       name,
     });
 
-    sonnerToast.promise(updateFormPromise, {
+    toast.promise(updateFormPromise, {
       loading: "Saving changes...",
       success: "Form name saved successfully",
       error: "Unable to update form name",

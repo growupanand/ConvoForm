@@ -10,9 +10,7 @@
   "keywords": [],
   "author": "Utkarsh Anand",
   "license": "ISC",
-  "dependencies": {
-    "bun": "1.2.10"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "catalog:",
     "typescript": "catalog:",

@@ -2,10 +2,9 @@
 
 import type { Form } from "@convoform/db/src/schema";
 
-import { sonnerToast } from "@convoform/ui";
-
 import { ToggleButton } from "@/components/common/toggleButton";
 import { api } from "@/trpc/react";
+import { toast } from "@convoform/ui";
 import { Pen, PenOff } from "lucide-react";
 import { useState } from "react";
 
@@ -26,7 +25,7 @@ export function FormPublishToggle({ form }: Readonly<Props>) {
       isPublished: checked,
     });
 
-    sonnerToast.promise(updateFormPromise, {
+    toast.promise(updateFormPromise, {
       loading: "Saving changes...",
       success: "Changes saved successfully",
       error: "Unable to save changes",

@@ -41,6 +41,8 @@
     }
   },
   "scripts": {
+    "dev": "tsup --watch",
+    "dev:turbo": "tsup --watch",
     "build": "tsup",
     "type-check": "tsc --noEmit"
   },
