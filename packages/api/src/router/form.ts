@@ -52,6 +52,7 @@ export const formRouter = createTRPCRouter({
           isPublished: input.isPublished,
           endScreenCTAUrl: input.endScreenCTAUrl,
           endScreenCTALabel: input.endScreenCTALabel,
+          googleFormId: input.googleFormId,
         })
         .returning();
       if (!savedForm) {

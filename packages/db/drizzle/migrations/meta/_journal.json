@@ -148,6 +148,13 @@
       "when": 1744343285783,
       "tag": "0020_naive_miss_america",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1745086123304,
+      "tag": "0021_majestic_sentinels",
+      "breakpoints": true
     }
   ]
 }

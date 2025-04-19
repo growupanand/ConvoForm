@@ -91,6 +91,8 @@ export const googleFormDateQuestionSchema = z.object({
 export const googleFormQuestionTypeSchema = z.union([
   googleFormTextQuestionSchema,
   googleFormDateQuestionSchema,
+  // Add a catch-all for other question types
+  z.record(z.string(), z.any()),
 ]);
 
 // Combined question schema with base fields and type-specific fields

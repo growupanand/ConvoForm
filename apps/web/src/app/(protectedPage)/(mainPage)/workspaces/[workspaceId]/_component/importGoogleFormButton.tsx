@@ -93,7 +93,10 @@ export default function ImportGoogleFormButton({ workspace }: Props) {
         workspaceId: workspace.id,
         organizationId: workspace.organizationId,
       };
-      const createFormPromise = createFormMutation.mutateAsync(newForm);
+      const createFormPromise = createFormMutation.mutateAsync({
+        ...newForm,
+        googleFormId: googleFormDetails.formId,
+      });
       toast.promise(createFormPromise, {
         loading: "Creating form...",
         success: "Form created successfully",

@@ -42,6 +42,7 @@ export const form = pgTable("Form", {
     .notNull(),
   endScreenCTAUrl: text("endScreenCTAUrl"),
   endScreenCTALabel: text("endScreenCTALabel"),
+  googleFormId: text("googleFormId"),
 });
 
 export const formRelations = relations(form, ({ one, many }) => ({

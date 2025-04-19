@@ -1,7 +1,10 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { googleDriveFormMetaSchema } from "@convoform/db/src/schema";
+import {
+  googleDriveFormMetaSchema,
+  googleFormSchema,
+} from "@convoform/db/src/schema";
 import {} from "@trpc/server/unstable-core-do-not-import";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { createTRPCRouter } from "../trpc";
@@ -59,7 +62,6 @@ export const googleRouter = createTRPCRouter({
       }
 
       const data = await response.json();
-      console.log({ data });
-      return data;
+      return googleFormSchema.parseAsync(data);
     }),
 });
