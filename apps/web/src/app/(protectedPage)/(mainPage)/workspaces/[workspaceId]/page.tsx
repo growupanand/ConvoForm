@@ -14,7 +14,7 @@ export const dynamicParams = true;
 export const revalidate = 0;
 
 type Props = {
-  params: { workspaceId: string };
+  params: Promise<{ workspaceId: string }>;
 };
 
 export const metadata: Metadata = {
@@ -42,7 +42,7 @@ export default async function WorkspacePage(props: Readonly<Props>) {
       actionButtonBottom={
         <div className="flex items-center gap-2">
           <CreateFormButton workspace={workspace} />
-          <ImportGoogleFormButton />
+          <ImportGoogleFormButton workspace={workspace} />
         </div>
       }
     >

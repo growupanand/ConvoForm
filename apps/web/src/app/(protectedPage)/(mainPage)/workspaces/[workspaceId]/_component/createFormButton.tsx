@@ -16,7 +16,6 @@ import { useState } from "react";
 import type { z } from "zod";
 
 import { api } from "@/trpc/react";
-import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 import { GenerateFormModal } from "./generateFormModal";
 
 type Props = {
@@ -56,14 +55,6 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
   const createForm = api.form.create.useMutation({
     onSuccess: async (newForm) => {
       router.push(`/forms/${newForm.id}`);
-    },
-    onError: (error) => {
-      if (isRateLimitErrorResponse(error)) {
-        toast.error("Rate limit exceeded", {
-          duration: 1500,
-          description: error.message,
-        });
-      }
     },
   });
   const { isPending: isCreatingForm } = createForm;

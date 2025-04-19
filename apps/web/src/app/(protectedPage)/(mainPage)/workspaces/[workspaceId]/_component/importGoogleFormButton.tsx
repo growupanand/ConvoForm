@@ -3,7 +3,7 @@
 import Spinner from "@/components/common/spinner";
 import { useGoogleAuth } from "@/contexts/GoogleAuthContext";
 import { api } from "@/trpc/react";
-import { Button, DialogDescription } from "@convoform/ui";
+import { Button, DialogDescription, toast } from "@convoform/ui";
 
 import {
   Dialog,
@@ -14,13 +14,20 @@ import {
 import { ExternalLink, FileText, Loader2 } from "lucide-react";
 import { useState } from "react";
 
-import type { GoogleDriveFormMeta } from "@convoform/db/src/schema";
+import {
+  type GoogleDriveFormMeta,
+  type Workspace,
+  convertGoogleFormToNewForm,
+} from "@convoform/db/src/schema";
+import { useRouter } from "next/navigation";
 
-// type Props = {
-//   workspace?: Workspace;
-// };
+type Props = {
+  workspace: Workspace;
+};
 
-export default function ImportGoogleFormButton() {
+export default function ImportGoogleFormButton({ workspace }: Props) {
+  const router = useRouter();
+
   const { getAccessToken, isAuthenticating } = useGoogleAuth();
   const [isLoadingForms, setIsLoadingForms] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
@@ -29,7 +36,19 @@ export default function ImportGoogleFormButton() {
     null,
   );
 
-  const googleDriveFormsFilesQuery = api.google.getDriveFormsFiles.useMutation({
+  const createFormMutation = api.form.create.useMutation({
+    onSuccess: async (newForm) => {
+      router.push(`/forms/${newForm.id}`);
+    },
+  });
+
+  const googleFormsMutation = api.google.getGoogleForms.useMutation({
+    meta: {
+      allowRetry: true,
+    },
+  });
+
+  const googleFormMutation = api.google.getGoogleForm.useMutation({
     meta: {
       allowRetry: true,
     },
@@ -38,7 +57,7 @@ export default function ImportGoogleFormButton() {
   const {
     data: googleDriveFormsFiles,
     isPending: googleDriveFormsFilesPending,
-  } = googleDriveFormsFilesQuery;
+  } = googleFormsMutation;
 
   const isLoadingGoogleForms = isLoadingForms || googleDriveFormsFilesPending;
   const hasGoogleDriveFormsFiles =
@@ -48,24 +67,39 @@ export default function ImportGoogleFormButton() {
 
   // Fetch Google Forms from user's drive
   const fetchGoogleForms = async () => {
-    const googleAccessToken = await getAccessToken();
+    const accessToken = await getAccessToken();
     setIsLoadingForms(true);
     setIsModalOpen(true);
 
-    await googleDriveFormsFilesQuery.mutateAsync({
-      accessToken: googleAccessToken,
+    await googleFormsMutation.mutateAsync({
+      accessToken,
     });
+    setIsLoadingForms(false);
   };
 
   // Handle form import
   const handleImportForm = async (formMeta: GoogleDriveFormMeta) => {
+    const accessToken = await getAccessToken();
     setSelectedForm(formMeta);
     setIsImporting(true);
-    console.log("selected form", formMeta);
 
     try {
-      //   await importPromise;
-      await new Promise((resolve) => setTimeout(resolve, 4000));
+      const googleFormDetails = await googleFormMutation.mutateAsync({
+        accessToken,
+        formId: formMeta.id,
+      });
+      const newForm = {
+        ...convertGoogleFormToNewForm(googleFormDetails),
+        workspaceId: workspace.id,
+        organizationId: workspace.organizationId,
+      };
+      const createFormPromise = createFormMutation.mutateAsync(newForm);
+      toast.promise(createFormPromise, {
+        loading: "Creating form...",
+        success: "Form created successfully",
+        error: "Failed to create form",
+      });
+      await createFormPromise;
       setIsModalOpen(false);
     } finally {
       setIsImporting(false);
