@@ -39,6 +39,7 @@ export const generateFormSchema = z.object({
 });
 
 export type Form = z.infer<typeof selectFormSchema>;
+export type NewForm = z.infer<typeof newFormSchema>;
 
 export const formWithFormFieldsSchema = selectFormSchema.extend({
   formFields: insertFormFieldSchema.array().min(1),

@@ -5,7 +5,7 @@ import { useFormContext } from "@/components/formViewer/formContext";
 import { useFormDesign } from "@/components/formViewer/formDesignContext";
 import { api } from "@/trpc/react";
 import { DEFAULT_FORM_DESIGN } from "@convoform/db/src/schema/formDesigns/constants";
-import { sonnerToast } from "@convoform/ui";
+import { toast } from "@convoform/ui";
 import { useEffect } from "react";
 import { BasicDesignCard, type FormHookData } from "./basicDesignCard";
 import { DesignDefaultScreenCard } from "./designDefaultScreen";
@@ -55,7 +55,7 @@ export function FormDesignEditor({ organizationId, formId }: Readonly<Props>) {
       screenType: currentSection,
       ...DEFAULT_FORM_DESIGN,
     });
-    sonnerToast.promise(createPromise, {
+    toast.promise(createPromise, {
       loading: "Initializing design...",
       success: "Form design initialized!",
       error: "Failed to initialized form design!",
@@ -99,7 +99,7 @@ export function FormDesignEditor({ organizationId, formId }: Readonly<Props>) {
       id: currentSectionFormDesign.id,
       ...updatedFormDesign,
     });
-    sonnerToast.promise(updatePromise, {
+    toast.promise(updatePromise, {
       loading: "Saving changes...",
       success: "Changes saved successfully",
       error: "Unable to save changes",

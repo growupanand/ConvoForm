@@ -1,12 +1,12 @@
 import createMDX from "@next/mdx";
-// Injected content via Sentry wizard below
-
 import { withSentryConfig } from "@sentry/nextjs";
+import type { NextConfig } from "next";
+import remarkGfm from "remark-gfm";
 
-import("./env.js");
+// Validate environment variables
+import "./src/env";
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactStrictMode: false,
   images: {
     remotePatterns: [
@@ -45,6 +45,7 @@ const nextConfig = {
     "@convoform/db",
     "@convoform/api",
     "@convoform/common",
+    "@convoform/websocket-client",
   ],
 
   /** We already do linting and typechecking as separate tasks in CI */
@@ -79,7 +80,7 @@ const remarkGFMOptions = {};
 const withMDX = createMDX({
   // Add markdown plugins here, as desired
   options: {
-    remarkPlugins: [["remark-gfm", remarkGFMOptions]],
+    remarkPlugins: [[remarkGfm, remarkGFMOptions]],
     rehypePlugins: [],
   },
 });

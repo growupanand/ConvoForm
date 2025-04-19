@@ -16,8 +16,10 @@
     "SENTRY_AUTH_TOKEN",
     "REDIS_URL",
     "SENTRY_ORG",
-    "SENTRY_PROJECT"
-
+    "SENTRY_PROJECT",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_REDIRECT_URI",
+    "GOOGLE_CLIENT_SECRET"
   ],
   "globalDependencies": [
     ".env",

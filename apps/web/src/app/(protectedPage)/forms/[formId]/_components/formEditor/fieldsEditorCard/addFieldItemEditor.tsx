@@ -11,7 +11,6 @@ import {
   FormMessage,
 } from "@convoform/ui";
 import { Input } from "@convoform/ui";
-import { sonnerToast } from "@convoform/ui";
 import { Textarea } from "@convoform/ui";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@convoform/ui";
 import { toast } from "@convoform/ui";
@@ -70,10 +69,8 @@ export function AddFieldItemEditor({
     },
     onError: (error) => {
       if (isRateLimitErrorResponse(error)) {
-        toast({
-          title: "Rate limit exceeded",
+        toast.error("Rate limit exceeded", {
           duration: 1500,
-          variant: "destructive",
           description: error.message,
         });
       }
@@ -92,7 +89,7 @@ export function AddFieldItemEditor({
       },
     });
 
-    sonnerToast.promise(createFormFieldPromise, {
+    toast.promise(createFormFieldPromise, {
       loading: "Adding field...",
       success: "Field added successfully",
       error: "Failed to add field",

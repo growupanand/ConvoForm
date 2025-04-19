@@ -78,9 +78,7 @@ const ActionButtons = ({
   const handleCopyLinkToClipboard = () => {
     if (!link) return;
     copyLinkToClipboard(link);
-    toast({
-      description: "Link copied to clipboard",
-    });
+    toast.info("Link copied to clipboard");
   };
 
   return (

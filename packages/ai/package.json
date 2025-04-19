@@ -11,11 +11,11 @@
     "ai": "^3.0.34",
     "openai": "^4.24.2",
     "openai-edge": "^1.2.2",
-    "zod": "^3.24.2"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@convoform/tsconfig": "workspace:*",
-    "@types/node": "^22.10.10",
-    "typescript": "latest"
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
   }
 }

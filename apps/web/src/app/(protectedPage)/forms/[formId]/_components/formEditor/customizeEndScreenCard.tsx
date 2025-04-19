@@ -1,9 +1,8 @@
 "use client";
 
 import { type Form, patchFormSchema } from "@convoform/db/src/schema";
-import { Collapsible, CollapsibleContent } from "@convoform/ui";
+import { Collapsible, CollapsibleContent, toast } from "@convoform/ui";
 import { Label } from "@convoform/ui";
-import { sonnerToast } from "@convoform/ui";
 import { Switch } from "@convoform/ui";
 import { Textarea } from "@convoform/ui";
 import { useQueryClient } from "@tanstack/react-query";
@@ -55,7 +54,7 @@ export function CustomizeEndScreenCard({ form }: Readonly<Props>) {
 
   function handlePatchPromise(promise: Promise<unknown>) {
     // Show a toast while saving changes
-    sonnerToast.promise(promise, {
+    toast.promise(promise, {
       loading: "Saving changes...",
       success: "Changes saved successfully",
       error: "Unable to save changes",
@@ -85,7 +84,7 @@ export function CustomizeEndScreenCard({ form }: Readonly<Props>) {
       id: form.id,
       ...data,
     });
-    sonnerToast.promise(patchPromise, {
+    toast.promise(patchPromise, {
       loading: "Saving changes...",
       success: "Changes saved successfully",
       error: "Unable to save changes",

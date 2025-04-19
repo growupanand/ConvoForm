@@ -9,7 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@convoform/ui";
-import { sonnerToast } from "@convoform/ui";
 import { toast } from "@convoform/ui";
 import { Loader2, PenLine, Plus, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -17,7 +16,6 @@ import { useState } from "react";
 import type { z } from "zod";
 
 import { api } from "@/trpc/react";
-import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 import { GenerateFormModal } from "./generateFormModal";
 
 type Props = {
@@ -58,16 +56,6 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
     onSuccess: async (newForm) => {
       router.push(`/forms/${newForm.id}`);
     },
-    onError: (error) => {
-      if (isRateLimitErrorResponse(error)) {
-        toast({
-          title: "Rate limit exceeded",
-          duration: 1500,
-          variant: "destructive",
-          description: error.message,
-        });
-      }
-    },
   });
   const { isPending: isCreatingForm } = createForm;
 
@@ -78,7 +66,7 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
       organizationId: workspace.organizationId,
     });
 
-    sonnerToast.promise(createFormPromise, {
+    toast.promise(createFormPromise, {
       loading: "Creating form...",
       success: "Form created successfully",
       error: "Failed to create form",

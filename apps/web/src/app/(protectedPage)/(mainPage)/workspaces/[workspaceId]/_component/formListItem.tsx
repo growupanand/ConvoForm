@@ -37,16 +37,13 @@ export function FormListItem({ form, conversationsCount }: Readonly<Props>) {
   const formSubmissionLink = getFormSubmissionLink(form.id);
   const handleCopyLinkToClipboard = () => {
     copyLinkToClipboard(formSubmissionLink);
-    toast({
-      description: "Link copied to clipboard",
-    });
+    toast.success("Link copied to clipboard");
   };
 
   const queryClient = useQueryClient();
   const deleteForm = api.form.delete.useMutation({
     onSuccess: () => {
-      toast({
-        title: "Form deleted.",
+      toast.success("Form deleted.", {
         duration: 1500,
       });
       queryClient.invalidateQueries({
@@ -57,8 +54,7 @@ export function FormListItem({ form, conversationsCount }: Readonly<Props>) {
       });
     },
     onError: () => {
-      toast({
-        title: "Unable to delete form",
+      toast.error("Unable to delete form", {
         duration: 1500,
       });
     },

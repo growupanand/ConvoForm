@@ -37,6 +37,7 @@ function broadcastToRoom(roomName: string, message: Record<string, any>) {
   }
 }
 
+console.log("starting websocket server", `http://localhost:${PORT}`);
 // Start the Bun WebSocket server
 serve({
   port: PORT,

@@ -9,6 +9,10 @@ import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
+export type QueryClientMeta = {
+  allowRetry?: boolean;
+};
+
 /**
  * 1. CONTEXT
  *
@@ -37,28 +41,31 @@ export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
-export const t = initTRPC.context<TRPCContext>().create({
-  transformer: superjson,
-  errorFormatter: ({ shape, error }) => {
-    // Add rate limit error data into response
-    let rateLimitErrorData: Record<string, any> = {};
-    if (isRateLimitError(error) && typeof error.cause === "object") {
-      rateLimitErrorData = error.cause;
-      rateLimitErrorData.code = "TOO_MANY_REQUESTS";
-      rateLimitErrorData.httpStatus = 429;
-    }
+export const t = initTRPC
+  .context<TRPCContext>()
+  .meta<QueryClientMeta>()
+  .create({
+    transformer: superjson,
+    errorFormatter: ({ shape, error }) => {
+      // Add rate limit error data into response
+      let rateLimitErrorData: Record<string, any> = {};
+      if (isRateLimitError(error) && typeof error.cause === "object") {
+        rateLimitErrorData = error.cause;
+        rateLimitErrorData.code = "TOO_MANY_REQUESTS";
+        rateLimitErrorData.httpStatus = 429;
+      }
 
-    return {
-      ...shape,
-      data: {
-        ...shape.data,
-        ...rateLimitErrorData,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
-    };
-  },
-});
+      return {
+        ...shape,
+        data: {
+          ...shape.data,
+          ...rateLimitErrorData,
+          zodError:
+            error.cause instanceof ZodError ? error.cause.flatten() : null,
+        },
+      };
+    },
+  });
 
 /**
  * Create a server-side caller

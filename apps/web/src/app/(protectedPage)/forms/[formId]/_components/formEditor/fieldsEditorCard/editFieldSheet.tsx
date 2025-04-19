@@ -6,7 +6,7 @@ import {
   inputTypeEnum,
   updateFormFieldSchema,
 } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui";
+import { Button, toast } from "@convoform/ui";
 import {
   Form,
   FormControl,
@@ -25,7 +25,6 @@ import {
   SelectValue,
 } from "@convoform/ui";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@convoform/ui";
-import { sonnerToast } from "@convoform/ui";
 import { Textarea } from "@convoform/ui";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@convoform/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -87,7 +86,7 @@ export function EditFieldSheet({
     const deletePromise = deleteFormFieldMutation.mutateAsync({
       id: formField.id,
     });
-    sonnerToast.promise(deletePromise, {
+    toast.promise(deletePromise, {
       loading: "Deleting field...",
       success: "Field deleted successfully",
       error: "Failed to delete field",
@@ -110,7 +109,7 @@ export function EditFieldSheet({
       ...formData,
     });
 
-    sonnerToast.promise(updatePromise, {
+    toast.promise(updatePromise, {
       loading: "Saving changes...",
       success: "Changes saved successfully",
       error: "Failed to save changes",

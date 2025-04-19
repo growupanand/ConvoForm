@@ -1,6 +1,4 @@
 "use client";
-
-import { sonnerToast } from "@convoform/ui";
 import {
   registerEventHandler,
   removeEventHandler,
@@ -15,6 +13,7 @@ import {
 } from "@/components/common/secondaryNavigation";
 import { api } from "@/trpc/react";
 import { useOrganization } from "@clerk/nextjs";
+import { toast } from "@convoform/ui";
 import { ChartColumnIncreasing, Table } from "lucide-react";
 import MainNavTab from "../../_components/mainNavTab";
 import { ConversationsNavigation } from "./conversationsNavigation";
@@ -67,7 +66,7 @@ export function ConversationsSidebar({ formId }: Props) {
 
     // Handler for conversation started events
     const handleConversationStarted = () => {
-      sonnerToast.info("New form submission started!", {
+      toast.info("New form submission started!", {
         position: "top-left",
         dismissible: true,
         duration: 1500,

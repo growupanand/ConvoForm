@@ -4,27 +4,28 @@
   "main": "index.ts",
   "types": "index.ts",
   "scripts": {
-    "type-check": "tsc --noEmit",
-    "drizzle-kit": "drizzle-kit",
     "dev": "drizzle-kit studio --config drizzle.config.ts",
+    "dev:turbo": "drizzle-kit studio --config drizzle.config.ts",
+    "drizzle-kit": "drizzle-kit",
     "drizzle:generate-migration": "drizzle-kit generate",
     "drizzle:apply-migration": "drizzle-kit migrate",
     "drizzle:push": "drizzle-kit push",
-    "custom-script": "tsx ./src/script.ts"
+    "custom-script": "tsx ./src/script.ts",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
     "@paralleldrive/cuid2": "^2.2.2",
     "drizzle-orm": "^0.41.0",
     "drizzle-zod": "^0.7.1",
-    "zod": "^3.24.2"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@convoform/tsconfig": "workspace:*",
-    "@types/node": "^20",
+    "@types/node": "catalog:",
     "drizzle-kit": "^0.30.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.0",
-    "typescript": "^5.3.3"
+    "typescript": "catalog:"
   }
 }

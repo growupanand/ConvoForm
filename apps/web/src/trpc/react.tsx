@@ -2,7 +2,12 @@
 
 import type { AppRouter } from "@convoform/api";
 import { toast } from "@convoform/ui";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { loggerLink } from "@trpc/client";
 import { httpBatchLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
@@ -10,7 +15,7 @@ import { useState } from "react";
 import SuperJSON from "superjson";
 
 import { getTRPCUrl } from "@/lib/url";
-import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
+import { getTRPCErrorMessage } from "./utils";
 
 export const api = createTRPCReact<AppRouter>();
 
@@ -22,18 +27,28 @@ export function makeQueryClient() {
         refetchInterval: false,
         retry: false,
       },
-      mutations: {
-        onError: (err) => {
-          if (isRateLimitErrorResponse(err)) {
-            toast({
-              title: err.message ?? "Too many requests",
-              duration: 1500,
-            });
-          }
-        },
-        throwOnError: false,
-      },
     },
+    queryCache: new QueryCache({
+      onError: (err) => {
+        toast.error(getTRPCErrorMessage(err));
+      },
+    }),
+    mutationCache: new MutationCache({
+      onError: (err, inputParams, _, mutation) => {
+        /**
+         * Show retry button on error toast if allowRetry is true
+         */
+        const { allowRetry } = mutation.meta ?? {};
+        const retryAction = {
+          label: "Retry",
+          onClick: () => mutation.execute(inputParams),
+        };
+
+        toast.error(getTRPCErrorMessage(err), {
+          action: allowRetry ? retryAction : undefined,
+        });
+      },
+    }),
   });
 }
 

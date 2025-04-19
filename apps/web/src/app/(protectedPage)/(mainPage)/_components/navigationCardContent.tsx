@@ -29,8 +29,7 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
 
   const createWorkspace = api.workspace.create.useMutation({
     onSuccess: (newWorkspace) => {
-      toast({
-        title: "Workspace created",
+      toast.success("Workspace created", {
         duration: 1500,
       });
       queryClient.invalidateQueries({
@@ -39,10 +38,8 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
       router.push(`/workspaces/${newWorkspace.id}/`);
     },
     onError: (error) =>
-      toast({
-        title: "Unable to create workspace",
+      toast.error("Unable to create workspace", {
         duration: 2000,
-        variant: "destructive",
         description: isRateLimitErrorResponse(error)
           ? error.message
           : undefined,

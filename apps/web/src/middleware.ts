@@ -4,6 +4,7 @@ const isPublicRoute = createRouteMatcher([
   "/",
   "/view/(.*)",
   "/api/form/(.*)",
+  "/api/google/forms",
   "/api/webhook(.*)",
   "/auth/(.*)",
   "/api/trpc/(.*)",

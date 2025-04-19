@@ -6,6 +6,7 @@ import { api } from "@/trpc/server";
 import { PageShell } from "../../_components/pageShell";
 import CreateFormButton from "./_component/createFormButton";
 import { FormList } from "./_component/formList";
+import ImportGoogleFormButton from "./_component/importGoogleFormButton";
 import { WorkspaceHeader } from "./_component/pageHeader";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +14,7 @@ export const dynamicParams = true;
 export const revalidate = 0;
 
 type Props = {
-  params: { workspaceId: string };
+  params: Promise<{ workspaceId: string }>;
 };
 
 export const metadata: Metadata = {
@@ -38,7 +39,12 @@ export default async function WorkspacePage(props: Readonly<Props>) {
   return (
     <PageShell
       title={<WorkspaceHeader workspace={workspace} />}
-      actionButtonBottom={<CreateFormButton workspace={workspace} />}
+      actionButtonBottom={
+        <div className="flex items-center gap-2">
+          <CreateFormButton workspace={workspace} />
+          <ImportGoogleFormButton workspace={workspace} />
+        </div>
+      }
     >
       <FormList workspace={workspace} />
     </PageShell>

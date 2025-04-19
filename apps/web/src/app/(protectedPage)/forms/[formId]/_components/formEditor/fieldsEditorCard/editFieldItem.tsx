@@ -4,7 +4,7 @@ import {
   type FormField as FormFieldSchema,
   patchFormFieldSchema,
 } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui";
+import { Button, toast } from "@convoform/ui";
 import {
   Form,
   FormControl,
@@ -12,7 +12,6 @@ import {
   FormItem,
   FormMessage,
 } from "@convoform/ui";
-import { sonnerToast } from "@convoform/ui";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -96,7 +95,7 @@ export function EditFieldItem({
       ...formData,
     });
 
-    sonnerToast.promise(patchFormFieldMutationPromise, {
+    toast.promise(patchFormFieldMutationPromise, {
       loading: "Saving changes...",
       success: "Changes saved successfully",
       error: "Failed to save changes",

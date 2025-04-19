@@ -12,7 +12,7 @@ import {
 import { Skeleton } from "@convoform/ui";
 import { toast } from "@convoform/ui";
 import { useQueryClient } from "@tanstack/react-query";
-import { Check, Edit, MoreVertical, Trash } from "lucide-react";
+import { Edit, MoreVertical, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef } from "react";
 
@@ -33,17 +33,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
 
   const deleteWorkspace = api.workspace.delete.useMutation({
     onSuccess: async () => {
-      toast({
-        action: (
-          <div className="w-full">
-            <div className="flex items-center gap-3">
-              <div className="rounded-full bg-green-500 p-1">
-                <Check className="text-white " />
-              </div>
-              <span>Workspace deleted</span>
-            </div>
-          </div>
-        ),
+      toast.success("Workspace deleted", {
         duration: 1500,
       });
       await queryClient.invalidateQueries({
@@ -53,8 +43,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
       router.push("/dashboard");
     },
     onError: () =>
-      toast({
-        title: "Unable to delete workspace",
+      toast.error("Unable to delete workspace", {
         duration: 1500,
       }),
   });
@@ -67,8 +56,7 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
 
   const updateWorkspace = api.workspace.patch.useMutation({
     onSuccess: () => {
-      toast({
-        title: "Workspace updated",
+      toast.success("Workspace updated", {
         duration: 1500,
       });
       queryClient.invalidateQueries({
@@ -76,10 +64,8 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
       });
     },
     onError: (error) =>
-      toast({
-        title: "Unable to update workspace",
+      toast.error("Unable to update workspace", {
         duration: 2000,
-        variant: "destructive",
         description: isRateLimitErrorResponse(error)
           ? error.message
           : undefined,

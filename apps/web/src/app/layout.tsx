@@ -1,5 +1,4 @@
-import { SonnerToaster } from "@convoform/ui";
-import { TooltipProvider } from "@convoform/ui";
+import { Toaster, TooltipProvider } from "@convoform/ui";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import type { Viewport } from "next";
@@ -9,6 +8,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 import "@convoform/tailwind-config/src/globals.css";
 import "nprogress/nprogress.css";
 import { CSPostHogProvider } from "@/components/analytics/analyticsProvider";
+import { GoogleAuthProvider } from "@/contexts/GoogleAuthContext";
 import { cn } from "@/lib/utils";
 import { unstable_ViewTransition as ViewTransition } from "react";
 import { montserrat } from "./fonts";
@@ -81,10 +81,12 @@ export default function RootLayout({
         <body className="antialiased font-sans">
           <CSPostHogProvider>
             <TooltipProvider delayDuration={200}>
-              <TRPCReactProvider>{children}</TRPCReactProvider>
+              <GoogleAuthProvider>
+                <TRPCReactProvider>{children}</TRPCReactProvider>
+              </GoogleAuthProvider>
             </TooltipProvider>
 
-            <SonnerToaster />
+            <Toaster />
           </CSPostHogProvider>
         </body>
       </html>

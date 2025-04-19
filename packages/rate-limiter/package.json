@@ -13,8 +13,8 @@
     "@upstash/redis": "^1.28.4"
   },
   "devDependencies": {
-    "@types/node": "^20.12.12",
-    "typescript": "^5",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
     "@convoform/tsconfig": "workspace:*"
   }
 }
