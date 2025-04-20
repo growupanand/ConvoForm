@@ -60,12 +60,12 @@ export function DatePicker({
   };
 
   return (
-    <Popover onOpenChange={setOpen} open={open} modal>
+    <Popover onOpenChange={setOpen} open={open}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
           className={cn(
-            "w-[280px] justify-start text-left font-normal",
+            "w-full lg:max-w-[280px] justify-start text-left font-normal",
             !date && "text-muted-foreground",
           )}
         >
@@ -79,7 +79,7 @@ export function DatePicker({
           selected={date}
           onSelect={handleOnSelect}
           disabled={getDateSelectorRules()}
-          initialFocus
+          autoFocus
           required
         />
       </PopoverContent>
