@@ -3,11 +3,11 @@
 import type { UseFormReturn } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@convoform/ui";
+import { Button, FormMessage, Switch } from "@convoform/ui";
 import { Calendar } from "@convoform/ui";
 import { FormControl, FormField, FormItem, FormLabel } from "@convoform/ui";
 import { Popover, PopoverContent, PopoverTrigger } from "@convoform/ui";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Clock } from "lucide-react";
 import { useState } from "react";
 import { OptionalText } from ".";
 import type { FormHookData } from "../editFieldSheet";
@@ -19,6 +19,21 @@ type Props = {
 export function DatePickerInputConfiguration({ formHook }: Readonly<Props>) {
   return (
     <>
+      <FormField
+        control={formHook.control}
+        name="fieldConfiguration.inputConfiguration.includeTime"
+        render={({ field }) => (
+          <FormItem className="flex flex-row items-center justify-between py-2">
+            <FormLabel className="font-normal text-sm flex items-center cursor-pointer">
+              <Clock className="size-4 inline me-2" /> Include time
+            </FormLabel>
+            <FormControl>
+              <Switch checked={field.value} onCheckedChange={field.onChange} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
       <FormField
         control={formHook.control}
         name="fieldConfiguration.inputConfiguration.minDate"

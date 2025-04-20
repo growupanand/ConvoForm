@@ -51,7 +51,7 @@ export function DatePickerInput({
       return;
     }
 
-    submitAnswer(selectedDate.toDateString());
+    submitAnswer(selectedDate.toISOString());
   };
 
   return (
@@ -63,6 +63,7 @@ export function DatePickerInput({
       autoFocus
       required
       className="lg:max-w-[280px]"
+      showTimePicker={inputConfiguration.includeTime}
     />
   );
 }

@@ -14,6 +14,18 @@ export function formatDate(input: string | number): string {
   });
 }
 
+export function formatDateTime(input: string | number): string {
+  const date = new Date(input);
+  return date.toLocaleString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
+
 // get time ago from date
 export function timeAgo(date: string | number | Date) {
   const seconds = Math.floor(

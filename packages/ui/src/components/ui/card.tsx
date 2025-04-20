@@ -4,8 +4,8 @@ import { cn } from "../../lib/utils";
 
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & {noShadow?: boolean}
->(({ className,noShadow, ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> & { noShadow?: boolean }
+>(({ className, noShadow, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(

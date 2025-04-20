@@ -25,7 +25,7 @@ export function TextInputConfigurationEditor({ formHook }: Readonly<Props>) {
         render={({ field }) => (
           <FormItem className="flex flex-row items-center justify-between">
             <div className="space-y-0.5">
-              <FormLabel>Paragraph Mode</FormLabel>
+              <FormLabel className="cursor-pointer">Paragraph Mode</FormLabel>
               <FormMessage />
             </div>
             <FormControl>

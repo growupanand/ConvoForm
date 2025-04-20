@@ -133,7 +133,18 @@ export function EditFieldSheet({
             className="relative flex h-full flex-col justify-between overflow-y-auto pe-5 ps-2 pb-4"
           >
             <div className="mb-6">
-              <h4 className="mb-4 text-xl font-semibold">Question</h4>
+              <h2 className="mb-4 font-semibold p-2 bg-secondary rounded-lg border flex items-center gap-2">
+                Question Configuration
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="size-4 ms-auto" />
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" align="start">
+                    Configure how the question will appear to users completing
+                    your form
+                  </TooltipContent>
+                </Tooltip>
+              </h2>
               <div className="grid space-y-8">
                 <FormField
                   control={formHook.control}
@@ -141,7 +152,7 @@ export function EditFieldSheet({
                   render={({ field }) => (
                     <FormItem>
                       <div className=" flex items-center gap-2">
-                        <FormLabel>Internal name</FormLabel>
+                        <FormLabel>Field name</FormLabel>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Info className="size-4" />
@@ -207,7 +218,17 @@ export function EditFieldSheet({
                   )}
                 />
               </div>
-              <h4 className="mb-4 mt-10 text-xl font-semibold">Answer</h4>
+              <h2 className="mb-4 mt-10 font-semibold p-2 bg-secondary rounded-lg border flex items-center gap-2">
+                Answer Configuration
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="size-4 ms-auto" />
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" align="start">
+                    Configure how users will provide answers to this question
+                  </TooltipContent>
+                </Tooltip>
+              </h2>
               <div className=" grid space-y-8">
                 <div className="grid space-y-4">
                   <FormField

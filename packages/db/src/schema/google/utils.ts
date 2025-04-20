@@ -137,7 +137,9 @@ const mapQuestionTypeToFieldConfiguration = (
   if (questionType === GoogleQuestionType.DATE && isDateQuestion(question)) {
     return {
       inputType: "datePicker",
-      inputConfiguration: {},
+      inputConfiguration: {
+        includeTime: question.dateQuestion.includeTime || false,
+      },
     };
   }
   return {

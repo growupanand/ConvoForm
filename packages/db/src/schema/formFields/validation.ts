@@ -45,6 +45,7 @@ export const multipleChoiceInputConfigSchema = z.object({
 export const datePickerInputConfigSchema = z.object({
   minDate: z.date().optional(),
   maxDate: z.date().optional(),
+  includeTime: z.boolean().optional(),
 });
 
 // --- FIELD CONFIGURATION TYPE SCHEMAS ---

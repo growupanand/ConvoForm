@@ -7,13 +7,7 @@
     "defaultBranch": "main"
   },
   "files": {
-    "ignore": [
-      "packages/ui/src/components/*.tsx",
-      "packages/ui/src/components/*.ts",
-      "**/*.yml",
-      "**/*.yaml",
-      "**/*.md"
-    ]
+    "ignore": ["**/*.yml", "**/*.yaml", "**/*.md"]
   },
   "formatter": {
     "enabled": true,

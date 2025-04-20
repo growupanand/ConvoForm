@@ -1,6 +1,6 @@
 {
   "extends": "@convoform/tsconfig/react-library.json",
-  "include": ["src/*"],
+  "include": ["src"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "baseUrl": ".",
@@ -9,5 +9,6 @@
       "dom.iterable",
       "esnext"
     ],
+    "jsx": "preserve",
   },
 }

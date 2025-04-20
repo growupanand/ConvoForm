@@ -1,4 +1,4 @@
-import type { CollectedData } from "@convoform/db/src/schema";
+import type { CollectedData, Conversation } from "@convoform/db/src/schema";
 
 /**
  * Format conversation fields data for TableComponent,
@@ -6,16 +6,28 @@ import type { CollectedData } from "@convoform/db/src/schema";
  * @param collectedData
  * @returns
  */
-export function getConversationTableData(collectedData: CollectedData[]) {
-  const sanitizedFieldsData: Record<string, string> = {};
-  collectedData.map((field) => {
-    let fieldValue = field.fieldValue;
-    // Handled edge case where field value is not string but object
-    if (fieldValue !== null && typeof fieldValue === "object") {
-      fieldValue = Object.values(fieldValue).join(", ");
-    }
-    sanitizedFieldsData[field.fieldName] = fieldValue?.toString() ?? "";
-  });
 
-  return sanitizedFieldsData;
+export function getConversationTableData(
+  collectedData: Conversation["collectedData"],
+) {
+  if (!collectedData || !Array.isArray(collectedData)) {
+    return {};
+  }
+
+  return collectedData.reduce(
+    (acc, data) => {
+      if (!data.fieldName || !data.fieldValue) return acc;
+
+      acc[data.fieldName] = {
+        value: data.fieldValue,
+        config: data.fieldConfiguration || {},
+      };
+
+      return acc;
+    },
+    {} as Record<
+      string,
+      { value: string; config: CollectedData["fieldConfiguration"] }
+    >,
+  );
 }
