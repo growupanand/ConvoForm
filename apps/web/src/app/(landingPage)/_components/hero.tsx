@@ -16,7 +16,7 @@ export function Hero() {
     <section className="flex w-full flex-col justify-start items-center lg:items-start gap-2 lg:gap-3 text-center lg:text-left">
       <Badge
         variant="outline"
-        className="group text-xs font-medium px-3 py-1 lg:px-4 lg:py-3 lg:text-base"
+        className="group text-xs font-medium px-2 py-0.5 lg:px-3 lg:py-2 lg:text-sm"
       >
         <Link
           href="https://github.com/growupanand/ConvoForm"
@@ -24,26 +24,26 @@ export function Hero() {
           rel="noreferrer nofollow noopener"
           className="flex items-center"
         >
-          <span className="mr-1 lg:mr-2">
+          <span className="mr-1 lg:mr-1.5">
             <Image
               src="images/icons/github.svg"
               alt="github"
-              width={12}
-              height={12}
-              className="lg:size-[15px] size-[12px]"
+              width={10}
+              height={10}
+              className="lg:size-[13px] size-[10px]"
             />
           </span>
           <span className="font-normal">Proudly Open Source</span>
           <ChevronRight
             className="ml-1 transition-all group-hover:translate-x-0.5"
-            size="12px"
+            size="10px"
           />
           <GithubStars />
         </Link>
       </Badge>
 
       <Card className="border-none bg-transparent shadow-none w-full">
-        <CardHeader className="mb-6 px-0">
+        <CardHeader className="mb-6 px-0 space-y-0">
           <h1
             className={cn(
               "text-3xl lg:text-5xl font-normal text-gray-800 leading-normal lg:leading-normal",
@@ -64,19 +64,20 @@ export function Hero() {
             Forms
           </h1>
         </CardHeader>
+
         <CardContent className="px-0 flex justify-center lg:justify-start">
           <div className="flex flex-wrap max-lg:flex-col max-lg:items-start justify-start gap-2 font-medium text-base text-muted-foreground">
-            <span className="flex items-center gap-1 bg-gray-50 rounded-full">
-              <CheckCircle2 className="size-6  fill-brand-500 text-white" />
-              No coding required
+            <span className="flex items-center gap-1 bg-gray-50 rounded-full px-3 py-1.5">
+              <CheckCircle2 className="size-6 fill-brand-500 text-white" />
+              100% Free
             </span>
-            <span className="flex items-center gap-1 bg-gray-50 rounded-full">
-              <CheckCircle2 className="size-6  fill-brand-500 text-white" />
+            <span className="flex items-center gap-1 bg-gray-50 rounded-full px-3 py-1.5">
+              <CheckCircle2 className="size-6 fill-brand-500 text-white" />
               No credit card required
             </span>
-            <span className="flex items-center gap-1 bg-gray-50 rounded-full">
-              <CheckCircle2 className="size-6  fill-brand-500 text-white" />
-              Cheapest pricing
+            <span className="flex items-center gap-1 bg-gray-50 rounded-full px-3 py-1.5">
+              <CheckCircle2 className="size-6 fill-brand-500 text-white" />
+              Enterprise-grade features
             </span>
           </div>
         </CardContent>

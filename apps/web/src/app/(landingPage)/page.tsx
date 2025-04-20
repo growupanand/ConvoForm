@@ -28,9 +28,20 @@ export default function Home() {
           <DemoSection />
         </div>
       </div>
-      <div className="max-lg:py-10">
+
+      <div className="my-10">
         <Achievements />
       </div>
+      {/* New headline section */}
+      <div className="py-8 lg:py-14">
+        <div className="container mx-auto px-4 lg:px-10 text-center">
+          <h2 className="text-2xl lg:text-4xl font-bold mb-2 text-gray-800">
+            The <span className="text-brand-500">Only Open Source</span>{" "}
+            conversational forms
+          </h2>
+        </div>
+      </div>
+
       <SectionContainer>
         <Footer />
       </SectionContainer>
