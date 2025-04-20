@@ -39,7 +39,7 @@ const BrowserWindow = ({
         className,
       )}
     >
-      <div className="flex items-center justify-between bg-gray-200 px-3 py-1">
+      <div className="flex items-center justify-between gap-x-2 bg-gray-200 px-3 py-1">
         <WindowButtons />
         <AddressBar link={link} />
         <ActionButtons

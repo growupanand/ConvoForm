@@ -7,7 +7,7 @@ import { cn } from "../lib/utils";
 import {Input} from "./ui/input";
 import {Popover, PopoverContent, PopoverTrigger} from "./ui/popover";
 import {Button} from "./ui/button";
-import {Calendar, CalendarProps, Matcher} from "./ui/calendar";
+import {Calendar, CalendarProps} from "./ui/calendar";
 import {rangeContainsModifiers} from "react-day-picker";
 
 

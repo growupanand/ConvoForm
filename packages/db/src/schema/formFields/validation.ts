@@ -15,6 +15,7 @@ export type InputTypeSchema = z.infer<typeof inputTypeSchema>;
 export const textInputConfigSchema = z.object({
   placeholder: z.string().optional(),
   maxLength: z.number().optional(),
+  isParagraph: z.boolean().optional(),
 });
 
 // --- MULTIPLE CHOICE CONFIGURATION ---

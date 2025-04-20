@@ -1,18 +1,39 @@
 import type { FieldConfiguration } from "../formFields";
 import type { NewForm } from "../forms";
-import type { GoogleForm, GoogleFormQuestionItem } from "./validation";
+import type {
+  GoogleForm,
+  GoogleFormDateQuestion,
+  GoogleFormQuestionItem,
+  GoogleFormTextQuestion,
+} from "./validation";
 
 enum GoogleQuestionType {
   TEXT = "TEXT",
   DATE = "DATE",
 }
 
+// Type guard for text questions
+function isTextQuestion(
+  question: GoogleFormQuestionItem["questionItem"]["question"],
+): question is GoogleFormQuestionItem["questionItem"]["question"] &
+  GoogleFormTextQuestion {
+  return "textQuestion" in question;
+}
+
+// Type guard for date questions
+function isDateQuestion(
+  question: GoogleFormQuestionItem["questionItem"]["question"],
+): question is GoogleFormQuestionItem["questionItem"]["question"] &
+  GoogleFormDateQuestion {
+  return "dateQuestion" in question;
+}
+
 const getQuestionItemType = (questionItem: GoogleFormQuestionItem) => {
-  if ("textQuestion" in questionItem.questionItem.question) {
+  if (isTextQuestion(questionItem.questionItem.question)) {
     return GoogleQuestionType.TEXT;
   }
 
-  if ("dateQuestion" in questionItem.questionItem.question) {
+  if (isDateQuestion(questionItem.questionItem.question)) {
     return GoogleQuestionType.DATE;
   }
 
@@ -102,21 +123,25 @@ export const convertGoogleFormToNewForm = (googleForm: GoogleForm): NewForm => {
 const mapQuestionTypeToFieldConfiguration = (
   questionItem: GoogleFormQuestionItem,
 ): FieldConfiguration => {
-  switch (getQuestionItemType(questionItem)) {
-    case GoogleQuestionType.TEXT:
-      return {
-        inputType: "text",
-        inputConfiguration: {},
-      };
-    case GoogleQuestionType.DATE:
-      return {
-        inputType: "datePicker",
-        inputConfiguration: {},
-      };
-    default:
-      return {
-        inputType: "text",
-        inputConfiguration: {},
-      };
+  const questionType = getQuestionItemType(questionItem);
+  const question = questionItem.questionItem.question;
+
+  if (questionType === GoogleQuestionType.TEXT && isTextQuestion(question)) {
+    return {
+      inputType: "text",
+      inputConfiguration: {
+        isParagraph: question.textQuestion.paragraph || false,
+      },
+    };
   }
+  if (questionType === GoogleQuestionType.DATE && isDateQuestion(question)) {
+    return {
+      inputType: "datePicker",
+      inputConfiguration: {},
+    };
+  }
+  return {
+    inputType: "text",
+    inputConfiguration: {},
+  };
 };

@@ -4,6 +4,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  Switch,
 } from "@convoform/ui";
 import { Input } from "@convoform/ui";
 import type { UseFormReturn } from "react-hook-form";
@@ -18,6 +19,21 @@ type Props = {
 export function TextInputConfigurationEditor({ formHook }: Readonly<Props>) {
   return (
     <>
+      <FormField
+        control={formHook.control}
+        name="fieldConfiguration.inputConfiguration.isParagraph"
+        render={({ field }) => (
+          <FormItem className="flex flex-row items-center justify-between">
+            <div className="space-y-0.5">
+              <FormLabel>Paragraph Mode</FormLabel>
+              <FormMessage />
+            </div>
+            <FormControl>
+              <Switch checked={field.value} onCheckedChange={field.onChange} />
+            </FormControl>
+          </FormItem>
+        )}
+      />
       <FormField
         control={formHook.control}
         name="fieldConfiguration.inputConfiguration.placeholder"

@@ -15,6 +15,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useAutoHeightHook } from "@/hooks/auto-height-hook";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { cn } from "@/lib/utils";
 import type { InputProps } from "./";
 
 type Props = InputProps & {
@@ -31,6 +33,7 @@ export function TextInput({
   submitAnswer,
   inputConfiguration,
 }: Readonly<Props>) {
+  const [isMobile] = useMediaQuery("(max-width: 1024px)");
   const textPlaceHolder = inputConfiguration.placeholder ?? "Type here...";
 
   const formHook = useForm({
@@ -62,13 +65,25 @@ export function TextInput({
                 <FormControl>
                   <Textarea
                     autoFocus
-                    rows={1}
-                    className="w-full rounded-none border-0 bg-transparent ps-0	 focus-visible:ring-0 focus-visible:ring-transparent  focus-visible:ring-offset-0 text-2xl"
+                    rows={inputConfiguration.isParagraph ? 4 : 1}
+                    className={cn(
+                      "w-full  text-2xl",
+                      !inputConfiguration.isParagraph
+                        ? "rounded-none border-0 bg-transparent ps-0	 focus-visible:ring-0 focus-visible:ring-transparent  focus-visible:ring-offset-0"
+                        : "",
+                    )}
                     placeholder={textPlaceHolder}
                     onKeyDown={(event) => {
                       if (event.key === "Enter") {
-                        event.preventDefault();
-                        formHook.handleSubmit(handleFormSubmit)();
+                        // On desktop: Enter submits, Shift+Enter adds new line
+                        if (!isMobile) {
+                          if (!event.shiftKey) {
+                            event.preventDefault();
+                            formHook.handleSubmit(handleFormSubmit)();
+                          }
+                          // If Shift+Enter, do nothing (default behavior adds a new line)
+                        }
+                        // On mobile: Enter always adds a new line (default behavior)
                       }
                     }}
                     {...field}
@@ -79,6 +94,11 @@ export function TextInput({
                   />
                 </FormControl>
                 <FormMessage />
+                {!isMobile && (
+                  <p className="text-xs text-muted-foreground mt-1 italic">
+                    Press Enter to submit or Shift+Enter for a new line
+                  </p>
+                )}
               </FormItem>
             )}
           />

@@ -72,14 +72,14 @@ export const googleFormQuestionSchema = z.object({
   required: z.boolean().optional(),
 });
 
-// Text question schema
+// =============== Text question schema ==================
 export const googleFormTextQuestionSchema = z.object({
   textQuestion: z.object({
     paragraph: z.boolean().optional(),
   }),
 });
 
-// Date question schema
+// ============== Date question schema ==================
 export const googleFormDateQuestionSchema = z.object({
   dateQuestion: z.object({
     includeTime: z.boolean().optional(),
@@ -149,6 +149,12 @@ export const importGoogleFormSchema = googleFormSchema
     },
   );
 
+export type GoogleFormTextQuestion = z.infer<
+  typeof googleFormTextQuestionSchema
+>;
+export type GoogleFormDateQuestion = z.infer<
+  typeof googleFormDateQuestionSchema
+>;
 export type GoogleFormQuestionType =
   (typeof googleFormQuestionTypeEnum)[number];
 export type GoogleFormInfo = z.infer<typeof googleFormInfoSchema>;
