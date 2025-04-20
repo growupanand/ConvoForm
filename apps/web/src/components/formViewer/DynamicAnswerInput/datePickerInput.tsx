@@ -1,14 +1,10 @@
 "use client";
-
-import { cn } from "@/lib/utils";
 import {
   type DatePickerInputConfigSchema,
   restoreDateFields,
 } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui";
-import { Calendar, type Matcher } from "@convoform/ui";
-import { Popover, PopoverContent, PopoverTrigger } from "@convoform/ui";
-import { CalendarIcon } from "lucide-react";
+import { DatePicker } from "@convoform/ui";
+import type { Matcher } from "@convoform/ui";
 import { useState } from "react";
 import type { InputProps } from ".";
 
@@ -16,7 +12,7 @@ type Props = InputProps & {
   inputConfiguration: DatePickerInputConfigSchema;
 };
 
-export function DatePicker({
+export function DatePickerInput({
   submitAnswer,
   inputConfiguration,
 }: Readonly<Props>) {
@@ -47,7 +43,6 @@ export function DatePicker({
   };
 
   const [date, setDate] = useState<Date>();
-  const [open, setOpen] = useState(false);
 
   const handleOnSelect = (selectedDate: Date | undefined) => {
     setDate(selectedDate);
@@ -60,29 +55,14 @@ export function DatePicker({
   };
 
   return (
-    <Popover onOpenChange={setOpen} open={open}>
-      <PopoverTrigger asChild>
-        <Button
-          variant={"outline"}
-          className={cn(
-            "w-full lg:max-w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground",
-          )}
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? date.toDateString() : <span>Pick a date</span>}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={handleOnSelect}
-          disabled={getDateSelectorRules()}
-          autoFocus
-          required
-        />
-      </PopoverContent>
-    </Popover>
+    <DatePicker
+      mode="single"
+      selected={date}
+      onSelect={handleOnSelect}
+      disabled={getDateSelectorRules()}
+      autoFocus
+      required
+      className="lg:max-w-[280px]"
+    />
   );
 }

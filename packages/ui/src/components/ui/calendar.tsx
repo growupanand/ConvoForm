@@ -10,8 +10,8 @@ import {
   useDayPicker,
   type DayPickerProps,
 } from "react-day-picker"
-import { cn } from "src/lib/utils"
 import { Button, buttonVariants } from "./button"
+import { cn } from "../../lib/utils"
 
 export type CalendarProps = DayPickerProps & {
   /**
@@ -50,7 +50,9 @@ export type CalendarProps = DayPickerProps & {
   hiddenClassName?: string
 }
 
+
 export type Matcher = CalendarProps["disabled"];
+
 
 
 type NavView = "days" | "years"
@@ -82,6 +84,25 @@ function Calendar({
       }
     }, [yearRange])
   )
+
+  // Get the defaultMonth from selected date if available
+  const defaultMonth = React.useMemo(() => {
+    // For single date selection
+    if (props.mode === 'single' && props.selected) {
+      return props.selected as Date;
+    }
+    // For range selection
+    if (props.mode === 'range' && props.selected) {
+      const range = props.selected as { from?: Date; to?: Date };
+      return range.from || new Date();
+    }
+    // For multiple selection
+    if (props.mode === 'multiple' && props.selected) {
+      const dates = props.selected as Date[];
+      return dates.length > 0 ? dates[0] : new Date();
+    }
+    return undefined;
+  }, [props.selected, props.mode]);
 
   const { onNextClick, onPrevClick, startMonth, endMonth } = props
 
@@ -169,6 +190,7 @@ function Calendar({
 
   return (
     <DayPicker
+    key={defaultMonth?.toString()}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       style={{
@@ -237,6 +259,7 @@ function Calendar({
         ),
       }}
       numberOfMonths={columnsDisplayed}
+      defaultMonth={defaultMonth}
       {...props}
     />
   )

@@ -4,5 +4,10 @@
   "exclude": ["node_modules"],
   "compilerOptions": {
     "baseUrl": ".",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
   },
 }
