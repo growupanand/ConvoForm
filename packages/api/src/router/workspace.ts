@@ -6,7 +6,7 @@ import {
 } from "@convoform/db/src/schema";
 import { z } from "zod";
 
-import { checkRateLimitThrowTRPCError } from "../lib/utils";
+import { enforceRateLimit } from "@convoform/rate-limiter";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { createTRPCRouter } from "../trpc";
 
@@ -14,7 +14,7 @@ export const workspaceRouter = createTRPCRouter({
   create: authProtectedProcedure
     .input(insertWorkspaceSchema)
     .mutation(async ({ input, ctx }) => {
-      await checkRateLimitThrowTRPCError({
+      await enforceRateLimit({
         identifier: ctx.userId,
         rateLimitType: "core:create",
       });
@@ -82,13 +82,18 @@ export const workspaceRouter = createTRPCRouter({
       ctx.analytics.track("workspace:delete", {
         properties: deletedWorkspace,
       });
+
+      if (!deletedWorkspace) {
+        throw new Error("Unable to delete workspace");
+      }
+
       return deletedWorkspace;
     }),
 
   patch: authProtectedProcedure
     .input(updateWorkspaceSchema)
     .mutation(async ({ input, ctx }) => {
-      await checkRateLimitThrowTRPCError({
+      await enforceRateLimit({
         identifier: ctx.userId,
         rateLimitType: "core:edit",
       });
@@ -101,6 +106,10 @@ export const workspaceRouter = createTRPCRouter({
       ctx.analytics.track("workspace:update", {
         properties: input,
       });
+
+      if (!updatedWorkspace) {
+        throw new Error("Unable to update workspace");
+      }
 
       return updatedWorkspace;
     }),

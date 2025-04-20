@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import {
   googleDriveFormMetaSchema,
-  googleFormSchema,
+  importGoogleFormSchema,
 } from "@convoform/db/src/schema";
 import {} from "@trpc/server/unstable-core-do-not-import";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
@@ -62,6 +62,6 @@ export const googleRouter = createTRPCRouter({
       }
 
       const data = await response.json();
-      return googleFormSchema.parseAsync(data);
+      return importGoogleFormSchema.parseAsync(data);
     }),
 });

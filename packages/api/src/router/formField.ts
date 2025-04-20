@@ -7,7 +7,7 @@ import {
   updateFormFieldSchema,
 } from "@convoform/db/src/schema";
 
-import { checkRateLimitThrowTRPCError } from "../lib/utils";
+import { enforceRateLimit } from "@convoform/rate-limiter";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { createTRPCRouter } from "../trpc";
 
@@ -16,7 +16,7 @@ export const formFieldRouter = createTRPCRouter({
   createFormField: authProtectedProcedure
     .input(insertFormFieldSchema)
     .mutation(async ({ input, ctx }) => {
-      await checkRateLimitThrowTRPCError({
+      await enforceRateLimit({
         identifier: ctx.userId,
         rateLimitType: "core:create",
       });
@@ -77,7 +77,7 @@ export const formFieldRouter = createTRPCRouter({
   patchFormField: authProtectedProcedure
     .input(patchFormFieldSchema)
     .mutation(async ({ input, ctx }) => {
-      await checkRateLimitThrowTRPCError({
+      await enforceRateLimit({
         identifier: ctx.userId,
         rateLimitType: "core:edit",
       });
@@ -105,7 +105,7 @@ export const formFieldRouter = createTRPCRouter({
   updateFormField: authProtectedProcedure
     .input(updateFormFieldSchema)
     .mutation(async ({ input, ctx }) => {
-      await checkRateLimitThrowTRPCError({
+      await enforceRateLimit({
         identifier: ctx.userId,
         rateLimitType: "core:edit",
       });

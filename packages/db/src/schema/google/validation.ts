@@ -124,12 +124,30 @@ export const googleFormSchema = z.object({
   formId: z.string(),
   info: googleFormInfoSchema,
   // settings: googleFormSettingsSchema.optional(),
-  items: z.array(questionItemSchema),
+  items: z.array(questionItemSchema).min(1),
   // revisionId: z.string().optional(),
   // responderUri: z.string().optional(),
   // linkedSheetId: z.string().optional(),
   // publishSettings: googleFormPublishSettingsSchema.optional(),
 });
+
+export const importGoogleFormSchema = googleFormSchema
+  .partial({
+    items: true,
+  })
+  .refine(
+    (data) => {
+      return (
+        "items" in data &&
+        Array.isArray(data.items) &&
+        data.items.length > 0 &&
+        data.items.every((item) => item.questionItem.question.questionId)
+      );
+    },
+    {
+      message: "The Google Form must contain at least one valid input field",
+    },
+  );
 
 export type GoogleFormQuestionType =
   (typeof googleFormQuestionTypeEnum)[number];

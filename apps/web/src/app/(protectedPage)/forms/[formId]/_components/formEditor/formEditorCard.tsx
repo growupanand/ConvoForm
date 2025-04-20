@@ -37,7 +37,6 @@ import { useFormContext } from "@/components/formViewer/formContext";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { FORM_SECTIONS_ENUMS } from "@convoform/db/src/schema/formDesigns/constants";
-import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 import { Label } from "@convoform/ui";
 import { CustomizeEndScreenCard } from "./customizeEndScreenCard";
 import { CustomizeFormCard } from "./customizeFormCard";
@@ -86,14 +85,6 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
       queryClient.invalidateQueries({
         queryKey: [["form"]],
       });
-    },
-    onError: (error) => {
-      if (isRateLimitErrorResponse(error)) {
-        toast.error("Rate limit exceeded", {
-          duration: 1500,
-          description: error.message,
-        });
-      }
     },
   });
 

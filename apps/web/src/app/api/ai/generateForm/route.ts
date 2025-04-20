@@ -11,7 +11,7 @@ import { getOrganizationId } from "@/lib/getOrganizationId";
 import { api } from "@/trpc/server";
 import { GenerateFormService } from "@convoform/ai";
 import { aiGeneratedFormLimit } from "@convoform/common";
-import { checkRateLimitThrowError } from "@convoform/rate-limiter";
+import { enforceRateLimit } from "@convoform/rate-limiter";
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
     // TODO: After moving AI related routes to tRPC, we can use userId as identifier
 
-    await checkRateLimitThrowError({
+    await enforceRateLimit({
       identifier: orgId,
       rateLimitType: "ai:identified",
     });

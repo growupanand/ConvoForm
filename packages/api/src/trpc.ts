@@ -6,6 +6,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@convoform/db";
 import { isRateLimitError } from "@convoform/rate-limiter";
 import { initTRPC } from "@trpc/server";
+import { TRPC_ERROR_CODES_BY_KEY } from "@trpc/server/unstable-core-do-not-import";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -48,20 +49,25 @@ export const t = initTRPC
     transformer: superjson,
     errorFormatter: ({ shape, error }) => {
       // Add rate limit error data into response
-      let rateLimitErrorData: Record<string, any> = {};
+      let rateLimitError = null;
       if (isRateLimitError(error) && typeof error.cause === "object") {
-        rateLimitErrorData = error.cause;
-        rateLimitErrorData.code = "TOO_MANY_REQUESTS";
-        rateLimitErrorData.httpStatus = 429;
+        shape.code = TRPC_ERROR_CODES_BY_KEY.TOO_MANY_REQUESTS;
+        shape.data.httpStatus = 429;
+        rateLimitError = {
+          resetTimeStamp: error.resetTimeStamp,
+        };
+      }
+
+      let zodError = null;
+      if (error.cause instanceof ZodError) {
+        zodError = error.cause.flatten();
       }
 
       return {
         ...shape,
         data: {
-          ...shape.data,
-          ...rateLimitErrorData,
-          zodError:
-            error.cause instanceof ZodError ? error.cause.flatten() : null,
+          zodError,
+          rateLimitError,
         },
       };
     },

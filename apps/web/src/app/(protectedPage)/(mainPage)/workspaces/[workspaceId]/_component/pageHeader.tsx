@@ -20,7 +20,6 @@ import { ConfirmAction } from "@/components/common/confirmAction";
 import Spinner from "@/components/common/spinner";
 import { debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 
 type Props = {
   workspace: Workspace;
@@ -42,10 +41,6 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
 
       router.push("/dashboard");
     },
-    onError: () =>
-      toast.error("Unable to delete workspace", {
-        duration: 1500,
-      }),
   });
 
   const handleDeleteWorkspace = useCallback(
@@ -63,13 +58,6 @@ export const WorkspaceHeader = ({ workspace }: Props) => {
         queryKey: [["workspace"]],
       });
     },
-    onError: (error) =>
-      toast.error("Unable to update workspace", {
-        duration: 2000,
-        description: isRateLimitErrorResponse(error)
-          ? error.message
-          : undefined,
-      }),
   });
 
   const handleUpdateWorkspace = useCallback(

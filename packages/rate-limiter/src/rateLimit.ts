@@ -25,6 +25,7 @@ export type LimitType =
   /** All OpenAI request called by loggedInUser or detected ip address of client */
   | "ai:identified";
 type RateLimit = Record<LimitType, any>;
+
 export const RATE_LIMIT_ERROR_NAME = "TOO_MANY_REQUESTS";
 
 export const ratelimit = redis
@@ -62,27 +63,34 @@ export const ratelimit = redis
     } as RateLimit)
   : undefined;
 
-export const isRateLimitError = (error: any) => {
-  return error.name === RATE_LIMIT_ERROR_NAME;
-};
+// Add a custom error class
+export class RateLimitError extends Error {
+  resetTimeStamp: number;
 
-export const isRateLimitErrorResponse = (error: any) => {
-  return error.data?.code === RATE_LIMIT_ERROR_NAME || error.status === 429;
+  constructor(message: string, resetTimeStamp: number) {
+    super(message);
+    this.name = RATE_LIMIT_ERROR_NAME;
+    this.resetTimeStamp = resetTimeStamp;
+  }
+}
+
+export const isRateLimitError = (error: Error): error is RateLimitError => {
+  return error.name === RATE_LIMIT_ERROR_NAME;
 };
 
 /**
  * Check for rate limit and throw an error if the limit is exceeded.
  * @returns `Promise<void>`
  */
-export const checkRateLimitThrowError = async ({
+export const enforceRateLimit = async ({
   identifier,
-  message,
+  customErrorMessage,
   rateLimitType,
 }: {
   /** A unique string value to identify user */
   identifier: string;
   /** Custom message to send in response */
-  message?: string;
+  customErrorMessage?: string;
   /** Limit type E.g. `core`, `AI` etc */
   rateLimitType?: LimitType;
 }) => {
@@ -102,14 +110,9 @@ export const checkRateLimitThrowError = async ({
 
   if (!success) {
     const errorMessage =
-      typeof message === "string"
-        ? message
-        : `Rate limit exceeded. Try again in ${timeAhead(resetTimeStamp)}.`;
-    const error = new Error(errorMessage);
-    error.name = RATE_LIMIT_ERROR_NAME;
-    error.cause = {
-      resetTimeStamp,
-    };
-    throw error;
+      customErrorMessage ??
+      `Rate limit exceeded. Try again in ${timeAhead(resetTimeStamp)}.`;
+
+    throw new RateLimitError(errorMessage, resetTimeStamp);
   }
 };

@@ -11,7 +11,6 @@ import { useCallback, useMemo } from "react";
 import BrandName from "@/components/common/brandName";
 import type { NavLink, NavigationConfig } from "@/lib/types/navigation";
 import { api } from "@/trpc/react";
-import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 import { NavigationLinks } from "./mainNavigation/mainNavigation";
 import { UsageCard } from "./usageCard";
 
@@ -37,13 +36,6 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
       });
       router.push(`/workspaces/${newWorkspace.id}/`);
     },
-    onError: (error) =>
-      toast.error("Unable to create workspace", {
-        duration: 2000,
-        description: isRateLimitErrorResponse(error)
-          ? error.message
-          : undefined,
-      }),
   });
   const isCreatingWorkspace = createWorkspace.isPending;
 

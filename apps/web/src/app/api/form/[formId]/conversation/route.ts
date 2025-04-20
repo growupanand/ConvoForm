@@ -6,7 +6,7 @@ import {
   selectConversationSchema,
   transcriptSchema,
 } from "@convoform/db/src/schema";
-import { checkRateLimitThrowError } from "@convoform/rate-limiter";
+import { enforceRateLimit } from "@convoform/rate-limiter";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 
@@ -58,7 +58,7 @@ export async function POST(
 
     // FIXME: Getting vercel edge runtime error for upstash/redis
 
-    await checkRateLimitThrowError({
+    await enforceRateLimit({
       identifier: clientIp ?? "unknown",
       rateLimitType: clientIp ? "ai:identified" : "ai:unkown",
     });

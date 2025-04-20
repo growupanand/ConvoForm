@@ -6,7 +6,6 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { cn, debounce } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 import { HeadingInput } from "@convoform/ui";
 
 type Props = {
@@ -23,15 +22,6 @@ export default function ChangeNameInput({ form, className }: Props) {
       queryClient.invalidateQueries({
         queryKey: [["form", "getOneWithWorkspace"]],
       });
-    },
-    throwOnError: false,
-    onError: (error) => {
-      if (isRateLimitErrorResponse(error)) {
-        toast.error("Rate limit exceeded", {
-          duration: 1500,
-          description: error.message,
-        });
-      }
     },
   });
   const isUpdating = updateForm.isPending;

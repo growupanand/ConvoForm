@@ -23,7 +23,6 @@ import type { z } from "zod";
 import Spinner from "@/components/common/spinner";
 import { useAutoHeightHook } from "@/hooks/auto-height-hook";
 import { api } from "@/trpc/react";
-import { isRateLimitErrorResponse } from "@convoform/rate-limiter";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@convoform/ui";
 
 type Props = {
@@ -66,14 +65,6 @@ export function AddFieldItemEditor({
       });
       formHook.reset();
       onFieldAdded();
-    },
-    onError: (error) => {
-      if (isRateLimitErrorResponse(error)) {
-        toast.error("Rate limit exceeded", {
-          duration: 1500,
-          description: error.message,
-        });
-      }
     },
   });
 
