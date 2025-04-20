@@ -1,6 +1,7 @@
 import createMDX from "@next/mdx";
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
+import remarkGfm from "remark-gfm";
 
 // Validate environment variables
 import "./src/env";
@@ -79,12 +80,7 @@ const remarkGFMOptions = {};
 const withMDX = createMDX({
   // Add markdown plugins here, as desired
   options: {
-    remarkPlugins: [
-      [
-        "remarkGfm" as any, // <-- need to set any otherwise turbopack (dev:turbo) fails
-        remarkGFMOptions,
-      ],
-    ],
+    remarkPlugins: [[remarkGfm, remarkGFMOptions]],
     rehypePlugins: [],
   },
 });
