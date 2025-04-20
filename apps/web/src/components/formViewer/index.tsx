@@ -31,7 +31,6 @@ export function FormViewer() {
 
   const handleCTAClick = useCallback(async () => {
     await startConversation();
-    setCurrentSection("questions-screen");
   }, []);
 
   const handlePostCTAClick = useCallback(

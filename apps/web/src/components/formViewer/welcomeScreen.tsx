@@ -30,17 +30,24 @@ export const WelcomeScreen = ({
   const handleCTAClick = async () => {
     setIsStartingConversation(true);
     await onCTAClick();
-    await animate(scope.current, { opacity: 0 }, { duration: 1 });
+    await animate(scope.current, { opacity: 0 }, { duration: 0.5 });
     postCTAClick();
     setIsStartingConversation(false);
   };
 
   useEffect(() => {
-    animate(
+    const animationControls = animate(
       ".welcome-screen-text",
       { opacity: 1, y: 0 },
       { delay: stagger(0.2) },
     );
+
+    // Cleanup function to handle unmounting
+    return () => {
+      if (animationControls && typeof animationControls.stop === "function") {
+        animationControls.stop();
+      }
+    };
   }, []);
 
   return (

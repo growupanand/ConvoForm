@@ -54,6 +54,8 @@ export const AskScreen = ({
           {!isEmptyQuestion && (
             <motion.div
               style={{ color: fontColor }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25 }}
               className="min-h-fit"
