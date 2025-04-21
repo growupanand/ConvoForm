@@ -8,7 +8,7 @@ import { Loader2, Plus } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 
-import BrandName from "@/components/common/brandName";
+import BrandNameLink from "@/components/common/brandName";
 import type { NavLink, NavigationConfig } from "@/lib/types/navigation";
 import { api } from "@/trpc/react";
 import { NavigationLinks } from "./mainNavigation/mainNavigation";
@@ -124,7 +124,7 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
       <div>
         <div className="mb-5 flex flex-col gap-3">
           <div>
-            <BrandName className="text-xl lg:text-2xl" />
+            <BrandNameLink className="text-xl lg:text-2xl" />
           </div>
         </div>
         <NavigationLinks navigationLinks={navigationLinks} />

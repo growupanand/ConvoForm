@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { nohemi } from "@/app/fonts/customFonts";
-import { LinkN } from "@/components/common/linkN";
 import { AnimatedTypingDots } from "@/components/common/typingDots";
 import { cn } from "@/lib/utils";
 import { GithubStars } from "./githubStar";
@@ -89,9 +88,9 @@ export function Hero() {
           className="rounded-full py-3 lg:py-5 text-base lg:text-base font-montserrat shadow-md hover:shadow-lg transition-all hover:translate-y-[-2px]"
           asChild
         >
-          <LinkN href="/auth/register" rel="noreferrer nofollow noopener">
-            Create your first form
-          </LinkN>
+          <Link href="/auth/register" rel="noreferrer nofollow noopener">
+            Start Building
+          </Link>
         </Button>
 
         <Button
@@ -100,13 +99,13 @@ export function Hero() {
           className="lg:hidden rounded-full py-3 lg:py-5 text-base font-montserrat hover:bg-gray-50"
           asChild
         >
-          <LinkN
+          <Link
             href="/view/demo"
             target="_blank"
             rel="noreferrer nofollow noopener"
           >
             See demo
-          </LinkN>
+          </Link>
         </Button>
       </div>
     </section>

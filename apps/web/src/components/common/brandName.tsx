@@ -1,13 +1,13 @@
-import { LinkN } from "@/components/common/linkN";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 type Props = {
   className?: string;
 };
 
-export default function BrandName({ className }: Props) {
+export default function BrandNameLink({ className }: Props) {
   return (
-    <LinkN href="/">
+    <Link href="/">
       <span
         className={cn(
           "text-foreground font-semibold font-montserrat",
@@ -19,6 +19,6 @@ export default function BrandName({ className }: Props) {
           <span>Form</span>
         </span>
       </span>
-    </LinkN>
+    </Link>
   );
 }

@@ -11,7 +11,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: "https://www.convoform.com/changelog",
       lastModified: new Date(),
-      changeFrequency: "daily",
+      changeFrequency: "weekly",
+      priority: 1,
+    },
+    {
+      url: "https://www.convoform.com/privacy",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
       priority: 1,
     },
   ];

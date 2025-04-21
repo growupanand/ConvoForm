@@ -38,3 +38,4 @@ export * from "./components/ui/drawer";
 export * from "./components/headingInput";
 export * from "./components/datePicker";
 export * from "./components/timePicker/timePicker";
+export * from "./components/timeline";

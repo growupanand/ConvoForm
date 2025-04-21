@@ -1,4 +1,4 @@
-import BrandName from "@/components/common/brandName";
+import BrandNameLink from "@/components/common/brandName";
 import { AlertCircle } from "lucide-react";
 
 export function DesktopOnlyAlert() {
@@ -20,7 +20,7 @@ export function DesktopOnlyAlert() {
           experience.
         </p>
         <div className="flex justify-center">
-          <BrandName />
+          <BrandNameLink />
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Button } from "@convoform/ui";
 import { motion } from "motion/react";
 import Link from "next/link";
-import BrandName from "../common/brandName";
+import BrandNameLink from "../common/brandName";
 
 type Props = {
   endScreenMessage: string;
@@ -78,7 +78,7 @@ export const EndScreen = (props: Props) => {
       </div>
       <div className="mt-2 flex items-center">
         <p className="text-muted-foreground mr-2 text-lg">Created using</p>
-        <BrandName className="text-lg font-bold" />
+        <BrandNameLink className="text-lg font-bold" />
       </div>
     </div>
   );

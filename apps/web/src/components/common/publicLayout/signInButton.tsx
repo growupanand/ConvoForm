@@ -1,13 +1,12 @@
 import { Button } from "@convoform/ui";
-
-import { LinkN } from "@/components/common/linkN";
+import Link from "next/link";
 
 export function SignInButton() {
   return (
-    <LinkN href="/auth/sign-in" rel="noopener noreferrer nofollow">
+    <Link href="/auth/sign-in" rel="noopener noreferrer nofollow">
       <Button variant="secondary" className="rounded-full">
         Sign In
       </Button>
-    </LinkN>
+    </Link>
   );
 }

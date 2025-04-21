@@ -11,8 +11,8 @@ import { Button } from "@convoform/ui";
 import { LayoutDashboard } from "lucide-react";
 
 import { AuthProvider } from "@/components/authProvider";
-import { LinkN } from "../../../components/common/linkN";
-import { SignInButton } from "./signInButton";
+import { SignInButton } from "@/components/common/publicLayout/signInButton";
+import Link from "next/link";
 
 export function UserSignInButton() {
   return (
@@ -22,12 +22,12 @@ export function UserSignInButton() {
       </ClerkLoading>
       <ClerkLoaded>
         <SignedIn>
-          <LinkN href="/dashboard">
+          <Link href="/dashboard">
             <Button variant="secondary">
               <LayoutDashboard className="" size={20} />
               <span className="ml-2 max-lg:hidden">Go to Dashboard</span>
             </Button>
-          </LinkN>
+          </Link>
           <UserButton />
         </SignedIn>
         <SignedOut>

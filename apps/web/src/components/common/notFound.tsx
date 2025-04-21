@@ -1,4 +1,4 @@
-import BrandName from "./brandName";
+import BrandNameLink from "./brandName";
 
 type Props = {
   title?: string;
@@ -20,7 +20,7 @@ function NotFoundPage({ title, description, code }: Readonly<Props>) {
           "The page you are looking for might have been removed or is temporarily unavailable."}
       </p>
       <div className="mt-10">
-        <BrandName />
+        <BrandNameLink />
       </div>
     </div>
   );

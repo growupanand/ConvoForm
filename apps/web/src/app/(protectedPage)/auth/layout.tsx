@@ -1,7 +1,7 @@
 import { ClerkLoading } from "@clerk/nextjs";
 
+import { PublicLayout } from "@/components/common/publicLayout/publicLayout";
 import Spinner from "@/components/common/spinner";
-import { TopHeader } from "@/components/common/topHeader";
 
 type Props = {
   children: React.ReactNode;
@@ -9,9 +9,8 @@ type Props = {
 
 export default function Layout({ children }: Readonly<Props>) {
   return (
-    <main className="min-h-screen flex flex-col">
-      <TopHeader hideSignIn />
-      <div className="  grow flex items-center justify-center">
+    <PublicLayout>
+      <main className="min-h-screen lg:min-h-[calc(100vh-6rem)] flex items-center justify-center">
         <div>
           <ClerkLoading>
             <div className="flex w-full justify-center">
@@ -20,7 +19,7 @@ export default function Layout({ children }: Readonly<Props>) {
           </ClerkLoading>
           {children}
         </div>
-      </div>
-    </main>
+      </main>
+    </PublicLayout>
   );
 }
