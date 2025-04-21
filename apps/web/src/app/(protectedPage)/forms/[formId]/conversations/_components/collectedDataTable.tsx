@@ -1,14 +1,12 @@
-import { getConversationTableData } from "@/components/queryComponents/table/utils";
-import { cn, formatDate, formatDateTime } from "@/lib/utils";
-import type {
-  CollectedData,
-  Conversation,
-  DatePickerInputConfigSchema,
-} from "@convoform/db/src/schema";
+import {
+  getConversationTableData,
+  renderCellValue,
+} from "@/components/queryComponents/table/utils";
+import { cn } from "@/lib/utils";
+import type { Conversation } from "@convoform/db/src/schema";
 
 import { Skeleton } from "@convoform/ui";
 import { Table, TableBody, TableCell, TableRow } from "@convoform/ui";
-import { Calendar, Clock } from "lucide-react";
 type Props = {
   collectedData: Conversation["collectedData"];
 };
@@ -75,59 +73,5 @@ function CollectedDataTableCell({
     >
       {children}
     </TableCell>
-  );
-}
-
-function renderCellValue(
-  value: string,
-  fieldConfig?: CollectedData["fieldConfiguration"],
-): React.ReactNode {
-  // Return early if no field configuration
-  if (!fieldConfig) return value;
-
-  // Handle date fields
-  if (isDatePickerField(fieldConfig)) {
-    const dateValue = new Date(value);
-    if (isValidDateString(value, dateValue)) {
-      const { inputConfiguration } = fieldConfig;
-      const formattedDate = inputConfiguration?.includeTime
-        ? formatDateTime(value)
-        : formatDate(value);
-
-      return (
-        <div className="flex items-start gap-2 ">
-          <span>
-            {inputConfiguration?.includeTime ? (
-              <Clock className="h-4 w-4 text-muted-foreground inline-block" />
-            ) : (
-              <Calendar className="h-4 w-4 text-muted-foreground inline-block" />
-            )}
-          </span>
-          <span className="text-justify">{formattedDate}</span>
-        </div>
-      );
-    }
-  }
-
-  return value;
-}
-
-// Type guard to check if this is a date picker field
-function isDatePickerField(
-  config: CollectedData["fieldConfiguration"],
-): config is {
-  inputType: "datePicker";
-  inputConfiguration: DatePickerInputConfigSchema;
-} {
-  return config?.inputType === "datePicker";
-}
-
-// Helper function to validate date strings
-function isValidDateString(value: string, dateValue: Date): boolean {
-  return (
-    !!value &&
-    !Number.isNaN(dateValue.getTime()) &&
-    typeof value === "string" &&
-    value.includes("-")
   );
 }

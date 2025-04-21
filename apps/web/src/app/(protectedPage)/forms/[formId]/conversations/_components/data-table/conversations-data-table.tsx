@@ -1,5 +1,7 @@
 "use client";
 
+import { SafeCellRenderer } from "@/components/queryComponents/table/SafeCellRenderer";
+
 import { getConversationTableData } from "@/components/queryComponents/table/utils";
 import { timeAgo } from "@/lib/utils";
 import type { Conversation } from "@convoform/db/src/schema";
@@ -147,9 +149,10 @@ export function ConversationsDataTable(props: {
           accessorKey: column,
           header: column,
           cell: (info) => (
-            <div className="min-w-[50px] max-w-[200px]">
-              {info.getValue() as string}
-            </div>
+            <SafeCellRenderer
+              value={info.getValue()}
+              className="min-w-[50px] max-w-[200px]"
+            />
           ),
         };
       });
@@ -258,7 +261,12 @@ export function ConversationsDataTable(props: {
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id} className="align-top">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    {cell.getValue() === ""
+                      ? "empty string"
+                      : flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
                   </TableCell>
                 ))}
               </TableRow>
