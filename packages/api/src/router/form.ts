@@ -62,6 +62,7 @@ export const formRouter = createTRPCRouter({
       ctx.analytics.track("form:create", {
         properties: {
           ...savedForm,
+          importedFromGoogleForms: Boolean(input.googleFormId),
         },
         groups: {
           workspace: savedForm.workspaceId,
