@@ -110,7 +110,7 @@ export function MultiChoiceInput({
             custom={index}
           >
             <Button
-              className="flex items-center gap-x-2 rounded-full shadow w-full font-medium text-xl h-auto py-2 active:scale-100 justify-center relative"
+              className="cursor-pointer flex items-center gap-x-2 rounded-full shadow w-full font-medium text-xl h-auto py-2 active:scale-100 justify-center relative"
               type="button"
               variant="outline"
               onClick={() => handleOptionSelect(option)}
