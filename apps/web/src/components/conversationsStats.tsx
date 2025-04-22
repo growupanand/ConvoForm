@@ -65,7 +65,7 @@ export const ConversationsStats = ({
             <StatsGrid className="gap-x-6">
               <ConversationsStatsCard
                 title="Average completion time"
-                primaryValue={formatDuration(data.averageFinishTimeMs)}
+                primaryValue={formatDuration(data.averageFinishTimeMs, true)}
                 description="Typical time to submit all answers"
               />
               <ConversationsStatsCard

@@ -49,6 +49,7 @@ export const googleFormChoiceOptionSchema = z.object({
       altText: z.string().optional(),
     })
     .optional(),
+  isOther: z.boolean().optional(),
 });
 
 // Define reusable enum for Google Form question types
@@ -87,10 +88,20 @@ export const googleFormDateQuestionSchema = z.object({
   }),
 });
 
+// ============== Choice question schema ==================
+export const googleFormChoiceQuestionSchema = z.object({
+  choiceQuestion: z.object({
+    type: z.enum(["RADIO", "CHECKBOX", "DROP_DOWN", "CHOICE_TYPE_UNSPECIFIED"]),
+    options: z.array(googleFormChoiceOptionSchema),
+    shuffle: z.boolean().optional(),
+  }),
+});
+
 // Union of all question types
 export const googleFormQuestionTypeSchema = z.union([
   googleFormTextQuestionSchema,
   googleFormDateQuestionSchema,
+  googleFormChoiceQuestionSchema,
   // Add a catch-all for other question types
   z.record(z.string(), z.any()),
 ]);
@@ -166,3 +177,6 @@ export type GoogleFormPublishSettings = z.infer<
   typeof googleFormPublishSettingsSchema
 >;
 export type GoogleForm = z.infer<typeof googleFormSchema>;
+export type GoogleFormChoiceQuestion = z.infer<
+  typeof googleFormChoiceQuestionSchema
+>;
