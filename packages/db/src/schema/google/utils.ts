@@ -2,6 +2,7 @@ import type { FieldConfiguration } from "../formFields";
 import type { NewForm } from "../forms";
 import type {
   GoogleForm,
+  GoogleFormChoiceQuestion,
   GoogleFormDateQuestion,
   GoogleFormQuestionItem,
   GoogleFormTextQuestion,
@@ -10,6 +11,7 @@ import type {
 enum GoogleQuestionType {
   TEXT = "TEXT",
   DATE = "DATE",
+  MULTIPLE_CHOICE = "MULTIPLE_CHOICE",
 }
 
 // Type guard for text questions
@@ -28,6 +30,14 @@ function isDateQuestion(
   return "dateQuestion" in question;
 }
 
+// Add a type guard for choice questions
+function isChoiceQuestion(
+  question: GoogleFormQuestionItem["questionItem"]["question"],
+): question is GoogleFormQuestionItem["questionItem"]["question"] &
+  GoogleFormChoiceQuestion {
+  return "choiceQuestion" in question;
+}
+
 const getQuestionItemType = (questionItem: GoogleFormQuestionItem) => {
   if (isTextQuestion(questionItem.questionItem.question)) {
     return GoogleQuestionType.TEXT;
@@ -35,6 +45,10 @@ const getQuestionItemType = (questionItem: GoogleFormQuestionItem) => {
 
   if (isDateQuestion(questionItem.questionItem.question)) {
     return GoogleQuestionType.DATE;
+  }
+
+  if (isChoiceQuestion(questionItem.questionItem.question)) {
+    return GoogleQuestionType.MULTIPLE_CHOICE;
   }
 
   return "unkown";
@@ -142,6 +156,28 @@ const mapQuestionTypeToFieldConfiguration = (
       },
     };
   }
+
+  if (
+    questionType === GoogleQuestionType.MULTIPLE_CHOICE &&
+    isChoiceQuestion(question)
+  ) {
+    // Map Google Forms choice options to ConvoForm options
+    const options = question.choiceQuestion.options.map((option) => ({
+      // Handle "Other" option by providing a default value when value is undefined
+      value: option.isOther ? "Other" : option.value,
+      isOther: option.isOther || false,
+    }));
+
+    return {
+      inputType: "multipleChoice",
+      inputConfiguration: {
+        options: options,
+        // Map CHECKBOX to allowMultiple: true
+        allowMultiple: question.choiceQuestion.type === "CHECKBOX",
+      },
+    };
+  }
+
   return {
     inputType: "text",
     inputConfiguration: {},

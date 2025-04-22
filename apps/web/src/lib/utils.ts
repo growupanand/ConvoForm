@@ -79,23 +79,31 @@ export function numberFormatter(value: number) {
 }
 
 // Format a duration in milliseconds to a readable string
-export function formatDuration(milliseconds: number) {
+export function formatDuration(milliseconds: number, abbreviated = false) {
   const seconds = Math.floor(milliseconds / 1000);
+
+  // Labels based on abbreviated parameter
+  const secondsLabel = abbreviated ? "sec" : "seconds";
+  const minutesLabel = abbreviated ? "min" : "minutes";
+  const hoursLabel = abbreviated ? "hr" : "hours";
+  const daysLabel = abbreviated
+    ? (days: number) => `day${days !== 1 ? "s" : ""}`
+    : () => "days";
 
   const minutes = Math.floor(seconds / 60);
   if (minutes < 1) {
-    return `${seconds} seconds`;
+    return `${seconds} ${secondsLabel}`;
   }
 
   const hours = Math.floor(minutes / 60);
   if (hours < 1) {
-    return `${minutes} minutes${seconds % 60 > 0 ? ` ${seconds % 60} seconds` : ""}`;
+    return `${minutes} ${minutesLabel}${seconds % 60 > 0 ? ` ${seconds % 60} ${secondsLabel}` : ""}`;
   }
 
   const days = Math.floor(hours / 24);
   if (days < 1) {
-    return `${hours} hours${minutes % 60 > 0 ? ` ${minutes % 60} minutes` : ""}`;
+    return `${hours} ${hoursLabel}${minutes % 60 > 0 ? ` ${minutes % 60} ${minutesLabel}` : ""}`;
   }
 
-  return `${days} days${hours % 24 > 0 ? ` ${hours % 24} hours` : ""}`;
+  return `${days} ${daysLabel(days)}${hours % 24 > 0 ? ` ${hours % 24} ${hoursLabel}` : ""}`;
 }
