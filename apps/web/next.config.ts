@@ -35,6 +35,7 @@ const nextConfig: NextConfig = {
       "@convoform/tailwind-config",
     ],
     viewTransition: true,
+    ppr: true,
   },
   // Configure `pageExtensions` to include MDX files
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
