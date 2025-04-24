@@ -14,7 +14,10 @@ export async function GET() {
     });
   }
 
-  const scopes = ["https://www.googleapis.com/auth/drive.readonly"];
+  const scopes = [
+    "https://www.googleapis.com/auth/drive.file",
+    "https://www.googleapis.com/auth/forms.body.readonly",
+  ];
 
   const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
   authUrl.searchParams.append("client_id", GOOGLE_CLIENT_ID);

@@ -56,9 +56,12 @@ export const googleRouter = createTRPCRouter({
       );
 
       if (!response.ok) {
+        const error = await response.json();
+        const errorMsg =
+          error?.error?.message || error?.message || "Unknown error";
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to fetch Google Form details",
+          message: `Failed to fetch Google Form details: ${errorMsg}`,
         });
       }
 

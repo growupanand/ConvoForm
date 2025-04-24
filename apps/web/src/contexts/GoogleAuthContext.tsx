@@ -1,6 +1,4 @@
 "use client";
-
-import { toast } from "@convoform/ui";
 import { type ReactNode, createContext, useContext, useState } from "react";
 
 interface GoogleAuthContextType {
@@ -49,24 +47,19 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
       // Track if authentication was successful
       let authSuccessful = false;
 
-      // Set up polling to check if the window is closed
-      const checkClosed = setInterval(() => {
-        if (authWindow.closed) {
-          clearInterval(checkClosed);
-
-          // If window closed without completing auth, show error
-          if (!authSuccessful) {
-            toast.error("Authentication required", {
-              description:
-                "You need to sign in with Google to access your forms.",
-            });
-          }
-
-          setIsAuthenticating(false);
-        }
-      }, 500);
-
       const token = await new Promise<string>((resolve, reject) => {
+        // Set up polling to check if the window is closed
+        const checkClosed = setInterval(() => {
+          if (authWindow.closed) {
+            clearInterval(checkClosed);
+            setIsAuthenticating(false);
+            // If window closed without completing auth, reject the promise
+            if (!authSuccessful) {
+              reject(new Error("Authentication cancelled"));
+            }
+          }
+        }, 500);
+
         // Listen for messages from the popup
         const messageHandler = (event: MessageEvent) => {
           // Add origin check for security
@@ -96,14 +89,6 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
       setAccessToken(token);
       setTokenExpiry(Date.now() + 60 * 60 * 1000); // 1 hour in milliseconds
       return token;
-    } catch (error) {
-      toast.error("Authentication failed", {
-        description:
-          error instanceof Error
-            ? error.message
-            : "Failed to authenticate with Google",
-      });
-      throw error;
     } finally {
       setIsAuthenticating(false);
     }
