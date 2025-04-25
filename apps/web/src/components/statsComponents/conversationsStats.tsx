@@ -5,9 +5,9 @@ import { QueryComponent } from "@/components/queryComponents/queryComponent";
 import { api } from "@/trpc/react";
 
 import { cn, formatDuration } from "@/lib/utils";
-import { Badge, Skeleton } from "@convoform/ui";
 import { Inbox, Radio } from "lucide-react";
-import { StatsGrid } from "./statsComponents/statsGrid";
+import { StatsGrid } from "./statsGrid";
+import { StatsTitle, StatsTitleSkeleton } from "./statsTitle";
 
 type ConversationsStatsCardProps = {
   formId?: string;
@@ -28,13 +28,11 @@ export const ConversationsStats = ({
     >
       {(data) => (
         <div>
-          <div className="flex items-center gap-2 text-lg  mb-4">
-            <span className=" text-muted-foreground">
-              <Inbox className="mr-2 h-4 w-4 inline" />
-              {title}
-            </span>
-            <Badge variant="secondary">{data.totalCount} total responses</Badge>
-          </div>
+          <StatsTitle
+            title={title}
+            icon={Inbox}
+            badge={`${data.totalCount} total responses`}
+          />
           <StatsGrid className="gap-x-6">
             <ConversationsStatsCard
               title="Active Now"
@@ -83,17 +81,11 @@ export const ConversationsStats = ({
 };
 
 function ConversationsStatsCardSkeleton({
-  title,
+  title = "Response Metrics",
 }: Pick<ConversationsStatsCardProps, "title">) {
   return (
     <div>
-      <div className="flex items-center gap-2 text-lg mb-4">
-        <span className="text-muted-foreground">
-          <Inbox className="mr-2 h-4 w-4 inline" />
-          {title}
-        </span>{" "}
-        <Skeleton className="h-5 w-10" />
-      </div>
+      <StatsTitleSkeleton title={title} icon={Inbox} />
 
       <div className="grid grid-cols-[repeat(3,_minmax(auto,200px))] gap-x-6">
         <StatsCard.Skeleton />

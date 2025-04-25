@@ -13,6 +13,7 @@ import {
 } from "@convoform/ui";
 import { Star } from "lucide-react";
 import { StatsGrid } from "../statsGrid";
+import { StatsTitle, StatsTitleSkeleton } from "../statsTitle";
 
 type RatingStatsProps = {
   formId: string;
@@ -34,10 +35,7 @@ export const RatingStats = ({
     >
       {(data) => (
         <div>
-          <h3 className="text-base font-medium text-muted-foreground mb-4">
-            <Star className="mr-2 h-4 w-4 inline" />
-            {title}
-          </h3>
+          <StatsTitle title={title} icon={Star} />
           <StatsGrid minWidth="250px" className="mb-8 gap-6">
             {data.length === 0 ? (
               <p className="text-muted-foreground">No rating data available.</p>
@@ -56,7 +54,7 @@ export const RatingStats = ({
                         {field.totalResponses} total
                       </Badge>
                     </div>
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center justify-start gap-2 mb-2">
                       <span className="text-lg font-bold">
                         {field.averageRating}
                       </span>
@@ -74,8 +72,8 @@ export const RatingStats = ({
                           />
                         ))}
                       </div>
-                      <span className="text-sm text-muted-foreground">
-                        average rating
+                      <span className="ms-auto text-sm text-muted-foreground text-nowrap">
+                        Average Rating
                       </span>
                     </div>
                   </CardHeader>
@@ -121,13 +119,13 @@ export const RatingStats = ({
   );
 };
 
-function RatingStatsSkeleton({ title }: { title?: string }) {
+function RatingStatsSkeleton({
+  title = "Rating Question Analysis",
+}: { title?: string }) {
   return (
     <div>
-      <h3 className="text-base font-medium text-muted-foreground mb-4">
-        <Star className="mr-2 h-4 w-4 inline" />
-        {title}
-      </h3>
+      <StatsTitleSkeleton title={title} icon={Star} />
+
       <StatsGrid minWidth="250px" className="mb-8 gap-6">
         {[1, 2, 3].map((index) => (
           <Card key={index} className="group">

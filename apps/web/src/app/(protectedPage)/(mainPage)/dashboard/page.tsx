@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { ConversationsStats } from "@/components/conversationsStats";
+import { ConversationsStats } from "@/components/statsComponents/conversationsStats";
 import { getOrganizationId } from "@/lib/getOrganizationId";
 import { PageShell } from "../_components/pageShell";
 import { RecentResponsesCard } from "./_components/recentResponseCard";

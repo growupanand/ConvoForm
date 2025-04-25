@@ -1,6 +1,6 @@
-import { ConversationsStats } from "@/components/conversationsStats";
 import { MultiChoiceStats } from "@/components/statsComponents/answersStatsComponents/multiChoiceStats";
 import { RatingStats } from "@/components/statsComponents/answersStatsComponents/ratingStats";
+import { ConversationsStats } from "@/components/statsComponents/conversationsStats";
 import { ChartColumnIncreasing } from "lucide-react";
 
 type Props = {

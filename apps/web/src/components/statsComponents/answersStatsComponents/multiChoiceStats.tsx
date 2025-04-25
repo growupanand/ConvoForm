@@ -13,6 +13,7 @@ import {
 } from "@convoform/ui";
 import { CheckSquare2 } from "lucide-react";
 import { StatsGrid } from "../statsGrid";
+import { StatsTitle, StatsTitleSkeleton } from "../statsTitle";
 
 type MultiChoiceStatsProps = {
   formId: string;
@@ -34,10 +35,7 @@ export const MultiChoiceStats = ({
     >
       {(data) => (
         <div>
-          <h3 className="text-base font-medium text-muted-foreground mb-4">
-            <CheckSquare2 className="mr-2 h-4 w-4 inline" />
-            {title}
-          </h3>
+          <StatsTitle title={title} icon={CheckSquare2} />
           <StatsGrid minWidth="250px" className="mb-8 gap-6">
             {data.length === 0 ? (
               <p className="text-muted-foreground">
@@ -101,13 +99,13 @@ export const MultiChoiceStats = ({
   );
 };
 
-function MultiChoiceStatsSkeleton({ title }: { title?: string }) {
+function MultiChoiceStatsSkeleton({
+  title = "Choice Question Analysis",
+}: { title?: string }) {
   return (
     <div>
-      <h3 className="text-base font-medium text-muted-foreground mb-4">
-        <CheckSquare2 className="mr-2 h-4 w-4 inline" />
-        {title}
-      </h3>
+      <StatsTitleSkeleton title={title} icon={CheckSquare2} />
+
       <StatsGrid minWidth="250px" className="mb-8 gap-6">
         {[1, 2, 3].map((index) => (
           <Card key={index} className="group">
