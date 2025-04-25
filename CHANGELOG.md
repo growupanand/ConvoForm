@@ -1,5 +1,32 @@
 
 
+## [0.18.0](https://github.com/growupanand/ConvoForm/compare/0.17.0...0.18.0) (2025-04-25)
+
+
+### Features
+
+* 🚀 add allowMultiple and other option in multi choice config sheet ([804ab26](https://github.com/growupanand/ConvoForm/commit/804ab267f5adf4f0e769fe0f9061ca41a3284500)), closes [#431](https://github.com/growupanand/ConvoForm/issues/431)
+* 🚀 add ChoiceQuestion support for importing google form ([125a467](https://github.com/growupanand/ConvoForm/commit/125a4678b3096c46fae34ad12d234cc5b4aabfb5)), closes [#431](https://github.com/growupanand/ConvoForm/issues/431)
+* 🚀 add full support for Google Forms rating and scale question ([719d971](https://github.com/growupanand/ConvoForm/commit/719d971796fa7fc304629dda2dbb73151a18f963))
+* 🚀 add new answer field type "Rating" ([2e167a1](https://github.com/growupanand/ConvoForm/commit/2e167a18c3f24d1a6578aad702186d59a776ce96))
+* 🚀 add Paragraph mode in text type answer Input for long answers ([ce34db5](https://github.com/growupanand/ConvoForm/commit/ce34db51da93bd6db423db8a63b0dd3f7d62f7d2))
+* 🚀 add support for importing "Scale Question" from google form ([9e095bf](https://github.com/growupanand/ConvoForm/commit/9e095bf6329288fdc688c0eaac1b56cd9c2a704f))
+* 🚀 date picker support for natural language date typing ([2b53e7d](https://github.com/growupanand/ConvoForm/commit/2b53e7dd0341dc100e0725ca3d78f94b59bd7349))
+* 🚀 date type answer input now support timepicker ([cc4c8e6](https://github.com/growupanand/ConvoForm/commit/cc4c8e61ccc23162c5adea3fac9874ecd7bcf6da))
+* 🚀 multi select support added for multichoice answer input ([167db2b](https://github.com/growupanand/ConvoForm/commit/167db2be10a01a32e90ada4aa1269dc82b3c0ce9)), closes [#431](https://github.com/growupanand/ConvoForm/issues/431)
+* 🚀 user can import google form, supported fields: text, date ([#430](https://github.com/growupanand/ConvoForm/issues/430)) ([4715a89](https://github.com/growupanand/ConvoForm/commit/4715a898566786171e492f751276793bc8d5c509)), closes [#429](https://github.com/growupanand/ConvoForm/issues/429) [#429](https://github.com/growupanand/ConvoForm/issues/429) [#429](https://github.com/growupanand/ConvoForm/issues/429) [#429](https://github.com/growupanand/ConvoForm/issues/429)
+
+
+### Bug Fixes
+
+* 🐛 fix shadcn calendar UI ([54e391b](https://github.com/growupanand/ConvoForm/commit/54e391b6f42f4705ac8b718df42073f64e0db97a))
+* 🐛 table cell rendering and data handling with SafeCellRenderer ([ecfda80](https://github.com/growupanand/ConvoForm/commit/ecfda804a6a5caeb509be7e3a025116e7a62a76c))
+
+
+### Improvements
+
+* ⚡️ replaced sentry error tracking with posthog error tracking ([e0fc6ab](https://github.com/growupanand/ConvoForm/commit/e0fc6ab53fe586eae176a8017876e711c7600a81))
+
 ## [0.17.0](https://github.com/growupanand/ConvoForm/compare/0.16.0...0.17.0) (2025-04-17)
 
 
