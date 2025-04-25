@@ -1,7 +1,7 @@
 import { Badge } from "@convoform/ui";
 import { Button } from "@convoform/ui";
 import { Card, CardContent, CardHeader } from "@convoform/ui";
-import { CheckCircle2, ChevronRight } from "lucide-react";
+import { CheckCircle2, ChevronRight, FileText } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -93,10 +93,27 @@ export function Hero() {
           </Link>
         </Button>
 
+        <div className="flex items-center gap-2">
+          <div className="h-[1px] w-4 bg-gray-300 " />
+          <span className="text-sm text-gray-500 font-medium">OR</span>
+          <div className="h-[1px] w-4 bg-gray-300 " />
+        </div>
+
+        <Button
+          size="lg"
+          variant="secondary"
+          className="rounded-full py-3 text-[#673AB7] lg:py-5 text-base lg:text-base font-montserrat shadow-md hover:shadow-lg transition-all hover:translate-y-[-2px]"
+          asChild
+        >
+          <Link href="/auth/register" rel="noreferrer nofollow noopener">
+            <FileText className="size-6 me-2 text-[#673AB7]" />
+            Import Google Form
+          </Link>
+        </Button>
         <Button
           variant="outline"
           size="lg"
-          className="lg:hidden rounded-full py-3 lg:py-5 text-base font-montserrat hover:bg-gray-50"
+          className="lg:hidden mt-4 rounded-full py-3 lg:py-5 text-base font-montserrat hover:bg-gray-50"
           asChild
         >
           <Link
@@ -104,7 +121,7 @@ export function Hero() {
             target="_blank"
             rel="noreferrer nofollow noopener"
           >
-            See demo
+            See demo form
           </Link>
         </Button>
       </div>

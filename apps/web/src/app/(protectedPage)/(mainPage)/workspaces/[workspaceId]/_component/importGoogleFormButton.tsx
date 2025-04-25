@@ -142,11 +142,11 @@ export default function ImportGoogleFormButton({ workspace }: Props) {
         disabled={isAuthenticating}
       >
         {isAuthenticating ? (
-          <Loader2 className="mr-2 size-4 animate-spin" />
+          <Loader2 className="mr-2 size-4 animate-spin text-[#673AB7]" />
         ) : (
-          <FileText className="mr-2 size-4" />
+          <FileText className="mr-2 size-4 text-[#673AB7]" />
         )}
-        <span>Import Google Form</span>
+        <span className="text-[#673AB7]">Import Google Form</span>
       </Button>
     </div>
   );
