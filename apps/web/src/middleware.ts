@@ -8,8 +8,6 @@ const isPublicRoute = createRouteMatcher([
   "/api/webhook(.*)",
   "/auth/(.*)",
   "/api/trpc/(.*)",
-  // Added for sentry
-  "/monitoring(.*)",
   "/changelog",
   "/privacy",
   "/api/og",

@@ -60,4 +60,8 @@ export class PosthogAnalyticsProvider extends BaseProvider {
     });
     this.distinctId = customId;
   };
+
+  captureException = (error: Error, distinctId?: string) => {
+    this.client?.captureException(error, distinctId);
+  };
 }

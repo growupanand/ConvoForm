@@ -4,9 +4,10 @@ type Props = {
   title?: string;
   description?: string;
   code?: number;
+  action?: React.ReactNode;
 };
 
-function NotFoundPage({ title, description, code }: Readonly<Props>) {
+function NotFoundPage({ title, description, code, action }: Readonly<Props>) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 ">
       <h1 className="animate-bounce text-9xl font-bold text-gray-800 dark:text-gray-200 ">
@@ -19,6 +20,9 @@ function NotFoundPage({ title, description, code }: Readonly<Props>) {
         {description ??
           "The page you are looking for might have been removed or is temporarily unavailable."}
       </p>
+      {action && (
+        <div className="flex justify-center items-center gap-2">{action}</div>
+      )}
       <div className="mt-10">
         <BrandNameLink />
       </div>
