@@ -74,12 +74,12 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
         control={formHook.control}
         name="fieldConfiguration.inputConfiguration.allowMultiple"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-start justify-between">
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
             <div className="space-y-0.5">
-              <FormLabel className="cursor-pointer">
+              <FormLabel className="text-sm cursor-pointer">
                 Allow multiple selections
               </FormLabel>
-              <FormDescription>
+              <FormDescription className="text-xs">
                 Let respondents select more than one option
               </FormDescription>
               <FormMessage />
@@ -90,17 +90,19 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
           </FormItem>
         )}
       />
-      {/* Allow Other Option toggle - only enabled when allowMultiple is false */}
-      <FormItem className="flex flex-row items-start justify-between">
+
+      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
         <div className="space-y-0.5">
           <FormLabel
-            className={
+            className={`text-sm ${
               allowMultiple ? "cursor-not-allowed opacity-50" : "cursor-pointer"
-            }
+            }`}
           >
             Allow "Other" option
           </FormLabel>
-          <FormDescription className={allowMultiple ? "opacity-50" : ""}>
+          <FormDescription
+            className={`text-xs ${allowMultiple ? "opacity-50" : ""}`}
+          >
             Add a text field option for custom responses
             {allowMultiple && " (only available for single selection)"}
           </FormDescription>

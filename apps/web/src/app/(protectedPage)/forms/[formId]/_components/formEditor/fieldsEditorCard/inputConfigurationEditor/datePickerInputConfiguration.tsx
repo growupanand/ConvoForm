@@ -23,8 +23,8 @@ export function DatePickerInputConfiguration({ formHook }: Readonly<Props>) {
         control={formHook.control}
         name="fieldConfiguration.inputConfiguration.includeTime"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between py-2">
-            <FormLabel className="font-normal text-sm flex items-center cursor-pointer">
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
+            <FormLabel className="text-sm cursor-pointer">
               <Clock className="size-4 inline me-2" /> Include time
             </FormLabel>
             <FormControl>

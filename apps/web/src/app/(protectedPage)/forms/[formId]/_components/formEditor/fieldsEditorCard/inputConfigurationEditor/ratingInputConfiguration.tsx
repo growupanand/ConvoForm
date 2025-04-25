@@ -101,8 +101,10 @@ export function RatingInputConfiguration({ formHook }: Readonly<Props>) {
         control={control}
         name="fieldConfiguration.inputConfiguration.requireConfirmation"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
-            <FormLabel className="text-base">Require Confirmation</FormLabel>
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
+            <FormLabel className="text-sm cursor-pointer">
+              Require Confirmation
+            </FormLabel>
             <FormControl>
               <Switch checked={field.value} onCheckedChange={field.onChange} />
             </FormControl>

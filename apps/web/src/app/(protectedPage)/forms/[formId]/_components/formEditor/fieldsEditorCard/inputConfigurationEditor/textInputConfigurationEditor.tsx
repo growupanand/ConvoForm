@@ -23,11 +23,10 @@ export function TextInputConfigurationEditor({ formHook }: Readonly<Props>) {
         control={formHook.control}
         name="fieldConfiguration.inputConfiguration.isParagraph"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between">
-            <div className="space-y-0.5">
-              <FormLabel className="cursor-pointer">Paragraph Mode</FormLabel>
-              <FormMessage />
-            </div>
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
+            <FormLabel className="text-sm cursor-pointer">
+              Paragraph Mode
+            </FormLabel>
             <FormControl>
               <Switch checked={field.value} onCheckedChange={field.onChange} />
             </FormControl>
