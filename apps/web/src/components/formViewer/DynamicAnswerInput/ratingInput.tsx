@@ -2,9 +2,9 @@
 
 import type { RatingInputConfigSchema } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui";
-import { Star } from "lucide-react";
+import { Heart, Star, ThumbsUp } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { cloneElement, useState } from "react";
 import type { InputProps } from "./";
 
 type Props = InputProps & {
@@ -36,6 +36,19 @@ export function RatingInput({
     }
   };
 
+  const getIcon = () => {
+    switch (inputConfiguration.iconType) {
+      case "HEART":
+        return <Heart size={40} />;
+      case "THUMB_UP":
+        return <ThumbsUp size={40} />;
+      // biome-ignore lint/complexity/noUselessSwitchCase: <explanation>
+      case "STAR":
+      default:
+        return <Star size={40} />;
+    }
+  };
+
   return (
     <div className="w-full">
       <div className="flex flex-col items-center justify-center gap-4">
@@ -59,20 +72,17 @@ export function RatingInput({
               onClick={() => handleRatingSelect(index + 1)}
               onMouseEnter={() => setHoveredRating(index + 1)}
             >
-              <Star
-                size={40}
-                className={`
-                  transition-colors duration-200
-                  ${
-                    (hoveredRating !== null && index < hoveredRating) ||
-                    (hoveredRating === null &&
-                      rating !== null &&
-                      index < rating)
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-300"
-                  }
-                `}
-              />
+              {cloneElement(getIcon(), {
+                className: `
+               transition-colors duration-200
+               ${
+                 (hoveredRating !== null && index < hoveredRating) ||
+                 (hoveredRating === null && rating !== null && index < rating)
+                   ? "fill-yellow-400 text-yellow-400"
+                   : "text-gray-300"
+               }
+             `,
+              })}
             </motion.button>
           ))}
         </div>

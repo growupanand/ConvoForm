@@ -5,6 +5,7 @@ import { MutedText } from "@convoform/ui";
 import type { FormHookData } from "../editFieldSheet";
 import { DatePickerInputConfiguration } from "./datePickerInputConfiguration";
 import { MultiChoiceInputConfiguration } from "./multiChoiceInputConfiguration";
+import { RatingInputConfiguration } from "./ratingInputConfiguration";
 import { TextInputConfigurationEditor } from "./textInputConfigurationEditor";
 
 type Props = {
@@ -24,6 +25,8 @@ export function InputConfigurationEditor({
         return <MultiChoiceInputConfiguration formHook={formHook} />;
       case "datePicker":
         return <DatePickerInputConfiguration formHook={formHook} />;
+      case "rating":
+        return <RatingInputConfiguration formHook={formHook} />;
       default:
         return null;
     }

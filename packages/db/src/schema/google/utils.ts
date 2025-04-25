@@ -5,6 +5,7 @@ import type {
   GoogleFormChoiceQuestion,
   GoogleFormDateQuestion,
   GoogleFormQuestionItem,
+  GoogleFormRatingQuestion,
   GoogleFormScaleQuestion,
   GoogleFormTextQuestion,
 } from "./validation";
@@ -14,6 +15,7 @@ enum GoogleQuestionType {
   DATE = "DATE",
   MULTIPLE_CHOICE = "MULTIPLE_CHOICE",
   SCALE = "SCALE",
+  RATING = "RATING",
 }
 
 // Type guard for text questions
@@ -48,6 +50,14 @@ function isScaleQuestion(
   return "scaleQuestion" in question;
 }
 
+// Type guard for rating questions
+function isRatingQuestion(
+  question: GoogleFormQuestionItem["questionItem"]["question"],
+): question is GoogleFormQuestionItem["questionItem"]["question"] &
+  GoogleFormRatingQuestion {
+  return "ratingQuestion" in question;
+}
+
 const getQuestionItemType = (questionItem: GoogleFormQuestionItem) => {
   if (isTextQuestion(questionItem.questionItem.question)) {
     return GoogleQuestionType.TEXT;
@@ -63,6 +73,10 @@ const getQuestionItemType = (questionItem: GoogleFormQuestionItem) => {
 
   if (isScaleQuestion(questionItem.questionItem.question)) {
     return GoogleQuestionType.SCALE;
+  }
+
+  if (isRatingQuestion(questionItem.questionItem.question)) {
+    return GoogleQuestionType.RATING;
   }
 
   return "unkown";
@@ -203,6 +217,26 @@ const mapQuestionTypeToFieldConfiguration = (
         lowLabel: question.scaleQuestion.lowLabel || "Poor",
         highLabel: question.scaleQuestion.highLabel || "Excellent",
         requireConfirmation: false,
+        iconType: "STAR",
+      },
+    };
+  }
+
+  if (
+    questionType === GoogleQuestionType.RATING &&
+    isRatingQuestion(question)
+  ) {
+    return {
+      inputType: "rating",
+      inputConfiguration: {
+        maxRating: question.ratingQuestion.ratingScaleLevel,
+        lowLabel: "Poor",
+        highLabel: "Excellent",
+        requireConfirmation: false,
+        iconType:
+          question.ratingQuestion.iconType === "RATING_ICON_TYPE_UNSPECIFIED"
+            ? "STAR"
+            : question.ratingQuestion.iconType,
       },
     };
   }

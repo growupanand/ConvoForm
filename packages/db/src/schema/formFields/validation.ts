@@ -66,6 +66,7 @@ export const ratingInputConfigSchema = z.object({
   lowLabel: z.string().optional(),
   highLabel: z.string().optional(),
   requireConfirmation: z.boolean().optional().default(false),
+  iconType: z.enum(["STAR", "HEART", "THUMB_UP"]).optional().default("STAR"),
 });
 
 /**

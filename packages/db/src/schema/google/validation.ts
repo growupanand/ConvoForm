@@ -101,7 +101,7 @@ export const googleFormChoiceQuestionSchema = z.object({
   }),
 });
 
-// =============== Rating question schema ==================
+// =============== Scale question schema ==================
 export const googleFormScaleQuestionSchema = z.object({
   scaleQuestion: z.object({
     low: z.number().optional(),
@@ -111,12 +111,26 @@ export const googleFormScaleQuestionSchema = z.object({
   }),
 });
 
+// =============== Rating question schema ==================
+export const googleFormRatingQuestionSchema = z.object({
+  ratingQuestion: z.object({
+    ratingScaleLevel: z.number(),
+    iconType: z.enum([
+      "RATING_ICON_TYPE_UNSPECIFIED",
+      "STAR",
+      "HEART",
+      "THUMB_UP",
+    ]),
+  }),
+});
+
 // Union of all question types
 export const googleFormQuestionTypeSchema = z.union([
   googleFormTextQuestionSchema,
   googleFormDateQuestionSchema,
   googleFormChoiceQuestionSchema,
   googleFormScaleQuestionSchema,
+  googleFormRatingQuestionSchema,
   // Add a catch-all for other question types
   z.record(z.string(), z.any()),
 ]);
@@ -195,11 +209,10 @@ export type GoogleForm = z.infer<typeof googleFormSchema>;
 export type GoogleFormChoiceQuestion = z.infer<
   typeof googleFormChoiceQuestionSchema
 >;
-export type GoogleFormScaleQuestion = {
-  scaleQuestion: {
-    low?: number;
-    high?: number;
-    lowLabel?: string;
-    highLabel?: string;
-  };
-};
+export type GoogleFormScaleQuestion = z.infer<
+  typeof googleFormScaleQuestionSchema
+>;
+
+export type GoogleFormRatingQuestion = z.infer<
+  typeof googleFormRatingQuestionSchema
+>;
