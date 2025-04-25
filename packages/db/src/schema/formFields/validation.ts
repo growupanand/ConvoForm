@@ -6,6 +6,10 @@ import { formField } from "./formField";
 export const inputTypeSchema = z.enum(inputTypeEnum.enumValues);
 export type InputTypeSchema = z.infer<typeof inputTypeSchema>;
 
+/**
+ * ======== SCHEMAS FOR INPUT CONFIGURATION ========
+ */
+
 // --- TEXT INPUT CONFIGURATION ---
 
 /**
@@ -56,7 +60,17 @@ export const datePickerInputConfigSchema = z.object({
   includeTime: z.boolean().optional(),
 });
 
-// --- FIELD CONFIGURATION TYPE SCHEMAS ---
+// --- RATING INPUT CONFIGURATION ---
+export const ratingInputConfigSchema = z.object({
+  maxRating: z.number().min(3).max(10).optional().default(5),
+  lowLabel: z.string().optional(),
+  highLabel: z.string().optional(),
+  requireConfirmation: z.boolean().optional().default(false),
+});
+
+/**
+ * ======== SCHEMAS FOR FIELD CONFIGURATION ========
+ */
 
 /**
  * Schema for text field configuration
@@ -85,6 +99,11 @@ export const datePickerFieldConfigurationSchema = z.object({
   inputConfiguration: datePickerInputConfigSchema,
 });
 
+export const ratingFieldConfigurationSchema = z.object({
+  inputType: z.literal(z.enum(inputTypeEnum.enumValues).Values.rating),
+  inputConfiguration: ratingInputConfigSchema,
+});
+
 /**
  * Union schema for all field configurations
  * Allows for validation of any supported field type
@@ -93,6 +112,7 @@ export const fieldConfigurationSchema = z.union([
   textFieldConfigurationSchema,
   multipleChoiceFieldConfigurationSchema,
   datePickerFieldConfigurationSchema,
+  ratingFieldConfigurationSchema,
 ]);
 
 // --- FORM FIELD CRUD SCHEMAS ---
@@ -146,3 +166,4 @@ export type MultipleChoiceInputConfigSchema = z.infer<
   typeof multipleChoiceInputConfigSchema
 >;
 export type FieldConfiguration = z.infer<typeof fieldConfigurationSchema>;
+export type RatingInputConfigSchema = z.infer<typeof ratingInputConfigSchema>;

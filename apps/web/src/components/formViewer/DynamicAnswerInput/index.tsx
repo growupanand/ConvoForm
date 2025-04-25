@@ -6,6 +6,7 @@ import type { SubmitAnswer } from "@convoform/react";
 
 import { DatePickerInput } from "./datePickerInput";
 import { MultiChoiceInput } from "./multiChoiceInput";
+import { RatingInput } from "./ratingInput";
 import { TextInput } from "./textInput";
 
 export type InputProps = {
@@ -41,6 +42,14 @@ export function DynamicAnswerInput({
     case "datePicker":
       return (
         <DatePickerInput
+          inputConfiguration={fieldConfiguration.inputConfiguration}
+          {...inputProps}
+        />
+      );
+
+    case "rating":
+      return (
+        <RatingInput
           inputConfiguration={fieldConfiguration.inputConfiguration}
           {...inputProps}
         />

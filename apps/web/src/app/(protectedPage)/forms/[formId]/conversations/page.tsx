@@ -1,5 +1,6 @@
 import { ConversationsStats } from "@/components/conversationsStats";
 import { MultiChoiceStats } from "@/components/statsComponents/answersStatsComponents/multiChoiceStats";
+import { RatingStats } from "@/components/statsComponents/answersStatsComponents/ratingStats";
 import { ChartColumnIncreasing } from "lucide-react";
 
 type Props = {
@@ -21,6 +22,7 @@ export default async function ConversationsStatsPage(props: Readonly<Props>) {
       <div className="space-y-20">
         <ConversationsStats formId={formId} showExtendedStats />
         <MultiChoiceStats formId={formId} />
+        <RatingStats formId={formId} />
       </div>
     </div>
   );

@@ -485,4 +485,107 @@ export const conversationRouter = createTRPCRouter({
 
       return results;
     }),
+  ratingStats: orgProtectedProcedure
+    .input(
+      z.object({
+        formId: z.string().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const formId = input.formId;
+
+      // Get all conversations for this form
+      const conversations = await ctx.db.query.conversation.findMany({
+        where: and(
+          eq(conversation.organizationId, ctx.orgId),
+          eq(conversation.formId, formId),
+        ),
+        columns: {
+          collectedData: true,
+        },
+      });
+
+      // Create a map to store stats for each rating field
+      const fieldStats: Record<
+        string,
+        {
+          fieldName: string;
+          ratings: number[];
+          totalRatings: number;
+          maxRating: number;
+        }
+      > = {};
+
+      // Process all conversations to collect rating data
+      for (const conv of conversations) {
+        if (conv.collectedData?.length) {
+          for (const field of conv.collectedData) {
+            // Check if this is a rating field with a value
+            if (
+              field.fieldConfiguration?.inputType === "rating" &&
+              field.fieldValue
+            ) {
+              const fieldName = field.fieldName;
+              const ratingValue = Number.parseInt(field.fieldValue, 10);
+
+              if (Number.isNaN(ratingValue)) continue;
+
+              // Initialize field in the stats if it doesn't exist
+              if (!fieldStats[fieldName]) {
+                const maxRating =
+                  field.fieldConfiguration.inputConfiguration?.maxRating || 5;
+                fieldStats[fieldName] = {
+                  fieldName: field.fieldName,
+                  ratings: [],
+                  totalRatings: 0,
+                  maxRating,
+                };
+              }
+
+              // Add this rating to the array
+              fieldStats[fieldName].ratings.push(ratingValue);
+              fieldStats[fieldName].totalRatings++;
+            }
+          }
+        }
+      }
+
+      // Calculate statistics for each field
+      const results = Object.values(fieldStats).map((field) => {
+        // Calculate average rating
+        const averageRating =
+          field.ratings.length > 0
+            ? (
+                field.ratings.reduce((sum, rating) => sum + rating, 0) /
+                field.ratings.length
+              ).toFixed(1)
+            : "0";
+
+        // Calculate distribution of ratings
+        const distribution = Array.from(
+          { length: field.maxRating },
+          (_, i) => i + 1,
+        ).map((ratingValue) => {
+          const count = field.ratings.filter((r) => r === ratingValue).length;
+          return {
+            rating: ratingValue,
+            count,
+            percentage:
+              field.totalRatings > 0
+                ? Math.round((count / field.totalRatings) * 100)
+                : 0,
+          };
+        });
+
+        return {
+          fieldName: field.fieldName,
+          totalResponses: field.totalRatings,
+          averageRating,
+          maxRating: field.maxRating,
+          distribution,
+        };
+      });
+
+      return results;
+    }),
 });

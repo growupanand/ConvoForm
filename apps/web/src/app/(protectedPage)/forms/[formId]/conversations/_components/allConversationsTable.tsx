@@ -16,7 +16,14 @@ export function AllConversationsTable({ formId }: Readonly<Props>) {
   return (
     <QueryTable
       query={query}
-      successComponent={(data) => <ConversationsTable data={data} />}
+      successComponent={(data) => (
+        <ConversationsTable
+          data={data.map((item) => ({
+            ...item,
+            transcript: item.transcript || [],
+          }))}
+        />
+      )}
       loadingComponent={<ConversationsTable.Skeleton />}
       emptyComponent={<ConversationsTable.Empty formId={formId} />}
     />

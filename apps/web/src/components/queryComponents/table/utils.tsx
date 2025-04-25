@@ -1,11 +1,12 @@
 import { formatDate, formatDateTime } from "@/lib/utils";
-import type {} from "@convoform/db/src/schema";
+import type { RatingInputConfigSchema } from "@convoform/db/src/schema";
 import type {
   CollectedData,
   Conversation,
   DatePickerInputConfigSchema,
 } from "@convoform/db/src/schema";
 import { Calendar, Clock } from "lucide-react";
+import { Star } from "lucide-react"; // Add this import at the top
 
 /**
  * Format conversation fields data for TableComponent,
@@ -110,6 +111,34 @@ export function renderCellValue(
     }
   }
 
+  // Handle rating fields
+  if (isRatingField(fieldConfig)) {
+    const ratingValue = Number.parseInt(value, 10);
+    if (!Number.isNaN(ratingValue)) {
+      const maxRating = fieldConfig.inputConfiguration?.maxRating || 5;
+
+      return (
+        <div className="flex items-center gap-1">
+          {Array.from({ length: maxRating }, (_, i) => (
+            <Star
+              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+              key={i}
+              size={16}
+              className={
+                i < ratingValue
+                  ? "fill-yellow-400 text-yellow-400"
+                  : "text-gray-300"
+              }
+            />
+          ))}
+          <span className="ml-2 text-sm text-muted-foreground">
+            ({ratingValue}/{maxRating})
+          </span>
+        </div>
+      );
+    }
+  }
+
   return value;
 }
 
@@ -131,4 +160,12 @@ function isValidDateString(value: string, dateValue: Date): boolean {
     typeof value === "string" &&
     value.includes("-")
   );
+}
+
+// Add this type guard after the isDatePickerField function
+function isRatingField(config: CollectedData["fieldConfiguration"]): config is {
+  inputType: "rating";
+  inputConfiguration: RatingInputConfigSchema;
+} {
+  return config?.inputType === "rating";
 }
