@@ -5,6 +5,7 @@ import type {
   GoogleFormChoiceQuestion,
   GoogleFormDateQuestion,
   GoogleFormQuestionItem,
+  GoogleFormScaleQuestion,
   GoogleFormTextQuestion,
 } from "./validation";
 
@@ -12,6 +13,7 @@ enum GoogleQuestionType {
   TEXT = "TEXT",
   DATE = "DATE",
   MULTIPLE_CHOICE = "MULTIPLE_CHOICE",
+  SCALE = "SCALE",
 }
 
 // Type guard for text questions
@@ -38,6 +40,14 @@ function isChoiceQuestion(
   return "choiceQuestion" in question;
 }
 
+// Type guard for rating questions
+function isScaleQuestion(
+  question: GoogleFormQuestionItem["questionItem"]["question"],
+): question is GoogleFormQuestionItem["questionItem"]["question"] &
+  GoogleFormScaleQuestion {
+  return "scaleQuestion" in question;
+}
+
 const getQuestionItemType = (questionItem: GoogleFormQuestionItem) => {
   if (isTextQuestion(questionItem.questionItem.question)) {
     return GoogleQuestionType.TEXT;
@@ -49,6 +59,10 @@ const getQuestionItemType = (questionItem: GoogleFormQuestionItem) => {
 
   if (isChoiceQuestion(questionItem.questionItem.question)) {
     return GoogleQuestionType.MULTIPLE_CHOICE;
+  }
+
+  if (isScaleQuestion(questionItem.questionItem.question)) {
+    return GoogleQuestionType.SCALE;
   }
 
   return "unkown";
@@ -174,6 +188,21 @@ const mapQuestionTypeToFieldConfiguration = (
         options: options,
         // Map CHECKBOX to allowMultiple: true
         allowMultiple: question.choiceQuestion.type === "CHECKBOX",
+      },
+    };
+  }
+
+  if (questionType === GoogleQuestionType.SCALE && isScaleQuestion(question)) {
+    // Default to 5 if high isn't specified
+    const maxRating = question.scaleQuestion.high || 5;
+
+    return {
+      inputType: "rating",
+      inputConfiguration: {
+        maxRating,
+        lowLabel: question.scaleQuestion.lowLabel || "Poor",
+        highLabel: question.scaleQuestion.highLabel || "Excellent",
+        requireConfirmation: false,
       },
     };
   }

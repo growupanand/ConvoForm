@@ -40,17 +40,10 @@ export const googleFormSettingsSchema = z.object({
   acceptingResponses: z.boolean().optional(),
 });
 
-// Question types
-export const googleFormChoiceOptionSchema = z.object({
-  value: z.string(),
-  image: z
-    .object({
-      sourceUri: z.string().optional(),
-      altText: z.string().optional(),
-    })
-    .optional(),
-  isOther: z.boolean().optional(),
-});
+/**
+ * =====================================================
+ * =========== Google Form Question Schemas  =================
+ */
 
 // Define reusable enum for Google Form question types
 export const googleFormQuestionTypeEnum = [
@@ -89,6 +82,17 @@ export const googleFormDateQuestionSchema = z.object({
 });
 
 // ============== Choice question schema ==================
+export const googleFormChoiceOptionSchema = z.object({
+  value: z.string(),
+  image: z
+    .object({
+      sourceUri: z.string().optional(),
+      altText: z.string().optional(),
+    })
+    .optional(),
+  isOther: z.boolean().optional(),
+});
+
 export const googleFormChoiceQuestionSchema = z.object({
   choiceQuestion: z.object({
     type: z.enum(["RADIO", "CHECKBOX", "DROP_DOWN", "CHOICE_TYPE_UNSPECIFIED"]),
@@ -97,11 +101,22 @@ export const googleFormChoiceQuestionSchema = z.object({
   }),
 });
 
+// =============== Rating question schema ==================
+export const googleFormScaleQuestionSchema = z.object({
+  scaleQuestion: z.object({
+    low: z.number().optional(),
+    high: z.number().optional(),
+    lowLabel: z.string().optional(),
+    highLabel: z.string().optional(),
+  }),
+});
+
 // Union of all question types
 export const googleFormQuestionTypeSchema = z.union([
   googleFormTextQuestionSchema,
   googleFormDateQuestionSchema,
   googleFormChoiceQuestionSchema,
+  googleFormScaleQuestionSchema,
   // Add a catch-all for other question types
   z.record(z.string(), z.any()),
 ]);
@@ -180,3 +195,11 @@ export type GoogleForm = z.infer<typeof googleFormSchema>;
 export type GoogleFormChoiceQuestion = z.infer<
   typeof googleFormChoiceQuestionSchema
 >;
+export type GoogleFormScaleQuestion = {
+  scaleQuestion: {
+    low?: number;
+    high?: number;
+    lowLabel?: string;
+    highLabel?: string;
+  };
+};
