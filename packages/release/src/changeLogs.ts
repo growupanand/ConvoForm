@@ -1,7 +1,89 @@
 export const releases = [
   {
+    version: "0.18.0",
+    isoDate: "2025-04-25",
+    commits: [
+      {
+        type: "features",
+        message: "feat: 🚀 date type answer input now support timepicker",
+        href: "https://github.com/growupanand/ConvoForm/commit/cc4c8e61ccc23162c5adea3fac9874ecd7bcf6da",
+      },
+      {
+        type: "features",
+        message:
+          'feat: 🚀 add new answer field type "Rating"\n\nalso added in response table and analytics page',
+        href: "https://github.com/growupanand/ConvoForm/commit/2e167a18c3f24d1a6578aad702186d59a776ce96",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 date picker support for natural language date typing",
+        href: "https://github.com/growupanand/ConvoForm/commit/2b53e7dd0341dc100e0725ca3d78f94b59bd7349",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 add full support for Google Forms rating and scale question",
+        href: "https://github.com/growupanand/ConvoForm/commit/719d971796fa7fc304629dda2dbb73151a18f963",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 add allowMultiple and other option in multi choice config sheet\n\n✅ Closes: #431",
+        href: "https://github.com/growupanand/ConvoForm/commit/804ab267f5adf4f0e769fe0f9061ca41a3284500",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 multi select support added for multichoice answer input\n\n✅ Closes: #431",
+        href: "https://github.com/growupanand/ConvoForm/commit/167db2be10a01a32e90ada4aa1269dc82b3c0ce9",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 add Paragraph mode in text type answer Input for long answers",
+        href: "https://github.com/growupanand/ConvoForm/commit/ce34db51da93bd6db423db8a63b0dd3f7d62f7d2",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 add ChoiceQuestion support for importing google form\n\n✅ Closes: #431",
+        href: "https://github.com/growupanand/ConvoForm/commit/125a4678b3096c46fae34ad12d234cc5b4aabfb5",
+      },
+      {
+        type: "features",
+        message:
+          'feat: 🚀 add support for importing "Scale Question" from google form',
+        href: "https://github.com/growupanand/ConvoForm/commit/9e095bf6329288fdc688c0eaac1b56cd9c2a704f",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 user can import google form, supported fields: text, date",
+        href: "https://github.com/growupanand/ConvoForm/pull/430",
+      },
+      {
+        type: "improvements",
+        message:
+          'perf: ⚡️ replaced sentry error tracking with posthog error tracking\n\nthis reduced the bundle size, E.g "First Load JS shared by all" 237KB &gt; 112KB',
+        href: "https://github.com/growupanand/ConvoForm/commit/e0fc6ab53fe586eae176a8017876e711c7600a81",
+      },
+      {
+        type: "fixes",
+        message: "fix: 🐛 fix shadcn calendar UI",
+        href: "https://github.com/growupanand/ConvoForm/commit/54e391b6f42f4705ac8b718df42073f64e0db97a",
+      },
+      {
+        type: "fixes",
+        message:
+          "fix: 🐛 table cell rendering and data handling with SafeCellRenderer",
+        href: "https://github.com/growupanand/ConvoForm/commit/ecfda804a6a5caeb509be7e3a025116e7a62a76c",
+      },
+    ],
+  },
+  {
     version: "0.17.0",
-    isoDate: "2025-04-17",
+    isoDate: "2025-04-18",
     commits: [
       {
         type: "features",
