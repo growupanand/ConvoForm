@@ -35,17 +35,7 @@ export const ConversationsStats = ({
             </span>
             <Badge variant="secondary">{data.totalCount} total responses</Badge>
           </div>
-          <StatsGrid className="gap-x-6 mb-6">
-            <ConversationsStatsCard
-              title="Completed"
-              primaryValue={data.finishedTotalCount.toString()}
-              description="Respondents answered all questions"
-            />
-            <ConversationsStatsCard
-              title="Incomplete"
-              primaryValue={data.partialTotalCount.toString()}
-              description="Respondents skipped some questions"
-            />
+          <StatsGrid className="gap-x-6">
             <ConversationsStatsCard
               title="Active Now"
               primaryValue={data.liveTotalCount.toString()}
@@ -60,21 +50,32 @@ export const ConversationsStats = ({
                 />
               }
             />
+            <ConversationsStatsCard
+              title="Completed"
+              primaryValue={data.finishedTotalCount.toString()}
+              description="Respondents answered all questions"
+            />
+            <ConversationsStatsCard
+              title="Incomplete"
+              primaryValue={data.partialTotalCount.toString()}
+              description="Respondents skipped some questions"
+            />
+
+            {showExtendedStats && (
+              <>
+                <ConversationsStatsCard
+                  title="Average completion time"
+                  primaryValue={formatDuration(data.averageFinishTimeMs, true)}
+                  description="Typical time to submit all answers"
+                />
+                <ConversationsStatsCard
+                  title="Bounce Rate"
+                  primaryValue={`${data.bounceRate}%`}
+                  description="Users who leave without answering any questions"
+                />
+              </>
+            )}
           </StatsGrid>
-          {showExtendedStats && (
-            <StatsGrid className="gap-x-6">
-              <ConversationsStatsCard
-                title="Average completion time"
-                primaryValue={formatDuration(data.averageFinishTimeMs, true)}
-                description="Typical time to submit all answers"
-              />
-              <ConversationsStatsCard
-                title="Bounce Rate"
-                primaryValue={`${data.bounceRate}%`}
-                description="Users who leave without answering any questions"
-              />
-            </StatsGrid>
-          )}
         </div>
       )}
     </QueryComponent>
@@ -104,5 +105,5 @@ function ConversationsStatsCardSkeleton({
 }
 
 export const ConversationsStatsCard = (props: StatsCardProps) => {
-  return <StatsCard className="grid grid-rows-subgrid row-span-2" {...props} />;
+  return <StatsCard className="h-full" {...props} />;
 };

@@ -19,7 +19,7 @@ export default async function ConversationsStatsPage(props: Readonly<Props>) {
         <span className="transition-all-conversation-heading">Responses</span>{" "}
         <span>Analytics</span>
       </h2>
-      <div className="space-y-20">
+      <div className="space-y-10">
         <ConversationsStats formId={formId} showExtendedStats />
         <MultiChoiceStats formId={formId} />
         <RatingStats formId={formId} />

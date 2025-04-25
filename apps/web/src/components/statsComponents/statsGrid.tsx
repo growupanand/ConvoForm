@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils";
 
 type StatsGridProps = {
   children: React.ReactNode;
-  columns?: number;
   className?: string;
   minWidth?: string; // Control minimum width per card
   gap?: number; // Control grid gap
@@ -10,7 +9,6 @@ type StatsGridProps = {
 
 export function StatsGrid({
   children,
-  columns = 3,
   className,
   minWidth = "200px",
   gap = 6,
@@ -18,8 +16,9 @@ export function StatsGrid({
   return (
     <div
       className={cn(
-        "grid grid-rows-[auto_min-content]",
+        "grid",
         `gap-x-${gap}`,
+        "gap-y-6", // Add specific vertical gap
         className,
       )}
       style={{
@@ -27,7 +26,6 @@ export function StatsGrid({
         // and auto-flows to new rows as needed
         gridTemplateColumns: `repeat(auto-fill, minmax(${minWidth}, 1fr))`,
         // For screens large enough, limit max columns
-        maxWidth: `calc(${Number.parseInt(minWidth) * columns}px + ${(columns - 1) * gap * 0.25}rem)`,
       }}
     >
       {children}

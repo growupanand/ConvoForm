@@ -38,7 +38,7 @@ export const MultiChoiceStats = ({
             <CheckSquare2 className="mr-2 h-4 w-4 inline" />
             {title}
           </h3>
-          <StatsGrid columns={4} minWidth="250px" className="mb-8 gap-6">
+          <StatsGrid minWidth="250px" className="mb-8 gap-6">
             {data.length === 0 ? (
               <p className="text-muted-foreground">
                 No multiple choice data available.
@@ -108,7 +108,7 @@ function MultiChoiceStatsSkeleton({ title }: { title?: string }) {
         <CheckSquare2 className="mr-2 h-4 w-4 inline" />
         {title}
       </h3>
-      <StatsGrid columns={4} minWidth="250px" className="mb-8 gap-6">
+      <StatsGrid minWidth="250px" className="mb-8 gap-6">
         {[1, 2, 3].map((index) => (
           <Card key={index} className="group">
             <CardHeader>
