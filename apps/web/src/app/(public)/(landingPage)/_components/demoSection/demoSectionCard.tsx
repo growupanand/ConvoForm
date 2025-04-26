@@ -7,25 +7,33 @@ import { useRef } from "react";
 import { DemoCollectedDataTable } from "./demoCollectedDataTable";
 import { DemoFormCard } from "./demoFormCard";
 
-function DemoSectionCardInner() {
+function DemoSectionCardInner({ showResponses }: { showResponses: boolean }) {
   const demoSectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(demoSectionRef, {
     once: true,
   });
   return (
-    <div className=" relative flex justify-center gap-10 " ref={demoSectionRef}>
+    <div className="relative flex justify-center gap-10" ref={demoSectionRef}>
       <DemoFormCard isInView={isInView} />
-      <div className="absolute -right-40 -top-10">
-        <DemoCollectedDataTable isInView={isInView} />
-      </div>
+      {showResponses && (
+        <div className="absolute -right-40 -top-10">
+          <DemoCollectedDataTable isInView={isInView} />
+        </div>
+      )}
     </div>
   );
 }
 
-export function DemoSectionCard({ form }: Readonly<{ form: Form }>) {
+export function DemoSectionCard({
+  form,
+  showResponses = false,
+}: Readonly<{
+  form: Form;
+  showResponses?: boolean;
+}>) {
   return (
     <FormContextProvider form={form}>
-      <DemoSectionCardInner />
+      <DemoSectionCardInner showResponses={showResponses} />
     </FormContextProvider>
   );
 }

@@ -4,6 +4,7 @@ import Spinner from "@/components/common/spinner";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { api } from "@/trpc/react";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { DEMO_FORM_ID } from "../constants";
 
 const LazyDemoSectionCard = dynamic(
@@ -15,6 +16,8 @@ const LazyDemoSectionCard = dynamic(
 
 function DemoSectionInner() {
   const [isDesktop] = useMediaQuery("(min-width: 1024px)");
+  // Track if responses demo is visible
+  const [showResponses, setShowResponses] = useState(false);
 
   const { data: formData, isLoading } = api.form.getOneWithFields.useQuery(
     {
@@ -24,6 +27,16 @@ function DemoSectionInner() {
       enabled: isDesktop,
     },
   );
+
+  // Show responses after form is visible for a few seconds
+  useEffect(() => {
+    if (formData && !isLoading) {
+      const timer = setTimeout(() => {
+        setShowResponses(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [formData, isLoading]);
 
   if (!isDesktop) {
     return null;
@@ -37,7 +50,7 @@ function DemoSectionInner() {
     return null;
   }
 
-  return <LazyDemoSectionCard form={formData} />;
+  return <LazyDemoSectionCard form={formData} showResponses={showResponses} />;
 }
 
 export const DemoSectionSkeleton = () => {
