@@ -43,7 +43,7 @@ export function DemoCollectedDataTable({ isInView: _ }: { isInView: boolean }) {
           transition={{ delay: 1.5 }}
         >
           <ArrowDownRight className="size-5" />
-          <span className="font-medium text-sm">Live Responses</span>
+          <span className="font-medium text-sm">Current Response</span>
         </motion.div>
 
         <div className="min-w-[250px] max-w-[400px] shadow-xl overflow-hidden rounded-3xl border bg-white/40 p-2 backdrop-blur-lg ring-2 ring-brand-200">

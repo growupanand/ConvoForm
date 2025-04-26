@@ -220,6 +220,7 @@ export function useConvoForm({
     if (conversation !== undefined && isBusy === false) {
       sendMessage("conversation:updated", {
         conversationId: conversation.id,
+        formId,
       });
     }
   }, [isBusy]);

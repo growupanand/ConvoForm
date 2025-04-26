@@ -102,7 +102,8 @@ serve({
           }
 
           case "conversation:updated": {
-            const { conversationId } = data;
+            const { conversationId, formId } = data;
+
             if (!isValidId(conversationId)) return;
 
             // Join the conversation room if not already
@@ -110,6 +111,16 @@ serve({
 
             // Notify the conversation room
             broadcastToRoom(getConversationRoom(conversationId), {
+              type: "conversation:updated",
+            });
+
+            if (!isValidId(formId)) return;
+
+            // Join the form room if not already
+            joinRoom(getFormRoom(formId), ws);
+
+            // Notify the form room
+            broadcastToRoom(getFormRoom(formId), {
               type: "conversation:updated",
             });
             break;

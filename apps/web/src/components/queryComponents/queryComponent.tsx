@@ -16,9 +16,9 @@ export function QueryComponent<TData, TError>({
   errorComponent,
   children,
 }: Props<TData, TError>) {
-  const { isFetching, isError, data, refetch } = query;
+  const { isPending, isError, data, refetch } = query;
 
-  if (isFetching) {
+  if (isPending) {
     return loadingComponent ?? <Spinner />;
   }
 

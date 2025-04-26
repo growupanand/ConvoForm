@@ -588,4 +588,41 @@ export const conversationRouter = createTRPCRouter({
 
       return results;
     }),
+  getDemoFormResponses: publicProcedure
+    .input(
+      z.object({
+        formId: z.string().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const existConversations = await ctx.db.query.conversation.findMany({
+        where: (conversation, { eq }) => eq(conversation.formId, input.formId),
+        orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
+        limit: 20, // Limit to 20 most recent
+      });
+
+      const existConversationsFormatted = existConversations.map(
+        (conversation) => {
+          const collectedData = conversation.collectedData.map((collection) => {
+            if (collection.fieldConfiguration === undefined) {
+              return collection;
+            }
+
+            return {
+              ...collection,
+              fieldConfiguration: restoreDateFields(
+                collection.fieldConfiguration,
+              ),
+            };
+          });
+          return {
+            ...conversation,
+            collectedData,
+            transcript: conversation.transcript ?? [],
+          };
+        },
+      );
+
+      return existConversationsFormatted;
+    }),
 });

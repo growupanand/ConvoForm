@@ -2,6 +2,8 @@ import { Hero } from "@/app/(public)/(landingPage)/_components/hero";
 import type { Metadata } from "next";
 import { Achievements } from "./_components/achievements";
 import { DemoSection } from "./_components/demoSection";
+import { LazyLiveDemoResponses } from "./_components/demoSection/LazyLiveDemoResponses";
+import { DemoResponsesShell } from "./_components/demoSection/demoResponsesShell";
 
 export const metadata: Metadata = {
   title: {
@@ -21,6 +23,13 @@ export default function Home() {
       <div className="grid lg:grid-cols-2 gap-8 lg:items-center lg:min-h-[calc(100vh-6rem)]">
         <Hero />
         <DemoSection />
+      </div>
+
+      {/* Live Responses Section */}
+      <div className="my-12 flex justify-center max-lg:hidden">
+        <DemoResponsesShell>
+          <LazyLiveDemoResponses />
+        </DemoResponsesShell>
       </div>
 
       <div className="my-10">
