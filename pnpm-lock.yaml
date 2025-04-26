@@ -412,11 +412,22 @@ importers:
   packages/react:
     dependencies:
       react:
+<<<<<<< Updated upstream
         specifier: 'catalog:'
         version: 19.1.0
       react-dom:
         specifier: 'catalog:'
         version: 19.1.0(react@19.1.0)
+=======
+        specifier: 19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: 19.1.0
+        version: 19.1.0(react@19.1.0)
+      socket.io-client:
+        specifier: ^4.7.5
+        version: 4.8.1
+>>>>>>> Stashed changes
     devDependencies:
       '@convoform/common':
         specifier: ../common
@@ -10684,7 +10695,14 @@ snapshots:
       date-fns-jalali: 4.1.0-0
       react: 19.1.0
 
+<<<<<<< Updated upstream
   react-dom@19.1.0(react@19.1.0):
+=======
+  /react-dom@19.1.0(react@19.1.0):
+    resolution: {integrity: sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==}
+    peerDependencies:
+      react: ^19.1.0
+>>>>>>> Stashed changes
     dependencies:
       react: 19.1.0
       scheduler: 0.26.0
@@ -10722,9 +10740,18 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.1.2
 
+<<<<<<< Updated upstream
   react@19.1.0: {}
 
   read-cache@1.0.0:
+=======
+  /react@19.1.0:
+    resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
+    engines: {node: '>=0.10.0'}
+
+  /read-cache@1.0.0:
+    resolution: {integrity: sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA==}
+>>>>>>> Stashed changes
     dependencies:
       pify: 2.3.0
 
@@ -10956,9 +10983,28 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
+<<<<<<< Updated upstream
   scheduler@0.26.0: {}
 
   schema-utils@4.3.2:
+=======
+  /scheduler@0.26.0:
+    resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
+    dev: false
+
+  /schema-utils@3.3.0:
+    resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
+    engines: {node: '>= 10.13.0'}
+    dependencies:
+      '@types/json-schema': 7.0.15
+      ajv: 6.12.6
+      ajv-keywords: 3.5.2(ajv@6.12.6)
+    dev: true
+
+  /schema-utils@4.3.0:
+    resolution: {integrity: sha512-Gf9qqc58SpCA/xdziiHz35F4GNIWYWZrEshUc/G/r5BnLph6xpKuLeoJoQuj5WfBIx/eQLf+hmVPYHaxJu7V2g==}
+    engines: {node: '>= 10.13.0'}
+>>>>>>> Stashed changes
     dependencies:
       '@types/json-schema': 7.0.15
       ajv: 8.17.1

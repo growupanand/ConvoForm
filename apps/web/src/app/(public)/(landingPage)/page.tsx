@@ -32,9 +32,6 @@ export default function Home() {
         </DemoResponsesShell>
       </div>
 
-      <div className="my-10">
-        <Achievements />
-      </div>
       {/* New headline section */}
       <div className="py-8 lg:py-14">
         <div className="container mx-auto px-4 lg:px-10 text-center">
@@ -44,6 +41,9 @@ export default function Home() {
             <span className="text-brand-500">you need</span>
           </h2>
         </div>
+      </div>
+      <div className="my-10">
+        <Achievements />
       </div>
     </main>
   );

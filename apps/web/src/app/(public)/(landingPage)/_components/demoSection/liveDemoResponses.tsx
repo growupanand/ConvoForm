@@ -25,6 +25,24 @@ import { useEffect } from "react";
 import { DEMO_FORM_ID } from "../constants";
 import { ResponsesTableSkeleton } from "./responsesTableSkeleton";
 
+// Sample data to replace "No data" entries
+const sampleResponses = [
+  {
+    id: "sample-1",
+    name: "Marketing Survey",
+    fieldValue: "Feedback on new product features",
+    status: "active",
+    time: "5 minutes ago",
+  },
+  {
+    id: "sample-2",
+    name: "Customer Feedback",
+    fieldValue: "Support ticket submission",
+    status: "active",
+    time: "12 minutes ago",
+  },
+];
+
 // Custom hook to handle websocket connections and updates
 function useFormWebsocket(formId: string, refetch: () => void) {
   useEffect(() => {
@@ -48,12 +66,17 @@ function useFormWebsocket(formId: string, refetch: () => void) {
 }
 
 // Component for the status badge
-function StatusBadge({
-  conversation,
-  existingResponses,
-}: { conversation: Conversation; existingResponses: Conversation[] }) {
-  const isActive = existingResponses.map((c) => c.id).includes(conversation.id);
-  const isCompleted = conversation.finishedAt;
+function StatusBadge({ conversation }: { conversation: Conversation }) {
+  const isActive = conversation.isInProgress;
+  const isCompleted = !!conversation.finishedAt;
+
+  if (isCompleted) {
+    return (
+      <Badge variant="outline" className="bg-blue-50 text-blue-700">
+        Completed
+      </Badge>
+    );
+  }
 
   if (isActive) {
     return (
@@ -63,14 +86,6 @@ function StatusBadge({
       >
         <CircleDot className="size-3 text-green-500 animate-pulse" />
         <span>Active</span>
-      </Badge>
-    );
-  }
-
-  if (isCompleted) {
-    return (
-      <Badge variant="outline" className="bg-blue-50 text-blue-700">
-        Completed
       </Badge>
     );
   }
@@ -85,8 +100,19 @@ function StatusBadge({
 // Component for a single response row
 function ResponseRow({
   conversation,
-  existingResponses,
 }: { conversation: Conversation; existingResponses: Conversation[] }) {
+  const collectedDataWithValues = conversation.collectedData.filter(
+    (i) => i.fieldValue,
+  );
+
+  // Calculate completion percentage
+  const completionPercentage = conversation.finishedAt
+    ? 100
+    : Math.round(
+        (collectedDataWithValues.length / conversation.collectedData.length) *
+          100,
+      );
+
   return (
     <motion.tr key={conversation.id} layout>
       <TableCell className="font-medium">
@@ -99,10 +125,10 @@ function ResponseRow({
         )}
       </TableCell>
       <TableCell>
-        <StatusBadge
-          conversation={conversation}
-          existingResponses={existingResponses}
-        />
+        <StatusBadge conversation={conversation} />
+      </TableCell>
+      <TableCell className="text-center">
+        <span className="font-medium">{completionPercentage}%</span>
       </TableCell>
       <TableCell className="text-right text-sm text-gray-500">
         {formatDistanceToNow(new Date(conversation.createdAt), {
@@ -119,6 +145,9 @@ function ResponsesTable({ responses }: { responses: Conversation[] }) {
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 
+  // Use sample data when there are no real responses
+  const displayResponses = responses.length === 0 ? [] : sortedResponses;
+
   return (
     <ScrollArea className="h-[300px] rounded-md">
       <Table>
@@ -126,20 +155,49 @@ function ResponsesTable({ responses }: { responses: Conversation[] }) {
           <TableRow>
             <TableHead className="w-[200px]">Submission</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead className="text-center">Completion</TableHead>
             <TableHead className="text-right">Submitted</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           <AnimatePresence>
-            {responses.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={3}
-                  className="text-center py-8 text-gray-500"
-                >
-                  No responses yet - be the first to try the demo form!
-                </TableCell>
-              </TableRow>
+            {displayResponses.length === 0 ? (
+              <>
+                {/* Sample entries instead of empty state */}
+                {sampleResponses.map((sample) => (
+                  <TableRow key={sample.id} className="opacity-70">
+                    <TableCell className="font-medium">
+                      {sample.name}
+                      <div className="text-xs text-gray-500 mt-1 truncate max-w-[200px]">
+                        {sample.fieldValue}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className="bg-green-50 text-green-700 flex items-center gap-1"
+                      >
+                        <CircleDot className="size-3 text-green-500 animate-pulse" />
+                        <span>Active</span>
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <div className="flex flex-col items-center">
+                        <span className="font-medium">45%</span>
+                        <span className="text-xs text-gray-500">
+                          5 answered
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <span className="text-sm">3 min</span>
+                    </TableCell>
+                    <TableCell className="text-right text-sm text-gray-500">
+                      {sample.time}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </>
             ) : (
               sortedResponses.map((conversation) => (
                 <ResponseRow

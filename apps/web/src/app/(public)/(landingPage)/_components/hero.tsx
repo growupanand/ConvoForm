@@ -1,7 +1,12 @@
 import { Badge } from "@convoform/ui";
 import { Button } from "@convoform/ui";
 import { Card, CardContent, CardHeader } from "@convoform/ui";
-import { CheckCircle2, ChevronRight, FileText } from "lucide-react";
+import {
+  CheckCircle2,
+  ChevronRight,
+  ExternalLink,
+  FileText,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,33 +19,35 @@ import { UserStats } from "./userStats";
 export function Hero() {
   return (
     <section className="flex w-full flex-col justify-start items-center lg:items-start gap-2 lg:gap-3 text-center lg:text-left">
-      <Badge
-        variant="outline"
-        className="group text-xs font-medium px-2 py-0.5 lg:px-3 lg:py-2 lg:text-sm"
-      >
-        <Link
-          href="https://github.com/growupanand/ConvoForm"
-          target="_blank"
-          rel="noreferrer nofollow noopener"
-          className="flex items-center"
+      <div className="flex gap-2">
+        <Badge
+          variant="outline"
+          className="group text-xs font-medium px-2 py-0.5 lg:px-3 lg:py-2 lg:text-sm"
         >
-          <span className="mr-1 lg:mr-1.5">
-            <Image
-              src="images/icons/github.svg"
-              alt="github"
-              width={10}
-              height={10}
-              className="lg:size-[13px] size-[10px]"
+          <Link
+            href="https://github.com/growupanand/ConvoForm"
+            target="_blank"
+            rel="noreferrer nofollow noopener"
+            className="flex items-center"
+          >
+            <span className="mr-1 lg:mr-1.5">
+              <Image
+                src="images/icons/github.svg"
+                alt="github"
+                width={10}
+                height={10}
+                className="lg:size-[13px] size-[10px]"
+              />
+            </span>
+            <span className="font-normal">Proudly Open Source</span>
+            <ChevronRight
+              className="ml-1 transition-all group-hover:translate-x-0.5"
+              size="10px"
             />
-          </span>
-          <span className="font-normal">Proudly Open Source</span>
-          <ChevronRight
-            className="ml-1 transition-all group-hover:translate-x-0.5"
-            size="10px"
-          />
-          <GithubStars />
-        </Link>
-      </Badge>
+            <GithubStars />
+          </Link>
+        </Badge>
+      </div>
 
       <Card className="border-none bg-transparent shadow-none w-full">
         <CardHeader className="mb-6 px-0 space-y-0">
@@ -66,16 +73,16 @@ export function Hero() {
         </CardHeader>
 
         <CardContent className="px-0 flex justify-center lg:justify-start">
-          <div className="flex flex-wrap max-lg:flex-col max-lg:items-start justify-start gap-2 font-medium text-base text-muted-foreground">
-            <span className="flex items-center gap-1 bg-gray-50 rounded-full px-3 py-1.5">
+          <div className="flex flex-wrap max-lg:flex-col max-lg:items-start justify-start gap-4 font-medium text-base text-muted-foreground">
+            <span className="flex items-center gap-1 bg-gray-50 rounded-full ">
               <CheckCircle2 className="size-6 fill-brand-500 text-white" />
               100% Free
             </span>
-            <span className="flex items-center gap-1 bg-gray-50 rounded-full px-3 py-1.5">
+            <span className="flex items-center gap-1 bg-gray-50 rounded-full ">
               <CheckCircle2 className="size-6 fill-brand-500 text-white" />
               No credit card required
             </span>
-            <span className="flex items-center gap-1 bg-gray-50 rounded-full px-3 py-1.5">
+            <span className="flex items-center gap-1 bg-gray-50 rounded-full ">
               <CheckCircle2 className="size-6 fill-brand-500 text-white" />
               Enterprise-grade features
             </span>
@@ -83,7 +90,7 @@ export function Hero() {
         </CardContent>
       </Card>
 
-      <div className="flex max-lg:flex-col max-lg:justify-center items-center gap-3 mt-6 lg:mt-4">
+      <div className="flex max-lg:flex-col justify-center items-center gap-3 mt-6 lg:mt-2">
         <Button
           size="lg"
           className="rounded-full py-3 lg:py-5 text-base lg:text-base font-montserrat shadow-md hover:shadow-lg transition-all hover:translate-y-[-2px]"
@@ -94,7 +101,7 @@ export function Hero() {
           </Link>
         </Button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ">
           <div className="h-[1px] w-4 bg-gray-300 " />
           <span className="text-sm text-gray-500 font-medium">OR</span>
           <div className="h-[1px] w-4 bg-gray-300 " />
@@ -111,6 +118,12 @@ export function Hero() {
             Import Google Form
           </Link>
         </Button>
+      </div>
+      {/* User stats added to hero section */}
+      <div className="mt-6 lg:mt-2 w-full flex justify-center lg:justify-start">
+        <UserStats />
+      </div>
+      <div>
         <Button
           variant="outline"
           size="lg"
@@ -122,13 +135,9 @@ export function Hero() {
             target="_blank"
             rel="noreferrer nofollow noopener"
           >
-            See demo form
+            See demo form <ExternalLink className="size-4 ms-2" />
           </Link>
         </Button>
-      </div>
-      {/* User stats added to hero section */}
-      <div className="mt-6 lg:mt-8 w-full flex justify-center lg:justify-start">
-        <UserStats />
       </div>
     </section>
   );

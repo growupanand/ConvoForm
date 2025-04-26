@@ -3,7 +3,7 @@ import { PublicLayoutHeader } from "./publicLayoutHeader";
 
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="w-screen">
+    <div>
       <div className="lg:fixed lg:top-0 lg:z-50 lg:mt-4 h-24 inset-x-0 lg:px-4">
         <PublicLayoutHeader />
       </div>

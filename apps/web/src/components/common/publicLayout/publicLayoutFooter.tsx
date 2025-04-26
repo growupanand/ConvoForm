@@ -1,6 +1,6 @@
 import { Button } from "@convoform/ui";
-import { Card } from "@convoform/ui";
-import { ExternalLink, Mail } from "lucide-react";
+import { Card, Badge } from "@convoform/ui";
+import { ChevronRight, ExternalLink, Mail } from "lucide-react";
 import Link from "next/link";
 
 import { marck_script } from "@/app/fonts/customFonts";
@@ -38,6 +38,32 @@ export function PublicLayoutFooter({ className }: { className?: string }) {
 const SocialIcons = () => {
   return (
     <div className="flex items-center justify-end flex-wrap gap-3">
+      <Badge
+        variant="outline"
+        className="group text-xs font-medium px-2 py-0.5 lg:px-3 lg:py-2 lg:text-sm"
+      >
+        <Link
+          href="https://discord.gg/aeYtKyn2E2"
+          target="_blank"
+          rel="noreferrer nofollow noopener"
+          className="flex items-center"
+        >
+          <span className="mr-1 lg:mr-1.5">
+            <Image
+              src="images/icons/discord.svg"
+              alt="discord"
+              width={10}
+              height={10}
+              className="lg:size-[13px] size-[10px]"
+            />
+          </span>
+          <span className="font-normal">Join our Discord</span>
+          <ChevronRight
+            className="ml-1 transition-all group-hover:translate-x-0.5"
+            size="10px"
+          />
+        </Link>
+      </Badge>
       <Link
         href="https://github.com/growupanand/ConvoForm"
         target="_blank"
