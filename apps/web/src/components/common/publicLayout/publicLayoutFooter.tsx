@@ -1,5 +1,5 @@
 import { Button } from "@convoform/ui";
-import { Card, Badge } from "@convoform/ui";
+import { Badge, Card } from "@convoform/ui";
 import { ChevronRight, ExternalLink, Mail } from "lucide-react";
 import Link from "next/link";
 
