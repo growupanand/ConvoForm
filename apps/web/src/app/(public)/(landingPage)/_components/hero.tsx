@@ -9,6 +9,7 @@ import { nohemi } from "@/app/fonts/customFonts";
 import { AnimatedTypingDots } from "@/components/common/typingDots";
 import { cn } from "@/lib/utils";
 import { GithubStars } from "./githubStar";
+import { UserStats } from "./userStats";
 
 export function Hero() {
   return (
@@ -124,6 +125,10 @@ export function Hero() {
             See demo form
           </Link>
         </Button>
+      </div>
+      {/* User stats added to hero section */}
+      <div className="mt-6 lg:mt-8 w-full flex justify-center lg:justify-start">
+        <UserStats />
       </div>
     </section>
   );
