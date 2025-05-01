@@ -31,7 +31,7 @@ const choiceOptionSchema = z.object({
   /** Option value which will be stored in the database on selecting,
    * and also used to display button label
    */
-  value: z.string().min(1),
+  value: z.string().min(1).max(100, "Option label cannot exceed 50 characters"),
   /**
    * Optional flag to indicate that this is an "other" option.
    * If true, the user will be able to enter text in the input field

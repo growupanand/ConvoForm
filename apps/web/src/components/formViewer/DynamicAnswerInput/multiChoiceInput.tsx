@@ -110,22 +110,26 @@ export function MultiChoiceInput({
             custom={index}
           >
             <Button
-              className="cursor-pointer flex items-center gap-x-2 rounded-full shadow w-full font-medium text-xl h-auto py-2 active:scale-100 justify-center relative"
+              className="cursor-pointer flex items-center gap-x-2 rounded-2xl shadow w-full font-medium text-xl h-auto py-3 px-4 active:scale-100 justify-start relative"
               type="button"
               variant="outline"
               onClick={() => handleOptionSelect(option)}
               asChild
             >
-              <div>
+              <div className="w-full">
                 {allowMultiple && (
                   <Checkbox
                     checked={selectedOptions.includes(option.value)}
                     id={`option-${index}`}
-                    className="h-5 w-5 absolute left-6 top-auto"
+                    className="h-5 w-5 absolute left-4 top-1/2 -translate-y-1/2"
                     // Remove the onCheckedChange handler
                   />
                 )}
-                {option.value}
+                <span
+                  className={`block text-wrap ${allowMultiple ? "pl-8" : ""}`}
+                >
+                  {option.value}
+                </span>
               </div>
             </Button>
           </motion.span>
