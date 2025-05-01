@@ -85,6 +85,9 @@ const config: Config = {
           "sans-serif",
         ], // Add generic sans-serif fallback
       },
+      transitionDuration: {
+        "2000": "2000ms",
+      },
     },
   },
   plugins: [
