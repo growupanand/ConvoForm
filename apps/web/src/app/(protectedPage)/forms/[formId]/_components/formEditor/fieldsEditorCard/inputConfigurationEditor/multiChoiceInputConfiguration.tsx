@@ -3,7 +3,7 @@
 import { Button, FormDescription, FormLabel, Switch } from "@convoform/ui";
 import { FormControl, FormField, FormItem, FormMessage } from "@convoform/ui";
 import { Input } from "@convoform/ui";
-import { Plus, X } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { type UseFormReturn, useFieldArray } from "react-hook-form";
 
@@ -120,7 +120,7 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
         control={formHook.control}
         name="fieldConfiguration.inputConfiguration.options"
         render={() => (
-          <FormItem className="">
+          <FormItem className="space-y-6 mt-6">
             {fields.map((field, index) => (
               <div key={field.id} className="mb-2">
                 <FormField
@@ -128,24 +128,27 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
                   name={`fieldConfiguration.inputConfiguration.options.${index}.value`}
                   render={({ field }) => (
                     <FormItem>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4 relative group">
                         <FormControl>
                           <Input
                             {...field}
                             placeholder="Type a choice name"
                             disabled={fields[index]?.isOther}
+                            maxLength={100}
+                            showValueCount
                           />
                         </FormControl>
                         <Button
+                          className="absolute -right-4 -top-4 hidden group-hover:block"
                           type="button"
-                          size="sm"
-                          variant="ghost"
+                          size="xs"
+                          variant="outline"
                           onClick={() => remove(index)}
                           disabled={
                             hasMinimumRequiredChoices || fields[index]?.isOther
                           }
                         >
-                          <X className="size-4" />
+                          <Trash2 className="size-4" />
                         </Button>
                       </div>
                       {fields[index]?.isOther && (
@@ -153,7 +156,7 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
                           This is the "Other" option with a text field
                         </FormDescription>
                       )}
-                      <FormMessage />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
