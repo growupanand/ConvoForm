@@ -11,6 +11,13 @@ export function AuthProvider({
       signUpFallbackRedirectUrl="/dashboard"
       signInUrl="/auth/sign-in"
       signUpUrl="/auth/register"
+      appearance={{
+        layout: {
+          termsPageUrl: "/terms",
+          privacyPageUrl: "/privacy",
+          logoImageUrl: "/logo.png",
+        },
+      }}
     >
       <PosthogUserInit />
       {children}

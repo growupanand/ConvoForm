@@ -10,6 +10,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/trpc/(.*)",
   "/changelog",
   "/privacy",
+  "/terms",
   "/api/og",
   "/playground(.*)",
   "/(public)/(.*)",
