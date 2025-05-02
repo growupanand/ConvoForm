@@ -111,7 +111,10 @@ function Calendar({
     "relative mx-10 flex h-7 items-center justify-center",
     props.monthCaptionClassName,
   );
-  const _weekdaysClassName = cn("flex flex-row", props.weekdaysClassName);
+  const _weekdaysClassName = cn(
+    "flex flex-row gap-x-1",
+    props.weekdaysClassName,
+  );
   const _weekdayClassName = cn(
     "w-8 text-sm font-normal text-muted-foreground",
     props.weekdayClassName,
@@ -142,7 +145,7 @@ function Calendar({
   );
   const _navClassName = cn("flex items-start", props.navClassName);
   const _monthGridClassName = cn(
-    "mx-auto mt-4 gap-1",
+    "mx-auto mt-4 gap-2",
     props.monthGridClassName,
   );
   const _weekClassName = cn(
@@ -493,7 +496,7 @@ function YearGrid({
   const { goToMonth, selected } = useDayPicker();
 
   return (
-    <div className={cn("grid grid-cols-4 gap-y-2", className)} {...props}>
+    <div className={cn("grid grid-cols-4 gap-y-4", className)} {...props}>
       {Array.from(
         { length: displayYears.to - displayYears.from + 1 },
         (_, i) => {
@@ -516,8 +519,9 @@ function YearGrid({
             <Button
               // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
               key={i}
+              size="lg"
               className={cn(
-                "h-7 w-full text-sm font-normal text-foreground",
+                " w-full text-sm font-normal text-foreground",
                 displayYears.from + i === new Date().getFullYear() &&
                   "bg-accent font-medium text-accent-foreground",
               )}
