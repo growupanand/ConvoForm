@@ -58,16 +58,10 @@ export const MultiChoiceStats = ({
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                    <div className="space-y-2 max-h-[200px] overflow-y-auto p-1">
                       {field.options.map((option) => (
                         <div key={option.option} className="relative">
-                          <Progress
-                            value={option.percentage}
-                            className="pe-0"
-                            trackClassName="bg-white h-6 transition-[border] duration-300 border border-transparent group-hover:border-muted"
-                            indicatorClassName="bg-muted"
-                            textClassName="text-secondary-foreground text-xs"
-                          >
+                          <Progress value={30} variant="subtle" size="sm">
                             <div className="flex justify-between items-center w-full">
                               <div className="flex items-center gap-2 z-10">
                                 {/* If you have flags, add them here */}

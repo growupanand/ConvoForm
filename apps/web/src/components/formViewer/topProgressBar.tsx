@@ -33,7 +33,7 @@ export function TopProgressBar({
           transition={{ duration: 1, delay: 1 }}
           className="w-full"
         >
-          <Progress value={totalProgress} className="w-full h-1 " />
+          <Progress value={totalProgress} className="w-full h-1.5" />
         </motion.div>
       </div>
     </div>

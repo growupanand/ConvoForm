@@ -78,15 +78,13 @@ export const RatingStats = ({
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                    <div className="space-y-2 max-h-[200px] overflow-y-auto p-1">
                       {field.distribution.map((item) => (
                         <div key={item.rating} className="relative">
                           <Progress
                             value={item.percentage}
-                            className="pe-0"
-                            trackClassName="bg-white h-6 transition-[border] duration-300 border border-transparent group-hover:border-muted"
-                            indicatorClassName="bg-muted"
-                            textClassName="text-secondary-foreground text-xs"
+                            variant="subtle"
+                            size="sm"
                           >
                             <div className="flex justify-between items-center w-full">
                               <div className="flex items-center gap-2 z-10">
