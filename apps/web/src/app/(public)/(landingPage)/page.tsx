@@ -4,6 +4,7 @@ import { Achievements } from "./_components/achievements";
 import { DemoSection } from "./_components/demoSection";
 import { LazyLiveDemoResponses } from "./_components/demoSection/LazyLiveDemoResponses";
 import { DemoResponsesShell } from "./_components/demoSection/demoResponsesShell";
+import { Technologies } from "./_components/technologies";
 
 export const metadata: Metadata = {
   title: {
@@ -42,6 +43,12 @@ export default function Home() {
           </h2>
         </div>
       </div>
+
+      {/* Technologies section with Docker support */}
+      <div className="my-12">
+        <Technologies />
+      </div>
+
       <div className="my-10">
         <Achievements />
       </div>

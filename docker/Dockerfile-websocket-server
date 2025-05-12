@@ -1,0 +1,47 @@
+FROM oven/bun:latest AS base
+
+ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL} \
+    NODE_ENV=${NODE_ENV}
+
+WORKDIR /app
+
+RUN bun add -g @pnpm/exe@latest-10
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+RUN pnpm add -g turbo
+
+# Add builder stage
+FROM base AS builder
+WORKDIR /app
+COPY . .
+RUN turbo prune websocket-server --docker
+
+# Install dependencies
+FROM base AS installer
+WORKDIR /app
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN pnpm install --frozen-lockfile
+
+# Build your project
+COPY --from=builder /app/out/full/ .
+
+RUN pnpm run build --filter=websocket-server...
+
+
+FROM base AS runner
+WORKDIR /app
+
+# Don't run production as root
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+USER nextjs
+
+COPY --from=installer --chown=nextjs:nodejs /app/apps/websocket-server/dist ./apps/websocket-server/dist
+
+
+EXPOSE 4000
+
+CMD ["bun", "apps/websocket-server/dist/index.js"]

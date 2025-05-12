@@ -19,7 +19,7 @@ In the course of building it from scratch, I penned down some insightful pieces 
 
 - **Frontend**: [Next.js](https://nextjs.org) for optimized server and client rendering.
 - **Backend**: [tRPC](https://trpc.io) for type-safe API development.
-- **AI Integration**: [GPT-3.5-Turbo](https://platform.openai.com/docs/models/gpt-3-5-turbo) for dynamic form generation and response analysis.
+- **AI Integration**: [gpt-4o-mini](https://platform.openai.com/docs/models/gpt-4o-mini) for generate form, conversation with user to collect required form information
 - **Real-time updates**: [Socket.io](https://socket.io/) for live form progress tracking.
 
 ## Community and Support
@@ -64,9 +64,9 @@ pnpm install
 
 3. Configuration environment
 
-Copy the .env.example file to .env.local file and open the `.env.local` file and update the necessary environment variables.
+Copy the .env.example file to .env file and open the `.env` file and update the necessary environment variables.
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 4. Setup Database
@@ -89,6 +89,19 @@ application.
 ```bash
 pnpm run build
 ```
+
+### Docker Setup
+
+#### Prerequisites
+- [Docker](https://www.docker.com/get-started) installed on your machine
+- Ensure all the necessary environment variables are set in the `.env` file.
+
+Build and run the Docker container
+```bash
+docker-compose up --build
+```
+
+Visit [http://localhost:3000](http://localhost:3000/) in your browser to see the application running in Docker.
 
 ## License
 
