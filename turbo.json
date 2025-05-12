@@ -19,8 +19,7 @@
     "GOOGLE_CLIENT_SECRET"
   ],
   "globalDependencies": [
-    ".env",
-    ".env.local"
+    ".env"
   ],
   "tasks": {
     "build": {

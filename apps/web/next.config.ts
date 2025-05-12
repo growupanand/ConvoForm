@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import "./src/env";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   reactStrictMode: false,
   images: {
     remotePatterns: [
