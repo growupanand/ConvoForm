@@ -13,7 +13,7 @@ export default function TranscriptCard({ transcript, isBusy }: Props) {
     return <SystemMessageBox message="No messages yet" />;
   }
   return (
-    <div className="space-y-1 ps-4">
+    <div className="space-y-1 ps-4 text-sm font-light">
       {transcript.map((message) => {
         return (
           <div
@@ -38,21 +38,20 @@ export default function TranscriptCard({ transcript, isBusy }: Props) {
 }
 
 const SystemMessageBox = ({ message }: { message: string }) => (
-  <p className="text-muted-foreground font-light ">{message}</p>
+  <p className="text-muted-foreground  ">{message}</p>
 );
 
 const UserMessageBox = ({ message }: { message: string }) => (
-  <p className="mb-4 ">{message}</p>
+  <p className="mb-4">{message}</p>
 );
 
 const SystemMessageSkeleton = () => <Skeleton className="h-2 w-40 bg-muted " />;
 
-const UserMessageSkeleton = () => (
-  <Skeleton className="h-2 w-20 bg-muted-foreground " />
-);
+const UserMessageSkeleton = () => <Skeleton className="h-2 w-20" />;
 
 const TranscriptCardSkeleton = () => (
   <div className="space-y-2 ps-4">
+    <SystemMessageSkeleton />
     <UserMessageSkeleton />
     <SystemMessageSkeleton />
   </div>

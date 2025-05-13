@@ -16,7 +16,7 @@ export function CollectedDataTable({ collectedData }: Readonly<Props>) {
   const tableColumns = Object.keys(tableData);
 
   return (
-    <Table>
+    <Table className="font-light">
       <TableBody>
         {tableColumns.map((columnName, index) => {
           const value = tableData[columnName]?.value ?? "";
@@ -67,7 +67,7 @@ function CollectedDataTableCell({
   return (
     <TableCell
       className={cn(
-        "py-2 font-medium align-text-top whitespace-pre-line text-justify",
+        "py-2 align-text-top whitespace-pre-line text-justify",
         className,
       )}
     >

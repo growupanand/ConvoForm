@@ -20,11 +20,9 @@ export function StatsTitle({
   children,
 }: StatsTitleProps) {
   return (
-    <div className={cn("flex items-center gap-2 text-lg mb-4", className)}>
-      <span className="text-secondary-foreground">
-        {Icon && <Icon className="mr-2 h-4 w-4 inline" />}
-        {title}
-      </span>
+    <div className={cn("flex items-center gap-2 text-lg mb-2", className)}>
+      {Icon && <Icon className=" h-4 w-4 inline" />}
+      <span>{title}</span>
       {badge && <Badge variant="secondary">{badge}</Badge>}
       {children}
     </div>
@@ -37,11 +35,9 @@ export function StatsTitleSkeleton({
   className,
 }: Pick<StatsTitleProps, "title" | "icon" | "className">) {
   return (
-    <div className={cn("flex items-center gap-2 text-lg mb-4", className)}>
-      <span className="text-muted-foreground">
-        {Icon && <Icon className="mr-2 h-4 w-4 inline" />}
-        {title}
-      </span>
+    <div className={cn("flex items-center gap-2 text-lg mb-2", className)}>
+      {Icon && <Icon className=" h-4 w-4 inline" />}
+      <span>{title}</span>
     </div>
   );
 }
