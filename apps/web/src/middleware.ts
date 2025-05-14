@@ -13,6 +13,7 @@ const isPublicRoute = createRouteMatcher([
   "/terms",
   "/api/og",
   "/playground(.*)",
+  "/api/playground(.*)",
   "/(public)/(.*)",
 ]);
 

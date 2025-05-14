@@ -3,7 +3,11 @@ import { boolean, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
 import { form } from "../forms/form";
-import type { CollectedData, Transcript } from "./validation";
+import type {
+  CollectedData,
+  RespondentMetadata,
+  Transcript,
+} from "./validation";
 
 export const conversation = pgTable("Conversation", {
   ...getBaseSchema(),
@@ -20,6 +24,7 @@ export const conversation = pgTable("Conversation", {
   organizationId: text("organizationId").notNull(),
   finishedAt: timestamp("finishedAt"),
   isInProgress: boolean("isInProgress").default(false).notNull(),
+  metaData: jsonb("metaData").$type<RespondentMetadata>().notNull().default({}),
 });
 
 export const conversationRelations = relations(conversation, ({ one }) => ({
