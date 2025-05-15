@@ -8,7 +8,7 @@ import {
 } from "openai-edge";
 
 import type { ChatCompletionMessageParam } from "openai/resources";
-import { SystemPromptService } from "./systemPrompt";
+import { SystemPromptService } from "./systemPromptService";
 
 export const OPEN_AI_MODEL = process.env.OPEN_AI_MODEL ?? "gpt-4o-mini";
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";

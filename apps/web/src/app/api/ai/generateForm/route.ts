@@ -9,7 +9,7 @@ import type { z } from "zod";
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getOrganizationId } from "@/lib/getOrganizationId";
 import { api } from "@/trpc/server";
-import { GenerateFormService } from "@convoform/ai";
+import { GenerateService } from "@convoform/ai";
 import { aiGeneratedFormLimit } from "@convoform/common";
 import { enforceRateLimit } from "@convoform/rate-limiter";
 
@@ -39,8 +39,9 @@ export async function POST(req: NextRequest) {
       throw new Error("AI generated form limit reached");
     }
 
-    const generateFormService = new GenerateFormService({ formOverview });
-    const aiResponseJSON = await generateFormService.getGeneratedFormData();
+    const generateFormService = new GenerateService({ formOverview });
+    const aiResponseJSON =
+      await generateFormService.generateFormDataFromOverview();
     const {
       formFields: generatedFormFields,
       welcomeScreenData,

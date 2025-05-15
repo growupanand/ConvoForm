@@ -1,7 +1,11 @@
 import type { ChatCompletionMessageParam } from "openai/resources";
-import { OpenAIService } from "./openAI";
+import { OpenAIService } from "./openAIService";
 
-export class GenerateFormService extends OpenAIService {
+/**
+ * Service for generating things:
+ * - form
+ */
+export class GenerateService extends OpenAIService {
   formOverview: string;
 
   constructor({ formOverview }: { formOverview: string }) {
@@ -9,7 +13,7 @@ export class GenerateFormService extends OpenAIService {
     this.formOverview = formOverview;
   }
 
-  async getGeneratedFormData() {
+  async generateFormDataFromOverview() {
     let formData = {} as Record<string, any>;
     const systemMessage = this.getGenerateFormPromptMessage({
       formOverview: this.formOverview,

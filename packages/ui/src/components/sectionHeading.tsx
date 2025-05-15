@@ -3,8 +3,8 @@ import { cn } from "src/lib/utils";
 
 type HeadingProps = {
   children: React.ReactNode;
-  description?: string;
-  className?: string;
+  description?: React.ReactNode;
+  className?: HTMLElement["className"];
 };
 
 export function SectionHeading({
@@ -13,9 +13,11 @@ export function SectionHeading({
   className,
 }: HeadingProps) {
   return (
-    <div className={cn("space-y-2 text- px-4 mb-4", className)}>
+    <div className={cn("space-y-2 px-4 mb-4", className)}>
       <div className="font-medium text-lg tracking-tight">{children}</div>
-      {description && <p className="text-muted-foreground">{description}</p>}
+      {description && (
+        <div className="text-muted-foreground text-xs">{description}</div>
+      )}
     </div>
   );
 }

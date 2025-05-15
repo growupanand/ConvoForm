@@ -10,7 +10,7 @@ import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
 
 import { CONVERSATION_END_MESSAGE } from "@convoform/common";
 import type { ChatCompletionMessageParam } from "openai/resources";
-import { OpenAIService } from "./openAI";
+import { OpenAIService } from "./openAIService";
 
 export class ConversationService extends OpenAIService {
   public getNextEmptyField(collectedData: CollectedData[]) {

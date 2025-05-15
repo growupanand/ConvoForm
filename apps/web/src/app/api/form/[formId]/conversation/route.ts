@@ -56,8 +56,6 @@ export async function POST(
     const conversationService = new ConversationService();
     const clientIp = getIP(req);
 
-    // FIXME: Getting vercel edge runtime error for upstash/redis
-
     await enforceRateLimit({
       identifier: clientIp ?? "unknown",
       rateLimitType: clientIp ? "ai:identified" : "ai:unkown",

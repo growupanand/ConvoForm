@@ -61,12 +61,48 @@ export const geoDetailsSchema = z
   })
   .partial();
 
+// Define enums for tone and sentiment
+export const userToneEnum = z.enum([
+  "formal",
+  "casual",
+  "frustrated",
+  "enthusiastic",
+  "neutral",
+]);
+
+export const userSentimentEnum = z.enum([
+  "positive",
+  "negative",
+  "neutral",
+  "mixed",
+]);
+
+// Define the insights schema
+export const conversationInsightsSchema = z.object({
+  tldr: z
+    .string()
+    .min(1)
+    .describe("A brief summary of the entire conversation (max 2 sentences)"),
+  externalQueries: z
+    .array(z.string())
+    .describe(
+      "Questions the user asked not directly related to form questions",
+    ),
+  userTone: userToneEnum.describe(
+    "The overall tone of the user's messages (formal, casual, frustrated, enthusiastic, neutral)",
+  ),
+  userSentiment: userSentimentEnum.describe(
+    "The overall sentiment of the user's messages (positive, negative, neutral, mixed)",
+  ),
+});
+
 export const respondentMetadataSchema = z
   .object({
     userAgent: userAgentSchema.optional(),
     geoDetails: geoDetailsSchema.optional(),
     submittedAt: z.date().optional(),
     ipAddress: z.string().optional(),
+    insights: conversationInsightsSchema.optional(),
   })
   .partial();
 

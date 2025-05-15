@@ -13,6 +13,7 @@ import { z } from "zod";
 import { analytics } from "@convoform/analytics";
 import { headers } from "next/headers";
 import { userAgent } from "next/server";
+import { generateConversationInsights } from "../lib/ai";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
 import { publicProcedure } from "../procedures/publicProcedure";
@@ -638,5 +639,55 @@ export const conversationRouter = createTRPCRouter({
       );
 
       return existConversationsFormatted;
+    }),
+  generateInsights: publicProcedure
+    .input(
+      z.object({
+        conversationId: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      // Fetch the conversation
+      const conversationData = await ctx.db.query.conversation.findFirst({
+        where: eq(conversation.id, input.conversationId),
+      });
+
+      if (!conversationData) {
+        throw new Error(
+          `Conversation with ID ${input.conversationId} not found`,
+        );
+      }
+
+      // Check if conversation is completed
+      if (
+        conversationData.isInProgress ||
+        conversationData.transcript === null
+      ) {
+        throw new Error("Cannot generate insights for incomplete conversation");
+      }
+
+      // Generate insights
+      const insights = await generateConversationInsights(
+        conversationData.transcript,
+        conversationData.collectedData,
+      );
+
+      // Update conversation with insights
+      const [updatedConversation] = await ctx.db
+        .update(conversation)
+        .set({
+          metaData: {
+            ...conversationData.metaData,
+            insights,
+          },
+        })
+        .where(eq(conversation.id, input.conversationId))
+        .returning();
+
+      if (!updatedConversation) {
+        throw new Error("Failed to update conversation with insights");
+      }
+
+      return { success: true, insights };
     }),
 });

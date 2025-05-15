@@ -1,10 +1,21 @@
-import { geolocation } from "@vercel/functions";
-import { type NextRequest, userAgent } from "next/server";
+import { createDataStreamResponse } from "ai";
+import type { NextRequest } from "next/server";
 
-export async function GET(request: NextRequest) {
-  const meta = userAgent(request);
-  const geoDetails = geolocation(request);
-  const metaJson = { meta, geoDetails };
-  console.log(metaJson);
-  return Response.json(metaJson);
+export async function GET(_request: NextRequest) {
+  let index = 0;
+
+  return createDataStreamResponse({
+    status: 200,
+    statusText: "OK",
+    headers: {
+      "Content-Type": "text/event-stream",
+    },
+
+    execute: async (dataStream) => {
+      while (true) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        dataStream.writeMessageAnnotation(`hello world - ${index++}`);
+      }
+    },
+  });
 }
