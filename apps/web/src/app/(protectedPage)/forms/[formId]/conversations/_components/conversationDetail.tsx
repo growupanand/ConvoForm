@@ -8,6 +8,7 @@ import { FileText, Globe, Timer } from "lucide-react";
 import Spinner from "@/components/common/spinner";
 import { formatDuration } from "@/lib/utils";
 import { CollectedDataTable } from "./collectedDataTable";
+import InsightsCard from "./insightsCard";
 import MetadataCard from "./metadataCard";
 import TranscriptCard from "./transcriptCard";
 
@@ -55,7 +56,7 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
   return (
     <div className="h-full pb-10">
       <CardHeader>
-        <div className=" flex items-center gap-2">
+        <div className="  flex items-center gap-2">
           <FileText className="size-10" />
           <div className="flex flex-col items-start gap-1">
             <CardTitle className=" text-primary text-xl capitalize">
@@ -67,7 +68,7 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         <MetadataCard
           metaData={{
             Status: getStatusBadge(),
@@ -86,26 +87,36 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
               value: conversation.metaData.userAgent?.device?.vendor,
             },
             Country: {
-              value: conversation.metaData.geoDetails?.country,
+              value: conversation.metaData.geoDetails?.country ? (
+                <span>
+                  {conversation.metaData.geoDetails?.flag}{" "}
+                  {conversation.metaData.geoDetails?.country}
+                </span>
+              ) : undefined,
             },
             City: {
               value: conversation.metaData.geoDetails?.city,
             },
           }}
         />
-        <div className="grid  gap-10 grid-cols-5">
-          <div className="col-span-2">
+        <div className="grid gap-10 grid-cols-5">
+          <div className="col-span-2 space-y-6">
+            {conversation.metaData?.insights && (
+              <InsightsCard insights={conversation.metaData.insights} />
+            )}
             <div>
               <SectionHeading>Collected information</SectionHeading>
               <CollectedDataTable collectedData={conversation.collectedData} />
             </div>
           </div>
-          <div className="col-span-3">
-            <SectionHeading>Conversation transcript</SectionHeading>
-            <TranscriptCard
-              isBusy={conversation.isInProgress}
-              transcript={transcript}
-            />
+          <div className="col-span-3 space-y-6 ">
+            <div>
+              <SectionHeading>Conversation transcript</SectionHeading>
+              <TranscriptCard
+                isBusy={conversation.isInProgress}
+                transcript={transcript}
+              />
+            </div>
           </div>
         </div>
       </CardContent>
@@ -132,7 +143,8 @@ const ConversationDetailSkeleton = () => {
       </CardHeader>
       <CardContent>
         <div className="grid  gap-10 grid-cols-5">
-          <div className="col-span-2">
+          <div className="col-span-2 space-y-4">
+            <InsightsCard.Skeleton />
             <div>
               <h2 className="font-montserrat text-muted-foreground mb-2 text-xl">
                 Collected data

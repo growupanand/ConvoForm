@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
           id: conversationId,
           isInProgress: false,
         });
+        await api.conversation.generateInsights({ conversationId });
         break;
       }
 
