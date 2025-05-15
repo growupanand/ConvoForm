@@ -11,7 +11,8 @@
   "keywords": [],
   "author": "Utkarsh Anand",
   "license": "ISC",
-  "dependencies": {},
+"dependencies": {
+  },
   "devDependencies": {
     "@types/node": "catalog:",
     "typescript": "catalog:",

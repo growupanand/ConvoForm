@@ -6,7 +6,7 @@ import {
   isValidId,
 } from "./utils/socket.utils";
 
-const PORT = 4000;
+const PORT = process.env.PORT ?? 4000;
 
 /**
  * ============ WEBSOCKET SERVER ============
