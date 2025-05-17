@@ -42,6 +42,19 @@ console.log("starting websocket server", `http://localhost:${PORT}`);
 serve({
   port: PORT,
   fetch(req, server) {
+    // Health check endpoint
+    if (req.url.endsWith("/healthcheck")) {
+      return new Response(
+        JSON.stringify({ status: "ok", timestamp: new Date().toISOString() }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+    }
+
     // upgrade the request to a WebSocket
     if (server.upgrade(req)) {
       return; // do not return a Response
