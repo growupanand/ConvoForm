@@ -32,7 +32,7 @@
     "@mdx-js/react": "^3.1.0",
     "@next/bundle-analyzer": "15.3.1",
     "@next/mdx": "15.1.6",
-    "@tanstack/react-query": "^5.65.0",
+    "@tanstack/react-query": "5.65.0",
     "@tanstack/react-table": "^8.20.6",
     "@trpc/client": "11.0.0-rc.571",
     "@trpc/react-query": "11.0.0-rc.571",
@@ -62,7 +62,6 @@
   },
   "devDependencies": {
     "@convoform/tsconfig": "workspace:*",
-    "@tanstack/react-query-devtools": "^5.65.0",
     "@types/mdx": "^2.0.13",
     "@types/node": "catalog:",
     "@types/nprogress": "^0.2.3",

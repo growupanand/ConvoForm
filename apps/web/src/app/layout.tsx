@@ -4,13 +4,13 @@ import type { Metadata } from "next";
 import type { Viewport } from "next";
 
 import { TRPCReactProvider } from "@/trpc/react";
-
 import "@convoform/tailwind-config/src/globals.css";
 import "nprogress/nprogress.css";
 import { CSPostHogProvider } from "@/components/analytics/analyticsProvider";
 import { GoogleAuthProvider } from "@/contexts/GoogleAuthContext";
 import { cn } from "@/lib/utils";
-import { unstable_ViewTransition as ViewTransition } from "react";
+// TODO: Disabled because getting some unexpected transitions when switching any page
+// import { unstable_ViewTransition as ViewTransition } from "react";
 import { montserrat } from "./fonts";
 
 export const viewport: Viewport = {
@@ -72,24 +72,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ViewTransition>
-      <html
-        lang="en"
-        className={cn(GeistSans.variable, montserrat.variable)}
-        suppressHydrationWarning
-      >
-        <body className="antialiased font-sans">
-          <CSPostHogProvider>
-            <TooltipProvider delayDuration={200}>
-              <GoogleAuthProvider>
-                <TRPCReactProvider>{children}</TRPCReactProvider>
-              </GoogleAuthProvider>
-            </TooltipProvider>
+    // <ViewTransition>
+    <html
+      lang="en"
+      className={cn(GeistSans.variable, montserrat.variable)}
+      suppressHydrationWarning
+    >
+      <body className="antialiased font-sans bg-background">
+        <CSPostHogProvider>
+          <TooltipProvider delayDuration={200}>
+            <GoogleAuthProvider>
+              <TRPCReactProvider>{children}</TRPCReactProvider>
+            </GoogleAuthProvider>
+          </TooltipProvider>
 
-            <Toaster />
-          </CSPostHogProvider>
-        </body>
-      </html>
-    </ViewTransition>
+          <Toaster />
+        </CSPostHogProvider>
+      </body>
+    </html>
+    // </ViewTransition>
   );
 }

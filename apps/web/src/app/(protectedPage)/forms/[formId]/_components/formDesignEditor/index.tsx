@@ -5,7 +5,7 @@ import { useFormContext } from "@/components/formViewer/formContext";
 import { useFormDesign } from "@/components/formViewer/formDesignContext";
 import { api } from "@/trpc/react";
 import { DEFAULT_FORM_DESIGN } from "@convoform/db/src/schema/formDesigns/constants";
-import { toast } from "@convoform/ui";
+import { Skeleton, toast } from "@convoform/ui";
 import { useEffect } from "react";
 import { BasicDesignCard, type FormHookData } from "./basicDesignCard";
 import { DesignDefaultScreenCard } from "./designDefaultScreen";
@@ -77,12 +77,7 @@ export function FormDesignEditor({ organizationId, formId }: Readonly<Props>) {
   }
 
   if (isLoadingFormDesign) {
-    return (
-      <div className="text-muted-foreground flex items-center gap-2 px-5">
-        <Spinner size="sm" />
-        loading...
-      </div>
-    );
+    return <FormDesignEditorSkeleton />;
   }
 
   if (!currentSectionFormDesign) {
@@ -141,7 +136,43 @@ export function FormDesignEditor({ organizationId, formId }: Readonly<Props>) {
 export function ComingSoonCard() {
   return (
     <div>
-      <p className="text-muted-foreground ">More options coming soon</p>
+      <p className="text-muted-foreground ">More options coming soon...</p>
+    </div>
+  );
+}
+
+FormDesignEditor.Skeleton = FormDesignEditorSkeleton;
+
+export function FormDesignEditorSkeleton() {
+  return (
+    <div className="px-5">
+      <div className="font-medium text-lg mb-4">
+        <Skeleton className="h-6 w-24" />
+      </div>
+      <div className="space-y-10">
+        {/* Basic Design Card Skeleton */}
+        <div className="border rounded-lg p-4">
+          <div className="space-y-4">
+            <Skeleton className="h-6 w-32" />
+            <div className="space-y-2">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </div>
+        </div>
+
+        {/* Section Design Card Skeleton */}
+        <div className="border rounded-lg p-4">
+          <div className="space-y-4">
+            <Skeleton className="h-6 w-40" />
+            <div className="space-y-2">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

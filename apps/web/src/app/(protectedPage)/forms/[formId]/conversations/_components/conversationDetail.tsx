@@ -1,16 +1,15 @@
 import type { Conversation, Transcript } from "@convoform/db/src/schema";
-import { Badge, SectionHeading } from "@convoform/ui";
+import { SectionHeading } from "@convoform/ui";
 import { CardContent, CardHeader, CardTitle } from "@convoform/ui";
 import { Skeleton } from "@convoform/ui";
 
 import { FileText, Globe, Timer } from "lucide-react";
-
-import Spinner from "@/components/common/spinner";
 import { formatDuration } from "@/lib/utils";
-import { CollectedDataTable } from "./collectedDataTable";
 import InsightsCard from "./insightsCard";
 import MetadataCard from "./metadataCard";
 import TranscriptCard from "./transcriptCard";
+import { ConversationStatusBadge } from "@/components/StatusBadge";
+import { CollectedDataTable } from "@/components/collectedDataTable";
 
 type Props = {
   conversation: Conversation;
@@ -28,38 +27,13 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
         true,
       );
 
-  const getStatusBadge = () => {
-    if (conversation.finishedAt) {
-      return (
-        <Badge variant="default" className="text-xs">
-          Finished
-        </Badge>
-      );
-    }
-
-    if (conversation.isInProgress) {
-      return (
-        <Badge variant="secondary" className=" text-xs ">
-          <Spinner size="xs" className="me-1" />
-          In progress
-        </Badge>
-      );
-    }
-
-    return (
-      <Badge variant="outline" className="text-xs ">
-        Incomplete
-      </Badge>
-    );
-  };
-
   return (
-    <div className="h-full pb-10">
-      <CardHeader>
-        <div className="  flex items-center gap-2">
+    <>
+      <CardHeader className="sticky flex flex-row items-center justify-between gap-x-6 top-0 z-30 bg-white/70 backdrop-blur-md mb-6">
+        <div className="  flex justify-start items-center gap-2 text-nowrap">
           <FileText className="size-10" />
-          <div className="flex flex-col items-start gap-1">
-            <CardTitle className=" text-primary text-xl capitalize">
+          <div className="flex flex-col items-start gap-1 ">
+            <CardTitle className=" text-primary text-xl capitalize max-w-xs truncate hover:text-wrap">
               {conversation.name}
             </CardTitle>
             <div className="text-xs text-muted-foreground">
@@ -67,11 +41,9 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
             </div>
           </div>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
         <MetadataCard
           metaData={{
-            Status: getStatusBadge(),
+            Status: <ConversationStatusBadge conversation={conversation} />,
             "Time taken": {
               value: timeTaken,
               icon: Timer,
@@ -99,6 +71,9 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
             },
           }}
         />
+        {/* {getStatusBadge()} */}
+      </CardHeader>
+      <CardContent className="space-y-6">
         <div className="grid gap-10 grid-cols-5">
           <div className="col-span-2 space-y-6">
             {conversation.metaData?.insights && (
@@ -120,15 +95,15 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
           </div>
         </div>
       </CardContent>
-    </div>
+    </>
   );
 }
 
 const ConversationDetailSkeleton = () => {
   return (
-    <div className="h-full">
-      <CardHeader>
-        <div className=" flex items-center gap-2">
+    <>
+      <CardHeader className="sticky flex flex-row items-center justify-between gap-x-6 top-0 z-30 bg-white/70 backdrop-blur-md mb-6">
+        <div className="flex justify-start items-center gap-2 text-nowrap">
           <FileText className="size-10" />
           <div className="flex flex-col items-start gap-1">
             <CardTitle>
@@ -141,26 +116,24 @@ const ConversationDetailSkeleton = () => {
         </div>
         <MetadataCard.Skeleton />
       </CardHeader>
-      <CardContent>
-        <div className="grid  gap-10 grid-cols-5">
-          <div className="col-span-2 space-y-4">
+      <CardContent className="space-y-6">
+        <div className="grid gap-10 grid-cols-5">
+          <div className="col-span-2 space-y-6">
             <InsightsCard.Skeleton />
             <div>
-              <h2 className="font-montserrat text-muted-foreground mb-2 text-xl">
-                Collected data
-              </h2>
+              <SectionHeading>Collected information</SectionHeading>
               <CollectedDataTable.Skeleton />
             </div>
           </div>
-          <div className="col-span-3">
-            <h2 className="font-montserrat text-muted-foreground mb-2 text-xl">
-              Transcript
-            </h2>
-            <TranscriptCard.Skeleton />
+          <div className="col-span-3 space-y-6">
+            <div>
+              <SectionHeading>Conversation transcript</SectionHeading>
+              <TranscriptCard.Skeleton />
+            </div>
           </div>
         </div>
       </CardContent>
-    </div>
+    </>
   );
 };
 

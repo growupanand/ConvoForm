@@ -1,6 +1,6 @@
 "use client";
 
-import { toast } from "@convoform/ui";
+import { Skeleton, toast } from "@convoform/ui";
 import { InboxIcon } from "lucide-react";
 
 import { AddressBar } from "@/components/common/browserWindow";
@@ -19,7 +19,25 @@ function ConversationsTable({ data }: { data: Conversation[] }) {
 }
 
 function ConversationsTableSkeleton() {
-  return <TableComponentLoading rows={2} />;
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center justify-end gap-4">
+          <Skeleton className="h-9 w-32" />{" "}
+          {/* Skeleton for per page selector */}
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-9 w-9" />{" "}
+            {/* Skeleton for pagination button */}
+            <Skeleton className="h-9 w-16" />{" "}
+            {/* Skeleton for pagination info */}
+            <Skeleton className="h-9 w-9" />{" "}
+            {/* Skeleton for pagination button */}
+          </div>
+        </div>
+      </div>
+      <TableComponentLoading rows={3} />
+    </div>
+  );
 }
 
 function ConversationsTableEmpty({ formId }: { formId: string }) {

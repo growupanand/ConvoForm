@@ -92,29 +92,6 @@ export function BasicDesignCard({
     <div>
       <Form {...formHook}>
         <form onSubmit={formHook.handleSubmit(onSubmit)} className="space-y-4">
-          {currentSection !== FORM_SECTIONS_ENUMS.defaultScreen && (
-            <FormField
-              control={formHook.control}
-              name="useDefaultDesign"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <ToggleButton
-                      checked={field.value}
-                      onCheckedChange={(v) => {
-                        field.onChange(v);
-                        formHook.handleSubmit(onSubmit)();
-                      }}
-                      disabled={isSavingFormDesign}
-                      label="Use default colors"
-                      id="useDefaultDesign"
-                      description="This will apply default colors to the screen, you can change them in default screen settings"
-                    />
-                  </FormItem>
-                );
-              }}
-            />
-          )}
           {basicFields.map((basicField) => (
             <FormField
               key={basicField.fieldName}
@@ -155,6 +132,32 @@ export function BasicDesignCard({
               }}
             />
           ))}
+          {currentSection !== FORM_SECTIONS_ENUMS.defaultScreen && (
+            <FormField
+              control={formHook.control}
+              name="useDefaultDesign"
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <ToggleButton
+                      className=" ps-0"
+                      label="Use default colors"
+                      id="useDefaultDesign"
+                      description="This will apply default colors to the screen, you can change them in default screen settings"
+                      switchProps={{
+                        checked: field.value,
+                        onCheckedChange: (v) => {
+                          field.onChange(v);
+                          formHook.handleSubmit(onSubmit)();
+                        },
+                        disabled: isSavingFormDesign,
+                      }}
+                    />
+                  </FormItem>
+                );
+              }}
+            />
+          )}
         </form>
       </Form>
     </div>

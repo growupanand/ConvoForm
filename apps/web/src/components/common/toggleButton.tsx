@@ -8,42 +8,41 @@ type SwitchProps = Parameters<typeof Switch>[0];
 export function ToggleButton({
   label,
   id,
-  labelSide = "left",
-  noHorizontalPadding,
   description,
   labelClass,
   icon,
-  ...switchProps
-}: Readonly<
-  {
-    label: string;
-    id: string;
-    labelSide?: "left" | "right";
-    noHorizontalPadding?: boolean;
-    description?: string;
-    labelClass?: string;
-    icon?: React.ReactNode;
-  } & SwitchProps
->) {
-  const leftSide = labelSide === "left";
+  buttonProps,
+  className,
+  switchProps,
+}: Readonly<{
+  className?: HTMLElement["className"];
+  label: string;
+  id: string;
+  description?: string;
+  labelClass?: string;
+  icon?: React.ReactNode;
+  switchProps?: SwitchProps;
+  buttonProps?: Omit<Parameters<typeof Button>[0], "asChild" | "className">;
+}>) {
   return (
     <Label htmlFor={id}>
       <Button
-        size="lg"
         variant="ghost"
+        {...buttonProps}
         className={cn(
-          "flex gap-2 w-full py-2 h-auto justify-between  cursor-pointer ",
-          !leftSide ? "justify-end flex-row-reverse" : undefined,
-          noHorizontalPadding ? "px-0 " : "px-4 ",
-          description ? "items-start" : "items-center",
+          " cursor-pointer text-xl h-auto",
+
+          className,
         )}
         asChild
       >
-        <div>
-          <div className="grid space-y-2">
-            <span className={cn("flex items-center gap-2", labelClass)}>
+        <div className="space-x-4 flex !items-start">
+          <div className="grid space-y-1">
+            <span
+              className={cn("flex items-center gap-2 text-base", labelClass)}
+            >
               {icon && icon}
-              {label}
+              <span>{label}</span>
             </span>
             {description && (
               <span className="text-muted-foreground text-sm font-normal text-wrap">

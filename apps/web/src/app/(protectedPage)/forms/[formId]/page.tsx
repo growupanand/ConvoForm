@@ -2,7 +2,7 @@
 import { use } from "react";
 
 import { useOrganization } from "@clerk/nextjs";
-import { Card, CardContent } from "@convoform/ui";
+import { Card, Skeleton } from "@convoform/ui";
 
 import {
   FormEditorCard,
@@ -10,10 +10,10 @@ import {
 } from "@/app/(protectedPage)/forms/[formId]/_components/formEditor/formEditorCard";
 import FormPreviewBrowser from "@/app/(protectedPage)/forms/[formId]/_components/formEditor/formPreviewBrowser";
 import MainNavTab from "@/app/(protectedPage)/forms/[formId]/_components/mainNavTab";
+import { FormEditPageLayout } from "@/components/formEditPageLayout";
 import { FormContextProvider } from "@/components/formViewer/formContext";
 import { api } from "@/trpc/react";
 import { FormDesignEditor } from "./_components/formDesignEditor";
-import { FormPublishToggle } from "./_components/formPublishToggle";
 import NotFound from "./not-found";
 
 type Props = {
@@ -45,49 +45,47 @@ export default function FormPage(props: Props) {
 
   return (
     <FormContextProvider form={data}>
-      <div className="h-full flex">
-        {/* Form editor section */}
-        <div className=" flex flex-col space-y-2 px-5 max-h-[calc(100vh-100px)] w-[450px] min-w-[450px] overflow-auto">
-          <MainNavTab formId={formId} organizationId={organization.id} />
-
-          <Card className="relative flex-grow overflow-auto border-0 bg-transparent shadow-none">
-            {isLoading ? (
-              <FormEditorFormSkeleton />
-            ) : (
-              <FormEditorCard form={data} organization={organization} />
-            )}
-          </Card>
-          <div>
-            <FormPublishToggle form={data} />
+      <FormEditPageLayout
+        leftSidebar={
+          <div className="h-full w-full flex flex-col space-y-4">
+            <MainNavTab formId={formId} organizationId={organization.id} />
+            <div className="relative grow overflow-auto">
+              <Card className="  border-0 bg-transparent shadow-none">
+                {isLoading ? (
+                  <FormEditorFormSkeleton />
+                ) : (
+                  <FormEditorCard form={data} organization={organization} />
+                )}
+              </Card>
+            </div>
           </div>
-        </div>
-        {/* Form preview section */}
-        <div className="flex grow items-center justify-center py-3 ">
-          <div className="h-[100%] w-full pr-3">
-            <FormPreviewBrowser formId={formId} />
-          </div>
-        </div>
-        {/* Form customize section */}
-        <div className="w-[400px] min-w-[400px] py-3">
+        }
+        rightSidebar={
           <FormDesignEditor organizationId={organization.id} formId={formId} />
-        </div>
-      </div>
+        }
+      >
+        <FormPreviewBrowser formId={formId} />
+      </FormEditPageLayout>
     </FormContextProvider>
   );
 }
 
 function FormPageLoading() {
   return (
-    <div className="h-full flex">
-      <div className="px-3 max-h-[calc(100vh-100px)] w-[400px] min-w-[400px] overflow-auto">
-        <MainNavTab.Skeleton />
-        <Card className="border-0 bg-transparent shadow-none">
-          <CardContent className="p-0 pt-6">
-            <FormEditorFormSkeleton />
-          </CardContent>
-        </Card>
-      </div>
-      <div className="flex grow items-center justify-center py-3 " />
-    </div>
+    <FormEditPageLayout
+      leftSidebar={
+        <div className="flex h-full w-full flex-col space-y-4">
+          <MainNavTab.Skeleton />
+          <div className="relative grow overflow-auto">
+            <Card className="border-0 bg-transparent shadow-none">
+              <FormEditorFormSkeleton />
+            </Card>
+          </div>
+        </div>
+      }
+      rightSidebar={<FormDesignEditor.Skeleton />}
+    >
+      <Skeleton className="h-full w-full " />
+    </FormEditPageLayout>
   );
 }

@@ -16,7 +16,7 @@ function DemoSectionCardInner({ showResponses }: { showResponses: boolean }) {
     <div className="relative flex justify-center gap-10" ref={demoSectionRef}>
       <DemoFormCard isInView={isInView} />
       {showResponses && (
-        <div className="absolute -right-40 -top-10">
+        <div className="absolute -left-60 -top-10">
           <DemoCollectedDataTable isInView={isInView} />
         </div>
       )}

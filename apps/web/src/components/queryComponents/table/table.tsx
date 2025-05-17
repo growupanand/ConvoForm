@@ -99,31 +99,33 @@ export function TableComponent({
 
 export function TableComponentLoading({ rows = 2 }: { rows?: number }) {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          {Array.from({ length: 4 }).map((_, i) => (
-            // biome-ignore lint: ignored
-            <TableHead key={i}>
-              <Skeleton className="h-2 w-full bg-gray-400" />
-            </TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {Array.from({ length: rows }).map((_, i) => (
-          // biome-ignore lint: ignored
-          <TableRow key={i}>
+    <div className="relative max-h-[80vh] overflow-auto rounded-md border bg-white">
+      <Table>
+        <TableHeader className="sticky top-0 bg-gray-50/90">
+          <TableRow>
             {Array.from({ length: 4 }).map((_, i) => (
               // biome-ignore lint: ignored
-              <TableCell key={i}>
-                <Skeleton className="h-2 w-full" />
-              </TableCell>
+              <TableHead key={i} className="h-auto py-2">
+                <Skeleton className="h-4 w-full bg-gray-200" />
+              </TableHead>
             ))}
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: rows }).map((_, i) => (
+            // biome-ignore lint: ignored
+            <TableRow key={i}>
+              {Array.from({ length: 4 }).map((_, i) => (
+                // biome-ignore lint: ignored
+                <TableCell key={i} className="py-2">
+                  <Skeleton className="h-4 w-full bg-gray-100" />
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
 

@@ -7,6 +7,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { type UseFormReturn, useFieldArray } from "react-hook-form";
 
+import { cn } from "@/lib/utils";
 import type { FormHookData } from "../editFieldSheet";
 
 type Props = {
@@ -74,7 +75,7 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
         control={formHook.control}
         name="fieldConfiguration.inputConfiguration.allowMultiple"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
+          <FormItem className="flex flex-row items-start justify-between rounded-lg border p-2">
             <div className="space-y-0.5">
               <FormLabel className="text-sm cursor-pointer">
                 Allow multiple selections
@@ -84,14 +85,14 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
               </FormDescription>
               <FormMessage />
             </div>
-            <FormControl>
+            <FormControl className="!mt-0">
               <Switch checked={field.value} onCheckedChange={field.onChange} />
             </FormControl>
           </FormItem>
         )}
       />
 
-      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
+      <FormItem className="flex flex-row items-start justify-between rounded-lg border p-2">
         <div className="space-y-0.5">
           <FormLabel
             className={`text-sm ${
@@ -107,7 +108,7 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
             {allowMultiple && " (only available for single selection)"}
           </FormDescription>
         </div>
-        <FormControl>
+        <FormControl className="!mt-0">
           <Switch
             checked={hasOtherOption}
             onCheckedChange={handleOtherOptionToggle}
@@ -134,15 +135,20 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
                             {...field}
                             placeholder="Type a choice name"
                             disabled={fields[index]?.isOther}
-                            maxLength={100}
+                            maxLength={fields[index]?.isOther ? undefined : 100}
                             showValueCount
                           />
                         </FormControl>
                         <Button
-                          className="absolute -right-4 -top-4 hidden group-hover:block"
+                          className={cn(
+                            "absolute -right-2 -top-2 hidden group-hover:block",
+                            hasMinimumRequiredChoices || fields[index]?.isOther
+                              ? "group-hover:hidden"
+                              : "",
+                          )}
                           type="button"
                           size="xs"
-                          variant="outline"
+                          variant="destructive"
                           onClick={() => remove(index)}
                           disabled={
                             hasMinimumRequiredChoices || fields[index]?.isOther

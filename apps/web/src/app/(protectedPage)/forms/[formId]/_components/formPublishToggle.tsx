@@ -2,10 +2,11 @@
 
 import type { Form } from "@convoform/db/src/schema";
 
+import Spinner from "@/components/common/spinner";
 import { ToggleButton } from "@/components/common/toggleButton";
 import { api } from "@/trpc/react";
 import { toast } from "@convoform/ui";
-import { Pen, PenOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
 type Props = {
@@ -31,15 +32,28 @@ export function FormPublishToggle({ form }: Readonly<Props>) {
       error: "Unable to save changes",
     });
   }
+
+  const getIcon = () => {
+    if (isPendingUpdateFormIsPublished) {
+      return <Spinner />;
+    }
+    if (isPublished) {
+      return <Eye />;
+    }
+    return <EyeOff className="text-destructive" />;
+  };
+
   return (
     <ToggleButton
-      label={!isPublished ? "Not published" : "Published"}
-      labelClass="text-xl font-bold tracking-tight "
+      label={isPublished ? "Published" : "Unpublished"}
+      icon={getIcon()}
+      labelClass={isPublished ? "" : " text-muted-foreground"}
       id="isFormPublished"
-      defaultChecked={form.isPublished}
-      disabled={isPendingUpdateFormIsPublished}
-      onCheckedChange={toggleIsFormPublished}
-      icon={!isPublished ? <PenOff className=" text-red-400" /> : <Pen />}
+      switchProps={{
+        defaultChecked: form.isPublished,
+        disabled: isPendingUpdateFormIsPublished,
+        onCheckedChange: toggleIsFormPublished,
+      }}
     />
   );
 }

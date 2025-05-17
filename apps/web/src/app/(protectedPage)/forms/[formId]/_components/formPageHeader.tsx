@@ -8,6 +8,7 @@ import { ChevronRight, Home } from "lucide-react";
 import { LinkN } from "@/components/common/linkN";
 import { api } from "@/trpc/react";
 import ChangeNameInput from "./changeNameInput";
+import { FormPublishToggle } from "./formPublishToggle";
 
 type Props = {
   formId: string;
@@ -27,36 +28,35 @@ function FormPageHeader({ formId }: Readonly<Props>) {
   }
 
   return (
-    <div className="p-3">
-      <div className="flex items-center justify-between ">
-        <div className="flex w-full items-center overflow-hidden pe-5 text-xs font-montserrat">
-          <Button size="sm" variant="link" asChild>
-            <LinkN href={"/dashboard"}>
-              <Home size={20} />
+    <div className="flex items-center justify-between gap-x-4">
+      <div className="inline-flex grow items-center">
+        <Button size="sm" variant="link" asChild>
+          <LinkN href={"/dashboard"}>
+            <Home size={20} />
+          </LinkN>
+        </Button>
+        <ChevronRight className="size-5" />
+        {data ? (
+          <>
+            <LinkN href={`/workspaces/${data.workspaceId}`}>
+              <Button
+                variant="link"
+                className="text-base text-muted-foreground hover:text-primary"
+              >
+                <span className="workspace-name">{data.workspace.name}</span>
+              </Button>
             </LinkN>
-          </Button>
-          <ChevronRight className="size-5" />
-          {data ? (
-            <>
-              <LinkN href={`/workspaces/${data.workspaceId}`}>
-                <Button
-                  size="sm"
-                  variant="link"
-                  className="text-muted-foreground hover:text-primary"
-                >
-                  <span className="workspace-name">{data.workspace.name}</span>
-                </Button>
-              </LinkN>
-              <ChevronRight className="size-5" />
-              <ChangeNameInput form={data} className="ms-2" />
-            </>
-          ) : (
-            <span>Form not found</span>
-          )}
-        </div>
-        <div className="flex items-center pe-5">
-          <UserButton />
-        </div>
+            <ChevronRight className="size-5" />
+            <ChangeNameInput form={data} className="ms-2 text-base" />
+          </>
+        ) : (
+          <span>Form not found</span>
+        )}
+      </div>
+
+      <div className="flex items-center justify-end gap-x-4 pe-6">
+        <FormPublishToggle form={data} />
+        <UserButton />
       </div>
     </div>
   );
@@ -64,15 +64,17 @@ function FormPageHeader({ formId }: Readonly<Props>) {
 
 const FormEditorPageHeaderSkeleton = () => {
   return (
-    <div className="border-border/40 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 flex items-center justify-between border-b bg-white p-3 backdrop-blur">
-      <div className="flex items-center ">
-        <Skeleton className="mr-2 h-5 w-5" />
-        <Skeleton className="mr-2 h-5 w-12" />
-        <Skeleton className="mr-2 h-5 w-12" />
-        <Skeleton className="mr-2 h-5 w-20" />
+    <div className="flex items-center justify-between gap-x-4">
+      <div className="inline-flex grow items-center">
+        <Skeleton className="size-5" />
+        <Skeleton className="mx-2 size-5" />
+        <Skeleton className="h-5 w-24" />
+        <Skeleton className="mx-2 size-5" />
+        <Skeleton className="h-5 w-32" />
       </div>
-      <div className="flex items-center gap-2">
-        <Skeleton className="h-10 w-10 animate-pulse rounded-full" />
+      <div className="flex items-center justify-end gap-x-4 pe-6">
+        <Skeleton className="h-8 w-20" />
+        <Skeleton className="size-8 rounded-full" />
       </div>
     </div>
   );

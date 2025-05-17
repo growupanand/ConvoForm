@@ -22,7 +22,10 @@ export function CollectedDataTable({ collectedData }: Readonly<Props>) {
           const value = tableData[columnName]?.value ?? "";
           const fieldConfig = tableData[columnName]?.config;
           return (
-            <TableRow key={`${index}-${columnName}-${value}`}>
+            <TableRow
+              key={`${index}-${columnName}-${value}`}
+              className="grid grid-cols-2 gap-4 w-full"
+            >
               <CollectedDataTableCell className="text-muted-foreground">
                 {columnName}
               </CollectedDataTableCell>
@@ -67,7 +70,7 @@ function CollectedDataTableCell({
   return (
     <TableCell
       className={cn(
-        "py-2 align-text-top whitespace-pre-line text-justify",
+        "py-2 align-text-top whitespace-pre-line text-justify break-words font-normal",
         className,
       )}
     >

@@ -1,6 +1,6 @@
 "use client";
 
-import { CollectedDataTable } from "@/app/(protectedPage)/forms/[formId]/conversations/_components/collectedDataTable";
+import { CollectedDataTable } from "@/components/collectedDataTable";
 import { useFormContext } from "@/components/formViewer/formContext";
 import { ArrowDownRight } from "lucide-react";
 import { type Variants, motion } from "motion/react";
@@ -46,7 +46,7 @@ export function DemoCollectedDataTable({ isInView: _ }: { isInView: boolean }) {
           <span className="font-medium text-sm">Current Response</span>
         </motion.div>
 
-        <div className="min-w-[250px] max-w-[400px] shadow-xl overflow-hidden rounded-3xl border bg-white/40 p-2 backdrop-blur-lg ring-2 ring-brand-200">
+        <div className="min-w-[250px] max-w-[400px] shadow-xl overflow-hidden rounded-3xl border bg-white/50 p-2 backdrop-blur-lg ring-2 ring-brand-200">
           <CollectedDataTable collectedData={collectedData} />
         </div>
       </motion.div>

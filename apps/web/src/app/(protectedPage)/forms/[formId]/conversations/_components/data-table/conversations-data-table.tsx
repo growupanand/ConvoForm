@@ -174,8 +174,8 @@ export function ConversationsDataTable(props: {
   });
 
   return (
-    <div className="pb-10 ">
-      <div className="mb-4 flex items-center justify-between">
+    <>
+      <div className="flex items-center justify-between">
         <div className="flex items-center justify-end gap-4 text-sm">
           <Select defaultValue={perPage} onValueChange={setPerPage}>
             <SelectTrigger className="gap-1 font-semibold">
@@ -233,13 +233,13 @@ export function ConversationsDataTable(props: {
           </Button>
         </CSVLink>
       </div>
-      <div className=" rounded-md border max-h-[calc(100vh-250px)] overflow-y-scroll relative">
-        <Table className="">
+      <div className="rounded-lg border grow overflow-y-auto">
+        <Table>
           <TableHeader className="sticky top-0 bg-background ">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="align-top">
                     {/* <div className="h-10 overflow-hidden resize"> */}
                     {header.isPlaceholder
                       ? null
@@ -274,6 +274,6 @@ export function ConversationsDataTable(props: {
           </TableBody>
         </Table>
       </div>
-    </div>
+    </>
   );
 }

@@ -356,13 +356,7 @@ export const FormEditorFormSkeleton = () => {
       <Skeleton className="h-5 w-[64px]" />
       <Skeleton className="h-10 w-full" />
       <Skeleton className="h-5 w-[64px]" />
-
       <Skeleton className="h-10 w-full" />
-      <Skeleton className="h-5 w-[64px]" />
-
-      <Skeleton className="h-10 w-full" />
-      <br />
-      <Skeleton className="h-[40px] w-full" />
     </div>
   );
 };

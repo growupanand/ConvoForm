@@ -7,7 +7,7 @@ import NotFound from "./not-found";
 
 type Props = {
   children: React.ReactNode;
-  params: { formId: string };
+  params: Promise<{ formId: string }>;
 };
 
 export const metadata: Metadata = {
@@ -29,9 +29,11 @@ export default async function Layout(props: Readonly<Props>) {
     return <NotFound />;
   }
   return (
-    <div className="relative flex h-screen flex-col gap-3 ">
-      <FormEditorPageHeader formId={formId} />
-      <div className="grow">{children}</div>
+    <div className="absolute inset-0  h-screen overflow-y-auto flex flex-col items-stretch gap-y-4 pb-6">
+      <div className="my-4 mx-6 ">
+        <FormEditorPageHeader formId={formId} />
+      </div>
+      <div className="grow relative">{children}</div>
     </div>
   );
 }

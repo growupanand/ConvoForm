@@ -13,8 +13,8 @@ export function SectionHeading({
   className,
 }: HeadingProps) {
   return (
-    <div className={cn("space-y-2 px-4 mb-4", className)}>
-      <div className="font-medium text-lg tracking-tight">{children}</div>
+    <div className={cn("space-y-2 px-4 mb-2", className)}>
+      <div className="font-medium text-lg tracking-tight ">{children}</div>
       {description && (
         <div className="text-muted-foreground text-xs">{description}</div>
       )}

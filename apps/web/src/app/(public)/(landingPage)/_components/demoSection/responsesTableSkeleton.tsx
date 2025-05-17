@@ -15,7 +15,8 @@ export function ResponsesTableSkeleton() {
         <TableHeader className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm">
           <TableRow>
             <TableHead className="w-[200px]">Submission</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead className="text-center">Status</TableHead>
+            <TableHead className="text-center">Completion</TableHead>
             <TableHead className="text-right">Submitted</TableHead>
           </TableRow>
         </TableHeader>
@@ -29,9 +30,14 @@ export function ResponsesTableSkeleton() {
                   <div className="h-3 w-1/2 bg-gray-100 rounded" />
                 </div>
               </TableCell>
-              <TableCell>
+              <TableCell className="text-center">
                 <div className="animate-pulse">
-                  <div className="h-6 w-16 bg-gray-200 rounded" />
+                  <div className="h-4 w-16 bg-gray-200 rounded mx-auto" />
+                </div>
+              </TableCell>
+              <TableCell className="text-center">
+                <div className="animate-pulse">
+                  <div className="h-4 w-12 bg-gray-200 rounded mx-auto" />
                 </div>
               </TableCell>
               <TableCell className="text-right">

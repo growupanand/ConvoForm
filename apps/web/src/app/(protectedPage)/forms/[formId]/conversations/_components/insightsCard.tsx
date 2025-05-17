@@ -6,7 +6,7 @@ import {
   SectionHeading,
   Skeleton,
 } from "@convoform/ui";
-import { HelpCircle, Lightbulb } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 import type { z } from "zod";
 
 type InsightsCardProps = {
@@ -48,8 +48,8 @@ export default function InsightsCard({ insights }: InsightsCardProps) {
   };
 
   return (
-    <Card className=" border-none shadow-none bg-background dark:bg-slate-900">
-      <CardContent className="p-4">
+    <Card className=" border-none shadow-none bg-background dark:bg-slate-900 group">
+      <CardContent className="p-4 ">
         <div className="space-y-2">
           <div className="flex items-start justify-between">
             <SectionHeading className="ps-0 mb-0">
@@ -71,25 +71,25 @@ export default function InsightsCard({ insights }: InsightsCardProps) {
               </Badge>
             </div>
           </div>
+          <div className="max-h-[200px]  overflow-y-auto resize-y">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              <span className="font-medium">TLDR:</span> {insights.tldr}
+            </p>
 
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            <span className="font-medium">TLDR:</span> {insights.tldr}
-          </p>
-
-          {insights.externalQueries.length > 0 && (
-            <>
-              <h4 className="text-sm font-medium mt-3 mb-1">
-                <HelpCircle className="size-4 text-amber-500 inline-block me-1" />
-                User Inquiries
-              </h4>
-              <ul className="list-disc ml-5 space-y-1 text-xs text-muted-foreground">
-                {insights.externalQueries.map((query, i) => (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                  <li key={i}>{query}</li>
-                ))}
-              </ul>
-            </>
-          )}
+            {insights.externalQueries.length > 0 && (
+              <>
+                <h4 className="text-sm font-medium mt-3 mb-1">
+                  User Inquiries
+                </h4>
+                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                  {insights.externalQueries.map((query, i) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                    <li key={i}>{query}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>

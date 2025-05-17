@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Badge } from "@convoform/ui";
+import { Badge, SectionHeading } from "@convoform/ui";
 import type { LucideIcon } from "lucide-react";
 
 type StatsTitleProps = {
@@ -20,12 +20,14 @@ export function StatsTitle({
   children,
 }: StatsTitleProps) {
   return (
-    <div className={cn("flex items-center gap-2 text-lg mb-2", className)}>
-      {Icon && <Icon className=" h-4 w-4 inline" />}
-      <span>{title}</span>
-      {badge && <Badge variant="secondary">{badge}</Badge>}
-      {children}
-    </div>
+    <SectionHeading className={cn("ps-0 text-lg mb-2", className)}>
+      <div className="flex items-center gap-2">
+        {Icon && <Icon className="h-4 w-4 inline" />}
+        {title}
+        {badge && <Badge variant="secondary">{badge}</Badge>}
+        {children}
+      </div>
+    </SectionHeading>
   );
 }
 
@@ -35,9 +37,11 @@ export function StatsTitleSkeleton({
   className,
 }: Pick<StatsTitleProps, "title" | "icon" | "className">) {
   return (
-    <div className={cn("flex items-center gap-2 text-lg mb-2", className)}>
-      {Icon && <Icon className=" h-4 w-4 inline" />}
-      <span>{title}</span>
-    </div>
+    <SectionHeading className={cn("ps-0 text-lg mb-2", className)}>
+      <div className="flex items-center gap-2">
+        {Icon && <Icon className="h-4 w-4 inline" />}
+        <span>{title}</span>
+      </div>
+    </SectionHeading>
   );
 }

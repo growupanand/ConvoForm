@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Skeleton } from "@convoform/ui";
 import { Info, type LucideIcon } from "lucide-react";
 import React from "react";
@@ -23,10 +24,10 @@ export default function MetadataCard({
 }: Readonly<Props>) {
   if (!metaData || Object.keys(metaData).length === 0) {
     return (
-      <div className="text-center py-4 text-muted-foreground">
+      <MetadataCardShell>
         <Info className="inline-block mr-2 h-4 w-4" />
         <span>No metadata available</span>
-      </div>
+      </MetadataCardShell>
     );
   }
 
@@ -76,24 +77,43 @@ export default function MetadataCard({
   extractNestedValues(metaData);
 
   return (
-    <div className="py-4 flex items-start justify-center space-x-10 divide-x-2 flex-wrap">
+    <MetadataCardShell>
       {Object.entries(flattenedData).map(([key, data]) => (
         <MetaInfo key={key} label={key} value={data.value} icon={data.icon} />
       ))}
-    </div>
+    </MetadataCardShell>
   );
 }
 
+function MetadataCardShell({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "py-2 flex items-start justify-start space-x-6 divide-x-2 flex-nowrap overflow-x-auto",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
 MetadataCard.Skeleton = function MetadataCardSkeleton() {
   return (
-    <div className="py-4 flex items-start justify-center space-x-10 divide-x-2">
-      {[1, 2, 3, 4].map((i) => (
+    <MetadataCardShell>
+      {Array.from({ length: 4 }).map((_, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
         <div key={i} className="flex flex-col items-start text-sm px-4">
           <Skeleton className="h-3 w-16 mb-1" />
           <Skeleton className="h-5 w-24" />
         </div>
       ))}
-    </div>
+    </MetadataCardShell>
   );
 };
 
@@ -116,11 +136,13 @@ function MetaInfo({
   }
 
   return (
-    <div className="flex flex-col items-start text-sm px-4 gap-y-1">
-      <div className="text-xs font-light text-muted-foreground">{label}</div>
+    <div className="flex flex-col items-start text-sm px-2 gap-y-1 text-nowrap">
+      <div className="text-xs self-start font-light text-muted-foreground">
+        {label}
+      </div>
       <div className=" flex items-center gap-x-1">
         {Icon ? renderIcon(Icon) : null}
-        {value ?? "-"}
+        <span>{value ?? "-"}</span>
       </div>
     </div>
   );

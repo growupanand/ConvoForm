@@ -1,4 +1,5 @@
-import { Sparkles } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@convoform/ui";
+import { ClipboardList } from "lucide-react";
 import type { ReactNode } from "react";
 
 type DemoResponsesShellProps = {
@@ -7,15 +8,13 @@ type DemoResponsesShellProps = {
 
 export function DemoResponsesShell({ children }: DemoResponsesShellProps) {
   return (
-    <div className="bg-white/50 backdrop-blur-md border rounded-2xl shadow-lg p-4 w-full max-w-[600px] min-h-[300px]">
-      <div className="flex items-center gap-2 mb-4">
-        <Sparkles className="text-brand-500 size-5" />
-        <h3 className="text-lg font-semibold">
-          Demo Form submissions in real-time
-        </h3>
-      </div>
-
-      {children}
-    </div>
+    <Card className="w-full max-w-[600px] min-h-[300px]">
+      <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <ClipboardList className=" size-5" />
+        <h3 className="text-lg font-semibold ">Realtime Submissions</h3>
+        <span className="ms-auto text-muted-foreground ">Demo Form</span>
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </Card>
   );
 }

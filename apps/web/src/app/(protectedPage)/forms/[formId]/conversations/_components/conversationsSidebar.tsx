@@ -101,22 +101,16 @@ export function ConversationsSidebar({ formId }: Props) {
   }
 
   return (
-    <div className="">
-      <div className="relative flex flex-col gap-4 px-3 max-h-[calc(100vh-100px)]">
-        <div>
-          <div>
-            <MainNavTab formId={formId} organizationId={organizationId} />
-          </div>
-          <div>
-            <SecondaryNavigation items={secondaryNavigationItems} />
-          </div>
-        </div>
-        <div className="relative h-full grow overflow-auto pb-5">
-          <ConversationsNavigation
-            conversations={conversations}
-            formId={formId}
-          />
-        </div>
+    <div className="h-full w-full flex flex-col space-y-4">
+      <div className="space-y-4">
+        <MainNavTab formId={formId} organizationId={organizationId} />
+        <SecondaryNavigation items={secondaryNavigationItems} />
+      </div>
+      <div className="relative grow overflow-auto">
+        <ConversationsNavigation
+          conversations={conversations}
+          formId={formId}
+        />
       </div>
     </div>
   );
@@ -124,9 +118,11 @@ export function ConversationsSidebar({ formId }: Props) {
 
 const ConversationsSidebarSkeleton = () => {
   return (
-    <div className="flex flex-col gap-3 px-3">
-      <MainNavTab.Skeleton />
-      <div className="px-4">
+    <div className="h-full w-full flex flex-col space-y-4">
+      <div className="space-y-4">
+        <MainNavTab.Skeleton />
+      </div>
+      <div className="relative grow overflow-auto">
         <ConversationsNavigation.ConversationsCardSkelton />
       </div>
     </div>

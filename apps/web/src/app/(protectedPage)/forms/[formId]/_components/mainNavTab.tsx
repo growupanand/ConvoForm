@@ -46,7 +46,7 @@ export default function MainNavTab({
   const activeTab = tabLinks.find((link) => link.isActive);
 
   return (
-    <Tabs value={activeTab?.name} className="w-full py-3">
+    <Tabs value={activeTab?.name} className="w-full">
       <TabsList className="grid w-full grid-cols-2">
         {tabLinks.map((link) => (
           <TabsTrigger

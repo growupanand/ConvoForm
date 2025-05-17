@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { FormEditPageLayout } from "@/components/formEditPageLayout";
 import { ConversationsSidebar } from "./_components/conversationsSidebar";
 
 type Props = {
@@ -19,11 +20,8 @@ export default async function Layout(props: Props) {
   const { children } = props;
 
   return (
-    <div className="flex h-full">
-      <div className="w-[400px] min-w-[400px]">
-        <ConversationsSidebar formId={formId} />
-      </div>
-      <div className="p-3 grow container ms-0">{children}</div>
-    </div>
+    <FormEditPageLayout leftSidebar={<ConversationsSidebar formId={formId} />}>
+      {children}
+    </FormEditPageLayout>
   );
 }

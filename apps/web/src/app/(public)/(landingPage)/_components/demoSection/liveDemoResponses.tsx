@@ -4,7 +4,6 @@ import { QueryComponent } from "@/components/queryComponents/queryComponent";
 import { api } from "@/trpc/react";
 import type { Conversation } from "@convoform/db/src/schema";
 import {
-  Badge,
   ScrollArea,
   Table,
   TableBody,
@@ -18,12 +17,12 @@ import {
   removeEventHandler,
   sendMessage,
 } from "@convoform/websocket-client";
-import { formatDistanceToNow } from "date-fns";
-import { CircleDot } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 import { DEMO_FORM_ID } from "../constants";
 import { ResponsesTableSkeleton } from "./responsesTableSkeleton";
+import { timeAgo } from "@/lib/utils";
+import { ConversationStatusBadge } from "@/components/StatusBadge";
 
 // Sample data to replace "No data" entries
 const sampleResponses = [
@@ -33,6 +32,14 @@ const sampleResponses = [
     fieldValue: "Feedback on new product features",
     status: "active",
     time: "5 minutes ago",
+    createdAt: new Date().toISOString(),
+    isInProgress: true,
+    finishedAt: null,
+    collectedData: [
+      { fieldValue: "Feedback on new product features" },
+      { fieldValue: null },
+      { fieldValue: null },
+    ],
   },
   {
     id: "sample-2",
@@ -40,6 +47,15 @@ const sampleResponses = [
     fieldValue: "Support ticket submission",
     status: "active",
     time: "12 minutes ago",
+    createdAt: new Date().toISOString(),
+    finishedAt: new Date(),
+    isInProgress: false,
+
+    collectedData: [
+      { fieldValue: "Support ticket submission" },
+      { fieldValue: null },
+      { fieldValue: null },
+    ],
   },
 ];
 
@@ -66,36 +82,6 @@ function useFormWebsocket(formId: string, refetch: () => void) {
 }
 
 // Component for the status badge
-function StatusBadge({ conversation }: { conversation: Conversation }) {
-  const isActive = conversation.isInProgress;
-  const isCompleted = !!conversation.finishedAt;
-
-  if (isCompleted) {
-    return (
-      <Badge variant="outline" className="bg-blue-50 text-blue-700">
-        Completed
-      </Badge>
-    );
-  }
-
-  if (isActive) {
-    return (
-      <Badge
-        variant="outline"
-        className="bg-green-50 text-green-700 flex items-center gap-1"
-      >
-        <CircleDot className="size-3 text-green-500 animate-pulse" />
-        <span>Active</span>
-      </Badge>
-    );
-  }
-
-  return (
-    <Badge variant="outline" className="bg-gray-50 text-gray-700">
-      Abandoned
-    </Badge>
-  );
-}
 
 // Component for a single response row
 function ResponseRow({
@@ -124,16 +110,14 @@ function ResponseRow({
           </div>
         )}
       </TableCell>
-      <TableCell>
-        <StatusBadge conversation={conversation} />
+      <TableCell className="text-center">
+        <ConversationStatusBadge conversation={conversation} />
       </TableCell>
       <TableCell className="text-center">
         <span className="font-medium">{completionPercentage}%</span>
       </TableCell>
       <TableCell className="text-right text-sm text-gray-500">
-        {formatDistanceToNow(new Date(conversation.createdAt), {
-          addSuffix: true,
-        })}
+        {timeAgo(conversation.createdAt)}
       </TableCell>
     </motion.tr>
   );
@@ -154,7 +138,7 @@ function ResponsesTable({ responses }: { responses: Conversation[] }) {
         <TableHeader className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm">
           <TableRow>
             <TableHead className="w-[200px]">Submission</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead className="text-center">Status</TableHead>
             <TableHead className="text-center">Completion</TableHead>
             <TableHead className="text-right">Submitted</TableHead>
           </TableRow>
@@ -173,13 +157,7 @@ function ResponsesTable({ responses }: { responses: Conversation[] }) {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge
-                        variant="outline"
-                        className="bg-green-50 text-green-700 flex items-center gap-1"
-                      >
-                        <CircleDot className="size-3 text-green-500 animate-pulse" />
-                        <span>Active</span>
-                      </Badge>
+                      <ConversationStatusBadge conversation={sample} />
                     </TableCell>
                     <TableCell className="text-center">
                       <div className="flex flex-col items-center">
