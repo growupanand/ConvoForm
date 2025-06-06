@@ -105,4 +105,4 @@ Visit [http://localhost:3000](http://localhost:3000/) in your browser to see the
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/growupanand/ConvoForm/blob/main/LICENSE).
+This project is licensed under the [Apache License 2.0 License](https://github.com/growupanand/ConvoForm/blob/main/LICENSE).
