@@ -1,6 +1,8 @@
 "use client";
 
+import { ConversationStatusBadge } from "@/components/StatusBadge";
 import { QueryComponent } from "@/components/queryComponents/queryComponent";
+import { timeAgo } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import type { Conversation } from "@convoform/db/src/schema";
 import {
@@ -21,8 +23,6 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 import { DEMO_FORM_ID } from "../constants";
 import { ResponsesTableSkeleton } from "./responsesTableSkeleton";
-import { timeAgo } from "@/lib/utils";
-import { ConversationStatusBadge } from "@/components/StatusBadge";
 
 // Sample data to replace "No data" entries
 const sampleResponses = [

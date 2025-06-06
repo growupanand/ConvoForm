@@ -2,7 +2,10 @@
 
 import { SafeCellRenderer } from "@/components/queryComponents/table/SafeCellRenderer";
 
-import { getConversationTableData } from "@/components/queryComponents/table/utils";
+import {
+  getConversationTableData,
+  getFlatConversationTableData,
+} from "@/components/queryComponents/table/utils";
 import { timeAgo } from "@/lib/utils";
 import type { Conversation } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui";
@@ -61,18 +64,22 @@ export function ConversationsDataTable(props: {
 
   const exportFileName = `Responses ${new Date().toLocaleString()}.csv`;
 
-  const { tableData, uniqueCollectedDataColumns } = useMemo(() => {
+  const { tableData, uniqueCollectedDataColumns, csvData } = useMemo(() => {
     let collectedDataColumns = [] as string[];
     const tableData = [];
+    const csvData = [];
 
     for (const conversation of data) {
       const { collectedData, id, name, createdAt, finishedAt, isInProgress } =
         conversation;
       const sanitizedCollectedData = getConversationTableData(collectedData);
+      const flattenedCollectedData =
+        getFlatConversationTableData(collectedData);
       collectedDataColumns = collectedDataColumns.concat(
         Object.keys(sanitizedCollectedData),
       );
 
+      // Data for table display (with nested objects for proper rendering)
       tableData.push({
         id,
         name,
@@ -84,6 +91,19 @@ export function ConversationsDataTable(props: {
             : "Not Started",
         ...sanitizedCollectedData,
       });
+
+      // Data for CSV export (with flattened values)
+      csvData.push({
+        id,
+        name,
+        createdAt: createdAt.toLocaleString(),
+        status: finishedAt
+          ? "Finished"
+          : isInProgress
+            ? "In Progress"
+            : "Not Started",
+        ...flattenedCollectedData,
+      });
     }
 
     const uniqueCollectedDataColumns = Array.from(
@@ -93,6 +113,7 @@ export function ConversationsDataTable(props: {
     return {
       tableData,
       uniqueCollectedDataColumns,
+      csvData,
     };
   }, [data]);
 
@@ -227,7 +248,7 @@ export function ConversationsDataTable(props: {
             </Button>
           </div>
         </div>
-        <CSVLink data={tableData} filename={exportFileName}>
+        <CSVLink data={csvData} filename={exportFileName}>
           <Button size="sm" variant="ghost">
             <Download size={20} className="mr-2" /> <span>Export CSV</span>
           </Button>
