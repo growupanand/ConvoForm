@@ -3,13 +3,13 @@ import { SectionHeading } from "@convoform/ui";
 import { CardContent, CardHeader, CardTitle } from "@convoform/ui";
 import { Skeleton } from "@convoform/ui";
 
-import { FileText, Globe, Timer } from "lucide-react";
+import { ConversationStatusBadge } from "@/components/StatusBadge";
+import { CollectedDataTable } from "@/components/collectedDataTable";
 import { formatDuration } from "@/lib/utils";
+import { FileText, Globe, Timer } from "lucide-react";
 import InsightsCard from "./insightsCard";
 import MetadataCard from "./metadataCard";
 import TranscriptCard from "./transcriptCard";
-import { ConversationStatusBadge } from "@/components/StatusBadge";
-import { CollectedDataTable } from "@/components/collectedDataTable";
 
 type Props = {
   conversation: Conversation;

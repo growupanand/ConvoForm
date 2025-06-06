@@ -1,6 +1,6 @@
-import { Badge } from "@convoform/ui";
 import Spinner from "@/components/common/spinner";
 import type { Conversation } from "@convoform/db/src/schema";
+import { Badge } from "@convoform/ui";
 
 type StatusBadgeProps = {
   conversation: Pick<Conversation, "finishedAt" | "isInProgress">;
