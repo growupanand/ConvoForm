@@ -16,7 +16,7 @@ type Props = {
 
 function FormPageHeader({ formId }: Readonly<Props>) {
   const { organization, isLoaded: isOrganizationLoaded } = useOrganization();
-  const { data, isLoading } = api.form.getOneWithWorkspace.useQuery({
+  const { data, isLoading } = api.form.getOne.useQuery({
     id: formId,
   });
 
@@ -38,12 +38,12 @@ function FormPageHeader({ formId }: Readonly<Props>) {
         <ChevronRight className="size-5" />
         {data ? (
           <>
-            <LinkN href={`/workspaces/${data.workspaceId}`}>
+            <LinkN href="/forms">
               <Button
                 variant="link"
                 className="text-base text-muted-foreground hover:text-primary"
               >
-                <span className="workspace-name">{data.workspace.name}</span>
+                <span>Forms</span>
               </Button>
             </LinkN>
             <ChevronRight className="size-5" />

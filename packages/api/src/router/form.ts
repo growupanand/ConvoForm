@@ -26,7 +26,6 @@ export const formRouter = createTRPCRouter({
   create: authProtectedProcedure
     .input(
       newFormSchema.extend({
-        workspaceId: z.string().min(1),
         organizationId: z.string().min(1),
       }),
     )
@@ -42,7 +41,6 @@ export const formRouter = createTRPCRouter({
         .values({
           userId: ctx.userId,
           organizationId: input.organizationId,
-          workspaceId: input.workspaceId,
           name: input.name,
           overview: input.overview,
           welcomeScreenCTALabel: input.welcomeScreenCTALabel,
@@ -65,7 +63,6 @@ export const formRouter = createTRPCRouter({
           importedFromGoogleForms: Boolean(input.googleFormId),
         },
         groups: {
-          workspace: savedForm.workspaceId,
           organization: savedForm.organizationId,
         },
       });
@@ -100,7 +97,6 @@ export const formRouter = createTRPCRouter({
               ...field,
             },
             groups: {
-              workspace: savedForm.workspaceId,
               organization: savedForm.organizationId,
             },
           });
@@ -137,17 +133,14 @@ export const formRouter = createTRPCRouter({
     .input(
       z.object({
         organizationId: z.string().min(1),
-        workspaceId: z.string().min(1),
       }),
     )
     .query(async ({ input, ctx }) => {
       const forms = await ctx.db.query.form.findMany({
-        where: (form, { eq, and }) =>
-          and(
-            eq(form.organizationId, input.organizationId),
-            eq(form.workspaceId, input.workspaceId),
-          ),
-        orderBy: (form, { asc }) => [asc(form.createdAt)],
+        where: (form, { eq }) => {
+          return eq(form.organizationId, input.organizationId);
+        },
+        orderBy: (form, { asc }) => asc(form.createdAt),
       });
       return forms;
     }),
@@ -164,21 +157,6 @@ export const formRouter = createTRPCRouter({
       });
     }),
 
-  getOneWithWorkspace: publicProcedure
-    .input(
-      z.object({
-        id: z.string().min(1),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      return await ctx.db.query.form.findFirst({
-        where: eq(form.id, input.id),
-        with: {
-          workspace: true,
-        },
-      });
-    }),
-
   getOneWithFields: publicProcedure
     .input(
       z.object({
@@ -186,20 +164,19 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const formWithWorkspaceFields = await ctx.db.query.form.findFirst({
+      const formWithFields = await ctx.db.query.form.findFirst({
         where: eq(form.id, input.id),
         with: {
-          workspace: true,
           formFields: true,
         },
         orderBy: (form, { asc }) => [asc(form.createdAt)],
       });
 
-      if (!formWithWorkspaceFields) {
+      if (!formWithFields) {
         return undefined;
       }
 
-      const { workspace, formFields, ...restForm } = formWithWorkspaceFields;
+      const { formFields, ...restForm } = formWithFields;
 
       // Sort form fields
       const formFieldsOrders = getSafeFormFieldsOrders(restForm, formFields);
@@ -215,7 +192,6 @@ export const formRouter = createTRPCRouter({
 
       return {
         ...restForm,
-        workspace,
         formFieldsOrders,
         formFields: sortedFormFields,
       };
@@ -237,9 +213,6 @@ export const formRouter = createTRPCRouter({
         ctx.analytics.track("form:delete", {
           properties: {
             ...result,
-          },
-          groups: {
-            workspace: result.workspaceId,
           },
         });
       }
@@ -272,7 +245,6 @@ export const formRouter = createTRPCRouter({
       ctx.analytics.track("form:update", {
         properties: input,
         groups: {
-          workspace: updatedForm.workspaceId,
           organization: updatedForm.organizationId,
         },
       });
@@ -310,7 +282,6 @@ export const formRouter = createTRPCRouter({
       ctx.analytics.track("form:update", {
         properties: input,
         groups: {
-          workspace: updatedForm.workspaceId,
           organization: updatedForm.organizationId,
         },
       });

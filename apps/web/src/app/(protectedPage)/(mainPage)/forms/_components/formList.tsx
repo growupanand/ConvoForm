@@ -1,6 +1,5 @@
 "use client";
 
-import type { Workspace } from "@convoform/db/src/schema";
 import { motion, stagger, useAnimate } from "motion/react";
 import { useEffect } from "react";
 
@@ -15,15 +14,14 @@ import { FormListItem } from "./formListItem";
 import FormListLoading from "./formListLoading";
 
 type Props = {
-  workspace: Workspace;
+  organizationId: string;
 };
 
-export function FormList({ workspace }: Readonly<Props>) {
+export function FormList({ organizationId }: Readonly<Props>) {
   const [scope, animate] = useAnimate();
 
   const { isLoading, data } = api.form.getAll.useQuery({
-    workspaceId: workspace.id,
-    organizationId: workspace.organizationId,
+    organizationId,
   });
 
   const forms = data ?? [];
@@ -31,7 +29,7 @@ export function FormList({ workspace }: Readonly<Props>) {
 
   const { data: formWithConversationsCount } =
     api.conversation.getCountByFormIds.useQuery({
-      organizationId: workspace.organizationId,
+      organizationId,
       formIds: forms.map((form) => form.id),
     });
 
@@ -67,7 +65,7 @@ export function FormList({ workspace }: Readonly<Props>) {
           title="No Forms Yet"
           description="Get started by creating your first form. Click the button below to get started."
           illustration={IllustrationImageEnum.UnboxingDoodle}
-          actionButton={<CreateFormButton workspace={workspace} />}
+          actionButton={<CreateFormButton organizationId={organizationId} />}
         />
       )}
       {!emptyForms && (

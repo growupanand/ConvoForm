@@ -17,7 +17,6 @@ export const eventObject = z.enum([
   "formField",
   "formDesign",
   "organization",
-  "workspace",
   "user",
   "collectData",
   "organizationMember",
@@ -26,7 +25,7 @@ export type EventObject = z.infer<typeof eventObject>;
 
 export type EventName = `${EventObject}:${EventAction}`;
 
-export const eventGroupName = z.enum(["organization", "workspace"]);
+export const eventGroupName = z.enum(["organization"]);
 
 export type EventGroupName = z.infer<typeof eventGroupName>;
 

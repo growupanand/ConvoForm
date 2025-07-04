@@ -9,16 +9,15 @@ import { useEffect, useRef, useState } from "react";
 
 import {
   type GoogleDriveFormMeta,
-  type Workspace,
   convertGoogleFormToNewForm,
 } from "@convoform/db/src/schema";
 import { useRouter } from "next/navigation";
 
 type Props = {
-  workspace: Workspace;
+  organizationId: string;
 };
 
-export default function ImportGoogleFormButton({ workspace }: Props) {
+export default function ImportGoogleFormButton({ organizationId }: Props) {
   const router = useRouter();
 
   const { getAccessToken, isAuthenticating } = useGoogleAuth();
@@ -118,8 +117,7 @@ export default function ImportGoogleFormButton({ workspace }: Props) {
     });
     const newForm = {
       ...convertGoogleFormToNewForm(googleFormDetails),
-      workspaceId: workspace.id,
-      organizationId: workspace.organizationId,
+      organizationId,
     };
     await createFormMutation.mutateAsync({
       ...newForm,

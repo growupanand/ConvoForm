@@ -9,7 +9,6 @@ import { organizationRouter } from "./organization";
 import { usageRouter } from "./usage";
 import { usersRouter } from "./users";
 import { webhookRouter } from "./webhook";
-import { workspaceRouter } from "./workspace";
 
 /**
  * This is the primary router for your server.
@@ -17,7 +16,6 @@ import { workspaceRouter } from "./workspace";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  workspace: workspaceRouter,
   form: formRouter,
   conversation: conversationRouter,
   metrics: metricsRouter,

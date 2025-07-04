@@ -22,7 +22,7 @@ export const formField = pgTable("FormField", {
 });
 
 export const formFieldRelations = relations(formField, ({ one }) => ({
-  workspace: one(form, {
+  form: one(form, {
     fields: [formField.formId],
     references: [form.id],
   }),
