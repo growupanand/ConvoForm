@@ -162,6 +162,13 @@
       "when": 1747156602277,
       "tag": "0022_hard_marvel_zombies",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1751601429601,
+      "tag": "0023_gigantic_moon_knight",
+      "breakpoints": true
     }
   ]
 }
