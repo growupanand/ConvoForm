@@ -18,7 +18,7 @@ export const selectFormSchema = createSelectSchema(form, {
 });
 
 export const newFormSchema = insertFormSchema
-  .omit({ userId: true, workspaceId: true, organizationId: true })
+  .omit({ userId: true, organizationId: true })
   .extend({
     formFields: insertFormFieldSchema.omit({ formId: true }).array().min(1),
   });

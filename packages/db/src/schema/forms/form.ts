@@ -4,7 +4,6 @@ import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { getBaseSchema } from "../base";
 import { conversation } from "../conversations";
 import { formField } from "../formFields";
-import { workspace } from "../workspaces/workspace";
 
 export const form = pgTable("Form", {
   ...getBaseSchema(),
@@ -15,12 +14,7 @@ export const form = pgTable("Form", {
   welcomeScreenCTALabel: text("welcomeScreenCTALabel").notNull(),
   isPublished: boolean("isPublished").default(false).notNull(),
   publishedAt: timestamp("publishedAt"),
-  workspaceId: text("workspaceId")
-    .notNull()
-    .references(() => workspace.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
+
   userId: text("userId").notNull(),
   organizationId: text("organizationId").notNull(),
   isAIGenerated: boolean("isAIGenerated").default(false).notNull(),
@@ -45,11 +39,7 @@ export const form = pgTable("Form", {
   googleFormId: text("googleFormId"),
 });
 
-export const formRelations = relations(form, ({ one, many }) => ({
-  workspace: one(workspace, {
-    fields: [form.workspaceId],
-    references: [workspace.id],
-  }),
+export const formRelations = relations(form, ({ many }) => ({
   formFields: many(formField),
   conversations: many(conversation),
 }));

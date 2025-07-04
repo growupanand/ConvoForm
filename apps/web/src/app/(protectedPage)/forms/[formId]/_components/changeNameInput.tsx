@@ -20,7 +20,7 @@ export default function ChangeNameInput({ form, className }: Props) {
   const updateForm = api.form.patch.useMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [["form", "getOneWithWorkspace"]],
+        queryKey: [["form"]],
       });
     },
   });

@@ -2,15 +2,11 @@
 
 import { ClerkLoading, OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { Skeleton } from "@convoform/ui";
-import { toast } from "@convoform/ui";
-import { useQueryClient } from "@tanstack/react-query";
-import { Loader2, Plus } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { usePathname } from "next/navigation";
+import { useMemo } from "react";
 
 import BrandNameLink from "@/components/common/brandName";
-import type { NavLink, NavigationConfig } from "@/lib/types/navigation";
-import { api } from "@/trpc/react";
+import type { NavigationConfig } from "@/lib/types/navigation";
 import { NavigationLinks } from "./mainNavigation/mainNavigation";
 import { UsageCard } from "./usageCard";
 
@@ -19,63 +15,7 @@ type Props = {
 };
 
 export function NavigationCardContent({ orgId }: Readonly<Props>) {
-  const { isLoading, data, isError, refetch } = api.workspace.getAll.useQuery({
-    organizationId: orgId,
-  });
-  const isLoadingWorkspaces = isLoading;
-  const workspaces = data ?? [];
-  const queryClient = useQueryClient();
-
-  const createWorkspace = api.workspace.create.useMutation({
-    onSuccess: (newWorkspace) => {
-      toast.success("Workspace created", {
-        duration: 1500,
-      });
-      queryClient.invalidateQueries({
-        queryKey: [["workspace", "getAll"]],
-      });
-      router.push(`/workspaces/${newWorkspace.id}/`);
-    },
-  });
-  const isCreatingWorkspace = createWorkspace.isPending;
-
-  const handleCreateWorkspace = useCallback(() => {
-    createWorkspace.mutate({
-      organizationId: orgId,
-      name: "New Workspace",
-    });
-  }, [orgId]);
-
-  const router = useRouter();
-
-  const createWorkspaceActionIcon = isCreatingWorkspace ? (
-    <Loader2 className=" size-4 animate-spin" />
-  ) : (
-    <Plus className="size-4" />
-  );
-
   const pathname = usePathname();
-
-  const workspaceLink = {
-    text: isError ? "Unable to load workspaces" : "No workspaces",
-    variant: isError ? "error" : "default",
-    action: isError
-      ? {
-          label: "Retry",
-          onClick: refetch,
-        }
-      : undefined,
-  };
-
-  const workspacesLinks = useMemo(() => {
-    return workspaces.length > 0
-      ? (workspaces.map((workspace) => ({
-          name: workspace.name,
-          link: `/workspaces/${workspace.id}`,
-          isActive: pathname.includes(`${workspace.id}`),
-        })) as NavLink[])
-      : [workspaceLink];
-  }, [workspaces, pathname, workspaceLink]);
 
   const navigationLinks = useMemo<NavigationConfig>(
     () =>
@@ -86,22 +26,12 @@ export function NavigationCardContent({ orgId }: Readonly<Props>) {
           isActive: pathname.includes("dashboard"),
         },
         {
-          title: "Workspaces",
-          action: {
-            icon: createWorkspaceActionIcon,
-            onClick: handleCreateWorkspace,
-            disabled: isCreatingWorkspace,
-          },
-          links: isLoadingWorkspaces
-            ? [
-                {
-                  text: "Loading workspaces",
-                },
-              ]
-            : workspacesLinks,
+          name: "Forms",
+          link: "/forms",
+          isActive: pathname.includes("/forms"),
         },
       ] as NavigationConfig,
-    [workspacesLinks, pathname, isCreatingWorkspace, isLoadingWorkspaces],
+    [pathname],
   );
 
   const UserActions = () => (

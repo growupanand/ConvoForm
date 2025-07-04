@@ -1,6 +1,6 @@
 "use client";
 
-import { type Workspace, newFormSchema } from "@convoform/db/src/schema";
+import { newFormSchema } from "@convoform/db/src/schema";
 import { Button } from "@convoform/ui";
 import {
   DropdownMenu,
@@ -19,7 +19,7 @@ import { api } from "@/trpc/react";
 import { GenerateFormModal } from "./generateFormModal";
 
 type Props = {
-  workspace: Workspace;
+  organizationId: string;
 };
 
 export type HandleCreateForm = (
@@ -48,7 +48,7 @@ const newFormData: z.infer<typeof newFormSchema> = newFormSchema.parse({
   formFieldsOrders: [],
 });
 
-export default function CreateFormButton({ workspace }: Readonly<Props>) {
+export default function CreateFormButton({ organizationId }: Readonly<Props>) {
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
@@ -62,8 +62,7 @@ export default function CreateFormButton({ workspace }: Readonly<Props>) {
   const handleCreateForm: HandleCreateForm = async (formData) => {
     const createFormPromise = createForm.mutateAsync({
       ...formData,
-      workspaceId: workspace.id,
-      organizationId: workspace.organizationId,
+      organizationId,
     });
 
     toast.promise(createFormPromise, {
