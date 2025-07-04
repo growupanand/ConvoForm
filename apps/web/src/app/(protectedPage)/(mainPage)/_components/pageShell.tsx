@@ -10,8 +10,8 @@ export function PageShell({
   actionButtonBottom?: React.ReactNode;
 }) {
   return (
-    <div className="pb-5 container px-4 ms-0">
-      <div className="mb-6  ">
+    <div className="pb-5 container px-4 ms-0 space-y-6">
+      <div className=" space-y-4 ">
         <div className="flex items-baseline justify-between gap-3">
           <div className="grow">
             {typeof title === "string" ? (
