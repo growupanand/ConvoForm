@@ -136,7 +136,7 @@ export function EditFieldSheet({
             className="relative flex h-full flex-col justify-between overflow-y-auto pe-5 ps-2 pb-4"
           >
             <div className="mb-6">
-              <h2 className="mb-4 font-semibold p-2 bg-secondary rounded-lg border flex items-center gap-2">
+              <h2 className="mb-4 font-semibold p-2 bg-emphasis rounded-lg border flex items-center gap-2">
                 Question Configuration
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -221,7 +221,7 @@ export function EditFieldSheet({
                   )}
                 />
               </div>
-              <h2 className="mb-4 mt-10 font-semibold p-2 bg-secondary rounded-lg border flex items-center gap-2">
+              <h2 className="mb-4 mt-10 font-semibold p-2 bg-emphasis rounded-lg border flex items-center gap-2">
                 Answer Configuration
                 <Tooltip>
                   <TooltipTrigger asChild>

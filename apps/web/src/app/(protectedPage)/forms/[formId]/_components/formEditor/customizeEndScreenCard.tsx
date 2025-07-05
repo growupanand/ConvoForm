@@ -1,7 +1,12 @@
 "use client";
 
 import { type Form, patchFormSchema } from "@convoform/db/src/schema";
-import { Collapsible, CollapsibleContent, toast } from "@convoform/ui";
+import {
+  Collapsible,
+  CollapsibleContent,
+  MutedText,
+  toast,
+} from "@convoform/ui";
 import { Label } from "@convoform/ui";
 import { Switch } from "@convoform/ui";
 import { Textarea } from "@convoform/ui";
@@ -126,9 +131,7 @@ export function CustomizeEndScreenCard({ form }: Readonly<Props>) {
                 >
                   Custom message
                 </Label>
-                <div className="text-muted-foreground text-sm">
-                  Display custom text after form submission
-                </div>
+                <MutedText>Display custom text after form submission</MutedText>
               </div>
               <Switch
                 disabled={isSavingForm}

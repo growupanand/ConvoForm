@@ -12,7 +12,7 @@ const progressVariants = cva(
       variant: {
         default: "bg-transparent",
         primary: "bg-primary/20",
-        secondary: "bg-secondary/20",
+        secondary: "bg-emphasis/20",
         accent: "bg-accent/20",
         destructive: "bg-destructive/20",
         subtle:
@@ -40,7 +40,7 @@ const indicatorVariants = cva(
       variant: {
         default: "bg-muted-foreground",
         primary: "bg-primary",
-        secondary: "bg-secondary",
+        secondary: "bg-emphasis",
         accent: "bg-accent",
         destructive: "bg-destructive",
         subtle: "bg-muted",

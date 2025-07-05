@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@convoform/ui";
+import { Button, Card } from "@convoform/ui";
 import { toast } from "@convoform/ui";
 import { ExternalLink, RotateCw } from "lucide-react";
 import Link from "next/link";
@@ -33,13 +33,13 @@ const BrowserWindow = ({
   className,
 }: Props) => {
   return (
-    <div
+    <Card
       className={cn(
-        "relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 shadow-xl shadow-gray-100 ",
+        "relative flex h-full w-full flex-col overflow-hidden ",
         className,
       )}
     >
-      <div className="flex items-center justify-between gap-x-2 bg-gray-200 px-3 py-1">
+      <div className="flex items-center justify-between gap-x-2 bg-muted px-3 py-1 border-b">
         <WindowButtons />
         <AddressBar link={link} />
         <ActionButtons
@@ -60,7 +60,7 @@ const BrowserWindow = ({
       >
         {children}
       </div>
-    </div>
+    </Card>
   );
 };
 
@@ -104,7 +104,7 @@ const ActionButtons = ({
 export const AddressBar = ({ link }: { link?: string }) => (
   <div>
     {link && (
-      <div className="flex w-full items-center gap-1 rounded-lg bg-gray-100">
+      <div className="flex w-full items-center gap-1 rounded-lg bg-emphasis">
         <Link href={link} target="_blank">
           <Button variant="link" size="sm">
             <span className="overflow-hidden">{link}</span>

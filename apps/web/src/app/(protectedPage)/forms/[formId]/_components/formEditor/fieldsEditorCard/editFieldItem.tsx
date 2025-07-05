@@ -197,7 +197,7 @@ export function EditFieldItem({
                       {...listeners}
                       {...attributes}
                     >
-                      <Grip className="stroke-muted-foreground size-4" />
+                      <Grip className=" size-4" />
                     </Button>
                   </div>
                 </FormControl>
