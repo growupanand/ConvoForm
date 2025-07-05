@@ -60,9 +60,10 @@ export function BasicDesignCard({
   defaultFormDesign,
 }: Readonly<Props>) {
   const useDefaultDesign = formDesign.useDefaultDesign;
+  const isDefaultScreen = currentSection === FORM_SECTIONS_ENUMS.defaultScreen;
+
   const shouldDisableInput =
-    isSavingFormDesign ||
-    (currentSection !== FORM_SECTIONS_ENUMS.defaultScreen && useDefaultDesign);
+    isSavingFormDesign || (!isDefaultScreen && useDefaultDesign);
 
   const formHook = useForm<FormHookData>({
     defaultValues: {
@@ -73,6 +74,8 @@ export function BasicDesignCard({
     resolver: zodResolver(formHookSchema),
     mode: "onChange",
   });
+
+  const useDefaultColors = formHook.watch("useDefaultDesign");
 
   const onSubmit = (formData: FormHookData) => {
     debounce(() => {
@@ -92,46 +95,47 @@ export function BasicDesignCard({
     <div>
       <Form {...formHook}>
         <form onSubmit={formHook.handleSubmit(onSubmit)} className="space-y-4">
-          {basicFields.map((basicField) => (
-            <FormField
-              key={basicField.fieldName}
-              control={formHook.control}
-              name={basicField.fieldName}
-              render={({ field }) => {
-                // Because if user selected use default design, we want to show the default color in form
-                const fieldValue = useDefaultDesign
-                  ? defaultFormDesign[basicField.fieldName]
-                  : field.value;
+          {(!useDefaultColors || isDefaultScreen) &&
+            basicFields.map((basicField) => (
+              <FormField
+                key={basicField.fieldName}
+                control={formHook.control}
+                name={basicField.fieldName}
+                render={({ field }) => {
+                  // Because if user selected use default design, we want to show the default color in form
+                  const fieldValue = useDefaultDesign
+                    ? defaultFormDesign[basicField.fieldName]
+                    : field.value;
 
-                return (
-                  <FormItem onChange={formHook.handleSubmit(onSubmit)}>
-                    <FormLabel>{basicField.fieldLabel}</FormLabel>
-                    <div className="flex gap-2 items-center justify-between">
-                      <FormControl>
+                  return (
+                    <FormItem onChange={formHook.handleSubmit(onSubmit)}>
+                      <FormLabel>{basicField.fieldLabel}</FormLabel>
+                      <div className="flex gap-2 items-center justify-between">
+                        <FormControl>
+                          <Input
+                            type="color"
+                            className="max-w-14"
+                            {...field}
+                            value={fieldValue}
+                            disabled={shouldDisableInput}
+                          />
+                        </FormControl>
                         <Input
-                          type="color"
-                          className="max-w-14"
+                          type="text"
+                          style={{
+                            color: fieldValue,
+                          }}
                           {...field}
                           value={fieldValue}
                           disabled={shouldDisableInput}
                         />
-                      </FormControl>
-                      <Input
-                        type="text"
-                        style={{
-                          color: fieldValue,
-                        }}
-                        {...field}
-                        value={fieldValue}
-                        disabled={shouldDisableInput}
-                      />
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-          ))}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+            ))}
           {currentSection !== FORM_SECTIONS_ENUMS.defaultScreen && (
             <FormField
               control={formHook.control}
@@ -140,10 +144,10 @@ export function BasicDesignCard({
                 return (
                   <FormItem>
                     <ToggleButton
-                      className=" ps-0"
-                      label="Use default colors"
+                      className=" "
+                      label="Default theme"
                       id="useDefaultDesign"
-                      description="This will apply default colors to the screen, you can change them in default screen settings"
+                      description="Applies default theme (configurable in default screen)"
                       switchProps={{
                         checked: field.value,
                         onCheckedChange: (v) => {
