@@ -3,6 +3,7 @@ import "@convoform/tailwind-config/src/globals.css";
 export * from "./components/ui/accordion";
 export * from "./components/ui/avatar";
 export * from "./components/ui/badge";
+export * from "./components/ui/breadcrumb";
 export * from "./components/ui/button";
 export * from "./components/ui/card";
 export * from "./components/ui/checkbox";
@@ -33,6 +34,7 @@ export * from "./components/ui/mutedText";
 export * from "./components/ui/alert";
 export * from "./components/ui/alert-dialog";
 export * from "./components/ui/drawer";
+export * from "./components/ui/sidebar";
 
 // Custome components
 export * from "./components/headingInput";
@@ -40,3 +42,4 @@ export * from "./components/datePicker";
 export * from "./components/timePicker/timePicker";
 export * from "./components/timeline";
 export * from "./components/sectionHeading";
+export * from "./components/mutedText";

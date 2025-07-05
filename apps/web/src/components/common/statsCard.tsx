@@ -29,15 +29,15 @@ export const StatsCard = ({
     >
       <div className="rounded-xl overflow-hidden bg-white border flex flex-col">
         <CardHeader className="py-2 flex-1 flex-row justify-between items-center">
-          <CardTitle className="text-sm">{title}</CardTitle>
+          <CardTitle className="text-base">{title}</CardTitle>
           {icon}
         </CardHeader>
-        <CardContent className="px-4 pb-2 text-xl font-bold ">
+        <CardContent className="px-4 pb-2 text-xl font-bold text-foreground">
           {primaryValue}
         </CardContent>
       </div>
       {description && (
-        <CardFooter className="px-4 py-2 text-xs text-muted-foreground bg-muted items-start self-start">
+        <CardFooter className="px-4 py-2 text-sm text-subtle-foreground bg-muted items-start self-start">
           {description}
         </CardFooter>
       )}

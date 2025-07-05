@@ -16,7 +16,7 @@ const config: Config = {
     extend: {
       colors: {
         border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
+        input: "hsl(var(--border))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -49,6 +49,26 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
         brand: colors.blue,
+        emphasis: {
+          DEFAULT: "hsl(var(--emphasis))",
+          foreground: "hsl(var(--emphasis-foreground))",
+        },
+        subtle: {
+          DEFAULT: "hsl(var(--subtle))",
+          foreground: "hsl(var(--subtle-foreground))",
+        },
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar-background))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          primary: "hsl(var(--sidebar-primary))",
+          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+          accent: "hsl(220, 14%, 96%)",
+          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          ring: "hsl(var(--sidebar-ring))",
+          emphasis: "hsl(var(--emphasis))",
+          "emphasis-foreground": "hsl(var(--emphasis-foreground))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

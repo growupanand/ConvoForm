@@ -4,13 +4,21 @@ import { Skeleton } from "@convoform/ui";
 import { Tabs, TabsList, TabsTrigger } from "@convoform/ui";
 import { usePathname } from "next/navigation";
 
-import type { NavLink } from "@/lib/types/navigation";
 import { api } from "@/trpc/react";
 import Link from "next/link";
 
 type Props = {
   formId: string;
   organizationId: string;
+};
+
+export type NavLink = {
+  link: string;
+  name: string;
+  isActive?: boolean;
+  getIsActive?: (link: string) => boolean;
+  disabled?: boolean;
+  activeClassName?: string;
 };
 
 export default function MainNavTab({

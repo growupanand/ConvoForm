@@ -12,6 +12,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
+  MutedText,
 } from "@convoform/ui";
 import { Badge } from "@convoform/ui";
 import {
@@ -162,14 +163,14 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
         >
           <AccordionTrigger
             className={cn(
-              "text-muted-foreground group font-medium hover:text-black hover:no-underline data-[state=open]:text-black",
+              " group font-medium hover:no-underline ",
               isErrorInLandingPageFields && "text-red-500",
             )}
           >
             <div className="flex items-center gap-3">
               <Badge
                 variant="outline"
-                className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
+                className="text-md font-medium bg-subtle group-data-[state=open]:bg-subtle-foreground group-data-[state=open]:text-white"
               >
                 1
               </Badge>{" "}
@@ -241,14 +242,14 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
         >
           <AccordionTrigger
             className={cn(
-              "text-muted-foreground group font-medium  hover:text-black hover:no-underline data-[state=open]:text-black",
+              "group font-medium  hover:no-underline",
               // isErrorInRequirementFields && "text-red-500",
             )}
           >
             <div className="flex items-center gap-3">
               <Badge
                 variant="outline"
-                className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
+                className="text-md font-medium g-subtle group-data-[state=open]:bg-subtle-foreground group-data-[state=open]:text-white"
               >
                 2
               </Badge>{" "}
@@ -286,9 +287,9 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
             </div>
             <div className="grid space-y-2">
               <Label className="block">Questions</Label>
-              <div className="text-muted-foreground text-sm">
+              <MutedText>
                 Use shift + up or down to jump between questions
-              </div>
+              </MutedText>
               <FieldsEditorCard
                 formFields={formFields}
                 formFieldsOrders={fieldsOrders}
@@ -304,14 +305,12 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
           className="border-none"
         >
           <AccordionTrigger
-            className={cn(
-              "text-muted-foreground group font-medium  hover:text-black hover:no-underline data-[state=open]:text-black",
-            )}
+            className={cn("group font-medium  hover:no-underline ")}
           >
             <div className="flex items-center gap-3">
               <Badge
                 variant="outline"
-                className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
+                className="text-md font-medium g-subtle group-data-[state=open]:bg-subtle-foreground group-data-[state=open]:text-white "
               >
                 3
               </Badge>
@@ -327,14 +326,12 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
           className="border-none"
         >
           <AccordionTrigger
-            className={cn(
-              "text-muted-foreground group font-medium  hover:text-black hover:no-underline data-[state=open]:text-black",
-            )}
+            className={cn("group font-medium  hover:no-underline")}
           >
             <div className="flex items-center gap-3">
               <Badge
                 variant="outline"
-                className="text-md font-medium group-data-[state=open]:bg-gray-500 group-data-[state=open]:text-white"
+                className="text-md font-medium g-subtle group-data-[state=open]:bg-subtle-foreground group-data-[state=open]:text-white"
               >
                 4
               </Badge>

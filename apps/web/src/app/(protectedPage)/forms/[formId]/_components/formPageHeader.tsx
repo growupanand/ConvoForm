@@ -1,9 +1,8 @@
 "use client";
 
 import { UserButton, useOrganization } from "@clerk/nextjs";
-import { Button } from "@convoform/ui";
-import { Skeleton } from "@convoform/ui";
-import { ChevronRight, Home } from "lucide-react";
+import { Button, Skeleton } from "@convoform/ui";
+import { ArrowLeft } from "lucide-react";
 
 import { LinkN } from "@/components/common/linkN";
 import { api } from "@/trpc/react";
@@ -29,26 +28,17 @@ function FormPageHeader({ formId }: Readonly<Props>) {
 
   return (
     <div className="flex items-center justify-between gap-x-4">
-      <div className="inline-flex grow items-center">
-        <Button size="sm" variant="link" asChild>
-          <LinkN href={"/dashboard"}>
-            <Home size={20} />
+      <div className="flex items-center gap-x-4 flex-1">
+        <Button size="sm" variant="ghost" asChild>
+          <LinkN href="/forms">
+            <ArrowLeft size={16} className="me-2" />
+            <span>Forms</span>
           </LinkN>
         </Button>
-        <ChevronRight className="size-5" />
         {data ? (
-          <>
-            <LinkN href="/forms">
-              <Button
-                variant="link"
-                className="text-base text-muted-foreground hover:text-primary"
-              >
-                <span>Forms</span>
-              </Button>
-            </LinkN>
-            <ChevronRight className="size-5" />
-            <ChangeNameInput form={data} className="ms-2 text-base" />
-          </>
+          <div className="flex-1">
+            <ChangeNameInput form={data} className="text-base w-full" />
+          </div>
         ) : (
           <span>Form not found</span>
         )}

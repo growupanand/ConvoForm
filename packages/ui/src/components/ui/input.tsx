@@ -34,7 +34,10 @@ const Input = ({
       {showValueCount && (
         <Badge
           variant="outline"
-          className="hidden group-hover:block absolute left-2 -top-1 -translate-y-1/2 rounded bg-gray-400 border-gray-400 font-semibold text-white"
+          className={cn(
+            "hidden group-hover:block absolute left-2 -top-1 -translate-y-1/2 rounded bg-gray-400 border-gray-400 font-semibold text-white",
+            maxValueCount === inputValueCount && "bg-red-500 border-red-500",
+          )}
         >
           {inputValueCount}
           {maxValueCount ? ` / ${maxValueCount} Max` : ""}

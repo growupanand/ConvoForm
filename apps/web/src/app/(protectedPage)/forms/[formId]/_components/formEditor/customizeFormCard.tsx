@@ -1,7 +1,7 @@
 "use client";
 
 import type { Form } from "@convoform/db/src/schema";
-import { Label, toast } from "@convoform/ui";
+import { Label, MutedText, toast } from "@convoform/ui";
 import { Switch } from "@convoform/ui";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -83,10 +83,10 @@ export function CustomizeFormCard({ form, organization }: Readonly<Props>) {
             >
               Company name
             </Label>
-            <div className="text-muted-foreground text-sm">
+            <MutedText>
               Display <span className="font-semibold">{organization.name}</span>{" "}
               on the form submission page header
-            </div>
+            </MutedText>
           </div>
           <Switch
             disabled={isPendingOrganizationName}
@@ -112,10 +112,10 @@ export function CustomizeFormCard({ form, organization }: Readonly<Props>) {
                 className="ml-2 inline-block"
               />
             </Label>
-            <div className="text-muted-foreground text-sm">
+            <MutedText>
               Display current organization logo on the form submission page
               header
-            </div>
+            </MutedText>
           </div>
           <Switch
             disabled={isPendingOrganizationLogo}
