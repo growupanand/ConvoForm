@@ -75,6 +75,9 @@ importers:
       '@convoform/ai':
         specifier: workspace:*
         version: link:../../packages/ai
+      '@convoform/analytics':
+        specifier: workspace:*
+        version: link:../../packages/analytics
       '@convoform/api':
         specifier: workspace:*
         version: link:../../packages/api

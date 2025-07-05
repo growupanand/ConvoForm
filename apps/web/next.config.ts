@@ -1,6 +1,5 @@
 import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
-import remarkGfm from "remark-gfm";
 
 // Validate environment variables
 import "./src/env";
@@ -83,12 +82,15 @@ const nextConfig: NextConfig = {
 };
 
 /** @type {import('remark-gfm').Options} */
-const remarkGFMOptions = {};
+// const remarkGFMOptions = {};
 
 const withMDX = createMDX({
   // Add markdown plugins here, as desired
   options: {
-    remarkPlugins: [[remarkGfm, remarkGFMOptions]],
+    remarkPlugins: [
+      // Note: comment out to make turbopack work
+      // [remarkGfm, remarkGFMOptions]
+    ],
     rehypePlugins: [],
   },
 });
