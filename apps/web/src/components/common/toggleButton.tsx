@@ -45,7 +45,7 @@ export function ToggleButton({
               <span>{label}</span>
             </span>
             {description && (
-              <span className="text-muted-foreground text-sm font-normal text-wrap">
+              <span className="text-subtle-foreground text-sm font-normal text-wrap">
                 {description}
               </span>
             )}

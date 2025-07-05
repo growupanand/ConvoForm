@@ -84,7 +84,7 @@ export function FormListItem({ form, conversationsCount }: Readonly<Props>) {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-subtle-foreground">
               <MessageCircle className="size-4" />
               <span>{conversationsCount}</span>
             </div>
