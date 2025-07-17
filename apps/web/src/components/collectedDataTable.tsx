@@ -16,7 +16,7 @@ export function CollectedDataTable({ collectedData }: Readonly<Props>) {
   const tableColumns = Object.keys(tableData);
 
   return (
-    <Table className="font-light">
+    <Table className="text-base">
       <TableBody>
         {tableColumns.map((columnName, index) => {
           const value = tableData[columnName]?.value ?? "";
@@ -26,10 +26,10 @@ export function CollectedDataTable({ collectedData }: Readonly<Props>) {
               key={`${index}-${columnName}-${value}`}
               className="grid grid-cols-2 gap-4 w-full"
             >
-              <CollectedDataTableCell className="text-muted-foreground">
+              <CollectedDataTableCell className="text-subtle-foreground">
                 {columnName}
               </CollectedDataTableCell>
-              <CollectedDataTableCell>
+              <CollectedDataTableCell className="font-medium">
                 {renderCellValue(value, fieldConfig)}
               </CollectedDataTableCell>
             </TableRow>
@@ -48,7 +48,7 @@ CollectedDataTable.Skeleton = ({ rowsCount = 3 }: { rowsCount?: number }) => {
           // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
           <TableRow key={index}>
             <CollectedDataTableCell>
-              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full bg-gray-200" />
             </CollectedDataTableCell>
             <CollectedDataTableCell>
               <Skeleton className="h-4 w-full" />

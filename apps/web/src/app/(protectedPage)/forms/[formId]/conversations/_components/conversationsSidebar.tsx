@@ -103,7 +103,7 @@ export function ConversationsSidebar({ formId }: Props) {
   return (
     <div className="h-full w-full flex flex-col space-y-4">
       <div className="space-y-4">
-        <MainNavTab formId={formId} organizationId={organizationId} />
+        <MainNavTab formId={formId} />
         <SecondaryNavigation items={secondaryNavigationItems} />
       </div>
       <div className="relative grow overflow-auto">

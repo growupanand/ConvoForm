@@ -23,8 +23,7 @@ export function UserStats() {
         <span className="font-bold ">
           <span className="inline-block h-4 w-8 bg-gray-200 rounded" /> users
         </span>{" "}
-        are boosting conversions by <span className="font-bold ">3x</span> with
-        <span className="font-bold ">ConvoForm</span>
+        are 🚀 boosting conversions by <span className="font-bold ">10x</span>
       </span>
     </div>
   );
@@ -59,8 +58,8 @@ export function UserStats() {
               </div>
               <span className="text-base">
                 <span className="font-bold ">{userCount}+ users</span> are
-                boosting conversions by <span className="font-bold ">3x</span>{" "}
-                with <span className="font-bold ">ConvoForm</span>
+                boosting 🚀 conversions by{" "}
+                <span className="font-bold ">10x</span>
               </span>
             </div>
           )}

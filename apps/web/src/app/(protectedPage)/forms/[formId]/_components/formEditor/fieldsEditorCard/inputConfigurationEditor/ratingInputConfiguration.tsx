@@ -11,10 +11,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Switch,
 } from "@convoform/ui";
 import type { UseFormReturn } from "react-hook-form";
 import type { FormHookData } from "../editFieldSheet";
+import { ToggleButton } from "@/components/common/toggleButton";
 
 type Props = {
   formHook: UseFormReturn<FormHookData>;
@@ -101,12 +101,17 @@ export function RatingInputConfiguration({ formHook }: Readonly<Props>) {
         control={control}
         name="fieldConfiguration.inputConfiguration.requireConfirmation"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-2">
-            <FormLabel className="text-sm cursor-pointer">
-              Require Confirmation
-            </FormLabel>
+          <FormItem>
             <FormControl>
-              <Switch checked={field.value} onCheckedChange={field.onChange} />
+              <ToggleButton
+                className="w-full justify-between"
+                label="Require Confirmation"
+                id="require-confirmation"
+                switchProps={{
+                  checked: field.value,
+                  onCheckedChange: field.onChange,
+                }}
+              />
             </FormControl>
           </FormItem>
         )}

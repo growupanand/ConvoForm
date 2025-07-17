@@ -6,7 +6,7 @@ import {
   inputTypeEnum,
   updateFormFieldSchema,
 } from "@convoform/db/src/schema";
-import { Button, toast } from "@convoform/ui";
+import { Button, SectionHeading, toast } from "@convoform/ui";
 import {
   Form,
   FormControl,
@@ -124,9 +124,9 @@ export function EditFieldSheet({
     <Sheet open={open} onOpenChange={!isFormBusy ? onOpenChange : undefined}>
       <SheetContent
         side="left"
-        className=" w-[500px] min-w-[500px] max-w-[500px]"
+        className=" w-[500px] min-w-[500px] max-w-[500px] space-y-6"
       >
-        <SheetHeader className="mb-5">
+        <SheetHeader>
           <SheetTitle>Edit form field</SheetTitle>
         </SheetHeader>
 
@@ -135,142 +135,131 @@ export function EditFieldSheet({
             onSubmit={formHook.handleSubmit(onSubmit)}
             className="relative flex h-full flex-col justify-between overflow-y-auto pe-5 ps-2 pb-4"
           >
-            <div className="mb-6">
-              <h2 className="mb-4 font-semibold p-2 bg-emphasis rounded-lg border flex items-center gap-2">
-                Question Configuration
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="size-4 ms-auto" />
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" align="start">
-                    Configure how the question will appear to users completing
-                    your form
-                  </TooltipContent>
-                </Tooltip>
-              </h2>
-              <div className="grid space-y-8">
-                <FormField
-                  control={formHook.control}
-                  name="fieldName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className=" flex items-center gap-2">
-                        <FormLabel>Field name</FormLabel>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Info className="size-4" />
-                          </TooltipTrigger>
-                          <TooltipContent side="bottom" align="start">
-                            This field is used for CSV export, as the column
-                            name in the table, and as the field name in the form
-                            submission page to show current field.
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Human readable name for the field"
-                          disabled
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+            <div className="mb-6 space-y-10">
+              <div>
+                <FieldSectionHeader
+                  title="Question Configuration"
+                  description="Configure how the question will appear to users completing your form"
                 />
-                <FormField
-                  control={formHook.control}
-                  name="fieldDescription"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex items-center gap-2">
-                        <FormLabel>Field description</FormLabel>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Info className="h-4 w-4 " />
-                          </TooltipTrigger>
-                          <TooltipContent side="bottom" align="start">
-                            This text will be utilized by the AI to generate
-                            questions.
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                      <FormControl>
-                        <Textarea
-                          placeholder={
-                            "Information you would like to collect (e.g. Tell me your full name, etc.)"
-                          }
-                          {...field}
-                          rows={4}
-                          disabled={isFormBusy}
-                          ref={(e) => {
-                            field.ref(e);
-                            inputRef.current = e;
-                          }}
-                          onKeyDown={(e) => {
-                            // disable enter key from submitting the form or inserting a new line
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                            }
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <h2 className="mb-4 mt-10 font-semibold p-2 bg-emphasis rounded-lg border flex items-center gap-2">
-                Answer Configuration
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="size-4 ms-auto" />
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" align="start">
-                    Configure how users will provide answers to this question
-                  </TooltipContent>
-                </Tooltip>
-              </h2>
-              <div className=" grid space-y-8">
-                <div className="grid space-y-4">
+                <div className=" grid space-y-8">
                   <FormField
                     control={formHook.control}
-                    name="fieldConfiguration.inputType"
+                    name="fieldName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Input type</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          disabled={isFormBusy}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a verified email to display" />
-                            </SelectTrigger>
-                          </FormControl>
+                        <div className=" flex items-center gap-2">
+                          <FormLabel>Field name</FormLabel>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="size-4" />
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" align="start">
+                              This field is used for CSV export, as the column
+                              name in the table, and as the field name in the
+                              form submission page to show current field.
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
 
-                          <SelectContent>
-                            {inputTypeEnum.enumValues.map((inputType) => (
-                              <SelectItem key={inputType} value={inputType}>
-                                {INPUT_TYPES_MAP[inputType].name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                          <FormMessage />
-                        </Select>
-                        <FormDescription className="flex items-center gap-2">
-                          {INPUT_TYPES_MAP[field.value].description}
-                        </FormDescription>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="Human readable name for the field"
+                            disabled
+                          />
+                        </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
-
-                  <InputConfigurationEditor
-                    inputType={selectedInputType}
-                    formHook={formHook}
+                  <FormField
+                    control={formHook.control}
+                    name="fieldDescription"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex items-center gap-2">
+                          <FormLabel>Field description</FormLabel>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="h-4 w-4 " />
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" align="start">
+                              This text will be utilized by the AI to generate
+                              questions.
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <FormControl>
+                          <Textarea
+                            placeholder={
+                              "Information you would like to collect (e.g. Tell me your full name, etc.)"
+                            }
+                            {...field}
+                            rows={4}
+                            disabled={isFormBusy}
+                            ref={(e) => {
+                              field.ref(e);
+                              inputRef.current = e;
+                            }}
+                            onKeyDown={(e) => {
+                              // disable enter key from submitting the form or inserting a new line
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                              }
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
+                </div>
+              </div>
+              <div>
+                <FieldSectionHeader
+                  title="Answer Configuration"
+                  description="Configure how users will provide answers to this question"
+                />
+                <div className=" grid space-y-8">
+                  <div className="grid space-y-4">
+                    <FormField
+                      control={formHook.control}
+                      name="fieldConfiguration.inputType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Input type</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            disabled={isFormBusy}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a verified email to display" />
+                              </SelectTrigger>
+                            </FormControl>
+
+                            <SelectContent>
+                              {inputTypeEnum.enumValues.map((inputType) => (
+                                <SelectItem key={inputType} value={inputType}>
+                                  {INPUT_TYPES_MAP[inputType].name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                            <FormMessage />
+                          </Select>
+                          <FormDescription className="text-base flex items-center gap-2">
+                            {INPUT_TYPES_MAP[field.value].description}
+                          </FormDescription>
+                        </FormItem>
+                      )}
+                    />
+
+                    <InputConfigurationEditor
+                      inputType={selectedInputType}
+                      formHook={formHook}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -301,4 +290,14 @@ export function EditFieldSheet({
       </SheetContent>
     </Sheet>
   );
+}
+
+function FieldSectionHeader({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
+  return <SectionHeading description={description}>{title}</SectionHeading>;
 }

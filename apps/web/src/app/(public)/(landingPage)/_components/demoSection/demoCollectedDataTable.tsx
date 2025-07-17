@@ -2,7 +2,7 @@
 
 import { CollectedDataTable } from "@/components/collectedDataTable";
 import { useFormContext } from "@/components/formViewer/formContext";
-import { ArrowDownRight } from "lucide-react";
+import { Activity } from "lucide-react";
 import { type Variants, motion } from "motion/react";
 
 const tableAnimationVariants: Variants = {
@@ -36,15 +36,10 @@ export function DemoCollectedDataTable({ isInView: _ }: { isInView: boolean }) {
         whileInView="visible"
         className="relative"
       >
-        <motion.div
-          className="absolute -top-12 -left-6 text-brand-500 flex items-center gap-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-        >
-          <ArrowDownRight className="size-5" />
-          <span className="font-medium text-sm">Current Response</span>
-        </motion.div>
+        <div className="absolute -top-8 -left-0 text-brand-600 flex items-center gap-2">
+          <Activity className="size-4" />
+          <span className="font-medium text-lg">Live Response Data</span>
+        </div>
 
         <div className="min-w-[250px] max-w-[400px] shadow-xl overflow-hidden rounded-3xl border bg-white/50 p-2 backdrop-blur-lg ring-2 ring-brand-200">
           <CollectedDataTable collectedData={collectedData} />

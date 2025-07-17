@@ -39,7 +39,7 @@ export function SecondaryNavigation({
               variant={pathname === item.href ? "secondary" : "ghost"}
               className={cn(
                 " w-full justify-start font-normal",
-                pathname === item.href && "font-medium",
+                pathname === item.href && "font-medium bg-emphasis",
               )}
               size="sm"
             >

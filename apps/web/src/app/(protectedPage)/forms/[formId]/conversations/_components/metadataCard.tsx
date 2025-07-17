@@ -137,12 +137,12 @@ function MetaInfo({
 
   return (
     <div className="flex flex-col items-start text-sm px-2 gap-y-1 text-nowrap">
-      <div className="text-xs self-start font-light text-muted-foreground">
+      <div className="text-xs self-start font-medium text-subtle-foreground">
         {label}
       </div>
       <div className=" flex items-center gap-x-1">
         {Icon ? renderIcon(Icon) : null}
-        <span>{value ?? "-"}</span>
+        <span className="text-foreground ">{value ?? "-"}</span>
       </div>
     </div>
   );

@@ -30,7 +30,7 @@ export function ToggleButton({
         variant="ghost"
         {...buttonProps}
         className={cn(
-          " cursor-pointer text-xl h-auto",
+          " cursor-pointer text-xl h-auto py-4",
 
           className,
         )}

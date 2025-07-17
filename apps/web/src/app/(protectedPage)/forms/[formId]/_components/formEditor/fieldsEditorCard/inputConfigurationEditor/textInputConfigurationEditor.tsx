@@ -4,11 +4,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Switch,
 } from "@convoform/ui";
 import { Input } from "@convoform/ui";
 import type { UseFormReturn } from "react-hook-form";
 
+import { ToggleButton } from "@/components/common/toggleButton";
 import { OptionalText } from ".";
 import type { FormHookData } from "../editFieldSheet";
 
@@ -21,20 +21,6 @@ export function TextInputConfigurationEditor({ formHook }: Readonly<Props>) {
     <>
       <FormField
         control={formHook.control}
-        name="fieldConfiguration.inputConfiguration.isParagraph"
-        render={({ field }) => (
-          <FormItem className="flex flex-row items-start justify-between rounded-lg border p-2">
-            <FormLabel className="text-sm cursor-pointer">
-              Paragraph Mode
-            </FormLabel>
-            <FormControl className="!mt-0">
-              <Switch checked={field.value} onCheckedChange={field.onChange} />
-            </FormControl>
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={formHook.control}
         name="fieldConfiguration.inputConfiguration.placeholder"
         render={({ field }) => (
           <FormItem>
@@ -45,6 +31,25 @@ export function TextInputConfigurationEditor({ formHook }: Readonly<Props>) {
               <Input {...field} placeholder="Type placeholder text" />
             </FormControl>
             <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={formHook.control}
+        name="fieldConfiguration.inputConfiguration.isParagraph"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <ToggleButton
+                className="w-full justify-between"
+                label="Paragraph Mode"
+                id="paragraph-mode"
+                switchProps={{
+                  checked: field.value,
+                  onCheckedChange: field.onChange,
+                }}
+              />
+            </FormControl>
           </FormItem>
         )}
       />

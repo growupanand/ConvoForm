@@ -36,7 +36,7 @@ export function ConversationsNavigation({
             {conversation.isInProgress ? "In progress..." : conversation.name}
           </span>
         </div>
-        <span className="text-muted-foreground font-light">
+        <span className="subtle-foreground font-light">
           {timeAgo(conversation.createdAt)}
         </span>
       </div>

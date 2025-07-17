@@ -39,7 +39,7 @@ const BrowserWindow = ({
         className,
       )}
     >
-      <div className="flex items-center justify-between gap-x-2 bg-muted px-3 py-1 border-b">
+      <div className="flex items-center justify-between gap-x-2 bg-muted px-3 py-2 border-b">
         <WindowButtons />
         <AddressBar link={link} />
         <ActionButtons
@@ -88,12 +88,7 @@ const ActionButtons = ({
         <CopyLinkButton onClick={handleCopyLinkToClipboard} />
       )}
       {onRefresh && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-6 w-6"
-          onClick={onRefresh}
-        >
+        <Button variant="ghost" size="xs" onClick={onRefresh}>
           <RotateCw className="h-4 w-4" />
         </Button>
       )}
@@ -106,7 +101,7 @@ export const AddressBar = ({ link }: { link?: string }) => (
     {link && (
       <div className="flex w-full items-center gap-1 rounded-lg bg-emphasis">
         <Link href={link} target="_blank">
-          <Button variant="link" size="sm">
+          <Button variant="link" size="xs" className="px-4">
             <span className="overflow-hidden">{link}</span>
             <ExternalLink className="ms-2 h-4 w-4" />
           </Button>

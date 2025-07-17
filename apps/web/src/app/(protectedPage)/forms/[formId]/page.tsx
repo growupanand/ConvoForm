@@ -48,7 +48,7 @@ export default function FormPage(props: Props) {
       <FormEditPageLayout
         leftSidebar={
           <div className="h-full w-full flex flex-col space-y-4">
-            <MainNavTab formId={formId} organizationId={organization.id} />
+            <MainNavTab formId={formId} />
             <div className="relative grow overflow-auto">
               <Card className="  border-0 bg-transparent shadow-none">
                 {isLoading ? (

@@ -1,5 +1,5 @@
 import type { Conversation, Transcript } from "@convoform/db/src/schema";
-import { SectionHeading } from "@convoform/ui";
+import { Badge, SectionHeading } from "@convoform/ui";
 import { CardContent, CardHeader, CardTitle } from "@convoform/ui";
 import { Skeleton } from "@convoform/ui";
 
@@ -10,6 +10,7 @@ import { FileText, Globe, Timer } from "lucide-react";
 import InsightsCard from "./insightsCard";
 import MetadataCard from "./metadataCard";
 import TranscriptCard from "./transcriptCard";
+import { getSentimentVariant, getToneVariant } from "./utils";
 
 type Props = {
   conversation: Conversation;
@@ -30,13 +31,13 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
   return (
     <>
       <CardHeader className="sticky flex flex-row items-center justify-between gap-x-6 top-0 z-30 bg-white/70 backdrop-blur-md mb-6">
-        <div className="  flex justify-start items-center gap-2 text-nowrap">
+        <div className="  flex justify-start items-start gap-2 text-nowrap">
           <FileText className="size-10" />
-          <div className="flex flex-col items-start gap-1 ">
+          <div className="flex flex-col items-start ">
             <CardTitle className=" text-primary text-xl capitalize max-w-xs truncate hover:text-wrap">
               {conversation.name}
             </CardTitle>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-sm text-subtle-foreground">
               {conversation.createdAt.toLocaleString()}
             </div>
           </div>
@@ -73,20 +74,50 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
         />
         {/* {getStatusBadge()} */}
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid gap-10 grid-cols-5">
+      <CardContent>
+        <div className="grid gap-10 grid-cols-5 px-2">
           <div className="col-span-2 space-y-6">
             {conversation.metaData?.insights && (
               <InsightsCard insights={conversation.metaData.insights} />
             )}
             <div>
-              <SectionHeading>Collected information</SectionHeading>
-              <CollectedDataTable collectedData={conversation.collectedData} />
+              <ConversationDetailSectionHeading>
+                Collected information
+              </ConversationDetailSectionHeading>
+              <div className="border rounded-lg">
+                <CollectedDataTable
+                  collectedData={conversation.collectedData}
+                />
+              </div>
             </div>
           </div>
           <div className="col-span-3 space-y-6 ">
             <div>
-              <SectionHeading>Conversation transcript</SectionHeading>
+              <div className="flex justify-between items-baseline">
+                <ConversationDetailSectionHeading>
+                  Chat History
+                </ConversationDetailSectionHeading>
+                {conversation.metaData?.insights && (
+                  <div className="flex gap-2">
+                    <Badge
+                      variant={getToneVariant(
+                        conversation.metaData.insights.userTone,
+                      )}
+                      className=" capitalize"
+                    >
+                      {conversation.metaData.insights.userTone}
+                    </Badge>
+                    <Badge
+                      variant={getSentimentVariant(
+                        conversation.metaData.insights.userSentiment,
+                      )}
+                      className=" capitalize"
+                    >
+                      {conversation.metaData.insights.userSentiment}
+                    </Badge>
+                  </div>
+                )}
+              </div>
               <TranscriptCard
                 isBusy={conversation.isInProgress}
                 transcript={transcript}
@@ -116,18 +147,24 @@ const ConversationDetailSkeleton = () => {
         </div>
         <MetadataCard.Skeleton />
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid gap-10 grid-cols-5">
+      <CardContent>
+        <div className="grid gap-10 grid-cols-5 px-2">
           <div className="col-span-2 space-y-6">
             <InsightsCard.Skeleton />
             <div>
-              <SectionHeading>Collected information</SectionHeading>
-              <CollectedDataTable.Skeleton />
+              <ConversationDetailSectionHeading>
+                Collected information
+              </ConversationDetailSectionHeading>
+              <div className="border rounded-lg">
+                <CollectedDataTable.Skeleton />
+              </div>
             </div>
           </div>
           <div className="col-span-3 space-y-6">
             <div>
-              <SectionHeading>Conversation transcript</SectionHeading>
+              <ConversationDetailSectionHeading>
+                Chat History
+              </ConversationDetailSectionHeading>
               <TranscriptCard.Skeleton />
             </div>
           </div>
@@ -138,3 +175,11 @@ const ConversationDetailSkeleton = () => {
 };
 
 ConversationDetail.ConversationDetailSkeleton = ConversationDetailSkeleton;
+
+function ConversationDetailSectionHeading({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <SectionHeading className="py-2 mb-2">{children}</SectionHeading>;
+}

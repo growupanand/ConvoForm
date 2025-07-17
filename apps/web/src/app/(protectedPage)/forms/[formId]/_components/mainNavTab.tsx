@@ -1,15 +1,11 @@
-"use client";
-
 import { Skeleton } from "@convoform/ui";
 import { Tabs, TabsList, TabsTrigger } from "@convoform/ui";
 import { usePathname } from "next/navigation";
 
-import { api } from "@/trpc/react";
 import Link from "next/link";
 
 type Props = {
   formId: string;
-  organizationId: string;
 };
 
 export type NavLink = {
@@ -21,22 +17,10 @@ export type NavLink = {
   activeClassName?: string;
 };
 
-export default function MainNavTab({
-  formId,
-  organizationId,
-}: Readonly<Props>) {
+export default function MainNavTab({ formId }: Readonly<Props>) {
   const pathName = usePathname();
   const currentFormId = formId;
   const isAlreadyOnConversationsPage = pathName.includes("conversations");
-
-  const { data: formsWithConversationsCount } =
-    api.conversation.getCountByFormIds.useQuery({
-      formIds: [currentFormId],
-      organizationId,
-    });
-
-  const conversationsCount =
-    formsWithConversationsCount?.[0]?.conversationCount ?? 0;
 
   const tabLinks = [
     {
@@ -45,7 +29,7 @@ export default function MainNavTab({
       isActive: pathName === `/forms/${currentFormId}`,
     },
     {
-      name: `Responses ${conversationsCount}`,
+      name: "Responses",
       link: `/forms/${currentFormId}/conversations`,
       isActive: isAlreadyOnConversationsPage,
     },

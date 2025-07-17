@@ -6,12 +6,7 @@ export const CopyLinkButton = ({ onClick }: { onClick: () => void }) => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-6 w-6"
-          onClick={onClick}
-        >
+        <Button variant="ghost" size="xs" onClick={onClick}>
           <Copy className="h-4 w-4" />
         </Button>
       </TooltipTrigger>

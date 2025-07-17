@@ -1,6 +1,6 @@
 import { Button } from "@convoform/ui";
-import { Badge, Card } from "@convoform/ui";
-import { ChevronRight, ExternalLink, Mail } from "lucide-react";
+import { Card } from "@convoform/ui";
+import { ExternalLink, Mail } from "lucide-react";
 import Link from "next/link";
 
 import { marck_script } from "@/app/fonts/customFonts";
@@ -11,14 +11,14 @@ export function PublicLayoutFooter({ className }: { className?: string }) {
   return (
     <Card
       className={cn(
-        "bg-brand-50 shadow-brand-100 mt-10 lg:rounded-full px-5 py-10 lg:mb-10 lg:mt-20 lg:px-24",
+        "bg-emphasis border-4  shadow-none mt-10 lg:rounded-full px-5 py-10 lg:mb-10 lg:mt-20 lg:px-24",
         className,
       )}
     >
       <footer>
         <div className="flex  items-start justify-between ">
           <div className="flex flex-col items-start lg:flex-row lg:gap-5">
-            <span className="text-muted-foreground mb-5 p-2">
+            <span className="text-subtle-foreground mb-5 p-2">
               ConvoForm © 2025
             </span>
             <OtherLinks />
@@ -38,10 +38,7 @@ export function PublicLayoutFooter({ className }: { className?: string }) {
 const SocialIcons = () => {
   return (
     <div className="flex items-center justify-end flex-wrap gap-3">
-      <Badge
-        variant="outline"
-        className="group text-xs font-medium px-2 py-0.5 lg:px-3 lg:py-2 lg:text-sm"
-      >
+      <Button variant="secondary" asChild>
         <Link
           href="https://discord.gg/aeYtKyn2E2"
           target="_blank"
@@ -52,18 +49,14 @@ const SocialIcons = () => {
             <Image
               src="images/icons/discord.svg"
               alt="discord"
-              width={10}
-              height={10}
-              className="lg:size-[13px] size-[10px]"
+              width={16}
+              height={16}
             />
           </span>
           <span className="font-normal">Join our Discord</span>
-          <ChevronRight
-            className="ml-1 transition-all group-hover:translate-x-0.5"
-            size="10px"
-          />
+          <ExternalLink className="size-3 ms-1 transition-all group-hover:translate-x-0.5" />
         </Link>
-      </Badge>
+      </Button>
       <Link
         href="https://github.com/growupanand/ConvoForm"
         target="_blank"

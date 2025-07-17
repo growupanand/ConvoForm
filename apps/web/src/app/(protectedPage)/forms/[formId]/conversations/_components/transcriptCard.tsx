@@ -2,19 +2,30 @@ import type { Transcript } from "@convoform/db/src/schema";
 
 import { AnimatedTypingDots } from "@/components/common/typingDots";
 import { Skeleton } from "@convoform/ui";
+import { cn } from "@/lib/utils";
 
 type Props = {
   transcript: Transcript[];
   isBusy?: boolean;
+  className?: HTMLElement["className"];
 };
 
-export default function TranscriptCard({ transcript, isBusy }: Props) {
+export default function TranscriptCard({
+  transcript,
+  isBusy,
+  className,
+}: Props) {
   if (transcript.length === 0) {
     return <SystemMessageBox message="No messages yet" />;
   }
+
+  // Hide opening message ("Hi") from transcript if found
+  const cleanedTranscript =
+    transcript[0]?.content === "Hi" ? transcript.slice(1) : transcript;
+
   return (
-    <div className="space-y-1 ps-4 text-sm font-light">
-      {transcript.map((message) => {
+    <div className={cn("text-base font-normal", className)}>
+      {cleanedTranscript.map((message, index) => {
         return (
           <div
             key={`${message.role}-${message.content}`}
@@ -23,7 +34,10 @@ export default function TranscriptCard({ transcript, isBusy }: Props) {
             {message.role === "user" ? (
               <UserMessageBox message={message.content} />
             ) : (
-              <SystemMessageBox message={message.content} />
+              <SystemMessageBox
+                message={message.content}
+                isFirst={index === 0}
+              />
             )}
           </div>
         );
@@ -37,23 +51,31 @@ export default function TranscriptCard({ transcript, isBusy }: Props) {
   );
 }
 
-const SystemMessageBox = ({ message }: { message: string }) => (
-  <p className="text-muted-foreground  ">{message}</p>
+const SystemMessageBox = ({
+  message,
+  isFirst,
+}: { message: string; isFirst?: boolean }) => (
+  <p className={cn("text-subtle-foreground", isFirst ? "pb-2" : "py-2")}>
+    {message}
+  </p>
 );
 
 const UserMessageBox = ({ message }: { message: string }) => (
-  <p className="mb-4">{message}</p>
+  <p className="mb-4 font-medium text-foreground pb-1">{message}</p>
 );
 
-const SystemMessageSkeleton = () => <Skeleton className="h-2 w-40 bg-muted " />;
+const SystemMessageSkeleton = () => (
+  <Skeleton className="h-4 w-40 bg-gray-200 " />
+);
 
-const UserMessageSkeleton = () => <Skeleton className="h-2 w-20" />;
+const UserMessageSkeleton = () => <Skeleton className="h-4 w-20" />;
 
 const TranscriptCardSkeleton = () => (
   <div className="space-y-2 ps-4">
     <SystemMessageSkeleton />
     <UserMessageSkeleton />
     <SystemMessageSkeleton />
+    <UserMessageSkeleton />
   </div>
 );
 

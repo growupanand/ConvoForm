@@ -110,9 +110,9 @@ export function MultiChoiceInput({
             custom={index}
           >
             <Button
-              className="cursor-pointer flex items-center gap-x-2 rounded-2xl shadow w-full font-medium text-xl h-auto py-3 px-4 active:scale-100 justify-start relative"
+              className="cursor-pointer flex items-center gap-x-2 w-full font-medium text-xl h-auto py-3 px-4 justify-start relative"
               type="button"
-              variant="outline"
+              variant={allowMultiple ? "outline" : "secondary"}
               onClick={() => handleOptionSelect(option)}
               asChild
             >
@@ -136,7 +136,7 @@ export function MultiChoiceInput({
         ))}
       </div>
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-10 space-y-4">
         {showOtherInput && (
           <Input
             type="text"
@@ -147,15 +147,17 @@ export function MultiChoiceInput({
             autoFocus
           />
         )}
-        {(showOtherInput || allowMultiple) && (
-          <Button
-            className="w-full"
-            onClick={confirmSubmit}
-            disabled={getSubmitButtonDisabled()}
-          >
-            Confirm Answer
-          </Button>
-        )}
+        <div className="flex justify-end">
+          {(showOtherInput || allowMultiple) && (
+            <Button
+              className="max-lg:w-full h-auto py-4"
+              onClick={confirmSubmit}
+              disabled={getSubmitButtonDisabled()}
+            >
+              Confirm Answer
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

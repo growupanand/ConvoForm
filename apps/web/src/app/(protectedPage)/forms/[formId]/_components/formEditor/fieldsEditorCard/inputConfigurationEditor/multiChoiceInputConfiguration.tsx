@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, FormDescription, FormLabel, Switch } from "@convoform/ui";
+import { Button, FormDescription } from "@convoform/ui";
 import { FormControl, FormField, FormItem, FormMessage } from "@convoform/ui";
 import { Input } from "@convoform/ui";
 import { Plus, Trash2 } from "lucide-react";
@@ -9,6 +9,7 @@ import { type UseFormReturn, useFieldArray } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
 import type { FormHookData } from "../editFieldSheet";
+import { ToggleButton } from "@/components/common/toggleButton";
 
 type Props = {
   formHook: UseFormReturn<FormHookData>;
@@ -70,58 +71,11 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
 
   return (
     <div className="grid gap-4">
-      {/* Allow Multiple Selection checkbox */}
-      <FormField
-        control={formHook.control}
-        name="fieldConfiguration.inputConfiguration.allowMultiple"
-        render={({ field }) => (
-          <FormItem className="flex flex-row items-start justify-between rounded-lg border p-2">
-            <div className="space-y-0.5">
-              <FormLabel className="text-sm cursor-pointer">
-                Allow multiple selections
-              </FormLabel>
-              <FormDescription className="text-xs">
-                Let respondents select more than one option
-              </FormDescription>
-              <FormMessage />
-            </div>
-            <FormControl className="!mt-0">
-              <Switch checked={field.value} onCheckedChange={field.onChange} />
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <FormItem className="flex flex-row items-start justify-between rounded-lg border p-2">
-        <div className="space-y-0.5">
-          <FormLabel
-            className={`text-sm ${
-              allowMultiple ? "cursor-not-allowed opacity-50" : "cursor-pointer"
-            }`}
-          >
-            Allow "Other" option
-          </FormLabel>
-          <FormDescription
-            className={`text-xs ${allowMultiple ? "opacity-50" : ""}`}
-          >
-            Add a text field option for custom responses
-            {allowMultiple && " (only available for single selection)"}
-          </FormDescription>
-        </div>
-        <FormControl className="!mt-0">
-          <Switch
-            checked={hasOtherOption}
-            onCheckedChange={handleOtherOptionToggle}
-            disabled={allowMultiple}
-          />
-        </FormControl>
-      </FormItem>
-
       <FormField
         control={formHook.control}
         name="fieldConfiguration.inputConfiguration.options"
         render={() => (
-          <FormItem className="space-y-6 mt-6">
+          <FormItem className="space-y-6">
             {fields.map((field, index) => (
               <div key={field.id} className="mb-2">
                 <FormField
@@ -182,6 +136,40 @@ export function MultiChoiceInputConfiguration({ formHook }: Readonly<Props>) {
           <Plus className="mr-2 size-4" /> Add choice
         </Button>
       </div>
+      <FormItem>
+        <FormControl className="!mt-0">
+          <ToggleButton
+            className="w-full justify-between"
+            label="Allow 'Other' option"
+            id="allow-other-option"
+            switchProps={{
+              checked: hasOtherOption,
+              onCheckedChange: handleOtherOptionToggle,
+              disabled: allowMultiple,
+            }}
+          />
+        </FormControl>
+      </FormItem>
+      {/* Allow Multiple Selection checkbox */}
+      <FormField
+        control={formHook.control}
+        name="fieldConfiguration.inputConfiguration.allowMultiple"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl className="!mt-0">
+              <ToggleButton
+                className="w-full justify-between"
+                label="Allow multiple selections"
+                id="allow-multiple-selections"
+                switchProps={{
+                  checked: field.value,
+                  onCheckedChange: field.onChange,
+                }}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
     </div>
   );
 }

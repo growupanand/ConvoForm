@@ -60,7 +60,7 @@ export function Hero() {
             Turn Static Forms
             <br />
             Into Smart
-            <span className="mx-1 lg:mx-2 rounded-full px-2 shadow-md outline outline-gray-100 lg:px-5 align-middle">
+            <span className="mx-1 lg:mx-2 rounded-full px-2 bg-white border lg:px-5 align-middle">
               <AnimatedTypingDots dotClassName="bg-gray-700 lg:size-3 size-1.5" />
             </span>{" "}
             <br />
@@ -73,7 +73,7 @@ export function Hero() {
         </CardHeader>
 
         <CardContent className="px-0 flex justify-center lg:justify-start">
-          <div className="flex flex-wrap max-lg:flex-col max-lg:items-start justify-start gap-4 font-medium text-base text-muted-foreground">
+          <div className="flex flex-wrap max-lg:flex-col max-lg:items-start justify-start gap-4 font-medium text-accent-foreground ">
             <span className="flex items-center gap-1 bg-gray-50 rounded-full ">
               <CheckCircle2 className="size-6 fill-brand-500 text-white" />
               100% Free

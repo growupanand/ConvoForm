@@ -45,10 +45,11 @@ export function FormPublishToggle({ form }: Readonly<Props>) {
 
   return (
     <ToggleButton
+      id="isFormPublished"
+      className="py-2"
+      labelClass={isPublished ? "" : " text-muted-foreground"}
       label={isPublished ? "Published" : "Unpublished"}
       icon={getIcon()}
-      labelClass={isPublished ? "" : " text-muted-foreground"}
-      id="isFormPublished"
       switchProps={{
         defaultChecked: form.isPublished,
         disabled: isPendingUpdateFormIsPublished,
