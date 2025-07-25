@@ -9,7 +9,6 @@ import { Input } from "@convoform/ui";
 import { Badge } from "@convoform/ui";
 import type { UseFormReturn } from "react-hook-form";
 
-import { ToggleButton } from "@/components/common/toggleButton";
 import { OptionalText } from ".";
 import type { FormHookData } from "../editFieldSheet";
 
@@ -39,53 +38,34 @@ export function FileUploadInputConfiguration({ formHook }: Readonly<Props>) {
         )}
       />
 
-      <div className="space-y-3">
-        <FormLabel>File Restrictions (Beta Limits)</FormLabel>
-        <div className="text-sm text-muted-foreground space-y-2">
-          <div>
-            <span className="font-medium">Maximum file size:</span> 5MB per file
-          </div>
-          <div>
-            <span className="font-medium">Files per response:</span> 1 file
-            maximum
-          </div>
-          <div>
-            <span className="font-medium">Allowed file types:</span>
-            <div className="flex gap-2 mt-1">
-              <Badge variant="secondary">JPG</Badge>
-              <Badge variant="secondary">JPEG</Badge>
-              <Badge variant="secondary">PDF</Badge>
-            </div>
-          </div>
-          <div>
-            <span className="font-medium">Storage limit:</span> 100MB per
-            organization
-          </div>
-          <div>
-            <span className="font-medium">File retention:</span> 30 days
+      <div className="text-sm space-y-1 border p-2 rounded-xl">
+        <h4 className="font-medium text-base mb-2">Free plan limits</h4>
+        <div>
+          <span>Allowed file types:</span>
+          <div className="inline-flex gap-2 ms-2">
+            <Badge variant="secondary">JPG</Badge>
+            <Badge variant="secondary">JPEG</Badge>
+            <Badge variant="secondary">PDF</Badge>
           </div>
         </div>
-      </div>
+        <div>
+          <span>Maximum file size:</span>
+          <span className="font-medium"> 5MB per file</span>
+        </div>
+        <div>
+          <span>Files per response:</span>
+          <span className="font-medium"> 1 file maximum</span>
+        </div>
 
-      <FormField
-        control={formHook.control}
-        name="fieldConfiguration.inputConfiguration.isRequired"
-        render={({ field }) => (
-          <FormItem>
-            <FormControl>
-              <ToggleButton
-                className="w-full justify-between"
-                label="Required Field"
-                id="required-field"
-                switchProps={{
-                  checked: field.value || false,
-                  onCheckedChange: field.onChange,
-                }}
-              />
-            </FormControl>
-          </FormItem>
-        )}
-      />
+        <div>
+          <span>Storage limit:</span>
+          <span className="font-medium"> 100MB per organization</span>
+        </div>
+        <div>
+          <span>File retention:</span>
+          <span className="font-medium"> 30 days</span>
+        </div>
+      </div>
     </>
   );
 }

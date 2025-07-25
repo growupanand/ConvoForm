@@ -211,6 +211,7 @@ export function FieldsEditorCard({
       {!!currentEditField && (
         <EditFieldSheet
           formField={currentEditField}
+          formFields={formFields}
           open={showEditFieldSheet}
           onOpenChange={handleHideEditFieldSheet}
         />

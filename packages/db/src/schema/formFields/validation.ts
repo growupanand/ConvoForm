@@ -78,8 +78,6 @@ export const ratingInputConfigSchema = z.object({
 export const fileUploadInputConfigSchema = z.object({
   /** Optional help text to display to users */
   helpText: z.string().optional(),
-  /** Whether the field is required */
-  isRequired: z.boolean().optional().default(false),
   /** Maximum file size in bytes (default: 5MB) */
   maxFileSize: z
     .number()
