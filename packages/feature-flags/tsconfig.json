@@ -1,0 +1,13 @@
+{
+  "extends": "@convoform/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "module": "CommonJS",
+    "types": ["node"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

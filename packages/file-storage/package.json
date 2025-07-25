@@ -1,0 +1,22 @@
+{
+  "name": "@convoform/file-storage",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.682.0",
+    "@aws-sdk/s3-request-presigner": "^3.682.0",
+    "@convoform/db": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@convoform/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -5,6 +5,7 @@ import type {
 import type { SubmitAnswer } from "@convoform/react";
 
 import { DatePickerInput } from "./datePickerInput";
+import { FileUploadInput } from "./fileUploadInput";
 import { MultiChoiceInput } from "./multiChoiceInput";
 import { RatingInput } from "./ratingInput";
 import { TextInput } from "./textInput";
@@ -50,6 +51,14 @@ export function DynamicAnswerInput({
     case "rating":
       return (
         <RatingInput
+          inputConfiguration={fieldConfiguration.inputConfiguration}
+          {...inputProps}
+        />
+      );
+
+    case "fileUpload":
+      return (
+        <FileUploadInput
           inputConfiguration={fieldConfiguration.inputConfiguration}
           {...inputProps}
         />

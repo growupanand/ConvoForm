@@ -1,5 +1,6 @@
 import { createTRPCRouter } from "../trpc";
 import { conversationRouter } from "./conversation";
+import { fileUploadRouter } from "./fileUpload";
 import { formRouter } from "./form";
 import { formDesignRouter } from "./formDesign";
 import { formFieldRouter } from "./formField";
@@ -18,6 +19,7 @@ import { webhookRouter } from "./webhook";
 export const appRouter = createTRPCRouter({
   form: formRouter,
   conversation: conversationRouter,
+  fileUpload: fileUploadRouter,
   metrics: metricsRouter,
   webhook: webhookRouter,
   organization: organizationRouter,

@@ -69,6 +69,38 @@ export const ratingInputConfigSchema = z.object({
   iconType: z.enum(["STAR", "HEART", "THUMB_UP"]).optional().default("STAR"),
 });
 
+// --- FILE UPLOAD INPUT CONFIGURATION ---
+
+/**
+ * Schema for file upload input configuration
+ * Defines limits and allowed file types for beta feature
+ */
+export const fileUploadInputConfigSchema = z.object({
+  /** Optional help text to display to users */
+  helpText: z.string().optional(),
+  /** Whether the field is required */
+  isRequired: z.boolean().optional().default(false),
+  /** Maximum file size in bytes (default: 5MB) */
+  maxFileSize: z
+    .number()
+    .min(1)
+    .max(5 * 1024 * 1024)
+    .optional()
+    .default(5 * 1024 * 1024),
+  /** Maximum number of files per response (default: 1) */
+  maxFiles: z.number().min(1).max(1).optional().default(1),
+  /** Allowed file types (default: images and PDFs only) */
+  allowedFileTypes: z
+    .array(z.enum(["image/jpeg", "image/jpg", "application/pdf"]))
+    .optional()
+    .default(["image/jpeg", "image/jpg", "application/pdf"]),
+  /** File extensions for display (default: .jpg, .pdf) */
+  allowedExtensions: z
+    .array(z.string())
+    .optional()
+    .default([".jpg", ".jpeg", ".pdf"]),
+});
+
 /**
  * ======== SCHEMAS FOR FIELD CONFIGURATION ========
  */
@@ -106,6 +138,15 @@ export const ratingFieldConfigurationSchema = z.object({
 });
 
 /**
+ * Schema for file upload field configuration
+ * Combines the input type with its specific configuration
+ */
+export const fileUploadFieldConfigurationSchema = z.object({
+  inputType: z.literal(z.enum(inputTypeEnum.enumValues).Values.fileUpload),
+  inputConfiguration: fileUploadInputConfigSchema,
+});
+
+/**
  * Union schema for all field configurations
  * Allows for validation of any supported field type
  */
@@ -114,6 +155,7 @@ export const fieldConfigurationSchema = z.union([
   multipleChoiceFieldConfigurationSchema,
   datePickerFieldConfigurationSchema,
   ratingFieldConfigurationSchema,
+  fileUploadFieldConfigurationSchema,
 ]);
 
 // --- FORM FIELD CRUD SCHEMAS ---
@@ -168,3 +210,6 @@ export type MultipleChoiceInputConfigSchema = z.infer<
 >;
 export type FieldConfiguration = z.infer<typeof fieldConfigurationSchema>;
 export type RatingInputConfigSchema = z.infer<typeof ratingInputConfigSchema>;
+export type FileUploadInputConfigSchema = z.infer<
+  typeof fileUploadInputConfigSchema
+>;

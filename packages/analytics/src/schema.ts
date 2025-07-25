@@ -8,7 +8,7 @@ export const userIdentity = z.object({
 
 export type UserIdentity = z.infer<typeof userIdentity>;
 
-export const eventAction = z.enum(["create", "delete", "update"]);
+export const eventAction = z.enum(["create", "delete", "update", "view"]);
 export type EventAction = z.infer<typeof eventAction>;
 
 export const eventObject = z.enum([
@@ -20,6 +20,7 @@ export const eventObject = z.enum([
   "user",
   "collectData",
   "organizationMember",
+  "fileUpload",
 ]);
 export type EventObject = z.infer<typeof eventObject>;
 

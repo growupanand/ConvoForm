@@ -97,7 +97,7 @@ export function ConversationsSidebar({ formId }: Props) {
   }, [pathname]);
 
   if (isLoadingConversations || !isLoaded || !organizationId) {
-    return <ConversationsSidebarSkeleton />;
+    return <ConversationsSidebarSkeleton formId={formId} />;
   }
 
   return (
@@ -116,11 +116,11 @@ export function ConversationsSidebar({ formId }: Props) {
   );
 }
 
-const ConversationsSidebarSkeleton = () => {
+const ConversationsSidebarSkeleton = ({ formId }: { formId: string }) => {
   return (
     <div className="h-full w-full flex flex-col space-y-4">
       <div className="space-y-4">
-        <MainNavTab.Skeleton />
+        <MainNavTab formId={formId} />
       </div>
       <div className="relative grow overflow-auto">
         <ConversationsNavigation.ConversationsCardSkelton />
