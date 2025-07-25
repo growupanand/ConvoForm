@@ -20,7 +20,10 @@ export function UsageCard() {
   if (isLoading) {
     return (
       <UsageCardShell>
-        <UsageCardSkeleton />
+        <div className="space-y-4 mt-4">
+          <UsageCardSkeleton />
+          <UsageCardSkeleton />
+        </div>
       </UsageCardShell>
     );
   }
@@ -28,29 +31,39 @@ export function UsageCard() {
   if (data) {
     return (
       <UsageCardShell>
-        {data.map((usage) => (
-          <SidebarMenuItem
-            key={`${usage.label}-${usage.value}-${usage.limit}`}
-            className="space-y-2"
-          >
-            <SidebarMenuButton className="h-auto" asChild>
-              <div>
-                <div className="w-full space-y-2">
-                  <div className="flex grid-cols-2 items-center justify-between gap-4 text-sm">
-                    <span className="">{usage.label}</span>
-                    <span className="text-muted-foreground">
-                      {usage.value}/{usage.limit}
-                    </span>
+        {data.map((usage) => {
+          // Handle custom formatting for different usage types
+          const displayValue = usage.readableValue
+            ? usage.readableValue
+            : usage.value.toString();
+          const displayLimit = usage.readableLimit
+            ? usage.readableLimit
+            : usage.limit.toString();
+
+          return (
+            <SidebarMenuItem
+              key={`${usage.label}-${usage.value}-${usage.limit}`}
+              className="space-y-2"
+            >
+              <SidebarMenuButton className="h-auto" asChild>
+                <div>
+                  <div className="w-full space-y-2">
+                    <div className="flex grid-cols-2 items-center justify-between gap-4 text-sm">
+                      <span className="">{usage.label}</span>
+                      <span className="text-subtle-foreground font-medium">
+                        {displayValue}/{displayLimit}
+                      </span>
+                    </div>
+                    <Progress
+                      className="h-1"
+                      value={Math.min((usage.value / usage.limit) * 100, 100)}
+                    />
                   </div>
-                  <Progress
-                    className="h-1"
-                    value={(usage.value / usage.limit) * 100}
-                  />
                 </div>
-              </div>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        ))}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          );
+        })}
       </UsageCardShell>
     );
   }
@@ -61,9 +74,9 @@ export function UsageCard() {
 function UsageCardShell({ children }: { children: React.ReactNode }) {
   return (
     <SidebarGroup className="p-0">
-      <SidebarGroupLabel>
+      <SidebarGroupLabel className="text-base font-bold">
         <Gauge className="mr-2" />
-        Usage
+        Usage limit
       </SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>{children}</SidebarMenu>
