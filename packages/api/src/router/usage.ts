@@ -1,5 +1,5 @@
 import { formSubmissionLimit } from "@convoform/common";
-import { count, eq, sum } from "@convoform/db";
+import { and, count, eq, sum } from "@convoform/db";
 import { conversation, fileUpload } from "@convoform/db/src/schema";
 import { formatFileSize } from "@convoform/file-storage";
 import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
@@ -20,7 +20,12 @@ export const usageRouter = createTRPCRouter({
     const [storageResult] = await ctx.db
       .select({ value: sum(fileUpload.fileSize) })
       .from(fileUpload)
-      .where(eq(fileUpload.organizationId, ctx.orgId));
+      .where(
+        and(
+          eq(fileUpload.organizationId, ctx.orgId),
+          eq(fileUpload.isDeleted, false),
+        ),
+      );
 
     const conversationsCount = conversationsResult.value;
     const storageUsed = Number(storageResult?.value || 0); // Convert to number, default to 0
