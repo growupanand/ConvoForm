@@ -175,10 +175,14 @@ export class FileStorageService {
 
       await this.client.send(headCommand);
 
-      // Generate signed URL
+      // Extract filename from the stored path for Content-Disposition header
+      const filename = validatedInput.storedPath.split("/").pop() || "download";
+
+      // Generate signed URL with Content-Disposition header to force download
       const getCommand = new GetObjectCommand({
         Bucket: this.config.R2_BUCKET_NAME,
         Key: validatedInput.storedPath,
+        ResponseContentDisposition: `attachment; filename="${filename}"`,
       });
 
       const signedUrl = await getSignedUrl(this.client, getCommand, {

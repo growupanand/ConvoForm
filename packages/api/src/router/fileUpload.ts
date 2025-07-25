@@ -28,6 +28,11 @@ const deleteFileInputSchema = z.object({
   organizationId: z.string().min(1),
 });
 
+const getFileMetadataInputSchema = z.object({
+  fileId: z.string().min(1),
+  organizationId: z.string().min(1),
+});
+
 export const fileUploadRouter = createTRPCRouter({
   // Upload a new file
   uploadFile: authProtectedProcedure
@@ -201,7 +206,7 @@ export const fileUploadRouter = createTRPCRouter({
   // Get secure download URL for a file
   getDownloadUrl: authProtectedProcedure
     .input(getDownloadUrlInputSchema)
-    .query(async ({ input, ctx }) => {
+    .mutation(async ({ input, ctx }) => {
       const { fileId, organizationId } = input;
 
       // Find file and verify ownership
@@ -301,6 +306,46 @@ export const fileUploadRouter = createTRPCRouter({
         console.error("Failed to generate download URL:", error);
         throw new Error("Failed to generate download URL");
       }
+    }),
+
+  // Get file metadata for display
+  getFileMetadata: authProtectedProcedure
+    .input(getFileMetadataInputSchema)
+    .query(async ({ input, ctx }) => {
+      const { fileId, organizationId } = input;
+
+      // Find file and verify ownership
+      const fileRecord = await ctx.db.query.fileUpload.findFirst({
+        where: (file, { eq, and }) =>
+          and(
+            eq(file.id, fileId),
+            eq(file.organizationId, organizationId),
+            eq(file.isDeleted, false),
+          ),
+        columns: {
+          id: true,
+          originalName: true,
+          mimeType: true,
+          fileSize: true,
+          expiresAt: true,
+          downloadCount: true,
+          createdAt: true,
+        },
+      });
+
+      if (!fileRecord) {
+        throw new Error("File not found or access denied");
+      }
+
+      return {
+        id: fileRecord.id,
+        originalName: fileRecord.originalName,
+        mimeType: fileRecord.mimeType,
+        fileSize: fileRecord.fileSize,
+        expiresAt: fileRecord.expiresAt,
+        downloadCount: fileRecord.downloadCount,
+        uploadedAt: fileRecord.createdAt,
+      };
     }),
 
   // Delete a file
