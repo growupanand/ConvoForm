@@ -83,16 +83,26 @@ export function FileDisplay({ fileId, className }: FileDisplayProps) {
     );
   }
 
-  const getFileIcon = (mimeType: string) => {
+  const getFileIcon = (mimeType: string, className?: string) => {
     if (mimeType.startsWith("image/")) {
       return (
-        <FileImage className="h-4 w-4 text-blue-500 inline align-middle" />
+        <FileImage
+          className={cn("h-4 w-4 text-blue-500 inline align-middle", className)}
+        />
       );
     }
     if (mimeType === "application/pdf") {
-      return <FileText className="h-4 w-4 text-red-500 inline align-middle" />;
+      return (
+        <FileText
+          className={cn("h-4 w-4 text-red-500 inline align-middle", className)}
+        />
+      );
     }
-    return <File className="h-4 w-4 text-gray-500 inline align-middle" />;
+    return (
+      <File
+        className={cn("h-4 w-4 text-gray-500 inline align-middle", className)}
+      />
+    );
   };
 
   const formatFileSize = (bytes: number) => {
@@ -106,93 +116,87 @@ export function FileDisplay({ fileId, className }: FileDisplayProps) {
   const isExpired =
     fileMetadata.expiresAt && new Date(fileMetadata.expiresAt) < new Date();
 
-  const truncateFilename = (filename: string, maxLength = 30) => {
-    if (filename.length <= maxLength) return filename;
-    const extension = filename.split(".").pop();
-    if (!extension) return filename; // Handle case where there's no extension
-    const nameWithoutExt = filename.substring(0, filename.lastIndexOf("."));
-    const truncatedName = nameWithoutExt.substring(
-      0,
-      maxLength - extension.length - 4,
-    );
-    return `${truncatedName}...${extension}`;
-  };
-
   return (
     <div className="flex items-center">
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="ghost" size="xs" className="flex items-center gap-2">
+          <div className="flex items-baseline gap-2 w-full cursor-pointer hover:bg-accent/50 rounded-md p-1 transition-colors">
             <div className="flex-shrink-0">
               {getFileIcon(fileMetadata.mimeType)}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">
-                {truncateFilename(fileMetadata.originalName)}
+              <p className="text-sm font-medium line-clamp-2">
+                {fileMetadata.originalName}
               </p>
               {isExpired && <p className="text-xs text-destructive">Expired</p>}
             </div>
-          </Button>
+          </div>
         </PopoverTrigger>
         <PopoverContent className="w-60">
           <div className="space-y-4">
-            <h4 className="font-medium">
-              {getFileIcon(fileMetadata.mimeType)} {fileMetadata.originalName}
-            </h4>
-            <div className="space-y-1 text-sm text-subtle-foreground">
-              <div>
-                <span>Size:</span>{" "}
+            <div className="flex justify-start items-baseline gap-2">
+              <div>{getFileIcon(fileMetadata.mimeType, "size-6")}</div>
+              <h4 className="font-medium text-lg leading-tight mx-auto break-all line-clamp-2">
+                {fileMetadata.originalName}
+              </h4>
+            </div>
+            <div className="space-y-2">
+              <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm">
+                <span className="text-subtle-foreground text-right">Size:</span>
                 <span className="font-medium">
                   {formatFileSize(fileMetadata.fileSize)}
                 </span>
-              </div>
-              <div>
-                <span>Type:</span>{" "}
-                <span className="font-medium">{fileMetadata.mimeType}</span>
-              </div>
-              <div>
-                <span>Downloads:</span>{" "}
+
+                <span className="text-subtle-foreground text-right">Type:</span>
+                <span className="font-medium truncate">
+                  {fileMetadata.mimeType}
+                </span>
+
+                <span className="text-subtle-foreground text-right">
+                  Downloads:
+                </span>
                 <span className="font-medium">
                   {fileMetadata.downloadCount}{" "}
                   {fileMetadata.downloadCount === 1 ? "time" : "times"}
-                  {/* show download left */}
                 </span>
-              </div>
-              <div>
-                <span>Uploaded:</span>{" "}
+
+                <span className="text-subtle-foreground text-right">
+                  Uploaded:
+                </span>
                 <span className="font-medium">
                   {new Date(fileMetadata.uploadedAt).toLocaleDateString()}
                 </span>
-              </div>
-              {fileMetadata.expiresAt && (
-                <div>
-                  <span>Expires:</span>{" "}
-                  <span
-                    className={cn(
-                      "font-medium",
-                      isExpired ? "text-destructive" : "",
-                    )}
-                  >
-                    {new Date(fileMetadata.expiresAt).toLocaleDateString()}
-                    {isExpired && " (Expired)"}
-                  </span>
-                </div>
-              )}
-            </div>
-            <div className="!mt-4">
-              <Button
-                onClick={handleDownload}
-                disabled={isDownloading || isExpired}
-                className="flex-shrink-0 gap-2 w-full"
-              >
-                {isDownloading ? (
-                  <Spinner size="sm" />
-                ) : (
-                  <Download className="size-4" />
+
+                {fileMetadata.expiresAt && (
+                  <>
+                    <span className="text-subtle-foreground text-right">
+                      Expires:
+                    </span>
+                    <span
+                      className={cn(
+                        "font-medium",
+                        isExpired ? "text-destructive" : "",
+                      )}
+                    >
+                      {new Date(fileMetadata.expiresAt).toLocaleDateString()}
+                      {isExpired && " (Expired)"}
+                    </span>
+                  </>
                 )}
-                Download
-              </Button>
+              </div>
             </div>
+            <Button
+              onClick={handleDownload}
+              disabled={isDownloading || isExpired}
+              className="w-full gap-2"
+            >
+              {isDownloading ? (
+                <Spinner size="sm" />
+              ) : (
+                <Download className="size-4" />
+              )}
+              Download
+            </Button>
           </div>
         </PopoverContent>
       </Popover>

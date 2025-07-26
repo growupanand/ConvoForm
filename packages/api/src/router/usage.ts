@@ -1,5 +1,5 @@
 import { formSubmissionLimit } from "@convoform/common";
-import { and, count, eq, sum } from "@convoform/db";
+import { and, count, eq, gte, sum } from "@convoform/db";
 import { conversation, fileUpload } from "@convoform/db/src/schema";
 import { formatFileSize } from "@convoform/file-storage";
 import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
@@ -16,14 +16,18 @@ export const usageRouter = createTRPCRouter({
       throw new Error("Failed to get conversations count");
     }
 
-    // Get file storage usage (sum of file sizes in bytes)
+    // Get current month's start and end dates
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    // Get file storage usage for current month only (sum of file sizes in bytes)
     const [storageResult] = await ctx.db
       .select({ value: sum(fileUpload.fileSize) })
       .from(fileUpload)
       .where(
         and(
           eq(fileUpload.organizationId, ctx.orgId),
-          eq(fileUpload.isDeleted, false),
+          gte(fileUpload.createdAt, startOfMonth),
         ),
       );
 
@@ -36,6 +40,7 @@ export const usageRouter = createTRPCRouter({
         label: "Responses",
         value: conversationsCount,
         limit: formSubmissionLimit,
+        limitPeriod: "total",
       },
       {
         label: "File Storage",
@@ -43,6 +48,7 @@ export const usageRouter = createTRPCRouter({
         readableValue: formatFileSize(storageUsed),
         limit: storageLimitBytes,
         readableLimit: formatFileSize(storageLimitBytes),
+        limitPeriod: "monthly",
       },
     ];
   }),

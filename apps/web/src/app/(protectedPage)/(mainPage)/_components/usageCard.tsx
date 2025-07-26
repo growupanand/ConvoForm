@@ -8,11 +8,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   Skeleton,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@convoform/ui";
 
 import { api } from "@/trpc/react";
 import { Progress } from "@convoform/ui";
-import { Gauge } from "lucide-react";
 
 export function UsageCard() {
   const { data, isLoading } = api.usage.getUsgae.useQuery();
@@ -48,12 +51,21 @@ export function UsageCard() {
               <SidebarMenuButton className="h-auto" asChild>
                 <div>
                   <div className="w-full space-y-2">
-                    <div className="flex grid-cols-2 items-center justify-between gap-4 text-sm">
-                      <span className="">{usage.label}</span>
-                      <span className="text-subtle-foreground font-medium">
-                        {displayValue}/{displayLimit}
-                      </span>
-                    </div>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex grid-cols-2 items-baseline justify-between gap-4 text-sm">
+                            <span className="text-nowrap">{usage.label}</span>
+                            <span className="text-subtle-foreground font-bold text-xs">
+                              {displayValue}/{displayLimit}
+                            </span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent align="end" className="capitalize">
+                          {usage.limitPeriod}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                     <Progress
                       className="h-1"
                       value={Math.min((usage.value / usage.limit) * 100, 100)}
@@ -74,10 +86,7 @@ export function UsageCard() {
 function UsageCardShell({ children }: { children: React.ReactNode }) {
   return (
     <SidebarGroup className="p-0">
-      <SidebarGroupLabel className="text-base font-bold">
-        <Gauge className="mr-2" />
-        Usage limit
-      </SidebarGroupLabel>
+      <SidebarGroupLabel>Usage limit</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>{children}</SidebarMenu>
       </SidebarGroupContent>
