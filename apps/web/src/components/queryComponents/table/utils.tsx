@@ -1,3 +1,4 @@
+import { FileDisplay } from "@/components/fileDisplay"; // Add import for file display
 import { formatDate, formatDateTime } from "@/lib/utils";
 import type { RatingInputConfigSchema } from "@convoform/db/src/schema";
 import type {
@@ -6,7 +7,7 @@ import type {
   DatePickerInputConfigSchema,
 } from "@convoform/db/src/schema";
 import { Calendar, Clock } from "lucide-react";
-import { Star } from "lucide-react"; // Add this import at the top
+import { Star } from "lucide-react";
 
 /**
  * Format conversation fields data for TableComponent,
@@ -139,6 +140,17 @@ export function renderCellValue(
     }
   }
 
+  // Handle file upload fields
+  if (isFileUploadField(fieldConfig)) {
+    // The value should be a file ID
+    if (value && typeof value === "string") {
+      return <FileDisplay fileId={value} />;
+    }
+    return (
+      <span className="text-muted-foreground italic">No file uploaded</span>
+    );
+  }
+
   return value;
 }
 
@@ -168,4 +180,14 @@ function isRatingField(config: CollectedData["fieldConfiguration"]): config is {
   inputConfiguration: RatingInputConfigSchema;
 } {
   return config?.inputType === "rating";
+}
+
+// Type guard to check if this is a file upload field
+function isFileUploadField(
+  config: CollectedData["fieldConfiguration"],
+): config is {
+  inputType: "fileUpload";
+  inputConfiguration: any; // We can make this more specific later if needed
+} {
+  return config?.inputType === "fileUpload";
 }

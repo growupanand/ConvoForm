@@ -36,7 +36,7 @@ export default function FormPage(props: Props) {
   );
 
   if (isLoading || !isLoaded) {
-    return <FormPageLoading />;
+    return <FormPageLoading formId={formId} />;
   }
 
   if (!data || isError || !organization) {
@@ -70,12 +70,12 @@ export default function FormPage(props: Props) {
   );
 }
 
-function FormPageLoading() {
+function FormPageLoading({ formId }: { formId: string }) {
   return (
     <FormEditPageLayout
       leftSidebar={
         <div className="flex h-full w-full flex-col space-y-4">
-          <MainNavTab.Skeleton />
+          <MainNavTab formId={formId} />
           <div className="relative grow overflow-auto">
             <Card className="border-0 bg-transparent shadow-none">
               <FormEditorFormSkeleton />

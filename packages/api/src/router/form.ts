@@ -10,6 +10,7 @@ import {
   restoreDateFields,
   updateFormSchema,
 } from "@convoform/db/src/schema";
+import { fileUpload } from "@convoform/db/src/schema/fileUploads/fileUpload";
 import { z } from "zod";
 
 import {
@@ -197,29 +198,6 @@ export const formRouter = createTRPCRouter({
       };
     }),
 
-  delete: authProtectedProcedure
-    .input(
-      z.object({
-        id: z.string().min(1),
-      }),
-    )
-    .mutation(async ({ input, ctx }) => {
-      const [result] = await ctx.db
-        .delete(form)
-        .where(eq(form.id, input.id))
-        .returning();
-
-      if (result) {
-        ctx.analytics.track("form:delete", {
-          properties: {
-            ...result,
-          },
-        });
-      }
-
-      return result;
-    }),
-
   // Patch partial form
   patch: authProtectedProcedure
     .input(patchFormSchema)
@@ -289,23 +267,86 @@ export const formRouter = createTRPCRouter({
       return updatedForm;
     }),
 
-  deleteForm: authProtectedProcedure
+  delete: authProtectedProcedure
     .input(
       z.object({
         id: z.string().min(1),
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      // First, find and delete all files associated with this form
+      const filesToDelete = await ctx.db.query.fileUpload.findMany({
+        where: and(
+          eq(fileUpload.formId, input.id),
+          eq(fileUpload.isDeleted, false),
+        ),
+        columns: {
+          id: true,
+          storedPath: true,
+          originalName: true,
+        },
+      });
+
+      // Delete files from storage and mark as deleted in database
+      const fileCleanupErrors: string[] = [];
+      for (const file of filesToDelete) {
+        try {
+          // Mark file as deleted in database first
+          await ctx.db
+            .update(fileUpload)
+            .set({
+              isDeleted: true,
+              updatedAt: new Date(),
+            })
+            .where(eq(fileUpload.id, file.id));
+
+          // Delete from R2 storage
+          try {
+            const { FileStorageService } = await import(
+              "@convoform/file-storage"
+            );
+            const fileStorageService = new FileStorageService();
+            await fileStorageService.deleteFile(file.storedPath);
+            console.log(
+              `Successfully deleted file: ${file.originalName} (${file.id}) for form ${input.id}`,
+            );
+          } catch (storageError) {
+            const errorMsg = `Failed to delete file from storage: ${file.originalName} (${file.id}) - ${storageError instanceof Error ? storageError.message : "Unknown error"}`;
+            console.error(errorMsg);
+            fileCleanupErrors.push(errorMsg);
+            // Continue with form deletion even if file storage deletion fails
+          }
+        } catch (fileError) {
+          const errorMsg = `Error deleting file ${file.id}: ${fileError instanceof Error ? fileError.message : "Unknown error"}`;
+          console.error(errorMsg);
+          fileCleanupErrors.push(errorMsg);
+        }
+      }
+
+      if (fileCleanupErrors.length > 0) {
+        console.warn(
+          `Form deletion proceeding with ${fileCleanupErrors.length} file cleanup errors for form ${input.id}`,
+        );
+      }
+
+      // Now delete the form
       const [deletedForm] = await ctx.db
         .delete(form)
         .where(eq(form.id, input.id))
         .returning();
+
       if (deletedForm) {
         ctx.analytics.track("form:delete", {
           properties: {
             ...deletedForm,
+            filesDeleted: filesToDelete.length,
+            fileCleanupErrors: fileCleanupErrors.length,
           },
         });
+
+        console.log(
+          `Successfully deleted form ${input.id} with ${filesToDelete.length} associated files`,
+        );
       }
 
       return deletedForm;

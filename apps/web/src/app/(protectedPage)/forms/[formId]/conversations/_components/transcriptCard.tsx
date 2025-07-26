@@ -1,8 +1,9 @@
 import type { Transcript } from "@convoform/db/src/schema";
 
 import { AnimatedTypingDots } from "@/components/common/typingDots";
-import { Skeleton } from "@convoform/ui";
+import { FileDisplay } from "@/components/fileDisplay";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@convoform/ui";
 
 type Props = {
   transcript: Transcript[];
@@ -60,9 +61,21 @@ const SystemMessageBox = ({
   </p>
 );
 
-const UserMessageBox = ({ message }: { message: string }) => (
-  <p className="mb-4 font-medium text-foreground pb-1">{message}</p>
-);
+const UserMessageBox = ({ message }: { message: string }) => {
+  // Check if the message is a file ID (typical format: lowercase alphanumeric string)
+  // File IDs are usually 24+ characters long and contain only lowercase letters and numbers
+  const isFileId = /^[a-z0-9]{20,}$/.test(message.trim());
+
+  if (isFileId) {
+    return (
+      <div className="mb-4 pb-1">
+        <FileDisplay fileId={message.trim()} className="" />
+      </div>
+    );
+  }
+
+  return <p className="mb-4 font-medium text-foreground pb-1">{message}</p>;
+};
 
 const SystemMessageSkeleton = () => (
   <Skeleton className="h-4 w-40 bg-gray-200 " />

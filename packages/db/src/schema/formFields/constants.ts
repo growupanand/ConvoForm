@@ -5,6 +5,7 @@ export const INPUT_TYPES = [
   "multipleChoice",
   "datePicker",
   "rating",
+  "fileUpload",
 ] as const;
 
 export const inputTypeEnum = pgEnum("inputTypeEnum", INPUT_TYPES);
@@ -41,6 +42,11 @@ export const INPUT_TYPES_MAP: InputTypeMap = {
   rating: {
     name: "Rating",
     description: "Respondent can rate on a scale using stars",
+    saveExactValue: true,
+  },
+  fileUpload: {
+    name: "File Upload",
+    description: "Respondent can upload files (images, PDFs)",
     saveExactValue: true,
   },
 };

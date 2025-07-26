@@ -2,6 +2,7 @@
 
 import type { UseFormReturn } from "react-hook-form";
 
+import { ToggleButton } from "@/components/common/toggleButton";
 import { cn } from "@/lib/utils";
 import { Button, FormMessage } from "@convoform/ui";
 import { Calendar } from "@convoform/ui";
@@ -11,7 +12,6 @@ import { CalendarIcon, Clock } from "lucide-react";
 import { useState } from "react";
 import { OptionalText } from ".";
 import type { FormHookData } from "../editFieldSheet";
-import { ToggleButton } from "@/components/common/toggleButton";
 
 type Props = {
   formHook: UseFormReturn<FormHookData>;

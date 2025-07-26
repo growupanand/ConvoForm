@@ -39,6 +39,7 @@ const nextConfig: NextConfig = {
       "@trpc/server",
       "lucide-react",
       "zod",
+      "@convoform/file-storage",
     ],
     viewTransition: true,
     ppr: true,
@@ -53,6 +54,7 @@ const nextConfig: NextConfig = {
     "@convoform/api",
     "@convoform/common",
     "@convoform/websocket-client",
+    "@convoform/file-storage",
   ],
 
   /** We already do linting and typechecking as separate tasks in CI */

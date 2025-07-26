@@ -1,0 +1,29 @@
+{
+  "name": "@convoform/feature-flags",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "posthog-node": "^4.0.1"
+  },
+  "devDependencies": {
+    "@convoform/tsconfig": "workspace:*",
+    "@types/node": "^20.11.24",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5"
+  }
+}

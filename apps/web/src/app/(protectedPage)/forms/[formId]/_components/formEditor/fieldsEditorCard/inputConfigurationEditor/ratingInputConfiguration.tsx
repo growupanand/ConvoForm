@@ -1,5 +1,6 @@
 // Create a new file: apps/web/src/app/(protectedPage)/forms/[formId]/_components/formEditor/fieldsEditorCard/inputConfigurationEditor/ratingInputConfiguration.tsx
 
+import { ToggleButton } from "@/components/common/toggleButton";
 import {
   FormControl,
   FormField,
@@ -14,7 +15,6 @@ import {
 } from "@convoform/ui";
 import type { UseFormReturn } from "react-hook-form";
 import type { FormHookData } from "../editFieldSheet";
-import { ToggleButton } from "@/components/common/toggleButton";
 
 type Props = {
   formHook: UseFormReturn<FormHookData>;

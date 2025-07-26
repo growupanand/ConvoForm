@@ -6,7 +6,7 @@ import {
   inputTypeEnum,
   updateFormFieldSchema,
 } from "@convoform/db/src/schema";
-import { Button, SectionHeading, toast } from "@convoform/ui";
+import { Badge, Button, SectionHeading, toast } from "@convoform/ui";
 import {
   Form,
   FormControl,
@@ -41,6 +41,7 @@ import { InputConfigurationEditor } from "./inputConfigurationEditor";
 
 type Props = {
   formField: FormFieldSchema;
+  formFields: FormFieldSchema[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
@@ -50,6 +51,7 @@ export type FormHookData = z.infer<typeof formHookSchema>;
 
 export function EditFieldSheet({
   formField,
+  formFields,
   open,
   onOpenChange,
 }: Readonly<Props>) {
@@ -100,6 +102,13 @@ export function EditFieldSheet({
 
   const selectedInputType = formHook.watch("fieldConfiguration.inputType");
   const fieldDescription = formHook.watch("fieldDescription");
+
+  // Check if a file upload field already exists in the form (excluding current field)
+  const hasExistingFileUploadField = formFields.some(
+    (field) =>
+      field.fieldConfiguration.inputType === "fileUpload" &&
+      field.id !== formField.id,
+  );
 
   const { inputRef } = useAutoHeightHook({ value: fieldDescription });
 
@@ -240,11 +249,44 @@ export function EditFieldSheet({
                             </FormControl>
 
                             <SelectContent>
-                              {inputTypeEnum.enumValues.map((inputType) => (
-                                <SelectItem key={inputType} value={inputType}>
-                                  {INPUT_TYPES_MAP[inputType].name}
-                                </SelectItem>
-                              ))}
+                              {inputTypeEnum.enumValues.map((inputType) => {
+                                // Disable fileUpload option if one already exists
+                                const isDisabled =
+                                  inputType === "fileUpload" &&
+                                  hasExistingFileUploadField;
+
+                                return (
+                                  <SelectItem
+                                    key={inputType}
+                                    value={inputType}
+                                    disabled={isDisabled}
+                                    className={
+                                      isDisabled
+                                        ? "opacity-50 cursor-not-allowed"
+                                        : ""
+                                    }
+                                  >
+                                    <div>
+                                      <div>
+                                        {INPUT_TYPES_MAP[inputType].name}
+                                        {inputType === "fileUpload" && (
+                                          <Badge
+                                            variant="secondary"
+                                            className="ms-2"
+                                          >
+                                            Beta
+                                          </Badge>
+                                        )}
+                                      </div>
+                                      {isDisabled && (
+                                        <div className="text-xs">
+                                          Only one file upload field allowed
+                                        </div>
+                                      )}
+                                    </div>
+                                  </SelectItem>
+                                );
+                              })}
                             </SelectContent>
                             <FormMessage />
                           </Select>

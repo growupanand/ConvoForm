@@ -7,9 +7,9 @@ import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { type UseFormReturn, useFieldArray } from "react-hook-form";
 
+import { ToggleButton } from "@/components/common/toggleButton";
 import { cn } from "@/lib/utils";
 import type { FormHookData } from "../editFieldSheet";
-import { ToggleButton } from "@/components/common/toggleButton";
 
 type Props = {
   formHook: UseFormReturn<FormHookData>;

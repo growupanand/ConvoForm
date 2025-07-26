@@ -169,6 +169,13 @@
       "when": 1751601429601,
       "tag": "0023_gigantic_moon_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1753466696172,
+      "tag": "0024_fat_dexter_bennett",
+      "breakpoints": true
     }
   ]
 }
