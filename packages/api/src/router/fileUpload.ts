@@ -1,11 +1,13 @@
+import { analytics } from "@convoform/analytics";
 import { and, eq, gte, lt, sql, sum } from "@convoform/db";
 import { fileUpload } from "@convoform/db/src/schema";
 import { featureFlagService } from "@convoform/feature-flags";
 import { BETA_LIMITS, fileStorageService } from "@convoform/file-storage";
-import { enforceRateLimit } from "@convoform/rate-limiter";
 import { z } from "zod";
 
+import { enforceRateLimit } from "@convoform/rate-limiter";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
+import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
 
 const uploadFileInputSchema = z.object({
@@ -13,9 +15,7 @@ const uploadFileInputSchema = z.object({
   fileType: z.enum(BETA_LIMITS.ALLOWED_MIME_TYPES),
   fileSize: z.number().min(1).max(BETA_LIMITS.MAX_FILE_SIZE),
   fileBuffer: z.string(), // Base64 encoded file data
-  organizationId: z.string().min(1),
-  formId: z.string().min(1),
-  conversationId: z.string().optional(),
+  conversationId: z.string().min(1),
 });
 
 const getDownloadUrlInputSchema = z.object({
@@ -34,23 +34,37 @@ const getFileMetadataInputSchema = z.object({
 });
 
 export const fileUploadRouter = createTRPCRouter({
-  // Upload a new file
-  uploadFile: authProtectedProcedure
+  // Upload a new file (authenticated)
+  uploadFile: publicProcedure
     .input(uploadFileInputSchema)
     .mutation(async ({ input, ctx }) => {
-      await enforceRateLimit({
-        identifier: ctx.userId,
-        rateLimitType: "core:create",
+      const { fileName, fileType, fileSize, fileBuffer, conversationId } =
+        input;
+
+      const existConversation = await ctx.db.query.conversation.findFirst({
+        where: (conv, { eq }) => eq(conv.id, conversationId),
       });
+
+      if (!existConversation) {
+        throw new Error("Conversation not found");
+      }
+
+      await enforceRateLimit({
+        identifier: conversationId,
+        rateLimitType: "file:upload",
+      });
+
+      const organizationId = existConversation.organizationId;
+      const formId = existConversation.formId;
 
       // Check if file upload beta is enabled for this organization
       const isFileUploadEnabled = await featureFlagService.isFeatureEnabled(
         "file-upload-beta",
         {
-          distinctId: ctx.userId,
-          organizationId: input.organizationId,
+          distinctId: "unknown",
+          organizationId: organizationId,
           groupType: "organization",
-          groupKey: input.organizationId,
+          groupKey: organizationId,
         },
       );
 
@@ -59,26 +73,6 @@ export const fileUploadRouter = createTRPCRouter({
           "File upload feature is not available. Please contact support to enable beta access.",
         );
       }
-
-      const {
-        fileName,
-        fileType,
-        fileSize,
-        fileBuffer,
-        organizationId,
-        formId,
-        conversationId,
-      } = input;
-
-      // Verify organization ownership
-      // const userOrg = await ctx.db.query.organization.findFirst({
-      //   where: (org, { eq }) => eq(org.id, organizationId),
-      //   columns: { id: true, name: true },
-      // });
-
-      // if (!userOrg) {
-      //   throw new Error("Organization not found or access denied");
-      // }
 
       // Check current organization storage usage
       const currentMonth = new Date();
@@ -177,7 +171,7 @@ export const fileUploadRouter = createTRPCRouter({
           throw new Error("Failed to save file metadata");
         }
 
-        ctx.analytics.track("fileUpload:create", {
+        analytics.track("fileUpload:create", {
           properties: {
             fileId: savedFileUpload.id,
             organizationId,

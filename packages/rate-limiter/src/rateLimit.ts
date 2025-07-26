@@ -23,7 +23,8 @@ export type LimitType =
   /** All OpenAI request called (except from loggedInUser or detected ip address of client)  */
   | "ai:unkown"
   /** All OpenAI request called by loggedInUser or detected ip address of client */
-  | "ai:identified";
+  | "ai:identified"
+  | "file:upload";
 type RateLimit = Record<LimitType, any>;
 
 export const RATE_LIMIT_ERROR_NAME = "TOO_MANY_REQUESTS";
@@ -59,6 +60,12 @@ export const ratelimit = redis
         analytics: true,
         prefix: "ratelimit:ai",
         limiter: Ratelimit.fixedWindow(150, "1d"),
+      }),
+      "file:upload": new Ratelimit({
+        redis,
+        analytics: true,
+        prefix: "ratelimit:api",
+        limiter: Ratelimit.fixedWindow(1, "10s"),
       }),
     } as RateLimit)
   : undefined;

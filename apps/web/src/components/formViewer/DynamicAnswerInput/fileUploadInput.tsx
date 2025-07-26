@@ -55,7 +55,7 @@ export function FileUploadInput({
     },
   });
 
-  const { form, convoFormHook } = useFormContext();
+  const { convoFormHook } = useFormContext();
   const { conversationId } = convoFormHook;
 
   const uploadFileMutation = api.fileUpload.uploadFile.useMutation({
@@ -87,8 +87,6 @@ export function FileUploadInput({
     const fileBufferString = Buffer.from(fileBuffer).toString("base64");
 
     uploadFileMutation.mutate({
-      formId: form.id,
-      organizationId: form.organizationId,
       fileName: formData.file.name,
       fileSize: formData.file.size,
       fileType: formData.file.type as
@@ -96,7 +94,7 @@ export function FileUploadInput({
         | "image/jpg"
         | "application/pdf",
       fileBuffer: fileBufferString,
-      conversationId: conversationId,
+      conversationId: conversationId, // Required for public uploads
     });
   };
 
