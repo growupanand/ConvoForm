@@ -12,6 +12,7 @@
     "@aws-sdk/client-s3": "^3.682.0",
     "@aws-sdk/s3-request-presigner": "^3.682.0",
     "@convoform/db": "workspace:*",
+    "server-only": "0.0.1",
     "zod": "catalog:"
   },
   "devDependencies": {
