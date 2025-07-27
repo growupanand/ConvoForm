@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { getOrganizationIdOrRedirect } from "@/lib/getOrganizationId";
+import { getOrgIdOrRedirect } from "@/lib/getOrganizationId";
 import { PageShell } from "../_components/pageShell";
 import CreateFormButton from "./_components/createFormButton";
 import { FormList } from "./_components/formList";
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default async function FormsPage() {
-  const organizationId = await getOrganizationIdOrRedirect();
+  const organizationId = await getOrgIdOrRedirect();
 
   return (
     <PageShell

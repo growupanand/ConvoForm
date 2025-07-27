@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { FormEditorPageHeader } from "@/app/(protectedPage)/forms/[formId]/_components/formPageHeader";
-import { getOrganizationIdOrRedirect } from "@/lib/getOrganizationId";
+import { getOrgIdOrRedirect } from "@/lib/getOrganizationId";
 import { api } from "@/trpc/server";
 import NotFound from "./not-found";
 
@@ -21,7 +21,7 @@ export default async function Layout(props: Readonly<Props>) {
 
   const { children } = props;
 
-  const orgId = await getOrganizationIdOrRedirect();
+  const orgId = await getOrgIdOrRedirect();
 
   const form = await api.form.getOne({ id: formId });
 
