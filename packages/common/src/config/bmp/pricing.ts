@@ -48,7 +48,7 @@ export const FEATURE_NAMES = {
  * Plan limits configuration
  */
 export const PLAN_LIMITS = {
-  FREE_RESPONSES: 1,
+  FREE_RESPONSES: 500,
   FREE_FORMS: 10,
   FREE_STORAGE_BYTES: mbToBytes(100),
   PRO_RESPONSES: 10000,
