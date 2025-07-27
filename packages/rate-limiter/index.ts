@@ -1,1 +1,1 @@
-export * from "./src/rateLimit";
+export * from "./src/index";

@@ -49,10 +49,7 @@ export const fileUploadRouter = createTRPCRouter({
         throw new Error("Conversation not found");
       }
 
-      await enforceRateLimit({
-        identifier: conversationId,
-        rateLimitType: "file:upload",
-      });
+      await enforceRateLimit.FILE_UPLOAD(conversationId);
 
       const organizationId = existConversation.organizationId;
       const formId = existConversation.formId;

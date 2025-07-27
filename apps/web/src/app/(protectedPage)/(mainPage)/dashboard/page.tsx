@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { ConversationsStats } from "@/components/statsComponents/conversationsStats";
-import { getOrganizationId } from "@/lib/getOrganizationId";
+import { getOrganizationIdOrRedirect } from "@/lib/getOrganizationId";
 import { PageShell } from "../_components/pageShell";
 import { RecentResponsesCard } from "./_components/recentResponseCard";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const orgId = await getOrganizationId();
+  const orgId = await getOrganizationIdOrRedirect();
 
   return (
     <PageShell title="Dashboard">

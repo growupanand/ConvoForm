@@ -56,10 +56,11 @@ export async function POST(
     const conversationService = new ConversationService();
     const clientIp = getIP(req);
 
-    await enforceRateLimit({
-      identifier: clientIp ?? "unknown",
-      rateLimitType: clientIp ? "ai:identified" : "ai:unkown",
-    });
+    if (clientIp) {
+      await enforceRateLimit.AI_PROTECTED_SESSION(clientIp);
+    } else {
+      await enforceRateLimit.AI_PUBLIC_SESSION();
+    }
 
     if (!isInitialMessage) {
       // Try to extract the answer from the current conversation messages, and Update conversation with the extracted answer

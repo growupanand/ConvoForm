@@ -1,6 +1,6 @@
 // import NavigationCardContent from "@/app/(protectedPage)/(mainPage)/_components/navigationCardContent";
 import { AppSidebar } from "@/components/app-sidebar";
-import { getOrganizationId } from "@/lib/getOrganizationId";
+import { getOrganizationIdOrRedirect } from "@/lib/getOrganizationId";
 import { SidebarInset, SidebarProvider } from "@convoform/ui";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default async function Layout({ children }: Readonly<Props>) {
-  const orgId = await getOrganizationId();
+  const orgId = await getOrganizationIdOrRedirect();
 
   return (
     <SidebarProvider>

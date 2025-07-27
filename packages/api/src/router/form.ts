@@ -31,10 +31,7 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      await enforceRateLimit({
-        identifier: ctx.userId,
-        rateLimitType: "core:create",
-      });
+      await enforceRateLimit.CORE_CREATE(ctx.userId);
 
       // Create new form
       const [savedForm] = await ctx.db
@@ -202,10 +199,7 @@ export const formRouter = createTRPCRouter({
   patch: authProtectedProcedure
     .input(patchFormSchema)
     .mutation(async ({ input, ctx }) => {
-      await enforceRateLimit({
-        identifier: ctx.userId,
-        rateLimitType: "core:edit",
-      });
+      await enforceRateLimit.CORE_EDIT(ctx.userId);
 
       const { id, ...updatedData } = input;
       const [updatedForm] = await ctx.db
@@ -234,10 +228,7 @@ export const formRouter = createTRPCRouter({
   updateForm: authProtectedProcedure
     .input(updateFormSchema.omit({ formFields: true }))
     .mutation(async ({ input, ctx }) => {
-      await enforceRateLimit({
-        identifier: ctx.userId,
-        rateLimitType: "core:edit",
-      });
+      await enforceRateLimit.CORE_EDIT(ctx.userId);
 
       const [updatedForm] = await ctx.db
         .update(form)

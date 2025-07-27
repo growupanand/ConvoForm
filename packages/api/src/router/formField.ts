@@ -16,10 +16,7 @@ export const formFieldRouter = createTRPCRouter({
   createFormField: authProtectedProcedure
     .input(insertFormFieldSchema)
     .mutation(async ({ input, ctx }) => {
-      await enforceRateLimit({
-        identifier: ctx.userId,
-        rateLimitType: "core:create",
-      });
+      await enforceRateLimit.CORE_CREATE(ctx.userId);
 
       const existForm = await ctx.db.query.form.findFirst({
         where: (form, { eq }) => eq(form.id, input.formId),
@@ -77,10 +74,7 @@ export const formFieldRouter = createTRPCRouter({
   patchFormField: authProtectedProcedure
     .input(patchFormFieldSchema)
     .mutation(async ({ input, ctx }) => {
-      await enforceRateLimit({
-        identifier: ctx.userId,
-        rateLimitType: "core:edit",
-      });
+      await enforceRateLimit.CORE_EDIT(ctx.userId);
 
       const { id, ...updatedData } = input;
 
@@ -105,10 +99,7 @@ export const formFieldRouter = createTRPCRouter({
   updateFormField: authProtectedProcedure
     .input(updateFormFieldSchema)
     .mutation(async ({ input, ctx }) => {
-      await enforceRateLimit({
-        identifier: ctx.userId,
-        rateLimitType: "core:edit",
-      });
+      await enforceRateLimit.CORE_EDIT(ctx.userId);
 
       const { id, ...updatedData } = input;
 
