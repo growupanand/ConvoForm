@@ -366,6 +366,10 @@ importers:
         version: 5.8.3
 
   packages/common:
+    dependencies:
+      zod:
+        specifier: 'catalog:'
+        version: 3.24.3
     devDependencies:
       '@convoform/tsconfig':
         specifier: workspace:*

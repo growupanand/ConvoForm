@@ -9,7 +9,7 @@
       "type-check": "tsc --noEmit"
     },
     "dependencies": {
-     
+      "zod": "catalog:"
     },
     "devDependencies": {
       "@types/node": "catalog:",

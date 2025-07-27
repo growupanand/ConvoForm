@@ -1,4 +1,4 @@
-import { and, count, eq } from "@convoform/db";
+import { and, eq } from "@convoform/db";
 import {
   form,
   formDesign,
@@ -341,26 +341,6 @@ export const formRouter = createTRPCRouter({
       }
 
       return deletedForm;
-    }),
-
-  getAIGeneratedCountByOrganization: publicProcedure
-    .input(
-      z.object({
-        organizationId: z.string().min(1),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      const [result] = await ctx.db
-        .select({ value: count() })
-        .from(form)
-        .where(
-          and(
-            eq(form.organizationId, input.organizationId),
-            eq(form.isAIGenerated, true),
-          ),
-        );
-
-      return result?.value;
     }),
 
   updateShowOrganizationName: authProtectedProcedure

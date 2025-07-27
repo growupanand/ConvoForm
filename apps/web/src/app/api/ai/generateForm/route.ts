@@ -8,9 +8,7 @@ import type { z } from "zod";
 
 import { sendErrorResponse } from "@/lib/errorHandlers";
 import { getOrganizationIdOrRedirect } from "@/lib/getOrganizationId";
-import { api } from "@/trpc/server";
 import { GenerateService } from "@convoform/ai";
-import { aiGeneratedFormLimit } from "@convoform/common";
 import { enforceRateLimit } from "@convoform/rate-limiter";
 
 export async function POST(req: NextRequest) {
@@ -23,17 +21,6 @@ export async function POST(req: NextRequest) {
     // TODO: After moving AI related routes to tRPC, we can use userId as identifier
 
     await enforceRateLimit.AI_PROTECTED_SESSION(orgId);
-    // Check current plan usage and limit
-    const aiGeneratedFormsCount =
-      await api.form.getAIGeneratedCountByOrganization({
-        organizationId: orgId,
-      });
-    if (
-      aiGeneratedFormsCount &&
-      aiGeneratedFormsCount >= aiGeneratedFormLimit
-    ) {
-      throw new Error("AI generated form limit reached");
-    }
 
     const generateFormService = new GenerateService({ formOverview });
     const aiResponseJSON =

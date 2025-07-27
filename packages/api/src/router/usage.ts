@@ -1,7 +1,6 @@
-import { formSubmissionLimit } from "@convoform/common";
+import { FEATURE_NAMES, formatFileSize, getPlanLimit } from "@convoform/common";
 import { and, count, eq, gte, sum } from "@convoform/db";
 import { conversation, fileUpload } from "@convoform/db/src/schema";
-import { formatFileSize } from "@convoform/file-storage";
 import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
 import { createTRPCRouter } from "../trpc";
 
@@ -33,21 +32,22 @@ export const usageRouter = createTRPCRouter({
 
     const conversationsCount = conversationsResult.value;
     const storageUsed = Number(storageResult?.value || 0); // Convert to number, default to 0
-    const storageLimitBytes = 100 * 1024 * 1024; // 100MB in bytes
 
     return [
       {
         label: "Responses",
         value: conversationsCount,
-        limit: formSubmissionLimit,
+        limit: getPlanLimit("free", FEATURE_NAMES.FORM_RESPONSES),
         limitPeriod: "total",
       },
       {
         label: "File Storage",
         value: storageUsed,
         readableValue: formatFileSize(storageUsed),
-        limit: storageLimitBytes,
-        readableLimit: formatFileSize(storageLimitBytes),
+        limit: getPlanLimit("free", FEATURE_NAMES.FILE_STORAGE),
+        readableLimit: formatFileSize(
+          getPlanLimit("free", FEATURE_NAMES.FILE_STORAGE),
+        ),
         limitPeriod: "monthly",
       },
     ];

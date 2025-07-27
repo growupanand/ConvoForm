@@ -30,7 +30,11 @@ export function FormViewer() {
   const shouldShowProgressBar = currentSection === "questions-screen";
 
   const handleCTAClick = useCallback(async () => {
-    await startConversation();
+    try {
+      await startConversation();
+    } catch (error) {
+      console.log({ error });
+    }
   }, []);
 
   const handlePostCTAClick = useCallback(

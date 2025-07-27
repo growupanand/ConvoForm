@@ -4,7 +4,12 @@ import type {
   Form,
 } from "@convoform/db/src/schema";
 
-import { formSubmissionLimit } from "@convoform/common";
+import {
+  FEATURE_NAMES,
+  PLAN_IDS,
+  getPlanLimit,
+  isOverLimit,
+} from "@convoform/common";
 
 import { api } from "@/trpc/server";
 
@@ -72,11 +77,23 @@ export const checkNThrowErrorFormSubmissionLimit = async (
     });
   }
 
-  if (totalSubmissionsCount && totalSubmissionsCount > formSubmissionLimit) {
-    throw new Error("This form have reached total submissions limit", {
-      cause: {
-        statusCode: 403,
+  // Check if usage exceeds the plan limit using new pricing helpers
+  if (
+    totalSubmissionsCount &&
+    isOverLimit(
+      totalSubmissionsCount,
+      PLAN_IDS.FREE, // TODO: Replace with actual user's plan ID
+      FEATURE_NAMES.FORM_RESPONSES,
+    )
+  ) {
+    const limit = getPlanLimit(PLAN_IDS.FREE, FEATURE_NAMES.FORM_RESPONSES);
+    throw new Error(
+      `Form submissions limit exceeded. Maximum ${limit} responses allowed.`,
+      {
+        cause: {
+          statusCode: 403,
+        },
       },
-    });
+    );
   }
 };

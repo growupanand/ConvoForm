@@ -11,6 +11,7 @@ import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { formatFileSize } from "@convoform/common";
 import Spinner from "./common/spinner";
 
 interface FileDisplayProps {
@@ -103,14 +104,6 @@ export function FileDisplay({ fileId, className }: FileDisplayProps) {
         className={cn("h-4 w-4 text-gray-500 inline align-middle", className)}
       />
     );
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
   };
 
   const isExpired =
