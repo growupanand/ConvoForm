@@ -28,7 +28,7 @@ catalogs:
       specifier: 5.8.3
       version: 5.8.3
     zod:
-      specifier: 3.25.76
+      specifier: ^3.25.76
       version: 3.25.76
 
 overrides:
@@ -299,6 +299,9 @@ importers:
       '@convoform/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@types/bun':
+        specifier: 1.2.19
+        version: 1.2.19(@types/react@19.1.2)
       '@types/node':
         specifier: 'catalog:'
         version: 22.14.1

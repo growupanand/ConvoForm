@@ -68,5 +68,5 @@
       "cache": false
     }
   },
-  "ui": "tui"
+  "ui": "stream"
 }
