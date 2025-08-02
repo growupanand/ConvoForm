@@ -1,3 +1,4 @@
+import { openai } from "@ai-sdk/openai";
 import {
   type CollectedData,
   type CollectedFilledData,
@@ -6,7 +7,7 @@ import {
   shouldSkipValidation,
   transcriptSchema,
 } from "@convoform/db/src/schema";
-import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
+import { streamText } from "ai";
 
 import { CONVERSATION_END_MESSAGE } from "@convoform/common";
 import type { ChatCompletionMessageParam } from "openai/resources";
@@ -44,37 +45,61 @@ export class ConversationService extends OpenAIService {
       fieldsWithData,
       isFirstQuestion,
     });
-    const openAiResponse = await this.getOpenAIResponseStream([
-      systemMessage,
+    const messages = [
+      {
+        role: systemMessage.role as "system",
+        content: systemMessage.content || "",
+      },
       ...transcript.map(({ role, content }) => ({
-        role,
+        role: role as "user" | "assistant" | "system",
         content,
       })),
-    ]);
+    ];
 
-    // Instantiate the StreamData. This is used to send extra custom data in the response stream
-    const data = new StreamData();
+    // Create a custom stream compatible with existing frontend parser
+    const encoder = new TextEncoder();
+    const modelName = this.openAIModel; // Capture model name for use in stream
 
-    // Without safeJsonString this it will throw type error for Date type used in JSON
-    const safeJsonString = JSON.stringify({ ...extraCustomStreamData });
-    data.append(JSON.parse(safeJsonString));
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          // Send custom data first (using format expected by frontend: "2:" prefix for data)
+          const safeJsonString = JSON.stringify([extraCustomStreamData]);
+          controller.enqueue(encoder.encode(`2:${safeJsonString}\n`));
 
-    // Convert the response into a friendly text-stream
-    const stream = OpenAIStream(openAiResponse, {
-      onFinal(completion) {
-        // IMPORTANT! you must close StreamData manually or the response will never finish.
-        data.close();
-        onStreamFinish?.(completion);
+          // Get streamText result
+          const result = await streamText({
+            model: openai(modelName),
+            messages,
+          });
+
+          let fullText = "";
+
+          // Stream text chunks (using format expected by frontend: "0:" prefix for text)
+          for await (const textPart of result.textStream) {
+            fullText += textPart;
+            controller.enqueue(
+              encoder.encode(`0:${JSON.stringify(textPart)}\n`),
+            );
+          }
+
+          // Call onStreamFinish with complete text
+          onStreamFinish?.(fullText);
+        } catch (error) {
+          controller.error(error);
+        } finally {
+          controller.close();
+        }
       },
     });
-    // Respond with the stream
-    return new StreamingTextResponse(
-      stream,
-      {
-        headers: { "Access-Control-Allow-Origin": "*" },
+
+    // Return response with proper headers
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Access-Control-Allow-Origin": "*",
       },
-      data,
-    );
+    });
   }
 
   /**
@@ -160,25 +185,36 @@ export class ConversationService extends OpenAIService {
     extraCustomStreamData: Record<string, any>;
     onStreamFinish?: (completion: string) => void;
   }) {
-    // Instantiate the StreamData. This is used to send extra custom data in the response stream
-    const data = new StreamData();
-    data.append(extraCustomStreamData);
-
-    // Convert the response into a friendly text-stream
     const endMessage = CONVERSATION_END_MESSAGE;
+    const encoder = new TextEncoder();
+
+    // Create a custom stream compatible with existing frontend parser
     const stream = new ReadableStream({
-      async pull(controller) {
-        controller.enqueue(`0:"${endMessage}"`);
-        data.close();
-        controller.close();
+      async start(controller) {
+        try {
+          // Send custom data first (using format expected by frontend: "2:" prefix for data)
+          const safeJsonString = JSON.stringify([extraCustomStreamData]);
+          controller.enqueue(encoder.encode(`2:${safeJsonString}\n`));
+
+          // Send the end message as text (using format expected by frontend: "0:" prefix for text)
+          controller.enqueue(
+            encoder.encode(`0:${JSON.stringify(endMessage)}\n`),
+          );
+        } catch (error) {
+          controller.error(error);
+        } finally {
+          controller.close();
+        }
       },
     });
-    // Respond with the stream
-    return new StreamingTextResponse(
-      stream,
-      { headers: { "Access-Control-Allow-Origin": "*" } },
-      data,
-    );
+
+    // Return response with proper headers
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
   }
 
   public async generateConversationName({
