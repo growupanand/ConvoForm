@@ -1,28 +1,27 @@
-import { openai } from "@ai-sdk/openai";
-import {
-  createUIMessageStream,
-  createUIMessageStreamResponse,
-  streamText,
-} from "ai";
+import type { CollectedData, Transcript } from "@convoform/db/src/schema";
+import { extractFieldAnswer } from "../conversationV5";
 
-const stream = createUIMessageStream({
-  execute({ writer }) {
-    // Write custom data parts
-    writer.write({
-      type: "data-custom",
-      id: "custom-1",
-      data: "custom-data",
-    });
+console.log("\n\n===== Starting test-ai-sdk.ts =====\n\n");
 
-    // Can merge with LLM streams
-    const result = streamText({
-      model: openai("gpt-4o-mini"),
-      prompt: "tell me a joke",
-    });
+const sampleFormOverview =
+  "This is a feedback for website convoform.com, I want to know about the user details and there feedback about the product.";
+const sampleTrancript: Transcript[] = [
+  { role: "user", content: "Hi" },
+  // { "role": "assistant", "content": "Hello! To start, may I have your email address?", "fieldName": "email" },
+  // { "role": "user", "content": "sadfsdfsdf@sddfsdf.com" },
+];
 
-    writer.merge(result.toUIMessageStream());
-  },
+const sampleEmailField: CollectedData = {
+  fieldName: "email",
+  fieldDescription: "Your email address",
+  fieldValue: null,
+  fieldConfiguration: { inputType: "text", inputConfiguration: {} },
+};
+
+const result = await extractFieldAnswer({
+  formOverview: sampleFormOverview,
+  transcript: sampleTrancript,
+  currentField: sampleEmailField,
 });
 
-const response = createUIMessageStreamResponse({ stream });
-console.log(response);
+console.log("Result: ", result);

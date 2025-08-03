@@ -5,8 +5,10 @@
 
 import { describe, expect, test } from "bun:test";
 import type { CollectedData } from "@convoform/db/src/schema";
-import { generateFieldQuestion } from "../conversationV5/generateQuestion";
-import type { GenerateQuestionParams } from "../conversationV5/types";
+import {
+  type GenerateFieldQuestionParams,
+  generateFieldQuestion,
+} from "../conversationV5/ai-actions/generateQuestion";
 
 // Mock data for testing
 const mockFormOverview =
@@ -33,7 +35,7 @@ const mockCurrentField: CollectedData = {
 
 describe("generateFieldQuestion", () => {
   test("should generate welcoming first question", async () => {
-    const testParams: GenerateQuestionParams = {
+    const testParams: GenerateFieldQuestionParams = {
       formOverview: mockFormOverview,
       currentField: mockCurrentField,
       collectedData: [],
@@ -43,10 +45,10 @@ describe("generateFieldQuestion", () => {
 
     const result = await generateFieldQuestion(testParams);
 
-    expect(result.question).toBeTruthy();
-    expect(result.isFollowUp).toBe(false);
-    expect(result.confidence).toBeGreaterThan(0.7);
-    expect(result.reasoning).toBeTruthy();
+    expect(result.object.question).toBeTruthy();
+    expect(result.object.isFollowUp).toBe(false);
+    expect(result.object.confidence).toBeGreaterThan(0.7);
+    expect(result.object.reasoning).toBeTruthy();
   });
 
   test("should generate contextual follow-up question", async () => {
@@ -68,7 +70,7 @@ describe("generateFieldQuestion", () => {
       { role: "user" as const, content: "My name is John Smith" },
     ];
 
-    const testParams: GenerateQuestionParams = {
+    const testParams: GenerateFieldQuestionParams = {
       formOverview: mockFormOverview,
       currentField: {
         fieldName: "technicalSkills",
@@ -88,11 +90,11 @@ describe("generateFieldQuestion", () => {
 
     const result = await generateFieldQuestion(testParams);
 
-    expect(result.question).toBeTruthy();
-    expect(result.isFollowUp).toBe(true);
-    expect(result.confidence).toBeGreaterThan(0.7);
-    expect(result.question).toBeTruthy();
-    expect(result.question.length).toBeGreaterThan(0);
+    expect(result.object.question).toBeTruthy();
+    expect(result.object.isFollowUp).toBe(true);
+    expect(result.object.confidence).toBeGreaterThan(0.7);
+    expect(result.object.question).toBeTruthy();
+    expect(result.object.question.length).toBeGreaterThan(0);
   });
 
   test("should handle empty transcript with collected data", async () => {
@@ -108,7 +110,7 @@ describe("generateFieldQuestion", () => {
       },
     ];
 
-    const testParams: GenerateQuestionParams = {
+    const testParams: GenerateFieldQuestionParams = {
       formOverview: "Simple contact form",
       currentField: {
         fieldName: "email",
@@ -126,13 +128,13 @@ describe("generateFieldQuestion", () => {
 
     const result = await generateFieldQuestion(testParams);
 
-    expect(result.question).toBeTruthy();
-    expect(result.confidence).toBeGreaterThan(0.5);
-    expect(result.reasoning).toBeTruthy();
+    expect(result.object.question).toBeTruthy();
+    expect(result.object.confidence).toBeGreaterThan(0.5);
+    expect(result.object.reasoning).toBeTruthy();
   });
 
   test("should generate appropriate questions for different field types", async () => {
-    const testParams: GenerateQuestionParams = {
+    const testParams: GenerateFieldQuestionParams = {
       formOverview: "Customer feedback form",
       currentField: {
         fieldName: "satisfaction",
@@ -156,8 +158,8 @@ describe("generateFieldQuestion", () => {
 
     const result = await generateFieldQuestion(testParams);
 
-    expect(result.question).toBeTruthy();
-    expect(result.question.toLowerCase()).toContain("satisfied");
-    expect(result.confidence).toBeGreaterThan(0.7);
+    expect(result.object.question).toBeTruthy();
+    expect(result.object.question.toLowerCase()).toContain("satisfied");
+    expect(result.object.confidence).toBeGreaterThan(0.7);
   });
 });

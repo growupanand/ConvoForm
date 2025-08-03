@@ -29,35 +29,3 @@ export function getModelConfig(): LanguageModel {
     return openai("gpt-4o-mini");
   }
 }
-
-/**
- * Get model configuration with fallback
- */
-export const modelConfig = {
-  extractAnswer: getModelConfig(),
-  generateQuestion: getModelConfig(),
-  generateEndMessage: getModelConfig(),
-  generateName: getModelConfig(),
-};
-
-/**
- * Model parameters configuration
- */
-export const modelParams = {
-  extractAnswer: {
-    temperature: 0.1,
-    maxTokens: 500,
-  },
-  generateQuestion: {
-    temperature: 0.7,
-    maxTokens: 500,
-  },
-  generateEndMessage: {
-    temperature: 0.8,
-    maxTokens: 500,
-  },
-  generateName: {
-    temperature: 0.3,
-    maxTokens: 500,
-  },
-} as const;

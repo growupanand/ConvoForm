@@ -4,8 +4,10 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { extractFieldAnswer } from "../conversationV5/extractAnswer";
-import type { ExtractAnswerParams } from "../conversationV5/types";
+import {
+  type ExtractFieldAnswerParams,
+  extractFieldAnswer,
+} from "../conversationV5/ai-actions/extractAnswer";
 
 // Mock data for testing
 const mockFormOverview =
@@ -41,7 +43,7 @@ const mockTranscript = [
 
 describe("extractFieldAnswer", () => {
   test("should extract valid answer from transcript", async () => {
-    const testParams: ExtractAnswerParams = {
+    const testParams: ExtractFieldAnswerParams = {
       formOverview: mockFormOverview,
       currentField: mockField,
       transcript: mockTranscript,
@@ -49,9 +51,9 @@ describe("extractFieldAnswer", () => {
 
     const result = await extractFieldAnswer(testParams);
 
-    expect(result.value).toBe("5 years");
-    expect(result.confidence).toBeGreaterThan(0);
-    expect(result.reasoning).toBeTruthy();
+    expect(result.object.answer).toBe("5 years");
+    expect(result.object.confidence).toBeGreaterThan(0);
+    expect(result.object.reasoning).toBeTruthy();
   });
 
   test("should handle invalid answers appropriately", async () => {
@@ -61,7 +63,7 @@ describe("extractFieldAnswer", () => {
       { role: "user" as const, content: "I don't want to answer this" },
     ];
 
-    const testParams: ExtractAnswerParams = {
+    const testParams: ExtractFieldAnswerParams = {
       formOverview: mockFormOverview,
       currentField: mockField,
       transcript: invalidTranscript,
@@ -69,12 +71,12 @@ describe("extractFieldAnswer", () => {
 
     const result = await extractFieldAnswer(testParams);
 
-    expect(result.value).toBeNull();
-    expect(result.confidence).toBeLessThan(0.5);
+    expect(result.object.answer).toBeNull();
+    expect(result.object.confidence).toBeLessThan(0.5);
   });
 
   test("should handle empty transcript gracefully", async () => {
-    const testParams: ExtractAnswerParams = {
+    const testParams: ExtractFieldAnswerParams = {
       formOverview: mockFormOverview,
       currentField: mockField,
       transcript: [],
@@ -82,8 +84,10 @@ describe("extractFieldAnswer", () => {
 
     const result = await extractFieldAnswer(testParams);
 
-    expect(result.value).toBeNull();
-    expect(result.reasoning).toContain("Insufficient");
+    expect(result.object.answer).toBeNull();
+    expect(result.object.isValid).toBe(false);
+    expect(result.object.confidence).toBeLessThan(0.5);
+    expect(result.object.reasoning).toBeTruthy();
   });
 
   test("should extract specific values from multiple choice options", async () => {
@@ -92,7 +96,7 @@ describe("extractFieldAnswer", () => {
       { role: "user" as const, content: "I have 7 years of experience" },
     ];
 
-    const testParams: ExtractAnswerParams = {
+    const testParams: ExtractFieldAnswerParams = {
       formOverview: mockFormOverview,
       currentField: mockField,
       transcript: specificTranscript,
@@ -100,10 +104,11 @@ describe("extractFieldAnswer", () => {
 
     const result = await extractFieldAnswer(testParams);
 
-    expect(result).toHaveProperty("value");
-    expect(result).toHaveProperty("confidence");
-    expect(result).toHaveProperty("reasoning");
-    expect(typeof result.confidence).toBe("number");
-    expect(typeof result.reasoning).toBe("string");
+    console.log(result.object);
+
+    expect(result.object.answer).toBeTruthy();
+    expect(result.object.isValid).toBe(true);
+    expect(result.object.confidence).toBeGreaterThan(0);
+    expect(result.object.reasoning).toBeTruthy();
   });
 });

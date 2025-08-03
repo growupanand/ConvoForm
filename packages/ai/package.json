@@ -5,6 +5,9 @@
   "exports": {
     ".": "./index.ts"
   },
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
   "dependencies": {
     "@ai-sdk/openai": "catalog:",
     "@convoform/common": "workspace:*",

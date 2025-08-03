@@ -5,8 +5,10 @@
 
 import { describe, expect, test } from "bun:test";
 import type { CollectedData } from "@convoform/db/src/schema";
-import { generateConversationName } from "../conversationV5/generateName";
-import type { GenerateNameParams } from "../conversationV5/types";
+import {
+  type GenerateConversationNameParams,
+  generateConversationName,
+} from "../conversationV5/ai-actions/generateConversationName";
 
 const mockFormOverview =
   "A comprehensive job application form for software engineers";
@@ -54,7 +56,7 @@ describe("generateConversationName", () => {
       { role: "user" as const, content: "I have 7 years of experience" },
     ];
 
-    const testParams: GenerateNameParams = {
+    const testParams: GenerateConversationNameParams = {
       formOverview: mockFormOverview,
       collectedData,
       transcript,
@@ -62,13 +64,13 @@ describe("generateConversationName", () => {
 
     const result = await generateConversationName(testParams);
 
-    expect(result).toHaveProperty("name");
-    expect(result).toHaveProperty("reasoning");
-    expect(typeof result.name).toBe("string");
-    expect(typeof result.reasoning).toBe("string");
-    expect(result.name.length).toBeGreaterThan(0);
-    expect(result.reasoning.length).toBeGreaterThan(0);
-    expect(result.name.toLowerCase()).toContain("john");
+    expect(result.object).toHaveProperty("name");
+    expect(result.object).toHaveProperty("reasoning");
+    expect(typeof result.object.name).toBe("string");
+    expect(typeof result.object.reasoning).toBe("string");
+    expect(result.object.name.length).toBeGreaterThan(0);
+    expect(result.object.reasoning.length).toBeGreaterThan(0);
+    expect(result.object.name.toLowerCase()).toContain("john");
   });
 
   test("should generate name with minimal data", async () => {
@@ -90,7 +92,7 @@ describe("generateConversationName", () => {
       { role: "user" as const, content: "My name is Alice Johnson" },
     ];
 
-    const testParams: GenerateNameParams = {
+    const testParams: GenerateConversationNameParams = {
       formOverview: "Simple contact form",
       collectedData,
       transcript,
@@ -98,10 +100,10 @@ describe("generateConversationName", () => {
 
     const result = await generateConversationName(testParams);
 
-    expect(result).toHaveProperty("name");
-    expect(result).toHaveProperty("reasoning");
-    expect(result.name.length).toBeGreaterThan(0);
-    expect(result.reasoning.length).toBeGreaterThan(0);
+    expect(result.object).toHaveProperty("name");
+    expect(result.object).toHaveProperty("reasoning");
+    expect(result.object.name.length).toBeGreaterThan(0);
+    expect(result.object.reasoning.length).toBeGreaterThan(0);
   });
 
   test("should handle empty data gracefully", async () => {
@@ -109,7 +111,7 @@ describe("generateConversationName", () => {
     const transcript: Array<{ role: "user" | "assistant"; content: string }> =
       [];
 
-    const testParams: GenerateNameParams = {
+    const testParams: GenerateConversationNameParams = {
       formOverview: "Simple feedback form",
       collectedData,
       transcript,
@@ -117,10 +119,10 @@ describe("generateConversationName", () => {
 
     const result = await generateConversationName(testParams);
 
-    expect(result).toHaveProperty("name");
-    expect(result).toHaveProperty("reasoning");
-    expect(result.name.length).toBeGreaterThan(0);
-    expect(result.reasoning.length).toBeGreaterThan(0);
+    expect(result.object).toHaveProperty("name");
+    expect(result.object).toHaveProperty("reasoning");
+    expect(result.object.name.length).toBeGreaterThan(0);
+    expect(result.object.reasoning.length).toBeGreaterThan(0);
   });
 
   test("should generate unique names for different conversations", async () => {
@@ -165,6 +167,6 @@ describe("generateConversationName", () => {
       transcript,
     });
 
-    expect(result1.name).not.toBe(result2.name);
+    expect(result1.object.name).not.toBe(result2.object.name);
   });
 });

@@ -5,8 +5,10 @@
 
 import { describe, expect, test } from "bun:test";
 import type { CollectedData } from "@convoform/db/src/schema";
-import { generateEndMessage } from "../conversationV5/generateEndMessage";
-import type { GenerateEndMessageParams } from "../conversationV5/types";
+import {
+  type GenerateEndMessageParams,
+  generateEndMessage,
+} from "../conversationV5/ai-actions/generateEndMessage";
 
 const mockFormOverview =
   "A comprehensive job application form for software engineers";
@@ -81,15 +83,12 @@ describe("generateEndMessage", () => {
 
     const result = await generateEndMessage(testParams);
 
-    expect(result).toHaveProperty("title");
-    expect(result).toHaveProperty("message");
-    expect(result).toHaveProperty("ctaText");
-    expect(typeof result.title).toBe("string");
-    expect(typeof result.message).toBe("string");
-    expect(typeof result.ctaText).toBe("string");
-    expect(result.title.length).toBeGreaterThan(0);
-    expect(result.message.length).toBeGreaterThan(0);
-    expect(result.ctaText.length).toBeGreaterThan(0);
+    expect(result.object).toHaveProperty("title");
+    expect(result.object).toHaveProperty("message");
+    expect(typeof result.object.title).toBe("string");
+    expect(typeof result.object.message).toBe("string");
+    expect(result.object.title.length).toBeGreaterThan(0);
+    expect(result.object.message.length).toBeGreaterThan(0);
   });
 
   test("should handle minimal collected data", async () => {
@@ -119,12 +118,10 @@ describe("generateEndMessage", () => {
 
     const result = await generateEndMessage(testParams);
 
-    expect(result).toHaveProperty("title");
-    expect(result).toHaveProperty("message");
-    expect(result).toHaveProperty("ctaText");
-    expect(result.title.length).toBeGreaterThan(0);
-    expect(result.message.length).toBeGreaterThan(0);
-    expect(result.ctaText.length).toBeGreaterThan(0);
+    expect(result.object).toHaveProperty("title");
+    expect(result.object).toHaveProperty("message");
+    expect(result.object.title.length).toBeGreaterThan(0);
+    expect(result.object.message.length).toBeGreaterThan(0);
   });
 
   test("should handle empty collected data gracefully", async () => {
@@ -140,10 +137,9 @@ describe("generateEndMessage", () => {
 
     const result = await generateEndMessage(testParams);
 
-    expect(result).toHaveProperty("title");
-    expect(result).toHaveProperty("message");
-    expect(result).toHaveProperty("ctaText");
-    expect(result.title.length).toBeGreaterThan(0);
-    expect(result.message.length).toBeGreaterThan(0);
+    expect(result.object).toHaveProperty("title");
+    expect(result.object).toHaveProperty("message");
+    expect(result.object.title.length).toBeGreaterThan(0);
+    expect(result.object.message.length).toBeGreaterThan(0);
   });
 });
