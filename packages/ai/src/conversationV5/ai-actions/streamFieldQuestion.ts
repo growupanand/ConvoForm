@@ -1,13 +1,12 @@
 import type { CollectedData, Transcript } from "@convoform/db/src/schema";
-import { generateObject } from "ai";
-import { z } from "zod/v3";
+import { streamText } from "ai";
 import { getModelConfig } from "../config";
 import {
   buildCollectedFieldsContext,
   buildConversationContext,
 } from "../utils/ai-actions-helpers";
 
-export interface GenerateFieldQuestionParams {
+export interface StreamFieldQuestionParams {
   formOverview: string;
   transcript: Transcript[];
   collectedData: CollectedData[];
@@ -15,37 +14,17 @@ export interface GenerateFieldQuestionParams {
   isFirstQuestion?: boolean;
 }
 
-export const generateFieldQuestionOutputSchema = z.object({
-  question: z.string().describe("The generated question for the current field"),
-  isFollowUp: z.boolean().describe("Whether this is a follow-up question"),
-  reasoning: z
-    .string()
-    .describe("Brief explanation of why this question was chosen"),
-  confidence: z
-    .number()
-    .min(0)
-    .max(1)
-    .describe("Confidence score for the question"),
-});
-
-export type GenerateFieldQuestionOutput = z.infer<
-  typeof generateFieldQuestionOutputSchema
->;
-
 /**
  * Generates a question for the current field based on context
  * Uses AI SDK V5 for edge runtime compatibility
  */
-export async function generateFieldQuestion(
-  params: GenerateFieldQuestionParams,
-) {
+export function streamFieldQuestion(params: StreamFieldQuestionParams) {
   try {
-    return await generateObject({
+    return streamText({
       model: getModelConfig(),
       temperature: 0.3,
       system: getGenerateFieldQuestionSystemPrompt(params),
       prompt: `Generate a ${params.isFirstQuestion ? "first" : "follow-up"} question for the field "${params.currentField.fieldName}" based on the provided context.`,
-      schema: generateFieldQuestionOutputSchema,
     });
   } catch (error) {
     // Edge-compatible error handling
@@ -61,7 +40,7 @@ export async function generateFieldQuestion(
  */
 
 export function getGenerateFieldQuestionSystemPrompt(
-  params: GenerateFieldQuestionParams,
+  params: StreamFieldQuestionParams,
 ): string {
   const conversationContext = buildConversationContext(params.transcript);
   const collectedFieldsContext = buildCollectedFieldsContext(
@@ -87,11 +66,5 @@ Instructions:
 4. Keep questions concise but complete
 5. Adapt tone to match the form type and context
 
-Respond with a JSON object containing:
-- "question": the generated question text
-- "isFollowUp": boolean indicating if this follows previous context
-- "reasoning": brief explanation of question choice
-- "confidence": confidence score (0-1)
-
-Important: Always respond with valid JSON format.`;
+Respond with only the question text, nothing else. Do not include any explanations, metadata, or additional formatting.`;
 }

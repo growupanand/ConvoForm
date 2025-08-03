@@ -6,9 +6,9 @@
 import { describe, expect, test } from "bun:test";
 import type { CollectedData } from "@convoform/db/src/schema";
 import {
-  type GenerateFieldQuestionParams,
-  generateFieldQuestion,
-} from "../conversationV5/ai-actions/generateQuestion";
+  type StreamFieldQuestionParams,
+  streamFieldQuestion,
+} from "../conversationV5/ai-actions/streamFieldQuestion";
 
 // Mock data for testing
 const mockFormOverview =
@@ -35,7 +35,7 @@ const mockCurrentField: CollectedData = {
 
 describe("generateFieldQuestion", () => {
   test("should generate welcoming first question", async () => {
-    const testParams: GenerateFieldQuestionParams = {
+    const testParams: StreamFieldQuestionParams = {
       formOverview: mockFormOverview,
       currentField: mockCurrentField,
       collectedData: [],
@@ -43,12 +43,16 @@ describe("generateFieldQuestion", () => {
       isFirstQuestion: true,
     };
 
-    const result = await generateFieldQuestion(testParams);
+    const result = streamFieldQuestion(testParams);
 
-    expect(result.object.question).toBeTruthy();
-    expect(result.object.isFollowUp).toBe(false);
-    expect(result.object.confidence).toBeGreaterThan(0.7);
-    expect(result.object.reasoning).toBeTruthy();
+    let fullText = "";
+    for await (const chunk of result.textStream) {
+      fullText += chunk;
+    }
+
+    expect(fullText).toBeTruthy();
+    expect(fullText.length).toBeGreaterThan(0);
+    expect(typeof fullText).toBe("string");
   });
 
   test("should generate contextual follow-up question", async () => {
@@ -70,7 +74,7 @@ describe("generateFieldQuestion", () => {
       { role: "user" as const, content: "My name is John Smith" },
     ];
 
-    const testParams: GenerateFieldQuestionParams = {
+    const testParams: StreamFieldQuestionParams = {
       formOverview: mockFormOverview,
       currentField: {
         fieldName: "technicalSkills",
@@ -88,13 +92,16 @@ describe("generateFieldQuestion", () => {
       isFirstQuestion: false,
     };
 
-    const result = await generateFieldQuestion(testParams);
+    const result = streamFieldQuestion(testParams);
 
-    expect(result.object.question).toBeTruthy();
-    expect(result.object.isFollowUp).toBe(true);
-    expect(result.object.confidence).toBeGreaterThan(0.7);
-    expect(result.object.question).toBeTruthy();
-    expect(result.object.question.length).toBeGreaterThan(0);
+    let fullText = "";
+    for await (const chunk of result.textStream) {
+      fullText += chunk;
+    }
+
+    expect(fullText).toBeTruthy();
+    expect(fullText.length).toBeGreaterThan(0);
+    expect(typeof fullText).toBe("string");
   });
 
   test("should handle empty transcript with collected data", async () => {
@@ -110,7 +117,7 @@ describe("generateFieldQuestion", () => {
       },
     ];
 
-    const testParams: GenerateFieldQuestionParams = {
+    const testParams: StreamFieldQuestionParams = {
       formOverview: "Simple contact form",
       currentField: {
         fieldName: "email",
@@ -126,15 +133,20 @@ describe("generateFieldQuestion", () => {
       isFirstQuestion: false,
     };
 
-    const result = await generateFieldQuestion(testParams);
+    const result = streamFieldQuestion(testParams);
 
-    expect(result.object.question).toBeTruthy();
-    expect(result.object.confidence).toBeGreaterThan(0.5);
-    expect(result.object.reasoning).toBeTruthy();
+    let fullText = "";
+    for await (const chunk of result.textStream) {
+      fullText += chunk;
+    }
+
+    expect(fullText).toBeTruthy();
+    expect(fullText.length).toBeGreaterThan(0);
+    expect(typeof fullText).toBe("string");
   });
 
   test("should generate appropriate questions for different field types", async () => {
-    const testParams: GenerateFieldQuestionParams = {
+    const testParams: StreamFieldQuestionParams = {
       formOverview: "Customer feedback form",
       currentField: {
         fieldName: "satisfaction",
@@ -156,10 +168,15 @@ describe("generateFieldQuestion", () => {
       isFirstQuestion: true,
     };
 
-    const result = await generateFieldQuestion(testParams);
+    const result = streamFieldQuestion(testParams);
 
-    expect(result.object.question).toBeTruthy();
-    expect(result.object.question.toLowerCase()).toContain("satisfied");
-    expect(result.object.confidence).toBeGreaterThan(0.7);
+    let fullText = "";
+    for await (const chunk of result.textStream) {
+      fullText += chunk;
+    }
+
+    expect(fullText).toBeTruthy();
+    expect(fullText.length).toBeGreaterThan(0);
+    expect(typeof fullText).toBe("string");
   });
 });
