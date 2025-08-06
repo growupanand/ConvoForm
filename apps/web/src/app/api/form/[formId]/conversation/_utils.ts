@@ -35,6 +35,7 @@ export const getORCreateConversation = async (
   }
 
   const fieldsWithEmptyData: CollectedData[] = form.formFields.map((field) => ({
+    id: field.id,
     fieldName: field.fieldName,
     fieldDescription: field.fieldDescription,
     fieldValue: null,

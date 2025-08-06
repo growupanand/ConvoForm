@@ -15,6 +15,7 @@ const mockFormOverview =
   "A comprehensive job application form for a software engineering position";
 
 const mockCurrentField: CollectedData = {
+  id: "field-1",
   fieldName: "experienceLevel",
   fieldDescription:
     "Your years of professional software development experience",
@@ -58,6 +59,7 @@ describe("generateFieldQuestion", () => {
   test("should generate contextual follow-up question", async () => {
     const collectedData: CollectedData[] = [
       {
+        id: "field-1",
         fieldName: "fullName",
         fieldDescription: "Your full legal name",
         fieldValue: "John Smith",
@@ -77,6 +79,7 @@ describe("generateFieldQuestion", () => {
     const testParams: StreamFieldQuestionParams = {
       formOverview: mockFormOverview,
       currentField: {
+        id: "field-2",
         fieldName: "technicalSkills",
         fieldDescription: "Your primary programming languages and technologies",
         fieldValue: null,
@@ -107,6 +110,7 @@ describe("generateFieldQuestion", () => {
   test("should handle empty transcript with collected data", async () => {
     const collectedData: CollectedData[] = [
       {
+        id: "field-1",
         fieldName: "name",
         fieldDescription: "Your name",
         fieldValue: "Alice Johnson",
@@ -120,6 +124,7 @@ describe("generateFieldQuestion", () => {
     const testParams: StreamFieldQuestionParams = {
       formOverview: "Simple contact form",
       currentField: {
+        id: "field-2",
         fieldName: "email",
         fieldDescription: "Your email address",
         fieldValue: null,
@@ -149,6 +154,7 @@ describe("generateFieldQuestion", () => {
     const testParams: StreamFieldQuestionParams = {
       formOverview: "Customer feedback form",
       currentField: {
+        id: "field-1",
         fieldName: "satisfaction",
         fieldDescription: "How satisfied are you with our service",
         fieldValue: null,

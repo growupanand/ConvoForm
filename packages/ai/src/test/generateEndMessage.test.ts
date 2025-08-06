@@ -17,6 +17,7 @@ describe("generateEndMessage", () => {
   test("should generate appropriate end message with collected data", async () => {
     const collectedData: CollectedData[] = [
       {
+        id: "field-1",
         fieldName: "fullName",
         fieldDescription: "Your full legal name",
         fieldValue: "John Smith",
@@ -26,6 +27,7 @@ describe("generateEndMessage", () => {
         },
       },
       {
+        id: "field-2",
         fieldName: "experienceLevel",
         fieldDescription:
           "Your years of professional software development experience",
@@ -44,6 +46,7 @@ describe("generateEndMessage", () => {
         },
       },
       {
+        id: "field-3",
         fieldName: "technicalSkills",
         fieldDescription: "Your primary programming languages and technologies",
         fieldValue: "JavaScript, React, Node.js, Python",
@@ -94,6 +97,7 @@ describe("generateEndMessage", () => {
   test("should handle minimal collected data", async () => {
     const collectedData: CollectedData[] = [
       {
+        id: "field-1",
         fieldName: "name",
         fieldDescription: "Your name",
         fieldValue: "Alice",

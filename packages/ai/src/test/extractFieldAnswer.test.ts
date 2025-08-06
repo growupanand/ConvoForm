@@ -14,6 +14,7 @@ const mockFormOverview =
   "A comprehensive job application form for software engineers";
 
 const mockField = {
+  id: "field-1",
   fieldName: "experienceLevel",
   fieldDescription:
     "Your years of professional software development experience",
@@ -103,9 +104,6 @@ describe("extractFieldAnswer", () => {
     };
 
     const result = await extractFieldAnswer(testParams);
-
-    console.log(result.object);
-
     expect(result.object.answer).toBeTruthy();
     expect(result.object.isValid).toBe(true);
     expect(result.object.confidence).toBeGreaterThan(0);

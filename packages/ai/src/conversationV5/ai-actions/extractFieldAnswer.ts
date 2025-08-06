@@ -2,7 +2,7 @@ import type { CollectedData, Transcript } from "@convoform/db/src/schema";
 import { generateObject } from "ai";
 import { z } from "zod/v3";
 import { getModelConfig } from "../config";
-import { buildConversationContext } from "../utils/ai-actions-helpers";
+import { buildConversationContext } from "../utils/contextUtils";
 
 export type ExtractFieldAnswerParams = {
   formOverview: string;

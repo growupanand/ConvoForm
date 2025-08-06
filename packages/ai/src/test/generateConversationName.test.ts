@@ -17,6 +17,7 @@ describe("generateConversationName", () => {
   test("should generate descriptive name with collected data", async () => {
     const collectedData: CollectedData[] = [
       {
+        id: "field-1",
         fieldName: "fullName",
         fieldDescription: "Your full legal name",
         fieldValue: "John Smith",
@@ -26,6 +27,7 @@ describe("generateConversationName", () => {
         },
       },
       {
+        id: "field-2",
         fieldName: "experienceLevel",
         fieldDescription:
           "Your years of professional software development experience",
@@ -76,6 +78,7 @@ describe("generateConversationName", () => {
   test("should generate name with minimal data", async () => {
     const collectedData: CollectedData[] = [
       {
+        id: "field-1",
         fieldName: "name",
         fieldDescription: "Your name",
         fieldValue: "Alice Johnson",
@@ -128,6 +131,7 @@ describe("generateConversationName", () => {
   test("should generate unique names for different conversations", async () => {
     const collectedData1: CollectedData[] = [
       {
+        id: "field-1",
         fieldName: "company",
         fieldDescription: "Company name",
         fieldValue: "TechCorp",
@@ -140,6 +144,7 @@ describe("generateConversationName", () => {
 
     const collectedData2: CollectedData[] = [
       {
+        id: "field-2",
         fieldName: "company",
         fieldDescription: "Company name",
         fieldValue: "StartupXYZ",
@@ -167,6 +172,8 @@ describe("generateConversationName", () => {
       transcript,
     });
 
+    console.log(result1.object.name, result2.object.name);
+
     expect(result1.object.name).not.toBe(result2.object.name);
-  });
+  }, 10000);
 });

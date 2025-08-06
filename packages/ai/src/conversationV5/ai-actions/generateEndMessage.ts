@@ -5,7 +5,7 @@ import { getModelConfig } from "../config";
 import {
   buildCollectedFieldsContext,
   buildConversationContext,
-} from "../utils/ai-actions-helpers";
+} from "../utils/contextUtils";
 
 export interface GenerateEndMessageParams {
   formOverview: string;

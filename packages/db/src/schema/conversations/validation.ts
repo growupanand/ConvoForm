@@ -1,7 +1,7 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-import { insertFormFieldSchema, selectFormFieldSchema } from "../formFields";
+import { selectFormFieldSchema } from "../formFields";
 import { selectFormSchema } from "../forms";
 import { conversation } from "./conversation";
 
@@ -111,8 +111,13 @@ export type RespondentMetadata = z.infer<typeof respondentMetadataSchema>;
 // =============================================================
 // ============ Conversation collected information/transcript =============================
 
-export const collectedDataSchema = insertFormFieldSchema
-  .pick({ fieldName: true, fieldDescription: true, fieldConfiguration: true })
+export const collectedDataSchema = selectFormFieldSchema
+  .pick({
+    fieldName: true,
+    fieldDescription: true,
+    fieldConfiguration: true,
+    id: true,
+  })
   .extend({
     fieldValue: z.string().min(1).nullable(),
   });
@@ -191,6 +196,7 @@ export const createConversationSchema = selectFormSchema
   .extend({
     formFields: selectFormFieldSchema
       .pick({
+        id: true,
         fieldName: true,
         fieldDescription: true,
         fieldConfiguration: true,
