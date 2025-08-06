@@ -1,4 +1,5 @@
 import type { Conversation } from "@convoform/db/src/schema";
+import { shouldSkipValidation } from "@convoform/db/src/schema/formFields/utils";
 import {
   type UIMessage,
   type UIMessageStreamWriter,
@@ -36,6 +37,54 @@ export class ConversationService {
     this.streamId = `stream-${this.conversationId}`;
   }
 
+  public async generateInitialQuestion() {
+    // Get the first empty field to start the conversation
+    const firstField = this.conversationManager.getNextEmptyField();
+
+    if (!firstField) {
+      // If no fields to fill, return completion message
+      this.conversationManager.addAIMessage(this.endMessage);
+      this.conversationManager.markConversationComplete();
+
+      const endMessageStream = createUIMessageStream({
+        execute: async ({ writer }) => {
+          writer.write({
+            type: "text-start",
+            id: this.streamId,
+          });
+          writer.write({
+            type: "text-delta",
+            delta: this.endMessage,
+            id: this.streamId,
+          });
+          writer.write({
+            type: "text-end",
+            id: this.streamId,
+          });
+        },
+      });
+
+      return endMessageStream;
+    }
+
+    // Generate question for the first field
+    const questionStreamTextResult = streamFieldQuestion({
+      ...this.conversationManager.getConversation(),
+      currentField: firstField,
+      isFirstQuestion: true,
+    });
+
+    return questionStreamTextResult.toUIMessageStream({
+      generateMessageId: () => {
+        return this.streamId;
+      },
+      onFinish: async () => {
+        const completeQuestionText = await questionStreamTextResult.text;
+        this.conversationManager.addAIMessage(completeQuestionText);
+      },
+    });
+  }
+
   public async orchestrateConversation(
     answerText: string,
     currentField: Conversation["collectedData"][number],
@@ -50,11 +99,30 @@ export class ConversationService {
     // Add answerText to transcript
     this.conversationManager.addUserMessage(validAnswer);
 
-    // First try to extract the answerText
-    const extractedAnswer = await extractFieldAnswer({
-      currentField,
-      ...this.conversationManager.getConversation(),
-    });
+    // Check if we should skip validation for this field type
+    const skipValidation = shouldSkipValidation(
+      currentField.fieldConfiguration.inputType,
+    );
+
+    let extractedAnswer: {
+      object: { isValid: boolean; answer: string | null };
+    };
+
+    if (skipValidation) {
+      // For fields that should save exact value, skip validation
+      extractedAnswer = {
+        object: {
+          isValid: true,
+          answer: validAnswer,
+        },
+      };
+    } else {
+      // For fields that need validation (like text), use AI extraction
+      extractedAnswer = await extractFieldAnswer({
+        currentField,
+        ...this.conversationManager.getConversation(),
+      });
+    }
 
     // If answer is invalid, generate followup question
     if (!extractedAnswer.object.isValid || !extractedAnswer.object.answer) {

@@ -501,6 +501,9 @@ importers:
 
   packages/react:
     dependencies:
+      ai:
+        specifier: 'catalog:'
+        version: 5.0.5(zod@3.25.76)
       react:
         specifier: 'catalog:'
         version: 19.1.0

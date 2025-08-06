@@ -7,15 +7,14 @@ import type {
 } from "@convoform/db/src/schema";
 import { sendMessage } from "@convoform/websocket-client";
 import { useCallback, useEffect, useState } from "react";
+// Manual parsing of AI SDK UI message stream format
 
-import { CONVERSATION_START_MESSAGE } from "@convoform/common";
 import { API_DOMAIN } from "../constants";
 import {
   createConversation,
   patchConversation,
 } from "../controllers/conversationControllers";
 import type { SubmitAnswer } from "../types";
-import { readResponseStream } from "../utils/streamUtils";
 
 type Props = {
   formId: string;
@@ -77,6 +76,151 @@ export function useConvoForm({
     [onError],
   );
 
+  const parseStreamResponse = async (
+    response: Response,
+    answerMessage?: Transcript,
+  ) => {
+    let generatedQuestion = "";
+    let updatedCurrentField: string | undefined;
+    let updatedExtraSteamData: ExtraStreamData | undefined;
+    let updatedConversation: Conversation | undefined;
+
+    // Parse AI SDK UI message stream format (Server-Sent Events)
+    // This matches the SSE wire protocol used by createUIMessageStreamResponse
+    if (!response.body) {
+      throw new Error("No response body available");
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+
+          // Parse Server-Sent Events format: "data: {json}"
+          if (line.startsWith("data: ")) {
+            const dataContent = line.slice(6); // Remove "data: " prefix
+
+            // Handle stream termination
+            if (dataContent === "[DONE]") {
+              break;
+            }
+
+            try {
+              const eventData = JSON.parse(dataContent);
+
+              // Handle different event types from AI SDK UI message stream
+              switch (eventData.type) {
+                case "text-delta":
+                  // Accumulate text deltas to build the complete question
+                  generatedQuestion += eventData.delta || "";
+                  setState((cs) => ({
+                    ...cs,
+                    currentQuestion: generatedQuestion,
+                  }));
+                  break;
+
+                case "data-conversation":
+                  // Handle conversation update data chunks from the backend
+                  try {
+                    const streamData = eventData.data;
+                    updatedCurrentField =
+                      streamData.currentField?.fieldName ?? undefined;
+                    updatedExtraSteamData = {
+                      ...extraStreamData,
+                      currentField: streamData.currentField,
+                      collectedData: streamData.collectedData,
+                      isFormSubmissionFinished:
+                        streamData.isFormSubmissionFinished,
+                    };
+                    updatedConversation = streamData.conversation;
+
+                    setState((cs) => ({
+                      ...cs,
+                      extraStreamData: updatedExtraSteamData ?? {},
+                      conversation: updatedConversation || cs.conversation,
+                    }));
+                  } catch (error) {
+                    console.warn(
+                      "Failed to process conversation data chunk:",
+                      error,
+                    );
+                  }
+                  break;
+
+                case "start":
+                case "text-start":
+                case "text-end":
+                case "finish-step":
+                case "finish":
+                  // These are control events, we can log them for debugging
+                  // but don't need to handle them for our use case
+                  break;
+
+                default:
+                  // Log unknown event types for debugging
+                  console.debug("Unknown stream event type:", eventData.type);
+              }
+            } catch (e) {
+              console.warn("Failed to parse SSE data:", e, "Line:", line);
+            }
+          }
+        }
+      }
+    } finally {
+      reader.releaseLock();
+    }
+
+    const questionMessage: Transcript = {
+      role: "assistant",
+      content: generatedQuestion,
+      ...(updatedCurrentField && { fieldName: updatedCurrentField }),
+    };
+
+    // For initial requests, don't include answer message in transcript
+    const updatedTranscript = answerMessage
+      ? transcript.concat([answerMessage, questionMessage])
+      : [questionMessage];
+
+    return {
+      generatedQuestion,
+      updatedTranscript,
+      updatedCurrentField,
+      updatedExtraSteamData: updatedExtraSteamData ?? {},
+      updatedConversation,
+    };
+  };
+
+  const fetchInitialQuestion = async (conversation: Conversation) => {
+    const requestPayload = {
+      ...conversation,
+      transcript: [], // Empty transcript for initial request
+      isInitialRequest: true, // Flag to indicate this is the first request
+      collectedData: conversation.collectedData,
+    };
+
+    const response = await fetch(apiEndpoint, {
+      method: "POST",
+      body: JSON.stringify(requestPayload),
+    });
+
+    if (!response.ok || !response.body) {
+      throw new Error("Failed to fetch initial question");
+    }
+
+    return await parseStreamResponse(response); // No answer message for initial request
+  };
+
   const fetchNextQuestion = async (
     answer: string,
     conversation: Conversation,
@@ -95,6 +239,7 @@ export function useConvoForm({
       collectedData: isNewConversation
         ? conversation.collectedData
         : collectedData,
+      isInitialRequest: false, // Explicitly set to false for answer processing
     };
 
     const response = await fetch(apiEndpoint, {
@@ -106,46 +251,7 @@ export function useConvoForm({
       throw new Error("Failed to fetch question");
     }
 
-    const reader = response.body.getReader();
-    let generatedQuestion = "";
-    let updatedCurrentField: string | undefined;
-    let updatedExtraSteamData: ExtraStreamData | undefined;
-
-    for await (const {
-      textValue,
-      data: streamData,
-    } of readResponseStream<ExtraStreamData>(reader)) {
-      if (textValue) {
-        generatedQuestion += textValue;
-      }
-
-      updatedCurrentField = streamData?.currentField?.fieldName;
-
-      updatedExtraSteamData = { ...extraStreamData, ...streamData };
-      setState((cs) => ({
-        ...cs,
-        currentQuestion: generatedQuestion,
-        extraStreamData: updatedExtraSteamData ?? {},
-      }));
-    }
-
-    const questionMessage: Transcript = {
-      role: "assistant",
-      content: generatedQuestion,
-      fieldName: updatedCurrentField,
-    };
-
-    const updatedTranscript = transcript.concat([
-      answerMessage,
-      questionMessage,
-    ]);
-
-    return {
-      generatedQuestion,
-      updatedTranscript,
-      updatedCurrentField,
-      updatedExtraSteamData: updatedExtraSteamData ?? {},
-    };
+    return await parseStreamResponse(response, answerMessage);
   };
 
   /**
@@ -177,22 +283,29 @@ export function useConvoForm({
       conversation: currentConversation,
     }));
 
-    const { updatedExtraSteamData, updatedTranscript } =
+    const { updatedExtraSteamData, updatedTranscript, updatedConversation } =
       await fetchNextQuestion(answer, currentConversation, isNewConversation);
 
-    await patchConversation(formId, currentConversation.id, {
-      collectedData: updatedExtraSteamData?.collectedData,
+    // Use the updated conversation from the stream if available
+    const conversationToUpdate = updatedConversation || currentConversation;
+
+    await patchConversation(formId, conversationToUpdate.id, {
+      collectedData:
+        updatedExtraSteamData?.collectedData ||
+        conversationToUpdate.collectedData,
       transcript: updatedTranscript,
       finishedAt: updatedExtraSteamData?.isFormSubmissionFinished
         ? new Date()
         : null,
-      name: updatedExtraSteamData?.conversationName,
+      name:
+        updatedExtraSteamData?.conversationName || conversationToUpdate.name,
     });
 
     setState((cs) => ({
       ...cs,
       isBusy: false,
       transcript: updatedTranscript,
+      conversation: conversationToUpdate,
     }));
   };
 
@@ -200,9 +313,49 @@ export function useConvoForm({
    * Start a new conversation
    */
   const startConversation = useCallback(async () => {
-    const newConversation = await createConversation(formId);
-    submitAnswer(CONVERSATION_START_MESSAGE, newConversation);
-  }, [formId]);
+    try {
+      const newConversation = await createConversation(formId);
+
+      setState((cs) => ({
+        ...cs,
+        isBusy: true,
+        currentQuestion: "",
+        isConversationStarted: true,
+        conversation: newConversation,
+      }));
+
+      // Fetch the initial question for the first field
+      const { updatedExtraSteamData, updatedTranscript, updatedConversation } =
+        await fetchInitialQuestion(newConversation);
+
+      // Use the updated conversation from the stream if available
+      const conversationToUpdate = updatedConversation || newConversation;
+
+      await patchConversation(formId, conversationToUpdate.id, {
+        collectedData:
+          updatedExtraSteamData?.collectedData ||
+          conversationToUpdate.collectedData,
+        transcript: updatedTranscript,
+        finishedAt: updatedExtraSteamData?.isFormSubmissionFinished
+          ? new Date()
+          : null,
+        name:
+          updatedExtraSteamData?.conversationName || conversationToUpdate.name,
+      });
+
+      setState((cs) => ({
+        ...cs,
+        isBusy: false,
+        transcript: updatedTranscript,
+        conversation: conversationToUpdate,
+      }));
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to start conversation",
+      );
+      setState((cs) => ({ ...cs, isBusy: false }));
+    }
+  }, [formId, fetchInitialQuestion, patchConversation, setError]);
 
   useEffect(() => {
     // When a new form submission is started
