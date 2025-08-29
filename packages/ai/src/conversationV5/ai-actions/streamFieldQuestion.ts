@@ -1,5 +1,5 @@
 import type { CollectedData, Transcript } from "@convoform/db/src/schema";
-import { streamText } from "ai";
+import { type StreamTextOnFinishCallback, type ToolSet, streamText } from "ai";
 import { getModelConfig } from "../config";
 import {
   buildCollectedFieldsContext,
@@ -18,13 +18,17 @@ export interface StreamFieldQuestionParams {
  * Generates a question for the current field based on context
  * Uses AI SDK V5 for edge runtime compatibility
  */
-export function streamFieldQuestion(params: StreamFieldQuestionParams) {
+export function streamFieldQuestion(
+  params: StreamFieldQuestionParams,
+  onFinish?: StreamTextOnFinishCallback<ToolSet> | undefined,
+) {
   try {
     return streamText({
       model: getModelConfig(),
       temperature: 0.3,
       system: getGenerateFieldQuestionSystemPrompt(params),
       prompt: `Generate a ${params.isFirstQuestion ? "first" : "follow-up"} question for the field "${params.currentField.fieldName}" based on the provided context.`,
+      onFinish,
     });
   } catch (error) {
     // Edge-compatible error handling

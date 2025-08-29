@@ -1,183 +1,174 @@
-import type { Conversation } from "@convoform/db/src/schema";
 import { shouldSkipValidation } from "@convoform/db/src/schema/formFields/utils";
 import {
+  type AsyncIterableStream,
+  type InferUIMessageChunk,
   type UIMessage,
-  type UIMessageStreamWriter,
   createUIMessageStream,
 } from "ai";
 import { extractFieldAnswer } from "../ai-actions/extractFieldAnswer";
 import { streamFieldQuestion } from "../ai-actions/streamFieldQuestion";
-import { ConversationManager } from "./managers/conversationManager";
+import type { Conversation } from "../types";
+import type { ConversationManager } from "./managers/conversationManager";
 
-export type ConversationUIMessage = UIMessage<
+export type ConversationServiceUIMessage = UIMessage<
   never, // metadata type
   {
-    conversation: Conversation;
+    conversation?: Conversation;
   }
 >;
 
+/**
+ * ============================================
+ * ----------- CONVERSATION SERVICE -----------
+ * ============================================
+ *
+ * Handles the core conversation orchestration logic.
+ *
+ * orchestrateConversation() handles below flows when user submits answer:
+ *
+ * 1. Invalid answer:
+ *    - Generate and stream followup question
+ *
+ * 2. Valid answer and next field exists:
+ *    - Save answer
+ *    - Generate and stream question for next field
+ *
+ * 3. Valid answer and no next field:
+ *    - Save answer
+ *    - Mark conversation as complete
+ *    - Add end message to transcript and stream it
+ *
+ */
+
 export class ConversationService {
-  private conversationId: string;
-  private streamId: string;
   private conversationManager: ConversationManager;
+  private streamId: string;
   private endMessage = "Form completed successfully!";
 
-  constructor(
-    conversation: Conversation,
-    opts: {
-      onUpdateConversation?: ConversationManager["onUpdateConversation"];
-      streamWriter?: UIMessageStreamWriter;
-    } = {},
-  ) {
-    this.conversationManager = new ConversationManager(
-      conversation,
-      opts.onUpdateConversation,
-    );
-    this.conversationId = conversation.id;
-    this.streamId = `stream-${this.conversationId}`;
+  constructor(conversationManager: ConversationManager, streamId: string) {
+    this.conversationManager = conversationManager;
+    this.streamId = streamId;
   }
 
-  public async generateInitialQuestion() {
-    // Get the first empty field to start the conversation
-    const firstField = this.conversationManager.getNextEmptyField();
-
-    if (!firstField) {
-      // If no fields to fill, return completion message
-      this.conversationManager.addAIMessage(this.endMessage);
-      this.conversationManager.markConversationComplete();
-
-      const endMessageStream = createUIMessageStream({
-        execute: async ({ writer }) => {
-          writer.write({
-            type: "text-start",
-            id: this.streamId,
-          });
-          writer.write({
-            type: "text-delta",
-            delta: this.endMessage,
-            id: this.streamId,
-          });
-          writer.write({
-            type: "text-end",
-            id: this.streamId,
-          });
-        },
-      });
-
-      return endMessageStream;
-    }
-
-    // Generate question for the first field
-    const questionStreamTextResult = streamFieldQuestion({
-      ...this.conversationManager.getConversation(),
-      currentField: firstField,
-      isFirstQuestion: true,
-    });
-
-    return questionStreamTextResult.toUIMessageStream({
-      generateMessageId: () => {
-        return this.streamId;
-      },
-      onFinish: async () => {
-        const completeQuestionText = await questionStreamTextResult.text;
-        this.conversationManager.addAIMessage(completeQuestionText);
-      },
-    });
-  }
-
-  public async orchestrateConversation(
+  /**
+   * Orchestrates the conversation flow based on user answer
+   */
+  public async process(
     answerText: string,
     currentField: Conversation["collectedData"][number],
-  ) {
-    // First validate answerText
-    const validAnswer = answerText.trim();
+  ): Promise<
+    AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>>
+  > {
+    let validatedAnswer: {
+      object: { isValid: boolean; answer: string | null };
+    };
 
-    if (!validAnswer) {
+    const sanitizedAnswerText = answerText.trim();
+
+    if (!sanitizedAnswerText) {
       throw new Error("Answer cannot be empty");
     }
 
-    // Add answerText to transcript
-    this.conversationManager.addUserMessage(validAnswer);
+    await this.conversationManager.updateCurrentFieldId(currentField.id);
+    await this.conversationManager.addUserMessage(sanitizedAnswerText);
 
     // Check if we should skip validation for this field type
     const skipValidation = shouldSkipValidation(
       currentField.fieldConfiguration.inputType,
     );
 
-    let extractedAnswer: {
-      object: { isValid: boolean; answer: string | null };
-    };
-
     if (skipValidation) {
-      // For fields that should save exact value, skip validation
-      extractedAnswer = {
+      validatedAnswer = {
         object: {
           isValid: true,
-          answer: validAnswer,
+          answer: sanitizedAnswerText,
         },
       };
     } else {
-      // For fields that need validation (like text), use AI extraction
-      extractedAnswer = await extractFieldAnswer({
-        currentField,
+      validatedAnswer = await extractFieldAnswer({
         ...this.conversationManager.getConversation(),
+        currentField,
       });
     }
 
-    // If answer is invalid, generate followup question
-    if (!extractedAnswer.object.isValid || !extractedAnswer.object.answer) {
-      // Generate followup question
-      const followupQuestionStreamTextResult = streamFieldQuestion({
-        ...this.conversationManager.getConversation(),
-        currentField,
-        isFirstQuestion: false,
-      });
-
-      return followupQuestionStreamTextResult.toUIMessageStream({
-        // TODO: This is not working, also tried ai sdk docs suggestion for streamText option - experimental_generateMessageId
-        // https://ai-sdk.dev/docs/reference/ai-sdk-core/stream-text#experimental_generate-message-id
-        generateMessageId: () => {
-          return this.streamId;
-        },
-        onFinish: async () => {
-          const completeQuestionText =
-            await followupQuestionStreamTextResult.text;
-          this.conversationManager.addAIMessage(completeQuestionText);
-        },
-      });
+    // If answer is not valid
+    if (!validatedAnswer.object.isValid || !validatedAnswer.object.answer) {
+      return this.generateFollowupQuestionStream(currentField);
     }
 
     // If answer is valid, save it and check for next field
     this.conversationManager.saveFieldAnswer(
       currentField.id,
-      extractedAnswer.object.answer,
+      validatedAnswer.object.answer,
     );
     const nextField = this.conversationManager.getNextEmptyField();
 
     // If next field found, generate and stream question for next field
     if (nextField) {
-      const questionStreamTextResult = streamFieldQuestion({
+      return this.generateNextFieldQuestionStream(nextField);
+    }
+
+    // If no next field found, mark conversation as complete
+    return this.generateEndConversationStream();
+  }
+
+  /**
+   * Generates a followup question for invalid answers
+   */
+  private generateFollowupQuestionStream(
+    currentField: Conversation["collectedData"][number],
+  ): AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>> {
+    const streamTextResult = streamFieldQuestion(
+      {
+        ...this.conversationManager.getConversation(),
+        currentField,
+        isFirstQuestion: false,
+      },
+      this.createTextStreamOnFinishHandler(),
+    );
+
+    return streamTextResult.toUIMessageStream<ConversationServiceUIMessage>({
+      onFinish: async () => {
+        await this.conversationManager.addAIMessage(await streamTextResult.text)
+      }
+    });
+  }
+
+  /**
+   * Generates a question for the next field
+   */
+  private generateNextFieldQuestionStream(
+    nextField: Conversation["collectedData"][number],
+  ): AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>> {
+    this.conversationManager.updateCurrentFieldId(nextField.id);
+    const streamTextResult = streamFieldQuestion(
+      {
         ...this.conversationManager.getConversation(),
         currentField: nextField,
         isFirstQuestion: true,
-      });
+      },
+      this.createTextStreamOnFinishHandler(),
+    );
 
-      return questionStreamTextResult.toUIMessageStream({
-        generateMessageId: () => {
-          return this.streamId;
-        },
-        onFinish: async () => {
-          const completeQuestionText = await questionStreamTextResult.text;
-          this.conversationManager.addAIMessage(completeQuestionText);
-        },
-      });
-    }
 
-    // If no next field found, mark conversation as complete and return end message stream
+    return streamTextResult.toUIMessageStream<ConversationServiceUIMessage>({
+      onFinish: async () => {
+        await this.conversationManager.addAIMessage(await streamTextResult.text);
+      }
+    });
+  }
+
+  /**
+   * Completes the conversation and returns end message stream
+   */
+  private generateEndConversationStream(): AsyncIterableStream<
+    InferUIMessageChunk<ConversationServiceUIMessage>
+  > {
     this.conversationManager.addAIMessage(this.endMessage);
     this.conversationManager.markConversationComplete();
 
-    const endMessageStream = createUIMessageStream({
+    // Create fake end message stream
+    return createUIMessageStream<ConversationServiceUIMessage>({
       execute: async ({ writer }) => {
         writer.write({
           type: "text-start",
@@ -194,7 +185,16 @@ export class ConversationService {
         });
       },
     });
+  }
 
-    return endMessageStream;
+  /**
+   * Creates a streaming callback that will be called when text streaming ends
+   * this will prevent streaming from ending before we have a chance to do something,
+   * E.g. sending final stream message or updating conversation data in the database
+   */
+  private createTextStreamOnFinishHandler() {
+    return async () => {
+      await this.conversationManager.updateConversation();
+    };
   }
 }

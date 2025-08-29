@@ -69,5 +69,11 @@ export async function GET(_request: NextRequest) {
     },
   });
 
-  return createUIMessageStreamResponse({ stream });
+  const stream2 = createUIMessageStream({
+    execute: async ({ writer }) => {
+      writer.merge(stream);
+    },
+  });
+
+  return createUIMessageStreamResponse({ stream: stream2 });
 }

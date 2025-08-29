@@ -142,7 +142,7 @@ export async function POST(
           if (!userAnswer || !currentFieldToProcess) {
             throw new Error("Missing required data for answer processing");
           }
-          aiMessageStream = await conversationService.orchestrateConversation(
+          aiMessageStream = await conversationService.process(
             userAnswer,
             currentFieldToProcess,
           );

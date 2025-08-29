@@ -1,15 +1,15 @@
-import type { Conversation } from "@convoform/db/src/schema";
+import type { Conversation } from "../../types";
 
 export class ConversationManager {
   private conversation: Conversation;
-  public onUpdateConversation?: (conversation: Conversation) => Promise<void>;
+  private onUpdateConversation?: (conversation: Conversation) => Promise<void>;
 
-  constructor(
-    conversation: Conversation,
-    onUpdateConversation?: ConversationManager["onUpdateConversation"],
-  ) {
-    this.conversation = conversation;
-    this.onUpdateConversation = onUpdateConversation;
+  constructor(opts: {
+    conversation: Conversation;
+    onUpdateConversation?: ConversationManager["onUpdateConversation"];
+  }) {
+    this.conversation = opts.conversation;
+    this.onUpdateConversation = opts.onUpdateConversation;
   }
 
   public getConversation() {
@@ -34,7 +34,12 @@ export class ConversationManager {
     return success;
   }
 
-  public saveFieldAnswer(fieldId: string, fieldValue: string) {
+  public async updateCurrentFieldId(fieldId: string) {
+    this.conversation.currentFieldId = fieldId;
+    await this.updateConversation();
+  }
+
+  public async saveFieldAnswer(fieldId: string, fieldValue: string) {
     const field = this.conversation.collectedData.find(
       (field) => field.id === fieldId,
     );
@@ -42,32 +47,32 @@ export class ConversationManager {
       throw new Error("Field not found");
     }
     field.fieldValue = fieldValue;
-    this.updateConversation();
+    await this.updateConversation();
   }
 
-  public addUserMessage(message: string) {
+  public async addUserMessage(message: string) {
     this.conversation.transcript.push({
       role: "user",
       content: message,
     });
-    this.updateConversation();
+    await this.updateConversation();
   }
 
-  public addAIMessage(message: string) {
+  public async addAIMessage(message: string) {
     this.conversation.transcript.push({
       role: "assistant",
       content: message,
     });
-    this.updateConversation();
+    await this.updateConversation();
   }
 
   public getNextEmptyField() {
     return this.conversation.collectedData.find((field) => !field.fieldValue);
   }
 
-  public markConversationComplete() {
+  public async markConversationComplete() {
     this.conversation.isInProgress = false;
     this.conversation.finishedAt = new Date();
-    this.updateConversation();
+    await this.updateConversation();
   }
 }

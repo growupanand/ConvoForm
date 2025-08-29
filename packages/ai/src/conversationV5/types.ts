@@ -1,3 +1,8 @@
+import type {
+  Conversation as DBConversation,
+  Form,
+} from "@convoform/db/src/schema";
+
 // Streaming types for edge compatibility
 export interface StreamableValue<T> {
   value: T;
@@ -31,3 +36,8 @@ export interface AIError {
   code: string;
   statusCode?: number;
 }
+
+export type Conversation = DBConversation & {
+  form: Form;
+  currentFieldId?: string;
+};

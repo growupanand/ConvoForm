@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import type { Conversation } from "@convoform/db/src/schema";
-import { ConversationService } from "../conversationV5/core/conversationService";
+import { CoreService } from "../conversationV5/core/coreService";
 
 // Helper function to create conversation logger
 function createConversationLogger(logger: TestLogger) {
@@ -244,9 +244,9 @@ async function testValidAnswerFlow(logger: TestLogger) {
     // Use the reusable conversation logger
     const onUpdateConversation = createConversationLogger(logger);
 
-    const service = new ConversationService(conversation, {
+    const service = new CoreService({
+      conversation,
       onUpdateConversation,
-      streamWriter: mockWriter,
     });
 
     const currentField = conversation.collectedData[0]; // Full Name field
@@ -256,10 +256,7 @@ async function testValidAnswerFlow(logger: TestLogger) {
       `🎧 Testing: ${currentField.fieldName} | Answer: "${validAnswer}" | Initial: ${conversation.transcript.length} msgs, ${conversation.collectedData.filter((field: any) => field.fieldValue !== null).length} fields`,
     );
 
-    const result = await service.orchestrateConversation(
-      validAnswer,
-      currentField,
-    );
+    const result = await service.process(validAnswer, currentField);
 
     const streamMessages = mockWriter.getMessages();
     logger.info(
@@ -282,7 +279,8 @@ async function testInvalidAnswerFlow(logger: TestLogger) {
 
   try {
     const conversation = JSON.parse(JSON.stringify(mockConversation));
-    const service = new ConversationService(conversation, {
+    const service = new CoreService({
+      conversation,
       onUpdateConversation: createConversationLogger(logger),
     });
 
@@ -294,7 +292,7 @@ async function testInvalidAnswerFlow(logger: TestLogger) {
     );
 
     try {
-      await service.orchestrateConversation(invalidAnswer, currentField);
+      await service.process(invalidAnswer, currentField);
       logger.fail("Should have thrown error for empty answer");
     } catch (error) {
       if ((error as Error).message.includes("Answer cannot be empty")) {
@@ -316,7 +314,8 @@ async function testMultipleChoiceField(logger: TestLogger) {
     // Set first field as completed to test second field
     conversation.collectedData[0].fieldValue = "John Doe";
 
-    const service = new ConversationService(conversation, {
+    const service = new CoreService({
+      conversation,
       onUpdateConversation: createConversationLogger(logger),
     });
     const currentField = conversation.collectedData[2]; // Age Range field
@@ -329,10 +328,7 @@ async function testMultipleChoiceField(logger: TestLogger) {
       `🎧 Testing: ${currentField.fieldName} (${currentField.fieldConfiguration.inputType}) | Options: ${options} | Choice: "${validChoice}"`,
     );
 
-    const result = await service.orchestrateConversation(
-      validChoice,
-      currentField,
-    );
+    const result = await service.process(validChoice, currentField);
     logger.info(`📺 Result: ${result ? "Success" : "Failed"}`);
 
     if (result) {
@@ -355,7 +351,8 @@ async function testRatingField(logger: TestLogger) {
     conversation.collectedData[1].fieldValue = "john@example.com";
     conversation.collectedData[2].fieldValue = "26-35";
 
-    const service = new ConversationService(conversation, {
+    const service = new CoreService({
+      conversation,
       onUpdateConversation: createConversationLogger(logger),
     });
     const currentField = conversation.collectedData[3]; // Rating field
@@ -365,10 +362,7 @@ async function testRatingField(logger: TestLogger) {
       `🎧 Testing: ${currentField.fieldName} (${currentField.fieldConfiguration.inputType}) | Max: ${currentField.fieldConfiguration.inputConfiguration.maxRating} | Rating: "${validRating}"`,
     );
 
-    const result = await service.orchestrateConversation(
-      validRating,
-      currentField,
-    );
+    const result = await service.process(validRating, currentField);
     logger.info(`📺 Result: ${result ? "Success" : "Failed"}`);
 
     if (result) {
@@ -391,7 +385,8 @@ async function testConversationCompletion(logger: TestLogger) {
     conversation.collectedData[1].fieldValue = "john@example.com";
     conversation.collectedData[2].fieldValue = "26-35";
 
-    const service = new ConversationService(conversation, {
+    const service = new CoreService({
+      conversation,
       onUpdateConversation: createConversationLogger(logger),
     });
     const lastField = conversation.collectedData[3]; // Rating field (last field)
@@ -401,10 +396,7 @@ async function testConversationCompletion(logger: TestLogger) {
       `🎧 Testing completion: ${lastField.fieldName} | Final Answer: "${finalAnswer}"`,
     );
 
-    const result = await service.orchestrateConversation(
-      finalAnswer,
-      lastField,
-    );
+    const result = await service.process(finalAnswer, lastField);
     logger.info(
       `📺 Result: ${result ? "Success - End message stream" : "Failed"}`,
     );

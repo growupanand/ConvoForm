@@ -76,7 +76,7 @@ export async function GET() {
   const convoFormService = new ConversationServiceV5(sampleConversation);
 
   if (sampleConversation.collectedData[1]) {
-    const resultStream = await convoFormService.orchestrateConversation(
+    const resultStream = await convoFormService.process(
       "utkarsh anand",
       sampleConversation.collectedData[1],
     );
