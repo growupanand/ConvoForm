@@ -1,4 +1,4 @@
-import type { CollectedData, Transcript } from "@convoform/db/src/schema";
+import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
 import { generateObject } from "ai";
 import { z } from "zod/v3";
 import { getModelConfig } from "../config";
@@ -10,7 +10,7 @@ import {
 export interface GenerateConversationNameParams {
   formOverview: string;
   transcript: Transcript[];
-  collectedData: CollectedData[];
+  formFieldResponses: FormFieldResponses[];
 }
 
 export const generateConversationNameOutputSchema = z.object({
@@ -68,7 +68,7 @@ export function getGenerateConversationNameSystemPrompt(
 ): string {
   const conversationContext = buildConversationContextPrompt(params.transcript);
   const collectedFieldsContext = buildCollectedFieldsContextPrompt(
-    params.collectedData,
+    params.formFieldResponses,
   );
 
   return `You are an expert at creating concise, descriptive names for conversations based on their content and context. Your names should be informative, professional, and help users quickly identify conversations.

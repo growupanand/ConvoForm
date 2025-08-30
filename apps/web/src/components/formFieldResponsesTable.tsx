@@ -8,11 +8,13 @@ import type { Conversation } from "@convoform/db/src/schema";
 import { Skeleton } from "@convoform/ui";
 import { Table, TableBody, TableCell, TableRow } from "@convoform/ui";
 type Props = {
-  collectedData: Conversation["collectedData"];
+  formFieldResponses: Conversation["formFieldResponses"];
 };
 
-export function CollectedDataTable({ collectedData }: Readonly<Props>) {
-  const tableData = getConversationTableData(collectedData);
+export function FormFieldResponsesTable({
+  formFieldResponses,
+}: Readonly<Props>) {
+  const tableData = getConversationTableData(formFieldResponses);
   const tableColumns = Object.keys(tableData);
 
   return (
@@ -26,12 +28,12 @@ export function CollectedDataTable({ collectedData }: Readonly<Props>) {
               key={`${index}-${columnName}-${value}`}
               className="grid grid-cols-2 gap-4 w-full"
             >
-              <CollectedDataTableCell className="text-subtle-foreground">
+              <FormFieldResponsesTableCell className="text-subtle-foreground">
                 {columnName}
-              </CollectedDataTableCell>
-              <CollectedDataTableCell className="font-medium">
+              </FormFieldResponsesTableCell>
+              <FormFieldResponsesTableCell className="font-medium">
                 {renderCellValue(value, fieldConfig)}
-              </CollectedDataTableCell>
+              </FormFieldResponsesTableCell>
             </TableRow>
           );
         })}
@@ -40,19 +42,21 @@ export function CollectedDataTable({ collectedData }: Readonly<Props>) {
   );
 }
 
-CollectedDataTable.Skeleton = ({ rowsCount = 3 }: { rowsCount?: number }) => {
+FormFieldResponsesTable.Skeleton = ({
+  rowsCount = 3,
+}: { rowsCount?: number }) => {
   return (
     <Table className="">
       <TableBody>
         {Array.from({ length: rowsCount }).map((_, index) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
           <TableRow key={index}>
-            <CollectedDataTableCell>
+            <FormFieldResponsesTableCell>
               <Skeleton className="h-4 w-full bg-gray-200" />
-            </CollectedDataTableCell>
-            <CollectedDataTableCell>
+            </FormFieldResponsesTableCell>
+            <FormFieldResponsesTableCell>
               <Skeleton className="h-4 w-full" />
-            </CollectedDataTableCell>
+            </FormFieldResponsesTableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -60,7 +64,7 @@ CollectedDataTable.Skeleton = ({ rowsCount = 3 }: { rowsCount?: number }) => {
   );
 };
 
-function CollectedDataTableCell({
+function FormFieldResponsesTableCell({
   children,
   className,
 }: {

@@ -18,14 +18,14 @@ function createConversationLogger(logger: TestLogger) {
     logger.info("─".repeat(50));
 
     // Log collected data updates in one line
-    const filledFields = updatedConversation.collectedData.filter(
+    const filledFields = updatedConversation.formFieldResponses.filter(
       (field) => field.fieldValue !== null,
     );
     const fieldSummary = filledFields
       .map((f) => `${f.fieldName}:"${f.fieldValue}"`)
       .join(", ");
     logger.info(
-      `📊 Fields (${filledFields.length}/${updatedConversation.collectedData.length}): ${fieldSummary}`,
+      `📊 Fields (${filledFields.length}/${updatedConversation.formFieldResponses.length}): ${fieldSummary}`,
     );
     logger.info(""); // Add spacing
   };
@@ -64,7 +64,7 @@ const mockConversation: Conversation = {
       content: "Welcome! Let's start with your basic information.",
     },
   ],
-  collectedData: [
+  formFieldResponses: [
     {
       id: "field-1",
       fieldName: "Full Name",
@@ -249,11 +249,11 @@ async function testValidAnswerFlow(logger: TestLogger) {
       onUpdateConversation,
     });
 
-    const currentField = conversation.collectedData[0]; // Full Name field
+    const currentField = conversation.formFieldResponses[0]; // Full Name field
     const validAnswer = "John Doe";
 
     logger.info(
-      `🎧 Testing: ${currentField.fieldName} | Answer: "${validAnswer}" | Initial: ${conversation.transcript.length} msgs, ${conversation.collectedData.filter((field: any) => field.fieldValue !== null).length} fields`,
+      `🎧 Testing: ${currentField.fieldName} | Answer: "${validAnswer}" | Initial: ${conversation.transcript.length} msgs, ${conversation.formFieldResponses.filter((field: any) => field.fieldValue !== null).length} fields`,
     );
 
     const result = await service.process(validAnswer, currentField);
@@ -284,7 +284,7 @@ async function testInvalidAnswerFlow(logger: TestLogger) {
       onUpdateConversation: createConversationLogger(logger),
     });
 
-    const currentField = conversation.collectedData[0];
+    const currentField = conversation.formFieldResponses[0];
     const invalidAnswer = "   "; // Empty/whitespace answer
 
     logger.info(
@@ -312,13 +312,13 @@ async function testMultipleChoiceField(logger: TestLogger) {
   try {
     const conversation = JSON.parse(JSON.stringify(mockConversation));
     // Set first field as completed to test second field
-    conversation.collectedData[0].fieldValue = "John Doe";
+    conversation.formFieldResponses[0].fieldValue = "John Doe";
 
     const service = new CoreService({
       conversation,
       onUpdateConversation: createConversationLogger(logger),
     });
-    const currentField = conversation.collectedData[2]; // Age Range field
+    const currentField = conversation.formFieldResponses[2]; // Age Range field
     const validChoice = "26-35";
 
     const options = currentField.fieldConfiguration.inputConfiguration.options
@@ -347,15 +347,15 @@ async function testRatingField(logger: TestLogger) {
   try {
     const conversation = JSON.parse(JSON.stringify(mockConversation));
     // Set previous fields as completed
-    conversation.collectedData[0].fieldValue = "John Doe";
-    conversation.collectedData[1].fieldValue = "john@example.com";
-    conversation.collectedData[2].fieldValue = "26-35";
+    conversation.formFieldResponses[0].fieldValue = "John Doe";
+    conversation.formFieldResponses[1].fieldValue = "john@example.com";
+    conversation.formFieldResponses[2].fieldValue = "26-35";
 
     const service = new CoreService({
       conversation,
       onUpdateConversation: createConversationLogger(logger),
     });
-    const currentField = conversation.collectedData[3]; // Rating field
+    const currentField = conversation.formFieldResponses[3]; // Rating field
     const validRating = "4";
 
     logger.info(
@@ -381,15 +381,15 @@ async function testConversationCompletion(logger: TestLogger) {
   try {
     const conversation = JSON.parse(JSON.stringify(mockConversation));
     // Set all fields as completed except the last one
-    conversation.collectedData[0].fieldValue = "John Doe";
-    conversation.collectedData[1].fieldValue = "john@example.com";
-    conversation.collectedData[2].fieldValue = "26-35";
+    conversation.formFieldResponses[0].fieldValue = "John Doe";
+    conversation.formFieldResponses[1].fieldValue = "john@example.com";
+    conversation.formFieldResponses[2].fieldValue = "26-35";
 
     const service = new CoreService({
       conversation,
       onUpdateConversation: createConversationLogger(logger),
     });
-    const lastField = conversation.collectedData[3]; // Rating field (last field)
+    const lastField = conversation.formFieldResponses[3]; // Rating field (last field)
     const finalAnswer = "5";
 
     logger.info(
@@ -428,11 +428,11 @@ async function testConversationValidation(logger: TestLogger) {
     }
 
     if (
-      Array.isArray(conversation.collectedData) &&
-      conversation.collectedData.length > 0
+      Array.isArray(conversation.formFieldResponses) &&
+      conversation.formFieldResponses.length > 0
     ) {
       logger.pass(
-        `Collected data array has ${conversation.collectedData.length} fields`,
+        `Collected data array has ${conversation.formFieldResponses.length} fields`,
       );
     } else {
       logger.fail("Invalid collected data structure");
@@ -447,7 +447,7 @@ async function testConversationValidation(logger: TestLogger) {
     }
 
     // Field validation
-    for (const field of conversation.collectedData) {
+    for (const field of conversation.formFieldResponses) {
       if (
         field.id &&
         field.fieldName &&

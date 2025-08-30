@@ -4,7 +4,7 @@ curl -X POST http://localhost:3000/api/test/generate-end-message \
   -H "Content-Type: application/json" \
   -d '{
     "formOverview": "A business inquiry form for potential clients",
-    "collectedData": [
+    "formFieldResponses": [
       {
         "fieldId": "companyName",
         "fieldName": "Company Name",
@@ -45,18 +45,18 @@ export async function POST(request: NextRequest) {
   try {
     const {
       formOverview,
-      collectedData,
+      formFieldResponses,
       transcript,
       formTitle,
       customMessage,
     } = await request.json();
 
     // Validate input
-    if (!formOverview || !collectedData) {
+    if (!formOverview || !formFieldResponses) {
       return NextResponse.json(
         {
           error:
-            "Missing required parameters: formOverview and collectedData are required",
+            "Missing required parameters: formOverview and formFieldResponses are required",
         },
         { status: 400 },
       );
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     // Run end message generation
     const result = await generateEndMessage({
       formOverview,
-      collectedData: collectedData || [],
+      formFieldResponses: formFieldResponses || [],
       transcript: transcript || [],
       formTitle,
       customMessage,
@@ -97,7 +97,7 @@ export async function GET() {
       endpoint: "/api/test/generate-end-message",
       body: {
         formOverview: "Form description string",
-        collectedData: "Previously collected data array",
+        formFieldResponses: "Previously collected data array",
         transcript: "Conversation history array",
         formTitle: "Optional form title",
         customMessage: "Optional custom message",
@@ -106,7 +106,7 @@ export async function GET() {
     example: {
       formOverview:
         "A comprehensive job application form for software engineers",
-      collectedData: [
+      formFieldResponses: [
         {
           fieldName: "fullName",
           fieldDescription: "Your full legal name",

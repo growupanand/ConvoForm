@@ -1,6 +1,6 @@
 import {
-  type CollectedData,
   type Conversation,
+  type FormFieldResponses,
   extraStreamDataSchema,
   restoreDateFields,
   selectConversationSchema,
@@ -30,7 +30,7 @@ export const requestSchema = selectConversationSchema
     formOverview: true,
     finishedAt: true,
     formId: true,
-    collectedData: true,
+    formFieldResponses: true,
     id: true,
   })
   .merge(extraStreamDataSchema.pick({ currentField: true }))
@@ -82,7 +82,7 @@ export async function POST(
       // Find the current field that needs to be processed
       currentFieldToProcess =
         currentField ||
-        conversation.collectedData.find((field) => !field.fieldValue);
+        conversation.formFieldResponses.find((field) => !field.fieldValue);
 
       if (!currentFieldToProcess) {
         return sendErrorMessage("No field to process", 400);
@@ -118,10 +118,10 @@ export async function POST(
               type: "data-conversation",
               data: {
                 conversation: updatedConversation,
-                currentField: updatedConversation.collectedData.find(
+                currentField: updatedConversation.formFieldResponses.find(
                   (field) => !field.fieldValue,
                 ),
-                collectedData: updatedConversation.collectedData,
+                formFieldResponses: updatedConversation.formFieldResponses,
                 isFormSubmissionFinished:
                   updatedConversation.finishedAt !== null,
               },
@@ -173,18 +173,18 @@ export const getParsedRequestJson = async (req: NextRequest) => {
     );
   }
 
-  const parsedCollectedData = [] as CollectedData[];
+  const parsedFormFieldResponses = [] as FormFieldResponses[];
 
-  for (const field of requestJson.collectedData) {
+  for (const field of requestJson.formFieldResponses) {
     const parsedFieldConfiguration = restoreDateFields(
       field.fieldConfiguration,
     );
-    parsedCollectedData.push({
+    parsedFormFieldResponses.push({
       ...field,
       fieldConfiguration: parsedFieldConfiguration,
     });
   }
-  requestJson.collectedData = parsedCollectedData;
+  requestJson.formFieldResponses = parsedFormFieldResponses;
 
   return requestSchema.parse(requestJson);
 };

@@ -1,0 +1,1 @@
+ALTER TABLE "Conversation" RENAME COLUMN "collectedData" TO "formFieldResponses";

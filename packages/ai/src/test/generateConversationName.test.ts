@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import type { CollectedData } from "@convoform/db/src/schema";
+import type { FormFieldResponses } from "@convoform/db/src/schema";
 import {
   type GenerateConversationNameParams,
   generateConversationName,
@@ -15,7 +15,7 @@ const mockFormOverview =
 
 describe("generateConversationName", () => {
   test("should generate descriptive name with collected data", async () => {
-    const collectedData: CollectedData[] = [
+    const formFieldResponses: FormFieldResponses[] = [
       {
         id: "field-1",
         fieldName: "fullName",
@@ -60,7 +60,7 @@ describe("generateConversationName", () => {
 
     const testParams: GenerateConversationNameParams = {
       formOverview: mockFormOverview,
-      collectedData,
+      formFieldResponses,
       transcript,
     };
 
@@ -76,7 +76,7 @@ describe("generateConversationName", () => {
   });
 
   test("should generate name with minimal data", async () => {
-    const collectedData: CollectedData[] = [
+    const formFieldResponses: FormFieldResponses[] = [
       {
         id: "field-1",
         fieldName: "name",
@@ -97,7 +97,7 @@ describe("generateConversationName", () => {
 
     const testParams: GenerateConversationNameParams = {
       formOverview: "Simple contact form",
-      collectedData,
+      formFieldResponses,
       transcript,
     };
 
@@ -110,13 +110,13 @@ describe("generateConversationName", () => {
   });
 
   test("should handle empty data gracefully", async () => {
-    const collectedData: CollectedData[] = [];
+    const formFieldResponses: FormFieldResponses[] = [];
     const transcript: Array<{ role: "user" | "assistant"; content: string }> =
       [];
 
     const testParams: GenerateConversationNameParams = {
       formOverview: "Simple feedback form",
-      collectedData,
+      formFieldResponses,
       transcript,
     };
 
@@ -129,7 +129,7 @@ describe("generateConversationName", () => {
   });
 
   test("should generate unique names for different conversations", async () => {
-    const collectedData1: CollectedData[] = [
+    const formFieldResponses1: FormFieldResponses[] = [
       {
         id: "field-1",
         fieldName: "company",
@@ -142,7 +142,7 @@ describe("generateConversationName", () => {
       },
     ];
 
-    const collectedData2: CollectedData[] = [
+    const formFieldResponses2: FormFieldResponses[] = [
       {
         id: "field-2",
         fieldName: "company",
@@ -162,13 +162,13 @@ describe("generateConversationName", () => {
 
     const result1 = await generateConversationName({
       formOverview: "Business inquiry form",
-      collectedData: collectedData1,
+      formFieldResponses: formFieldResponses1,
       transcript,
     });
 
     const result2 = await generateConversationName({
       formOverview: "Business inquiry form",
-      collectedData: collectedData2,
+      formFieldResponses: formFieldResponses2,
       transcript,
     });
 

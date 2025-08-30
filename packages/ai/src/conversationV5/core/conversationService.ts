@@ -55,7 +55,7 @@ export class ConversationService {
    */
   public async process(
     answerText: string,
-    currentField: Conversation["collectedData"][number],
+    currentField: Conversation["formFieldResponses"][number],
   ): Promise<
     AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>>
   > {
@@ -115,7 +115,7 @@ export class ConversationService {
    * Generates a followup question for invalid answers
    */
   private generateFollowupQuestionStream(
-    currentField: Conversation["collectedData"][number],
+    currentField: Conversation["formFieldResponses"][number],
   ): AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>> {
     const streamTextResult = streamFieldQuestion(
       {
@@ -139,7 +139,7 @@ export class ConversationService {
    * Generates a question for the next field
    */
   private generateNextFieldQuestionStream(
-    nextField: Conversation["collectedData"][number],
+    nextField: Conversation["formFieldResponses"][number],
   ): AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>> {
     this.conversationManager.updateCurrentFieldId(nextField.id);
     const streamTextResult = streamFieldQuestion(

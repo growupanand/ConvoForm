@@ -1,6 +1,6 @@
 import { openai } from "@ai-sdk/openai";
 import {
-  type CollectedData,
+  type FormFieldResponses,
   type Transcript,
   conversationInsightsSchema,
 } from "@convoform/db/src/schema";
@@ -12,7 +12,7 @@ import { generateObject } from "ai";
  */
 export async function generateConversationInsights(
   transcript: Transcript[],
-  collectedData: CollectedData[],
+  formFieldResponses: FormFieldResponses[],
 ) {
   // Format the conversation data
   const formattedTranscript = transcript
@@ -20,7 +20,7 @@ export async function generateConversationInsights(
     .join("\n");
 
   // Extract form questions for context
-  const formQuestions = collectedData.map((field) => field.fieldName);
+  const formQuestions = formFieldResponses.map((field) => field.fieldName);
 
   // Use generateObject with our schema for structured output
   const result = await generateObject({

@@ -35,7 +35,7 @@ const sampleResponses = [
     createdAt: new Date().toISOString(),
     isInProgress: true,
     finishedAt: null,
-    collectedData: [
+    formFieldResponses: [
       { fieldValue: "Feedback on new product features" },
       { fieldValue: null },
       { fieldValue: null },
@@ -51,7 +51,7 @@ const sampleResponses = [
     finishedAt: new Date(),
     isInProgress: false,
 
-    collectedData: [
+    formFieldResponses: [
       { fieldValue: "Support ticket submission" },
       { fieldValue: null },
       { fieldValue: null },
@@ -87,7 +87,7 @@ function useFormWebsocket(formId: string, refetch: () => void) {
 function ResponseRow({
   conversation,
 }: { conversation: Conversation; existingResponses: Conversation[] }) {
-  const collectedDataWithValues = conversation.collectedData.filter(
+  const formFieldResponsesWithValues = conversation.formFieldResponses.filter(
     (i) => i.fieldValue,
   );
 
@@ -95,7 +95,8 @@ function ResponseRow({
   const completionPercentage = conversation.finishedAt
     ? 100
     : Math.round(
-        (collectedDataWithValues.length / conversation.collectedData.length) *
+        (formFieldResponsesWithValues.length /
+          conversation.formFieldResponses.length) *
           100,
       );
 
@@ -103,10 +104,10 @@ function ResponseRow({
     <motion.tr key={conversation.id} layout>
       <TableCell className="font-medium">
         {conversation.name || "Anonymous submission"}
-        {conversation.collectedData.length > 0 && (
+        {conversation.formFieldResponses.length > 0 && (
           <div className="text-xs text-gray-500 mt-1 truncate max-w-[200px]">
-            {conversation.collectedData.find((d) => d.fieldValue)?.fieldValue ||
-              "No data"}
+            {conversation.formFieldResponses.find((d) => d.fieldValue)
+              ?.fieldValue || "No data"}
           </div>
         )}
       </TableCell>

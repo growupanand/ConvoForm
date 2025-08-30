@@ -1,6 +1,6 @@
 import {
-  type CollectedData,
   type CollectedFilledData,
+  type FormFieldResponses,
   type Transcript,
   type generateFormSchema,
   selectFormFieldSchema,
@@ -103,7 +103,7 @@ export class SystemPromptService {
     isFirstQuestion,
   }: {
     formOverview: string;
-    currentField: CollectedData;
+    currentField: FormFieldResponses;
     fieldsWithData: CollectedFilledData[];
     isFirstQuestion: boolean;
   }) {
@@ -155,7 +155,7 @@ export class SystemPromptService {
     formOverview,
   }: {
     transcript: Transcript[];
-    currentField: CollectedData;
+    currentField: FormFieldResponses;
     formOverview: string;
   }) {
     const systemPrompt = `

@@ -51,7 +51,7 @@ export class CoreService {
 
   public async process(
     answerText: string,
-    currentField: Conversation["collectedData"][number],
+    currentField: Conversation["formFieldResponses"][number],
   ) {
     return await this.conversationService.process(answerText, currentField);
   }

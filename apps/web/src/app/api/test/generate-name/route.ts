@@ -4,7 +4,7 @@ curl -X POST http://localhost:3000/api/test/generate-name \
   -H "Content-Type: application/json" \
   -d '{
     "formOverview": "A business inquiry form for potential clients",
-    "collectedData": [
+    "formFieldResponses": [
       {
         "fieldId": "companyName",
         "fieldName": "Company Name",
@@ -43,14 +43,15 @@ export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
   try {
-    const { formOverview, collectedData, transcript } = await request.json();
+    const { formOverview, formFieldResponses, transcript } =
+      await request.json();
 
     // Validate input
-    if (!formOverview || !collectedData) {
+    if (!formOverview || !formFieldResponses) {
       return NextResponse.json(
         {
           error:
-            "Missing required parameters: formOverview and collectedData are required",
+            "Missing required parameters: formOverview and formFieldResponses are required",
         },
         { status: 400 },
       );
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
     // Run name generation
     const result = await generateConversationName({
       formOverview,
-      collectedData: collectedData || [],
+      formFieldResponses: formFieldResponses || [],
       transcript: transcript || [],
     });
 
@@ -89,14 +90,14 @@ export async function GET() {
       endpoint: "/api/test/generate-name",
       body: {
         formOverview: "Form description string",
-        collectedData: "Previously collected data array",
+        formFieldResponses: "Previously collected data array",
         transcript: "Conversation history array",
       },
     },
     example: {
       formOverview:
         "A comprehensive job application form for software engineers",
-      collectedData: [
+      formFieldResponses: [
         {
           fieldName: "fullName",
           fieldDescription: "Your full legal name",

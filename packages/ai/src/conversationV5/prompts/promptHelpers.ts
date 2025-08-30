@@ -1,4 +1,4 @@
-import type { CollectedData, Transcript } from "@convoform/db/src/schema";
+import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
 
 /**
  * Builds conversation context from transcript
@@ -23,13 +23,13 @@ export function buildConversationContextPrompt(transcript: Transcript[]) {
  * Pure function with no side effects
  */
 export function buildCollectedFieldsContextPrompt(
-  collectedData: CollectedData[],
+  formFieldResponses: FormFieldResponses[],
 ) {
-  if (collectedData.length === 0) {
+  if (formFieldResponses.length === 0) {
     return "No data was collected during this conversation.";
   }
 
-  const fieldsWithContext = collectedData
+  const fieldsWithContext = formFieldResponses
     .map(
       (field, index) =>
         `${index + 1}. ${field.fieldName}: ${field.fieldValue || "[not provided]"}`,

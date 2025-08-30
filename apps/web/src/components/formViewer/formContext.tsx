@@ -40,7 +40,7 @@ function FormContextProviderInner({ children, form }: Readonly<ContextProps>) {
   const {
     resetForm,
     startConversation,
-    collectedData,
+    formFieldResponses,
     isConversationStarted,
     isFormSubmissionFinished,
   } = convoFormHook;
@@ -54,7 +54,7 @@ function FormContextProviderInner({ children, form }: Readonly<ContextProps>) {
       ? form.customEndScreenMessage
       : CONVERSATION_END_MESSAGE;
 
-  const totalSubmissionProgress = getSubmissionProgress(collectedData);
+  const totalSubmissionProgress = getSubmissionProgress(formFieldResponses);
 
   // In form editor when user click on questions section, we should start conversation
   useEffect(() => {

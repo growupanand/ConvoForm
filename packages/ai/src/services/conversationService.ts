@@ -1,8 +1,8 @@
 import { openai } from "@ai-sdk/openai";
 import {
-  type CollectedData,
   type CollectedFilledData,
   type ExtraStreamData,
+  type FormFieldResponses,
   type Transcript,
   shouldSkipValidation,
   transcriptSchema,
@@ -14,26 +14,26 @@ import type { ChatCompletionMessageParam } from "openai/resources";
 import { OpenAIService } from "./openAIService";
 
 export class ConversationService extends OpenAIService {
-  public getNextEmptyField(collectedData: CollectedData[]) {
-    return collectedData.find((field) => field.fieldValue === null);
+  public getNextEmptyField(formFieldResponses: FormFieldResponses[]) {
+    return formFieldResponses.find((field) => field.fieldValue === null);
   }
 
   public async generateQuestion({
     formOverview,
     currentField,
-    collectedData,
+    formFieldResponses,
     extraCustomStreamData,
     transcript,
     onStreamFinish,
   }: {
     formOverview: string;
-    currentField: CollectedData;
-    collectedData: CollectedData[];
+    currentField: FormFieldResponses;
+    formFieldResponses: FormFieldResponses[];
     extraCustomStreamData: ExtraStreamData;
     transcript: Transcript[];
     onStreamFinish?: (completion: string) => void;
   }) {
-    const fieldsWithData = collectedData.filter(
+    const fieldsWithData = formFieldResponses.filter(
       (field) => field.fieldValue !== null,
     ) as CollectedFilledData[];
     const isFirstQuestion =
@@ -114,7 +114,7 @@ export class ConversationService extends OpenAIService {
     formOverview,
   }: {
     transcript: Transcript[];
-    currentField: CollectedData;
+    currentField: FormFieldResponses;
     formOverview: string;
   }) {
     let isAnswerExtracted = false;

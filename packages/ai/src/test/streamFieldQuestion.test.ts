@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import type { CollectedData } from "@convoform/db/src/schema";
+import type { FormFieldResponses } from "@convoform/db/src/schema";
 import {
   type StreamFieldQuestionParams,
   streamFieldQuestion,
@@ -14,7 +14,7 @@ import {
 const mockFormOverview =
   "A comprehensive job application form for a software engineering position";
 
-const mockCurrentField: CollectedData = {
+const mockCurrentField: FormFieldResponses = {
   id: "field-1",
   fieldName: "experienceLevel",
   fieldDescription:
@@ -39,7 +39,7 @@ describe("generateFieldQuestion", () => {
     const testParams: StreamFieldQuestionParams = {
       formOverview: mockFormOverview,
       currentField: mockCurrentField,
-      collectedData: [],
+      formFieldResponses: [],
       transcript: [],
       isFirstQuestion: true,
     };
@@ -57,7 +57,7 @@ describe("generateFieldQuestion", () => {
   });
 
   test("should generate contextual follow-up question", async () => {
-    const collectedData: CollectedData[] = [
+    const formFieldResponses: FormFieldResponses[] = [
       {
         id: "field-1",
         fieldName: "fullName",
@@ -90,7 +90,7 @@ describe("generateFieldQuestion", () => {
           },
         },
       },
-      collectedData,
+      formFieldResponses,
       transcript,
       isFirstQuestion: false,
     };
@@ -108,7 +108,7 @@ describe("generateFieldQuestion", () => {
   });
 
   test("should handle empty transcript with collected data", async () => {
-    const collectedData: CollectedData[] = [
+    const formFieldResponses: FormFieldResponses[] = [
       {
         id: "field-1",
         fieldName: "name",
@@ -133,7 +133,7 @@ describe("generateFieldQuestion", () => {
           inputConfiguration: {},
         },
       },
-      collectedData,
+      formFieldResponses,
       transcript: [],
       isFirstQuestion: false,
     };
@@ -169,7 +169,7 @@ describe("generateFieldQuestion", () => {
           },
         },
       },
-      collectedData: [],
+      formFieldResponses: [],
       transcript: [],
       isFirstQuestion: true,
     };

@@ -1,5 +1,9 @@
 import { CoreService, type CoreServiceUIMessage } from "@convoform/ai";
-import type { CollectedData, Form, Transcript } from "@convoform/db/src/schema";
+import type {
+  Form,
+  FormFieldResponses,
+  Transcript,
+} from "@convoform/db/src/schema";
 import { createUIMessageStream, createUIMessageStreamResponse } from "ai";
 import type { NextRequest } from "next/server";
 
@@ -33,7 +37,7 @@ const sampleForm: Form = {
 };
 
 // Sample form fields
-const sampleCollectedData: CollectedData[] = [
+const sampleFormFieldResponses: FormFieldResponses[] = [
   {
     id: "field-1",
     fieldName: "name",
@@ -113,7 +117,7 @@ const sampleConversation = {
       fieldName: "name",
     },
   ] as Transcript[],
-  collectedData: sampleCollectedData,
+  formFieldResponses: sampleFormFieldResponses,
   form: sampleForm,
 };
 
@@ -130,9 +134,10 @@ export async function GET(_request: NextRequest) {
           console.log("📝 Conversation updated:", {
             id: updatedConversation.id,
             isInProgress: updatedConversation.isInProgress,
-            collectedDataCount: updatedConversation.collectedData.filter(
-              (field) => field.fieldValue,
-            ).length,
+            formFieldResponsesCount:
+              updatedConversation.formFieldResponses.filter(
+                (field) => field.fieldValue,
+              ).length,
             transcriptLength: updatedConversation.transcript?.length || 0,
           });
           writer.write({
@@ -143,7 +148,7 @@ export async function GET(_request: NextRequest) {
       });
 
       // Mock conversation flow: Submit answer for the first field (name)
-      const currentField = sampleConversation.collectedData[0];
+      const currentField = sampleConversation.formFieldResponses[0];
       const mockAnswer = "My name is John Doe";
 
       if (!currentField) {

@@ -26,7 +26,7 @@ export async function GET() {
     ],
     formId: "demo",
     organizationId: "org_2aEa6kfAdQkzIzwTiah48mNscE9",
-    collectedData: [
+    formFieldResponses: [
       {
         id: "1",
         fieldName: "Full Name",
@@ -75,10 +75,10 @@ export async function GET() {
 
   const convoFormService = new ConversationServiceV5(sampleConversation);
 
-  if (sampleConversation.collectedData[1]) {
+  if (sampleConversation.formFieldResponses[1]) {
     const resultStream = await convoFormService.process(
       "utkarsh anand",
-      sampleConversation.collectedData[1],
+      sampleConversation.formFieldResponses[1],
     );
 
     return createUIMessageStreamResponse({

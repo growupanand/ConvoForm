@@ -1,4 +1,4 @@
-import type { CollectedData, Transcript } from "@convoform/db/src/schema";
+import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
 import { type StreamTextOnFinishCallback, type ToolSet, streamText } from "ai";
 import { getModelConfig } from "../config";
 import {
@@ -9,8 +9,8 @@ import {
 export interface StreamFieldQuestionParams {
   formOverview: string;
   transcript: Transcript[];
-  collectedData: CollectedData[];
-  currentField: CollectedData;
+  formFieldResponses: FormFieldResponses[];
+  currentField: FormFieldResponses;
   isFirstQuestion?: boolean;
 }
 
@@ -48,7 +48,7 @@ export function getGenerateFieldQuestionSystemPrompt(
 ): string {
   const conversationContext = buildConversationContextPrompt(params.transcript);
   const collectedFieldsContext = buildCollectedFieldsContextPrompt(
-    params.collectedData,
+    params.formFieldResponses,
   );
 
   return `You are an expert conversational AI assistant that generates natural, context-aware questions for form fields. Your questions should be clear, concise, and appropriate for the form type and conversation context.

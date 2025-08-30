@@ -62,7 +62,7 @@ export function useConvoForm({
     isConversationStarted,
     conversation,
   } = state;
-  const { collectedData, currentField, isFormSubmissionFinished } =
+  const { formFieldResponses, currentField, isFormSubmissionFinished } =
     extraStreamData;
 
   const setError = useCallback(
@@ -139,7 +139,7 @@ export function useConvoForm({
                     updatedExtraSteamData = {
                       ...extraStreamData,
                       currentField: streamData.currentField,
-                      collectedData: streamData.collectedData,
+                      formFieldResponses: streamData.formFieldResponses,
                       isFormSubmissionFinished:
                         streamData.isFormSubmissionFinished,
                     };
@@ -206,7 +206,7 @@ export function useConvoForm({
       ...conversation,
       transcript: [], // Empty transcript for initial request
       isInitialRequest: true, // Flag to indicate this is the first request
-      collectedData: conversation.collectedData,
+      formFieldResponses: conversation.formFieldResponses,
     };
 
     const response = await fetch(apiEndpoint, {
@@ -236,9 +236,9 @@ export function useConvoForm({
         ? [answerMessage]
         : [...transcript, answerMessage],
       currentField: isNewConversation ? undefined : currentField,
-      collectedData: isNewConversation
-        ? conversation.collectedData
-        : collectedData,
+      formFieldResponses: isNewConversation
+        ? conversation.formFieldResponses
+        : formFieldResponses,
       isInitialRequest: false, // Explicitly set to false for answer processing
     };
 
@@ -290,9 +290,9 @@ export function useConvoForm({
     const conversationToUpdate = updatedConversation || currentConversation;
 
     await patchConversation(formId, conversationToUpdate.id, {
-      collectedData:
-        updatedExtraSteamData?.collectedData ||
-        conversationToUpdate.collectedData,
+      formFieldResponses:
+        updatedExtraSteamData?.formFieldResponses ||
+        conversationToUpdate.formFieldResponses,
       transcript: updatedTranscript,
       finishedAt: updatedExtraSteamData?.isFormSubmissionFinished
         ? new Date()
@@ -332,9 +332,9 @@ export function useConvoForm({
       const conversationToUpdate = updatedConversation || newConversation;
 
       await patchConversation(formId, conversationToUpdate.id, {
-        collectedData:
-          updatedExtraSteamData?.collectedData ||
-          conversationToUpdate.collectedData,
+        formFieldResponses:
+          updatedExtraSteamData?.formFieldResponses ||
+          conversationToUpdate.formFieldResponses,
         transcript: updatedTranscript,
         finishedAt: updatedExtraSteamData?.isFormSubmissionFinished
           ? new Date()
@@ -408,7 +408,7 @@ export function useConvoForm({
     conversationId: conversation?.id,
 
     /** Data related to form fields */
-    collectedData,
+    formFieldResponses,
 
     /** The current field in focus */
     currentField,

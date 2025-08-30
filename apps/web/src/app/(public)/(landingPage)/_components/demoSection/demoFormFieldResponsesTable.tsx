@@ -1,6 +1,6 @@
 "use client";
 
-import { CollectedDataTable } from "@/components/collectedDataTable";
+import { FormFieldResponsesTable } from "@/components/formFieldResponsesTable";
 import { useFormContext } from "@/components/formViewer/formContext";
 import { Activity } from "lucide-react";
 import { type Variants, motion } from "motion/react";
@@ -18,12 +18,14 @@ const tableAnimationVariants: Variants = {
   },
 };
 
-export function DemoCollectedDataTable({ isInView: _ }: { isInView: boolean }) {
+export function DemoFormFieldResponsesTable({
+  isInView: _,
+}: { isInView: boolean }) {
   const {
-    convoFormHook: { collectedData = [], isConversationStarted },
+    convoFormHook: { formFieldResponses = [], isConversationStarted },
   } = useFormContext();
 
-  const showTable = isConversationStarted && collectedData.length > 0;
+  const showTable = isConversationStarted && formFieldResponses.length > 0;
 
   if (!showTable) return null;
 
@@ -42,7 +44,7 @@ export function DemoCollectedDataTable({ isInView: _ }: { isInView: boolean }) {
         </div>
 
         <div className="min-w-[250px] max-w-[400px] shadow-xl overflow-hidden rounded-3xl border bg-white/50 p-2 backdrop-blur-lg ring-2 ring-brand-200">
-          <CollectedDataTable collectedData={collectedData} />
+          <FormFieldResponsesTable formFieldResponses={formFieldResponses} />
         </div>
       </motion.div>
     );

@@ -1,7 +1,7 @@
 import type {
-  CollectedData,
   CreateConversation,
   Form,
+  FormFieldResponses,
 } from "@convoform/db/src/schema";
 
 import {
@@ -34,20 +34,22 @@ export const getORCreateConversation = async (
     return existConversation;
   }
 
-  const fieldsWithEmptyData: CollectedData[] = form.formFields.map((field) => ({
-    id: field.id,
-    fieldName: field.fieldName,
-    fieldDescription: field.fieldDescription,
-    fieldValue: null,
-    fieldConfiguration: field.fieldConfiguration,
-  }));
+  const fieldsWithEmptyData: FormFieldResponses[] = form.formFields.map(
+    (field) => ({
+      id: field.id,
+      fieldName: field.fieldName,
+      fieldDescription: field.fieldDescription,
+      fieldValue: null,
+      fieldConfiguration: field.fieldConfiguration,
+    }),
+  );
 
   return await api.conversation.create({
     formId: form.id,
     name: "New Conversation",
     organizationId: form.organizationId,
     transcript: [],
-    collectedData: fieldsWithEmptyData,
+    formFieldResponses: fieldsWithEmptyData,
     formOverview: form.overview,
   });
 };

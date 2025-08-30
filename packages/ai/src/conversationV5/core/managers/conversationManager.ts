@@ -40,7 +40,7 @@ export class ConversationManager {
   }
 
   public async saveFieldAnswer(fieldId: string, fieldValue: string) {
-    const field = this.conversation.collectedData.find(
+    const field = this.conversation.formFieldResponses.find(
       (field) => field.id === fieldId,
     );
     if (!field) {
@@ -67,7 +67,9 @@ export class ConversationManager {
   }
 
   public getNextEmptyField() {
-    return this.conversation.collectedData.find((field) => !field.fieldValue);
+    return this.conversation.formFieldResponses.find(
+      (field) => !field.fieldValue,
+    );
   }
 
   public async markConversationComplete() {

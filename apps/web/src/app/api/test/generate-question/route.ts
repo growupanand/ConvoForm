@@ -14,7 +14,7 @@ curl -X POST http://localhost:3000/api/test/generate-question \
         }
       }
     },
-    "collectedData": [],
+    "formFieldResponses": [],
     "transcript": [],
     "isFirstQuestion": true
   }'
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     const {
       formOverview,
       currentField,
-      collectedData,
+      formFieldResponses,
       transcript,
       isFirstQuestion,
     } = await request.json();
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     const result = await generateFieldQuestion({
       formOverview,
       currentField,
-      collectedData: collectedData || [],
+      formFieldResponses: formFieldResponses || [],
       transcript: transcript || [],
       isFirstQuestion: isFirstQuestion || false,
     });
@@ -83,7 +83,7 @@ export async function GET() {
       body: {
         formOverview: "Form description string",
         currentField: "Current field configuration",
-        collectedData: "Previously collected data array",
+        formFieldResponses: "Previously collected data array",
         transcript: "Conversation history array",
         isFirstQuestion: "Boolean indicating if this is the first question",
       },
@@ -95,7 +95,7 @@ export async function GET() {
         fieldDescription: "Your primary programming languages and technologies",
         fieldValue: null,
       },
-      collectedData: [
+      formFieldResponses: [
         {
           fieldName: "fullName",
           fieldDescription: "Your full legal name",

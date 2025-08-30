@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import type { CollectedData } from "@convoform/db/src/schema";
+import type { FormFieldResponses } from "@convoform/db/src/schema";
 import {
   type GenerateEndMessageParams,
   generateEndMessage,
@@ -15,7 +15,7 @@ const mockFormOverview =
 
 describe("generateEndMessage", () => {
   test("should generate appropriate end message with collected data", async () => {
-    const collectedData: CollectedData[] = [
+    const formFieldResponses: FormFieldResponses[] = [
       {
         id: "field-1",
         fieldName: "fullName",
@@ -80,7 +80,7 @@ describe("generateEndMessage", () => {
 
     const testParams: GenerateEndMessageParams = {
       formOverview: mockFormOverview,
-      collectedData,
+      formFieldResponses,
       transcript,
     };
 
@@ -95,7 +95,7 @@ describe("generateEndMessage", () => {
   });
 
   test("should handle minimal collected data", async () => {
-    const collectedData: CollectedData[] = [
+    const formFieldResponses: FormFieldResponses[] = [
       {
         id: "field-1",
         fieldName: "name",
@@ -116,7 +116,7 @@ describe("generateEndMessage", () => {
 
     const testParams: GenerateEndMessageParams = {
       formOverview: "Simple contact form",
-      collectedData,
+      formFieldResponses,
       transcript,
     };
 
@@ -129,13 +129,13 @@ describe("generateEndMessage", () => {
   });
 
   test("should handle empty collected data gracefully", async () => {
-    const collectedData: CollectedData[] = [];
+    const formFieldResponses: FormFieldResponses[] = [];
     const transcript: Array<{ role: "user" | "assistant"; content: string }> =
       [];
 
     const testParams: GenerateEndMessageParams = {
       formOverview: "Simple feedback form",
-      collectedData,
+      formFieldResponses,
       transcript,
     };
 

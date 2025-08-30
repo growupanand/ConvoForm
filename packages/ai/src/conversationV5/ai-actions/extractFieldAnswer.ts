@@ -1,4 +1,4 @@
-import type { CollectedData, Transcript } from "@convoform/db/src/schema";
+import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
 import { generateObject } from "ai";
 import { z } from "zod/v3";
 import { getModelConfig } from "../config";
@@ -7,7 +7,7 @@ import { buildConversationContextPrompt } from "../prompts/promptHelpers";
 export type ExtractFieldAnswerParams = {
   formOverview: string;
   transcript: Transcript[];
-  currentField: CollectedData;
+  currentField: FormFieldResponses;
 };
 
 export const extractFieldAnswerOutputSchema = z.object({

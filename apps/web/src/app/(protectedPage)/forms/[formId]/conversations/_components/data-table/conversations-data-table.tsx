@@ -64,58 +64,66 @@ export function ConversationsDataTable(props: {
 
   const exportFileName = `Responses ${new Date().toLocaleString()}.csv`;
 
-  const { tableData, uniqueCollectedDataColumns, csvData } = useMemo(() => {
-    let collectedDataColumns = [] as string[];
-    const tableData = [];
-    const csvData = [];
+  const { tableData, uniqueFormFieldResponsesColumns, csvData } =
+    useMemo(() => {
+      let formFieldResponsesColumns = [] as string[];
+      const tableData = [];
+      const csvData = [];
 
-    for (const conversation of data) {
-      const { collectedData, id, name, createdAt, finishedAt, isInProgress } =
-        conversation;
-      const sanitizedCollectedData = getConversationTableData(collectedData);
-      const flattenedCollectedData =
-        getFlatConversationTableData(collectedData);
-      collectedDataColumns = collectedDataColumns.concat(
-        Object.keys(sanitizedCollectedData),
+      for (const conversation of data) {
+        const {
+          formFieldResponses,
+          id,
+          name,
+          createdAt,
+          finishedAt,
+          isInProgress,
+        } = conversation;
+        const sanitizedFormFieldResponses =
+          getConversationTableData(formFieldResponses);
+        const flattenedFormFieldResponses =
+          getFlatConversationTableData(formFieldResponses);
+        formFieldResponsesColumns = formFieldResponsesColumns.concat(
+          Object.keys(sanitizedFormFieldResponses),
+        );
+
+        // Data for table display (with nested objects for proper rendering)
+        tableData.push({
+          id,
+          name,
+          createdAt,
+          status: finishedAt
+            ? "Finished"
+            : isInProgress
+              ? "In Progress"
+              : "Not Started",
+          ...sanitizedFormFieldResponses,
+        });
+
+        // Data for CSV export (with flattened values)
+        csvData.push({
+          id,
+          name,
+          createdAt: createdAt.toLocaleString(),
+          status: finishedAt
+            ? "Finished"
+            : isInProgress
+              ? "In Progress"
+              : "Not Started",
+          ...flattenedFormFieldResponses,
+        });
+      }
+
+      const uniqueFormFieldResponsesColumns = Array.from(
+        new Set(formFieldResponsesColumns),
       );
 
-      // Data for table display (with nested objects for proper rendering)
-      tableData.push({
-        id,
-        name,
-        createdAt,
-        status: finishedAt
-          ? "Finished"
-          : isInProgress
-            ? "In Progress"
-            : "Not Started",
-        ...sanitizedCollectedData,
-      });
-
-      // Data for CSV export (with flattened values)
-      csvData.push({
-        id,
-        name,
-        createdAt: createdAt.toLocaleString(),
-        status: finishedAt
-          ? "Finished"
-          : isInProgress
-            ? "In Progress"
-            : "Not Started",
-        ...flattenedCollectedData,
-      });
-    }
-
-    const uniqueCollectedDataColumns = Array.from(
-      new Set(collectedDataColumns),
-    );
-
-    return {
-      tableData,
-      uniqueCollectedDataColumns,
-      csvData,
-    };
-  }, [data]);
+      return {
+        tableData,
+        uniqueFormFieldResponsesColumns,
+        csvData,
+      };
+    }, [data]);
 
   const baseColumnsDefs: ColumnDef<ConversationTableData>[] = useMemo(() => {
     return [
@@ -163,9 +171,9 @@ export function ConversationsDataTable(props: {
     ];
   }, [formId]);
 
-  const uniqueCollectedDataColumnsDefs: ColumnDef<ConversationTableData>[] =
+  const uniqueFormFieldResponsesColumnsDefs: ColumnDef<ConversationTableData>[] =
     useMemo(() => {
-      return uniqueCollectedDataColumns.map((column) => {
+      return uniqueFormFieldResponsesColumns.map((column) => {
         return {
           accessorKey: column,
           header: column,
@@ -177,9 +185,12 @@ export function ConversationsDataTable(props: {
           ),
         };
       });
-    }, [uniqueCollectedDataColumns]);
+    }, [uniqueFormFieldResponsesColumns]);
 
-  const columnDefs = [...baseColumnsDefs, ...uniqueCollectedDataColumnsDefs];
+  const columnDefs = [
+    ...baseColumnsDefs,
+    ...uniqueFormFieldResponsesColumnsDefs,
+  ];
 
   const table = useReactTable({
     data: tableData,
