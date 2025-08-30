@@ -25,6 +25,7 @@ export const conversation = pgTable("Conversation", {
   finishedAt: timestamp("finishedAt"),
   isInProgress: boolean("isInProgress").default(false).notNull(),
   metaData: jsonb("metaData").$type<RespondentMetadata>().notNull().default({}),
+  currentFieldId: text("currentFieldId"),
 });
 
 export const conversationRelations = relations(conversation, ({ one }) => ({

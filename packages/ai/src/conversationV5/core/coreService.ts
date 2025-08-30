@@ -1,4 +1,4 @@
-import { } from "ai";
+import {} from "ai";
 import type { Conversation } from "../types";
 import {
   ConversationService,
@@ -22,15 +22,6 @@ export class CoreService {
   private streamId: string;
   private conversationManager: ConversationManager;
   private conversationService: ConversationService;
-  /**
-   * Internal writer for automatic conversation data streaming.
-   *
-   * This writer is set during stream execution to enable automatic streaming
-   * of conversation updates when onUpdateConversation is called. It's optional
-   * because the writer is only available within the createUIMessageStream
-   * execution context, not during service initialization.
-   */
-  // private internalWriter?: UIMessageStreamWriter<CoreServiceUIMessage>;
 
   constructor(opts: {
     conversation: Conversation;

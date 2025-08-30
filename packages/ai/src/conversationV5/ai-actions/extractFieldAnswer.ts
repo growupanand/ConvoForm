@@ -2,7 +2,7 @@ import type { CollectedData, Transcript } from "@convoform/db/src/schema";
 import { generateObject } from "ai";
 import { z } from "zod/v3";
 import { getModelConfig } from "../config";
-import { buildConversationContext } from "../utils/contextUtils";
+import { buildConversationContextPrompt } from "../prompts/promptHelpers";
 
 export type ExtractFieldAnswerParams = {
   formOverview: string;
@@ -56,7 +56,7 @@ export function getExtractFieldAnswerSystemPrompt(
   params: ExtractFieldAnswerParams,
 ): string {
   // Build context from transcript
-  const conversationContext = buildConversationContext(params.transcript);
+  const conversationContext = buildConversationContextPrompt(params.transcript);
 
   return `You are an expert at extracting specific field values from conversation transcripts. Your task is to analyze the conversation and extract the answer for the specified field.
 

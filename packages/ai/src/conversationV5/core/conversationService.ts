@@ -91,24 +91,23 @@ export class ConversationService {
       });
     }
 
-    // If answer is not valid
+    // 1. Invalid answer: Generate and stream followup question
     if (!validatedAnswer.object.isValid || !validatedAnswer.object.answer) {
       return this.generateFollowupQuestionStream(currentField);
     }
 
-    // If answer is valid, save it and check for next field
+    // 2. Valid answer and next field exists: Save answer and generate and stream question for next field
     this.conversationManager.saveFieldAnswer(
       currentField.id,
       validatedAnswer.object.answer,
     );
     const nextField = this.conversationManager.getNextEmptyField();
 
-    // If next field found, generate and stream question for next field
     if (nextField) {
       return this.generateNextFieldQuestionStream(nextField);
     }
 
-    // If no next field found, mark conversation as complete
+    // 3. Valid answer and no next field: Save answer, mark conversation as complete
     return this.generateEndConversationStream();
   }
 
@@ -124,13 +123,15 @@ export class ConversationService {
         currentField,
         isFirstQuestion: false,
       },
-      this.createTextStreamOnFinishHandler(),
+      this.createTextStreamFinishHandler(),
     );
 
     return streamTextResult.toUIMessageStream<ConversationServiceUIMessage>({
       onFinish: async () => {
-        await this.conversationManager.addAIMessage(await streamTextResult.text)
-      }
+        await this.conversationManager.addAIMessage(
+          await streamTextResult.text,
+        );
+      },
     });
   }
 
@@ -147,14 +148,15 @@ export class ConversationService {
         currentField: nextField,
         isFirstQuestion: true,
       },
-      this.createTextStreamOnFinishHandler(),
+      this.createTextStreamFinishHandler(),
     );
-
 
     return streamTextResult.toUIMessageStream<ConversationServiceUIMessage>({
       onFinish: async () => {
-        await this.conversationManager.addAIMessage(await streamTextResult.text);
-      }
+        await this.conversationManager.addAIMessage(
+          await streamTextResult.text,
+        );
+      },
     });
   }
 
@@ -192,7 +194,7 @@ export class ConversationService {
    * this will prevent streaming from ending before we have a chance to do something,
    * E.g. sending final stream message or updating conversation data in the database
    */
-  private createTextStreamOnFinishHandler() {
+  private createTextStreamFinishHandler() {
     return async () => {
       await this.conversationManager.updateConversation();
     };

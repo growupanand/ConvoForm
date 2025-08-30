@@ -4,7 +4,7 @@ import type { CollectedData, Transcript } from "@convoform/db/src/schema";
  * Builds conversation context from transcript
  * Pure function with no side effects
  */
-export function buildConversationContext(transcript: Transcript[]) {
+export function buildConversationContextPrompt(transcript: Transcript[]) {
   if (transcript.length === 0) {
     return "No conversation history available.";
   }
@@ -22,7 +22,9 @@ export function buildConversationContext(transcript: Transcript[]) {
  * Builds context from collected fields
  * Pure function with no side effects
  */
-export function buildCollectedFieldsContext(collectedData: CollectedData[]) {
+export function buildCollectedFieldsContextPrompt(
+  collectedData: CollectedData[],
+) {
   if (collectedData.length === 0) {
     return "No data was collected during this conversation.";
   }

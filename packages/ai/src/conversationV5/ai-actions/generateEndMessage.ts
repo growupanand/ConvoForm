@@ -3,9 +3,9 @@ import { generateObject } from "ai";
 import { z } from "zod/v3";
 import { getModelConfig } from "../config";
 import {
-  buildCollectedFieldsContext,
-  buildConversationContext,
-} from "../utils/contextUtils";
+  buildCollectedFieldsContextPrompt,
+  buildConversationContextPrompt,
+} from "../prompts/promptHelpers";
 
 export interface GenerateEndMessageParams {
   formOverview: string;
@@ -60,8 +60,8 @@ export async function generateEndMessage(params: GenerateEndMessageParams) {
 export function getGenerateEndMessageSystemPrompt(
   params: GenerateEndMessageParams,
 ): string {
-  const conversationContext = buildConversationContext(params.transcript);
-  const collectedFieldsContext = buildCollectedFieldsContext(
+  const conversationContext = buildConversationContextPrompt(params.transcript);
+  const collectedFieldsContext = buildCollectedFieldsContextPrompt(
     params.collectedData,
   );
 

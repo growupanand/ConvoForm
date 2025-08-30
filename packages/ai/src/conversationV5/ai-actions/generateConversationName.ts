@@ -3,9 +3,9 @@ import { generateObject } from "ai";
 import { z } from "zod/v3";
 import { getModelConfig } from "../config";
 import {
-  buildCollectedFieldsContext,
-  buildConversationContext,
-} from "../utils/contextUtils";
+  buildCollectedFieldsContextPrompt,
+  buildConversationContextPrompt,
+} from "../prompts/promptHelpers";
 
 export interface GenerateConversationNameParams {
   formOverview: string;
@@ -66,8 +66,8 @@ export async function generateConversationName(
 export function getGenerateConversationNameSystemPrompt(
   params: GenerateConversationNameParams,
 ): string {
-  const conversationContext = buildConversationContext(params.transcript);
-  const collectedFieldsContext = buildCollectedFieldsContext(
+  const conversationContext = buildConversationContextPrompt(params.transcript);
+  const collectedFieldsContext = buildCollectedFieldsContextPrompt(
     params.collectedData,
   );
 

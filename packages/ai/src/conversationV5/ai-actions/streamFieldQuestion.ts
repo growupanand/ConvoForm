@@ -2,9 +2,9 @@ import type { CollectedData, Transcript } from "@convoform/db/src/schema";
 import { type StreamTextOnFinishCallback, type ToolSet, streamText } from "ai";
 import { getModelConfig } from "../config";
 import {
-  buildCollectedFieldsContext,
-  buildConversationContext,
-} from "../utils/contextUtils";
+  buildCollectedFieldsContextPrompt,
+  buildConversationContextPrompt,
+} from "../prompts/promptHelpers";
 
 export interface StreamFieldQuestionParams {
   formOverview: string;
@@ -46,8 +46,8 @@ export function streamFieldQuestion(
 export function getGenerateFieldQuestionSystemPrompt(
   params: StreamFieldQuestionParams,
 ): string {
-  const conversationContext = buildConversationContext(params.transcript);
-  const collectedFieldsContext = buildCollectedFieldsContext(
+  const conversationContext = buildConversationContextPrompt(params.transcript);
+  const collectedFieldsContext = buildCollectedFieldsContextPrompt(
     params.collectedData,
   );
 

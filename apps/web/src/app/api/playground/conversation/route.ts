@@ -1,9 +1,5 @@
 import { CoreService, type CoreServiceUIMessage } from "@convoform/ai";
-import type {
-  CollectedData,
-  Form,
-  Transcript,
-} from "@convoform/db/src/schema";
+import type { CollectedData, Form, Transcript } from "@convoform/db/src/schema";
 import { createUIMessageStream, createUIMessageStreamResponse } from "ai";
 import type { NextRequest } from "next/server";
 
@@ -139,7 +135,10 @@ export async function GET(_request: NextRequest) {
             ).length,
             transcriptLength: updatedConversation.transcript?.length || 0,
           });
-          writer.write({ type: "data-conversation", data: updatedConversation });
+          writer.write({
+            type: "data-conversation",
+            data: updatedConversation,
+          });
         },
       });
 
@@ -159,15 +158,11 @@ export async function GET(_request: NextRequest) {
       const coreStream = await coreService.process(mockAnswer, currentField);
       console.log("✅ Stream response created successfully");
       writer.merge(coreStream);
-
-
-    }
-
+    },
   });
 
   // Return the stream response using createUIMessageStreamResponse
   return createUIMessageStreamResponse({
     stream,
   });
-
 }
