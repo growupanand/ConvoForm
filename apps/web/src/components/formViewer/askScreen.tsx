@@ -7,7 +7,7 @@ import { DynamicAnswerInput } from "./DynamicAnswerInput";
 
 type Props = {
   isFormBusy: boolean;
-  currentQuestion: string;
+  currentQuestion: string | null;
   submitAnswer: SubmitAnswer;
   currentField: ExtraStreamData["currentField"];
   fontColor?: string;
@@ -20,7 +20,8 @@ export const AskScreen = ({
   currentField,
   fontColor,
 }: Props) => {
-  const isEmptyQuestion = currentQuestion.trim().length === 0;
+  const isEmptyQuestion =
+    currentQuestion === null || currentQuestion?.trim().length === 0;
   const shouldShowAnswerInput = !isFormBusy && currentField;
   return (
     <motion.div

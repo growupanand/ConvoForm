@@ -18,7 +18,7 @@ export type State = {
   /** Whole conversation state */
   conversationState: ConversationState;
   /** Whole conversation submission progress */
-  progress: number | null;
+  progress: number;
   /** Streaming status of the chat */
   chatStatus: ChatStatus;
   /** Messages */

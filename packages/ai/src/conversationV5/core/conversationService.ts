@@ -48,6 +48,11 @@ export class ConversationService {
   constructor(conversationManager: ConversationManager, streamId: string) {
     this.conversationManager = conversationManager;
     this.streamId = streamId;
+    const customEndScreenMessage =
+      this.conversationManager.getConversation().form.customEndScreenMessage;
+    if (customEndScreenMessage) {
+      this.endMessage = customEndScreenMessage;
+    }
   }
 
   public initialize(): AsyncIterableStream<
@@ -135,6 +140,8 @@ export class ConversationService {
     }
 
     // 3. Valid answer and no next field: Save answer, mark conversation as complete
+    await this.conversationManager.addAIMessage(this.endMessage);
+    await this.conversationManager.markConversationComplete();
     return this.generateEndConversationStream();
   }
 
@@ -194,13 +201,9 @@ export class ConversationService {
   private generateEndConversationStream(): AsyncIterableStream<
     InferUIMessageChunk<ConversationServiceUIMessage>
   > {
-    this.conversationManager.addAIMessage(this.endMessage);
-
     // Create fake end message stream
     return createUIMessageStream<ConversationServiceUIMessage>({
       execute: async ({ writer }) => {
-        await this.conversationManager.markConversationComplete();
-
         writer.write({
           type: "text-start",
           id: this.streamId,

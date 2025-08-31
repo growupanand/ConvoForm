@@ -6,18 +6,20 @@ import {
   DEFAULT_FORM_SECTION,
   type FormSections,
 } from "@convoform/db/src/schema/formDesigns/constants";
-import { type UseConvoFormReturnType, useConvoForm } from "@convoform/react";
+import {
+  type NewUseConvoFormReturnType,
+  newUseConvoForm as useConvoForm,
+} from "@convoform/react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { FormDesignProvider, useFormDesign } from "./formDesignContext";
-import { getSubmissionProgress } from "./utils";
 
 type FormContext = {
   currentSection: FormSections;
   setCurrentSection: (section: FormSections) => void;
-  convoFormHook: UseConvoFormReturnType;
+  convoFormHook: NewUseConvoFormReturnType;
   currentFormDesign: FormDesignRenderSchema;
   endScreenMessage: string;
-  totalSubmissionProgress: number;
+  progress: number;
   form: Form;
 };
 
@@ -38,12 +40,13 @@ function FormContextProviderInner({ children, form }: Readonly<ContextProps>) {
   });
 
   const {
-    resetForm,
-    startConversation,
-    formFieldResponses,
-    isConversationStarted,
-    isFormSubmissionFinished,
+    resetConversation,
+    initializeConversation,
+    progress,
+    conversationState,
   } = convoFormHook;
+
+  const isFormSubmissionFinished = conversationState === "completed";
 
   const { getCurrentSectionFormDesign } = useFormDesign();
 
@@ -54,15 +57,13 @@ function FormContextProviderInner({ children, form }: Readonly<ContextProps>) {
       ? form.customEndScreenMessage
       : CONVERSATION_END_MESSAGE;
 
-  const totalSubmissionProgress = getSubmissionProgress(formFieldResponses);
-
   // In form editor when user click on questions section, we should start conversation
   useEffect(() => {
     if (
       currentSection === "questions-screen" &&
-      (!isConversationStarted || isFormSubmissionFinished)
+      (conversationState === "idle" || isFormSubmissionFinished)
     ) {
-      startConversation();
+      initializeConversation();
     }
   }, [currentSection, form]);
 
@@ -70,7 +71,7 @@ function FormContextProviderInner({ children, form }: Readonly<ContextProps>) {
     // If user only changed form design, We don't want to regenerate question,
     // this will save unnecessary AI API calls
     if (currentSection !== "questions-screen") {
-      resetForm();
+      resetConversation();
     }
   }, [form]);
 
@@ -89,7 +90,7 @@ function FormContextProviderInner({ children, form }: Readonly<ContextProps>) {
         convoFormHook,
         currentFormDesign,
         endScreenMessage,
-        totalSubmissionProgress,
+        progress,
         form,
       }}
     >

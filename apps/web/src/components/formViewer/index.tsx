@@ -15,23 +15,28 @@ export function FormViewer() {
     convoFormHook,
     currentFormDesign,
     endScreenMessage,
-    totalSubmissionProgress,
+    progress: totalSubmissionProgress,
     form,
   } = useFormContext();
 
   const {
     submitAnswer,
-    currentQuestion,
-    isBusy,
-    currentField,
-    startConversation,
+    currentQuestionText,
+    chatStatus,
+    conversation,
+    initializeConversation,
   } = convoFormHook;
+
+  const isBusy = chatStatus === "streaming" || chatStatus === "submitted";
+  const currentField = conversation?.formFieldResponses.find(
+    (field) => field.id === conversation?.currentFieldId,
+  );
 
   const shouldShowProgressBar = currentSection === "questions-screen";
 
   const handleCTAClick = useCallback(async () => {
     try {
-      await startConversation();
+      await initializeConversation();
     } catch (error) {
       console.log({ error });
     }
@@ -43,7 +48,7 @@ export function FormViewer() {
   );
 
   const handleResetForm = useCallback(() => {
-    convoFormHook.resetForm();
+    convoFormHook.resetConversation();
     setCurrentSection("landing-screen");
   }, [convoFormHook, setCurrentSection]);
 
@@ -51,7 +56,7 @@ export function FormViewer() {
     <div className="relative w-full h-full  flex flex-col">
       {shouldShowProgressBar && (
         <TopProgressBar
-          totalProgress={totalSubmissionProgress}
+          totalProgressPercentage={totalSubmissionProgress * 100}
           onReset={handleResetForm}
         />
       )}
@@ -71,7 +76,7 @@ export function FormViewer() {
 
         {currentSection === "questions-screen" && (
           <AskScreen
-            currentQuestion={currentQuestion}
+            currentQuestion={currentQuestionText}
             isFormBusy={isBusy}
             submitAnswer={submitAnswer}
             currentField={currentField}
