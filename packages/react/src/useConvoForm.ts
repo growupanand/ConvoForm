@@ -1,16 +1,17 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import type { Conversation } from "@convoform/db/src/schema";
 import { sendMessage as sendWebsocketMessage } from "@convoform/websocket-client";
 import { DefaultChatTransport } from "ai";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { CoreServiceUIMessage } from "../../../ai";
-import { API_DOMAIN } from "../constants";
+import type { CoreConversation, CoreServiceUIMessage } from "../../ai";
+import { API_DOMAIN } from "./constants";
 import type { UseConvoFormProps, UseConvoFormReturnType } from "./types";
 
 export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
-  const [conversation, setConversation] = useState<Conversation | null>(null);
+  const [conversation, setConversation] = useState<CoreConversation | null>(
+    null,
+  );
   const { setMessages, sendMessage, messages, status, error, clearError } =
     useChat<CoreServiceUIMessage>({
       transport: new DefaultChatTransport({
@@ -18,7 +19,7 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
       }),
       onData: async (dataPart) => {
         if (dataPart.type === "data-conversation") {
-          const updatedConversation = dataPart.data as Conversation;
+          const updatedConversation = dataPart.data as CoreConversation;
           setConversation(updatedConversation);
           sendWebsocketMessage("conversation:updated", {
             conversationId: updatedConversation.id,

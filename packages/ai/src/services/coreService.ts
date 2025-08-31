@@ -1,9 +1,9 @@
-import type { Conversation } from "../types";
+import { ConversationManager } from "../managers/conversationManager";
+import type { CoreConversation } from "../types";
 import {
   ConversationService,
   type ConversationServiceUIMessage,
 } from "./conversationService";
-import { ConversationManager } from "./managers/conversationManager";
 
 /**
  * ============================================
@@ -23,7 +23,7 @@ export class CoreService {
   private conversationService: ConversationService;
 
   constructor(opts: {
-    conversation: Conversation;
+    conversation: CoreConversation;
     /**
      * onUpdateConversation is used to update conversation data in the database
      * If not provided, conversation data will not be updated in the database
@@ -54,7 +54,7 @@ export class CoreService {
 
   public async process(
     answerText: string,
-    currentFieldId: Conversation["formFieldResponses"][number]["id"],
+    currentFieldId: CoreConversation["formFieldResponses"][number]["id"],
   ) {
     return await this.conversationService.process(answerText, currentFieldId);
   }
@@ -65,7 +65,7 @@ export class CoreService {
   private createConversationUpdateHandler(
     originalCallback?: ConversationManager["onUpdateConversation"],
   ) {
-    return async (conversation: Conversation) => {
+    return async (conversation: CoreConversation) => {
       // Call original callback first (database update)
       if (originalCallback) {
         await originalCallback(conversation);

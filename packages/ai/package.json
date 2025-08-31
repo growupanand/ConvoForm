@@ -2,9 +2,8 @@
   "name": "@convoform/ai",
   "type": "module",
   "private": true,
-  "exports": {
-    ".": "./index.ts"
-  },
+  "main": "index.ts",
+  "types": "index.ts",
   "scripts": {
     "type-check": "tsc --noEmit"
   },

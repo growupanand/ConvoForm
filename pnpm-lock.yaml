@@ -526,15 +526,6 @@ importers:
         specifier: 'catalog:'
         version: 19.1.0(react@19.1.0)
     devDependencies:
-      '@convoform/ai':
-        specifier: ../ai
-        version: link:../ai
-      '@convoform/common':
-        specifier: ../common
-        version: link:../common
-      '@convoform/db':
-        specifier: ../db
-        version: link:../db
       '@convoform/tsconfig':
         specifier: ../tsconfig
         version: link:../tsconfig

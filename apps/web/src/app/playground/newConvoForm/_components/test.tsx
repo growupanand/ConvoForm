@@ -1,6 +1,6 @@
 "use client";
 
-import { newUseConvoForm } from "@convoform/react";
+import { useConvoForm } from "@convoform/react";
 import { Button, Card, Input } from "@convoform/ui";
 import { useState } from "react";
 
@@ -16,7 +16,7 @@ export function Test() {
     resetConversation,
     currentQuestionText,
     conversationState,
-  } = newUseConvoForm({
+  } = useConvoForm({
     formId: "demo",
     onFinish: (conversation) => {
       console.log("Conversation completed", conversation);

@@ -1,11 +1,13 @@
-import type { Conversation } from "../../types";
+import type { CoreConversation } from "../types";
 
 export class ConversationManager {
-  private conversation: Conversation;
-  private onUpdateConversation?: (conversation: Conversation) => Promise<void>;
+  private conversation: CoreConversation;
+  private onUpdateConversation?: (
+    conversation: CoreConversation,
+  ) => Promise<void>;
 
   constructor(opts: {
-    conversation: Conversation;
+    conversation: CoreConversation;
     onUpdateConversation?: ConversationManager["onUpdateConversation"];
   }) {
     this.conversation = opts.conversation;

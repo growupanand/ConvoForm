@@ -6,17 +6,14 @@ import {
   DEFAULT_FORM_SECTION,
   type FormSections,
 } from "@convoform/db/src/schema/formDesigns/constants";
-import {
-  type NewUseConvoFormReturnType,
-  newUseConvoForm as useConvoForm,
-} from "@convoform/react";
+import { type UseConvoFormReturnType, useConvoForm } from "@convoform/react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { FormDesignProvider, useFormDesign } from "./formDesignContext";
 
 type FormContext = {
   currentSection: FormSections;
   setCurrentSection: (section: FormSections) => void;
-  convoFormHook: NewUseConvoFormReturnType;
+  convoFormHook: UseConvoFormReturnType;
   currentFormDesign: FormDesignRenderSchema;
   endScreenMessage: string;
   progress: number;

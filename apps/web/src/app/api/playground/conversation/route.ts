@@ -1,5 +1,5 @@
 import {
-  type Conversation,
+  type CoreConversation,
   CoreService,
   type CoreServiceUIMessage,
 } from "@convoform/ai";
@@ -101,7 +101,7 @@ const sampleFormFieldResponses: FormFieldResponses[] = [
 ];
 
 // Sample conversation data for testing
-const sampleConversation: Conversation = {
+const sampleConversation: CoreConversation = {
   id: "conv-123",
   name: "Customer Feedback Session",
   formId: "form-123",

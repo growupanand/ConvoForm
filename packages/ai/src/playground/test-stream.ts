@@ -1,5 +1,5 @@
 import { type UIMessage, createUIMessageStream, streamText } from "ai";
-import { getModelConfig } from "../conversationV5/config";
+import { getModelConfig } from "../config";
 
 console.log("hello bun");
 

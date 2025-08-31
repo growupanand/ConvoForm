@@ -8,7 +8,7 @@ import type { FormFieldResponses } from "@convoform/db/src/schema";
 import {
   type StreamFieldQuestionParams,
   streamFieldQuestion,
-} from "../conversationV5/ai-actions/streamFieldQuestion";
+} from "../ai-actions/streamFieldQuestion";
 
 // Mock data for testing
 const mockFormOverview =

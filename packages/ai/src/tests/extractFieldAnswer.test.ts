@@ -7,7 +7,7 @@ import { describe, expect, test } from "bun:test";
 import {
   type ExtractFieldAnswerParams,
   extractFieldAnswer,
-} from "../conversationV5/ai-actions/extractFieldAnswer";
+} from "../ai-actions/extractFieldAnswer";
 
 // Mock data for testing
 const mockFormOverview =

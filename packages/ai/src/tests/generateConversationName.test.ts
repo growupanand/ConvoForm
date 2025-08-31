@@ -8,7 +8,7 @@ import type { FormFieldResponses } from "@convoform/db/src/schema";
 import {
   type GenerateConversationNameParams,
   generateConversationName,
-} from "../conversationV5/ai-actions/generateConversationName";
+} from "../ai-actions/generateConversationName";
 
 const mockFormOverview =
   "A comprehensive job application form for software engineers";

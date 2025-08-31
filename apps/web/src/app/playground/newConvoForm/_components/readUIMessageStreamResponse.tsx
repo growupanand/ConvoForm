@@ -3,7 +3,7 @@
 import {} from "@ai-sdk/provider-utils";
 import { useChat } from "@ai-sdk/react";
 import type { CoreServiceUIMessage } from "@convoform/ai";
-import { newUseConvoForm } from "@convoform/react";
+import { useConvoForm } from "@convoform/react";
 import { Button, Card } from "@convoform/ui";
 import { DefaultChatTransport, type UIMessage } from "ai";
 
@@ -14,7 +14,7 @@ class PublicChatTransport<T extends UIMessage> extends DefaultChatTransport<T> {
 }
 
 export function Test() {
-  const { initializeConversation, conversation } = newUseConvoForm({
+  const { initializeConversation, conversation } = useConvoForm({
     formId: "demo",
   });
 

@@ -1,4 +1,4 @@
-import { AI_MODEL } from "@convoform/ai";
+import { getModelConfig } from "@convoform/ai";
 import {
   type UIMessage,
   createUIMessageStream,
@@ -22,6 +22,8 @@ export type MyUIMessage = UIMessage<
     };
   } // data parts type
 >;
+
+const AI_MODEL = getModelConfig();
 
 export async function GET(_request: NextRequest) {
   // const newSteam = new ReadableStream({
