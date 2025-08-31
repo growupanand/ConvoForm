@@ -12,6 +12,7 @@ export default defineConfig({
     "@convoform/websocket-client",
     "@convoform/db",
     "@convoform/common",
+    "@convoform/ai",
   ],
   minify: true,
   treeshake: true,

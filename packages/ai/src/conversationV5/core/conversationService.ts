@@ -50,15 +50,37 @@ export class ConversationService {
     this.streamId = streamId;
   }
 
+  public initialize(): AsyncIterableStream<
+    InferUIMessageChunk<ConversationServiceUIMessage>
+  > {
+    // First check if conversation is already initialized
+    if (this.conversationManager.getConversation().transcript.length > 0) {
+      throw new Error("Conversation already initialized");
+    }
+
+    const firstEmptyField = this.conversationManager.getNextEmptyField();
+    if (!firstEmptyField) {
+      throw new Error(
+        "Unable to generate initial conversation stream, there is no empty field exists.",
+      );
+    }
+
+    return this.generateFieldQuestionStream(firstEmptyField, true);
+  }
+
   /**
    * Orchestrates the conversation flow based on user answer
    */
   public async process(
     answerText: string,
-    currentField: Conversation["formFieldResponses"][number],
+    currentFieldId: Conversation["formFieldResponses"][number]["id"],
   ): Promise<
     AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>>
   > {
+    if (this.conversationManager.checkConversationIsComplete()) {
+      throw new Error("Conversation is already complete");
+    }
+
     let validatedAnswer: {
       object: { isValid: boolean; answer: string | null };
     };
@@ -67,6 +89,11 @@ export class ConversationService {
 
     if (!sanitizedAnswerText) {
       throw new Error("Answer cannot be empty");
+    }
+
+    const currentField = this.conversationManager.getFieldById(currentFieldId);
+    if (!currentField) {
+      throw new Error("Current field not found");
     }
 
     await this.conversationManager.updateCurrentFieldId(currentField.id);
@@ -104,7 +131,7 @@ export class ConversationService {
     const nextField = this.conversationManager.getNextEmptyField();
 
     if (nextField) {
-      return this.generateNextFieldQuestionStream(nextField);
+      return this.generateFieldQuestionStream(nextField);
     }
 
     // 3. Valid answer and no next field: Save answer, mark conversation as complete
@@ -138,15 +165,16 @@ export class ConversationService {
   /**
    * Generates a question for the next field
    */
-  private generateNextFieldQuestionStream(
+  private generateFieldQuestionStream(
     nextField: Conversation["formFieldResponses"][number],
+    isFirstQuestion = true,
   ): AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>> {
     this.conversationManager.updateCurrentFieldId(nextField.id);
     const streamTextResult = streamFieldQuestion(
       {
         ...this.conversationManager.getConversation(),
         currentField: nextField,
-        isFirstQuestion: true,
+        isFirstQuestion,
       },
       this.createTextStreamFinishHandler(),
     );
@@ -167,11 +195,12 @@ export class ConversationService {
     InferUIMessageChunk<ConversationServiceUIMessage>
   > {
     this.conversationManager.addAIMessage(this.endMessage);
-    this.conversationManager.markConversationComplete();
 
     // Create fake end message stream
     return createUIMessageStream<ConversationServiceUIMessage>({
       execute: async ({ writer }) => {
+        await this.conversationManager.markConversationComplete();
+
         writer.write({
           type: "text-start",
           id: this.streamId,

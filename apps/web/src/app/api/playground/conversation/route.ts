@@ -1,4 +1,8 @@
-import { CoreService, type CoreServiceUIMessage } from "@convoform/ai";
+import {
+  type Conversation,
+  CoreService,
+  type CoreServiceUIMessage,
+} from "@convoform/ai";
 import type {
   Form,
   FormFieldResponses,
@@ -97,7 +101,7 @@ const sampleFormFieldResponses: FormFieldResponses[] = [
 ];
 
 // Sample conversation data for testing
-const sampleConversation = {
+const sampleConversation: Conversation = {
   id: "conv-123",
   name: "Customer Feedback Session",
   formId: "form-123",
@@ -110,21 +114,29 @@ const sampleConversation = {
   updatedAt: new Date("2024-01-15T10:00:00Z"),
   metaData: {},
   transcript: [
-    {
-      role: "assistant",
-      content:
-        "Hello! I'd like to get your feedback about our service. What's your name?",
-      fieldName: "name",
-    },
+    // {
+    //   role: "assistant",
+    //   content:
+    //     "Hello! I'd like to get your feedback about our service. What's your name?",
+    //   fieldName: "name",
+    // },
   ] as Transcript[],
   formFieldResponses: sampleFormFieldResponses,
   form: sampleForm,
+  currentFieldId: null,
 };
 
 export async function GET(_request: NextRequest) {
+  return handleRequest();
+}
+
+export async function POST(_request: NextRequest) {
+  return handleRequest();
+}
+
+async function handleRequest() {
   const stream = createUIMessageStream<CoreServiceUIMessage>({
     execute: async ({ writer }) => {
-      writer.write({ type: "text-start", id: "stream-start" });
       console.log("🚀 Starting conversation playground with mock answer...");
 
       // Initialize CoreService with sample conversation
@@ -149,7 +161,7 @@ export async function GET(_request: NextRequest) {
 
       // Mock conversation flow: Submit answer for the first field (name)
       const currentField = sampleConversation.formFieldResponses[0];
-      const mockAnswer = "My name is John Doe";
+      const mockAnswer = "Hi";
 
       if (!currentField) {
         throw new Error("No field available for testing");
@@ -160,7 +172,7 @@ export async function GET(_request: NextRequest) {
       );
 
       // Get the actual stream response from CoreService
-      const coreStream = await coreService.process(mockAnswer, currentField);
+      const coreStream = await coreService.initialize();
       console.log("✅ Stream response created successfully");
       writer.merge(coreStream);
     },

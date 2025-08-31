@@ -1,4 +1,3 @@
-import {} from "ai";
 import type { Conversation } from "../types";
 import {
   ConversationService,
@@ -49,11 +48,15 @@ export class CoreService {
     );
   }
 
+  public async initialize() {
+    return this.conversationService.initialize();
+  }
+
   public async process(
     answerText: string,
-    currentField: Conversation["formFieldResponses"][number],
+    currentFieldId: Conversation["formFieldResponses"][number]["id"],
   ) {
-    return await this.conversationService.process(answerText, currentField);
+    return await this.conversationService.process(answerText, currentFieldId);
   }
 
   /**

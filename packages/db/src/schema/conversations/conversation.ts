@@ -12,7 +12,7 @@ import type {
 export const conversation = pgTable("Conversation", {
   ...getBaseSchema(),
   name: text("name").notNull(),
-  transcript: jsonb("transcript").array().$type<Transcript[]>(),
+  transcript: jsonb("transcript").array().$type<Transcript[]>().notNull(),
   formFieldResponses: jsonb("formFieldResponses")
     .array()
     .$type<FormFieldResponses[]>()

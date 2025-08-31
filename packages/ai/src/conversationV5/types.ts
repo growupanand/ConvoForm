@@ -39,5 +39,5 @@ export interface AIError {
 
 export type Conversation = DBConversation & {
   form: Form;
-  currentFieldId?: string;
+  currentFieldId: string | null;
 };

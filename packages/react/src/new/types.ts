@@ -1,11 +1,11 @@
 import type { Conversation } from "@convoform/db/src/schema";
+import type { ChatStatus } from "ai";
+import type { ConversationServiceUIMessage } from "../../../ai/src/conversationV5/core/conversationService";
 
 export type ConversationState =
   | "idle" // Initial state, no conversation started
   | "initializing" // Creating new conversation
-  | "awaitingQuestion" // Conversation created, waiting for question
-  | "streamingQuestion" // Question is being streamed
-  | "awaitingUserInput" // Question received, ready for user input
+  | "inProgress" // Conversation in progress
   | "completed"; // All fields collected, conversation finished
 
 export type State = {
@@ -19,13 +19,17 @@ export type State = {
   conversationState: ConversationState;
   /** Whole conversation submission progress */
   progress: number | null;
-  /** Whether a question is currently being streamed */
-  isStreamingQuestion: boolean;
+  /** Streaming status of the chat */
+  chatStatus: ChatStatus;
+  /** Messages */
+  messages: ConversationServiceUIMessage[];
+  /** Error */
+  error: Error | undefined;
 };
 
 export type Methods = {
   /** Create a new conversation in db and start conversation */
-  initializeConversation: () => Promise<Conversation>;
+  initializeConversation: () => Promise<void>;
   /**
    * Submit an answer to the current question
    *
@@ -33,7 +37,7 @@ export type Methods = {
    * @returns Promise<void> this promise will resolve when the answer is submitted and
    * the next question streaming text is ready
    */
-  submitAnswer: (answer: string) => Promise<void>;
+  submitAnswer: (answerText: string) => Promise<void>;
   /**
    * Reset the conversation
    *
@@ -43,12 +47,14 @@ export type Methods = {
 };
 
 export type EventHandlers = {
-  onError: (error: Error) => void;
-  onFinish: (conversation: Conversation) => void;
+  onUpdateConversation?: (conversation: Conversation) => Promise<void>;
+  onError?: (error: Error) => void;
+  onFinish?: (conversation: Conversation) => void;
 };
 
-export type Handlers = {
-  onUpdateConversation: (conversation: Conversation) => Promise<void>;
-  onError: (error: Error) => void;
-  onFinish: (conversation: Conversation) => void;
+export type UseConvoFormProps = EventHandlers & {
+  formId: string;
+  apiEndpoint?: string;
 };
+
+export type UseConvoFormReturnType = State & Methods;

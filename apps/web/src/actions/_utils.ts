@@ -1,4 +1,5 @@
 import type {
+  Conversation,
   CreateConversation,
   Form,
   FormFieldResponses,
@@ -51,6 +52,16 @@ export const getORCreateConversation = async (
     transcript: [],
     formFieldResponses: fieldsWithEmptyData,
     formOverview: form.overview,
+  });
+};
+
+export const patchConversation = async (
+  conversationId: string,
+  patchData: Partial<Conversation>,
+) => {
+  return await api.conversation.patch({
+    id: conversationId,
+    ...patchData,
   });
 };
 

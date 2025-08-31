@@ -16,3 +16,4 @@ catalog:
   "@types/node": ^22
   "ai": "5.0.5"
   "@ai-sdk/openai": "2.0.0"
+  "@ai-sdk/react": "2.0.28"

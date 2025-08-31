@@ -21,7 +21,6 @@ export class ConversationManager {
     if (this.onUpdateConversation) {
       // We want to make sure that update failed should not prevent the flow to continue
       try {
-        console.log(`Updating conversation ${this.conversation.id}`);
         await this.onUpdateConversation(this.conversation);
         success = true;
       } catch (error) {
@@ -76,5 +75,15 @@ export class ConversationManager {
     this.conversation.isInProgress = false;
     this.conversation.finishedAt = new Date();
     await this.updateConversation();
+  }
+
+  public getFieldById(fieldId: string) {
+    return this.conversation.formFieldResponses.find(
+      (field) => field.id === fieldId,
+    );
+  }
+
+  public checkConversationIsComplete() {
+    return this.conversation.finishedAt !== null;
   }
 }

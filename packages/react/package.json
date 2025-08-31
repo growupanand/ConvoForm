@@ -50,6 +50,7 @@
     "@convoform/common": "../common",
     "@convoform/db": "../db",
     "@convoform/tsconfig": "../tsconfig",
+    "@convoform/ai": "../ai",
     "@convoform/websocket-client": "../websocket-client",
     "@types/react": "catalog:",
     "tsup": "^8.0.2",
@@ -64,6 +65,7 @@
     "url": "https://github.com/sponsors/growupanand"
   },
   "dependencies": {
+    "@ai-sdk/react": "catalog:",
     "ai": "catalog:"
   }
 }
