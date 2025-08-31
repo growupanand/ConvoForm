@@ -2,6 +2,7 @@
 
 import { useChat } from "@ai-sdk/react";
 import type { Conversation } from "@convoform/db/src/schema";
+import { sendMessage as sendWebsocketMessage } from "@convoform/websocket-client";
 import { DefaultChatTransport } from "ai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { CoreServiceUIMessage } from "../../../ai";
@@ -17,7 +18,12 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
       }),
       onData: async (dataPart) => {
         if (dataPart.type === "data-conversation") {
-          setConversation(dataPart.data as Conversation);
+          const updatedConversation = dataPart.data as Conversation;
+          setConversation(updatedConversation);
+          sendWebsocketMessage("conversation:updated", {
+            conversationId: updatedConversation.id,
+            formId: props.formId,
+          });
         }
       },
       onError: (error) => {
@@ -100,10 +106,42 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
   };
 
   const resetConversation = useCallback(async () => {
+    if (conversation) {
+      sendWebsocketMessage("conversation:stopped", {
+        conversationId: conversation.id,
+        formId: props.formId,
+      });
+    }
     setConversation(null);
     setMessages([]);
     clearError();
   }, [setMessages, clearError]);
+
+  // =========================================================
+  // ----------------- Websocket Events ----------------------
+  // =========================================================
+
+  useEffect(() => {
+    if (!conversation?.id) return;
+
+    const conversationData = {
+      conversationId: conversation.id,
+      formId: props.formId,
+    };
+
+    sendWebsocketMessage("conversation:started", conversationData);
+  }, [conversation?.id]);
+
+  useEffect(() => {
+    if (!conversation?.finishedAt) return;
+
+    const conversationData = {
+      conversationId: conversation.id,
+      formId: props.formId,
+    };
+
+    sendWebsocketMessage("conversation:stopped", conversationData);
+  }, [conversation?.finishedAt]);
 
   return {
     // Methods
