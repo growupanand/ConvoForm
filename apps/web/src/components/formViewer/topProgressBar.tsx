@@ -7,9 +7,9 @@ import { motion } from "motion/react";
 import { ConfirmAction } from "../common/confirmAction";
 
 export function TopProgressBar({
-  totalProgress,
+  totalProgressPercentage,
   onReset,
-}: { totalProgress: number; onReset: () => void }) {
+}: { totalProgressPercentage: number; onReset: () => void }) {
   return (
     <div className="w-full py-4 pe-3">
       <div className="flex items-center gap-6">
@@ -33,7 +33,7 @@ export function TopProgressBar({
           transition={{ duration: 1, delay: 1 }}
           className="w-full"
         >
-          <Progress value={totalProgress} className="w-full h-1.5" />
+          <Progress value={totalProgressPercentage} className="w-full h-1.5" />
         </motion.div>
       </div>
     </div>

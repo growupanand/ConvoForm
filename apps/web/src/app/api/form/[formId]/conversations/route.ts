@@ -1,15 +1,15 @@
+import {
+  checkNThrowErrorFormSubmissionLimit,
+  getORCreateConversation,
+} from "@/actions";
 import { sendErrorMessage, sendErrorResponse } from "@/lib/errorHandlers";
 import { api } from "@/trpc/server";
 import {
-  type CollectedData,
+  type FormFieldResponses,
   restoreDateFields,
 } from "@convoform/db/src/schema";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
-import {
-  checkNThrowErrorFormSubmissionLimit,
-  getORCreateConversation,
-} from "../conversation/_utils";
 
 const routeContextSchema = z.object({
   params: z.promise(
@@ -49,18 +49,18 @@ export async function PATCH(request: NextRequest) {
       return sendErrorMessage("Missing conversation id", 400);
     }
 
-    const parsedCollectedData = [] as CollectedData[];
+    const parsedFormFieldResponses = [] as FormFieldResponses[];
 
-    for (const field of requestJson.collectedData) {
+    for (const field of requestJson.formFieldResponses) {
       const parsedFieldConfiguration = restoreDateFields(
         field.fieldConfiguration,
       );
-      parsedCollectedData.push({
+      parsedFormFieldResponses.push({
         ...field,
         fieldConfiguration: parsedFieldConfiguration,
       });
     }
-    requestJson.collectedData = parsedCollectedData;
+    requestJson.formFieldResponses = parsedFormFieldResponses;
 
     await api.conversation.patch(requestJson);
     return Response.json({ success: true });

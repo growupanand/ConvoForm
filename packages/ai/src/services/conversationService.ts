@@ -1,218 +1,234 @@
+import { shouldSkipValidation } from "@convoform/db/src/schema/formFields/utils";
 import {
-  type CollectedData,
-  type CollectedFilledData,
-  type ExtraStreamData,
-  type Transcript,
-  shouldSkipValidation,
-  transcriptSchema,
-} from "@convoform/db/src/schema";
-import { OpenAIStream, StreamData, StreamingTextResponse } from "ai";
+  type AsyncIterableStream,
+  type InferUIMessageChunk,
+  type UIMessage,
+  createUIMessageStream,
+} from "ai";
+import { extractFieldAnswer } from "../ai-actions/extractFieldAnswer";
+import { streamFieldQuestion } from "../ai-actions/streamFieldQuestion";
+import type { ConversationManager } from "../managers/conversationManager";
+import type { CoreConversation } from "../types";
 
-import { CONVERSATION_END_MESSAGE } from "@convoform/common";
-import type { ChatCompletionMessageParam } from "openai/resources";
-import { OpenAIService } from "./openAIService";
+export type ConversationServiceUIMessage = UIMessage<
+  never, // metadata type
+  {
+    conversation?: CoreConversation;
+  }
+>;
 
-export class ConversationService extends OpenAIService {
-  public getNextEmptyField(collectedData: CollectedData[]) {
-    return collectedData.find((field) => field.fieldValue === null);
+/**
+ * ============================================
+ * ----------- CONVERSATION SERVICE -----------
+ * ============================================
+ *
+ * Handles the core conversation orchestration logic.
+ *
+ * orchestrateConversation() handles below flows when user submits answer:
+ *
+ * 1. Invalid answer:
+ *    - Generate and stream followup question
+ *
+ * 2. Valid answer and next field exists:
+ *    - Save answer
+ *    - Generate and stream question for next field
+ *
+ * 3. Valid answer and no next field:
+ *    - Save answer
+ *    - Mark conversation as complete
+ *    - Add end message to transcript and stream it
+ *
+ */
+
+export class ConversationService {
+  private conversationManager: ConversationManager;
+  private streamId: string;
+  private endMessage = "Form completed successfully!";
+
+  constructor(conversationManager: ConversationManager, streamId: string) {
+    this.conversationManager = conversationManager;
+    this.streamId = streamId;
+    const customEndScreenMessage =
+      this.conversationManager.getConversation().form.customEndScreenMessage;
+    if (customEndScreenMessage) {
+      this.endMessage = customEndScreenMessage;
+    }
   }
 
-  public async generateQuestion({
-    formOverview,
-    currentField,
-    collectedData,
-    extraCustomStreamData,
-    transcript,
-    onStreamFinish,
-  }: {
-    formOverview: string;
-    currentField: CollectedData;
-    collectedData: CollectedData[];
-    extraCustomStreamData: ExtraStreamData;
-    transcript: Transcript[];
-    onStreamFinish?: (completion: string) => void;
-  }) {
-    const fieldsWithData = collectedData.filter(
-      (field) => field.fieldValue !== null,
-    ) as CollectedFilledData[];
-    const isFirstQuestion =
-      fieldsWithData.length === 0 && transcript.length === 1;
+  public initialize(): AsyncIterableStream<
+    InferUIMessageChunk<ConversationServiceUIMessage>
+  > {
+    // First check if conversation is already initialized
+    if (this.conversationManager.getConversation().transcript.length > 0) {
+      throw new Error("Conversation already initialized");
+    }
 
-    const systemMessage = this.getGenerateQuestionPromptMessage({
-      formOverview,
-      currentField,
-      fieldsWithData,
-      isFirstQuestion,
-    });
-    const openAiResponse = await this.getOpenAIResponseStream([
-      systemMessage,
-      ...transcript.map(({ role, content }) => ({
-        role,
-        content,
-      })),
-    ]);
+    const firstEmptyField = this.conversationManager.getNextEmptyField();
+    if (!firstEmptyField) {
+      throw new Error(
+        "Unable to generate initial conversation stream, there is no empty field exists.",
+      );
+    }
 
-    // Instantiate the StreamData. This is used to send extra custom data in the response stream
-    const data = new StreamData();
-
-    // Without safeJsonString this it will throw type error for Date type used in JSON
-    const safeJsonString = JSON.stringify({ ...extraCustomStreamData });
-    data.append(JSON.parse(safeJsonString));
-
-    // Convert the response into a friendly text-stream
-    const stream = OpenAIStream(openAiResponse, {
-      onFinal(completion) {
-        // IMPORTANT! you must close StreamData manually or the response will never finish.
-        data.close();
-        onStreamFinish?.(completion);
-      },
-    });
-    // Respond with the stream
-    return new StreamingTextResponse(
-      stream,
-      {
-        headers: { "Access-Control-Allow-Origin": "*" },
-      },
-      data,
-    );
+    return this.generateFieldQuestionStream(firstEmptyField, true);
   }
 
   /**
-   * There should be at least 3 transcript messages in the conversation to extract answer,
-   * 1. Initial user message e.g. "Hi", "start the form submission"
-   * 2. AI assistant message e.g. "Hello! To start with, may I have your full name for the job application as a full stack engineer?"
-   * 3. User message e.g. "My name is Utkarsh Anand"
+   * Orchestrates the conversation flow based on user answer
    */
-  public async extractAnswer({
-    transcript,
-    currentField,
-    formOverview,
-  }: {
-    transcript: Transcript[];
-    currentField: CollectedData;
-    formOverview: string;
-  }) {
-    let isAnswerExtracted = false;
-    let extractedAnswer = "";
-    let reasonForFailure: string | null = null;
-    let otherFieldsData: CollectedFilledData[] = [];
+  public async process(
+    answerText: string,
+    currentFieldId: CoreConversation["formFieldResponses"][number]["id"],
+  ): Promise<
+    AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>>
+  > {
+    if (this.conversationManager.checkConversationIsComplete()) {
+      throw new Error("Conversation is already complete");
+    }
+
+    let validatedAnswer: {
+      object: { isValid: boolean; answer: string | null };
+    };
+
+    const sanitizedAnswerText = answerText.trim();
+
+    if (!sanitizedAnswerText) {
+      throw new Error("Answer cannot be empty");
+    }
+
+    const currentField = this.conversationManager.getFieldById(currentFieldId);
+    if (!currentField) {
+      throw new Error("Current field not found");
+    }
+
+    await this.conversationManager.updateCurrentFieldId(currentField.id);
+    await this.conversationManager.addUserMessage(sanitizedAnswerText);
+
+    // Check if we should skip validation for this field type
     const skipValidation = shouldSkipValidation(
       currentField.fieldConfiguration.inputType,
     );
 
-    const isValidTranscript = transcriptSchema
-      .array()
-      .min(3)
-      .safeParse(transcript).success;
-    if (!isValidTranscript) {
-      throw new Error("Does not have enough transcript data to extract answer");
-    }
-
     if (skipValidation) {
-      return {
-        isAnswerExtracted: true,
-        // biome-ignore lint/style/noNonNullAssertion: Already checked above
-        extractedAnswer: transcript[transcript.length - 1]!.content,
-        reasonForFailure,
-        otherFieldsData,
+      validatedAnswer = {
+        object: {
+          isValid: true,
+          answer: sanitizedAnswerText,
+        },
       };
+    } else {
+      validatedAnswer = await extractFieldAnswer({
+        ...this.conversationManager.getConversation(),
+        currentField,
+      });
     }
 
-    const systemMessage = this.getExtractAnswerPromptMessage({
-      transcript,
-      currentField,
-      formOverview,
-    }) as ChatCompletionMessageParam;
-    const message = {
-      role: "user",
-      content: "Extract answer",
-    } as ChatCompletionMessageParam;
-    const openAiResponse = await this.getOpenAIResponseJSON([
-      systemMessage,
-      message,
-    ]);
-    const responseJson = openAiResponse.choices[0]?.message.content;
-    if (responseJson) {
-      try {
-        const parsedJson = JSON.parse(responseJson);
-        isAnswerExtracted = parsedJson.isAnswerExtracted ?? isAnswerExtracted;
-        extractedAnswer = parsedJson.extractedAnswer ?? extractedAnswer;
-        reasonForFailure = parsedJson.reasonForFailure ?? reasonForFailure;
-        otherFieldsData = Array.isArray(parsedJson.otherFieldsData)
-          ? parsedJson.otherFieldsData
-          : otherFieldsData;
-      } catch (_) {
-        /* empty */
-      }
+    // 1. Invalid answer: Generate and stream followup question
+    if (!validatedAnswer.object.isValid || !validatedAnswer.object.answer) {
+      return this.generateFollowupQuestionStream(currentField);
     }
 
-    return {
-      isAnswerExtracted,
-      extractedAnswer,
-      reasonForFailure,
-      otherFieldsData,
-    };
+    // 2. Valid answer and next field exists: Save answer and generate and stream question for next field
+    this.conversationManager.saveFieldAnswer(
+      currentField.id,
+      validatedAnswer.object.answer,
+    );
+    const nextField = this.conversationManager.getNextEmptyField();
+
+    if (nextField) {
+      return this.generateFieldQuestionStream(nextField);
+    }
+
+    // 3. Valid answer and no next field: Save answer, mark conversation as complete
+    await this.conversationManager.addAIMessage(this.endMessage);
+    await this.conversationManager.markConversationComplete();
+    return this.generateEndConversationStream();
   }
 
-  public async generateEndMessage({
-    extraCustomStreamData,
-  }: {
-    extraCustomStreamData: Record<string, any>;
-    onStreamFinish?: (completion: string) => void;
-  }) {
-    // Instantiate the StreamData. This is used to send extra custom data in the response stream
-    const data = new StreamData();
-    data.append(extraCustomStreamData);
+  /**
+   * Generates a followup question for invalid answers
+   */
+  private generateFollowupQuestionStream(
+    currentField: CoreConversation["formFieldResponses"][number],
+  ): AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>> {
+    const streamTextResult = streamFieldQuestion(
+      {
+        ...this.conversationManager.getConversation(),
+        currentField,
+        isFirstQuestion: false,
+      },
+      this.createTextStreamFinishHandler(),
+    );
 
-    // Convert the response into a friendly text-stream
-    const endMessage = CONVERSATION_END_MESSAGE;
-    const stream = new ReadableStream({
-      async pull(controller) {
-        controller.enqueue(`0:"${endMessage}"`);
-        data.close();
-        controller.close();
+    return streamTextResult.toUIMessageStream<ConversationServiceUIMessage>({
+      onFinish: async () => {
+        await this.conversationManager.addAIMessage(
+          await streamTextResult.text,
+        );
       },
     });
-    // Respond with the stream
-    return new StreamingTextResponse(
-      stream,
-      { headers: { "Access-Control-Allow-Origin": "*" } },
-      data,
-    );
   }
 
-  public async generateConversationName({
-    formOverview,
-    fieldsWithData,
-  }: {
-    formOverview: string;
-    fieldsWithData: CollectedFilledData[];
-  }) {
-    const systemMessage = this.getGenerateConversationNamePromptMessage({
-      formOverview,
-      fieldsWithData,
-    }) as ChatCompletionMessageParam;
-
-    const openAiResponse = await this.getOpenAIResponseJSON([
-      systemMessage,
+  /**
+   * Generates a question for the next field
+   */
+  private generateFieldQuestionStream(
+    nextField: CoreConversation["formFieldResponses"][number],
+    isFirstQuestion = true,
+  ): AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>> {
+    this.conversationManager.updateCurrentFieldId(nextField.id);
+    const streamTextResult = streamFieldQuestion(
       {
-        role: "user",
-        content: "Generate conversation name",
+        ...this.conversationManager.getConversation(),
+        currentField: nextField,
+        isFirstQuestion,
       },
-    ]);
+      this.createTextStreamFinishHandler(),
+    );
 
-    let conversationName = "Finished conversation";
+    return streamTextResult.toUIMessageStream<ConversationServiceUIMessage>({
+      onFinish: async () => {
+        await this.conversationManager.addAIMessage(
+          await streamTextResult.text,
+        );
+      },
+    });
+  }
 
-    const responseJson = openAiResponse.choices[0]?.message.content;
-    if (responseJson) {
-      try {
-        const parsedJson = JSON.parse(responseJson);
-        conversationName = parsedJson.conversationName ?? conversationName;
-      } catch (_) {
-        /* empty */
-      }
-    }
+  /**
+   * Completes the conversation and returns end message stream
+   */
+  private generateEndConversationStream(): AsyncIterableStream<
+    InferUIMessageChunk<ConversationServiceUIMessage>
+  > {
+    // Create fake end message stream
+    return createUIMessageStream<ConversationServiceUIMessage>({
+      execute: async ({ writer }) => {
+        writer.write({
+          type: "text-start",
+          id: this.streamId,
+        });
+        writer.write({
+          type: "text-delta",
+          delta: this.endMessage,
+          id: this.streamId,
+        });
+        writer.write({
+          type: "text-end",
+          id: this.streamId,
+        });
+      },
+    });
+  }
 
-    return { conversationName };
+  /**
+   * Creates a streaming callback that will be called when text streaming ends
+   * this will prevent streaming from ending before we have a chance to do something,
+   * E.g. sending final stream message or updating conversation data in the database
+   */
+  private createTextStreamFinishHandler() {
+    return async () => {
+      await this.conversationManager.updateConversation();
+    };
   }
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "Conversation" ALTER COLUMN "transcript" SET NOT NULL;

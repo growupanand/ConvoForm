@@ -1,7 +1,7 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-import { insertFormFieldSchema, selectFormFieldSchema } from "../formFields";
+import { selectFormFieldSchema } from "../formFields";
 import { selectFormSchema } from "../forms";
 import { conversation } from "./conversation";
 
@@ -111,14 +111,19 @@ export type RespondentMetadata = z.infer<typeof respondentMetadataSchema>;
 // =============================================================
 // ============ Conversation collected information/transcript =============================
 
-export const collectedDataSchema = insertFormFieldSchema
-  .pick({ fieldName: true, fieldDescription: true, fieldConfiguration: true })
+export const formFieldResponsesSchema = selectFormFieldSchema
+  .pick({
+    fieldName: true,
+    fieldDescription: true,
+    fieldConfiguration: true,
+    id: true,
+  })
   .extend({
     fieldValue: z.string().min(1).nullable(),
   });
-export type CollectedData = z.infer<typeof collectedDataSchema>;
+export type FormFieldResponses = z.infer<typeof formFieldResponsesSchema>;
 
-export const collectedFilledDataSchema = collectedDataSchema
+export const collectedFilledDataSchema = formFieldResponsesSchema
   .omit({ fieldValue: true })
   .extend({
     fieldValue: z.string().min(1),
@@ -139,7 +144,7 @@ export type Transcript = z.infer<typeof transcriptSchema>;
 
 export const insertConversationSchema = createInsertSchema(conversation, {
   transcript: transcriptSchema.array(),
-  collectedData: collectedDataSchema.array().min(1),
+  formFieldResponses: formFieldResponsesSchema.array().min(1),
   name: z.string().min(1),
   formOverview: z.string().min(1),
   finishedAt: z.coerce.date().nullable().optional(),
@@ -147,7 +152,7 @@ export const insertConversationSchema = createInsertSchema(conversation, {
 });
 export const selectConversationSchema = createSelectSchema(conversation, {
   transcript: transcriptSchema.array(),
-  collectedData: collectedDataSchema.array().min(1),
+  formFieldResponses: formFieldResponsesSchema.array().min(1),
   isInProgress: z.boolean(),
   metaData: respondentMetadataSchema,
 });
@@ -173,8 +178,8 @@ export type Conversation = z.infer<typeof selectConversationSchema>;
 export const extraStreamDataSchema = z
   .object({
     conversationId: z.string().min(1),
-    collectedData: collectedDataSchema.array().min(1),
-    currentField: collectedDataSchema,
+    formFieldResponses: formFieldResponsesSchema.array().min(1),
+    currentField: formFieldResponsesSchema,
     isFormSubmissionFinished: z.boolean(),
     conversationName: z.string().min(1),
   })
@@ -191,6 +196,7 @@ export const createConversationSchema = selectFormSchema
   .extend({
     formFields: selectFormFieldSchema
       .pick({
+        id: true,
         fieldName: true,
         fieldDescription: true,
         fieldConfiguration: true,

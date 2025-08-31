@@ -4,8 +4,8 @@ import { FormContextProvider } from "@/components/formViewer/formContext";
 import type { Form } from "@convoform/db/src/schema";
 import { useInView } from "motion/react";
 import { useRef } from "react";
-import { DemoCollectedDataTable } from "./demoCollectedDataTable";
 import { DemoFormCard } from "./demoFormCard";
+import { DemoFormFieldResponsesTable } from "./demoFormFieldResponsesTable";
 
 function DemoSectionCardInner({ showResponses }: { showResponses: boolean }) {
   const demoSectionRef = useRef<HTMLDivElement>(null);
@@ -17,7 +17,7 @@ function DemoSectionCardInner({ showResponses }: { showResponses: boolean }) {
       <DemoFormCard isInView={isInView} />
       {showResponses && (
         <div className="absolute -left-60 -top-10">
-          <DemoCollectedDataTable isInView={isInView} />
+          <DemoFormFieldResponsesTable isInView={isInView} />
         </div>
       )}
     </div>

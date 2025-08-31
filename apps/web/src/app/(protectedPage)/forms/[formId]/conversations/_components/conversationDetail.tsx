@@ -4,7 +4,7 @@ import { CardContent, CardHeader, CardTitle } from "@convoform/ui";
 import { Skeleton } from "@convoform/ui";
 
 import { ConversationStatusBadge } from "@/components/StatusBadge";
-import { CollectedDataTable } from "@/components/collectedDataTable";
+import { FormFieldResponsesTable } from "@/components/formFieldResponsesTable";
 import { formatDuration } from "@/lib/utils";
 import { FileText, Globe, Timer } from "lucide-react";
 import InsightsCard from "./insightsCard";
@@ -85,8 +85,8 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
                 Collected information
               </ConversationDetailSectionHeading>
               <div className="border rounded-lg">
-                <CollectedDataTable
-                  collectedData={conversation.collectedData}
+                <FormFieldResponsesTable
+                  formFieldResponses={conversation.formFieldResponses}
                 />
               </div>
             </div>
@@ -156,7 +156,7 @@ const ConversationDetailSkeleton = () => {
                 Collected information
               </ConversationDetailSectionHeading>
               <div className="border rounded-lg">
-                <CollectedDataTable.Skeleton />
+                <FormFieldResponsesTable.Skeleton />
               </div>
             </div>
           </div>

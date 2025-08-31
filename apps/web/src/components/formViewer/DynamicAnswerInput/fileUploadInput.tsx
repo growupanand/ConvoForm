@@ -57,7 +57,8 @@ export function FileUploadInput({
   });
 
   const { convoFormHook } = useFormContext();
-  const { conversationId } = convoFormHook;
+  const { conversation } = convoFormHook;
+  const conversationId = conversation?.id;
 
   const uploadFileMutation = api.fileUpload.uploadFile.useMutation({
     onSuccess: async (result: { fileId: string }) => {

@@ -1,6 +1,2 @@
-export {
-  useConvoForm,
-  type UseConvoFormReturnType,
-} from "./src/hooks/useConvoForm";
-
-export * from "./src/types";
+export { useConvoForm } from "./src/useConvoForm";
+export type { UseConvoFormReturnType } from "./src/types";

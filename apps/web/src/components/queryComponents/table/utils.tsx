@@ -2,9 +2,9 @@ import { FileDisplay } from "@/components/fileDisplay"; // Add import for file d
 import { formatDate, formatDateTime } from "@/lib/utils";
 import type { RatingInputConfigSchema } from "@convoform/db/src/schema";
 import type {
-  CollectedData,
   Conversation,
   DatePickerInputConfigSchema,
+  FormFieldResponses,
 } from "@convoform/db/src/schema";
 import { Calendar, Clock } from "lucide-react";
 import { Star } from "lucide-react";
@@ -12,18 +12,18 @@ import { Star } from "lucide-react";
 /**
  * Format conversation fields data for TableComponent,
  * Example: `<TableComponent tableData={tableData} />`
- * @param collectedData
+ * @param formFieldResponses
  * @returns
  */
 
 export function getConversationTableData(
-  collectedData: Conversation["collectedData"],
+  formFieldResponses: Conversation["formFieldResponses"],
 ) {
-  if (!collectedData || !Array.isArray(collectedData)) {
+  if (!formFieldResponses || !Array.isArray(formFieldResponses)) {
     return {};
   }
 
-  return collectedData.reduce(
+  return formFieldResponses.reduce(
     (acc, data) => {
       // Only check if fieldName exists, allow null fieldValues
       if (!data.fieldName) return acc;
@@ -37,24 +37,24 @@ export function getConversationTableData(
     },
     {} as Record<
       string,
-      { value: string | null; config: CollectedData["fieldConfiguration"] }
+      { value: string | null; config: FormFieldResponses["fieldConfiguration"] }
     >,
   );
 }
 
 /**
  * Format conversation fields data for Data Tables, flattening values to avoid rendering objects
- * @param collectedData
+ * @param formFieldResponses
  * @returns Record with flattened values instead of {value, config} objects
  */
 export function getFlatConversationTableData(
-  collectedData: Conversation["collectedData"],
+  formFieldResponses: Conversation["formFieldResponses"],
 ): Record<string, string> {
-  if (!collectedData || !Array.isArray(collectedData)) {
+  if (!formFieldResponses || !Array.isArray(formFieldResponses)) {
     return {};
   }
 
-  return collectedData.reduce(
+  return formFieldResponses.reduce(
     (acc, data) => {
       if (!data.fieldName) return acc;
 
@@ -80,7 +80,7 @@ export function getFlatConversationTableData(
 
 export function renderCellValue(
   value: string,
-  fieldConfig?: CollectedData["fieldConfiguration"],
+  fieldConfig?: FormFieldResponses["fieldConfiguration"],
 ): React.ReactNode {
   // Handle null values
   if (value === null) return "";
@@ -156,7 +156,7 @@ export function renderCellValue(
 
 // Type guard to check if this is a date picker field
 function isDatePickerField(
-  config: CollectedData["fieldConfiguration"],
+  config: FormFieldResponses["fieldConfiguration"],
 ): config is {
   inputType: "datePicker";
   inputConfiguration: DatePickerInputConfigSchema;
@@ -175,7 +175,9 @@ function isValidDateString(value: string, dateValue: Date): boolean {
 }
 
 // Add this type guard after the isDatePickerField function
-function isRatingField(config: CollectedData["fieldConfiguration"]): config is {
+function isRatingField(
+  config: FormFieldResponses["fieldConfiguration"],
+): config is {
   inputType: "rating";
   inputConfiguration: RatingInputConfigSchema;
 } {
@@ -184,7 +186,7 @@ function isRatingField(config: CollectedData["fieldConfiguration"]): config is {
 
 // Type guard to check if this is a file upload field
 function isFileUploadField(
-  config: CollectedData["fieldConfiguration"],
+  config: FormFieldResponses["fieldConfiguration"],
 ): config is {
   inputType: "fileUpload";
   inputConfiguration: any; // We can make this more specific later if needed

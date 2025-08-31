@@ -26,43 +26,88 @@ import { useConvoForm } from "@convoform/react";
 
 function ConversationalForm() {
   const { 
+    initializeConversation,
     submitAnswer, 
-    currentQuestion, 
-    isBusy,
-    conversationId,
-    isFormSubmissionFinished,
-    resetForm
+    resetConversation,
+    currentQuestionText,
+    conversationState,
+    chatStatus,
+    progress,
+    conversation,
+    error
   } = useConvoForm({
     formId: "your-form-id",
-    onError: (error) => console.error("Form error:", error)
+    onError: (error) => console.error("Form error:", error),
+    onFinish: (conversation) => console.log("Form completed:", conversation)
   });
+
+  // Initialize conversation when component mounts
+  useEffect(() => {
+    if (conversationState === "idle") {
+      initializeConversation();
+    }
+  }, [conversationState, initializeConversation]);
 
   // Handle form submission
   const handleSubmit = (answer) => {
-    submitAnswer(answer);
+    if (conversationState === "inProgress") {
+      submitAnswer(answer);
+    }
   };
 
   // Show completion message when form is done
-  if (isFormSubmissionFinished) {
+  if (conversationState === "completed") {
     return <div>Thank you for completing the form!</div>;
+  }
+
+  // Show loading state during initialization
+  if (conversationState === "initializing") {
+    return <div>Starting conversation...</div>;
   }
 
   return (
     <div>
-      {currentQuestion && (
+      {/* Progress indicator */}
+      <div>Progress: {Math.round(progress * 100)}%</div>
+      
+      {/* Current question */}
+      {currentQuestionText && (
         <div>
-          <h3>{currentQuestion.text}</h3>
+          <h3>{currentQuestionText}</h3>
           <input 
             type="text" 
-            disabled={isBusy}
-            onKeyDown={(e) => e.key === 'Enter' && handleSubmit(e.target.value)}
+            disabled={chatStatus === "streaming"}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && e.target.value.trim()) {
+                handleSubmit(e.target.value);
+                e.target.value = '';
+              }
+            }}
           />
-          <button onClick={() => handleSubmit(/* answer */)} disabled={isBusy}>
-            {isBusy ? 'Processing...' : 'Submit'}
+          <button 
+            onClick={() => {
+              const input = document.querySelector('input');
+              if (input?.value.trim()) {
+                handleSubmit(input.value);
+                input.value = '';
+              }
+            }} 
+            disabled={chatStatus === "streaming"}
+          >
+            {chatStatus === "streaming" ? 'Processing...' : 'Submit'}
           </button>
         </div>
       )}
-      <button onClick={resetForm}>Start Over</button>
+      
+      {/* Error display */}
+      {error && (
+        <div style={{ color: 'red' }}>
+          Error: {error.message}
+        </div>
+      )}
+      
+      {/* Reset button */}
+      <button onClick={resetConversation}>Start Over</button>
     </div>
   );
 }
@@ -75,18 +120,28 @@ function ConversationalForm() {
 `useConvoForm` accepts the following parameters:
 
 - `formId`: (Required) The unique identifier for the form generated on convoform.com.
+- `apiEndpoint?`: (Optional) Custom API endpoint for the conversation service.
 - `onError?`: (Optional) A callback function to handle errors that occur during form processing.
+- `onFinish?`: (Optional) A callback function called when the conversation is completed.
 
 #### Return Values
 
 It returns an object containing:
 
-- `submitAnswer`: Function to submit the answer to the current question. Takes the user's response as parameter.
-- `currentQuestion`: The current question object to be displayed, including question text and any additional metadata.
-- `conversationId`: A unique identifier for the current conversation session.
-- `isBusy`: Boolean indicating if the form is currently processing a response.
-- `isFormSubmissionFinished`: Boolean indicating if the form submission has been completed.
-- `resetForm`: Function to reset the form to its initial state, allowing users to start over.
+**Methods:**
+- `initializeConversation`: Function to create a new conversation and start the form flow.
+- `submitAnswer`: Function to submit an answer to the current question. Takes the user's response text as parameter.
+- `resetConversation`: Function to reset the conversation to its initial state, allowing users to start over.
+
+**State:**
+- `conversation`: The complete conversation object from the database, including all form field responses.
+- `currentQuestionText`: The current question text being displayed to the user.
+- `conversationState`: Current state of the conversation (`"idle"`, `"initializing"`, `"inProgress"`, or `"completed"`).
+- `progress`: A number between 0 and 1 indicating the completion progress of the form.
+- `chatStatus`: The streaming status of the chat (`"idle"`, `"submitted"`, `"streaming"`, etc.).
+- `messages`: Array of conversation messages exchanged during the session.
+- `error`: Any error that occurred during form processing.
+- `currentFieldId`: The ID of the current field being processed.
 
 ## Example Project
 

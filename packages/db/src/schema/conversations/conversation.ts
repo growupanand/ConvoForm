@@ -4,7 +4,7 @@ import { boolean, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { getBaseSchema } from "../base";
 import { form } from "../forms/form";
 import type {
-  CollectedData,
+  FormFieldResponses,
   RespondentMetadata,
   Transcript,
 } from "./validation";
@@ -12,10 +12,10 @@ import type {
 export const conversation = pgTable("Conversation", {
   ...getBaseSchema(),
   name: text("name").notNull(),
-  transcript: jsonb("transcript").array().$type<Transcript[]>(),
-  collectedData: jsonb("collectedData")
+  transcript: jsonb("transcript").array().$type<Transcript[]>().notNull(),
+  formFieldResponses: jsonb("formFieldResponses")
     .array()
-    .$type<CollectedData[]>()
+    .$type<FormFieldResponses[]>()
     .notNull(),
   formOverview: text("formOverview").notNull(),
   formId: text("formId")
@@ -25,6 +25,7 @@ export const conversation = pgTable("Conversation", {
   finishedAt: timestamp("finishedAt"),
   isInProgress: boolean("isInProgress").default(false).notNull(),
   metaData: jsonb("metaData").$type<RespondentMetadata>().notNull().default({}),
+  currentFieldId: text("currentFieldId"),
 });
 
 export const conversationRelations = relations(conversation, ({ one }) => ({

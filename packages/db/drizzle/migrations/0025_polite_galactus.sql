@@ -1,0 +1,1 @@
+ALTER TABLE "Conversation" ADD COLUMN "currentFieldId" text;

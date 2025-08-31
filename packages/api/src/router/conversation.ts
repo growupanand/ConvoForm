@@ -42,21 +42,23 @@ export const conversationRouter = createTRPCRouter({
 
       const existConversationsFormatted = existConversations.map(
         (conversation) => {
-          const collectedData = conversation.collectedData.map((collection) => {
-            if (collection.fieldConfiguration === undefined) {
-              return collection;
-            }
+          const formFieldResponses = conversation.formFieldResponses.map(
+            (collection) => {
+              if (collection.fieldConfiguration === undefined) {
+                return collection;
+              }
 
-            return {
-              ...collection,
-              fieldConfiguration: restoreDateFields(
-                collection.fieldConfiguration,
-              ),
-            };
-          });
+              return {
+                ...collection,
+                fieldConfiguration: restoreDateFields(
+                  collection.fieldConfiguration,
+                ),
+              };
+            },
+          );
           return {
             ...conversation,
-            collectedData,
+            formFieldResponses,
             transcript: conversation.transcript ?? [],
           };
         },
@@ -80,7 +82,7 @@ export const conversationRouter = createTRPCRouter({
         return undefined;
       }
 
-      const collectedData = existConversation.collectedData.map(
+      const formFieldResponses = existConversation.formFieldResponses.map(
         (collection) => {
           if (collection.fieldConfiguration === undefined) {
             return collection;
@@ -97,15 +99,19 @@ export const conversationRouter = createTRPCRouter({
 
       return {
         ...existConversation,
-        collectedData,
+        formFieldResponses,
       };
     }),
 
   create: publicProcedure
     .input(insertConversationSchema)
     .mutation(async ({ input, ctx }) => {
-      const { transcript, collectedData, formOverview, ...newConversation } =
-        insertConversationSchema.parse(input);
+      const {
+        transcript,
+        formFieldResponses,
+        formOverview,
+        ...newConversation
+      } = insertConversationSchema.parse(input);
 
       const userAgentInformation = userAgent({ headers: await headers() });
       const geoInformation = geolocation({ headers: await headers() });
@@ -122,7 +128,7 @@ export const conversationRouter = createTRPCRouter({
           ...newConversation,
           transcript,
           formOverview,
-          collectedData,
+          formFieldResponses,
           updatedAt: new Date(),
           metaData,
         })
@@ -138,7 +144,7 @@ export const conversationRouter = createTRPCRouter({
         },
       });
 
-      const parsedCollectedData = collectedData.map((collection) => {
+      const parsedFormFieldResponses = formFieldResponses.map((collection) => {
         if (collection.fieldConfiguration === undefined) {
           return collection;
         }
@@ -151,7 +157,7 @@ export const conversationRouter = createTRPCRouter({
 
       return {
         ...result,
-        collectedData: parsedCollectedData,
+        formFieldResponses: parsedFormFieldResponses,
       };
     }),
 
@@ -221,13 +227,15 @@ export const conversationRouter = createTRPCRouter({
       });
     }),
 
-  updateCollectedData: publicProcedure
-    .input(updateConversationSchema.pick({ id: true, collectedData: true }))
+  updateFormFieldResponses: publicProcedure
+    .input(
+      updateConversationSchema.pick({ id: true, formFieldResponses: true }),
+    )
     .mutation(async ({ input, ctx }) => {
       const [result] = await ctx.db
         .update(conversation)
         .set({
-          collectedData: input.collectedData,
+          formFieldResponses: input.formFieldResponses,
           updatedAt: new Date(),
         })
         .where(eq(conversation.id, input.id))
@@ -355,7 +363,7 @@ export const conversationRouter = createTRPCRouter({
           finishedAt: true,
           isInProgress: true,
           createdAt: true,
-          collectedData: true,
+          formFieldResponses: true,
         },
         where: and(...filters),
       });
@@ -380,12 +388,12 @@ export const conversationRouter = createTRPCRouter({
           }
 
           // Check for bounce - conversations with no collected data
-          const hasNoCollectedData =
-            !conv.collectedData ||
-            conv.collectedData.filter((i) => i.fieldValue !== null).length ===
-              0;
+          const hasNoFormFieldResponses =
+            !conv.formFieldResponses ||
+            conv.formFieldResponses.filter((i) => i.fieldValue !== null)
+              .length === 0;
 
-          if (hasNoCollectedData) {
+          if (hasNoFormFieldResponses) {
             acc.bouncedCount++;
           }
 
@@ -433,7 +441,7 @@ export const conversationRouter = createTRPCRouter({
           eq(conversation.formId, formId),
         ),
         columns: {
-          collectedData: true,
+          formFieldResponses: true,
         },
       });
 
@@ -449,8 +457,8 @@ export const conversationRouter = createTRPCRouter({
 
       // Process all conversations to count options for multiple choice fields
       for (const conv of conversations) {
-        if (conv.collectedData?.length) {
-          for (const field of conv.collectedData) {
+        if (conv.formFieldResponses?.length) {
+          for (const field of conv.formFieldResponses) {
             // Check if this is a multiple choice field with a value
             if (
               field.fieldConfiguration?.inputType === "multipleChoice" &&
@@ -516,7 +524,7 @@ export const conversationRouter = createTRPCRouter({
           eq(conversation.formId, formId),
         ),
         columns: {
-          collectedData: true,
+          formFieldResponses: true,
         },
       });
 
@@ -533,8 +541,8 @@ export const conversationRouter = createTRPCRouter({
 
       // Process all conversations to collect rating data
       for (const conv of conversations) {
-        if (conv.collectedData?.length) {
-          for (const field of conv.collectedData) {
+        if (conv.formFieldResponses?.length) {
+          for (const field of conv.formFieldResponses) {
             // Check if this is a rating field with a value
             if (
               field.fieldConfiguration?.inputType === "rating" &&
@@ -618,21 +626,23 @@ export const conversationRouter = createTRPCRouter({
 
       const existConversationsFormatted = existConversations.map(
         (conversation) => {
-          const collectedData = conversation.collectedData.map((collection) => {
-            if (collection.fieldConfiguration === undefined) {
-              return collection;
-            }
+          const formFieldResponses = conversation.formFieldResponses.map(
+            (collection) => {
+              if (collection.fieldConfiguration === undefined) {
+                return collection;
+              }
 
-            return {
-              ...collection,
-              fieldConfiguration: restoreDateFields(
-                collection.fieldConfiguration,
-              ),
-            };
-          });
+              return {
+                ...collection,
+                fieldConfiguration: restoreDateFields(
+                  collection.fieldConfiguration,
+                ),
+              };
+            },
+          );
           return {
             ...conversation,
-            collectedData,
+            formFieldResponses,
             transcript: conversation.transcript ?? [],
           };
         },
@@ -669,7 +679,7 @@ export const conversationRouter = createTRPCRouter({
       // Generate insights
       const insights = await generateConversationInsights(
         conversationData.transcript,
-        conversationData.collectedData,
+        conversationData.formFieldResponses,
       );
 
       // Update conversation with insights

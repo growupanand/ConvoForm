@@ -1,18 +1,19 @@
 import {
-  type CollectedData,
-  type CollectedFilledData,
+  type Conversation,
+  type FormFieldResponses,
   extraStreamDataSchema,
   restoreDateFields,
   selectConversationSchema,
   transcriptSchema,
 } from "@convoform/db/src/schema";
 import { enforceRateLimit } from "@convoform/rate-limiter";
+import { createUIMessageStream, createUIMessageStreamResponse } from "ai";
 import type { NextRequest } from "next/server";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { sendErrorMessage, sendErrorResponse } from "@/lib/errorHandlers";
 import getIP from "@/lib/getIP";
-import { ConversationService } from "@convoform/ai";
+import { ConversationServiceV5 as ConversationService } from "@convoform/ai";
 
 export const runtime = "edge";
 
@@ -29,11 +30,14 @@ export const requestSchema = selectConversationSchema
     formOverview: true,
     finishedAt: true,
     formId: true,
-    collectedData: true,
+    formFieldResponses: true,
     id: true,
   })
   .merge(extraStreamDataSchema.pick({ currentField: true }))
-  .extend({ transcript: transcriptSchema.array().min(1) });
+  .extend({
+    transcript: transcriptSchema.array().min(0), // Allow empty transcript for initial question
+    isInitialRequest: z.boolean().optional(), // Flag to indicate if this is the first request
+  });
 
 export async function POST(
   req: NextRequest,
@@ -41,7 +45,8 @@ export async function POST(
 ) {
   try {
     const { formId } = await routeContextSchema.parse(context).params;
-    const { currentField, ...conversation } = await getParsedRequestJson(req);
+    const { currentField, isInitialRequest, ...conversation } =
+      await getParsedRequestJson(req);
 
     if (conversation.formId !== formId) {
       return sendErrorMessage("Conversation not found", 400);
@@ -51,9 +56,6 @@ export async function POST(
       return sendErrorMessage("Conversation already finished", 400);
     }
 
-    const isInitialMessage = currentField === undefined;
-
-    const conversationService = new ConversationService();
     const clientIp = getIP(req);
 
     if (clientIp) {
@@ -62,99 +64,98 @@ export async function POST(
       await enforceRateLimit.AI_PUBLIC_SESSION();
     }
 
-    if (!isInitialMessage) {
-      // Try to extract the answer from the current conversation messages, and Update conversation with the extracted answer
-      const {
-        isAnswerExtracted,
-        extractedAnswer,
-        reasonForFailure,
-        otherFieldsData,
-      } = await conversationService.extractAnswer({
-        ...conversation,
-        currentField: currentField,
-      });
+    // Determine if this is an initial request or answer processing
+    const isInitial = isInitialRequest || conversation.transcript.length === 0;
 
-      // If user provided valid answer for current field
-      if (isAnswerExtracted) {
-        const updatedFieldsData = conversation.collectedData.map((field) => {
-          if (field.fieldName === currentField.fieldName) {
-            return {
-              ...field,
-              fieldValue: extractedAnswer,
-            };
-          }
-          return field;
-        });
+    let userAnswer: string | undefined;
+    let currentFieldToProcess: typeof currentField;
 
-        conversation.collectedData = updatedFieldsData;
+    if (!isInitial) {
+      // For answer processing, get the user's answer from the last transcript message
+      const lastMessage =
+        conversation.transcript[conversation.transcript.length - 1];
+      if (!lastMessage || lastMessage.role !== "user") {
+        return sendErrorMessage("Invalid request: missing user message", 400);
       }
+      userAnswer = lastMessage.content;
 
-      // If user provided valid answer for other than current field (E.g user provided answer for previous field)
-      if (
-        isAnswerExtracted === false &&
-        reasonForFailure === "wrongField" &&
-        otherFieldsData.length > 0
-      ) {
-        // update valid fields data only
-        const validFields = conversation.collectedData.map(
-          ({ fieldName }) => fieldName,
-        );
-        const validOtherFieldsData = otherFieldsData.filter(({ fieldName }) =>
-          validFields.includes(fieldName),
-        );
-        if (validOtherFieldsData.length > 0) {
-          const updatedFieldsData = [...conversation.collectedData].map(
-            (field) => {
-              const updatedFieldValue = validOtherFieldsData.find(
-                (f) => f.fieldName === field.fieldName,
-              )?.fieldValue;
-              if (typeof updatedFieldValue === "string") {
-                return {
-                  ...field,
-                  fieldValue: updatedFieldValue,
-                };
-              }
-              return field;
-            },
-          );
-          conversation.collectedData = updatedFieldsData;
-        }
+      // Find the current field that needs to be processed
+      currentFieldToProcess =
+        currentField ||
+        conversation.formFieldResponses.find((field) => !field.fieldValue);
+
+      if (!currentFieldToProcess) {
+        return sendErrorMessage("No field to process", 400);
       }
     }
 
-    const nextRequiredField = conversationService.getNextEmptyField(
-      conversation.collectedData,
-    );
-    const isFormSubmissionFinished = nextRequiredField === undefined;
-
-    const { data } = extraStreamDataSchema.safeParse({
+    // Create a complete conversation object with required fields
+    const fullConversation: Conversation = {
       ...conversation,
-      collectedData: conversation.collectedData,
-      currentField: nextRequiredField,
-      isFormSubmissionFinished,
-    });
-    const extraCustomStreamData = data ?? {};
+      name: `Conversation ${conversation.id}`,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      organizationId: "temp-org-id", // This should come from the form or request context
+      isInProgress: !conversation.finishedAt,
+      metaData: {
+        ipAddress: getIP(req) || "unknown",
+        userAgent: {
+          ua: req.headers.get("user-agent") || "unknown",
+        },
+      },
+    };
 
-    if (isFormSubmissionFinished) {
-      const { conversationName } =
-        await conversationService.generateConversationName({
-          formOverview: conversation.formOverview,
-          fieldsWithData: conversation.collectedData as CollectedFilledData[],
+    // Create a UI message stream that combines AI text generation with conversation updates
+    const combinedStream = createUIMessageStream({
+      execute: async ({ writer }) => {
+        // Create conversation service with callback to send updated conversation data
+        const conversationService = new ConversationService(fullConversation, {
+          onUpdateConversation: async (updatedConversation: Conversation) => {
+            console.log(`Conversation ${updatedConversation.id} updated`);
+
+            // Send conversation updates as custom data through the stream
+            writer.write({
+              type: "data-conversation",
+              data: {
+                conversation: updatedConversation,
+                currentField: updatedConversation.formFieldResponses.find(
+                  (field) => !field.fieldValue,
+                ),
+                formFieldResponses: updatedConversation.formFieldResponses,
+                isFormSubmissionFinished:
+                  updatedConversation.finishedAt !== null,
+              },
+            });
+          },
         });
 
-      extraCustomStreamData.conversationName = conversationName;
+        // Handle both initial question generation and answer processing
+        let aiMessageStream: Awaited<
+          ReturnType<typeof conversationService.generateInitialQuestion>
+        >;
 
-      return conversationService.generateEndMessage({
-        extraCustomStreamData,
-      });
-    }
+        if (isInitial) {
+          // Generate initial question for the first field
+          aiMessageStream = await conversationService.generateInitialQuestion();
+        } else {
+          // Process user answer and orchestrate conversation
+          if (!userAnswer || !currentFieldToProcess) {
+            throw new Error("Missing required data for answer processing");
+          }
+          aiMessageStream = await conversationService.process(
+            userAnswer,
+            currentFieldToProcess,
+          );
+        }
 
-    return conversationService.generateQuestion({
-      formOverview: conversation.formOverview,
-      currentField: nextRequiredField,
-      collectedData: conversation.collectedData,
-      extraCustomStreamData,
-      transcript: conversation.transcript,
+        // Merge the AI text generation stream with our custom data stream
+        writer.merge(aiMessageStream);
+      },
+    });
+
+    // Return the combined UIMessageStream using createUIMessageStreamResponse
+    return createUIMessageStreamResponse({
+      stream: combinedStream,
     });
   } catch (error) {
     return sendErrorResponse(error);
@@ -172,18 +173,18 @@ export const getParsedRequestJson = async (req: NextRequest) => {
     );
   }
 
-  const parsedCollectedData = [] as CollectedData[];
+  const parsedFormFieldResponses = [] as FormFieldResponses[];
 
-  for (const field of requestJson.collectedData) {
+  for (const field of requestJson.formFieldResponses) {
     const parsedFieldConfiguration = restoreDateFields(
       field.fieldConfiguration,
     );
-    parsedCollectedData.push({
+    parsedFormFieldResponses.push({
       ...field,
       fieldConfiguration: parsedFieldConfiguration,
     });
   }
-  requestJson.collectedData = parsedCollectedData;
+  requestJson.formFieldResponses = parsedFormFieldResponses;
 
   return requestSchema.parse(requestJson);
 };

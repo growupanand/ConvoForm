@@ -47,8 +47,6 @@
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
-    "@convoform/common": "../common",
-    "@convoform/db": "../db",
     "@convoform/tsconfig": "../tsconfig",
     "@convoform/websocket-client": "../websocket-client",
     "@types/react": "catalog:",
@@ -57,7 +55,9 @@
   },
   "peerDependencies": {
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "@ai-sdk/react": "catalog:",
+    "ai": "catalog:"
   },
   "funding": {
     "type": "individual",
