@@ -6,6 +6,7 @@ import { sendErrorMessage, sendErrorResponse } from "@/lib/errorHandlers";
 import { api } from "@/trpc/server";
 import {
   type FormFieldResponses,
+  coreConversationSchema,
   restoreDateFields,
 } from "@convoform/db/src/schema";
 import type { NextRequest } from "next/server";
@@ -35,8 +36,12 @@ export async function POST(
     await checkNThrowErrorFormSubmissionLimit(formWithFormFields);
 
     const newConversation = await getORCreateConversation(formWithFormFields);
+    const coreConversation = coreConversationSchema.parse({
+      ...newConversation,
+      form: formWithFormFields,
+    });
 
-    return Response.json(newConversation);
+    return Response.json(coreConversation);
   } catch (error) {
     return sendErrorResponse(error);
   }

@@ -1,6 +1,7 @@
 import { and, count, eq, inArray } from "@convoform/db";
 import {
   conversation,
+  form,
   insertConversationSchema,
   patchConversationSchema,
   respondentMetadataSchema,
@@ -175,6 +176,30 @@ export const conversationRouter = createTRPCRouter({
 
       return result?.value;
     }),
+  getOrganizationFormsCountByFormId: publicProcedure
+    .input(
+      z.object({
+        formId: z.string().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      // Count all conversations for all forms in the same organization as the input form
+      const [result] = await ctx.db
+        .select({ value: count() })
+        .from(conversation)
+        .innerJoin(form, eq(conversation.formId, form.id))
+        .where(
+          eq(
+            form.organizationId,
+            ctx.db
+              .select({ organizationId: form.organizationId })
+              .from(form)
+              .where(eq(form.id, input.formId)),
+          ),
+        );
+
+      return result?.value;
+    }),
   getFormResponsesData: authProtectedProcedure
     .input(
       z.object({
@@ -324,7 +349,12 @@ export const conversationRouter = createTRPCRouter({
   patch: publicProcedure
     .input(patchConversationSchema)
     .mutation(async ({ input, ctx }) => {
-      const { id, ...updatedData } = input;
+      const {
+        id,
+        createdAt: _createdAt,
+        updatedAt: _updatedAt,
+        ...updatedData
+      } = input;
       const [updatedConversation] = await ctx.db
         .update(conversation)
         .set({

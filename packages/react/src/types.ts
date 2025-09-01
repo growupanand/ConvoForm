@@ -1,5 +1,6 @@
 import type { ChatStatus } from "ai";
-import type { ConversationServiceUIMessage, CoreConversation } from "../../ai";
+import type { ConversationServiceUIMessage } from "../../ai";
+import type { CoreConversation } from "../../db/src/schema";
 
 /**
  *
@@ -60,7 +61,7 @@ export type EventHandlers = {
 
 export type UseConvoFormProps = EventHandlers & {
   formId: string;
-  apiEndpoint?: string;
+  apiDomain?: string;
 };
 
 export type UseConvoFormReturnType = State & Methods;

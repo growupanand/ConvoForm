@@ -155,12 +155,16 @@ export const selectConversationSchema = createSelectSchema(conversation, {
   formFieldResponses: formFieldResponsesSchema.array().min(1),
   isInProgress: z.boolean(),
   metaData: respondentMetadataSchema,
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
 });
 export const updateConversationSchema = insertConversationSchema.extend({
   id: z.string().min(1),
   transcript: transcriptSchema.array().min(1),
   isInProgress: z.boolean(),
   finishedAt: z.coerce.date().nullable(),
+  createdAt: z.coerce.date().nullable().optional(),
+  updatedAt: z.coerce.date().nullable().optional(),
 });
 
 export const patchConversationSchema = insertConversationSchema
@@ -168,6 +172,8 @@ export const patchConversationSchema = insertConversationSchema
   .extend({
     id: z.string().min(1),
     finishedAt: z.coerce.date().nullable().optional(),
+    createdAt: z.coerce.date().nullable().optional(),
+    updatedAt: z.coerce.date().nullable().optional(),
   });
 
 export type Conversation = z.infer<typeof selectConversationSchema>;
@@ -206,3 +212,13 @@ export const createConversationSchema = selectFormSchema
   });
 
 export type CreateConversation = z.infer<typeof createConversationSchema>;
+
+// ======================================================
+// ---------------- CONVERSATION SERVICE ----------------
+// ======================================================
+
+export const coreConversationSchema = selectConversationSchema.extend({
+  form: selectFormSchema,
+});
+
+export type CoreConversation = z.infer<typeof coreConversationSchema>;

@@ -1,4 +1,4 @@
-import type { CoreConversation } from "../types";
+import type { CoreConversation } from "@convoform/db/src/schema";
 
 export class ConversationManager {
   private conversation: CoreConversation;

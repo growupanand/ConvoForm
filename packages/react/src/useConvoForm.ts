@@ -4,7 +4,8 @@ import { useChat } from "@ai-sdk/react";
 import { sendMessage as sendWebsocketMessage } from "@convoform/websocket-client";
 import { DefaultChatTransport } from "ai";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { CoreConversation, CoreServiceUIMessage } from "../../ai";
+import type { CoreServiceUIMessage } from "../../ai";
+import type { CoreConversation } from "../../db/src/schema";
 import { API_DOMAIN } from "./constants";
 import type { UseConvoFormProps, UseConvoFormReturnType } from "./types";
 
@@ -12,10 +13,11 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
   const [conversation, setConversation] = useState<CoreConversation | null>(
     null,
   );
+
   const { setMessages, sendMessage, messages, status, error, clearError } =
     useChat<CoreServiceUIMessage>({
       transport: new DefaultChatTransport({
-        api: props.apiEndpoint ?? `${API_DOMAIN}/api/conversation`,
+        api: `${props.apiDomain ?? API_DOMAIN}/api/conversation`,
       }),
       onData: async (dataPart) => {
         if (dataPart.type === "data-conversation") {
@@ -25,6 +27,7 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
             conversationId: updatedConversation.id,
             formId: props.formId,
           });
+          // queuePatchConversation(props.formId, updatedConversation.id, updatedConversation, props.apiDomain ?? API_DOMAIN);
         }
       },
       onError: (error) => {
@@ -81,10 +84,9 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
     return {
       formId: props.formId,
       type: isConversationInitialized ? "existing" : "new",
-      conversationId: conversation?.id,
-      currentFieldId: conversation?.currentFieldId,
+      coreConversation: conversation,
     };
-  }, [conversation?.id, props.formId, conversation?.currentFieldId]);
+  }, [conversation, props.formId]);
 
   const submitAnswer = useCallback(
     async (answerText: string) => {

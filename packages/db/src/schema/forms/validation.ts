@@ -12,9 +12,13 @@ export const insertFormSchema = createInsertSchema(form, {
   overview: z.string().min(1),
   formFieldsOrders: z.string().array(),
   endScreenCTAUrl: z.string().url().nullable().optional(),
+  createdAt: z.coerce.date().nullable().optional(),
+  updatedAt: z.coerce.date().nullable().optional(),
 });
 export const selectFormSchema = createSelectSchema(form, {
   formFieldsOrders: z.string().array(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
 });
 
 export const newFormSchema = insertFormSchema

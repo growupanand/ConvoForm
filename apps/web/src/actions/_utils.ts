@@ -71,7 +71,7 @@ export const patchConversation = async (
  * @returns
  */
 export const checkNThrowErrorFormSubmissionLimit = async (
-  form: Pick<Form, "id" | "organizationId">,
+  form: Pick<Form, "id">,
 ) => {
   // No limit for demo form
   if (form.id === "demo" || process.env.NODE_ENV === "development") {
@@ -79,15 +79,14 @@ export const checkNThrowErrorFormSubmissionLimit = async (
   }
 
   // get all conversations count for current organization
-  const totalSubmissionsCount = await api.conversation.getCountByOrganizationId(
-    {
-      organizationId: form.organizationId,
-    },
-  );
+  const totalSubmissionsCount =
+    await api.conversation.getOrganizationFormsCountByFormId({
+      formId: form.id,
+    });
 
   if (!totalSubmissionsCount) {
     console.error("Unable to get total submissions count", {
-      organizationId: form.organizationId,
+      formId: form.id,
     });
   }
 

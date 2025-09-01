@@ -1,3 +1,4 @@
+import type { CoreConversation } from "@convoform/db/src/schema";
 import { shouldSkipValidation } from "@convoform/db/src/schema/formFields/utils";
 import {
   type AsyncIterableStream,
@@ -8,7 +9,6 @@ import {
 import { extractFieldAnswer } from "../ai-actions/extractFieldAnswer";
 import { streamFieldQuestion } from "../ai-actions/streamFieldQuestion";
 import type { ConversationManager } from "../managers/conversationManager";
-import type { CoreConversation } from "../types";
 
 export type ConversationServiceUIMessage = UIMessage<
   never, // metadata type
@@ -55,8 +55,8 @@ export class ConversationService {
     }
   }
 
-  public initialize(): AsyncIterableStream<
-    InferUIMessageChunk<ConversationServiceUIMessage>
+  public async initialize(): Promise<
+    AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>>
   > {
     // First check if conversation is already initialized
     if (this.conversationManager.getConversation().transcript.length > 0) {
@@ -70,7 +70,7 @@ export class ConversationService {
       );
     }
 
-    return this.generateFieldQuestionStream(firstEmptyField, true);
+    return await this.generateFieldQuestionStream(firstEmptyField, true);
   }
 
   /**
@@ -125,32 +125,34 @@ export class ConversationService {
 
     // 1. Invalid answer: Generate and stream followup question
     if (!validatedAnswer.object.isValid || !validatedAnswer.object.answer) {
-      return this.generateFollowupQuestionStream(currentField);
+      return await this.generateFollowupQuestionStream(currentField);
     }
 
     // 2. Valid answer and next field exists: Save answer and generate and stream question for next field
-    this.conversationManager.saveFieldAnswer(
+    await this.conversationManager.saveFieldAnswer(
       currentField.id,
       validatedAnswer.object.answer,
     );
     const nextField = this.conversationManager.getNextEmptyField();
 
     if (nextField) {
-      return this.generateFieldQuestionStream(nextField);
+      return await this.generateFieldQuestionStream(nextField);
     }
 
     // 3. Valid answer and no next field: Save answer, mark conversation as complete
     await this.conversationManager.addAIMessage(this.endMessage);
     await this.conversationManager.markConversationComplete();
-    return this.generateEndConversationStream();
+    return await this.generateEndConversationStream();
   }
 
   /**
    * Generates a followup question for invalid answers
    */
-  private generateFollowupQuestionStream(
+  private async generateFollowupQuestionStream(
     currentField: CoreConversation["formFieldResponses"][number],
-  ): AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>> {
+  ): Promise<
+    AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>>
+  > {
     const streamTextResult = streamFieldQuestion(
       {
         ...this.conversationManager.getConversation(),
@@ -172,11 +174,13 @@ export class ConversationService {
   /**
    * Generates a question for the next field
    */
-  private generateFieldQuestionStream(
+  private async generateFieldQuestionStream(
     nextField: CoreConversation["formFieldResponses"][number],
     isFirstQuestion = true,
-  ): AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>> {
-    this.conversationManager.updateCurrentFieldId(nextField.id);
+  ): Promise<
+    AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>>
+  > {
+    await this.conversationManager.updateCurrentFieldId(nextField.id);
     const streamTextResult = streamFieldQuestion(
       {
         ...this.conversationManager.getConversation(),
@@ -198,27 +202,32 @@ export class ConversationService {
   /**
    * Completes the conversation and returns end message stream
    */
-  private generateEndConversationStream(): AsyncIterableStream<
-    InferUIMessageChunk<ConversationServiceUIMessage>
+  private async generateEndConversationStream(): Promise<
+    AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>>
   > {
     // Create fake end message stream
-    return createUIMessageStream<ConversationServiceUIMessage>({
-      execute: async ({ writer }) => {
-        writer.write({
-          type: "text-start",
-          id: this.streamId,
-        });
-        writer.write({
-          type: "text-delta",
-          delta: this.endMessage,
-          id: this.streamId,
-        });
-        writer.write({
-          type: "text-end",
-          id: this.streamId,
-        });
-      },
-    });
+    const fakeEndMessageStream =
+      createUIMessageStream<ConversationServiceUIMessage>({
+        execute: async ({ writer }) => {
+          writer.write({
+            type: "text-start",
+            id: this.streamId,
+          });
+          writer.write({
+            type: "text-delta",
+            delta: this.endMessage,
+            id: this.streamId,
+          });
+          writer.write({
+            type: "text-end",
+            id: this.streamId,
+          });
+        },
+      });
+
+    return fakeEndMessageStream as AsyncIterableStream<
+      InferUIMessageChunk<ConversationServiceUIMessage>
+    >;
   }
 
   /**

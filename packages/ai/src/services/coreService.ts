@@ -1,5 +1,5 @@
+import type { CoreConversation } from "@convoform/db/src/schema";
 import { ConversationManager } from "../managers/conversationManager";
-import type { CoreConversation } from "../types";
 import {
   ConversationService,
   type ConversationServiceUIMessage,

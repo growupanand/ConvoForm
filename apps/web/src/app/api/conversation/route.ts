@@ -1,20 +1,19 @@
+import { getBackendBaseUrl } from "@/lib/url";
 import {
-  checkNThrowErrorFormSubmissionLimit,
-  getORCreateConversation,
-  patchConversation,
-} from "@/actions";
-import { api } from "@/trpc/server";
-import {
-  type Conversation,
   CoreService,
   type CoreServiceUIMessage,
   createErrorStreamResponse,
   createStreamResponseWithWriter,
 } from "@convoform/ai";
-import {} from "@convoform/db/src/schema";
+import {
+  type CoreConversation,
+  coreConversationSchema,
+} from "@convoform/db/src/schema";
 import type { UIMessageStreamWriter } from "ai";
-import type { NextRequest } from "next/server";
+import { type NextRequest, after } from "next/server";
 import { z } from "zod";
+
+export const runtime = "edge";
 
 const newConversationRequestSchema = z.object({
   type: z.literal("new"),
@@ -24,9 +23,10 @@ const newConversationRequestSchema = z.object({
 const existingConversationRequestSchema = z.object({
   type: z.literal("existing"),
   formId: z.string().min(1),
-  conversationId: z.string().min(1),
   answerText: z.string().min(1),
-  currentFieldId: z.string().min(1),
+  coreConversation: coreConversationSchema.extend({
+    currentFieldId: z.string().min(1),
+  }),
 });
 
 const requestSchema = z.discriminatedUnion("type", [
@@ -39,26 +39,20 @@ export async function POST(request: NextRequest) {
     const requestBody = await request.json();
     const parsedRequestBody = await requestSchema.parseAsync(requestBody);
 
-    const formWithFormFields = await api.form.getOneWithFields({
-      id: parsedRequestBody.formId,
-    });
-
-    if (!formWithFormFields) {
-      throw new Error("Form not found");
-    }
-
-    await checkNThrowErrorFormSubmissionLimit(formWithFormFields);
-
     if (parsedRequestBody.type === "new") {
-      const newConversation = await getORCreateConversation(formWithFormFields);
+      const response = await fetch(
+        `${getBackendBaseUrl()}/api/form/${parsedRequestBody.formId}/conversations`,
+        {
+          method: "POST",
+        },
+      );
+      const responseJson = await response.json();
+      const newConversation = coreConversationSchema.parse(responseJson);
 
       return await createStreamResponseWithWriter<CoreServiceUIMessage>(
         async (writer) => {
           const coreService = new CoreService({
-            conversation: {
-              ...newConversation,
-              form: formWithFormFields,
-            },
+            conversation: newConversation,
             onUpdateConversation: createOnUpdateConversationHandler(writer),
           });
 
@@ -70,22 +64,14 @@ export async function POST(request: NextRequest) {
 
     return await createStreamResponseWithWriter<CoreServiceUIMessage>(
       async (writer) => {
-        const existConversation = await getORCreateConversation(
-          formWithFormFields,
-          parsedRequestBody.conversationId,
-        );
-
         const coreService = new CoreService({
-          conversation: {
-            ...existConversation,
-            form: formWithFormFields,
-          },
+          conversation: parsedRequestBody.coreConversation,
           onUpdateConversation: createOnUpdateConversationHandler(writer),
         });
 
         const initialConversationStream = await coreService.process(
           parsedRequestBody.answerText,
-          parsedRequestBody.currentFieldId,
+          parsedRequestBody.coreConversation.currentFieldId,
         );
         writer.merge(initialConversationStream);
       },
@@ -103,12 +89,28 @@ export async function POST(request: NextRequest) {
 function createOnUpdateConversationHandler(
   writer: UIMessageStreamWriter<CoreServiceUIMessage>,
 ) {
-  return async (updatedConversation: Conversation) => {
-    await patchConversation(updatedConversation.id, updatedConversation);
-    writer.write({
-      type: "data-conversation",
-      data: updatedConversation,
-      id: updatedConversation.id,
-    });
+  return async (updatedConversation: CoreConversation) => {
+    try {
+      after(async () => {
+        await fetch(
+          `${getBackendBaseUrl()}/api/form/${updatedConversation.formId}/conversations`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedConversation),
+          },
+        );
+      });
+
+      writer.write({
+        type: "data-conversation",
+        data: updatedConversation,
+        id: updatedConversation.id,
+      });
+    } catch (error) {
+      console.error("Error updating conversation:", error);
+    }
   };
 }
