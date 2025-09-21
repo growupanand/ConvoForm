@@ -197,6 +197,13 @@
       "when": 1756555750478,
       "tag": "0027_first_paibok",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1758467174767,
+      "tag": "0028_melodic_starbolt",
+      "breakpoints": true
     }
   ]
 }
