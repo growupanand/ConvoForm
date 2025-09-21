@@ -80,12 +80,13 @@ ${collectedFieldsContext ? `Completed data:\n${collectedFieldsContext}` : "No da
 ${conversationContext ? `Conversation summary:\n${conversationContext}` : "No conversation history."}
 
 Instructions:
-1. Create a concise name (3-8 words) that captures the essence
+1. Create a concise name (1-2 words) that captures the essence
 2. Include key identifiers like names, key topics, or form type
 3. Make it professional and informative
 4. Avoid generic terms like "conversation" or "form"
 5. Use natural language, not technical jargon
 6. Consider the form type and collected data
+7. Should be in slug format
 
 Respond with a JSON object containing:
 - "name": the generated conversation name

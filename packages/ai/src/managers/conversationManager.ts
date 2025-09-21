@@ -88,4 +88,9 @@ export class ConversationManager {
   public checkConversationIsComplete() {
     return this.conversation.finishedAt !== null;
   }
+
+  public async updateConversationName(name: string) {
+    this.conversation.name = name;
+    await this.updateConversation();
+  }
 }

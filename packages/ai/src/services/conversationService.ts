@@ -7,6 +7,7 @@ import {
   createUIMessageStream,
 } from "ai";
 import { extractFieldAnswer } from "../ai-actions/extractFieldAnswer";
+import { generateConversationName } from "../ai-actions/generateConversationName";
 import { streamFieldQuestion } from "../ai-actions/streamFieldQuestion";
 import type { ConversationManager } from "../managers/conversationManager";
 
@@ -142,6 +143,7 @@ export class ConversationService {
     // 3. Valid answer and no next field: Save answer, mark conversation as complete
     await this.conversationManager.addAIMessage(this.endMessage);
     await this.conversationManager.markConversationComplete();
+    await this.generateAndUpdateConversationName();
     return await this.generateEndConversationStream();
   }
 
@@ -239,5 +241,22 @@ export class ConversationService {
     return async () => {
       await this.conversationManager.updateConversation();
     };
+  }
+
+  public async generateAndUpdateConversationName() {
+    const conversation = this.conversationManager.getConversation();
+
+    try {
+      const result = await generateConversationName({
+        formOverview: conversation.form.overview,
+        transcript: conversation.transcript,
+        formFieldResponses: conversation.formFieldResponses,
+      });
+
+      await this.conversationManager.updateConversationName(result.object.name);
+    } catch (error) {
+      console.error("Failed to generate conversation name:", error);
+      // Don't throw error to avoid breaking conversation completion flow
+    }
   }
 }

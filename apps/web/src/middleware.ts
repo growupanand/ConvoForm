@@ -17,6 +17,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/playground(.*)",
   "/(public)/(.*)",
   "/api/test/(.*)",
+  "/api/conversation",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
