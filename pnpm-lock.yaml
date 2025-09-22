@@ -289,21 +289,12 @@ importers:
       '@ai-sdk/openai':
         specifier: 'catalog:'
         version: 2.0.0(zod@3.25.76)
-      '@convoform/common':
-        specifier: workspace:*
-        version: link:../common
       '@convoform/db':
         specifier: workspace:*
         version: link:../db
       ai:
         specifier: 'catalog:'
         version: 5.0.5(zod@3.25.76)
-      openai:
-        specifier: ^4.24.2
-        version: 4.95.1(zod@3.25.76)
-      openai-edge:
-        specifier: ^1.2.2
-        version: 1.2.2
       zod:
         specifier: 'catalog:'
         version: 3.25.76

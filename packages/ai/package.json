@@ -9,11 +9,8 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "catalog:",
-    "@convoform/common": "workspace:*",
     "@convoform/db": "workspace:*",
     "ai": "catalog:",
-    "openai": "^4.24.2",
-    "openai-edge": "^1.2.2",
     "zod": "catalog:"
   },
   "devDependencies": {
