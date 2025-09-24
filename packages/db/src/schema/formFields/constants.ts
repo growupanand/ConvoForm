@@ -1,5 +1,3 @@
-import { pgEnum } from "drizzle-orm/pg-core";
-
 export const INPUT_TYPES = [
   "text",
   "multipleChoice",
@@ -7,8 +5,6 @@ export const INPUT_TYPES = [
   "rating",
   "fileUpload",
 ] as const;
-
-export const inputTypeEnum = pgEnum("inputTypeEnum", INPUT_TYPES);
 
 type InputTypeMap = Record<
   (typeof INPUT_TYPES)[number],

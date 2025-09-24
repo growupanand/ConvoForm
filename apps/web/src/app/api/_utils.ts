@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import type { ZodSchema } from "zod";
+import type { ZodSchema } from "zod/v4";
 
 export const getRequestJSON = async <T>(
   request: NextRequest,

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export const commitCategories = ["features", "improvements", "fixes"] as const;
 

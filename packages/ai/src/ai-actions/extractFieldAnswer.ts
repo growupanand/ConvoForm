@@ -1,6 +1,6 @@
 import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
 import { generateObject } from "ai";
-import { z } from "zod/v3";
+import { z } from "zod/v4";
 import { getModelConfig } from "../config";
 import { buildConversationContextPrompt } from "../prompts/promptHelpers";
 

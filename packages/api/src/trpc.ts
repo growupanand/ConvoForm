@@ -8,7 +8,7 @@ import { isRateLimitError } from "@convoform/rate-limiter";
 import { initTRPC } from "@trpc/server";
 import { TRPC_ERROR_CODES_BY_KEY } from "@trpc/server/unstable-core-do-not-import";
 import superjson from "superjson";
-import { ZodError } from "zod";
+import { ZodError } from "zod/v4";
 
 export type QueryClientMeta = {
   allowRetry?: boolean;

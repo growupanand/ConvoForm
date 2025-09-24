@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FileText, Upload, X } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { useFormContext } from "../formContext";
 import type { InputProps } from "./";
 

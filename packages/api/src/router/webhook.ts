@@ -8,7 +8,7 @@ import {
   organizationMember,
   user,
 } from "@convoform/db/src/schema";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";

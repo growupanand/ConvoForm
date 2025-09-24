@@ -13,7 +13,7 @@ import { toast } from "@convoform/ui";
 import { Loader2, PenLine, Plus, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { z } from "zod";
+import type { z } from "zod/v4";
 
 import { api } from "@/trpc/react";
 import { GenerateFormModal } from "./generateFormModal";

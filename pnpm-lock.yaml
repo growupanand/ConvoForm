@@ -31,8 +31,8 @@ catalogs:
       specifier: 5.8.3
       version: 5.8.3
     zod:
-      specifier: ^3.25.76
-      version: 3.25.76
+      specifier: 4.1.11
+      version: 4.1.11
 
 overrides:
   '@types/react': 19.1.2
@@ -80,13 +80,13 @@ importers:
     dependencies:
       '@ai-sdk/openai':
         specifier: 'catalog:'
-        version: 2.0.0(zod@3.25.76)
+        version: 2.0.0(zod@4.1.11)
       '@ai-sdk/provider-utils':
         specifier: 3.0.7
-        version: 3.0.7(zod@3.25.76)
+        version: 3.0.7(zod@4.1.11)
       '@ai-sdk/react':
         specifier: 'catalog:'
-        version: 2.0.28(react@19.1.0)(zod@3.25.76)
+        version: 2.0.28(react@19.1.0)(zod@4.1.11)
       '@clerk/nextjs':
         specifier: ^6.14.3
         version: 6.16.0(next@15.4.0-canary.7(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -176,7 +176,7 @@ importers:
         version: 2.0.3(@aws-sdk/credential-provider-web-identity@3.848.0)
       ai:
         specifier: 'catalog:'
-        version: 5.0.5(zod@3.25.76)
+        version: 5.0.5(zod@4.1.11)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -200,7 +200,7 @@ importers:
         version: 0.2.0
       openai:
         specifier: ^4.24.2
-        version: 4.95.1(zod@3.25.76)
+        version: 4.95.1(zod@4.1.11)
       openai-edge:
         specifier: ^1.2.2
         version: 1.2.2
@@ -236,7 +236,7 @@ importers:
         version: 2.6.0
       zod:
         specifier: 'catalog:'
-        version: 3.25.76
+        version: 4.1.11
     devDependencies:
       '@convoform/tsconfig':
         specifier: workspace:*
@@ -288,16 +288,16 @@ importers:
     dependencies:
       '@ai-sdk/openai':
         specifier: 'catalog:'
-        version: 2.0.0(zod@3.25.76)
+        version: 2.0.0(zod@4.1.11)
       '@convoform/db':
         specifier: workspace:*
         version: link:../db
       ai:
         specifier: 'catalog:'
-        version: 5.0.5(zod@3.25.76)
+        version: 5.0.5(zod@4.1.11)
       zod:
         specifier: 'catalog:'
-        version: 3.25.76
+        version: 4.1.11
     devDependencies:
       '@convoform/tsconfig':
         specifier: workspace:*
@@ -319,7 +319,7 @@ importers:
         version: 4.12.0
       zod:
         specifier: 'catalog:'
-        version: 3.25.76
+        version: 4.1.11
     devDependencies:
       '@convoform/tsconfig':
         specifier: workspace:*
@@ -335,7 +335,7 @@ importers:
     dependencies:
       '@ai-sdk/openai':
         specifier: 'catalog:'
-        version: 2.0.0(zod@3.25.76)
+        version: 2.0.0(zod@4.1.11)
       '@clerk/nextjs':
         specifier: ^6.14.3
         version: 6.16.0(next@15.3.0(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -365,7 +365,7 @@ importers:
         version: 2.0.3(@aws-sdk/credential-provider-web-identity@3.848.0)
       ai:
         specifier: 'catalog:'
-        version: 5.0.5(zod@3.25.76)
+        version: 5.0.5(zod@4.1.11)
       next:
         specifier: 'catalog:'
         version: 15.3.0(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -374,7 +374,7 @@ importers:
         version: 2.2.2
       zod:
         specifier: 'catalog:'
-        version: 3.25.76
+        version: 4.1.11
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -387,7 +387,7 @@ importers:
     dependencies:
       zod:
         specifier: 'catalog:'
-        version: 3.25.76
+        version: 4.1.11
     devDependencies:
       '@convoform/tsconfig':
         specifier: workspace:*
@@ -412,10 +412,10 @@ importers:
         version: 0.41.0(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(bun-types@1.2.21(@types/react@19.1.2))(gel@2.0.2)
       drizzle-zod:
         specifier: 0.7.1
-        version: 0.7.1(drizzle-orm@0.41.0(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(bun-types@1.2.21(@types/react@19.1.2))(gel@2.0.2))(zod@3.25.76)
+        version: 0.7.1(drizzle-orm@0.41.0(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(bun-types@1.2.21(@types/react@19.1.2))(gel@2.0.2))(zod@4.1.11)
       zod:
         specifier: 'catalog:'
-        version: 3.25.76
+        version: 4.1.11
     devDependencies:
       '@convoform/tsconfig':
         specifier: workspace:*
@@ -471,7 +471,7 @@ importers:
         version: 0.0.1
       zod:
         specifier: 'catalog:'
-        version: 3.25.76
+        version: 4.1.11
     devDependencies:
       '@convoform/tsconfig':
         specifier: workspace:*
@@ -506,10 +506,10 @@ importers:
     dependencies:
       '@ai-sdk/react':
         specifier: 'catalog:'
-        version: 2.0.28(react@19.1.0)(zod@3.25.76)
+        version: 2.0.28(react@19.1.0)(zod@4.1.11)
       ai:
         specifier: 'catalog:'
-        version: 5.0.5(zod@3.25.76)
+        version: 5.0.5(zod@4.1.11)
       react:
         specifier: 'catalog:'
         version: 19.1.0
@@ -549,7 +549,7 @@ importers:
         version: 5.8.3
       zod:
         specifier: 'catalog:'
-        version: 3.25.76
+        version: 4.1.11
 
   packages/tailwind-config:
     devDependencies:
@@ -6693,68 +6693,68 @@ packages:
     peerDependencies:
       zod: ^3.24.1
 
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+  zod@4.1.11:
+    resolution: {integrity: sha512-WPsqwxITS2tzx1bzhIKsEs19ABD5vmCVa4xBo2tq/SrV4RNZtfws1EnCWQXM6yh8bD08a1idvkB5MZSBiZsjwg==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
 
-  '@ai-sdk/gateway@1.0.15(zod@3.25.76)':
+  '@ai-sdk/gateway@1.0.15(zod@4.1.11)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.7(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 3.0.7(zod@4.1.11)
+      zod: 4.1.11
 
-  '@ai-sdk/gateway@1.0.3(zod@3.25.76)':
+  '@ai-sdk/gateway@1.0.3(zod@4.1.11)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.1(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 3.0.1(zod@4.1.11)
+      zod: 4.1.11
 
-  '@ai-sdk/openai@2.0.0(zod@3.25.76)':
+  '@ai-sdk/openai@2.0.0(zod@4.1.11)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.0(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 3.0.0(zod@4.1.11)
+      zod: 4.1.11
 
-  '@ai-sdk/provider-utils@3.0.0(zod@3.25.76)':
-    dependencies:
-      '@ai-sdk/provider': 2.0.0
-      '@standard-schema/spec': 1.0.0
-      eventsource-parser: 3.0.3
-      zod: 3.25.76
-      zod-to-json-schema: 3.24.6(zod@3.25.76)
-
-  '@ai-sdk/provider-utils@3.0.1(zod@3.25.76)':
+  '@ai-sdk/provider-utils@3.0.0(zod@4.1.11)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@standard-schema/spec': 1.0.0
       eventsource-parser: 3.0.3
-      zod: 3.25.76
-      zod-to-json-schema: 3.24.6(zod@3.25.76)
+      zod: 4.1.11
+      zod-to-json-schema: 3.24.6(zod@4.1.11)
 
-  '@ai-sdk/provider-utils@3.0.7(zod@3.25.76)':
+  '@ai-sdk/provider-utils@3.0.1(zod@4.1.11)':
+    dependencies:
+      '@ai-sdk/provider': 2.0.0
+      '@standard-schema/spec': 1.0.0
+      eventsource-parser: 3.0.3
+      zod: 4.1.11
+      zod-to-json-schema: 3.24.6(zod@4.1.11)
+
+  '@ai-sdk/provider-utils@3.0.7(zod@4.1.11)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@standard-schema/spec': 1.0.0
       eventsource-parser: 3.0.6
-      zod: 3.25.76
+      zod: 4.1.11
 
   '@ai-sdk/provider@2.0.0':
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/react@2.0.28(react@19.1.0)(zod@3.25.76)':
+  '@ai-sdk/react@2.0.28(react@19.1.0)(zod@4.1.11)':
     dependencies:
-      '@ai-sdk/provider-utils': 3.0.7(zod@3.25.76)
-      ai: 5.0.28(zod@3.25.76)
+      '@ai-sdk/provider-utils': 3.0.7(zod@4.1.11)
+      ai: 5.0.28(zod@4.1.11)
       react: 19.1.0
       swr: 2.3.3(react@19.1.0)
       throttleit: 2.1.0
     optionalDependencies:
-      zod: 3.25.76
+      zod: 4.1.11
 
   '@alloc/quick-lru@5.2.0': {}
 
@@ -9672,21 +9672,21 @@ snapshots:
     dependencies:
       humanize-ms: 1.2.1
 
-  ai@5.0.28(zod@3.25.76):
+  ai@5.0.28(zod@4.1.11):
     dependencies:
-      '@ai-sdk/gateway': 1.0.15(zod@3.25.76)
+      '@ai-sdk/gateway': 1.0.15(zod@4.1.11)
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.7(zod@3.25.76)
+      '@ai-sdk/provider-utils': 3.0.7(zod@4.1.11)
       '@opentelemetry/api': 1.9.0
-      zod: 3.25.76
+      zod: 4.1.11
 
-  ai@5.0.5(zod@3.25.76):
+  ai@5.0.5(zod@4.1.11):
     dependencies:
-      '@ai-sdk/gateway': 1.0.3(zod@3.25.76)
+      '@ai-sdk/gateway': 1.0.3(zod@4.1.11)
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.1(zod@3.25.76)
+      '@ai-sdk/provider-utils': 3.0.1(zod@4.1.11)
       '@opentelemetry/api': 1.9.0
-      zod: 3.25.76
+      zod: 4.1.11
 
   ajv-formats@2.1.1(ajv@8.17.1):
     optionalDependencies:
@@ -10279,10 +10279,10 @@ snapshots:
       bun-types: 1.2.21(@types/react@19.1.2)
       gel: 2.0.2
 
-  drizzle-zod@0.7.1(drizzle-orm@0.41.0(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(bun-types@1.2.21(@types/react@19.1.2))(gel@2.0.2))(zod@3.25.76):
+  drizzle-zod@0.7.1(drizzle-orm@0.41.0(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(bun-types@1.2.21(@types/react@19.1.2))(gel@2.0.2))(zod@4.1.11):
     dependencies:
       drizzle-orm: 0.41.0(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(bun-types@1.2.21(@types/react@19.1.2))(gel@2.0.2)
-      zod: 3.25.76
+      zod: 4.1.11
 
   dunder-proto@1.0.1:
     dependencies:
@@ -11966,7 +11966,7 @@ snapshots:
 
   openai-edge@1.2.2: {}
 
-  openai@4.95.1(zod@3.25.76):
+  openai@4.95.1(zod@4.1.11):
     dependencies:
       '@types/node': 18.19.86
       '@types/node-fetch': 2.6.12
@@ -11976,7 +11976,7 @@ snapshots:
       formdata-node: 4.4.1
       node-fetch: 2.7.0
     optionalDependencies:
-      zod: 3.25.76
+      zod: 4.1.11
     transitivePeerDependencies:
       - encoding
 
@@ -13381,10 +13381,10 @@ snapshots:
 
   yoctocolors-cjs@2.1.2: {}
 
-  zod-to-json-schema@3.24.6(zod@3.25.76):
+  zod-to-json-schema@3.24.6(zod@4.1.11):
     dependencies:
-      zod: 3.25.76
+      zod: 4.1.11
 
-  zod@3.25.76: {}
+  zod@4.1.11: {}
 
   zwitch@2.0.4: {}

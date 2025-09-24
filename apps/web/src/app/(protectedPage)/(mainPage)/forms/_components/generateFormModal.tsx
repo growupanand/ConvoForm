@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, CheckCircle2, Pen, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import type { z } from "zod";
+import type { z } from "zod/v4";
 
 import Spinner from "@/components/common/spinner";
 import { useAutoHeightHook } from "@/hooks/auto-height-hook";

@@ -9,7 +9,7 @@ import {
   updateConversationSchema,
 } from "@convoform/db/src/schema";
 import { geolocation } from "@vercel/functions";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import { analytics } from "@convoform/analytics";
 import { headers } from "next/headers";

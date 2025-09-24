@@ -5,7 +5,7 @@ import {
   patchFormDesignSchema,
   selectFormDesignSchema,
 } from "@convoform/db/src/schema";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import { enforceRateLimit } from "@convoform/rate-limiter";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";

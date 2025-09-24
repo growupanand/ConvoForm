@@ -1,6 +1,6 @@
 import type { conversationInsightsSchema } from "@convoform/db/src/schema";
 import { Card, CardContent, Skeleton } from "@convoform/ui";
-import type { z } from "zod";
+import type { z } from "zod/v4";
 import {} from "./utils";
 
 type InsightsCardProps = {

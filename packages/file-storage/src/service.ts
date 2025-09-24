@@ -7,7 +7,7 @@ import {
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { getR2Client } from "./client";
 import { BETA_LIMITS, getR2Config } from "./config";
 

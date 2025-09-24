@@ -1,10 +1,10 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod";
-import { inputTypeEnum } from "./constants";
+import { z } from "zod/v4";
+import { INPUT_TYPES } from "./constants";
 import { formField } from "./formField";
 
-export const inputTypeSchema = z.enum(inputTypeEnum.enumValues);
-export type InputTypeSchema = z.infer<typeof inputTypeSchema>;
+export const inputTypeEnum = z.enum(INPUT_TYPES);
+export type InputTypeSchema = z.infer<typeof inputTypeEnum>;
 
 /**
  * ======== SCHEMAS FOR INPUT CONFIGURATION ========
@@ -182,7 +182,7 @@ export const fileUploadInputConfigSchema = z.object({
  */
 export const textFieldConfigurationSchema = z.object({
   inputType: z
-    .literal(z.enum(inputTypeEnum.enumValues).Values.text)
+    .literal(inputTypeEnum.enum.text)
     .describe(
       "Type of input field - text input for short or long text responses",
     ),
@@ -197,7 +197,7 @@ export const textFieldConfigurationSchema = z.object({
  */
 export const multipleChoiceFieldConfigurationSchema = z.object({
   inputType: z
-    .literal(z.enum(inputTypeEnum.enumValues).Values.multipleChoice)
+    .literal(inputTypeEnum.enum.multipleChoice)
     .describe(
       "Type of input field - multiple choice for selecting from predefined options",
     ),
@@ -212,7 +212,7 @@ export const multipleChoiceFieldConfigurationSchema = z.object({
  */
 export const datePickerFieldConfigurationSchema = z.object({
   inputType: z
-    .literal(z.enum(inputTypeEnum.enumValues).Values.datePicker)
+    .literal(inputTypeEnum.enum.datePicker)
     .describe(
       "Type of input field - date picker for selecting dates and optionally times",
     ),
@@ -223,7 +223,7 @@ export const datePickerFieldConfigurationSchema = z.object({
 
 export const ratingFieldConfigurationSchema = z.object({
   inputType: z
-    .literal(z.enum(inputTypeEnum.enumValues).Values.rating)
+    .literal(inputTypeEnum.enum.rating)
     .describe(
       "Type of input field - rating for collecting feedback or satisfaction scores",
     ),
@@ -239,7 +239,7 @@ export const ratingFieldConfigurationSchema = z.object({
 export const fileUploadFieldConfigurationSchema = z
   .object({
     inputType: z
-      .literal(z.enum(inputTypeEnum.enumValues).Values.fileUpload)
+      .literal(inputTypeEnum.enum.fileUpload)
       .describe(
         "Type of input field - file upload for collecting documents or images from users",
       ),

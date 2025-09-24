@@ -11,7 +11,7 @@ import {
   updateFormSchema,
 } from "@convoform/db/src/schema";
 import { fileUpload } from "@convoform/db/src/schema/fileUploads/fileUpload";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import {
   DEFAULT_FORM_DESIGN,

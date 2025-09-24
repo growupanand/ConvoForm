@@ -32,7 +32,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import type { z } from "zod";
+import type { z } from "zod/v4";
 
 import { useFormContext } from "@/components/formViewer/formContext";
 import { cn } from "@/lib/utils";

@@ -3,7 +3,7 @@ import { and, eq, gte, lt, sql, sum } from "@convoform/db";
 import { fileUpload } from "@convoform/db/src/schema";
 import { featureFlagService } from "@convoform/feature-flags";
 import { BETA_LIMITS, fileStorageService } from "@convoform/file-storage";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import { enforceRateLimit } from "@convoform/rate-limiter";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";

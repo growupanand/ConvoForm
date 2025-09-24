@@ -22,7 +22,7 @@ import { Input } from "@convoform/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import type { z } from "zod";
+import type { z } from "zod/v4";
 
 type Props = {
   formDesign: FormHookData;

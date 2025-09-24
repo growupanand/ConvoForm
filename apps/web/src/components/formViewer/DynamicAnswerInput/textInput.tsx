@@ -12,7 +12,7 @@ import {
 import { Textarea } from "@convoform/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import { useAutoHeightHook } from "@/hooks/auto-height-hook";
 import { useMediaQuery } from "@/hooks/use-media-query";

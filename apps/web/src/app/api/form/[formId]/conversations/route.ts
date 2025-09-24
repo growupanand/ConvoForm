@@ -10,22 +10,19 @@ import {
   restoreDateFields,
 } from "@convoform/db/src/schema";
 import type { NextRequest } from "next/server";
-import { z } from "zod";
+import { z } from "zod/v4";
 
-const routeContextSchema = z.object({
-  params: z.promise(
-    z.object({
-      formId: z.string(),
-    }),
-  ),
+const routeParamsSchema = z.object({
+  formId: z.string(),
 });
 
 export async function POST(
   _request: NextRequest,
-  context: z.infer<typeof routeContextSchema>,
+  context: { params: Promise<{ formId: string }> },
 ) {
   try {
-    const { formId } = await routeContextSchema.parse(context).params;
+    const routeParams = await context.params;
+    const { formId } = routeParamsSchema.parse(routeParams);
 
     const formWithFormFields = await api.form.getOneWithFields({ id: formId });
 
@@ -43,6 +40,7 @@ export async function POST(
 
     return Response.json(coreConversation);
   } catch (error) {
+    console.log("\n\n ------> error in form conversations route", error);
     return sendErrorResponse(error);
   }
 }

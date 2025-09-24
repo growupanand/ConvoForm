@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
 /**
  * Environment configuration schema for Cloudflare R2 storage

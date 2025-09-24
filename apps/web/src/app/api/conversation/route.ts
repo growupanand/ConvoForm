@@ -11,13 +11,14 @@ import {
 } from "@convoform/db/src/schema";
 import type { UIMessageStreamWriter } from "ai";
 import { type NextRequest, after } from "next/server";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export const runtime = "edge";
 
 const newConversationRequestSchema = z.object({
   type: z.literal("new"),
   formId: z.string().min(1),
+  coreConversation: z.null(),
 });
 
 const existingConversationRequestSchema = z.object({

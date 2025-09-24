@@ -4,7 +4,7 @@
  */
 
 import type { openai } from "@ai-sdk/openai";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 type OpenAIModelName = Parameters<typeof openai>[0];
 

@@ -32,7 +32,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Info } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import type { z } from "zod";
+import type { z } from "zod/v4";
 
 import { ConfirmAction } from "@/components/common/confirmAction";
 import { useAutoHeightHook } from "@/hooks/auto-height-hook";

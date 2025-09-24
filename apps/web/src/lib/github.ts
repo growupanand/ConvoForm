@@ -1,4 +1,4 @@
-import * as z from "zod";
+import * as z from "zod/v4";
 
 const schema = z.object({
   stargazers_count: z.number(),

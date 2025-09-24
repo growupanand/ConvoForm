@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export const sendErrorResponse = (error: any) => {
   if (error instanceof z.ZodError) {
