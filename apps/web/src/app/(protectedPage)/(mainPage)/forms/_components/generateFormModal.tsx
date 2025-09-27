@@ -1,100 +1,88 @@
 "use client";
 
 import {
-  aiGeneratedFormSchema,
-  generateFormSchema,
-} from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@convoform/ui";
-import { Textarea } from "@convoform/ui";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, CheckCircle2, Pen, Sparkles } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import type { z } from "zod/v4";
-
-import Spinner from "@/components/common/spinner";
-import { useAutoHeightHook } from "@/hooks/auto-height-hook";
-import { apiClient } from "@/lib/apiClient";
-import {
+  Button,
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  Form,
 } from "@convoform/ui";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@convoform/ui";
-import type { HandleCreateForm } from "./createFormButton";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Sparkles } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
 
-type Props = {
-  onFormGenerated: HandleCreateForm;
-  isCreatingForm: boolean;
-  open: boolean;
-  setOpen: (open: boolean) => void;
-};
+import { api } from "@/trpc/react";
 
-type State = {
-  isGeneratingForm: boolean;
-  isGeneratingFormData: boolean;
-  isSavingForm: boolean;
-  isGeneratedForm: boolean;
-};
+// Import our new components
+import { FieldReviewStep } from "./generateFormModal/FieldReviewStep";
+import { FormInput } from "./generateFormModal/FormInput";
+import { ProgressSteps } from "./generateFormModal/ProgressSteps";
+import { StatusCards } from "./generateFormModal/StatusCards";
+import { TemplateSelection } from "./generateFormModal/TemplateSelection";
+import { initialState } from "./generateFormModal/constants";
+import type {
+  GenerateFormModalProps,
+  GeneratedField,
+  State,
+  Template,
+} from "./generateFormModal/types";
 
-const initialState = {
-  isGeneratingFormData: false,
-  isGeneratingForm: false,
-  isSavingForm: false,
-  isGeneratedForm: false,
-} as State;
+// Schema for form context input
+const generateFormSchema = z.object({
+  formOverview: z
+    .string()
+    .min(50, "Please provide at least 50 characters")
+    .max(500, "Description must be under 500 characters"),
+});
 
-const formGenerationTemplates = [
-  {
-    name: "Job application form",
-    description:
-      "This is job application form for the role of full stack engineer. We required at least 2 years of work experience.",
-  },
-  {
-    name: "Contact form",
-    description:
-      "This is an contact form, where customer can contact us. He can provide his name, email, mobile number and message.",
-  },
-  {
-    name: "Feedback form",
-    description:
-      "This is a feedback form, where customer can submit feedback for my product. I would like to know his name, contact detail and feedback.",
-  },
-];
-
-const apiEndpoint = "ai/generateForm";
+type FormInputData = z.infer<typeof generateFormSchema>;
 
 export function GenerateFormModal({
   onFormGenerated,
-  isCreatingForm,
   open,
   setOpen,
-}: Readonly<Props>) {
+  organizationId,
+}: Readonly<GenerateFormModalProps>) {
   const [state, setState] = useState<State>(initialState);
-  const {
-    isGeneratingFormData,
-    isGeneratingForm,
-    isSavingForm,
-    isGeneratedForm,
-  } = state;
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
+    null,
+  );
+  const [formContext, setFormContext] = useState<string>("");
+
+  // Load form templates from API
+  const { data: templates, isLoading: isLoadingTemplates } =
+    api.aiFormGeneration.getTemplates.useQuery();
+
+  // AI form generation mutations
+  const generateFieldsMutation =
+    api.aiFormGeneration.generateFields.useMutation();
+  const generateMetadataMutation =
+    api.aiFormGeneration.generateMetadata.useMutation();
+  const createFormMutation =
+    api.aiFormGeneration.createFormFromFields.useMutation();
+
+  const { currentStep, progress, error, generatedFields } = state;
   const isBusy =
-    isCreatingForm || isGeneratingFormData || isSavingForm || isGeneratingForm;
-  const form = useForm<z.infer<typeof generateFormSchema>>({
+    currentStep !== "idle" &&
+    currentStep !== "completed" &&
+    currentStep !== "error";
+  const isCompleted = currentStep === "completed";
+  const hasError = currentStep === "error";
+
+  // Reset state when modal opens/closes
+  useEffect(() => {
+    if (!open) {
+      setState(initialState);
+      setSelectedTemplateId(null);
+      setFormContext("");
+    }
+  }, [open]);
+
+  const form = useForm<FormInputData>({
     resolver: zodResolver(generateFormSchema),
     defaultValues: {
       formOverview: "",
@@ -102,161 +90,242 @@ export function GenerateFormModal({
   });
 
   const formOverview = form.watch("formOverview");
-  const { inputRef } = useAutoHeightHook({ value: formOverview });
+  const characterCount = formOverview.length;
+  const isValidLength = characterCount >= 50 && characterCount <= 500;
 
-  async function onSubmit(formData: z.infer<typeof generateFormSchema>) {
-    setState({
-      ...initialState,
-      isGeneratingForm: true,
-      isGeneratingFormData: true,
-      isSavingForm: true,
-    });
+  async function onSubmit(formData: FormInputData) {
     try {
-      // Get AI generated form data to create new form
-      const response = await apiClient(apiEndpoint, {
-        method: "POST",
-        data: formData,
+      setFormContext(formData.formOverview);
+
+      // Step 1: Generate form fields
+      setState({
+        currentStep: "generating-fields",
+        progress: 10,
+        error: undefined,
       });
-      const responseJson = await response.json();
-      const newFormData = aiGeneratedFormSchema.parse(responseJson);
-      setState((cs) => ({
-        ...cs,
-        isGeneratingFormData: false,
-      }));
-      await onFormGenerated({
-        ...newFormData,
-        formFields: newFormData.formFields,
-        isAIGenerated: true,
-        isPublished: true,
+
+      const fieldsResult = await generateFieldsMutation.mutateAsync({
+        formContext: formData.formOverview,
+        maxFields: 8,
       });
-      setState((cs) => ({
-        ...cs,
-        isSavingForm: false,
-        isGeneratedForm: true,
-      }));
+
+      // Step 2: Show field review
+      setState({
+        currentStep: "reviewing-fields",
+        progress: 30,
+        error: undefined,
+        generatedFields: fieldsResult.fields,
+        selectedFields: fieldsResult.fields,
+      });
     } catch (error: any) {
       let errorMessage =
-        "This could be some server issue OR please check again provided form overview.";
-      if (error instanceof Response) {
-        const errorJson = await error.json();
-        errorMessage = errorJson?.nonFieldError || errorMessage;
+        "Failed to generate form fields. Please try again with a different description.";
+
+      if (error?.message) {
+        errorMessage = error.message;
       }
-      form.setError("formOverview", {
-        type: "manual",
-        message: errorMessage,
-      });
-      setState(initialState);
+
+      setState({ currentStep: "error", progress: 0, error: errorMessage });
     }
   }
+
+  const handleTemplateSelect = (template: Template) => {
+    form.setValue("formOverview", template.context);
+    setSelectedTemplateId(template.id);
+  };
+
+  const handleFieldsConfirmed = async (confirmedFields: GeneratedField[]) => {
+    try {
+      // Step 3: Generate form metadata
+      setState({
+        currentStep: "generating-metadata",
+        progress: 60,
+        error: undefined,
+        selectedFields: confirmedFields,
+      });
+
+      const metadataResult = await generateMetadataMutation.mutateAsync({
+        formContext,
+        selectedFields: confirmedFields,
+      });
+
+      // Step 4: Create the complete form
+      setState({
+        currentStep: "saving-form",
+        progress: 85,
+        error: undefined,
+      });
+
+      const formResult = await createFormMutation.mutateAsync({
+        formName: metadataResult.formName,
+        formDescription: metadataResult.formDescription,
+        welcomeScreenTitle: metadataResult.welcomeScreenTitle,
+        welcomeScreenMessage: metadataResult.welcomeScreenMessage,
+        endingMessage: metadataResult.endingMessage,
+        selectedFields: confirmedFields,
+        organizationId,
+      });
+
+      setState({
+        currentStep: "completed",
+        progress: 100,
+        error: undefined,
+      });
+
+      // Redirect to the new form after a brief delay
+      setTimeout(async () => {
+        if (formResult.success && formResult.form) {
+          await onFormGenerated?.({
+            ...formResult.form,
+            formFields: formResult.form.formFields || [],
+            isAIGenerated: true,
+            isPublished: false,
+          });
+        }
+      }, 1500);
+    } catch (error: any) {
+      let errorMessage = "Failed to generate form. Please try again.";
+
+      if (error?.message) {
+        errorMessage = error.message;
+      }
+
+      setState({ currentStep: "error", progress: 0, error: errorMessage });
+    }
+  };
+
+  const handleBackToEdit = () => {
+    setState({
+      currentStep: "idle",
+      progress: 0,
+      error: undefined,
+      generatedFields: undefined,
+      selectedFields: undefined,
+    });
+  };
+
+  const handleRetry = () => {
+    setState(initialState);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <Dialog
       open={open}
-      onOpenChange={isGeneratingFormData ? undefined : setOpen}
+      onOpenChange={
+        isBusy && currentStep !== "reviewing-fields"
+          ? undefined
+          : (open) => {
+              setOpen(open);
+              if (!open) {
+                form.reset();
+                setState(initialState);
+                setSelectedTemplateId(null);
+                setFormContext("");
+              }
+            }
+      }
     >
-      <DialogContent>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="text-brand-500" /> Generate by AI
+            <Sparkles className="text-brand-500" /> Generate Form with AI
           </DialogTitle>
         </DialogHeader>
-        {isBusy && (
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2">
-              {isGeneratingFormData ? (
-                <Spinner />
-              ) : (
-                <Check className="text-brand-500" />
-              )}
-              Generate fields
-            </div>
-            <div className="flex items-center gap-2">
-              {isSavingForm ? (
-                <Spinner />
-              ) : (
-                <Check className="text-brand-500" />
-              )}
-              Save form
-            </div>
-          </div>
-        )}
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-3">
-            {!isBusy && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="formOverview"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormDescription>
-                        Form fields will be auto-generated based on your brief
-                        description
-                      </FormDescription>
-                      <FormMessage />
-                      <FormControl>
-                        <Textarea
-                          {...field}
-                          maxLength={500}
-                          rows={5}
-                          className="overflow-hidden"
-                          placeholder="Explain here or choose one of the templates"
-                          ref={(e) => {
-                            field.ref(e);
-                            inputRef.current = e;
-                          }}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <div className="flex items-center mb-4">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline">
-                        <Pen className="mr-2 size-4" />
-                        Choose Template
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent side="right" align="start">
-                      <DropdownMenuGroup>
-                        {formGenerationTemplates.map(
-                          ({ name, description }) => (
-                            <DropdownMenuItem
-                              key={name}
-                              className="cursor-pointer"
-                              onClick={() => {
-                                form.setValue("formOverview", description);
-                              }}
-                            >
-                              {name}
-                            </DropdownMenuItem>
-                          ),
-                        )}
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </>
-            )}
+        <AnimatePresence mode="wait">
+          {/* Progress and Status Steps */}
+          {(currentStep === "generating-fields" ||
+            currentStep === "generating-metadata" ||
+            currentStep === "saving-form") && (
+            <motion.div
+              key="progress"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-6"
+            >
+              <ProgressSteps currentStep={currentStep} progress={progress} />
+              <StatusCards currentStep={currentStep} />
+            </motion.div>
+          )}
 
-            {isGeneratedForm && (
-              <div className="flex items-center justify-center gap-2">
-                <CheckCircle2 className="size-6 fill-green-100 stroke-green-500" />
-                <span>Generated form successfully</span>
-              </div>
-            )}
+          {/* Field Review Step */}
+          {currentStep === "reviewing-fields" && generatedFields && (
+            <FieldReviewStep
+              key="review"
+              fields={generatedFields}
+              onFieldsConfirmed={handleFieldsConfirmed}
+              onBack={handleBackToEdit}
+            />
+          )}
 
-            {!isGeneratedForm && (
-              <Button type="submit" disabled={isBusy}>
-                <span>
-                  {isGeneratingForm ? "Generating..." : "Generate Form"}
-                </span>
-              </Button>
-            )}
-          </form>
-        </Form>
+          {/* Success State */}
+          {isCompleted && (
+            <StatusCards key="success" currentStep={currentStep} />
+          )}
+
+          {/* Error State */}
+          {hasError && (
+            <StatusCards
+              key="error"
+              currentStep={currentStep}
+              error={error}
+              onRetry={handleRetry}
+              onClose={handleClose}
+            />
+          )}
+
+          {/* Initial Form */}
+          {currentStep === "idle" && (
+            <motion.div
+              key="form"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6"
+                >
+                  <TemplateSelection
+                    templates={templates}
+                    isLoading={isLoadingTemplates}
+                    selectedTemplateId={selectedTemplateId}
+                    onTemplateSelect={handleTemplateSelect}
+                  />
+
+                  <FormInput form={form} characterCount={characterCount} />
+
+                  {/* Generate Button */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button
+                      type="submit"
+                      disabled={!isValidLength || isBusy}
+                      className="flex-1"
+                      size="lg"
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Generate Form with AI
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setOpen(false)}
+                      size="lg"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </DialogContent>
     </Dialog>
   );

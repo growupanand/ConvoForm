@@ -1,9 +1,6 @@
-import {
-  type CoreConversation,
-  CoreService,
-  type CoreServiceUIMessage,
-} from "@convoform/ai";
+import { CoreService, type CoreServiceUIMessage } from "@convoform/ai";
 import type {
+  CoreConversation,
   Form,
   FormFieldResponses,
   Transcript,

@@ -3,7 +3,7 @@ import { z } from "zod/v4";
 
 export const sendErrorResponse = (error: any) => {
   if (error instanceof z.ZodError) {
-    return NextResponse.json(error.formErrors, { status: 400 });
+    return NextResponse.json(z.treeifyError(error), { status: 400 });
   }
 
   if (error.name === "Unauthorized") {

@@ -2,7 +2,7 @@ import type {
   ExtraStreamData,
   FieldConfiguration,
 } from "@convoform/db/src/schema";
-import type { SubmitAnswer } from "@convoform/react";
+import type { UseConvoFormReturnType } from "@convoform/react";
 
 import { DatePickerInput } from "./datePickerInput";
 import { FileUploadInput } from "./fileUploadInput";
@@ -12,7 +12,7 @@ import { TextInput } from "./textInput";
 
 export type InputProps = {
   currentField: ExtraStreamData["currentField"];
-  submitAnswer: SubmitAnswer;
+  submitAnswer: UseConvoFormReturnType["submitAnswer"];
 };
 
 type Props = InputProps & {

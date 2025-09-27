@@ -32,9 +32,15 @@ export const updateFormSchema = newFormSchema.extend({
   formFieldsOrders: z.string().array().min(1),
 });
 
-export const patchFormSchema = newFormSchema.partial().extend({
-  id: z.string().min(1),
-});
+export const patchFormSchema = newFormSchema
+  .partial()
+  .omit({
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    id: z.string().min(1),
+  });
 
 export const aiGeneratedFormSchema = newFormSchema;
 export const formSubmissionSchema = updateFormSchema;

@@ -8,8 +8,11 @@
     "rootDir": "./src",             // Source code location
     "strict": true,                 // Enforce stricter type checking
     "esModuleInterop": true,        // Improved interoperability with CommonJS modules 
-    "resolveJsonModule": true       // Allow importing JSON modules 
+    "resolveJsonModule": true,      // Allow importing JSON modules 
+    "jsx": "react-jsx",             // Enable JSX support for React 17+ 
+    "allowSyntheticDefaultImports": true, // Allow synthetic default imports
+    "skipLibCheck": true            // Skip type checking of declaration files
   },
-  "include": ["src"],               // Include only the "src" directory for compilation
+  "include": ["src/**/*"],          // Include all files in src directory including types
   "exclude": ["node_modules"] // Standard exclusions
 }

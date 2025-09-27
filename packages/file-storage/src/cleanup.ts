@@ -1,4 +1,4 @@
-import { and, eq, lt } from "@convoform/db";
+import { and, count, eq, lt, sum } from "@convoform/db";
 import { db } from "@convoform/db/src/db";
 import { fileUpload } from "@convoform/db/src/schema";
 import { fileStorageService } from "./service";
@@ -45,7 +45,7 @@ export class FileCleanupService {
               updatedAt: new Date(),
             })
             .where(eq(fileUpload.id, file.id))
-            .returning({ id: true });
+            .returning();
 
           if (updatedFile) {
             // Try to delete from R2 storage
@@ -183,7 +183,7 @@ export class FileCleanupService {
     try {
       // Count expired files
       const expiredFiles = await db
-        .select({ count: db.$count() })
+        .select({ count: count() })
         .from(fileUpload)
         .where(
           and(
@@ -194,15 +194,15 @@ export class FileCleanupService {
 
       // Count deleted files
       const deletedFiles = await db
-        .select({ count: db.$count() })
+        .select({ count: count() })
         .from(fileUpload)
         .where(eq(fileUpload.isDeleted, true));
 
       // Count active files and total storage
       const activeFiles = await db
         .select({
-          count: db.$count(),
-          totalSize: db.sum(fileUpload.fileSize),
+          count: count(),
+          totalSize: sum(fileUpload.fileSize),
         })
         .from(fileUpload)
         .where(eq(fileUpload.isDeleted, false));

@@ -95,7 +95,7 @@ export function validateEnv() {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const message = error.errors.map((e) => e.message).join("\n");
+      const message = error.issues.map((e) => e.message).join("\n");
       throw new Error(`Environment validation failed:\n${message}`);
     }
     throw error;

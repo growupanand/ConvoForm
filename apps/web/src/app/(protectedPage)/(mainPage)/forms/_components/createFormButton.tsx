@@ -12,7 +12,7 @@ import {
 import { toast } from "@convoform/ui";
 import { Loader2, PenLine, Plus, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { z } from "zod/v4";
 
 import { api } from "@/trpc/react";
@@ -52,14 +52,20 @@ export default function CreateFormButton({ organizationId }: Readonly<Props>) {
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
-  const createForm = api.form.create.useMutation({
-    onSuccess: async (newForm) => {
-      router.push(`/forms/${newForm.id}`);
+
+  const handleFormCreatedSuccess = useCallback(
+    (form: { id: string }) => {
+      router.push(`/forms/${form.id}`);
     },
+    [router],
+  );
+
+  const createForm = api.form.create.useMutation({
+    onSuccess: handleFormCreatedSuccess,
   });
   const { isPending: isCreatingForm } = createForm;
 
-  const handleCreateForm: HandleCreateForm = async (formData) => {
+  const handleCreateBlankForm: HandleCreateForm = async (formData) => {
     const createFormPromise = createForm.mutateAsync({
       ...formData,
       organizationId,
@@ -92,7 +98,7 @@ export default function CreateFormButton({ organizationId }: Readonly<Props>) {
             <DropdownMenuItem
               className="cursor-pointer px-3 font-semibold font-montserrat"
               disabled={isCreatingForm}
-              onClick={() => handleCreateForm(newFormData)}
+              onClick={() => handleCreateBlankForm(newFormData)}
             >
               <PenLine size={16} className="mr-2" />
               <span>Blank form</span>
@@ -111,10 +117,10 @@ export default function CreateFormButton({ organizationId }: Readonly<Props>) {
       </DropdownMenu>
 
       <GenerateFormModal
-        isCreatingForm={isCreatingForm}
-        onFormGenerated={handleCreateForm}
         open={open}
         setOpen={setOpen}
+        organizationId={organizationId}
+        onFormGenerated={async ({ id }) => handleFormCreatedSuccess({ id })}
       />
     </div>
   );
