@@ -11,15 +11,12 @@ export interface InputProps
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, showValueCount, value, ...props }, ref) => {
+  ({ className, type, showValueCount, value, ...props }, _ref) => {
     // Create an internal ref
     const internalRef = useRef<HTMLInputElement>(null);
 
-    // Use ref passed or the internal ref fallback
-    const combinedRef = ref || internalRef;
-
     const inputValueCount =
-      (combinedRef as React.RefObject<HTMLInputElement>)?.current?.value
+      (internalRef as React.RefObject<HTMLInputElement>)?.current?.value
         .length ?? 0;
     const maxValueCount = props.maxLength ?? 0;
 
@@ -33,7 +30,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
           value={value === null ? "" : value}
           {...props}
-          ref={combinedRef}
+          ref={internalRef}
         />
         {showValueCount && (
           <Badge
