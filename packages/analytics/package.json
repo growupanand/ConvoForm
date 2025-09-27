@@ -9,7 +9,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "posthog-node": "^4.3.2",
+    "posthog-node": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

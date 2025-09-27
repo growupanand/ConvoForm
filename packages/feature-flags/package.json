@@ -18,7 +18,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "posthog-node": "^4.0.1"
+    "posthog-node": "catalog:"
   },
   "devDependencies": {
     "@convoform/tsconfig": "workspace:*",
