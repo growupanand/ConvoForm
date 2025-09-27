@@ -11,7 +11,7 @@
   "dependencies": {
     "@convoform/tailwind-config": "workspace:*",
     "@headlessui/react": "^2.2.0",
-    "@hookform/resolvers": "^3.3.2",
+    "@hookform/resolvers": "catalog:",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.5",
     "@radix-ui/react-aspect-ratio": "1.1.1",
@@ -40,7 +40,7 @@
     "next-themes": "^0.4.4",
     "react": "^19.1.0",
     "react-day-picker": "^9.5.1",
-    "react-hook-form": "^7.54.2",
+    "react-hook-form": "catalog:",
     "sonner": "^1.7.2",
     "tailwind-merge": "^2.6.0",
     "vaul": "^1.1.2"
