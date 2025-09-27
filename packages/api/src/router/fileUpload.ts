@@ -7,6 +7,7 @@ import { z } from "zod/v4";
 
 import { enforceRateLimit } from "@convoform/rate-limiter";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
+import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
 import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
 
@@ -20,7 +21,6 @@ const uploadFileInputSchema = z.object({
 
 const getDownloadUrlInputSchema = z.object({
   fileId: z.string().min(1),
-  organizationId: z.string().min(1),
 });
 
 const deleteFileInputSchema = z.object({
@@ -30,7 +30,6 @@ const deleteFileInputSchema = z.object({
 
 const getFileMetadataInputSchema = z.object({
   fileId: z.string().min(1),
-  organizationId: z.string().min(1),
 });
 
 export const fileUploadRouter = createTRPCRouter({
@@ -195,17 +194,17 @@ export const fileUploadRouter = createTRPCRouter({
     }),
 
   // Get secure download URL for a file
-  getDownloadUrl: authProtectedProcedure
+  getDownloadUrl: orgProtectedProcedure
     .input(getDownloadUrlInputSchema)
     .mutation(async ({ input, ctx }) => {
-      const { fileId, organizationId } = input;
+      const { fileId } = input;
 
       // Find file and verify ownership
       const fileRecord = await ctx.db.query.fileUpload.findFirst({
         where: (file, { eq, and }) =>
           and(
             eq(file.id, fileId),
-            eq(file.organizationId, organizationId),
+            eq(file.organizationId, ctx.auth.orgId),
             eq(file.isDeleted, false),
           ),
         columns: {
@@ -243,7 +242,7 @@ export const fileUploadRouter = createTRPCRouter({
         .from(fileUpload)
         .where(
           and(
-            eq(fileUpload.organizationId, organizationId),
+            eq(fileUpload.organizationId, ctx.auth.orgId),
             gte(fileUpload.lastDownloadedAt, currentMonth),
             lt(fileUpload.lastDownloadedAt, nextMonth),
           ),
@@ -284,7 +283,7 @@ export const fileUploadRouter = createTRPCRouter({
         ctx.analytics.track("fileUpload:view", {
           properties: {
             fileId,
-            organizationId,
+            organizationId: ctx.auth.orgId,
             fileSize: fileRecord.fileSize,
           },
         });
@@ -303,16 +302,12 @@ export const fileUploadRouter = createTRPCRouter({
   getFileMetadata: authProtectedProcedure
     .input(getFileMetadataInputSchema)
     .query(async ({ input, ctx }) => {
-      const { fileId, organizationId } = input;
+      const { fileId } = input;
 
       // Find file and verify ownership
       const fileRecord = await ctx.db.query.fileUpload.findFirst({
         where: (file, { eq, and }) =>
-          and(
-            eq(file.id, fileId),
-            eq(file.organizationId, organizationId),
-            eq(file.isDeleted, false),
-          ),
+          and(eq(file.id, fileId), eq(file.isDeleted, false)),
         columns: {
           id: true,
           originalName: true,

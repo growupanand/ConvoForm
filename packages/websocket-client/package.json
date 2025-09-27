@@ -6,9 +6,10 @@
   "scripts": {
     "type-check": "tsc --noEmit"
   },
-  "dependencies": {  },
+  "dependencies": {},
   "devDependencies": {
     "typescript": "catalog:",
-    "@convoform/tsconfig": "workspace:*"
+    "@convoform/tsconfig": "workspace:*",
+    "@types/node": "catalog:"
   }
 }

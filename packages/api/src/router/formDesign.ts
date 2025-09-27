@@ -98,9 +98,7 @@ export const formDesignRouter = createTRPCRouter({
       const { id, ...updatedData } = input;
       const [updatedForm] = await ctx.db
         .update(formDesign)
-        .set({
-          ...updatedData,
-        })
+        .set(updatedData)
         .where(eq(formDesign.id, id))
         .returning();
 

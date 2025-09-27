@@ -71,7 +71,7 @@ export async function generateFormFields(params: GenerateFormFieldsParams) {
   try {
     const maxFields = params.maxFields ?? 8; // Default limit for free tier
 
-    return await generateObject({
+    const result = await generateObject({
       model: getModelConfig(),
       temperature: 0.7,
       system: getGenerateFormFieldsSystemPrompt(params, maxFields),
@@ -79,6 +79,28 @@ export async function generateFormFields(params: GenerateFormFieldsParams) {
         "Based on the form context provided, generate appropriate form fields that will collect the necessary information. Focus on creating a user-friendly form that flows naturally.",
       schema: generateFormFieldsOutputSchema,
     });
+
+    // Post-process to ensure datePicker fields have proper ISO timestamp format
+    if (result.object?.fields) {
+      result.object.fields = result.object.fields.map((field) => {
+        if (field.fieldConfiguration?.inputType === "datePicker") {
+          const inputConfig = field.fieldConfiguration.inputConfiguration;
+
+          // Fix minDate if it's in wrong format
+          if (inputConfig?.minDate && isDateStringOnly(inputConfig.minDate)) {
+            inputConfig.minDate = convertToISOTimestamp(inputConfig.minDate);
+          }
+
+          // Fix maxDate if it's in wrong format
+          if (inputConfig?.maxDate && isDateStringOnly(inputConfig.maxDate)) {
+            inputConfig.maxDate = convertToISOTimestamp(inputConfig.maxDate);
+          }
+        }
+        return field;
+      });
+    }
+
+    return result;
   } catch (error) {
     // Edge-compatible error handling
     console.error("\n[AI Action error]: generateFormFields\n", error);
@@ -126,9 +148,10 @@ Supported Input Types and their Configuration Structure:
    - Set allowMultiple: true if users can select multiple options
 
 3. **datePicker** fields:
-   - fieldConfiguration: { inputType: "datePicker", inputConfiguration: { minDate?: Date, maxDate?: Date, includeTime?: boolean } }
+   - fieldConfiguration: { inputType: "datePicker", inputConfiguration: { minDate?: string, maxDate?: string, includeTime?: boolean } }
    - Set includeTime: true if time selection is needed
-   - Use minDate/maxDate for reasonable date ranges
+   - Use minDate/maxDate as full ISO timestamp strings (e.g., "2025-09-08T18:30:00.000Z")
+   - IMPORTANT: Always use full ISO timestamp format, not just date strings
 
 4. **rating** fields:
    - fieldConfiguration: { inputType: "rating", inputConfiguration: { maxRating?: number, lowLabel?: string, highLabel?: string, iconType?: "STAR"|"HEART"|"THUMB_UP" } }
@@ -161,4 +184,30 @@ Respond with a JSON object containing:
 CRITICAL: Each field MUST have the exact fieldConfiguration structure matching the input type as shown above.
 
 Important: Always respond with valid JSON format and ensure all fields have appropriate input types and validation rules.`;
+}
+
+/**
+ * Checks if a date string is in simple "YYYY-MM-DD" format (date only)
+ */
+function isDateStringOnly(dateString: string): boolean {
+  // Check if it matches YYYY-MM-DD format exactly
+  const dateOnlyRegex = /^\d{4}-\d{2}-\d{2}$/;
+  return dateOnlyRegex.test(dateString);
+}
+
+/**
+ * Converts a date-only string to a full ISO timestamp
+ * Input: "2023-10-01"
+ * Output: "2023-10-01T00:00:00.000Z"
+ */
+function convertToISOTimestamp(dateString: string): string {
+  try {
+    // Parse the date and create a new Date object at midnight UTC
+    const date = new Date(`${dateString}T00:00:00.000Z`);
+    return date.toISOString();
+  } catch (error) {
+    // If parsing fails, return the original string
+    console.warn(`Failed to convert date string: ${dateString}`, error);
+    return dateString;
+  }
 }

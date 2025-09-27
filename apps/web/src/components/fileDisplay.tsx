@@ -1,6 +1,5 @@
 "use client";
 
-import { useOrganization } from "@clerk/nextjs";
 import { Button } from "@convoform/ui";
 import { Card, CardContent } from "@convoform/ui";
 import { Popover, PopoverContent, PopoverTrigger } from "@convoform/ui";
@@ -21,7 +20,6 @@ interface FileDisplayProps {
 
 export function FileDisplay({ fileId, className }: FileDisplayProps) {
   const [isDownloading, setIsDownloading] = useState(false);
-  const { organization } = useOrganization();
 
   const {
     data: fileMetadata,
@@ -30,10 +28,9 @@ export function FileDisplay({ fileId, className }: FileDisplayProps) {
   } = api.fileUpload.getFileMetadata.useQuery(
     {
       fileId,
-      organizationId: organization?.id || "",
     },
     {
-      enabled: !!organization?.id && !!fileId,
+      enabled: !!fileId,
     },
   );
 
@@ -58,12 +55,11 @@ export function FileDisplay({ fileId, className }: FileDisplayProps) {
   });
 
   const handleDownload = () => {
-    if (!organization?.id || !fileId) return;
+    if (!fileId) return;
 
     setIsDownloading(true);
     downloadMutation.mutate({
       fileId,
-      organizationId: organization.id,
     });
   };
 

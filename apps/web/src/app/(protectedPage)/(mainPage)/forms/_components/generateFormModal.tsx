@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  aiGeneratedFormSchema,
-  generateFormSchema,
-} from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui";
+import { Button, toast } from "@convoform/ui";
 import {
   Form,
   FormControl,
@@ -18,11 +14,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, CheckCircle2, Pen, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import type { z } from "zod/v4";
+import { z } from "zod/v4";
 
 import Spinner from "@/components/common/spinner";
 import { useAutoHeightHook } from "@/hooks/auto-height-hook";
-import { apiClient } from "@/lib/apiClient";
+import { api } from "@/trpc/react";
+import type {
+  Form as DBForm,
+  FormField as DBFormField,
+} from "@convoform/db/src/schema";
 import {
   Dialog,
   DialogContent,
@@ -36,13 +36,22 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@convoform/ui";
-import type { HandleCreateForm } from "./createFormButton";
+
+// Schema for form context input
+const generateFormSchema = z.object({
+  formOverview: z.string().min(50).max(500),
+});
 
 type Props = {
-  onFormGenerated: HandleCreateForm;
+  onFormGenerated?: (
+    form: DBForm & {
+      formFields: DBFormField[];
+    },
+  ) => Promise<void>;
   isCreatingForm: boolean;
   open: boolean;
   setOpen: (open: boolean) => void;
+  organizationId: string;
 };
 
 type State = {
@@ -59,33 +68,28 @@ const initialState = {
   isGeneratedForm: false,
 } as State;
 
-const formGenerationTemplates = [
-  {
-    name: "Job application form",
-    description:
-      "This is job application form for the role of full stack engineer. We required at least 2 years of work experience.",
-  },
-  {
-    name: "Contact form",
-    description:
-      "This is an contact form, where customer can contact us. He can provide his name, email, mobile number and message.",
-  },
-  {
-    name: "Feedback form",
-    description:
-      "This is a feedback form, where customer can submit feedback for my product. I would like to know his name, contact detail and feedback.",
-  },
-];
-
-const apiEndpoint = "ai/generateForm";
+// Templates are now loaded from API
 
 export function GenerateFormModal({
   onFormGenerated,
   isCreatingForm,
   open,
   setOpen,
+  organizationId,
 }: Readonly<Props>) {
   const [state, setState] = useState<State>(initialState);
+
+  // Load form templates from API
+  const { data: templates, isLoading: isLoadingTemplates } =
+    api.aiFormGeneration.getTemplates.useQuery();
+
+  // AI form generation mutations
+  const generateFieldsMutation =
+    api.aiFormGeneration.generateFields.useMutation();
+  const generateMetadataMutation =
+    api.aiFormGeneration.generateMetadata.useMutation();
+  const createFormMutation =
+    api.aiFormGeneration.createFormFromFields.useMutation();
   const {
     isGeneratingFormData,
     isGeneratingForm,
@@ -111,36 +115,68 @@ export function GenerateFormModal({
       isGeneratingFormData: true,
       isSavingForm: true,
     });
+
     try {
-      // Get AI generated form data to create new form
-      const response = await apiClient(apiEndpoint, {
-        method: "POST",
-        data: formData,
+      // Step 1: Generate form fields
+      setState((cs) => ({ ...cs, isGeneratingFormData: true }));
+      const fieldsResult = await generateFieldsMutation.mutateAsync({
+        formContext: formData.formOverview,
+        maxFields: 8,
       });
-      const responseJson = await response.json();
-      const newFormData = aiGeneratedFormSchema.parse(responseJson);
+
+      // Step 2: Generate form metadata
+      const metadataResult = await generateMetadataMutation.mutateAsync({
+        formContext: formData.formOverview,
+        selectedFields: fieldsResult.fields,
+      });
+
       setState((cs) => ({
         ...cs,
         isGeneratingFormData: false,
+        isSavingForm: true,
       }));
-      await onFormGenerated({
-        ...newFormData,
-        formFields: newFormData.formFields,
-        isAIGenerated: true,
-        isPublished: true,
+
+      // Step 3: Create the complete form
+      const formResultPromise = createFormMutation.mutateAsync({
+        formName: metadataResult.formName,
+        formDescription: metadataResult.formDescription,
+        welcomeScreenTitle: metadataResult.welcomeScreenTitle,
+        welcomeScreenMessage: metadataResult.welcomeScreenMessage,
+        endingMessage: metadataResult.endingMessage,
+        selectedFields: fieldsResult.fields,
+        organizationId,
       });
+
+      toast.promise(formResultPromise, {
+        loading: "Creating form...",
+        success: "Form created successfully",
+        error: "Failed to create form",
+      });
+
+      const formResult = await formResultPromise;
       setState((cs) => ({
         ...cs,
         isSavingForm: false,
         isGeneratedForm: true,
       }));
+
+      // Redirect to the new form
+      if (formResult.success && formResult.form) {
+        await onFormGenerated?.({
+          ...formResult.form,
+          formFields: formResult.form.formFields || [],
+          isAIGenerated: true,
+          isPublished: false,
+        });
+      }
     } catch (error: any) {
       let errorMessage =
-        "This could be some server issue OR please check again provided form overview.";
-      if (error instanceof Response) {
-        const errorJson = await error.json();
-        errorMessage = errorJson?.nonFieldError || errorMessage;
+        "Failed to generate form. Please try again with a different description.";
+
+      if (error?.message) {
+        errorMessage = error.message;
       }
+
       form.setError("formOverview", {
         type: "manual",
         message: errorMessage,
@@ -221,18 +257,22 @@ export function GenerateFormModal({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent side="right" align="start">
                       <DropdownMenuGroup>
-                        {formGenerationTemplates.map(
-                          ({ name, description }) => (
-                            <DropdownMenuItem
-                              key={name}
-                              className="cursor-pointer"
-                              onClick={() => {
-                                form.setValue("formOverview", description);
-                              }}
-                            >
-                              {name}
-                            </DropdownMenuItem>
-                          ),
+                        {templates?.map((template) => (
+                          <DropdownMenuItem
+                            key={template.id}
+                            className="cursor-pointer"
+                            onClick={() => {
+                              form.setValue("formOverview", template.context);
+                            }}
+                          >
+                            {template.name}
+                          </DropdownMenuItem>
+                        )) || (
+                          <DropdownMenuItem disabled>
+                            {isLoadingTemplates
+                              ? "Loading..."
+                              : "No templates available"}
+                          </DropdownMenuItem>
                         )}
                       </DropdownMenuGroup>
                     </DropdownMenuContent>

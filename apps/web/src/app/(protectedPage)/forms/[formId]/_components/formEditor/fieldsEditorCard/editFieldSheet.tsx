@@ -249,7 +249,7 @@ export function EditFieldSheet({
                             </FormControl>
 
                             <SelectContent>
-                              {inputTypeEnum.enumValues.map((inputType) => {
+                              {inputTypeEnum.options.map((inputType) => {
                                 // Disable fileUpload option if one already exists
                                 const isDisabled =
                                   inputType === "fileUpload" &&

@@ -10,8 +10,12 @@
     "update:releaseList": "tsx ./src/scripts/updateReleaseList.ts",
     "prepare:release": "pnpm run generate:changelogs && pnpm run update:releaseList"
   },
+  "dependencies": {
+    "react": "catalog:"
+  },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@types/react": "catalog:",
     "auto-changelog": "^2.5.0",
     "tsx": "^4.7.0",
     "typescript": "catalog:",

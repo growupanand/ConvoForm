@@ -100,7 +100,7 @@ export const respondentMetadataSchema = z
   .object({
     userAgent: userAgentSchema.optional(),
     geoDetails: geoDetailsSchema.optional(),
-    submittedAt: z.date().optional(),
+    submittedAt: z.coerce.date().optional(),
     ipAddress: z.string().optional(),
     insights: conversationInsightsSchema.optional(),
   })

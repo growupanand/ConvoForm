@@ -1,4 +1,5 @@
 import { createTRPCRouter } from "../trpc";
+import { aiFormGenerationRouter } from "./aiFormGeneration";
 import { conversationRouter } from "./conversation";
 import { fileUploadRouter } from "./fileUpload";
 import { formRouter } from "./form";
@@ -28,6 +29,7 @@ export const appRouter = createTRPCRouter({
   usage: usageRouter,
   google: googleRouter,
   users: usersRouter,
+  aiFormGeneration: aiFormGenerationRouter,
 });
 
 // export type definition of API

@@ -26,6 +26,7 @@
     "lint": "dotenv -e .env -- biome lint --write . --unsafe",
     "lint-ci": "biome lint .",
     "type-check": "dotenv -e .env -- biome check --write . --unsafe --no-errors-on-unmatched",
+    "type-check:turbo": "dotenv -e .env -- biome check --write . --unsafe --no-errors-on-unmatched && dotenv -e .env -- turbo run type-check",
     "type-check-ci": "biome check .",
     "ui:add": "pnpm --filter @convoform/ui ui:add",
     "drizzle-kit": "dotenv -e .env -- pnpm --filter @convoform/db drizzle-kit",

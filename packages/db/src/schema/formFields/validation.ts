@@ -83,8 +83,14 @@ export const multipleChoiceInputConfigSchema = z.object({
  * Allows for optional min and max date constraints
  */
 export const datePickerInputConfigSchema = z.object({
-  minDate: z.date().optional().describe("Earliest selectable date (inclusive)"),
-  maxDate: z.date().optional().describe("Latest selectable date (inclusive)"),
+  minDate: z.coerce
+    .date()
+    .optional()
+    .describe("Earliest selectable date (inclusive)"),
+  maxDate: z.coerce
+    .date()
+    .optional()
+    .describe("Latest selectable date (inclusive)"),
   includeTime: z
     .boolean()
     .optional()

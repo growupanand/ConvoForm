@@ -30,7 +30,6 @@ export * from "./components/ui/collapsible";
 export * from "./components/ui/select";
 export * from "./components/ui/calendar";
 export * from "./components/ui/popover";
-export * from "./components/ui/mutedText";
 export * from "./components/ui/alert";
 export * from "./components/ui/alert-dialog";
 export * from "./components/ui/drawer";

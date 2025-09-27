@@ -22,10 +22,13 @@ export function DemoFormFieldResponsesTable({
   isInView: _,
 }: { isInView: boolean }) {
   const {
-    convoFormHook: { formFieldResponses = [], isConversationStarted },
+    convoFormHook: { conversation, conversationState },
   } = useFormContext();
 
-  const showTable = isConversationStarted && formFieldResponses.length > 0;
+  const formFieldResponses = conversation?.formFieldResponses ?? [];
+
+  const showTable =
+    conversationState === "inProgress" && formFieldResponses.length > 0;
 
   if (!showTable) return null;
 

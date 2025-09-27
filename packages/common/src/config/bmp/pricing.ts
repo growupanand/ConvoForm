@@ -42,6 +42,8 @@ export const FEATURE_NAMES = {
   FORMS_LIMIT: "Create forms",
   FILE_STORAGE: "File storage",
   AI_FORM_GENERATION: "AI form generation",
+  AI_FORM_FIELDS_PER_GENERATION: "AI form fields per generation",
+  AI_FORM_GENERATIONS_PER_MONTH: "AI form generations per month",
 } as const;
 
 /**
@@ -51,9 +53,13 @@ export const PLAN_LIMITS = {
   FREE_RESPONSES: 500,
   FREE_FORMS: 10,
   FREE_STORAGE_BYTES: mbToBytes(100),
+  FREE_AI_FIELDS_PER_GENERATION: 8,
+  FREE_AI_GENERATIONS_PER_MONTH: 5,
   PRO_RESPONSES: 10000,
   PRO_FORMS: 100,
   PRO_STORAGE_BYTES: mbToBytes(1000),
+  PRO_AI_FIELDS_PER_GENERATION: 15,
+  PRO_AI_GENERATIONS_PER_MONTH: 50,
 } as const;
 
 /**
@@ -80,9 +86,14 @@ export const freePlan: Plan = {
       featureText: `${formatFileSize(PLAN_LIMITS.FREE_STORAGE_BYTES)}`,
     },
     {
-      name: FEATURE_NAMES.AI_FORM_GENERATION,
-      featureValue: -1, // -1 indicates unlimited
-      featureText: "Unlimited",
+      name: FEATURE_NAMES.AI_FORM_FIELDS_PER_GENERATION,
+      featureValue: PLAN_LIMITS.FREE_AI_FIELDS_PER_GENERATION,
+      featureText: `${PLAN_LIMITS.FREE_AI_FIELDS_PER_GENERATION} fields per generation`,
+    },
+    {
+      name: FEATURE_NAMES.AI_FORM_GENERATIONS_PER_MONTH,
+      featureValue: PLAN_LIMITS.FREE_AI_GENERATIONS_PER_MONTH,
+      featureText: `${PLAN_LIMITS.FREE_AI_GENERATIONS_PER_MONTH} generations per month`,
     },
   ],
 };

@@ -29,7 +29,7 @@ export function FormViewer() {
 
   const isBusy = chatStatus === "streaming" || chatStatus === "submitted";
   const currentField = conversation?.formFieldResponses.find(
-    (field) => field.id === conversation?.currentFieldId,
+    (field: { id: any }) => field.id === conversation?.currentFieldId,
   );
 
   const shouldShowProgressBar = currentSection === "questions-screen";

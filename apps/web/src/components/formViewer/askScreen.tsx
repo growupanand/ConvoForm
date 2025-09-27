@@ -1,5 +1,5 @@
 import type { ExtraStreamData } from "@convoform/db/src/schema";
-import type { SubmitAnswer } from "@convoform/react";
+import type { UseConvoFormReturnType } from "@convoform/react";
 
 import { AnimatePresence, motion } from "motion/react";
 import { TypingCursor, TypingEffect } from "../common/typingEffect";
@@ -8,7 +8,7 @@ import { DynamicAnswerInput } from "./DynamicAnswerInput";
 type Props = {
   isFormBusy: boolean;
   currentQuestion: string | null;
-  submitAnswer: SubmitAnswer;
+  submitAnswer: UseConvoFormReturnType["submitAnswer"];
   currentField: ExtraStreamData["currentField"];
   fontColor?: string;
 };
