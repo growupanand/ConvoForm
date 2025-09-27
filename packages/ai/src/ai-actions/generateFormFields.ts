@@ -1,4 +1,11 @@
-import { INPUT_TYPES } from "@convoform/db/src/schema/formFields/constants";
+import {
+  datePickerInputConfigSchema,
+  fileUploadFieldConfigurationSchema,
+  inputTypeEnum,
+  multipleChoiceFieldConfigurationSchema,
+  ratingFieldConfigurationSchema,
+  textFieldConfigurationSchema,
+} from "@convoform/db/src/schema";
 import { generateObject } from "ai";
 import { z } from "zod/v4";
 import { getModelConfig } from "../config";
@@ -10,14 +17,50 @@ export interface GenerateFormFieldsParams {
 }
 
 /**
- * Simplified field configuration schema to avoid deep type instantiation issues
+ * AI-compatible date picker field configuration schema
+ *
+ * IMPORTANT: We override the original datePickerInputConfigSchema here because
+ * the AI SDK's generateObject() function converts Zod schemas to JSON Schema format,
+ * but Date objects cannot be represented in JSON Schema and cause the error:
+ * "Date cannot be represented in JSON Schema"
+ *
+ * The original schema uses z.coerce.date() for minDate/maxDate, but for AI generation
+ * we need to use string types instead. The post-processing logic later converts
+ * any date-only strings (YYYY-MM-DD) to proper ISO timestamps.
  */
-const simpleFieldConfigurationSchema = z.object({
-  inputType: z.enum(INPUT_TYPES),
-  inputConfiguration: z
-    .record(z.string(), z.any())
-    .describe("Configuration specific to the input type"),
+export const datePickerFieldConfigurationSchema = z.object({
+  inputType: z
+    .literal(inputTypeEnum.enum.datePicker)
+    .describe(
+      "Type of input field - date picker for selecting dates and optionally times",
+    ),
+  inputConfiguration: datePickerInputConfigSchema
+    .extend({
+      minDate: z
+        .string()
+        .optional()
+        .describe("Earliest selectable date (inclusive)"),
+      maxDate: z
+        .string()
+        .optional()
+        .describe("Latest selectable date (inclusive)"),
+    })
+    .describe(
+      "Configuration options specific to date picker fields including date constraints",
+    ),
 });
+
+export const fieldConfigurationSchema = z
+  .discriminatedUnion("inputType", [
+    textFieldConfigurationSchema,
+    multipleChoiceFieldConfigurationSchema,
+    datePickerFieldConfigurationSchema,
+    ratingFieldConfigurationSchema,
+    fileUploadFieldConfigurationSchema,
+  ])
+  .describe(
+    "Complete configuration for a form field including type-specific settings",
+  );
 
 /**
  * Schema for a single generated form field that matches the database schema
@@ -31,7 +74,7 @@ export const generatedFormFieldSchema = z.object({
     .describe(
       "Description or instructions for the field shown to help users understand what information to provide",
     ),
-  fieldConfiguration: simpleFieldConfigurationSchema.describe(
+  fieldConfiguration: fieldConfigurationSchema.describe(
     "Complete configuration object defining the field type and its specific settings",
   ),
 });
@@ -87,12 +130,18 @@ export async function generateFormFields(params: GenerateFormFieldsParams) {
           const inputConfig = field.fieldConfiguration.inputConfiguration;
 
           // Fix minDate if it's in wrong format
-          if (inputConfig?.minDate && isDateStringOnly(inputConfig.minDate)) {
+          if (
+            typeof inputConfig?.minDate === "string" &&
+            isDateStringOnly(inputConfig.minDate)
+          ) {
             inputConfig.minDate = convertToISOTimestamp(inputConfig.minDate);
           }
 
           // Fix maxDate if it's in wrong format
-          if (inputConfig?.maxDate && isDateStringOnly(inputConfig.maxDate)) {
+          if (
+            typeof inputConfig?.maxDate === "string" &&
+            isDateStringOnly(inputConfig.maxDate)
+          ) {
             inputConfig.maxDate = convertToISOTimestamp(inputConfig.maxDate);
           }
         }
@@ -159,7 +208,7 @@ Supported Input Types and their Configuration Structure:
    - Use lowLabel and highLabel for scale descriptions
 
 5. **fileUpload** fields:
-   - fieldConfiguration: { inputType: "fileUpload", inputConfiguration: { helpText?: string, maxFileSize?: number, maxFiles?: number, allowedFileTypes?: string[], allowedExtensions?: string[] } }
+   - fieldConfiguration: { inputType: "fileUpload", inputConfiguration: { helpText?: string, maxFileSize?: number, allowedFileTypes?: string[], allowedExtensions?: string[] } }
    - Default maxFileSize: 5MB (5242880 bytes)
    - Default allowedFileTypes: ["image/jpeg", "image/jpg", "application/pdf"]
 

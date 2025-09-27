@@ -187,6 +187,7 @@ export const aiFormGenerationRouter = createTRPCRouter({
           isAIGenerated: true,
           isPublished: false, // Let user decide when to publish
           customEndScreenMessage: input.endingMessage,
+          showCustomEndScreenMessage: input.endingMessage.trim() !== "",
         })
         .returning();
 

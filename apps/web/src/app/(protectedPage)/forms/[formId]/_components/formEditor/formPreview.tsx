@@ -14,6 +14,8 @@ export const FormPreview = ({ form }: { form: any }) => {
     return <FormNotFound />;
   }
   if (!isValidForm) {
+    console.log("Invalid form", validForm.error);
+
     return <InvalidForm />;
   }
   return <FormViewer />;

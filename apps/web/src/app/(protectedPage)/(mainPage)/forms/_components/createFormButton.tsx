@@ -117,7 +117,6 @@ export default function CreateFormButton({ organizationId }: Readonly<Props>) {
       </DropdownMenu>
 
       <GenerateFormModal
-        isCreatingForm={isCreatingForm}
         open={open}
         setOpen={setOpen}
         organizationId={organizationId}
