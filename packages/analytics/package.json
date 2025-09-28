@@ -9,6 +9,8 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@posthog/ai": "6.4.2",
+    "ai": "catalog:",
     "posthog-node": "catalog:",
     "zod": "catalog:"
   },
