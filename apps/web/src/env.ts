@@ -17,6 +17,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_POSTHOG_KEY: z.string().min(1).optional(),
   NEXT_PUBLIC_POSTHOG_HOST: z.string().min(1).optional(),
   POSTHOG_ENV_ID: z.string().min(1).optional(),
+  NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS: z.string().min(1).optional(),
 });
 
 // https://bharathvaj-ganesan.medium.com/adding-type-safety-to-environment-variables-in-nextjs-1ffebb4cf07d
@@ -34,4 +35,6 @@ export const env = envSchema.parse({
   NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
   NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   POSTHOG_ENV_ID: process.env.POSTHOG_ENV_ID,
+  NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS:
+    process.env.NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS,
 });
