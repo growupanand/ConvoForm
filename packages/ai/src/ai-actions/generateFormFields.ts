@@ -1,3 +1,4 @@
+import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import {
   datePickerInputConfigSchema,
   fileUploadFieldConfigurationSchema,
@@ -14,6 +15,7 @@ export interface GenerateFormFieldsParams {
   formContext: string;
   maxFields?: number;
   templateType?: string;
+  metadata?: LLMAnalyticsMetadata;
 }
 
 /**
@@ -115,7 +117,10 @@ export async function generateFormFields(params: GenerateFormFieldsParams) {
     const maxFields = params.maxFields ?? 8; // Default limit for free tier
 
     const result = await generateObject({
-      model: getModelConfig(),
+      model: getModelConfig({
+        ...params.metadata,
+        actionType: "generateFormFields",
+      }),
       temperature: 0.7,
       system: getGenerateFormFieldsSystemPrompt(params, maxFields),
       prompt:

@@ -1,3 +1,4 @@
+import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
 import { generateObject } from "ai";
 import { z } from "zod/v4";
@@ -11,6 +12,7 @@ export interface GenerateEndMessageParams {
   formOverview: string;
   transcript: Transcript[];
   formFieldResponses: FormFieldResponses[];
+  metadata?: LLMAnalyticsMetadata;
 }
 
 const generateEndMessageOutputSchema = z.object({
@@ -38,7 +40,10 @@ export type GenerateEndMessageOutput = z.infer<
 export async function generateEndMessage(params: GenerateEndMessageParams) {
   try {
     return await generateObject({
-      model: getModelConfig(),
+      model: getModelConfig({
+        ...params.metadata,
+        actionType: "generateEndMessage",
+      }),
       schema: generateEndMessageOutputSchema,
       temperature: 0.8,
       system: getGenerateEndMessageSystemPrompt(params),

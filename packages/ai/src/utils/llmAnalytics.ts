@@ -3,23 +3,8 @@
  * Provides wrapper functions and metadata helpers for PostHog LLM analytics
  */
 
-import type { LLMAnalyticsMetadata } from "@convoform/analytics";
+import type { LLMActionType, LLMAnalyticsMetadata } from "@convoform/analytics";
 import { getTracedModelConfig } from "../config";
-
-/**
- * AI Action types for analytics tracking
- */
-export const AI_ACTION_TYPES = {
-  EXTRACT_FIELD_ANSWER: "extract_field_answer",
-  GENERATE_FIELD_QUESTION: "generate_field_question",
-  GENERATE_CONVERSATION_NAME: "generate_conversation_name",
-  GENERATE_END_MESSAGE: "generate_end_message",
-  GENERATE_FORM_FIELDS: "generate_form_fields",
-  GENERATE_FORM_METADATA: "generate_form_metadata",
-} as const;
-
-export type AIActionType =
-  (typeof AI_ACTION_TYPES)[keyof typeof AI_ACTION_TYPES];
 
 /**
  * Base metadata for conversation-related AI actions
@@ -29,12 +14,7 @@ export interface ConversationAIMetadata extends LLMAnalyticsMetadata {
   conversationId: string;
   organizationId: string;
   userId?: string;
-  fieldType?:
-    | "text"
-    | "multipleChoice"
-    | "datePicker"
-    | "rating"
-    | "fileUpload";
+  fieldType?: string;
 }
 
 /**
@@ -83,7 +63,7 @@ export function createFormGenerationTracedModel(
  * @returns Promise with the AI function result
  */
 export async function withLLMAnalytics<T>(
-  actionType: AIActionType,
+  actionType: LLMActionType,
   aiFunction: () => Promise<T>,
 ): Promise<T> {
   const startTime = Date.now();

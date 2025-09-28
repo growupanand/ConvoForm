@@ -4,15 +4,11 @@
  */
 
 import { exit } from "node:process";
+import { type LLMAnalyticsMetadata, llmActionType } from "@convoform/analytics";
 import { generateObject, generateText } from "ai";
 import { z } from "zod/v4";
-import {
-  type ExtractFieldAnswerWithAnalyticsParams,
-  extractFieldAnswerWithAnalytics,
-} from "../ai-actions/extractFieldAnswerWithAnalytics";
 import { getTracedModelConfig } from "../config";
 import {
-  AI_ACTION_TYPES,
   type ConversationAIMetadata,
   type FormGenerationAIMetadata,
   createConversationTracedModel,
@@ -54,12 +50,12 @@ console.log(
 async function testBasicAnalytics() {
   console.log("\n📊 Test 1: Basic LLM Analytics");
 
-  const metadata = {
+  const metadata: ConversationAIMetadata = {
     userId: "test-user-123",
     formId: "test-form-456",
     conversationId: "test-conversation-789",
     organizationId: "test-org-001",
-    actionType: "test_basic_generation",
+    actionType: "test_basic_generation" as any,
     isAnonymous: false,
   };
 
@@ -94,7 +90,7 @@ async function testConversationAnalytics() {
     formId: "form-123",
     conversationId: "conv-789",
     organizationId: "org-001",
-    actionType: AI_ACTION_TYPES.GENERATE_FIELD_QUESTION,
+    actionType: llmActionType.enum.generateFieldQuestion,
     fieldType: "text",
   };
 
@@ -102,7 +98,7 @@ async function testConversationAnalytics() {
 
   try {
     const result = await withLLMAnalytics(
-      AI_ACTION_TYPES.GENERATE_FIELD_QUESTION,
+      llmActionType.enum.generateFieldQuestion,
       async () => {
         return await generateText({
           model: tracedModel,
@@ -132,7 +128,7 @@ async function testFormGenerationAnalytics() {
   const formMetadata: FormGenerationAIMetadata = {
     userId: "user-789",
     organizationId: "org-002",
-    actionType: AI_ACTION_TYPES.GENERATE_FORM_FIELDS,
+    actionType: llmActionType.enum.generateFormFields,
     templateType: "contact_form",
   };
 
@@ -151,7 +147,7 @@ async function testFormGenerationAnalytics() {
 
   try {
     const result = await withLLMAnalytics(
-      AI_ACTION_TYPES.GENERATE_FORM_FIELDS,
+      llmActionType.enum.generateFormFields,
       async () => {
         return await generateObject({
           model: tracedModel,
@@ -174,58 +170,17 @@ async function testFormGenerationAnalytics() {
 }
 
 /**
- * Test 4: Extract Field Answer with Analytics
- */
-async function testExtractFieldAnswerAnalytics() {
-  console.log("\n🔍 Test 4: Extract Field Answer Analytics");
-
-  const mockParams: ExtractFieldAnswerWithAnalyticsParams = {
-    formOverview: "A contact form to collect user information",
-    transcript: [
-      { role: "assistant" as const, content: "Hi! What's your name?" },
-      { role: "user" as const, content: "My name is John Doe" },
-    ],
-    currentField: {
-      fieldName: "name",
-      id: "name",
-      fieldDescription: "User's full name",
-      fieldConfiguration: {
-        inputType: "text" as const,
-        inputConfiguration: {},
-      },
-      fieldValue: null,
-    },
-    formId: "form-extract-test",
-    conversationId: "conv-extract-test",
-    organizationId: "org-extract-test",
-    userId: "user-extract-test",
-  };
-
-  try {
-    const result = await extractFieldAnswerWithAnalytics(mockParams);
-
-    console.log("✅ Extract field answer analytics test successful");
-    console.log("Extracted answer:", result.object);
-
-    return result;
-  } catch (error) {
-    console.error("❌ Extract field answer analytics test failed:", error);
-    throw error;
-  }
-}
-
-/**
- * Test 5: Anonymous User Analytics
+ * Test 4: Anonymous User Analytics
  */
 async function testAnonymousAnalytics() {
-  console.log("\n👤 Test 5: Anonymous User Analytics");
+  console.log("\n👤 Test 4: Anonymous User Analytics");
 
-  const anonymousMetadata = {
+  const anonymousMetadata: LLMAnalyticsMetadata = {
     // No userId provided (anonymous)
     formId: "anonymous-form-123",
     conversationId: "anonymous-conv-456",
     organizationId: "org-anonymous",
-    actionType: "anonymous_interaction",
+    actionType: "anonymous_interaction" as any,
     isAnonymous: true,
   };
 
@@ -259,10 +214,6 @@ async function runPlayground() {
     { name: "Basic Analytics", test: testBasicAnalytics },
     { name: "Conversation Analytics", test: testConversationAnalytics },
     { name: "Form Generation Analytics", test: testFormGenerationAnalytics },
-    {
-      name: "Extract Field Answer Analytics",
-      test: testExtractFieldAnswerAnalytics,
-    },
     { name: "Anonymous Analytics", test: testAnonymousAnalytics },
   ];
 
@@ -317,7 +268,6 @@ export {
   testBasicAnalytics,
   testConversationAnalytics,
   testFormGenerationAnalytics,
-  testExtractFieldAnswerAnalytics,
   testAnonymousAnalytics,
 };
 

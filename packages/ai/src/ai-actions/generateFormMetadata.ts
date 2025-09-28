@@ -1,3 +1,4 @@
+import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import { generateObject } from "ai";
 import { z } from "zod/v4";
 import { getModelConfig } from "../config";
@@ -7,6 +8,7 @@ export interface GenerateFormMetadataParams {
   formContext: string;
   selectedFields: GeneratedFormField[];
   organizationName?: string;
+  metadata?: LLMAnalyticsMetadata;
 }
 
 /**
@@ -38,7 +40,10 @@ export type GenerateFormMetadataOutput = z.infer<
 export async function generateFormMetadata(params: GenerateFormMetadataParams) {
   try {
     return await generateObject({
-      model: getModelConfig(),
+      model: getModelConfig({
+        ...params.metadata,
+        actionType: "generateFormMetadata",
+      }),
       temperature: 0.6,
       system: getGenerateFormMetadataSystemPrompt(params),
       prompt:

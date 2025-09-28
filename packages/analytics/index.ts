@@ -4,14 +4,11 @@ export const analytics = new PosthogAnalyticsProvider();
 
 // Export types for external usage
 export type { LanguageModel } from "ai";
-export type LLMAnalyticsMetadata = {
-  userId?: string;
-  traceId?: string;
-  formId?: string;
-  conversationId?: string;
-  organizationId?: string;
-  actionType?: string;
-  fieldType?: string;
-  isAnonymous?: boolean;
-  [key: string]: unknown;
-};
+export type {
+  LLMAnalyticsMetadata,
+  LLMActionType,
+} from "./src/schema";
+export {
+  llmActionType,
+  llmAnalyticsMetadata,
+} from "./src/schema";

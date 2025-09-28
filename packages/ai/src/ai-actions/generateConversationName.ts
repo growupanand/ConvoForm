@@ -1,3 +1,4 @@
+import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
 import { generateObject } from "ai";
 import { z } from "zod/v4";
@@ -11,6 +12,7 @@ export interface GenerateConversationNameParams {
   formOverview: string;
   transcript: Transcript[];
   formFieldResponses: FormFieldResponses[];
+  metadata?: LLMAnalyticsMetadata;
 }
 
 export const generateConversationNameOutputSchema = z.object({
@@ -43,7 +45,10 @@ export async function generateConversationName(
 ) {
   try {
     return await generateObject({
-      model: getModelConfig(),
+      model: getModelConfig({
+        ...params.metadata,
+        actionType: "generateConversationName",
+      }),
       temperature: 0.7,
       system: getGenerateConversationNameSystemPrompt(params),
       prompt:

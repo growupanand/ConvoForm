@@ -1,3 +1,4 @@
+import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
 import { generateObject } from "ai";
 import { z } from "zod/v4";
@@ -8,6 +9,7 @@ export type ExtractFieldAnswerParams = {
   formOverview: string;
   transcript: Transcript[];
   currentField: FormFieldResponses;
+  metadata?: LLMAnalyticsMetadata;
 };
 
 export const extractFieldAnswerOutputSchema = z.object({
@@ -33,7 +35,10 @@ export type ExtractFieldAnswerOutput = z.infer<
 export async function extractFieldAnswer(params: ExtractFieldAnswerParams) {
   try {
     return await generateObject({
-      model: getModelConfig(),
+      model: getModelConfig({
+        ...params.metadata,
+        actionType: "extractFieldAnswer",
+      }),
       temperature: 0.1,
       system: getExtractFieldAnswerSystemPrompt(params),
       prompt: `Based on the conversation above, extract the value for "${params.currentField.fieldName}" and return it as a JSON object.`,

@@ -11,19 +11,38 @@ import { getValidatedModelConfig } from "./envSchema";
 /**
  * Get model configuration from validated environment variables
  * Edge runtime compatible with proper error handling
+ * @param metadata Optional analytics metadata - if provided, returns traced model when analytics enabled
  */
-export function getModelConfig(): Exclude<LanguageModel, string> {
+export function getModelConfig(
+  metadata?: LLMAnalyticsMetadata,
+): Exclude<LanguageModel, string> {
   try {
     const config = getValidatedModelConfig();
 
+    let baseModel: LanguageModel;
     switch (config.provider.toLowerCase()) {
       case "openai":
-        return openai(config.model);
+        baseModel = openai(config.model);
+        break;
       default:
         // This should not happen with validation, but fallback just in case
         console.warn(`Unsupported provider: ${config.provider}, using default`);
-        return openai("gpt-4o-mini");
+        baseModel = openai("gpt-4o-mini");
     }
+
+    // If metadata provided and analytics enabled, return traced model
+    if (metadata) {
+      const isAnalyticsEnabled =
+        process.env.NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS === "true";
+      if (isAnalyticsEnabled) {
+        return analytics.createTracedModel(baseModel, metadata) as Exclude<
+          LanguageModel,
+          string
+        >;
+      }
+    }
+
+    return baseModel;
   } catch (error) {
     // Log error and use default
     console.error("Model configuration error:", error);
@@ -43,7 +62,7 @@ export function getTracedModelConfig(
 
   // Check if LLM analytics is enabled via environment variable
   const isAnalyticsEnabled =
-    process.env.NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS !== "false";
+    process.env.NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS === "true";
 
   if (!isAnalyticsEnabled) {
     return baseModel;

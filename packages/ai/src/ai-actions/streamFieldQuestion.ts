@@ -1,3 +1,4 @@
+import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
 import { type StreamTextOnFinishCallback, type ToolSet, streamText } from "ai";
 import { getModelConfig } from "../config";
@@ -12,10 +13,10 @@ export interface StreamFieldQuestionParams {
   formFieldResponses: FormFieldResponses[];
   currentField: FormFieldResponses;
   isFirstQuestion?: boolean;
+  metadata?: LLMAnalyticsMetadata;
 }
 
 /**
- * Generates a question for the current field based on context
  * Uses AI SDK V5 for edge runtime compatibility
  */
 export function streamFieldQuestion(
@@ -24,7 +25,10 @@ export function streamFieldQuestion(
 ) {
   try {
     return streamText({
-      model: getModelConfig(),
+      model: getModelConfig({
+        ...params.metadata,
+        actionType: "generateFieldQuestion",
+      }),
       temperature: 0.3,
       system: getGenerateFieldQuestionSystemPrompt(params),
       prompt: `Generate a ${params.isFirstQuestion ? "first" : "follow-up"} question for the field "${params.currentField.fieldName}" based on the provided context.`,
