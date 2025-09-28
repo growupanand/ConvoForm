@@ -37,3 +37,39 @@ export const eventProperties = z
   .catchall(z.any());
 
 export type EventProperties = z.infer<typeof eventProperties>;
+
+// =============================================================
+// ============== LLM Analytics Schema ======================
+// =============================================================
+
+export const llmActionType = z.enum([
+  "extractFieldAnswer",
+  "generateFieldQuestion",
+  "generateConversationName",
+  "generateEndMessage",
+  "generateFormFields",
+  "generateFormMetadata",
+]);
+
+export type LLMActionType = z.infer<typeof llmActionType>;
+
+export const llmAnalyticsMetadata = z
+  .object({
+    // Core identifiers
+    userId: z.string().optional(),
+    traceId: z.string().optional(),
+    formId: z.string().optional(),
+    conversationId: z.string().optional(),
+    organizationId: z.string().optional(),
+
+    // LLM specific context
+    actionType: llmActionType.optional(),
+
+    // Additional context
+    isAnonymous: z.boolean().optional(),
+    modelProvider: z.string().optional(),
+    modelName: z.string().optional(),
+  })
+  .catchall(z.unknown());
+
+export type LLMAnalyticsMetadata = z.infer<typeof llmAnalyticsMetadata>;

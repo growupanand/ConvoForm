@@ -1,3 +1,5 @@
+import { withTracing } from "@posthog/ai";
+import type { LanguageModel } from "ai";
 import { PostHog } from "posthog-node";
 import { repoPackageVersion } from "../constants";
 import { isUserEmployee } from "../utils";
@@ -63,5 +65,68 @@ export class PosthogAnalyticsProvider extends BaseProvider {
 
   captureException = (error: Error, distinctId?: string) => {
     this.client?.captureException(error, distinctId);
+  };
+
+  /**
+   * Creates a traced language model for LLM analytics
+   * @param model The original language model from AI SDK
+   * @param metadata Optional metadata to enrich analytics events
+   * @returns Traced model that captures analytics events
+   */
+  createTracedModel = (
+    model: Exclude<LanguageModel, string>,
+    metadata?: {
+      userId?: string;
+      traceId?: string;
+      formId?: string;
+      conversationId?: string;
+      organizationId?: string;
+      actionType?: string;
+      fieldType?: string;
+      isAnonymous?: boolean;
+      [key: string]: unknown;
+    },
+  ): LanguageModel => {
+    // If PostHog client is not available, return original model
+    if (!this.client) {
+      console.warn("PostHog client not available, skipping LLM tracing");
+      return model;
+    }
+
+    // Check if LLM analytics is enabled
+    const isEnabled = process.env.NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS !== "false";
+    if (!isEnabled) {
+      return model;
+    }
+
+    try {
+      return withTracing(model, this.client, {
+        posthogDistinctId: metadata?.userId || this.distinctId,
+        posthogTraceId: metadata?.traceId,
+        posthogProperties: {
+          appVersion: repoPackageVersion,
+          isUserEmployee: metadata?.userId
+            ? isUserEmployee(metadata.userId)
+            : false,
+          formId: metadata?.formId,
+          conversationId: metadata?.conversationId,
+          organizationId: metadata?.organizationId,
+          actionType: metadata?.actionType,
+          fieldType: metadata?.fieldType,
+          isAnonymous: metadata?.isAnonymous ?? true,
+          ...metadata,
+        },
+        posthogPrivacyMode: false,
+        posthogGroups: metadata?.organizationId
+          ? {
+              organization: metadata.organizationId,
+            }
+          : undefined,
+      });
+    } catch (error) {
+      // Fail silently and return original model
+      console.error("Failed to create traced model:", error);
+      return model;
+    }
   };
 }

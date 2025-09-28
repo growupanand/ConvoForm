@@ -10,6 +10,10 @@ import { extractFieldAnswer } from "../ai-actions/extractFieldAnswer";
 import { generateConversationName } from "../ai-actions/generateConversationName";
 import { streamFieldQuestion } from "../ai-actions/streamFieldQuestion";
 import type { ConversationManager } from "../managers/conversationManager";
+import {
+  type ConversationAIMetadata,
+  extractFieldType,
+} from "../utils/llmAnalytics";
 
 export type ConversationServiceUIMessage = UIMessage<
   never, // metadata type
@@ -54,6 +58,20 @@ export class ConversationService {
     if (customEndScreenMessage) {
       this.endMessage = customEndScreenMessage;
     }
+  }
+
+  /**
+   * Get analytics metadata from current conversation
+   */
+  private getAnalyticsMetadata(): ConversationAIMetadata {
+    const conversation = this.conversationManager.getConversation();
+    return {
+      formId: conversation.form.id,
+      conversationId: conversation.id,
+      organizationId: conversation.organizationId,
+      // Conversations are anonymous (no userId), only organization-level tracking
+      userId: undefined,
+    };
   }
 
   public async initialize(): Promise<
@@ -121,6 +139,10 @@ export class ConversationService {
       validatedAnswer = await extractFieldAnswer({
         ...this.conversationManager.getConversation(),
         currentField,
+        metadata: {
+          ...this.getAnalyticsMetadata(),
+          fieldType: extractFieldType(currentField) as any,
+        },
       });
     }
 
@@ -160,6 +182,10 @@ export class ConversationService {
         ...this.conversationManager.getConversation(),
         currentField,
         isFirstQuestion: false,
+        metadata: {
+          ...this.getAnalyticsMetadata(),
+          fieldType: extractFieldType(currentField),
+        },
       },
       this.createTextStreamFinishHandler(),
     );
@@ -188,6 +214,10 @@ export class ConversationService {
         ...this.conversationManager.getConversation(),
         currentField: nextField,
         isFirstQuestion,
+        metadata: {
+          ...this.getAnalyticsMetadata(),
+          fieldType: extractFieldType(nextField) as any,
+        },
       },
       this.createTextStreamFinishHandler(),
     );
@@ -251,6 +281,7 @@ export class ConversationService {
         formOverview: conversation.form.overview,
         transcript: conversation.transcript,
         formFieldResponses: conversation.formFieldResponses,
+        metadata: this.getAnalyticsMetadata(),
       });
 
       await this.conversationManager.updateConversationName(result.object.name);
