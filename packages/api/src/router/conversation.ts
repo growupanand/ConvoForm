@@ -1,19 +1,15 @@
-import { and, count, eq, inArray } from "@convoform/db";
+import { alias, and, count, eq, inArray } from "@convoform/db";
 import {
   conversation,
   form,
   insertConversationSchema,
   patchConversationSchema,
-  respondentMetadataSchema,
   restoreDateFields,
   updateConversationSchema,
 } from "@convoform/db/src/schema";
-import { geolocation } from "@vercel/functions";
 import { z } from "zod/v4";
 
 import { analytics } from "@convoform/analytics";
-import { headers } from "next/headers";
-import { userAgent } from "next/server";
 import { generateConversationInsights } from "../lib/ai";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
@@ -114,15 +110,6 @@ export const conversationRouter = createTRPCRouter({
         ...newConversation
       } = insertConversationSchema.parse(input);
 
-      const userAgentInformation = userAgent({ headers: await headers() });
-      const geoInformation = geolocation({ headers: await headers() });
-
-      const metaData = await respondentMetadataSchema.parseAsync({
-        userAgent: userAgentInformation,
-        geoDetails: geoInformation,
-        ...input.metaData,
-      });
-
       const [result] = await ctx.db
         .insert(conversation)
         .values({
@@ -131,7 +118,6 @@ export const conversationRouter = createTRPCRouter({
           formOverview,
           formFieldResponses,
           updatedAt: new Date(),
-          metaData,
         })
         .returning();
 
@@ -184,19 +170,19 @@ export const conversationRouter = createTRPCRouter({
     )
     .query(async ({ input, ctx }) => {
       // Count all conversations for all forms in the same organization as the input form
-      const [result] = await ctx.db
+      // Use a single optimized query with form table aliasing to avoid subquery
+      const targetForm = alias(form, "targetForm");
+      const query = ctx.db
         .select({ value: count() })
         .from(conversation)
         .innerJoin(form, eq(conversation.formId, form.id))
-        .where(
-          eq(
-            form.organizationId,
-            ctx.db
-              .select({ organizationId: form.organizationId })
-              .from(form)
-              .where(eq(form.id, input.formId)),
-          ),
-        );
+        .innerJoin(
+          targetForm,
+          eq(form.organizationId, targetForm.organizationId),
+        )
+        .where(eq(targetForm.id, input.formId));
+
+      const [result] = await query;
 
       return result?.value;
     }),

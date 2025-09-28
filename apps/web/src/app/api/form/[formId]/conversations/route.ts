@@ -1,19 +1,17 @@
-import {
-  checkNThrowErrorFormSubmissionLimit,
-  getORCreateConversation,
-} from "@/actions";
+import { createConversationWithMetadata } from "@/actions/conversationActions";
 import { sendErrorMessage, sendErrorResponse } from "@/lib/errorHandlers";
 import { api } from "@/trpc/server";
 import {
   type FormFieldResponses,
-  coreConversationSchema,
   restoreDateFields,
 } from "@convoform/db/src/schema";
 import type { NextRequest } from "next/server";
 import { z } from "zod/v4";
 
+export const runtime = "edge";
+
 const routeParamsSchema = z.object({
-  formId: z.string(),
+  formId: z.string().min(1),
 });
 
 export async function POST(
@@ -24,19 +22,8 @@ export async function POST(
     const routeParams = await context.params;
     const { formId } = routeParamsSchema.parse(routeParams);
 
-    const formWithFormFields = await api.form.getOneWithFields({ id: formId });
-
-    if (!formWithFormFields) {
-      return sendErrorMessage("Form not found", 404);
-    }
-
-    await checkNThrowErrorFormSubmissionLimit(formWithFormFields);
-
-    const newConversation = await getORCreateConversation(formWithFormFields);
-    const coreConversation = coreConversationSchema.parse({
-      ...newConversation,
-      form: formWithFormFields,
-    });
+    // Use shared action for conversation creation with metadata
+    const coreConversation = await createConversationWithMetadata(formId);
 
     return Response.json(coreConversation);
   } catch (error) {

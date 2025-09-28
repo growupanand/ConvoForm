@@ -1,4 +1,5 @@
-import { getBackendBaseUrl } from "@/lib/url";
+import { createConversationWithMetadata } from "@/actions/conversationActions";
+import { api } from "@/trpc/server";
 import {
   CoreService,
   type CoreServiceUIMessage,
@@ -41,20 +42,16 @@ export async function POST(request: NextRequest) {
     const parsedRequestBody = await requestSchema.parseAsync(requestBody);
 
     if (parsedRequestBody.type === "new") {
-      const response = await fetch(
-        `${getBackendBaseUrl()}/api/form/${parsedRequestBody.formId}/conversations`,
-        {
-          method: "POST",
-        },
+      // Use shared action for conversation creation with metadata
+      const newConversation = await createConversationWithMetadata(
+        parsedRequestBody.formId,
       );
-      const responseJson = await response.json();
-      const newConversation = coreConversationSchema.parse(responseJson);
 
       return await createStreamResponseWithWriter<CoreServiceUIMessage>(
         async (writer) => {
           const coreService = new CoreService({
             conversation: newConversation,
-            onUpdateConversation: createOnUpdateConversationHandler(writer),
+            onUpdateConversation: getOnUpdateConversationHandler(writer),
           });
 
           const initialConversationStream = await coreService.initialize();
@@ -67,7 +64,7 @@ export async function POST(request: NextRequest) {
       async (writer) => {
         const coreService = new CoreService({
           conversation: parsedRequestBody.coreConversation,
-          onUpdateConversation: createOnUpdateConversationHandler(writer),
+          onUpdateConversation: getOnUpdateConversationHandler(writer),
         });
 
         const initialConversationStream = await coreService.process(
@@ -87,22 +84,13 @@ export async function POST(request: NextRequest) {
 // ----------------------- HELPERS -----------------------
 // ================================================================
 
-function createOnUpdateConversationHandler(
+function getOnUpdateConversationHandler(
   writer: UIMessageStreamWriter<CoreServiceUIMessage>,
 ) {
   return async (updatedConversation: CoreConversation) => {
     try {
       after(async () => {
-        await fetch(
-          `${getBackendBaseUrl()}/api/form/${updatedConversation.formId}/conversations`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedConversation),
-          },
-        );
+        await api.conversation.patch(updatedConversation);
       });
 
       writer.write({
