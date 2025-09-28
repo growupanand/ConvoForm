@@ -21,7 +21,6 @@ import {
  * Add these to your .env file for testing:
  * NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key
  * NEXT_PUBLIC_POSTHOG_HOST=your_posthog_host
- * NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS=true
  * OPENAI_API_KEY=your_openai_key
  */
 
@@ -34,10 +33,6 @@ console.log(
 console.log(
   "- POSTHOG_HOST:",
   process.env.NEXT_PUBLIC_POSTHOG_HOST ? "✅ Set" : "❌ Missing",
-);
-console.log(
-  "- LLM_ANALYTICS:",
-  process.env.NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS || "false",
 );
 console.log(
   "- OPENAI_API_KEY:",

@@ -25,8 +25,7 @@
     "NEXT_PUBLIC_POSTHOG_KEY",
     "NEXT_PUBLIC_POSTHOG_HOST",
     "POSTHOG_API_KEY",
-    "POSTHOG_ENV_ID",
-    "NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS"
+    "POSTHOG_ENV_ID"
   ],
   "globalDependencies": [
     ".env"

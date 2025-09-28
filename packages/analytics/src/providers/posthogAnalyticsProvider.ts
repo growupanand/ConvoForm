@@ -21,6 +21,8 @@ export class PosthogAnalyticsProvider extends BaseProvider {
     } else {
       this.client = new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
         host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+        flushAt: 1,
+        flushInterval: 0,
       });
     }
   }
@@ -94,7 +96,8 @@ export class PosthogAnalyticsProvider extends BaseProvider {
     }
 
     // Check if LLM analytics is enabled
-    const isEnabled = process.env.NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS !== "false";
+    const isEnabled = true; // TODO: Enable analytics based on environment variable
+    console.log("createTraceModel > isEnabled", { isEnabled });
     if (!isEnabled) {
       return model;
     }

@@ -78,8 +78,6 @@ const EnvSchema = z.object({
       }
       return tokens;
     }),
-
-  NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS: z.string().optional(),
 });
 
 // Type for validated environment
@@ -94,8 +92,6 @@ export function validateEnv() {
       CONVERSATION_MODEL: process.env.CONVERSATION_MODEL,
       CONVERSATION_TEMPERATURE: process.env.CONVERSATION_TEMPERATURE,
       CONVERSATION_MAX_TOKENS: process.env.CONVERSATION_MAX_TOKENS,
-      NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS:
-        process.env.NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

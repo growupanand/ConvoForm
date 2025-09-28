@@ -32,8 +32,7 @@ export function getModelConfig(
 
     // If metadata provided and analytics enabled, return traced model
     if (metadata) {
-      const isAnalyticsEnabled =
-        process.env.NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS === "true";
+      const isAnalyticsEnabled = true; // TODO: Enable analytics based on environment variable
       if (isAnalyticsEnabled) {
         return analytics.createTracedModel(baseModel, metadata) as Exclude<
           LanguageModel,
@@ -61,8 +60,7 @@ export function getTracedModelConfig(
   const baseModel = getModelConfig();
 
   // Check if LLM analytics is enabled via environment variable
-  const isAnalyticsEnabled =
-    process.env.NEXT_PUBLIC_POSTHOG_LLM_ANALYTICS === "true";
+  const isAnalyticsEnabled = true; // TODO: Enable analytics based on environment variable
 
   if (!isAnalyticsEnabled) {
     return baseModel;
