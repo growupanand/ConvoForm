@@ -1,6 +1,11 @@
 import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
-import { type StreamTextOnFinishCallback, type ToolSet, streamText } from "ai";
+import {
+  type LanguageModel,
+  type StreamTextOnFinishCallback,
+  type ToolSet,
+  streamText,
+} from "ai";
 import { getModelConfig } from "../config";
 import {
   buildCollectedFieldsContextPrompt,
@@ -14,6 +19,7 @@ export interface StreamFieldQuestionParams {
   currentField: FormFieldResponses;
   isFirstQuestion?: boolean;
   metadata?: LLMAnalyticsMetadata;
+  model?: LanguageModel;
 }
 
 /**
@@ -25,10 +31,12 @@ export function streamFieldQuestion(
 ) {
   try {
     return streamText({
-      model: getModelConfig({
-        ...params.metadata,
-        actionType: "generateFieldQuestion",
-      }),
+      model:
+        params.model ||
+        getModelConfig({
+          ...params.metadata,
+          actionType: "generateFieldQuestion",
+        }),
       temperature: 0.3,
       system: getGenerateFieldQuestionSystemPrompt(params),
       prompt: `Generate a ${params.isFirstQuestion ? "first" : "follow-up"} question for the field "${params.currentField.fieldName}" based on the provided context.`,

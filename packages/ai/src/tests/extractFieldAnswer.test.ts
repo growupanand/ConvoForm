@@ -51,6 +51,7 @@ describe("extractFieldAnswer", () => {
     };
 
     const result = await extractFieldAnswer(testParams);
+    console.log("result", result);
 
     expect(result.object.answer).toBe("5 years");
     expect(result.object.confidence).toBeGreaterThan(0);
