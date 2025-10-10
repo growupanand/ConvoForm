@@ -3,11 +3,9 @@ import {
   form,
   formDesign,
   formField,
-  getSafeFormFieldsOrders,
   type insertFormFieldSchema,
   newFormSchema,
   patchFormSchema,
-  restoreDateFields,
   updateFormSchema,
 } from "@convoform/db/src/schema";
 import { fileUpload } from "@convoform/db/src/schema/fileUploads/fileUpload";
@@ -18,6 +16,7 @@ import {
   FORM_SECTIONS_ENUMS_VALUES,
 } from "@convoform/db/src/schema/formDesigns/constants";
 import { enforceRateLimit } from "@convoform/rate-limiter";
+import { getOneFormWithFields } from "../actions/form";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
@@ -162,37 +161,7 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const formWithFields = await ctx.db.query.form.findFirst({
-        where: eq(form.id, input.id),
-        with: {
-          formFields: true,
-        },
-        orderBy: (form, { asc }) => [asc(form.createdAt)],
-      });
-
-      if (!formWithFields) {
-        return undefined;
-      }
-
-      const { formFields, ...restForm } = formWithFields;
-
-      // Sort form fields
-      const formFieldsOrders = getSafeFormFieldsOrders(restForm, formFields);
-      const sortedFormFields = formFieldsOrders
-        .map(
-          // biome-ignore lint/style/noNonNullAssertion: ignored
-          (id) => formFields.find((field) => field.id === id)!,
-        )
-        .map((field) => ({
-          ...field,
-          fieldConfiguration: restoreDateFields(field.fieldConfiguration),
-        }));
-
-      return {
-        ...restForm,
-        formFieldsOrders,
-        formFields: sortedFormFields,
-      };
+      return await getOneFormWithFields(input.id, ctx);
     }),
 
   // Patch partial form

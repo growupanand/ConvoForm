@@ -1,69 +1,13 @@
-import type {
-  Conversation,
-  CreateConversation,
-  Form,
-  FormFieldResponses,
-} from "@convoform/db/src/schema";
+import type { Form } from "@convoform/db/src/schema";
 
+import { getOrganizationFormsCountByFormId } from "@convoform/api/src/actions/conversation/getOrganizationFormsCountByFormId";
 import {
   FEATURE_NAMES,
   PLAN_IDS,
   getPlanLimit,
   isOverLimit,
 } from "@convoform/common";
-
-import { api } from "@/trpc/server";
-
-/**
- * Returns a conversation or creates a new one
- * @param form
- * @param conversationId
- * @returns
- */
-export const getORCreateConversation = async (
-  form: CreateConversation,
-  conversationId?: string,
-) => {
-  if (conversationId) {
-    const existConversation = await api.conversation.getOne({
-      id: conversationId,
-    });
-    if (!existConversation) {
-      throw new Error("Conversation not found");
-    }
-
-    return existConversation;
-  }
-
-  const fieldsWithEmptyData: FormFieldResponses[] = form.formFields.map(
-    (field) => ({
-      id: field.id,
-      fieldName: field.fieldName,
-      fieldDescription: field.fieldDescription,
-      fieldValue: null,
-      fieldConfiguration: field.fieldConfiguration,
-    }),
-  );
-
-  return await api.conversation.create({
-    formId: form.id,
-    name: "New Conversation",
-    organizationId: form.organizationId,
-    transcript: [],
-    formFieldResponses: fieldsWithEmptyData,
-    formOverview: form.overview,
-  });
-};
-
-export const patchConversation = async (
-  conversationId: string,
-  patchData: Partial<Conversation>,
-) => {
-  return await api.conversation.patch({
-    id: conversationId,
-    ...patchData,
-  });
-};
+import { db } from "@convoform/db";
 
 /**
  * Check if form submission limit is reached
@@ -79,10 +23,12 @@ export const checkNThrowErrorFormSubmissionLimit = async (
   }
 
   // get all conversations count for current organization
-  const totalSubmissionsCount =
-    await api.conversation.getOrganizationFormsCountByFormId({
-      formId: form.id,
-    });
+  const totalSubmissionsCount = await getOrganizationFormsCountByFormId(
+    form.id,
+    {
+      db,
+    },
+  );
 
   if (!totalSubmissionsCount) {
     console.error("Unable to get total submissions count", {

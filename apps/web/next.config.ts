@@ -43,7 +43,7 @@ const nextConfig: NextConfig = {
       "@convoform/file-storage",
     ],
     viewTransition: true,
-    ppr: true,
+    // ppr: true,
   },
   // Configure `pageExtensions` to include MDX files
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],

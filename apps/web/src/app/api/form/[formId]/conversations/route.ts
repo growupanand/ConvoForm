@@ -1,6 +1,7 @@
 import { createConversationWithMetadata } from "@/actions/conversationActions";
 import { sendErrorMessage, sendErrorResponse } from "@/lib/errorHandlers";
-import { api } from "@/trpc/server";
+import { patchConversation } from "@convoform/api/src/actions/conversation";
+import { db } from "@convoform/db";
 import {
   type FormFieldResponses,
   restoreDateFields,
@@ -52,7 +53,15 @@ export async function PATCH(request: NextRequest) {
     }
     requestJson.formFieldResponses = parsedFormFieldResponses;
 
-    await api.conversation.patch(requestJson);
+    await patchConversation(
+      {
+        id: requestJson.id,
+        ...requestJson,
+      },
+      {
+        db,
+      },
+    );
     return Response.json({ success: true });
   } catch (error) {
     return sendErrorResponse(error);

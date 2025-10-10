@@ -1,7 +1,6 @@
-import { alias, and, count, eq, inArray } from "@convoform/db";
+import { and, count, eq, inArray } from "@convoform/db";
 import {
   conversation,
-  form,
   insertConversationSchema,
   patchConversationSchema,
   restoreDateFields,
@@ -9,8 +8,12 @@ import {
 } from "@convoform/db/src/schema";
 import { z } from "zod/v4";
 
-import { analytics } from "@convoform/analytics";
-import { patchConversation } from "../actions/conversation/patchConversation";
+import {
+  createConversation,
+  getOneConversation,
+  patchConversation,
+} from "../actions/conversation";
+import { getOrganizationFormsCountByFormId } from "../actions/conversation/getOrganizationFormsCountByFormId";
 import { generateConversationInsights } from "../lib/ai";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
@@ -72,81 +75,13 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const existConversation = await ctx.db.query.conversation.findFirst({
-        where: eq(conversation.id, input.id),
-      });
-
-      if (!existConversation) {
-        return undefined;
-      }
-
-      const formFieldResponses = existConversation.formFieldResponses.map(
-        (collection) => {
-          if (collection.fieldConfiguration === undefined) {
-            return collection;
-          }
-
-          return {
-            ...collection,
-            fieldConfiguration: restoreDateFields(
-              collection.fieldConfiguration,
-            ),
-          };
-        },
-      );
-
-      return {
-        ...existConversation,
-        formFieldResponses,
-      };
+      return await getOneConversation(input.id, ctx);
     }),
 
   create: publicProcedure
     .input(insertConversationSchema)
     .mutation(async ({ input, ctx }) => {
-      const {
-        transcript,
-        formFieldResponses,
-        formOverview,
-        ...newConversation
-      } = insertConversationSchema.parse(input);
-
-      const [result] = await ctx.db
-        .insert(conversation)
-        .values({
-          ...newConversation,
-          transcript,
-          formOverview,
-          formFieldResponses,
-          updatedAt: new Date(),
-        })
-        .returning();
-
-      if (!result) {
-        throw new Error("Failed to create conversation");
-      }
-
-      analytics.track("conversation:create", {
-        properties: {
-          ...result,
-        },
-      });
-
-      const parsedFormFieldResponses = formFieldResponses.map((collection) => {
-        if (collection.fieldConfiguration === undefined) {
-          return collection;
-        }
-
-        return {
-          ...collection,
-          fieldConfiguration: restoreDateFields(collection.fieldConfiguration),
-        };
-      });
-
-      return {
-        ...result,
-        formFieldResponses: parsedFormFieldResponses,
-      };
+      return await createConversation(input, ctx);
     }),
 
   getCountByOrganizationId: publicProcedure
@@ -170,22 +105,7 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      // Count all conversations for all forms in the same organization as the input form
-      // Use a single optimized query with form table aliasing to avoid subquery
-      const targetForm = alias(form, "targetForm");
-      const query = ctx.db
-        .select({ value: count() })
-        .from(conversation)
-        .innerJoin(form, eq(conversation.formId, form.id))
-        .innerJoin(
-          targetForm,
-          eq(form.organizationId, targetForm.organizationId),
-        )
-        .where(eq(targetForm.id, input.formId));
-
-      const [result] = await query;
-
-      return result?.value;
+      return await getOrganizationFormsCountByFormId(input.formId, ctx);
     }),
   getFormResponsesData: authProtectedProcedure
     .input(

@@ -522,9 +522,9 @@ function displayResults(results: ModelTestResult[]) {
         const avgDuration =
           relevantRecords.length > 0
             ? Math.round(
-              relevantRecords.reduce((sum, r) => sum + r.durationMs, 0) /
-              relevantRecords.length,
-            )
+                relevantRecords.reduce((sum, r) => sum + r.durationMs, 0) /
+                  relevantRecords.length,
+              )
             : 0;
 
         return {
@@ -573,7 +573,7 @@ function displayResults(results: ModelTestResult[]) {
   const speedDiff = Math.round(
     ((slowest.totalDurationMs - fastest.totalDurationMs) /
       fastest.totalDurationMs) *
-    100,
+      100,
   );
 
   const fastestCost = fastest.records.reduce(

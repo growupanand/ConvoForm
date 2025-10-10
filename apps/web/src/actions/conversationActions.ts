@@ -1,5 +1,10 @@
 import { checkNThrowErrorFormSubmissionLimit } from "@/actions";
-import { api } from "@/trpc/server";
+import {
+  createConversation,
+  getOneConversation,
+} from "@convoform/api/src/actions/conversation";
+import { getOneFormWithFields } from "@convoform/api/src/actions/form";
+import { db } from "@convoform/db";
 import {
   type CoreConversation,
   coreConversationSchema,
@@ -31,9 +36,7 @@ export const createConversationWithMetadata = async (
   });
 
   // Get form with fields
-  const formWithFormFields = await api.form.getOneWithFields({
-    id: formId,
-  });
+  const formWithFormFields = await getOneFormWithFields(formId, { db });
 
   if (!formWithFormFields) {
     throw new Error("Form not found");
@@ -47,8 +50,8 @@ export const createConversationWithMetadata = async (
 
   if (conversationId) {
     // Get existing conversation
-    const existingConversation = await api.conversation.getOne({
-      id: conversationId,
+    const existingConversation = await getOneConversation(conversationId, {
+      db,
     });
     if (!existingConversation) {
       throw new Error("Conversation not found");
@@ -64,15 +67,18 @@ export const createConversationWithMetadata = async (
       fieldConfiguration: field.fieldConfiguration,
     }));
 
-    conversationData = await api.conversation.create({
-      formId: formWithFormFields.id,
-      name: "New Conversation",
-      organizationId: formWithFormFields.organizationId,
-      transcript: [],
-      formFieldResponses: fieldsWithEmptyData,
-      formOverview: formWithFormFields.overview,
-      metaData, // Pass the extracted metadata here
-    });
+    conversationData = await createConversation(
+      {
+        formId: formWithFormFields.id,
+        name: "New Conversation",
+        organizationId: formWithFormFields.organizationId,
+        transcript: [],
+        formFieldResponses: fieldsWithEmptyData,
+        formOverview: formWithFormFields.overview,
+        metaData, // Pass the extracted metadata here
+      },
+      { db },
+    );
   }
 
   // Return CoreConversation with form data

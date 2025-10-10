@@ -1,19 +1,26 @@
-import { createConversationWithMetadata } from "@/actions/conversationActions";
+import { checkNThrowErrorFormSubmissionLimit } from "@/actions";
 import {
   CoreService,
   type CoreServiceUIMessage,
   createErrorStreamResponse,
   createStreamResponseWithWriter,
 } from "@convoform/ai";
-import { patchConversation } from "@convoform/api/src/actions/conversation/patchConversation";
+import {
+  createConversation,
+  patchConversation,
+} from "@convoform/api/src/actions/conversation";
+import { getOneFormWithFields } from "@convoform/api/src/actions/form";
 import type { ActionContext } from "@convoform/api/src/types/actionContextType";
 import { db } from "@convoform/db";
 import {
   type CoreConversation,
   coreConversationSchema,
+  respondentMetadataSchema,
 } from "@convoform/db/src/schema";
+import { geolocation } from "@vercel/functions";
 import type { UIMessageStreamWriter } from "ai";
-import { type NextRequest, after } from "next/server";
+import { headers } from "next/headers";
+import { type NextRequest, after, userAgent } from "next/server";
 import { z } from "zod/v4";
 
 export const runtime = "edge";
@@ -44,10 +51,60 @@ export async function POST(request: NextRequest) {
     const parsedRequestBody = await requestSchema.parseAsync(requestBody);
 
     if (parsedRequestBody.type === "new") {
-      // Use shared action for conversation creation with metadata
-      const newConversation = await createConversationWithMetadata(
+      // Extract user-agent and geo information from request headers
+      const userAgentInformation = userAgent({ headers: await headers() });
+      const geoInformation = geolocation({ headers: await headers() });
+
+      // Parse metadata using the schema
+      const metaData = await respondentMetadataSchema.parseAsync({
+        userAgent: userAgentInformation,
+        geoDetails: geoInformation,
+      });
+
+      // Get form with fields
+      const formWithFormFields = await getOneFormWithFields(
         parsedRequestBody.formId,
+        {
+          db,
+        },
       );
+
+      if (!formWithFormFields) {
+        throw new Error("Form not found");
+      }
+
+      // Check form submission limits
+      await checkNThrowErrorFormSubmissionLimit(formWithFormFields);
+
+      // Create new conversation with metadata
+      const fieldsWithEmptyData = formWithFormFields.formFields.map(
+        (field) => ({
+          id: field.id,
+          fieldName: field.fieldName,
+          fieldDescription: field.fieldDescription,
+          fieldValue: null,
+          fieldConfiguration: field.fieldConfiguration,
+        }),
+      );
+
+      const conversationData = await createConversation(
+        {
+          formId: formWithFormFields.id,
+          name: "New Conversation",
+          organizationId: formWithFormFields.organizationId,
+          transcript: [],
+          formFieldResponses: fieldsWithEmptyData,
+          formOverview: formWithFormFields.overview,
+          metaData,
+        },
+        { db },
+      );
+
+      // Create CoreConversation with form data
+      const newConversation = coreConversationSchema.parse({
+        ...conversationData,
+        form: formWithFormFields,
+      });
 
       return await createStreamResponseWithWriter<CoreServiceUIMessage>(
         async (writer) => {
