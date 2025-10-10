@@ -175,6 +175,7 @@ export const patchConversationSchema = insertConversationSchema
     createdAt: z.coerce.date().nullable().optional(),
     updatedAt: z.coerce.date().nullable().optional(),
   });
+export type PatchConversation = z.infer<typeof patchConversationSchema>;
 
 export type Conversation = z.infer<typeof selectConversationSchema>;
 

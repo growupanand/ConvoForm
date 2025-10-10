@@ -38,8 +38,9 @@ export function streamFieldQuestion(
           actionType: "generateFieldQuestion",
         }),
       temperature: 0.3,
-      system: getGenerateFieldQuestionSystemPrompt(params),
-      prompt: `Generate a ${params.isFirstQuestion ? "first" : "follow-up"} question for the field "${params.currentField.fieldName}" based on the provided context.`,
+      maxOutputTokens: 200,
+      system: getGenerateFieldQuestionSystemPrompt(params.formOverview),
+      prompt: buildGenerateFieldQuestionPrompt(params),
       onFinish,
     });
   } catch (error) {
@@ -55,7 +56,42 @@ export function streamFieldQuestion(
  * ==================================================================
  */
 
+/**
+ * System prompt with form context for per-form LLM caching optimization
+ * Including formOverview here enables better cache hits within a form's conversations
+ * while keeping the prompt static for all fields/turns of that specific form
+ *
+ * Cache scope: Per-form (same system prompt for all conversations of one form)
+ * Cache benefit: ~50-90% cost reduction + faster response times after first request
+ */
 export function getGenerateFieldQuestionSystemPrompt(
+  formOverview: string,
+): string {
+  return `You are a conversational AI that generates natural questions for form fields.
+
+### FORM CONTEXT
+${formOverview}
+
+### YOUR TASK
+Generate a clear, conversational question for the specified field.
+
+### GUIDELINES
+- Be natural and conversational, not robotic
+- For first questions: be welcoming and set the tone
+- For follow-ups: acknowledge previous context when relevant
+- Match the tone to the form type (professional, casual, etc.)
+- Keep questions concise and focused
+
+### OUTPUT FORMAT
+Respond with only the question text. No explanations or additional formatting.`;
+}
+
+/**
+ * Builds the user prompt with dynamic field and conversation context
+ * formOverview moved to system prompt for better per-form caching
+ * This prompt changes with each field extraction and conversation turn
+ */
+export function buildGenerateFieldQuestionPrompt(
   params: StreamFieldQuestionParams,
 ): string {
   const conversationContext = buildConversationContextPrompt(params.transcript);
@@ -63,24 +99,18 @@ export function getGenerateFieldQuestionSystemPrompt(
     params.formFieldResponses,
   );
 
-  return `You are an expert conversational AI assistant that generates natural, context-aware questions for form fields. Your questions should be clear, concise, and appropriate for the form type and conversation context.
+  return `### FIELD TO ASK ABOUT
+Name: ${params.currentField.fieldName}
+Description: ${params.currentField.fieldDescription}
+Field Type: ${params.currentField.fieldConfiguration.inputType}
 
-Form Overview: ${params.formOverview}
-Current Field: ${params.currentField.fieldName}
-Field Description: ${params.currentField.fieldDescription}
-
-${params.isFirstQuestion ? "This is the first question in the conversation." : "This is a follow-up question based on previous responses."}
+### QUESTION TYPE
+${params.isFirstQuestion ? "First question - welcome the user and start the conversation" : "Follow-up question - build on previous responses"}
 
 ${collectedFieldsContext}
 
 ${conversationContext}
 
-Instructions:
-1. Generate a natural, conversational question
-2. For first questions: be welcoming and clear
-3. For follow-ups: reference previous context when relevant
-4. Keep questions concise but complete
-5. Adapt tone to match the form type and context
-
-Respond with only the question text, nothing else. Do not include any explanations, metadata, or additional formatting.`;
+### INSTRUCTIONS
+Generate a ${params.isFirstQuestion ? "welcoming first" : "contextual follow-up"} question for "${params.currentField.fieldName}".`;
 }

@@ -1,6 +1,5 @@
 {
   "extends": "@convoform/tsconfig/base.json",
   "exclude": ["node_modules", "dist"],
-  "include": ["src/**/*.ts", "index.ts"]
-
+  "include": ["src/**/*.ts"]
 }

@@ -124,7 +124,7 @@ export async function generateFormFields(params: GenerateFormFieldsParams) {
       temperature: 0.7,
       system: getGenerateFormFieldsSystemPrompt(params, maxFields),
       prompt:
-        "Based on the form context provided, generate appropriate form fields that will collect the necessary information. Focus on creating a user-friendly form that flows naturally.",
+        "Generate appropriate form fields that collect the necessary information with optimal user experience.",
       schema: generateFormFieldsOutputSchema,
     });
 
@@ -172,72 +172,62 @@ export function getGenerateFormFieldsSystemPrompt(
   params: GenerateFormFieldsParams,
   maxFields: number,
 ): string {
-  return `You are an expert UX designer and form builder who creates optimal form structures for data collection. Your task is to analyze the provided form context and generate the most appropriate form fields.
+  return `You are an expert UX designer creating optimal form structures for data collection.
 
-Form Context: ${params.formContext}
+### FORM CONTEXT
+${params.formContext}
 ${params.templateType ? `Template Type: ${params.templateType}` : ""}
-Maximum Fields Allowed: ${maxFields}
+Maximum Fields: ${maxFields}
 
-Instructions:
-1. Generate ${maxFields} or fewer fields that comprehensively cover the form's purpose
-2. Choose the most appropriate input type for each field based on the data being collected
-3. Consider user experience - logical field order and clear labeling
-4. Set appropriate validation rules based on the field type
-5. Mark fields as required only if they are essential for the form's purpose
-6. For choice fields, provide realistic and comprehensive options
-7. Include helpful placeholder text where appropriate
-8. Consider data privacy and only request necessary information
+### YOUR TASK
+Generate ${maxFields} or fewer form fields that comprehensively cover the form's purpose.
 
-Supported Input Types and their Configuration Structure:
+### DESIGN PRINCIPLES
+- Choose the most appropriate input type for each field
+- Logical field order: basic info → specific questions → optional fields
+- Clear, descriptive field names and descriptions
+- Only mark essential fields as required
+- Realistic options for choice fields (2-8 options)
+- Include helpful placeholder text
+- Request only necessary information
 
-1. **text** fields:
-   - fieldConfiguration: { inputType: "text", inputConfiguration: { placeholder?: string, maxLength?: number, isParagraph?: boolean } }
-   - Use isParagraph: true for long text areas (descriptions, comments)
-   - Use maxLength for character limits
-   - Use placeholder for helpful hints
+### SUPPORTED FIELD TYPES
 
-2. **multipleChoice** fields:
-   - fieldConfiguration: { inputType: "multipleChoice", inputConfiguration: { options: [{ value: string }], allowMultiple?: boolean } }
-   - Provide 2-8 realistic options in the format [{ value: "Option 1" }, { value: "Option 2" }]
-   - Set allowMultiple: true if users can select multiple options
+**text**
+fieldConfiguration: { inputType: "text", inputConfiguration: { placeholder?: string, maxLength?: number, isParagraph?: boolean } }
+- Use isParagraph: true for long text (comments, descriptions)
+- Use maxLength for character limits
+- Use placeholder for hints
 
-3. **datePicker** fields:
-   - fieldConfiguration: { inputType: "datePicker", inputConfiguration: { minDate?: string, maxDate?: string, includeTime?: boolean } }
-   - Set includeTime: true if time selection is needed
-   - Use minDate/maxDate as full ISO timestamp strings (e.g., "2025-09-08T18:30:00.000Z")
-   - IMPORTANT: Always use full ISO timestamp format, not just date strings
+**multipleChoice**
+fieldConfiguration: { inputType: "multipleChoice", inputConfiguration: { options: [{ value: string }], allowMultiple?: boolean } }
+- Format: [{ value: "Option 1" }, { value: "Option 2" }]
+- Set allowMultiple: true for multi-select
 
-4. **rating** fields:
-   - fieldConfiguration: { inputType: "rating", inputConfiguration: { maxRating?: number, lowLabel?: string, highLabel?: string, iconType?: "STAR"|"HEART"|"THUMB_UP" } }
-   - Default maxRating is 5, can be 3-10
-   - Use lowLabel and highLabel for scale descriptions
+**datePicker**
+fieldConfiguration: { inputType: "datePicker", inputConfiguration: { minDate?: string, maxDate?: string, includeTime?: boolean } }
+- CRITICAL: Use full ISO timestamps ("2025-09-08T18:30:00.000Z"), NOT date-only strings
+- Set includeTime: true for time selection
 
-5. **fileUpload** fields:
-   - fieldConfiguration: { inputType: "fileUpload", inputConfiguration: { helpText?: string, maxFileSize?: number, allowedFileTypes?: string[], allowedExtensions?: string[] } }
-   - Default maxFileSize: 5MB (5242880 bytes)
-   - Default allowedFileTypes: ["image/jpeg", "image/jpg", "application/pdf"]
+**rating**
+fieldConfiguration: { inputType: "rating", inputConfiguration: { maxRating?: number, lowLabel?: string, highLabel?: string, iconType?: "STAR"|"HEART"|"THUMB_UP" } }
+- Default maxRating: 5 (range: 3-10)
+- Use lowLabel/highLabel for scale descriptions
 
-Form Flow Best Practices:
-1. Start with basic identifying information (name, contact)
-2. Progress to more specific questions
-3. End with optional or supplementary fields
-4. Group related fields logically
-5. Keep the form as concise as possible while gathering necessary data
+**fileUpload**
+fieldConfiguration: { inputType: "fileUpload", inputConfiguration: { helpText?: string, maxFileSize?: number, allowedFileTypes?: string[], allowedExtensions?: string[] } }
+- Default maxFileSize: 5MB (5242880 bytes)
+- Default types: ["image/jpeg", "image/jpg", "application/pdf"]
 
-Respond with a JSON object containing:
-- "formName": A clear, descriptive name for the form
-- "formDescription": Brief explanation of the form's purpose
-- "fields": Array of field objects with:
-  * "fieldName": Human-readable field name
-  * "fieldDescription": Detailed description for users
-  * "fieldConfiguration": Complete configuration object with inputType and inputConfiguration
-- "reasoning": Brief explanation of field choices and structure
-- "confidence": Number 0-1 indicating confidence in the generated structure
-- "estimatedCompletionTime": Estimated minutes to complete the form
+### OUTPUT REQUIREMENTS
+- formName: Clear, descriptive form name
+- formDescription: Brief purpose explanation
+- fields: Array with fieldName, fieldDescription, fieldConfiguration
+- reasoning: Brief explanation of field choices
+- confidence: 0-1 score
+- estimatedCompletionTime: Minutes to complete
 
-CRITICAL: Each field MUST have the exact fieldConfiguration structure matching the input type as shown above.
-
-Important: Always respond with valid JSON format and ensure all fields have appropriate input types and validation rules.`;
+Each field MUST use the exact fieldConfiguration structure shown above.`;
 }
 
 /**

@@ -43,9 +43,10 @@ export async function extractFieldAnswer(params: ExtractFieldAnswerParams) {
           actionType: "extractFieldAnswer",
         }),
       temperature: 0.1,
-      system: getExtractFieldAnswerSystemPrompt(params),
-      prompt: `Based on the conversation above, extract the value for "${params.currentField.fieldName}" and return it as a JSON object.`,
+      system: getExtractFieldAnswerSystemPrompt(params.formOverview),
+      prompt: buildExtractFieldAnswerPrompt(params),
       schema: extractFieldAnswerOutputSchema,
+      maxOutputTokens: 200,
     });
   } catch (error) {
     // Edge-compatible error handling
@@ -60,25 +61,57 @@ export async function extractFieldAnswer(params: ExtractFieldAnswerParams) {
  * ==================================================================
  */
 
+/**
+ * System prompt with form context for per-form LLM caching optimization
+ * Including formOverview here enables better cache hits within a form's conversations
+ * while keeping the prompt static for all fields/turns of that specific form
+ *
+ * Cache scope: Per-form (same system prompt for all conversations of one form)
+ * Cache benefit: ~50-90% cost reduction + faster response times after first request
+ */
 export function getExtractFieldAnswerSystemPrompt(
+  formOverview: string,
+): string {
+  return `You are an expert at extracting field values from conversation transcripts.
+
+### FORM CONTEXT
+${formOverview}
+
+### YOUR TASK
+Analyze the conversation transcript and extract the user's answer for the specified field.
+
+### EXTRACTION GUIDELINES
+- Extract the most relevant answer from the user's messages
+- Return null if no clear answer is found
+- Consider the field's description and requirements
+- Validate the answer matches the expected field type
+- Provide confidence based on clarity and relevance of the user's response
+
+### OUTPUT REQUIREMENTS
+- answer: The extracted value as a string, or null if not found
+- confidence: Score from 0-1 indicating extraction certainty
+- reasoning: Brief explanation of your extraction decision
+- isValid: Boolean indicating if the answer meets field requirements`;
+}
+
+/**
+ * Builds the user prompt with dynamic field and conversation context
+ * formOverview moved to system prompt for better per-form caching
+ * This prompt changes with each field extraction and conversation turn
+ */
+export function buildExtractFieldAnswerPrompt(
   params: ExtractFieldAnswerParams,
 ): string {
-  // Build context from transcript
   const conversationContext = buildConversationContextPrompt(params.transcript);
 
-  return `You are an expert at extracting specific field values from conversation transcripts. Your task is to analyze the conversation and extract the answer for the specified field.
+  return `### FIELD TO EXTRACT
+Name: ${params.currentField.fieldName}
+Description: ${params.currentField.fieldDescription}
+Field Type: ${params.currentField.fieldConfiguration.inputType}
 
-Form Overview: ${params.formOverview}
-Field to extract: ${params.currentField.fieldName}
-Field description: ${params.currentField.fieldDescription}
-
+### CONVERSATION TRANSCRIPT
 ${conversationContext}
 
-You must respond with a valid JSON object containing:
-- "answer": the extracted value as a string, or null if not found
-- "confidence": a number between 0 and 1 indicating your confidence
-- "reasoning": a brief explanation of why you extracted this value
-- "isValid": boolean indicating if this is a valid answer for the field
-
-Important: Always respond with valid JSON format.`;
+### INSTRUCTIONS
+Extract the user's answer for the field "${params.currentField.fieldName}" from the conversation above.`;
 }

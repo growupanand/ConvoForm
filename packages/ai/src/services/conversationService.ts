@@ -10,10 +10,8 @@ import { extractFieldAnswer } from "../ai-actions/extractFieldAnswer";
 import { generateConversationName } from "../ai-actions/generateConversationName";
 import { streamFieldQuestion } from "../ai-actions/streamFieldQuestion";
 import type { ConversationManager } from "../managers/conversationManager";
-import {
-  type ConversationAIMetadata,
-  extractFieldType,
-} from "../utils/llmAnalytics";
+import { extractFieldInputType } from "../utils";
+import type { ConversationAIMetadata } from "../utils/llmAnalyticsUtils";
 
 export type ConversationServiceUIMessage = UIMessage<
   never, // metadata type
@@ -141,7 +139,7 @@ export class ConversationService {
         currentField,
         metadata: {
           ...this.getAnalyticsMetadata(),
-          fieldType: extractFieldType(currentField) as any,
+          fieldType: extractFieldInputType(currentField) as any,
         },
       });
     }
@@ -184,7 +182,7 @@ export class ConversationService {
         isFirstQuestion: false,
         metadata: {
           ...this.getAnalyticsMetadata(),
-          fieldType: extractFieldType(currentField),
+          fieldType: extractFieldInputType(currentField),
         },
       },
       this.createTextStreamFinishHandler(),
@@ -216,7 +214,7 @@ export class ConversationService {
         isFirstQuestion,
         metadata: {
           ...this.getAnalyticsMetadata(),
-          fieldType: extractFieldType(nextField) as any,
+          fieldType: extractFieldInputType(nextField) as any,
         },
       },
       this.createTextStreamFinishHandler(),

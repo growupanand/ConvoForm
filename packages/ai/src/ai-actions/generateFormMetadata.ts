@@ -47,7 +47,7 @@ export async function generateFormMetadata(params: GenerateFormMetadataParams) {
       temperature: 0.6,
       system: getGenerateFormMetadataSystemPrompt(params),
       prompt:
-        "Based on the form context and selected fields, generate comprehensive metadata that will make this form engaging and professional.",
+        "Generate comprehensive metadata that makes this form engaging and professional.",
       schema: generateFormMetadataOutputSchema,
     });
   } catch (error) {
@@ -73,55 +73,57 @@ export function getGenerateFormMetadataSystemPrompt(
     )
     .join("\n");
 
-  return `You are an expert copywriter and UX designer specializing in creating engaging form experiences. Your task is to generate compelling metadata for a form that will encourage completion while maintaining professionalism.
+  return `You are an expert copywriter creating engaging form experiences.
 
-Form Context: ${params.formContext}
+### FORM CONTEXT
+${params.formContext}
 ${params.organizationName ? `Organization: ${params.organizationName}` : ""}
 
-Selected Form Fields:
+### FORM FIELDS
 ${fieldsDescription}
 
-Instructions:
-1. Create a clear, concise form name that immediately conveys the purpose
-2. Write an informative description that explains what the form is for
-3. Craft a welcoming title and message that puts users at ease
-4. Design an ending message that thanks users and sets expectations
-5. Provide realistic completion time estimate based on field complexity
-6. Generate relevant tags for categorization and searchability
-7. Use professional yet friendly tone throughout
-8. Consider the user's perspective and motivation for filling the form
+### YOUR TASK
+Generate compelling metadata that encourages form completion while maintaining professionalism.
 
-Form Name Guidelines:
-- Keep it under 60 characters
-- Be specific and descriptive
-- Avoid jargon or technical terms
-- Make it immediately understandable
+### CONTENT REQUIREMENTS
 
-Description Guidelines:
-- Explain the form's purpose clearly
-- Mention who should fill it out
-- Include any important context or requirements
-- Keep it under 200 characters
+**formName** (<60 chars)
+- Clear, immediately understandable
+- Conveys purpose without jargon
+- Specific and descriptive
 
-Welcome Message Guidelines:
-- Be warm and professional
-- Set clear expectations
-- Mention estimated time if helpful
-- Address any privacy concerns if relevant
+**formDescription** (<200 chars)
+- Explains purpose clearly
+- Mentions target audience
+- Includes important context
 
-Ending Message Guidelines:
-- Thank the user for their time
-- Explain what happens next if applicable
-- Provide contact information if relevant
-- Leave a positive final impression
+**welcomeScreenTitle**
+- Warm and professional
+- Sets the right tone
 
-Tags Guidelines:
-- Use 3-5 relevant tags
-- Include form type, industry, purpose
+**welcomeScreenMessage**
+- Puts users at ease
+- Sets clear expectations
+- Mentions estimated time
+- Addresses privacy if relevant
+
+**endingMessage**
+- Thanks user for their time
+- Explains next steps if applicable
+- Provides contact info if relevant
+- Leaves positive impression
+
+**estimatedCompletionTime**
+- Realistic estimate in minutes based on field complexity
+
+**tags** (3-5 tags)
+- Include: form type, industry, purpose
 - Use common, searchable terms
 - Avoid overly specific tags
 
-Respond with a JSON object containing all required metadata fields and a reasoning explanation for your choices.
+**reasoning**
+- Brief explanation of your choices
 
-Important: Always respond with valid JSON format and ensure all text is professional, clear, and engaging.`;
+### TONE
+Professional yet friendly throughout. Consider user motivation and perspective.`;
 }

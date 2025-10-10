@@ -1,11 +1,13 @@
 import { createConversationWithMetadata } from "@/actions/conversationActions";
-import { api } from "@/trpc/server";
 import {
   CoreService,
   type CoreServiceUIMessage,
   createErrorStreamResponse,
   createStreamResponseWithWriter,
 } from "@convoform/ai";
+import { patchConversation } from "@convoform/api/src/actions/conversation/patchConversation";
+import type { ActionContext } from "@convoform/api/src/types/actionContextType";
+import { db } from "@convoform/db";
 import {
   type CoreConversation,
   coreConversationSchema,
@@ -51,7 +53,9 @@ export async function POST(request: NextRequest) {
         async (writer) => {
           const coreService = new CoreService({
             conversation: newConversation,
-            onUpdateConversation: getOnUpdateConversationHandler(writer),
+            onUpdateConversation: getOnUpdateConversationHandler(writer, {
+              db,
+            }),
           });
 
           const initialConversationStream = await coreService.initialize();
@@ -64,7 +68,9 @@ export async function POST(request: NextRequest) {
       async (writer) => {
         const coreService = new CoreService({
           conversation: parsedRequestBody.coreConversation,
-          onUpdateConversation: getOnUpdateConversationHandler(writer),
+          onUpdateConversation: getOnUpdateConversationHandler(writer, {
+            db,
+          }),
         });
 
         const initialConversationStream = await coreService.process(
@@ -86,11 +92,12 @@ export async function POST(request: NextRequest) {
 
 function getOnUpdateConversationHandler(
   writer: UIMessageStreamWriter<CoreServiceUIMessage>,
+  ctx: ActionContext,
 ) {
   return async (updatedConversation: CoreConversation) => {
     try {
       after(async () => {
-        await api.conversation.patch(updatedConversation);
+        await patchConversation(updatedConversation, ctx);
       });
 
       writer.write({

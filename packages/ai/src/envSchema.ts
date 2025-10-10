@@ -9,7 +9,7 @@ import { z } from "zod/v4";
 type OpenAIModelName = Parameters<typeof openai>[0];
 
 // OpenAI model IDs from @ai-sdk/openai type definitions
-const SUPPORTED_OPENAI_CHAT_MODELS = ["gpt-4o-mini"] as const;
+const SUPPORTED_OPENAI_CHAT_MODELS = ["gpt-4o-mini", "gpt-4.1-nano"] as const;
 
 // Create zod schema for model validation
 const OpenAIChatModelSchema = z.enum(SUPPORTED_OPENAI_CHAT_MODELS);
@@ -110,19 +110,23 @@ export function getValidatedModelConfig(): {
   model: OpenAIModelName;
 } {
   const validatedEnv = validateEnv();
+  console.log("Validated environment variables:", validatedEnv);
 
   if (
     validatedEnv.CONVERSATION_MODEL &&
     validatedEnv.CONVERSATION_MODEL.provider === "openai"
   ) {
     const modelName = validatedEnv.CONVERSATION_MODEL.model;
+    console.log("Validating model name...", modelName);
+
     if (modelName !== undefined) {
       if (isValidOpenAiModel(modelName)) {
+        console.log("Valid model found: ", modelName);
         return { provider: "openai", model: modelName as OpenAIModelName };
       }
     }
   }
-
+  console.log("Valid mode not found, using default model: gpt-4o-mini");
   return { provider: "openai", model: "gpt-4o-mini" };
 }
 
@@ -130,5 +134,7 @@ export function getValidatedModelConfig(): {
  * Check if a model name is valid for a provider
  */
 export function isValidOpenAiModel(model: string): model is OpenAIModelName {
-  return SUPPORTED_OPENAI_CHAT_MODELS.includes(model as any);
+  return SUPPORTED_OPENAI_CHAT_MODELS.some((modelName) =>
+    modelName.startsWith(model),
+  );
 }

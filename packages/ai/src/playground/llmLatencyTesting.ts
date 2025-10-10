@@ -9,7 +9,7 @@
 import { exit } from "node:process";
 import { openai } from "@ai-sdk/openai";
 import type { FormFieldResponses } from "@convoform/db/src/schema";
-import type { LanguageModelV1 } from "ai";
+import type { LanguageModel } from "ai";
 import { extractFieldAnswer } from "../ai-actions/extractFieldAnswer";
 import { generateConversationName } from "../ai-actions/generateConversationName";
 import { generateEndMessage } from "../ai-actions/generateEndMessage";
@@ -47,7 +47,7 @@ interface ModelTestResult {
 }
 
 interface TestConfig {
-  models: Array<{ name: string; model: LanguageModelV1 }>;
+  models: Array<{ name: string; model: Exclude<LanguageModel, string> }>;
 }
 
 // ============================================================================
@@ -260,7 +260,7 @@ async function measureLatency<T>(
  */
 async function simulateConversation(
   modelName: string,
-  model: LanguageModelV1,
+  model: Exclude<LanguageModel, string>,
 ): Promise<ModelTestResult> {
   console.log(`\n🎯 Testing model: ${modelName}`);
   console.log("─".repeat(60));
@@ -522,9 +522,9 @@ function displayResults(results: ModelTestResult[]) {
         const avgDuration =
           relevantRecords.length > 0
             ? Math.round(
-                relevantRecords.reduce((sum, r) => sum + r.durationMs, 0) /
-                  relevantRecords.length,
-              )
+              relevantRecords.reduce((sum, r) => sum + r.durationMs, 0) /
+              relevantRecords.length,
+            )
             : 0;
 
         return {
@@ -573,7 +573,7 @@ function displayResults(results: ModelTestResult[]) {
   const speedDiff = Math.round(
     ((slowest.totalDurationMs - fastest.totalDurationMs) /
       fastest.totalDurationMs) *
-      100,
+    100,
   );
 
   const fastestCost = fastest.records.reduce(
@@ -667,10 +667,15 @@ async function runLatencyTests(config: TestConfig) {
 
 const DEFAULT_CONFIG: TestConfig = {
   models: [
-    { name: "GPT-4o Mini", model: openai("gpt-4o-mini") },
-    { name: "GPT-4.1 Mini", model: openai("gpt-4.1-mini") },
+    // {
+    //   name: DEFAULT_OPENAI_MODEL_NAME,
+    //   model: openai(DEFAULT_OPENAI_MODEL_NAME),
+    // },
     { name: "GPT-4.1 Nano", model: openai("gpt-4.1-nano") },
-    { name: "GPT-4 Turbo", model: openai("gpt-4-turbo") },
+    // { name: "GPT-5 Mini", model: openai("gpt-5-mini-2025-08-07") },
+    // { name: "GPT-4 Mini", model: openai("gpt-4-mini-2025-04-16") },
+    // { name: "GPT-5 Chat", model: openai("gpt-5-chat-latest") },
+    // { name: "GPT-4 Turbo", model: openai("gpt-4-turbo") },
   ],
 };
 

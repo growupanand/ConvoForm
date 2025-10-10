@@ -6,7 +6,10 @@
 import { openai } from "@ai-sdk/openai";
 import { type LLMAnalyticsMetadata, analytics } from "@convoform/analytics";
 import type { LanguageModel } from "ai";
+import { DEFAULT_OPENAI_MODEL_NAME } from "./constants";
 import { getValidatedModelConfig } from "./envSchema";
+
+const DEFAULT_AI_SDK_MODEL = openai(DEFAULT_OPENAI_MODEL_NAME);
 
 /**
  * Get model configuration from validated environment variables
@@ -27,44 +30,26 @@ export function getModelConfig(
       default:
         // This should not happen with validation, but fallback just in case
         console.warn(`Unsupported provider: ${config.provider}, using default`);
-        baseModel = openai("gpt-4o-mini");
+        baseModel = DEFAULT_AI_SDK_MODEL;
     }
 
     // If metadata provided and analytics enabled, return traced model
     if (metadata) {
-      const isAnalyticsEnabled = true; // TODO: Enable analytics based on environment variable
-      if (isAnalyticsEnabled) {
-        return analytics.createTracedModel(baseModel, metadata) as Exclude<
-          LanguageModel,
-          string
-        >;
-      }
+      return analytics.createTracedModel(baseModel, metadata) as Exclude<
+        LanguageModel,
+        string
+      >;
     }
 
     return baseModel;
   } catch (error) {
     // Log error and use default
-    console.error("Model configuration error:", error);
-    return openai("gpt-4o-mini");
+    console.error(
+      "Error getting model config, using default:",
+      DEFAULT_OPENAI_MODEL_NAME,
+      "\nError:\n",
+      error,
+    );
+    return DEFAULT_AI_SDK_MODEL;
   }
-}
-
-/**
- * Get a traced model configuration with LLM analytics
- * @param metadata Optional metadata to enrich analytics events
- * @returns Traced language model that captures analytics events
- */
-export function getTracedModelConfig(
-  metadata?: LLMAnalyticsMetadata,
-): LanguageModel {
-  const baseModel = getModelConfig();
-
-  // Check if LLM analytics is enabled via environment variable
-  const isAnalyticsEnabled = true; // TODO: Enable analytics based on environment variable
-
-  if (!isAnalyticsEnabled) {
-    return baseModel;
-  }
-
-  return analytics.createTracedModel(baseModel, metadata);
 }
