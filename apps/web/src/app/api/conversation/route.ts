@@ -24,6 +24,7 @@ import { type NextRequest, after, userAgent } from "next/server";
 import { z } from "zod/v4";
 
 export const runtime = "edge";
+export const maxDuration = 60;
 
 const newConversationRequestSchema = z.object({
   type: z.literal("new"),

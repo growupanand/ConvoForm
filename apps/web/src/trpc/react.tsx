@@ -1,5 +1,6 @@
 "use client";
 
+import { getTRPCUrl } from "@/lib/url";
 import type { AppRouter } from "@convoform/api";
 import { toast } from "@convoform/ui";
 import {
@@ -8,13 +9,14 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import { TRPCClientError, loggerLink } from "@trpc/client";
-import { httpBatchLink } from "@trpc/client";
+import {
+  TRPCClientError,
+  loggerLink,
+  unstable_httpBatchStreamLink,
+} from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 import SuperJSON from "superjson";
-
-import { getTRPCUrl } from "@/lib/url";
 import { getTRPCErrorMessage } from "./utils";
 
 export const api = createTRPCReact<AppRouter>();
@@ -74,7 +76,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
             process.env.NODE_ENV === "development" ||
             (op.direction === "down" && op.result instanceof Error),
         }),
-        httpBatchLink({
+        unstable_httpBatchStreamLink({
           url: getTRPCUrl(),
           // You can pass any HTTP headers you wish here
           async headers() {
@@ -84,6 +86,16 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
           },
           transformer: SuperJSON,
         }),
+        // httpBatchLink({
+        //   url: getTRPCUrl(),
+        //   // You can pass any HTTP headers you wish here
+        //   async headers() {
+        //     const headers = new Headers();
+        //     headers.set("x-trpc-source", "nextjs-react");
+        //     return headers;
+        //   },
+        //   transformer: SuperJSON,
+        // }),
       ],
     }),
   );
