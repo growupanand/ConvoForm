@@ -1,5 +1,6 @@
 import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
+import { getLogger } from "@convoform/logger";
 import { type LanguageModel, generateObject } from "ai";
 import { z } from "zod/v4";
 import { getModelConfig } from "../config";
@@ -44,23 +45,36 @@ export type GenerateConversationNameOutput = z.infer<
 export async function generateConversationName(
   params: GenerateConversationNameParams,
 ) {
+  const context = {
+    ...(params.metadata || {}),
+    actionType: "generateConversationName",
+  } as const;
+  const logger = getLogger().withContext(context);
+  const timer = logger.startTimer("ai.generateConversationName");
+
   try {
-    return await generateObject({
-      model:
-        params.model ||
-        getModelConfig({
-          ...params.metadata,
-          actionType: "generateConversationName",
-        }),
+    const result = await generateObject({
+      model: params.model || getModelConfig(context),
       temperature: 0.7,
       system: getGenerateConversationNameSystemPrompt(params),
       prompt:
         "Generate a descriptive name for this conversation based on the provided context.",
       schema: generateConversationNameOutputSchema,
     });
+
+    timer.end({
+      success: true,
+      name: result.object.name,
+      confidence: result.object.confidence,
+      keywordsCount: result.object.keywords.length,
+    });
+
+    return result;
   } catch (error) {
-    // Edge-compatible error handling
-    console.error("\n[AI Action error]: generateConversationName\n", error);
+    timer.end({
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    });
     throw error;
   }
 }

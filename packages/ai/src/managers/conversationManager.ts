@@ -1,4 +1,5 @@
 import type { CoreConversation } from "@convoform/db/src/schema";
+import { type ILogger, createConversationLogger } from "@convoform/logger";
 
 /**
  * Manages a conversation object and provides methods to update it in the database.
@@ -22,6 +23,13 @@ export class ConversationManager {
   ) => Promise<void>;
 
   /**
+   * Logger instance with conversation context
+   * @type {ILogger}
+   * @private
+   */
+  private logger: ILogger;
+
+  /**
    * Initializes the ConversationManager.
    * @constructor
    * @param {Object} opts - The options to initialize the ConversationManager.
@@ -34,6 +42,18 @@ export class ConversationManager {
   }) {
     this.conversation = opts.conversation;
     this.onUpdateConversation = opts.onUpdateConversation;
+
+    // Create logger with conversation context
+    this.logger = createConversationLogger({
+      conversationId: opts.conversation.id,
+      formId: opts.conversation.form.id,
+      organizationId: opts.conversation.organizationId,
+    });
+
+    this.logger.debug("ConversationManager initialized", {
+      fieldCount: opts.conversation.formFieldResponses.length,
+      isInProgress: opts.conversation.isInProgress,
+    });
   }
 
   /**
@@ -51,15 +71,19 @@ export class ConversationManager {
   public async updateConversation() {
     let success = false;
     if (this.onUpdateConversation) {
+      const timer = this.logger.startTimer("manager.updateConversation");
+
       // We want to make sure that update failed should not prevent the flow to continue
       try {
         await this.onUpdateConversation(this.conversation);
         success = true;
+
+        timer.end({ success: true });
       } catch (error) {
-        console.error(
-          `Failed to update conversation ${this.conversation.id}`,
-          error,
-        );
+        timer.end({
+          success: false,
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     }
     return success;
@@ -71,6 +95,11 @@ export class ConversationManager {
    * @returns {Promise<void>} A promise that resolves when the conversation is updated.
    */
   public async updateCurrentFieldId(fieldId: string) {
+    this.logger.info("Updating current field", {
+      fieldId,
+      previousFieldId: this.conversation.currentFieldId,
+    });
+
     this.conversation.currentFieldId = fieldId;
     await this.updateConversation();
   }
@@ -85,9 +114,19 @@ export class ConversationManager {
     const field = this.conversation.formFieldResponses.find(
       (field) => field.id === fieldId,
     );
+
     if (!field) {
+      this.logger.error("Field not found", { fieldId });
       throw new Error("Field not found");
     }
+
+    this.logger.info("Saving field answer", {
+      fieldId,
+      fieldName: field.fieldName,
+      fieldType: field.fieldConfiguration.inputType,
+      answerLength: fieldValue.length,
+    });
+
     field.fieldValue = fieldValue;
     await this.updateConversation();
   }
@@ -98,6 +137,11 @@ export class ConversationManager {
    * @returns {Promise<void>} A promise that resolves when the conversation is updated.
    */
   public async addUserMessage(message: string) {
+    this.logger.debug("Adding user message", {
+      messageLength: message.length,
+      transcriptLength: this.conversation.transcript.length + 1,
+    });
+
     this.conversation.transcript.push({
       role: "user",
       content: message,
@@ -111,6 +155,11 @@ export class ConversationManager {
    * @returns {Promise<void>} A promise that resolves when the conversation is updated.
    */
   public async addAIMessage(message: string) {
+    this.logger.debug("Adding AI message", {
+      messageLength: message.length,
+      transcriptLength: this.conversation.transcript.length + 1,
+    });
+
     this.conversation.transcript.push({
       role: "assistant",
       content: message,
@@ -141,6 +190,14 @@ export class ConversationManager {
    * @returns {Promise<void>} A promise that resolves when the conversation is updated.
    */
   public async markConversationComplete() {
+    this.logger.info("Marking conversation as complete", {
+      totalFields: this.conversation.formFieldResponses.length,
+      filledFields: this.conversation.formFieldResponses.filter(
+        (f) => f.fieldValue,
+      ).length,
+      transcriptLength: this.conversation.transcript.length,
+    });
+
     this.conversation.isInProgress = false;
     this.conversation.finishedAt = new Date();
     await this.updateConversation();
@@ -163,6 +220,11 @@ export class ConversationManager {
    * @returns {Promise<void>} A promise that resolves when the conversation is updated.
    */
   public async updateConversationName(name: string) {
+    this.logger.info("Updating conversation name", {
+      newName: name,
+      previousName: this.conversation.name,
+    });
+
     this.conversation.name = name;
     await this.updateConversation();
   }

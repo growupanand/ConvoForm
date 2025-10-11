@@ -1,5 +1,6 @@
 import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
+import { getLogger } from "@convoform/logger";
 import {
   type LanguageModel,
   type StreamTextOnFinishCallback,
@@ -29,23 +30,74 @@ export function streamFieldQuestion(
   params: StreamFieldQuestionParams,
   onFinish?: StreamTextOnFinishCallback<ToolSet> | undefined,
 ) {
+  const context = {
+    ...(params.metadata || {}),
+    fieldId: params.currentField.id,
+    fieldName: params.currentField.fieldName,
+    fieldType: params.currentField.fieldConfiguration.inputType,
+    isFirstQuestion: params.isFirstQuestion,
+    actionType: "generateFieldQuestion",
+  } as const;
+  const logger = getLogger().withContext(context);
+
+  const timer = logger.startTimer("ai.streamFieldQuestion");
+  let ttfbTimer: number | null = null;
+  let firstTokenReceived = false;
+
   try {
-    return streamText({
-      model:
-        params.model ||
-        getModelConfig({
-          ...params.metadata,
-          actionType: "generateFieldQuestion",
-        }),
+    // Track TTFB (Time To First Byte/Token)
+    const startTime = Date.now();
+
+    // Wrap onFinish to include comprehensive logging
+    const wrappedOnFinish: StreamTextOnFinishCallback<ToolSet> | undefined =
+      onFinish
+        ? async (event) => {
+            const totalDuration = timer.end({
+              textLength: event.text.length,
+              finishReason: event.finishReason,
+              ttfb: ttfbTimer,
+              usage: event.usage,
+            });
+
+            timer.end({
+              success: true,
+              textLength: event.text.length,
+              finishReason: event.finishReason,
+              ttfb: ttfbTimer,
+              totalDuration,
+              ...(event.usage && { tokenUsage: event.usage }),
+            });
+
+            await onFinish(event);
+          }
+        : undefined;
+
+    const streamResult = streamText({
+      model: params.model || getModelConfig(context),
       temperature: 0.3,
       maxOutputTokens: 200,
       system: getGenerateFieldQuestionSystemPrompt(params.formOverview),
       prompt: buildGenerateFieldQuestionPrompt(params),
-      onFinish,
+      onChunk: ({ chunk }) => {
+        // Track TTFB on first chunk
+        if (!firstTokenReceived && chunk.type === "text-delta") {
+          ttfbTimer = Date.now() - startTime;
+          firstTokenReceived = true;
+
+          logger.debug("First token received (TTFB)", {
+            ttfb: ttfbTimer,
+          });
+        }
+      },
+      onFinish: wrappedOnFinish,
     });
+
+    return streamResult;
   } catch (error) {
-    // Edge-compatible error handling
-    console.error("\n[AI Action error]: generateFieldQuestion\n", error);
+    timer.end({
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    });
     throw error;
   }
 }

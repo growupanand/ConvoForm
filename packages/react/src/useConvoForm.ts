@@ -3,7 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { sendMessage as sendWebsocketMessage } from "@convoform/websocket-client";
 import { DefaultChatTransport } from "ai";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CoreServiceUIMessage } from "../../ai";
 import type { CoreConversation } from "../../db/src/schema";
 import { API_DOMAIN } from "./constants";
@@ -13,6 +13,10 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
   const [conversation, setConversation] = useState<CoreConversation | null>(
     null,
   );
+
+  // TTFB tracking
+  const requestStartTimeRef = useRef<number | null>(null);
+  const firstByteReceivedRef = useRef<boolean>(false);
 
   const { setMessages, sendMessage, messages, status, error, clearError } =
     useChat<CoreServiceUIMessage>({
@@ -44,6 +48,20 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
 
   const isConversationInitialized = !!conversation;
   const currentFieldId = conversation?.currentFieldId ?? null;
+  const currentFieldName = useMemo(() => {
+    if (!isConversationInitialized) {
+      return null;
+    }
+    return (
+      conversation.formFieldResponses.find(
+        (field) => field.id === currentFieldId,
+      )?.fieldName ?? null
+    );
+  }, [
+    isConversationInitialized,
+    conversation?.currentFieldId,
+    conversation?.formFieldResponses,
+  ]);
 
   const progress = useMemo(() => {
     if (!isConversationInitialized) {
@@ -80,6 +98,42 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
       .join("\n");
   }, [messages]);
 
+  // Track TTFB (Time To First Byte) on client side
+  useEffect(() => {
+    if (
+      requestStartTimeRef.current !== null &&
+      !firstByteReceivedRef.current &&
+      messages.length > 0 &&
+      currentQuestionText &&
+      currentQuestionText.trim().length > 0
+    ) {
+      const ttfb = Date.now() - requestStartTimeRef.current;
+      firstByteReceivedRef.current = true;
+
+      props.logger?.info("Client: First byte received (TTFB)", {
+        ttfb,
+        currentQuestionText,
+        status,
+        formId: props.formId,
+        conversationId: conversation?.id,
+        organizationId: conversation?.organizationId,
+        messages,
+        fieldName: currentFieldName,
+      });
+
+      // Reset for next request
+      requestStartTimeRef.current = null;
+    }
+  }, [
+    messages.length,
+    status,
+    props.logger,
+    props.formId,
+    conversation?.id,
+    conversation?.organizationId,
+    currentQuestionText,
+  ]);
+
   const transportBody = useMemo(() => {
     return {
       formId: props.formId,
@@ -90,6 +144,19 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
 
   const submitAnswer = useCallback(
     async (answerText: string) => {
+      // Track request start time for TTFB measurement
+      requestStartTimeRef.current = Date.now();
+      firstByteReceivedRef.current = false;
+
+      props.logger?.debug("Client: Request started", {
+        answerLength: answerText.length,
+        isInitialization: !isConversationInitialized,
+        formId: props.formId,
+        conversationId: conversation?.id,
+        organizationId: conversation?.organizationId,
+        fieldName: currentFieldName,
+      });
+
       setMessages([]);
       return await sendMessage(undefined, {
         body: {
@@ -98,7 +165,15 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
         },
       });
     },
-    [transportBody, sendMessage],
+    [
+      transportBody,
+      sendMessage,
+      props.logger,
+      isConversationInitialized,
+      props.formId,
+      conversation?.id,
+      conversation?.organizationId,
+    ],
   );
 
   const initializeConversation = async () => {

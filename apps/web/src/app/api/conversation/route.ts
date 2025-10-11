@@ -1,4 +1,5 @@
 import { checkNThrowErrorFormSubmissionLimit } from "@/actions";
+import { createNextjsLogger } from "@/lib/logger";
 import {
   CoreService,
   type CoreServiceUIMessage,
@@ -122,6 +123,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const logger = createNextjsLogger().withContext({
+      conversationId: parsedRequestBody.coreConversation.id,
+    });
+
+    logger.info("Server: Request started");
+
     return await createStreamResponseWithWriter<CoreServiceUIMessage>(
       async (writer) => {
         const coreService = new CoreService({
@@ -130,6 +137,7 @@ export async function POST(request: NextRequest) {
             db,
           }),
         });
+        logger.info("Server: CoreService initialized");
 
         const initialConversationStream = await coreService.process(
           parsedRequestBody.answerText,

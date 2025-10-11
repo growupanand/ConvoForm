@@ -1,6 +1,7 @@
 import type { ChatStatus } from "ai";
 import type { ConversationServiceUIMessage } from "../../ai";
 import type { CoreConversation } from "../../db/src/schema";
+import type { ILogger } from "../../logger/src/types";
 
 /**
  *
@@ -62,6 +63,8 @@ export type EventHandlers = {
 export type UseConvoFormProps = EventHandlers & {
   formId: string;
   apiDomain?: string;
+  /** Optional logger instance for client-side logging */
+  logger?: ILogger;
 };
 
 export type UseConvoFormReturnType = State & Methods;

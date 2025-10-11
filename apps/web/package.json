@@ -20,6 +20,7 @@
     "@convoform/analytics": "workspace:*",
     "@convoform/api": "workspace:*",
     "@convoform/common": "workspace:*",
+    "@convoform/logger": "workspace:*",
     "@convoform/db": "workspace:*",
     "@convoform/feature-flags": "workspace:*",
     "@convoform/rate-limiter": "workspace:*",

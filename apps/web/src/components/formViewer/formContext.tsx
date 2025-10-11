@@ -1,5 +1,6 @@
 "use client";
 
+import { createNextjsLogger } from "@/lib/logger";
 import { CONVERSATION_END_MESSAGE } from "@convoform/common";
 import type { Form, FormDesignRenderSchema } from "@convoform/db/src/schema";
 import {
@@ -7,7 +8,7 @@ import {
   type FormSections,
 } from "@convoform/db/src/schema/formDesigns/constants";
 import { type UseConvoFormReturnType, useConvoForm } from "@convoform/react";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { FormDesignProvider, useFormDesign } from "./formDesignContext";
 
 type FormContext = {
@@ -32,8 +33,12 @@ function FormContextProviderInner({ children, form }: Readonly<ContextProps>) {
   const [currentSection, setCurrentSection] =
     useState<FormSections>(DEFAULT_FORM_SECTION);
 
+  // Create client-side logger instance
+  const logger = useMemo(() => createNextjsLogger(), []);
+
   const convoFormHook = useConvoForm({
     formId: form.id,
+    logger, // Pass logger for client-side TTFB tracking
   });
 
   const {

@@ -9,8 +9,9 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "catalog:",
-    "@convoform/db": "workspace:*",
     "@convoform/analytics": "workspace:*",
+    "@convoform/db": "workspace:*",
+    "@convoform/logger": "workspace:*",
     "ai": "catalog:",
     "zod": "catalog:"
   },

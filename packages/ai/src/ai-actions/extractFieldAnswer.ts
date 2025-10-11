@@ -1,5 +1,6 @@
 import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
+import { getLogger } from "@convoform/logger";
 import { type LanguageModel, generateObject } from "ai";
 import { z } from "zod/v4";
 import { getModelConfig } from "../config";
@@ -34,23 +35,57 @@ export type ExtractFieldAnswerOutput = z.infer<
  * Uses AI SDK V5 with edge runtime compatibility
  */
 export async function extractFieldAnswer(params: ExtractFieldAnswerParams) {
+  const context = {
+    ...(params.metadata || {}),
+    fieldId: params.currentField.id,
+    fieldName: params.currentField.fieldName,
+    fieldType: params.currentField.fieldConfiguration.inputType,
+    actionType: "extractFieldAnswer",
+  } as const;
+  const logger = getLogger().withContext(context);
+
+  const timer = logger.startTimer("ai.extractFieldAnswer");
+  const startTime = Date.now();
+
   try {
-    return await generateObject({
-      model:
-        params.model ||
-        getModelConfig({
-          ...params.metadata,
-          actionType: "extractFieldAnswer",
-        }),
+    const result = await generateObject({
+      model: params.model || getModelConfig(context),
       temperature: 0.1,
       system: getExtractFieldAnswerSystemPrompt(params.formOverview),
       prompt: buildExtractFieldAnswerPrompt(params),
       schema: extractFieldAnswerOutputSchema,
       maxOutputTokens: 200,
     });
+
+    const ttfb = Date.now() - startTime;
+    const totalDuration = timer.end({
+      isValid: result.object.isValid,
+      hasAnswer: !!result.object.answer,
+      confidence: result.object.confidence,
+      ttfb,
+      ...(result.usage && { tokenUsage: result.usage }),
+    });
+
+    timer.end({
+      success: true,
+      isValid: result.object.isValid,
+      answer: result.object.answer,
+      confidence: result.object.confidence,
+      reasoning: result.object.reasoning,
+      ttfb,
+      totalDuration,
+      ...(result.usage && { tokenUsage: result.usage }),
+    });
+
+    return result;
   } catch (error) {
-    // Edge-compatible error handling
-    console.error("\n[AI Action error]: extractFieldAnswer\n", error);
+    const errorDuration = Date.now() - startTime;
+
+    timer.end({
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+      duration: errorDuration,
+    });
     throw error;
   }
 }

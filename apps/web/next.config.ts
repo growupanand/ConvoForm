@@ -8,6 +8,10 @@ import "./src/env";
 const nextConfig: NextConfig = {
   output: "standalone",
   reactStrictMode: false,
+  env: {
+    NEXT_PUBLIC_AXIOM_TOKEN: process.env.AXIOM_TOKEN,
+    NEXT_PUBLIC_AXIOM_DATASET: process.env.AXIOM_DATASET,
+  },
   images: {
     remotePatterns: [
       {

@@ -47,6 +47,7 @@
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
+    "@convoform/logger": "../logger",
     "@convoform/tsconfig": "../tsconfig",
     "@convoform/websocket-client": "../websocket-client",
     "@types/react": "catalog:",
