@@ -51,6 +51,8 @@ describe("generateFormMetadata", () => {
           inputConfiguration: {
             maxFileSize: 5242880,
             allowedFileTypes: ["application/pdf"],
+            maxFiles: 1,
+            allowedExtensions: [".pdf"],
           },
         },
       },
@@ -262,6 +264,8 @@ describe("generateFormMetadata", () => {
           inputType: "rating",
           inputConfiguration: {
             maxRating: 5,
+            requireConfirmation: false,
+            iconType: "STAR",
           },
         },
       },
@@ -305,6 +309,9 @@ describe("generateFormMetadata", () => {
           inputType: "fileUpload",
           inputConfiguration: {
             allowedFileTypes: ["application/pdf", "image/jpeg"],
+            maxFileSize: 5242880,
+            maxFiles: 1,
+            allowedExtensions: [".pdf", ".jpg", ".jpeg"],
           },
         },
       },

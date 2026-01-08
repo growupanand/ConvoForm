@@ -19,6 +19,10 @@ type FormContext = {
   endScreenMessage: string;
   progress: number;
   form: Form;
+  /** Error from conversation service (e.g., rate limit errors) */
+  error: Error | undefined;
+  /** Clear the current error */
+  clearError: () => void;
 };
 
 const formContext = createContext<FormContext | undefined>(undefined);
@@ -46,6 +50,7 @@ function FormContextProviderInner({ children, form }: Readonly<ContextProps>) {
     initializeConversation,
     progress,
     conversationState,
+    error,
   } = convoFormHook;
 
   const isFormSubmissionFinished = conversationState === "completed";
@@ -94,6 +99,8 @@ function FormContextProviderInner({ children, form }: Readonly<ContextProps>) {
         endScreenMessage,
         progress,
         form,
+        error,
+        clearError: resetConversation,
       }}
     >
       {children}

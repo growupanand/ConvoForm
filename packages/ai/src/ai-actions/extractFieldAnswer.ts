@@ -54,7 +54,7 @@ export async function extractFieldAnswer(params: ExtractFieldAnswerParams) {
       system: getExtractFieldAnswerSystemPrompt(params.formOverview),
       prompt: buildExtractFieldAnswerPrompt(params),
       schema: extractFieldAnswerOutputSchema,
-      maxOutputTokens: 200,
+      maxOutputTokens: 1000,
     });
 
     const ttfb = Date.now() - startTime;
@@ -126,7 +126,9 @@ Analyze the conversation transcript and extract the user's answer for the specif
 - answer: The extracted value as a string, or null if not found
 - confidence: Score from 0-1 indicating extraction certainty
 - reasoning: Brief explanation of your extraction decision
-- isValid: Boolean indicating if the answer meets field requirements`;
+- isValid: Boolean indicating if the answer meets field requirements
+    
+IMPORTANT: You must return a valid JSON object only.`;
 }
 
 /**

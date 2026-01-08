@@ -72,7 +72,7 @@ export class Logger implements ILogger {
     }
 
     return new AxiomLogger({
-      transports,
+      transports: transports as [any, ...any[]],
     });
   }
 

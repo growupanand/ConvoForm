@@ -4,6 +4,7 @@ import { useCallback } from "react";
 
 import { AskScreen } from "@/components/formViewer/askScreen";
 import { EndScreen } from "@/components/formViewer/endScreen";
+import { ErrorDisplay } from "@/components/formViewer/errorDisplay";
 import { TopProgressBar } from "@/components/formViewer/topProgressBar";
 import { WelcomeScreen } from "@/components/formViewer/welcomeScreen";
 import { useFormContext } from "./formContext";
@@ -17,6 +18,8 @@ export function FormViewer() {
     endScreenMessage,
     progress: totalSubmissionProgress,
     form,
+    error,
+    clearError,
   } = useFormContext();
 
   const {
@@ -61,35 +64,46 @@ export function FormViewer() {
         />
       )}
       <div className="flex-1 relative">
-        {((currentSection as string) === "" ||
-          currentSection === "landing-screen" ||
-          currentSection === "default-screen") && (
-          <WelcomeScreen
-            onCTAClick={handleCTAClick}
-            postCTAClick={handlePostCTAClick}
-            title={form.welcomeScreenTitle}
-            message={form.welcomeScreenMessage}
-            CTALabel={form.welcomeScreenCTALabel}
+        {/* Show error display when an error occurs */}
+        {error ? (
+          <ErrorDisplay
+            error={error}
+            onRetry={clearError}
             fontColor={currentFormDesign.fontColor}
           />
-        )}
+        ) : (
+          <>
+            {((currentSection as string) === "" ||
+              currentSection === "landing-screen" ||
+              currentSection === "default-screen") && (
+              <WelcomeScreen
+                onCTAClick={handleCTAClick}
+                postCTAClick={handlePostCTAClick}
+                title={form.welcomeScreenTitle}
+                message={form.welcomeScreenMessage}
+                CTALabel={form.welcomeScreenCTALabel}
+                fontColor={currentFormDesign.fontColor}
+              />
+            )}
 
-        {currentSection === "questions-screen" && (
-          <AskScreen
-            currentQuestion={currentQuestionText}
-            isFormBusy={isBusy}
-            submitAnswer={submitAnswer}
-            currentField={currentField}
-            fontColor={currentFormDesign.fontColor}
-          />
-        )}
-        {currentSection === "ending-screen" && (
-          <EndScreen
-            endScreenMessage={endScreenMessage}
-            endScreenCTALabel={form.endScreenCTALabel || undefined}
-            endScreenCTAUrl={form.endScreenCTAUrl || undefined}
-            fontColor={currentFormDesign.fontColor}
-          />
+            {currentSection === "questions-screen" && (
+              <AskScreen
+                currentQuestion={currentQuestionText}
+                isFormBusy={isBusy}
+                submitAnswer={submitAnswer}
+                currentField={currentField}
+                fontColor={currentFormDesign.fontColor}
+              />
+            )}
+            {currentSection === "ending-screen" && (
+              <EndScreen
+                endScreenMessage={endScreenMessage}
+                endScreenCTALabel={form.endScreenCTALabel || undefined}
+                endScreenCTAUrl={form.endScreenCTAUrl || undefined}
+                fontColor={currentFormDesign.fontColor}
+              />
+            )}
+          </>
         )}
       </div>
     </div>
