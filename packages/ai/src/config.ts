@@ -3,13 +3,14 @@
  * Edge runtime compatible with environment variable support
  */
 
-import { openai } from "@ai-sdk/openai";
 import { type LLMAnalyticsMetadata, analytics } from "@convoform/analytics";
 import type { LanguageModel } from "ai";
-import { DEFAULT_OPENAI_MODEL_NAME } from "./constants";
 import { getValidatedModelConfig } from "./envSchema";
-
-const DEFAULT_AI_SDK_MODEL = openai(DEFAULT_OPENAI_MODEL_NAME);
+import {
+  type ProviderName,
+  getDefaultConfig,
+  getProviderModel,
+} from "./providers";
 
 /**
  * Get model configuration from validated environment variables
@@ -21,17 +22,10 @@ export function getModelConfig(
 ): Exclude<LanguageModel, string> {
   try {
     const config = getValidatedModelConfig();
-
-    let baseModel: LanguageModel;
-    switch (config.provider.toLowerCase()) {
-      case "openai":
-        baseModel = openai(config.model);
-        break;
-      default:
-        // This should not happen with validation, but fallback just in case
-        console.warn(`Unsupported provider: ${config.provider}, using default`);
-        baseModel = DEFAULT_AI_SDK_MODEL;
-    }
+    const baseModel = getProviderModel(
+      config.provider as ProviderName,
+      config.model,
+    );
 
     // If metadata provided and analytics enabled, return traced model
     if (metadata) {
@@ -44,12 +38,13 @@ export function getModelConfig(
     return baseModel;
   } catch (error) {
     // Log error and use default
+    const defaultConfig = getDefaultConfig();
     console.error(
       "Error getting model config, using default:",
-      DEFAULT_OPENAI_MODEL_NAME,
+      `${defaultConfig.provider}:${defaultConfig.model}`,
       "\nError:\n",
       error,
     );
-    return DEFAULT_AI_SDK_MODEL;
+    return getProviderModel(defaultConfig.provider, defaultConfig.model);
   }
 }

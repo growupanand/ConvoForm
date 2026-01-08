@@ -1,18 +1,17 @@
 /**
  * Environment schema validator for AI model configuration
- * Validates OpenAI model names against official type definitions
+ * Uses the provider registry for validation
  */
 
-import type { openai } from "@ai-sdk/openai";
 import { z } from "zod/v4";
-
-type OpenAIModelName = Parameters<typeof openai>[0];
-
-// OpenAI model IDs from @ai-sdk/openai type definitions
-const SUPPORTED_OPENAI_CHAT_MODELS = ["gpt-4o-mini", "gpt-4.1-nano"] as const;
-
-// Create zod schema for model validation
-const OpenAIChatModelSchema = z.enum(SUPPORTED_OPENAI_CHAT_MODELS);
+import {
+  PROVIDERS,
+  type ProviderName,
+  getDefaultConfig,
+  getSupportedProviders,
+  isValidModel,
+  isValidProvider,
+} from "./providers";
 
 // Environment variable schema
 const EnvSchema = z.object({
@@ -22,33 +21,32 @@ const EnvSchema = z.object({
     .transform((val) => {
       if (!val) return undefined;
 
-      // Parse format: "provider:model-name" or just "model-name"
-      const parts = val.split(":");
-      const provider = parts[0]?.toLowerCase();
-      const modelName = parts[1] || parts[0];
-
-      // Validate based on provider
-      switch (provider) {
-        case "openai":
-          // Validate OpenAI model name
-          try {
-            OpenAIChatModelSchema.parse(modelName);
-            return { provider: "openai", model: modelName };
-          } catch (_error) {
-            throw new Error(
-              `Invalid OpenAI model: "${modelName}". Valid models: ${SUPPORTED_OPENAI_CHAT_MODELS.join(", ")}`,
-            );
-          }
-
-        case "anthropic":
-          // Add Anthropic validation when supported
-          return { provider: "anthropic", model: modelName };
-
-        default:
-          throw new Error(
-            `Unsupported provider: "${provider}". Supported providers: openai, anthropic`,
-          );
+      // Parse format: "provider:model-name"
+      const colonIndex = val.indexOf(":");
+      if (colonIndex === -1) {
+        throw new Error(
+          `Invalid format: "${val}". Expected "provider:model-name" (e.g., "openai:gpt-4o-mini")`,
+        );
       }
+
+      const provider = val.substring(0, colonIndex).toLowerCase();
+      const modelName = val.substring(colonIndex + 1);
+
+      // Validate provider
+      if (!isValidProvider(provider)) {
+        throw new Error(
+          `Unsupported provider: "${provider}". Supported: ${getSupportedProviders().join(", ")}`,
+        );
+      }
+
+      // Validate model
+      if (!isValidModel(provider, modelName)) {
+        throw new Error(
+          `Invalid model for ${provider}: "${modelName}". Valid: ${PROVIDERS[provider].models.join(", ")}`,
+        );
+      }
+
+      return { provider, model: modelName };
     }),
 
   CONVERSATION_TEMPERATURE: z
@@ -106,35 +104,17 @@ export function validateEnv() {
  * Get validated model configuration
  */
 export function getValidatedModelConfig(): {
-  provider: "openai";
-  model: OpenAIModelName;
+  provider: ProviderName;
+  model: string;
 } {
   const validatedEnv = validateEnv();
-  console.log("Validated environment variables:", validatedEnv);
 
-  if (
-    validatedEnv.CONVERSATION_MODEL &&
-    validatedEnv.CONVERSATION_MODEL.provider === "openai"
-  ) {
-    const modelName = validatedEnv.CONVERSATION_MODEL.model;
-    console.log("Validating model name...", modelName);
-
-    if (modelName !== undefined) {
-      if (isValidOpenAiModel(modelName)) {
-        console.log("Valid model found: ", modelName);
-        return { provider: "openai", model: modelName as OpenAIModelName };
-      }
-    }
+  if (validatedEnv.CONVERSATION_MODEL) {
+    return {
+      provider: validatedEnv.CONVERSATION_MODEL.provider as ProviderName,
+      model: validatedEnv.CONVERSATION_MODEL.model,
+    };
   }
-  console.log("Valid mode not found, using default model: gpt-4o-mini");
-  return { provider: "openai", model: "gpt-4o-mini" };
-}
 
-/**
- * Check if a model name is valid for a provider
- */
-export function isValidOpenAiModel(model: string): model is OpenAIModelName {
-  return SUPPORTED_OPENAI_CHAT_MODELS.some((modelName) =>
-    modelName.startsWith(model),
-  );
+  return getDefaultConfig();
 }

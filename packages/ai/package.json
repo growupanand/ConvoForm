@@ -8,6 +8,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@ai-sdk/groq": "catalog:",
     "@ai-sdk/openai": "catalog:",
     "@convoform/analytics": "workspace:*",
     "@convoform/db": "workspace:*",

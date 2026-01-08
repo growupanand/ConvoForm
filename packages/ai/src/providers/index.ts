@@ -1,0 +1,88 @@
+/**
+ * Provider Registry - Single source of truth for all AI providers
+ *
+ * To add a new provider:
+ * 1. Add the @ai-sdk/[provider] dependency
+ * 2. Add entry to PROVIDERS object below
+ * That's it!
+ */
+
+import { createGroq } from "@ai-sdk/groq";
+import { createOpenAI } from "@ai-sdk/openai";
+import type { LanguageModel } from "ai";
+
+// LanguageModelV2 is the actual model object (LanguageModel = string | LanguageModelV2)
+type LanguageModelInstance = Exclude<LanguageModel, string>;
+
+// ============================================================================
+// Provider Registry
+// ============================================================================
+
+export type ProviderName = keyof typeof PROVIDERS;
+
+export const PROVIDERS = {
+  openai: {
+    name: "openai" as const,
+    models: ["gpt-4o-mini", "gpt-4.1-nano"] as const,
+    defaultModel: "gpt-4o-mini",
+    // Priority: AI_API_KEY > OPENAI_API_KEY > SDK default
+    createModel: (model: string): LanguageModelInstance => {
+      const apiKey = process.env.AI_API_KEY || process.env.OPENAI_API_KEY;
+      return apiKey ? createOpenAI({ apiKey })(model) : createOpenAI()(model);
+    },
+  },
+  groq: {
+    name: "groq" as const,
+    models: [
+      "meta-llama/llama-4-maverick-17b-128e-instruct",
+      "meta-llama/llama-4-scout-17b-16e-instruct",
+    ] as const,
+    defaultModel: "meta-llama/llama-4-scout-17b-16e-instruct",
+    // Priority: AI_API_KEY > GROQ_API_KEY > SDK default
+    createModel: (model: string): LanguageModelInstance => {
+      const apiKey = process.env.AI_API_KEY || process.env.GROQ_API_KEY;
+      return apiKey ? createGroq({ apiKey })(model) : createGroq()(model);
+    },
+  },
+} as const;
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+/** Get list of supported provider names */
+export function getSupportedProviders(): ProviderName[] {
+  return Object.keys(PROVIDERS) as ProviderName[];
+}
+
+/** Check if a provider is valid */
+export function isValidProvider(provider: string): provider is ProviderName {
+  return provider in PROVIDERS;
+}
+
+/** Check if a model is valid for the given provider */
+export function isValidModel(provider: ProviderName, model: string): boolean {
+  const providerConfig = PROVIDERS[provider];
+  return providerConfig.models.some((m) => m === model || model.startsWith(m));
+}
+
+/** Get the default model for a provider */
+export function getDefaultModel(provider: ProviderName): string {
+  return PROVIDERS[provider].defaultModel;
+}
+
+/** Get a model instance for the given provider and model name */
+export function getProviderModel(
+  provider: ProviderName,
+  model: string,
+): LanguageModelInstance {
+  return PROVIDERS[provider].createModel(model);
+}
+
+/** Get default provider and model configuration */
+export function getDefaultConfig(): { provider: ProviderName; model: string } {
+  return {
+    provider: "openai",
+    model: PROVIDERS.openai.defaultModel,
+  };
+}

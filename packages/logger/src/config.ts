@@ -23,15 +23,15 @@ const LoggerEnvSchema = z.object({
   AXIOM_ENABLED: z
     .string()
     .optional()
-    .transform((val: string) => val === "true")
-    .default("false"),
+    .transform((val) => val === "true")
+    .default(false),
 
   // Console configuration
   LOGGER_CONSOLE_ENABLED: z
     .string()
     .optional()
-    .transform((val: string) => val !== "false") // Enabled by default
-    .default("true"),
+    .transform((val) => val !== "false") // Enabled by default
+    .default(true),
 
   // Environment
   NODE_ENV: z.string().optional().default("development"),

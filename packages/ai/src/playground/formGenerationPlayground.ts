@@ -90,23 +90,20 @@ async function generateCompleteForm(scenario: (typeof testScenarios)[0]) {
         `  ${index + 1}. ${field.fieldName} (${field.fieldConfiguration.inputType})`,
       );
       console.log(`     └─ ${field.fieldDescription}`);
-      if (field.fieldConfiguration.inputConfiguration.placeholder) {
-        console.log(
-          `     └─ Placeholder: "${field.fieldConfiguration.inputConfiguration.placeholder}"`,
-        );
+      const config = field.fieldConfiguration.inputConfiguration;
+      if ("placeholder" in config && config.placeholder) {
+        console.log(`     └─ Placeholder: "${config.placeholder}"`);
       }
-      if (field.fieldConfiguration.inputConfiguration.options) {
+      if ("options" in config && config.options) {
         console.log(
-          `     └─ Options: ${field.fieldConfiguration.inputConfiguration.options.map((opt: any) => opt.value || opt).join(", ")}`,
+          `     └─ Options: ${config.options.map((opt: any) => opt.value || opt).join(", ")}`,
         );
       }
       if (
-        field.fieldConfiguration.inputConfiguration.maxLength ||
-        field.fieldConfiguration.inputConfiguration.minDate
+        ("maxLength" in config && config.maxLength) ||
+        ("minDate" in config && config.minDate)
       ) {
-        console.log(
-          `     └─ Configuration: ${JSON.stringify(field.fieldConfiguration.inputConfiguration)}`,
-        );
+        console.log(`     └─ Configuration: ${JSON.stringify(config)}`);
       }
     });
 

@@ -6,7 +6,10 @@
  * bun run packages/ai/src/playground/llmLatencyTesting.ts
  */
 
+import { appendFile } from "node:fs/promises";
+import { join } from "node:path";
 import { exit } from "node:process";
+import { groq } from "@ai-sdk/groq";
 import { openai } from "@ai-sdk/openai";
 import type { FormFieldResponses } from "@convoform/db/src/schema";
 import type { LanguageModel } from "ai";
@@ -125,12 +128,43 @@ const USER_RESPONSES = [
 
 // Pricing per 1M tokens (USD) - as of 2025
 const MODEL_PRICING: Record<string, { input: number; output: number }> = {
+  // OpenAI models
   "gpt-4o-mini": { input: 0.15, output: 0.6 },
   "gpt-4o": { input: 2.5, output: 10.0 },
   "gpt-4.1-nano": { input: 0.1, output: 0.4 },
+  "gpt-4.1-mini": { input: 0.4, output: 1.6 },
+  "gpt-4.1": { input: 2.0, output: 8.0 },
+  // Anthropic models
   "claude-3-5-haiku-20241022": { input: 0.25, output: 1.25 },
   "claude-3-5-sonnet-20241022": { input: 3.0, output: 15.0 },
+  // Google models
   "gemini-1.5-flash": { input: 0.075, output: 0.3 },
+  "gemini-2.0-flash": { input: 0.1, output: 0.4 },
+  // Groq models (pricing per 1M tokens)
+  "llama-3.3-70b-versatile": { input: 0.59, output: 0.79 },
+  "llama-3.1-8b-instant": { input: 0.05, output: 0.08 },
+  // Meta Llama 4 models on Groq
+  "meta-llama/llama-4-maverick-17b-128e-instruct": { input: 0.2, output: 0.6 },
+  "meta-llama/llama-4-scout-17b-16e-instruct": { input: 0.11, output: 0.34 },
+  "openai/gpt-oss-120b": { input: 0.15, output: 0.075 },
+  "openai/gpt-oss-20b": { input: 0.075, output: 0.037 },
+  "meta-llama/llama-guard-4-12b": { input: 0.2, output: 0.2 },
+};
+
+// Map display names to actual model IDs for pricing lookup
+const MODEL_NAME_ALIASES: Record<string, string> = {
+  "gpt-4o mini": "gpt-4o-mini",
+  "gpt-4.1 nano": "gpt-4.1-nano",
+  "gpt-4.1 mini": "gpt-4.1-mini",
+  "groq meta-llama/llama-4-maverick-17b-128e-instruct":
+    "meta-llama/llama-4-maverick-17b-128e-instruct",
+  "groq meta-llama/llama-4-scout-17b-16e-instruct":
+    "meta-llama/llama-4-scout-17b-16e-instruct",
+  "llama 3.3 70b (groq)": "llama-3.3-70b-versatile",
+  "llama 3.1 8b (groq)": "llama-3.1-8b-instant",
+  "GPT OSS 120B": "openai/gpt-oss-120b",
+  "GPT OSS 20B": "openai/gpt-oss-20b",
+  "llama guard 4 12b (groq)": "meta-llama/llama-guard-4-12b",
 };
 
 /**
@@ -140,25 +174,32 @@ function calculateCost(
   modelName: string,
   usage: { promptTokens: number; completionTokens: number },
 ): number {
-  // Extract base model name from full model name
-  const baseModel = modelName
-    .toLowerCase()
-    .replace(/^(gpt-|claude-|gemini-)/, "");
+  const normalizedName = modelName.toLowerCase();
+
+  // First try direct alias lookup
+  let modelId = MODEL_NAME_ALIASES[normalizedName];
+
+  // If no alias, try direct lookup in pricing
+  if (!modelId) {
+    modelId = normalizedName;
+  }
 
   // Find matching pricing
-  let pricing = MODEL_PRICING[baseModel];
+  let pricing = MODEL_PRICING[modelId];
+
   if (!pricing) {
-    // Try to find partial match
+    // Try to find partial match in both directions
     const matchingKey = Object.keys(MODEL_PRICING).find(
-      (key) => baseModel.includes(key) || key.includes(baseModel),
+      (key) => normalizedName.includes(key) || key.includes(normalizedName),
     );
     pricing = matchingKey
       ? MODEL_PRICING[matchingKey]
       : { input: 0, output: 0 };
   }
 
-  const inputCost = (usage.promptTokens / 1_000_000) * pricing.input;
-  const outputCost = (usage.completionTokens / 1_000_000) * pricing.output;
+  const inputCost = (usage.promptTokens / 1_000_000) * (pricing?.input ?? 0);
+  const outputCost =
+    (usage.completionTokens / 1_000_000) * (pricing?.output ?? 0);
 
   return inputCost + outputCost;
 }
@@ -167,13 +208,18 @@ function calculateCost(
  * Format cost in a readable way
  */
 function formatCost(cost: number): string {
+  if (cost === 0) {
+    return "$0.00";
+  }
   if (cost < 0.001) {
-    return `$${(cost * 1000).toFixed(10)}m`; // Show in millicents
+    // Very small costs - show in milli-dollars (1/1000 of a dollar)
+    return `$${(cost * 1000).toFixed(4)}m`;
   }
-  if (cost < 0.01) {
-    return `$${(cost * 100).toFixed(10)}¢`; // Show in cents
+  if (cost < 1) {
+    // Show in cents for readability
+    return `${(cost * 100).toFixed(3)}¢`;
   }
-  return `$${cost.toFixed(10)}`;
+  return `$${cost.toFixed(4)}`;
 }
 
 // ============================================================================
@@ -207,8 +253,10 @@ async function measureLatency<T>(
     const response = result as any;
     if (response?.usage) {
       usage = {
-        promptTokens: response.usage.promptTokens || 0,
-        completionTokens: response.usage.completionTokens || 0,
+        promptTokens:
+          response.usage.promptTokens || response.usage.inputTokens || 0,
+        completionTokens:
+          response.usage.completionTokens || response.usage.outputTokens || 0,
         totalTokens: response.usage.totalTokens || 0,
       };
       cost = calculateCost(modelName, usage);
@@ -277,7 +325,8 @@ async function simulateConversation(
       async () => {
         const params: StreamFieldQuestionParams = {
           formOverview: MOCK_FORM_OVERVIEW,
-          currentField: MOCK_FIELDS[0],
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
+          currentField: MOCK_FIELDS[0]!,
           formFieldResponses: [],
           transcript: [],
           isFirstQuestion: true,
@@ -289,7 +338,9 @@ async function simulateConversation(
         for await (const chunk of result.textStream) {
           fullText += chunk;
         }
-        return { text: fullText, usage: result.usage };
+        // Await the usage promise - streaming responses return usage as a Promise
+        const usage = await result.usage;
+        return { text: fullText, usage };
       },
       (result) =>
         `Q: "${result.text.slice(0, 80)}${result.text.length > 80 ? "..." : ""}"`,
@@ -299,8 +350,9 @@ async function simulateConversation(
 
     // Simulate conversation for each field
     for (let i = 0; i < MOCK_FIELDS.length; i++) {
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      const field = MOCK_FIELDS[i]!;
+      const field = MOCK_FIELDS[i];
+      if (!field) continue;
+
       // biome-ignore lint/style/noNonNullAssertion: <explanation>
       const userResponse = USER_RESPONSES[i]!;
       console.log("user response: ", userResponse);
@@ -355,7 +407,9 @@ async function simulateConversation(
             for await (const chunk of result.textStream) {
               fullText += chunk;
             }
-            return { text: fullText, usage: result.usage };
+            // Await the usage promise - streaming responses return usage as a Promise
+            const usage = await result.usage;
+            return { text: fullText, usage };
           },
           (result) =>
             `Q: "${result.text.slice(0, 80)}${result.text.length > 80 ? "..." : ""}"`,
@@ -570,6 +624,9 @@ function displayResults(results: ModelTestResult[]) {
 
   const fastest = sortedResults[0];
   const slowest = sortedResults[sortedResults.length - 1];
+
+  if (!fastest || !slowest) return;
+
   const speedDiff = Math.round(
     ((slowest.totalDurationMs - fastest.totalDurationMs) /
       fastest.totalDurationMs) *
@@ -623,6 +680,75 @@ function displayResults(results: ModelTestResult[]) {
   console.log(`\n${"═".repeat(80)}`);
 }
 
+/**
+ * Saves test results to a markdown file
+ */
+async function saveResultsToFile(results: ModelTestResult[]) {
+  const timestamp = new Date().toLocaleString();
+  let content = `\n\n# Test Run: ${timestamp}\n\n`;
+
+  // Summary
+  const successfulTests = results.filter((r) => r.success);
+  const failedTests = results.filter((r) => !r.success);
+
+  content += "**Summary**\n";
+  content += `- Total Models: ${results.length}\n`;
+  content += `- Successful: ${successfulTests.length}\n`;
+  content += `- Failed: ${failedTests.length}\n\n`;
+
+  if (successfulTests.length > 0) {
+    const sortedResults = [...successfulTests].sort(
+      (a, b) => a.totalDurationMs - b.totalDurationMs,
+    );
+
+    content += "| Rank | Model Name | Time | Tokens | Cost | Avg/Call |\n";
+    content += "|------|------------|------|--------|------|----------|\n";
+
+    sortedResults.forEach((result, index) => {
+      const avgLatency = Math.round(
+        result.totalDurationMs / result.records.length,
+      );
+      const totalTokens = result.records.reduce(
+        (sum, r) => sum + (r.usage?.totalTokens || 0),
+        0,
+      );
+      const totalCost = result.records.reduce(
+        (sum, r) => sum + (r.cost || 0),
+        0,
+      );
+
+      const rank =
+        index === 0
+          ? "🥇"
+          : index === 1
+            ? "🥈"
+            : index === 2
+              ? "🥉"
+              : `${index + 1}`;
+
+      content += `| ${rank} | ${result.modelName} | ${result.totalDurationMs}ms | ${totalTokens} | ${formatCost(totalCost)} | ${avgLatency}ms |\n`;
+    });
+  }
+
+  // Failed Tests
+  if (failedTests.length > 0) {
+    content += "\n### Failed Tests\n";
+    failedTests.forEach((result) => {
+      content += `- **${result.modelName}**: ${result.error}\n`;
+    });
+  }
+
+  content += "\n---\n";
+
+  try {
+    const filePath = join(__dirname, "latency-results.md");
+    await appendFile(filePath, content);
+    console.log(`\n📝 Results saved to ${filePath}`);
+  } catch (error) {
+    console.error(`\n⚠️ Failed to save results to file: ${error}`);
+  }
+}
+
 // ============================================================================
 // Main Test Runner
 // ============================================================================
@@ -647,7 +773,9 @@ async function runLatencyTests(config: TestConfig) {
   const results: ModelTestResult[] = [];
 
   for (let i = 0; i < config.models.length; i++) {
-    const { name, model } = config.models[i];
+    const modelEntry = config.models[i];
+    if (!modelEntry) continue;
+    const { name, model } = modelEntry;
 
     if (i > 0) {
       console.log("\n⏳ Waiting 2 seconds before next test...");
@@ -659,6 +787,7 @@ async function runLatencyTests(config: TestConfig) {
   }
 
   displayResults(results);
+  await saveResultsToFile(results);
 }
 
 // ============================================================================
@@ -667,15 +796,27 @@ async function runLatencyTests(config: TestConfig) {
 
 const DEFAULT_CONFIG: TestConfig = {
   models: [
+    // { name: "GPT-4.1 Nano", model: openai("gpt-4.1-nano") },
+    { name: "GPT-4o Mini", model: openai("gpt-4o-mini") },
+    {
+      name: "Groq meta-llama/llama-4-maverick-17b-128e-instruct",
+      model: groq("meta-llama/llama-4-maverick-17b-128e-instruct"),
+    },
+    {
+      name: "Groq meta-llama/llama-4-scout-17b-16e-instruct",
+      model: groq("meta-llama/llama-4-scout-17b-16e-instruct"),
+    },
     // {
-    //   name: DEFAULT_OPENAI_MODEL_NAME,
-    //   model: openai(DEFAULT_OPENAI_MODEL_NAME),
+    //   name: "GPT OSS 120B",
+    //   model: groq("openai/gpt-oss-120b"),
     // },
-    { name: "GPT-4.1 Nano", model: openai("gpt-4.1-nano") },
-    // { name: "GPT-5 Mini", model: openai("gpt-5-mini-2025-08-07") },
-    // { name: "GPT-4 Mini", model: openai("gpt-4-mini-2025-04-16") },
-    // { name: "GPT-5 Chat", model: openai("gpt-5-chat-latest") },
-    // { name: "GPT-4 Turbo", model: openai("gpt-4-turbo") },
+    // {
+    //   name: "GPT OSS 20B",
+    //   model: groq("openai/gpt-oss-20b"),
+    // },
+    // { name: "Llama 3.3 70B (Groq)", model: groq("llama-3.3-70b-versatile") },
+    // { name: "Llama 3.1 8B (Groq)", model: groq("llama-3.1-8b-instant") },
+    // { name: "Llama Guard 4 12B (Groq)", model: groq("meta-llama/llama-guard-4-12b") },
   ],
 };
 
