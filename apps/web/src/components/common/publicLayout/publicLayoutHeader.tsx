@@ -1,6 +1,9 @@
 import { UserSignInButton } from "@/app/(public)/(landingPage)/_components/userButton";
 import { SignInButton } from "@/components/common/publicLayout/signInButton";
 import { cn } from "@/lib/utils";
+import { Button } from "@convoform/ui";
+import { ExternalLink } from "lucide-react";
+import Link from "next/link";
 import { Suspense } from "react";
 import BrandNameLink from "../brandName";
 
@@ -20,6 +23,19 @@ export function PublicLayoutHeader({
           <BrandNameLink className="text-xl lg:text-2xl" />
           {!hideSignIn && (
             <nav className="flex items-center gap-3">
+              <Button variant="link" size="sm" asChild>
+                <Link
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  aria-label="Visit documentation website"
+                  href="https://docs.convoform.com"
+                >
+                  <span className="flex items-center">
+                    <span>Documentation</span>{" "}
+                    <ExternalLink className="ms-2 h-4 w-4" />
+                  </span>
+                </Link>
+              </Button>
               <Suspense fallback={<SignInButton />}>
                 <UserSignInButton />
               </Suspense>
