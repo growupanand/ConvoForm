@@ -1,0 +1,37 @@
+# Supported Field Types
+
+ConvoForm supports a variety of input types to collect structured data from users.
+
+## Text Input (`text`)
+Used for short or long text responses.
+- **Configuration**:
+  - `placeholder`: Guide text.
+  - `maxLength`: Character limit.
+  - `isParagraph`: Multi-line support.
+
+## Multiple Choice (`multipleChoice`)
+Select from predefined options.
+- **Configuration**:
+  - `options`: List of choices.
+  - `allowMultiple`: Allow selecting more than one option.
+  - `isOther`: Allow user to type a custom answer (per option).
+
+## Date Picker (`datePicker`)
+Select dates and times.
+- **Configuration**:
+  - `minDate` / `maxDate`: Date range constraints.
+  - `includeTime`: Enable time selection.
+
+## Rating (`rating`)
+Collect feedback scores.
+- **Configuration**:
+  - `maxRating`: Scale (e.g., 5 or 10 stars). Default is 5.
+  - `iconType`: `STAR`, `HEART`, or `THUMB_UP`.
+  - `lowLabel` / `highLabel`: Labels for extremes (e.g., "Poor" to "Excellent").
+
+## File Upload (`fileUpload`)
+Upload documents or images.
+- **Configuration**:
+  - `maxFileSize`: Limit in bytes (Default: 5MB).
+  - `maxFiles`: Limit number of files (Default: 1).
+  - `allowedFileTypes`: `image/jpeg`, `image/jpg`, `application/pdf`.

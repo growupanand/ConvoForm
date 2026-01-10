@@ -1,0 +1,36 @@
+# Self Hosting ConvoForm
+
+ConvoForm is designed to be easily self-hosted using Docker.
+
+## Prerequisites
+
+- [Docker](https://www.docker.com/) installed on your machine.
+- [Git](https://git-scm.com/) installed.
+- OpenAI API Key.
+- Clerk API Keys (for authentication).
+
+## Quick Start via Docker Compose
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/growupanand/ConvoForm.git
+   cd ConvoForm
+   ```
+
+2. **Configure Environment Variables:**
+
+   Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` and fill in your API keys (OpenAI, Clerk, etc.).
+
+3. **Run with Docker Compose:**
+
+   ```bash
+   docker-compose up --build
+   ```
+
+4. **Access the Application:**
+   Open [http://localhost:3000](http://localhost:3000) in your browser.

@@ -1,108 +1,74 @@
-# About ConvoForm
+# ConvoForm
 
-[ConvoForm.com](https://www.convoform.com/?utm_source=genai_works&utm_medium=social&utm_campaign=github_launch) transforms traditional forms into interactive conversational experiences, powered by AI for an enhanced user journey. Think Google Forms, but more engaging and intuitive.
+<div align="center">
 
-#### Features:
+**Turn Forms into Conversations with AI**
 
-- **AI-Powered Form Generation:** Automatically generate comprehensive forms by describing your needs, streamlining the creation process.
-- **Real-time Form Editing and Preview:** Edit forms with live changes previewed on the same page, providing immediate feedback.
-- **Customizable Submission Pages:** Tailor the submission page with your organization's branding and personalized messages.
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![Discord](https://img.shields.io/discord/1250384369118347376?logo=discord&label=Discord)](https://discord.gg/aeYtKyn2E2)
 
-#### Learnings
+[Documentation](https://docs.convoform.com)
 
-In the course of building it from scratch, I penned down some insightful pieces on Medium reflecting on my journey and learning, I hope these articles provide value to your coding journey.
+</div>
 
-- [A Comprehensive Guide to Easily Switch from Prisma to Drizzle ORM](https://medium.com/@growupanand/a-comprehensive-guide-to-easily-switch-from-prisma-to-drizzle-orm-c290f8ed8ef3)
-- [Transitioning from Monorepo to Turborepo: My Development Journey with ConvoForm.com](https://medium.com/@growupanand/transitioning-from-monorepo-to-turborepo-my-development-journey-with-convoform-com-691b9d19f397)
+## 🚀 About
 
-## Tech Stack
+ConvoForm transforms traditional, static forms into interactive, AI-powered conversational experiences. It makes data collection engaging and intuitive—like talking to a human, but scalable.
 
-- **Frontend**: [Next.js](https://nextjs.org) for optimized server and client rendering.
-- **Backend**: [tRPC](https://trpc.io) for type-safe API development.
-- **AI Integration**: [gpt-4o-mini](https://platform.openai.com/docs/models/gpt-4o-mini) for generate form, conversation with user to collect required form information
-- **Real-time updates**: [Socket.io](https://socket.io/) for live form progress tracking.
+### Key Features
 
-## Community and Support
+- **AI-Powered Generation**: Describe your needs, and let AI build the form for you.
+- **Conversational Interface**: Users answer questions in a chat format rather than filling out input fields.
+- **Smart Validation**: AI validates responses in real-time and asks follow-up questions if needed.
+- **Real-Time Editor**: See changes instantly as you edit your form.
+- **Customizable**: Brand your submission pages to match your identity.
 
-Join our community on [Discord](https://discord.gg/aeYtKyn2E2) to get support, share feedback, and connect with other users and developers:
+## 📚 Documentation
 
-## Contributing
+Visit our **[Documentation Site](https://docs.convoform.com)** for detailed guides, concepts, and API references.
 
-Feel free to contribute to the development by opening issues, providing feedback, or submitting pull requests. see the [CONTRIBUTING.md](https://github.com/growupanand/ConvoForm/blob/main/CONTRIBUTING.md) for more details.
+- **[Getting Started / Self Hosting](apps/docs/pages/getting-started/self-hosting.mdx)**
+- **[Conversation Flow Concepts](apps/docs/pages/concepts/conversation-flow.mdx)**
 
-
-## Local Setup
-
-Follow these steps to set up the project locally on your machine.
+## 🛠️ Quick Start (Local Development)
 
 ### Prerequisites
 
-- Make sure you have the following installed:
+- [Node.js](https://nodejs.org/) (v18+)
+- [pnpm](https://pnpm.io/) (v8+)
+- [Docker](https://www.docker.com/) (optional, for self-hosting)
 
-  - [Node.js](https://nodejs.org/) (v18.17.1 or higher)
-  - [pnpm](https://pnpm.io/) (v8.14.3 or higher)
-  - [Git](https://git-scm.com/)
+### Installation
 
-- Make sure you [Enable organizations](https://clerk.com/docs/organizations/overview#enable-organizations-in-your-application) in Clerk settings.
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/growupanand/ConvoForm.git
+   cd ConvoForm
+   ```
 
-- Get your OpenAI key at [OpenAI Dashboard](https://platform.openai.com/api-keys)
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
 
-### Steps
+3. **Configure Environment**
+   ```bash
+   cp .env.example .env
+   # Update .env with your API keys (OpenAI, Clerk, etc.)
+   ```
 
-1. Clone the Repository
+4. **Run Development Server**
+   ```bash
+   pnpm run dev
+   ```
 
-```bash
-git clone https://github.com/growupanand/ConvoForm.git
-cd ConvoForm
-```
+Visit `http://localhost:3000` for the web app and `http://localhost:3001` for the documentation.
 
-2. Install Dependencies
+## 🤝 Contributing
 
-```bash
-pnpm install
-```
+We love contributions! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
-3. Configuration environment
+## 📄 License
 
-Copy the .env.example file to .env file and open the `.env` file and update the necessary environment variables.
-```bash
-cp .env.example .env
-```
+This project is open-sourced under the [Apache License 2.0](LICENSE).
 
-4. Setup Database
-```bash
-pnpm drizzle:apply-migration
-```
-### Once all steps done
-
-#### Run the Development Server
-
-```bash
-pnpm run dev
-```
-
-Visit [http://localhost:3000](http://localhost:3000/) in your browser to see the
-application.
-
-#### Build for Production
-
-```bash
-pnpm run build
-```
-
-### Docker Setup
-
-#### Prerequisites
-- [Docker](https://www.docker.com/get-started) installed on your machine
-- Ensure all the necessary environment variables are set in the `.env` file.
-
-Build and run the Docker container
-```bash
-docker-compose up --build
-```
-
-Visit [http://localhost:3000](http://localhost:3000/) in your browser to see the application running in Docker.
-
-## License
-
-This project is licensed under the [Apache License 2.0 License](https://github.com/growupanand/ConvoForm/blob/main/LICENSE).

@@ -1,0 +1,27 @@
+# ConvoForm Conversation Flow
+
+This page explains how ConvoForm orchestrates the conversation between the user and the AI.
+
+## Flow Diagram
+
+```mermaid
+graph TD
+    A[User Submits Answer] --> B{Is Answer Valid?};
+    B -- No --> C[Generate Follow-up Question];
+    C --> D[Stream Question to User];
+    B -- Yes --> E[Save Answer];
+    E --> F{Next Field Exists?};
+    F -- Yes --> G[Generate Question for Next Field];
+    G --> D;
+    F -- No --> H[Mark Conversation Complete];
+    H --> I[Stream End Message];
+```
+
+## Explanation
+
+1. **User Answer**: The user inputs text in response to a question.
+2. **Validation**: The AI evaluates if the answer satisfies the current field requirements within the context of the conversation.
+3. **Branching**:
+    - **Invalid**: The AI generates a polite follow-up question to nudge the user towards a valid answer.
+    - **Valid**: The answer is stored, and the system moves to the *Next Field*.
+4. **Completion**: When all fields are collected, the conversation is marked as complete and a success message is shown.

@@ -1,0 +1,49 @@
+# Supported AI Providers
+
+ConvoForm supports multiple AI providers to power your conversational forms. You can configure these by setting the appropriate environment variables.
+
+## OpenAI
+
+OpenAI is the default provider.
+
+- **Provider Name**: `openai`
+- **Supported Models**: `gpt-4o-mini`, `gpt-4.1-nano`
+- **Default Model**: `gpt-4o-mini`
+
+### Configuration
+
+To use OpenAI, set the following environment variable:
+
+```bash
+OPENAI_API_KEY=your_api_key_here
+```
+
+## Groq
+
+Groq provides high-speed inference for Llama models.
+
+- **Provider Name**: `groq`
+- **Supported Models**: 
+  - `meta-llama/llama-4-maverick-17b-128e-instruct`
+  - `meta-llama/llama-4-scout-17b-16e-instruct`
+- **Default Model**: `meta-llama/llama-4-scout-17b-16e-instruct`
+
+### Configuration
+
+To use Groq, set the following environment variable:
+
+```bash
+GROQ_API_KEY=your_api_key_here
+```
+
+## Universal Key
+
+You can also use the `AI_API_KEY` environment variable as a fallback for either provider.
+
+```bash
+AI_API_KEY=your_universal_key
+```
+
+## selecting a Provider
+
+To select a specific provider and model, you may need to configure the `AI_MODEL` environment variable or modify the application configuration (depending on your setup).

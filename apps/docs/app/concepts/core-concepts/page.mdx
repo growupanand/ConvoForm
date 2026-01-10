@@ -1,0 +1,27 @@
+# Core Concepts
+
+Understanding the terminology used in ConvoForm.
+
+## Form
+
+A **Form** is the blueprint. It defines:
+- **Overview**: A high-level description of what the form is for (e.g., "Job Application").
+- **Fields**: The specific data points to collect (e.g., "Name", "Years of Experience").
+
+## Conversation
+
+A **Conversation** is a single instance of a user filling out a Form. It is "stateful" and tracks:
+- **Transcript**: The history of messages between User and AI.
+- **Responses**: The structured data extracted so far.
+- **Status**: Whether it is distinct, in-progress, or completed.
+
+## Submission
+
+A **Submission** is the final, read-only record of a completed Conversation. It contains the structured answers extracted by the AI.
+
+## Workflow
+
+1. Admin creates a **Form**.
+2. User starts a **Conversation**.
+3. AI conducts the interview.
+4. User completes the interview -> **Submission** is created.
