@@ -1,4 +1,5 @@
 import type { CoreConversation } from "@convoform/db/src/schema";
+import type { EdgeTracer } from "@convoform/tracing";
 import { ConversationManager } from "../managers/conversationManager";
 import {
   ConversationService,
@@ -34,17 +35,24 @@ export class CoreService {
      * If not provided, conversation ID will be used
      */
     streamId?: CoreService["streamId"];
+    /**
+     * Optional tracer for distributed tracing
+     * If provided, spans will be recorded for AI operations
+     */
+    tracer?: EdgeTracer;
   }) {
     this.conversationManager = new ConversationManager({
       conversation: opts.conversation,
       onUpdateConversation: this.createConversationUpdateHandler(
         opts.onUpdateConversation,
       ),
+      tracer: opts.tracer,
     });
     this.streamId = opts.streamId || opts.conversation.id;
     this.conversationService = new ConversationService(
       this.conversationManager,
       this.streamId,
+      opts.tracer,
     );
   }
 

@@ -35,7 +35,9 @@
     "AXIOM_DATASET",
     "AXIOM_ENABLED",
     "LOGGER_CONSOLE_ENABLED",
-    "LOGGER_LEVEL"
+    "LOGGER_LEVEL",
+    "AXIOM_TRACING_ENABLED",
+    "AXIOM_OTLP_TOKEN"
   ],
   "globalDependencies": [
     ".env"

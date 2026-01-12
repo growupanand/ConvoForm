@@ -27,6 +27,7 @@
     "@convoform/react": "workspace:*",
     "@convoform/release": "workspace:*",
     "@convoform/tailwind-config": "workspace:*",
+    "@convoform/tracing": "workspace:*",
     "@convoform/ui": "workspace:*",
     "@convoform/websocket-client": "workspace:*",
     "@dnd-kit/core": "^6.1.0",

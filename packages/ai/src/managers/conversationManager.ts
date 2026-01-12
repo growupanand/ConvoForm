@@ -1,5 +1,6 @@
 import type { CoreConversation } from "@convoform/db/src/schema";
 import { type ILogger, createConversationLogger } from "@convoform/logger";
+import type { EdgeTracer } from "@convoform/tracing";
 
 /**
  * Manages a conversation object and provides methods to update it in the database.
@@ -29,6 +30,8 @@ export class ConversationManager {
    */
   private logger: ILogger;
 
+  private tracer?: EdgeTracer;
+
   /**
    * Initializes the ConversationManager.
    * @constructor
@@ -39,9 +42,11 @@ export class ConversationManager {
   constructor(opts: {
     conversation: CoreConversation;
     onUpdateConversation?: ConversationManager["onUpdateConversation"];
+    tracer?: EdgeTracer;
   }) {
     this.conversation = opts.conversation;
     this.onUpdateConversation = opts.onUpdateConversation;
+    this.tracer = opts.tracer;
 
     // Create logger with conversation context
     this.logger = createConversationLogger({
@@ -72,6 +77,9 @@ export class ConversationManager {
     let success = false;
     if (this.onUpdateConversation) {
       const timer = this.logger.startTimer("manager.updateConversation");
+      const updateConversationSpan = this.tracer?.startSpan(
+        "update_conversation",
+      );
 
       // We want to make sure that update failed should not prevent the flow to continue
       try {
@@ -79,11 +87,14 @@ export class ConversationManager {
         success = true;
 
         timer.end({ success: true });
+        updateConversationSpan?.end();
       } catch (error) {
         timer.end({
           success: false,
           error: error instanceof Error ? error.message : String(error),
         });
+        updateConversationSpan?.setStatus("error");
+        updateConversationSpan?.end();
       }
     }
     return success;

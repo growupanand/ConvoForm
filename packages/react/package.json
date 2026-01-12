@@ -48,6 +48,7 @@
   },
   "devDependencies": {
     "@convoform/logger": "../logger",
+    "@convoform/tracing": "workspace:*",
     "@convoform/tsconfig": "../tsconfig",
     "@convoform/websocket-client": "../websocket-client",
     "@types/react": "catalog:",

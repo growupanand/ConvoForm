@@ -1,3 +1,4 @@
+import type { EdgeTracer } from "@convoform/tracing";
 import type { ChatStatus } from "ai";
 import type { ConversationServiceUIMessage } from "../../ai";
 import type { CoreConversation } from "../../db/src/schema";
@@ -65,6 +66,8 @@ export type UseConvoFormProps = EventHandlers & {
   apiDomain?: string;
   /** Optional logger instance for client-side logging */
   logger?: ILogger;
+  /** Optional tracer instance for distributed tracing */
+  tracer?: EdgeTracer;
 };
 
 export type UseConvoFormReturnType = State & Methods;

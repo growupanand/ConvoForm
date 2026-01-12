@@ -48,3 +48,22 @@ export function getModelConfig(
     return getProviderModel(defaultConfig.provider, defaultConfig.model);
   }
 }
+
+/**
+ * Get model info (provider and model name) for tracing attributes
+ */
+export function getModelInfo(): { provider: string; model: string } {
+  try {
+    const config = getValidatedModelConfig();
+    return {
+      provider: config.provider,
+      model: config.model,
+    };
+  } catch {
+    const defaultConfig = getDefaultConfig();
+    return {
+      provider: defaultConfig.provider,
+      model: defaultConfig.model,
+    };
+  }
+}

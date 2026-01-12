@@ -18,6 +18,7 @@ import {
   coreConversationSchema,
   respondentMetadataSchema,
 } from "@convoform/db/src/schema";
+import { type EdgeTracer, createEdgeTracer } from "@convoform/tracing";
 import { geolocation } from "@vercel/functions";
 import type { UIMessageStreamWriter } from "ai";
 import { headers } from "next/headers";
@@ -48,11 +49,19 @@ const requestSchema = z.discriminatedUnion("type", [
 ]);
 
 export async function POST(request: NextRequest) {
+  // Initialize tracer for this request
+  const tracer = createEdgeTracer("convoform-server");
+
+  // Note: We'll set the trace ID from conversationId below, after we have it
+
   try {
     const requestBody = await request.json();
     const parsedRequestBody = await requestSchema.parseAsync(requestBody);
 
     if (parsedRequestBody.type === "new") {
+      // For new conversations, we need to create the conversation FIRST
+      // so we can use its ID as the trace ID before starting any spans
+
       // Extract user-agent and geo information from request headers
       const userAgentInformation = userAgent({ headers: await headers() });
       const geoInformation = geolocation({ headers: await headers() });
@@ -63,12 +72,10 @@ export async function POST(request: NextRequest) {
         geoDetails: geoInformation,
       });
 
-      // Get form with fields
+      // Get form with fields (before tracing so we can create conversation)
       const formWithFormFields = await getOneFormWithFields(
         parsedRequestBody.formId,
-        {
-          db,
-        },
+        { db },
       );
 
       if (!formWithFormFields) {
@@ -78,7 +85,7 @@ export async function POST(request: NextRequest) {
       // Check form submission limits
       await checkNThrowErrorFormSubmissionLimit(formWithFormFields);
 
-      // Create new conversation with metadata
+      // Create new conversation with metadata (before tracing)
       const fieldsWithEmptyData = formWithFormFields.formFields.map(
         (field) => ({
           id: field.id,
@@ -102,52 +109,74 @@ export async function POST(request: NextRequest) {
         { db },
       );
 
+      // NOW set the trace ID to conversationId - all subsequent spans will use this
+      tracer.setTraceId(conversationData.id);
+
       // Create CoreConversation with form data
       const newConversation = coreConversationSchema.parse({
         ...conversationData,
         form: formWithFormFields,
       });
 
-      return await createStreamResponseWithWriter<CoreServiceUIMessage>(
-        async (writer) => {
-          const coreService = new CoreService({
-            conversation: newConversation,
-            onUpdateConversation: getOnUpdateConversationHandler(writer, {
-              db,
-            }),
-          });
+      const response =
+        await createStreamResponseWithWriter<CoreServiceUIMessage>(
+          async (writer) => {
+            const coreService = new CoreService({
+              conversation: newConversation,
+              onUpdateConversation: getOnUpdateConversationHandler(writer, {
+                db,
+                tracer,
+              }),
+              tracer,
+            });
 
-          const initialConversationStream = await coreService.initialize();
-          writer.merge(initialConversationStream);
-        },
-      );
+            const initialConversationStream = await coreService.initialize();
+            writer.merge(initialConversationStream);
+          },
+        );
+
+      return response;
     }
 
+    // Existing conversation processing
     const logger = createNextjsLogger().withContext({
       conversationId: parsedRequestBody.coreConversation.id,
     });
 
     logger.info("Server: Request started");
 
-    return await createStreamResponseWithWriter<CoreServiceUIMessage>(
+    // Set trace ID to conversationId so all spans for this conversation share one trace
+    tracer.setTraceId(parsedRequestBody.coreConversation.id);
+
+    const response = await createStreamResponseWithWriter<CoreServiceUIMessage>(
       async (writer) => {
         const coreService = new CoreService({
           conversation: parsedRequestBody.coreConversation,
           onUpdateConversation: getOnUpdateConversationHandler(writer, {
             db,
+            tracer,
           }),
+          tracer,
         });
         logger.info("Server: CoreService initialized");
 
-        const initialConversationStream = await coreService.process(
+        const conversationStream = await coreService.process(
           parsedRequestBody.answerText,
           parsedRequestBody.coreConversation.currentFieldId,
         );
-        writer.merge(initialConversationStream);
+        writer.merge(conversationStream);
       },
     );
+
+    return response;
   } catch (error) {
     console.log("\n\n ------> error in conversation route", error);
+
+    // Flush traces even on error
+    after(async () => {
+      await tracer.flush();
+    });
+
     return createErrorStreamResponse(error as Error);
   }
 }
@@ -158,12 +187,15 @@ export async function POST(request: NextRequest) {
 
 function getOnUpdateConversationHandler(
   writer: UIMessageStreamWriter<CoreServiceUIMessage>,
-  ctx: ActionContext,
+  ctx: ActionContext & {
+    tracer?: EdgeTracer;
+  },
 ) {
   return async (updatedConversation: CoreConversation) => {
     try {
       after(async () => {
         await patchConversation(updatedConversation, ctx);
+        await ctx.tracer?.flush();
       });
 
       writer.write({

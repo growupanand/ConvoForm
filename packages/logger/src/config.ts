@@ -51,7 +51,7 @@ export function parseLoggerConfig(
       axiom: validatedEnv.AXIOM_TOKEN
         ? {
             token: validatedEnv.AXIOM_TOKEN,
-            dataset: validatedEnv.AXIOM_DATASET || "convoform-logs",
+            dataset: validatedEnv.AXIOM_DATASET || "convoform-dev",
             enabled: validatedEnv.AXIOM_ENABLED,
           }
         : undefined,

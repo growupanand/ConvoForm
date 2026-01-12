@@ -1,9 +1,10 @@
 import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
 import { getLogger } from "@convoform/logger";
+import type { EdgeTracer } from "@convoform/tracing";
 import { type LanguageModel, generateObject } from "ai";
 import { z } from "zod/v4";
-import { getModelConfig } from "../config";
+import { getModelConfig, getModelInfo } from "../config";
 import { buildConversationContextPrompt } from "../prompts/promptHelpers";
 
 export type ExtractFieldAnswerParams = {
@@ -12,6 +13,7 @@ export type ExtractFieldAnswerParams = {
   currentField: FormFieldResponses;
   metadata?: LLMAnalyticsMetadata;
   model?: LanguageModel;
+  tracer?: EdgeTracer;
 };
 
 export const extractFieldAnswerOutputSchema = z.object({
@@ -35,6 +37,18 @@ export type ExtractFieldAnswerOutput = z.infer<
  * Uses AI SDK V5 with edge runtime compatibility
  */
 export async function extractFieldAnswer(params: ExtractFieldAnswerParams) {
+  const { tracer } = params;
+  const modelInfo = getModelInfo();
+
+  const spanAttributes = {
+    field_id: params.currentField.id,
+    field_name: params.currentField.fieldName,
+    field_type: params.currentField.fieldConfiguration.inputType,
+    ai_provider: modelInfo.provider,
+    ai_model: modelInfo.model,
+  };
+
+  // Context for non-traced logger (error cases only)
   const context = {
     ...(params.metadata || {}),
     fieldId: params.currentField.id,
@@ -42,10 +56,12 @@ export async function extractFieldAnswer(params: ExtractFieldAnswerParams) {
     fieldType: params.currentField.fieldConfiguration.inputType,
     actionType: "extractFieldAnswer",
   } as const;
-  const logger = getLogger().withContext(context);
 
-  const timer = logger.startTimer("ai.extractFieldAnswer");
-  const startTime = Date.now();
+  const logger = getLogger().withContext(context);
+  const extractFieldAnswerSpan = tracer?.startSpan(
+    "extract_field_answer",
+    spanAttributes,
+  );
 
   try {
     const result = await generateObject({
@@ -57,35 +73,36 @@ export async function extractFieldAnswer(params: ExtractFieldAnswerParams) {
       maxOutputTokens: 1000,
     });
 
-    const ttfb = Date.now() - startTime;
-    const totalDuration = timer.end({
-      isValid: result.object.isValid,
-      hasAnswer: !!result.object.answer,
-      confidence: result.object.confidence,
-      ttfb,
-      ...(result.usage && { tokenUsage: result.usage }),
-    });
+    extractFieldAnswerSpan?.setAttribute("answer", result.object.answer ?? "");
+    extractFieldAnswerSpan?.setAttribute("is_valid", result.object.isValid);
+    extractFieldAnswerSpan?.setAttribute("reasoning", result.object.reasoning);
+    extractFieldAnswerSpan?.setAttribute(
+      "confidence",
+      result.object.confidence,
+    );
 
-    timer.end({
-      success: true,
-      isValid: result.object.isValid,
-      answer: result.object.answer,
-      confidence: result.object.confidence,
-      reasoning: result.object.reasoning,
-      ttfb,
-      totalDuration,
-      ...(result.usage && { tokenUsage: result.usage }),
-    });
+    // Token usage
+    if (result.usage) {
+      extractFieldAnswerSpan?.setAttributes({
+        input_tokens: result.usage.inputTokens || 0,
+        output_tokens: result.usage.outputTokens || 0,
+        total_tokens:
+          (result.usage.inputTokens || 0) + (result.usage.outputTokens || 0),
+      });
+    }
+
+    extractFieldAnswerSpan?.end();
 
     return result;
   } catch (error) {
-    const errorDuration = Date.now() - startTime;
-
-    timer.end({
-      success: false,
+    logger.error("extractFieldAnswer failed", {
       error: error instanceof Error ? error.message : String(error),
-      duration: errorDuration,
     });
+    extractFieldAnswerSpan?.setStatus(
+      "error",
+      error instanceof Error ? error.message : String(error),
+    );
+    extractFieldAnswerSpan?.end();
     throw error;
   }
 }
