@@ -13,6 +13,7 @@
     "@convoform/analytics": "workspace:*",
     "@convoform/db": "workspace:*",
     "@convoform/logger": "workspace:*",
+    "@convoform/tracing": "workspace:*",
     "ai": "catalog:",
     "zod": "catalog:"
   },

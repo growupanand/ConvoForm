@@ -1,0 +1,113 @@
+# Distributed Tracing
+
+ConvoForm includes built-in support for **distributed tracing** using [OpenTelemetry](https://opentelemetry.io/) and [Axiom](https://axiom.co/). This allows you to visualize the complete flow of a conversation from frontend to backend.
+
+## What is Distributed Tracing?
+
+Distributed tracing tracks requests as they flow through your system, showing:
+- **Request flow** through API endpoints and services
+- **Performance bottlenecks** in AI processing or database queries
+- **Error origins** across service boundaries
+
+## Architecture
+
+```
+Frontend → /api/conversation → CoreService (AI) → Database
+                    ↓
+            Traces → Axiom Dashboard
+```
+
+## Setup
+
+### 1. Get Axiom Credentials
+
+1. Create an account at [axiom.co](https://axiom.co)
+2. Create a new dataset named `convoform-traces`
+3. Generate an API token with **ingest** permissions
+
+### 2. Configure Environment Variables
+
+Add these to your `.env` file:
+
+```bash
+# Enable tracing
+AXIOM_TRACING_ENABLED=true
+
+# Axiom OTLP token (get from Axiom dashboard)
+AXIOM_OTLP_TOKEN=xaat-your-token-here
+
+# Dataset name (default: convoform-traces)
+AXIOM_TRACES_DATASET=convoform-traces
+
+# Optional: Console output for debugging
+TRACING_CONSOLE_ENABLED=false
+```
+
+### 3. Restart Your Application
+
+After configuring the environment variables, restart your development server:
+
+```bash
+pnpm run dev
+```
+
+## Viewing Traces
+
+1. Go to your [Axiom Dashboard](https://app.axiom.co)
+2. Navigate to the **Datasets** section
+3. Select your traces dataset (e.g., `convoform-dev` or `convoform-traces`)
+
+### Unified Conversation Traces
+
+ConvoForm uses the **conversation ID as the trace ID**, so all spans for a single conversation share the same trace. This means you can view the entire conversation flow in one trace view:
+
+- `conversation.new` - New conversation initialization + AI greeting
+- `conversation.process` - Processing each user answer
+- `ai.initialize` / `ai.process` - AI model calls
+
+### Query by Conversation
+
+To find all spans for a specific conversation:
+
+```apl
+['your-dataset']
+| where isnotnull(trace_id)
+| where ['attributes.custom']['conversation.id'] == "your-conversation-id"
+| order by _time asc
+```
+
+Click **"View Trace"** on any row to see the full waterfall visualization.
+
+## Span Attributes
+
+Each span includes helpful attributes:
+
+| Attribute | Description |
+|-----------|-------------|
+| `conversation.id` | Unique conversation identifier |
+| `conversation.form_id` | Form being filled out |
+| `conversation.type` | "new" or "existing" |
+| `field.id` | Current form field being processed |
+
+## For Self-Hosted Deployments
+
+If you're self-hosting ConvoForm with Docker, add the tracing environment variables to your `docker-compose.yml`:
+
+```yaml
+services:
+  web:
+    environment:
+      - AXIOM_TRACING_ENABLED=true
+      - AXIOM_OTLP_TOKEN=your-token
+      - AXIOM_TRACES_DATASET=convoform-traces
+```
+
+## Disabling Tracing
+
+To disable tracing, set:
+
+```bash
+AXIOM_TRACING_ENABLED=false
+```
+
+This is the default setting, so tracing is opt-in.

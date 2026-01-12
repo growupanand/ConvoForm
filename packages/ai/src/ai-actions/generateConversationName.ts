@@ -1,9 +1,10 @@
 import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
 import { getLogger } from "@convoform/logger";
+import type { EdgeTracer } from "@convoform/tracing";
 import { type LanguageModel, generateObject } from "ai";
 import { z } from "zod/v4";
-import { getModelConfig } from "../config";
+import { getModelConfig, getModelInfo } from "../config";
 import {
   buildCollectedFieldsContextPrompt,
   buildConversationContextPrompt,
@@ -15,6 +16,7 @@ export interface GenerateConversationNameParams {
   formFieldResponses: FormFieldResponses[];
   metadata?: LLMAnalyticsMetadata;
   model?: LanguageModel;
+  tracer?: EdgeTracer;
 }
 
 export const generateConversationNameOutputSchema = z.object({
@@ -45,12 +47,21 @@ export type GenerateConversationNameOutput = z.infer<
 export async function generateConversationName(
   params: GenerateConversationNameParams,
 ) {
+  const { tracer } = params;
+  const modelInfo = getModelInfo();
+
+  const spanAttributes = {
+    "ai.provider": modelInfo.provider,
+    "ai.model": modelInfo.model,
+  };
+
   const context = {
     ...(params.metadata || {}),
     actionType: "generateConversationName",
   } as const;
   const logger = getLogger().withContext(context);
-  const timer = logger.startTimer("ai.generateConversationName");
+
+  const startTime = Date.now();
 
   try {
     const result = await generateObject({
@@ -62,18 +73,41 @@ export async function generateConversationName(
       schema: generateConversationNameOutputSchema,
     });
 
-    timer.end({
-      success: true,
-      name: result.object.name,
-      confidence: result.object.confidence,
-      keywordsCount: result.object.keywords.length,
-    });
+    const duration = Date.now() - startTime;
+
+    // Record span if tracer available
+    if (tracer) {
+      await tracer.withSpan(
+        "ai.generateConversationName",
+        async (span) => {
+          span.setAttribute("ai.duration_ms", duration);
+          span.setAttribute("ai.generated_name", result.object.name);
+          span.setAttribute("ai.confidence", result.object.confidence);
+          span.setAttribute("ai.keywords_count", result.object.keywords.length);
+
+          // Token usage
+          if (result.usage) {
+            span.setAttribute("ai.tokens.input", result.usage.inputTokens || 0);
+            span.setAttribute(
+              "ai.tokens.output",
+              result.usage.outputTokens || 0,
+            );
+            span.setAttribute(
+              "ai.tokens.total",
+              (result.usage.inputTokens || 0) +
+                (result.usage.outputTokens || 0),
+            );
+          }
+        },
+        spanAttributes,
+      );
+    }
 
     return result;
   } catch (error) {
-    timer.end({
-      success: false,
+    logger.error("generateConversationName failed", {
       error: error instanceof Error ? error.message : String(error),
+      duration: Date.now() - startTime,
     });
     throw error;
   }

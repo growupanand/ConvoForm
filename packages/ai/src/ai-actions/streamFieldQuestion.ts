@@ -1,13 +1,14 @@
 import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
 import { getLogger } from "@convoform/logger";
+import type { EdgeTracer } from "@convoform/tracing";
 import {
   type LanguageModel,
   type StreamTextOnFinishCallback,
   type ToolSet,
   streamText,
 } from "ai";
-import { getModelConfig } from "../config";
+import { getModelConfig, getModelInfo } from "../config";
 import {
   buildCollectedFieldsContextPrompt,
   buildConversationContextPrompt,
@@ -21,6 +22,7 @@ export interface StreamFieldQuestionParams {
   isFirstQuestion?: boolean;
   metadata?: LLMAnalyticsMetadata;
   model?: LanguageModel;
+  tracer?: EdgeTracer;
 }
 
 /**
@@ -30,6 +32,18 @@ export function streamFieldQuestion(
   params: StreamFieldQuestionParams,
   onFinish?: StreamTextOnFinishCallback<ToolSet> | undefined,
 ) {
+  const { tracer } = params;
+  const modelInfo = getModelInfo();
+
+  const spanAttributes = {
+    field_id: params.currentField.id,
+    field_name: params.currentField.fieldName,
+    field_type: params.currentField.fieldConfiguration.inputType,
+    ai_provider: modelInfo.provider,
+    ai_model: modelInfo.model,
+    ai_is_first_question: params.isFirstQuestion ?? false,
+  };
+
   const context = {
     ...(params.metadata || {}),
     fieldId: params.currentField.id,
@@ -39,34 +53,30 @@ export function streamFieldQuestion(
     actionType: "generateFieldQuestion",
   } as const;
   const logger = getLogger().withContext(context);
+  const streamSpan = tracer?.startSpan("stream_question", spanAttributes);
 
-  const timer = logger.startTimer("ai.streamFieldQuestion");
-  let ttfbTimer: number | null = null;
   let firstTokenReceived = false;
 
   try {
-    // Track TTFB (Time To First Byte/Token)
-    const startTime = Date.now();
-
-    // Wrap onFinish to include comprehensive logging
+    // Wrap onFinish to include tracing
     const wrappedOnFinish: StreamTextOnFinishCallback<ToolSet> | undefined =
       onFinish
         ? async (event) => {
-            const totalDuration = timer.end({
-              textLength: event.text.length,
-              finishReason: event.finishReason,
-              ttfb: ttfbTimer,
-              usage: event.usage,
-            });
+            streamSpan?.setAttribute("question", event.text);
+            streamSpan?.setAttribute("finish_reason", event.finishReason);
 
-            timer.end({
-              success: true,
-              textLength: event.text.length,
-              finishReason: event.finishReason,
-              ttfb: ttfbTimer,
-              totalDuration,
-              ...(event.usage && { tokenUsage: event.usage }),
-            });
+            // Token usage
+            if (event.usage) {
+              streamSpan?.setAttributes({
+                input_tokens: event.usage.inputTokens || 0,
+                output_tokens: event.usage.outputTokens || 0,
+                total_tokens:
+                  (event.usage.inputTokens || 0) +
+                  (event.usage.outputTokens || 0),
+              });
+            }
+
+            streamSpan?.end();
 
             await onFinish(event);
           }
@@ -81,12 +91,8 @@ export function streamFieldQuestion(
       onChunk: ({ chunk }) => {
         // Track TTFB on first chunk
         if (!firstTokenReceived && chunk.type === "text-delta") {
-          ttfbTimer = Date.now() - startTime;
           firstTokenReceived = true;
-
-          logger.debug("First token received (TTFB)", {
-            ttfb: ttfbTimer,
-          });
+          streamSpan?.addEvent("ttfb");
         }
       },
       onFinish: wrappedOnFinish,
@@ -94,10 +100,14 @@ export function streamFieldQuestion(
 
     return streamResult;
   } catch (error) {
-    timer.end({
-      success: false,
+    logger.error("streamFieldQuestion failed", {
       error: error instanceof Error ? error.message : String(error),
     });
+    streamSpan?.setStatus(
+      "error",
+      error instanceof Error ? error.message : String(error),
+    );
+    streamSpan?.end();
     throw error;
   }
 }

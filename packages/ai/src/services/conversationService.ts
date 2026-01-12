@@ -1,6 +1,7 @@
 import type { CoreConversation } from "@convoform/db/src/schema";
 import { shouldSkipValidation } from "@convoform/db/src/schema/formFields/utils";
 import { type ILogger, createConversationLogger } from "@convoform/logger";
+import type { EdgeTracer } from "@convoform/tracing";
 import {
   type AsyncIterableStream,
   type InferUIMessageChunk,
@@ -49,10 +50,16 @@ export class ConversationService {
   private streamId: string;
   private endMessage = "Form completed successfully!";
   private logger: ILogger;
+  private tracer?: EdgeTracer;
 
-  constructor(conversationManager: ConversationManager, streamId: string) {
+  constructor(
+    conversationManager: ConversationManager,
+    streamId: string,
+    tracer?: EdgeTracer,
+  ) {
     this.conversationManager = conversationManager;
     this.streamId = streamId;
+    this.tracer = tracer;
 
     const conversation = conversationManager.getConversation();
 
@@ -67,11 +74,6 @@ export class ConversationService {
     if (customEndScreenMessage) {
       this.endMessage = customEndScreenMessage;
     }
-
-    this.logger.debug("ConversationService initialized", {
-      streamId,
-      hasCustomEndMessage: !!customEndScreenMessage,
-    });
   }
 
   /**
@@ -91,8 +93,6 @@ export class ConversationService {
   public async initialize(): Promise<
     AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>>
   > {
-    const timer = this.logger.startTimer("ConversationService.initialize");
-
     // First check if conversation is already initialized
     if (this.conversationManager.getConversation().transcript.length > 0) {
       this.logger.error("Conversation already initialized");
@@ -106,13 +106,7 @@ export class ConversationService {
         "Unable to generate initial conversation stream, there is no empty field exists.",
       );
     }
-    const stream = await this.generateFieldQuestionStream(
-      firstEmptyField,
-      true,
-    );
-
-    timer.end();
-    return stream;
+    return await this.generateFieldQuestionStream(firstEmptyField, true);
   }
 
   /**
@@ -124,12 +118,6 @@ export class ConversationService {
   ): Promise<
     AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>>
   > {
-    const timer = this.logger.startTimer("ConversationService.process", {
-      fieldId: currentFieldId,
-      answerLength: answerText.length,
-      answerText,
-    });
-
     if (this.conversationManager.checkConversationIsComplete()) {
       this.logger.error(
         "Attempted to process answer on completed conversation",
@@ -154,12 +142,6 @@ export class ConversationService {
       throw new Error("Current field not found");
     }
 
-    this.logger.info("Processing user answer", {
-      fieldId: currentField.id,
-      fieldName: currentField.fieldName,
-      fieldType: currentField.fieldConfiguration.inputType,
-    });
-
     await this.conversationManager.updateCurrentFieldId(currentField.id);
 
     await this.conversationManager.addUserMessage(sanitizedAnswerText);
@@ -170,10 +152,6 @@ export class ConversationService {
     );
 
     if (skipValidation) {
-      this.logger.debug("Skipping validation for field type", {
-        fieldType: currentField.fieldConfiguration.inputType,
-      });
-
       validatedAnswer = {
         object: {
           isValid: true,
@@ -181,8 +159,6 @@ export class ConversationService {
         },
       };
     } else {
-      this.logger.debug("Validating answer with AI");
-
       validatedAnswer = await extractFieldAnswer({
         ...this.conversationManager.getConversation(),
         currentField,
@@ -190,13 +166,12 @@ export class ConversationService {
           ...this.getAnalyticsMetadata(),
           fieldType: extractFieldInputType(currentField) as any,
         },
+        tracer: this.tracer,
       });
     }
 
     // 1. Invalid answer: Generate and stream followup question
     if (!validatedAnswer.object.isValid || !validatedAnswer.object.answer) {
-      this.logger.warn("Invalid answer provided, generating followup question");
-      timer.end({ flow: "invalid_answer" });
       return await this.generateFollowupQuestionStream(currentField);
     }
 
@@ -209,24 +184,16 @@ export class ConversationService {
     const nextField = this.conversationManager.getNextEmptyField();
 
     if (nextField) {
-      this.logger.info("Moving to next field", {
-        nextFieldId: nextField.id,
-        nextFieldName: nextField.fieldName,
-      });
-      timer.end({ flow: "next_field" });
       return await this.generateFieldQuestionStream(nextField);
     }
 
     // 3. Valid answer and no next field: Save answer, mark conversation as complete
-    this.logger.info("All fields completed, finishing conversation");
-
     await this.conversationManager.addAIMessage(this.endMessage);
 
     await this.conversationManager.markConversationComplete();
 
     await this.generateAndUpdateConversationName();
 
-    timer.end({ flow: "completed" });
     return await this.generateEndConversationStream();
   }
 
@@ -238,14 +205,6 @@ export class ConversationService {
   ): Promise<
     AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>>
   > {
-    const timer = this.logger.startTimer(
-      "ConversationService.generateFollowupQuestion",
-      {
-        fieldId: currentField.id,
-        fieldName: currentField.fieldName,
-      },
-    );
-
     const streamTextResult = streamFieldQuestion(
       {
         ...this.conversationManager.getConversation(),
@@ -255,6 +214,7 @@ export class ConversationService {
           ...this.getAnalyticsMetadata(),
           fieldType: extractFieldInputType(currentField),
         },
+        tracer: this.tracer,
       },
       this.createTextStreamFinishHandler(),
     );
@@ -264,7 +224,6 @@ export class ConversationService {
         await this.conversationManager.addAIMessage(
           await streamTextResult.text,
         );
-        timer.end();
       },
     });
   }
@@ -278,16 +237,6 @@ export class ConversationService {
   ): Promise<
     AsyncIterableStream<InferUIMessageChunk<ConversationServiceUIMessage>>
   > {
-    const timer = this.logger.startTimer(
-      "ConversationService.generateFieldQuestion",
-      {
-        fieldId: nextField.id,
-        fieldName: nextField.fieldName,
-        fieldType: nextField.fieldConfiguration.inputType,
-        isFirstQuestion,
-      },
-    );
-
     await this.conversationManager.updateCurrentFieldId(nextField.id);
 
     const streamTextResult = streamFieldQuestion(
@@ -299,6 +248,7 @@ export class ConversationService {
           ...this.getAnalyticsMetadata(),
           fieldType: extractFieldInputType(nextField) as any,
         },
+        tracer: this.tracer,
       },
       this.createTextStreamFinishHandler(),
     );
@@ -308,7 +258,6 @@ export class ConversationService {
         await this.conversationManager.addAIMessage(
           await streamTextResult.text,
         );
-        timer.end();
       },
     });
   }
@@ -356,9 +305,6 @@ export class ConversationService {
   }
 
   public async generateAndUpdateConversationName() {
-    const timer = this.logger.startTimer(
-      "ConversationService.generateConversationName",
-    );
     const conversation = this.conversationManager.getConversation();
 
     try {
@@ -367,14 +313,12 @@ export class ConversationService {
         transcript: conversation.transcript,
         formFieldResponses: conversation.formFieldResponses,
         metadata: this.getAnalyticsMetadata(),
+        tracer: this.tracer,
       });
 
       await this.conversationManager.updateConversationName(result.object.name);
-
-      timer.end({ success: true });
     } catch (error) {
-      timer.end({
-        success: false,
+      this.logger.error("generateConversationName failed", {
         error: error instanceof Error ? error.message : String(error),
       });
       // Don't throw error to avoid breaking conversation completion flow

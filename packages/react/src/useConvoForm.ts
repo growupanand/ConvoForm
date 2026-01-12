@@ -1,6 +1,11 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
+import {
+  type EdgeSpanHandle,
+  type EdgeTracer,
+  createBrowserTracer,
+} from "@convoform/tracing";
 import { sendMessage as sendWebsocketMessage } from "@convoform/websocket-client";
 import { DefaultChatTransport } from "ai";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -9,10 +14,30 @@ import type { CoreConversation } from "../../db/src/schema";
 import { API_DOMAIN } from "./constants";
 import type { UseConvoFormProps, UseConvoFormReturnType } from "./types";
 
+// ============================================================
+// useConvoForm Hook
+// ============================================================
+
 export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
   const [conversation, setConversation] = useState<CoreConversation | null>(
     null,
   );
+
+  // Initialize tracer
+  // We use a ref to keep the tracer instance stable
+  const tracerRef = useRef<EdgeTracer | null>(null);
+
+  useEffect(() => {
+    if (!tracerRef.current) {
+      // Use provided tracer or fall back to browser tracer (for local development)
+      tracerRef.current =
+        props.tracer ?? createBrowserTracer("convoform-react-client");
+    }
+  }, [props.tracer]);
+
+  // Track active spans
+  const streamSpanRef = useRef<EdgeSpanHandle | null>(null);
+  const loadingSpanRef = useRef<EdgeSpanHandle | null>(null);
 
   // TTFB tracking
   const requestStartTimeRef = useRef<number | null>(null);
@@ -27,15 +52,52 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
         if (dataPart.type === "data-conversation") {
           const updatedConversation = dataPart.data as CoreConversation;
           setConversation(updatedConversation);
+
+          // Update trace ID to match conversation ID for unifying traces
+          if (tracerRef.current) {
+            tracerRef.current.setTraceId(updatedConversation.id);
+          }
+
+          if (streamSpanRef.current) {
+            streamSpanRef.current.addEvent("conversation_updated");
+          }
+
           sendWebsocketMessage("conversation:updated", {
             conversationId: updatedConversation.id,
             formId: props.formId,
           });
-          // queuePatchConversation(props.formId, updatedConversation.id, updatedConversation, props.apiDomain ?? API_DOMAIN);
+        }
+      },
+      onFinish: () => {
+        // End stream span when generation finishes
+        if (streamSpanRef.current) {
+          streamSpanRef.current.end();
+          streamSpanRef.current = null;
+        }
+
+        // Flush traces
+        if (tracerRef.current) {
+          tracerRef.current.flush();
         }
       },
       onError: (error) => {
         props.onError?.(error);
+        if (loadingSpanRef.current) {
+          loadingSpanRef.current.setStatus(
+            "error",
+            error instanceof Error ? error.message : String(error),
+          );
+          loadingSpanRef.current.end();
+          loadingSpanRef.current = null;
+        }
+        if (streamSpanRef.current) {
+          streamSpanRef.current.setStatus(
+            "error",
+            error instanceof Error ? error.message : String(error),
+          );
+          streamSpanRef.current.end();
+          streamSpanRef.current = null;
+        }
       },
     });
 
@@ -98,40 +160,53 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
       .join("\n");
   }, [messages]);
 
-  // Track TTFB (Time To First Byte) on client side
+  // Track TTFB / Streaming Start
   useEffect(() => {
     if (
-      requestStartTimeRef.current !== null &&
-      !firstByteReceivedRef.current &&
-      messages.length > 0 &&
-      currentQuestionText &&
-      currentQuestionText.trim().length > 0
+      status === "streaming" &&
+      !streamSpanRef.current &&
+      requestStartTimeRef.current !== null
     ) {
       const ttfb = Date.now() - requestStartTimeRef.current;
       firstByteReceivedRef.current = true;
 
-      props.logger?.info("Client: First byte received (TTFB)", {
+      // Start stream span
+      if (tracerRef.current) {
+        // End 'submit_answer' span (loading state) if it's still open
+        if (loadingSpanRef.current) {
+          loadingSpanRef.current.end();
+          loadingSpanRef.current = null;
+        }
+
+        // Start stream span
+        streamSpanRef.current = tracerRef.current.startSpan("stream_question", {
+          ttfb_ms: ttfb,
+          form_id: props.formId,
+          field_name: currentFieldName ?? undefined,
+        });
+      }
+
+      props.logger?.info("Client: Stream started (TTFB)", {
         ttfb,
-        currentQuestionText,
         status,
         formId: props.formId,
         conversationId: conversation?.id,
         organizationId: conversation?.organizationId,
-        messages,
         fieldName: currentFieldName,
       });
 
       // Reset for next request
       requestStartTimeRef.current = null;
     }
+
+    streamSpanRef.current?.setAttribute("field_name", currentFieldName ?? "");
   }, [
-    messages.length,
     status,
     props.logger,
     props.formId,
     conversation?.id,
     conversation?.organizationId,
-    currentQuestionText,
+    currentFieldName,
   ]);
 
   const transportBody = useMemo(() => {
@@ -148,6 +223,23 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
       requestStartTimeRef.current = Date.now();
       firstByteReceivedRef.current = false;
 
+      // Start trace if not already started
+      if (tracerRef.current) {
+        // If we have a conversation ID, trace ID is already set.
+        // If not, a new trace ID will be generated by startSpan if not set.
+        // But we want to ensure we have a trace ID to send to server.
+        if (!tracerRef.current.getTraceId()) {
+          tracerRef.current.startTrace();
+        }
+
+        loadingSpanRef.current = tracerRef.current.startSpan("submit_answer", {
+          answer_text: answerText,
+          is_initialization: !isConversationInitialized,
+          form_id: props.formId,
+          field_name: currentFieldName || undefined,
+        });
+      }
+
       props.logger?.debug("Client: Request started", {
         answerLength: answerText.length,
         isInitialization: !isConversationInitialized,
@@ -158,11 +250,22 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
       });
 
       setMessages([]);
+
+      // Get headers to propagate trace context
+      const traceHeaders: Record<string, string> = {};
+      if (tracerRef.current) {
+        const traceparent = tracerRef.current.getTraceparent();
+        if (traceparent) {
+          traceHeaders.traceparent = traceparent;
+        }
+      }
+
       return await sendMessage(undefined, {
         body: {
           ...transportBody,
           answerText,
         },
+        headers: traceHeaders,
       });
     },
     [
@@ -173,6 +276,7 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
       props.formId,
       conversation?.id,
       conversation?.organizationId,
+      currentFieldName,
     ],
   );
 
@@ -193,7 +297,8 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
     setConversation(null);
     setMessages([]);
     clearError();
-  }, [setMessages, clearError]);
+    // Clear tracer state on reset? Maybe keep it for continuity unless strict reset needed
+  }, [setMessages, clearError, conversation, props.formId]);
 
   // =========================================================
   // ----------------- Websocket Events ----------------------
@@ -208,7 +313,7 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
     };
 
     sendWebsocketMessage("conversation:started", conversationData);
-  }, [conversation?.id]);
+  }, [conversation?.id, props.formId]);
 
   useEffect(() => {
     if (!conversation?.finishedAt) return;
@@ -219,7 +324,7 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
     };
 
     sendWebsocketMessage("conversation:stopped", conversationData);
-  }, [conversation?.finishedAt]);
+  }, [conversation?.finishedAt, conversation?.id, props.formId]);
 
   return {
     // Methods
