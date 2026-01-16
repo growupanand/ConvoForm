@@ -9,10 +9,9 @@
 import { appendFile } from "node:fs/promises";
 import { join } from "node:path";
 import { exit } from "node:process";
-import { groq } from "@ai-sdk/groq";
-import { openai } from "@ai-sdk/openai";
 import type { FormFieldResponses } from "@convoform/db/src/schema";
 import type { LanguageModel } from "ai";
+import { ollama } from "ai-sdk-ollama";
 import { extractFieldAnswer } from "../ai-actions/extractFieldAnswer";
 import { generateConversationName } from "../ai-actions/generateConversationName";
 import { generateEndMessage } from "../ai-actions/generateEndMessage";
@@ -149,6 +148,7 @@ const MODEL_PRICING: Record<string, { input: number; output: number }> = {
   "openai/gpt-oss-120b": { input: 0.15, output: 0.075 },
   "openai/gpt-oss-20b": { input: 0.075, output: 0.037 },
   "meta-llama/llama-guard-4-12b": { input: 0.2, output: 0.2 },
+  "qwen2.5:1.5b": { input: 0.0, output: 0.0 },
 };
 
 // Map display names to actual model IDs for pricing lookup
@@ -165,6 +165,7 @@ const MODEL_NAME_ALIASES: Record<string, string> = {
   "GPT OSS 120B": "openai/gpt-oss-120b",
   "GPT OSS 20B": "openai/gpt-oss-20b",
   "llama guard 4 12b (groq)": "meta-llama/llama-guard-4-12b",
+  "Qwen 2.5:1.5b": "qwen2.5:1.5b",
 };
 
 /**
@@ -797,14 +798,18 @@ async function runLatencyTests(config: TestConfig) {
 const DEFAULT_CONFIG: TestConfig = {
   models: [
     // { name: "GPT-4.1 Nano", model: openai("gpt-4.1-nano") },
-    { name: "GPT-4o Mini", model: openai("gpt-4o-mini") },
+    // { name: "GPT-4o Mini", model: openai("gpt-4o-mini") },
+    // {
+    //   name: "Groq meta-llama/llama-4-maverick-17b-128e-instruct",
+    //   model: groq("meta-llama/llama-4-maverick-17b-128e-instruct"),
+    // },
+    // {
+    //   name: "Groq meta-llama/llama-4-scout-17b-16e-instruct",
+    //   model: groq("meta-llama/llama-4-scout-17b-16e-instruct"),
+    // },
     {
-      name: "Groq meta-llama/llama-4-maverick-17b-128e-instruct",
-      model: groq("meta-llama/llama-4-maverick-17b-128e-instruct"),
-    },
-    {
-      name: "Groq meta-llama/llama-4-scout-17b-16e-instruct",
-      model: groq("meta-llama/llama-4-scout-17b-16e-instruct"),
+      name: "Qwen 2.5:1.5b",
+      model: ollama("qwen2.5:1.5b"),
     },
     // {
     //   name: "GPT OSS 120B",

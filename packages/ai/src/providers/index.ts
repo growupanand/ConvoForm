@@ -10,6 +10,7 @@
 import { createGroq } from "@ai-sdk/groq";
 import { createOpenAI } from "@ai-sdk/openai";
 import type { LanguageModel } from "ai";
+import { createOllama } from "ai-sdk-ollama";
 
 // LanguageModelV2 is the actual model object (LanguageModel = string | LanguageModelV2)
 type LanguageModelInstance = Exclude<LanguageModel, string>;
@@ -42,6 +43,21 @@ export const PROVIDERS = {
     createModel: (model: string): LanguageModelInstance => {
       const apiKey = process.env.AI_API_KEY || process.env.GROQ_API_KEY;
       return apiKey ? createGroq({ apiKey })(model) : createGroq()(model);
+    },
+  },
+  ollama: {
+    name: "ollama" as const,
+    models: ["smollm", "qwen2.5"] as const,
+    defaultModel: "qwen2.5:1.5b",
+    // Ollama runs locally, uses OLLAMA_BASE_URL for custom endpoint (default: http://localhost:11434)
+    // Ollama runs locally, uses OLLAMA_BASE_URL for custom endpoint (default: http://localhost:11434)
+    createModel: (model: string): LanguageModelInstance => {
+      const baseURL = process.env.OLLAMA_BASE_URL;
+      const ollamaProvider = createOllama({
+        baseURL,
+      });
+
+      return ollamaProvider(model);
     },
   },
 } as const;

@@ -24,6 +24,9 @@ catalogs:
     ai:
       specifier: 5.0.5
       version: 5.0.5
+    ai-sdk-ollama:
+      specifier: ^2.0.0
+      version: 2.2.0
     next:
       specifier: 15.5.8
       version: 15.5.8
@@ -353,6 +356,9 @@ importers:
       ai:
         specifier: 'catalog:'
         version: 5.0.5(zod@4.1.11)
+      ai-sdk-ollama:
+        specifier: 'catalog:'
+        version: 2.2.0(ai@5.0.5(zod@4.1.11))(zod@4.1.11)
       zod:
         specifier: 'catalog:'
         version: 4.1.11
@@ -3949,6 +3955,12 @@ packages:
     resolution: {integrity: sha512-kja8j7PjmncONqaTsB8fQ+wE2mSU2DJ9D4XKoJ5PFWIdRMa6SLSN1ff4mOr4jCbfRSsxR4keIiySJU0N9T5hIQ==}
     engines: {node: '>= 8.0.0'}
 
+  ai-sdk-ollama@2.2.0:
+    resolution: {integrity: sha512-M7zDxlmnnIyFQCDxgQj+ln4g1KeUWDLfO5a3aZbY334xJUSlrZOqEoRDxNEpmuiZF/NCP7QpxQ4oQA7HEECHBA==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      ai: ^5.0.116
+
   ai@5.0.28:
     resolution: {integrity: sha512-tnybAqoDFzuK6O1NOMHX1d/wH7Eug8y0H4l/Gl6swi8BYGtlTPDjniKnGYzgTpLTdpj7SI3qjZuomz7evph9+w==}
     engines: {node: '>=18'}
@@ -6514,6 +6526,9 @@ packages:
   obuf@1.1.2:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
 
+  ollama@0.6.3:
+    resolution: {integrity: sha512-KEWEhIqE5wtfzEIZbDCLH51VFZ6Z3ZSa6sIOg/E/tBV8S51flyqBOXi+bRxlOYKDf8i327zG9eSTb8IJxvm3Zg==}
+
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
 
@@ -7987,6 +8002,9 @@ packages:
     peerDependenciesMeta:
       webpack-cli:
         optional: true
+
+  whatwg-fetch@3.6.20:
+    resolution: {integrity: sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==}
 
   whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
@@ -11695,6 +11713,15 @@ snapshots:
     dependencies:
       humanize-ms: 1.2.1
 
+  ai-sdk-ollama@2.2.0(ai@5.0.5(zod@4.1.11))(zod@4.1.11):
+    dependencies:
+      '@ai-sdk/provider': 2.0.1
+      '@ai-sdk/provider-utils': 3.0.20(zod@4.1.11)
+      ai: 5.0.5(zod@4.1.11)
+      ollama: 0.6.3
+    transitivePeerDependencies:
+      - zod
+
   ai@5.0.28(zod@4.1.11):
     dependencies:
       '@ai-sdk/gateway': 1.0.15(zod@4.1.11)
@@ -14683,6 +14710,10 @@ snapshots:
 
   obuf@1.1.2: {}
 
+  ollama@0.6.3:
+    dependencies:
+      whatwg-fetch: 3.6.20
+
   once@1.4.0:
     dependencies:
       wrappy: 1.0.2
@@ -16397,6 +16428,8 @@ snapshots:
       - esbuild
       - uglify-js
     optional: true
+
+  whatwg-fetch@3.6.20: {}
 
   whatwg-url@5.0.0:
     dependencies:

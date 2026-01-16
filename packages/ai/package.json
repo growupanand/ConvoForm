@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ai-sdk/groq": "catalog:",
+    "ai-sdk-ollama": "catalog:",
     "@ai-sdk/openai": "catalog:",
     "@convoform/analytics": "workspace:*",
     "@convoform/db": "workspace:*",

@@ -14,3 +14,17 @@
 | 🥉 | GPT-4o Mini | 35274ms | 4285 | $0.8610m | 3527ms |
 
 ---
+
+
+# Test Run: 1/16/2026, 10:17:11 PM
+
+**Summary**
+- Total Models: 1
+- Successful: 1
+- Failed: 0
+
+| Rank | Model Name | Time | Tokens | Cost | Avg/Call |
+|------|------------|------|--------|------|----------|
+| 🥇 | Qwen 2.5:1.5b | 76041ms | 3804 | $0.00 | 7604ms |
+
+---
