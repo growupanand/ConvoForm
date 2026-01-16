@@ -77,9 +77,6 @@ export class ConversationManager {
     let success = false;
     if (this.onUpdateConversation) {
       const timer = this.logger.startTimer("manager.updateConversation");
-      const updateConversationSpan = this.tracer?.startSpan(
-        "update_conversation",
-      );
 
       // We want to make sure that update failed should not prevent the flow to continue
       try {
@@ -87,14 +84,11 @@ export class ConversationManager {
         success = true;
 
         timer.end({ success: true });
-        updateConversationSpan?.end();
       } catch (error) {
         timer.end({
           success: false,
           error: error instanceof Error ? error.message : String(error),
         });
-        updateConversationSpan?.setStatus("error");
-        updateConversationSpan?.end();
       }
     }
     return success;

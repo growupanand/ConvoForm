@@ -5,13 +5,13 @@
 
 import { z } from "zod/v4";
 import {
-  PROVIDERS,
-  type ProviderName,
+  type LLMProviderName,
+  LLM_PROVIDERS,
   getDefaultConfig,
   getSupportedProviders,
   isValidModel,
   isValidProvider,
-} from "./providers";
+} from "./llm-providers";
 
 // Environment variable schema
 const EnvSchema = z.object({
@@ -42,7 +42,7 @@ const EnvSchema = z.object({
       // Validate model
       if (!isValidModel(provider, modelName)) {
         throw new Error(
-          `Invalid model for ${provider}: "${modelName}". Valid: ${PROVIDERS[provider].models.join(", ")}`,
+          `Invalid model for ${provider}: "${modelName}". Valid: ${LLM_PROVIDERS[provider].models.join(", ")}`,
         );
       }
 
@@ -104,14 +104,14 @@ export function validateEnv() {
  * Get validated model configuration
  */
 export function getValidatedModelConfig(): {
-  provider: ProviderName;
+  provider: LLMProviderName;
   model: string;
 } {
   const validatedEnv = validateEnv();
 
   if (validatedEnv.CONVERSATION_MODEL) {
     return {
-      provider: validatedEnv.CONVERSATION_MODEL.provider as ProviderName,
+      provider: validatedEnv.CONVERSATION_MODEL.provider as LLMProviderName,
       model: validatedEnv.CONVERSATION_MODEL.model,
     };
   }

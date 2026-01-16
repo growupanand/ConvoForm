@@ -7,10 +7,10 @@ import { type LLMAnalyticsMetadata, analytics } from "@convoform/analytics";
 import type { LanguageModel } from "ai";
 import { getValidatedModelConfig } from "./envSchema";
 import {
-  type ProviderName,
+  type LLMProviderName,
   getDefaultConfig,
   getProviderModel,
-} from "./providers";
+} from "./llm-providers";
 
 /**
  * Get model configuration from validated environment variables
@@ -23,7 +23,7 @@ export function getModelConfig(
   try {
     const config = getValidatedModelConfig();
     const baseModel = getProviderModel(
-      config.provider as ProviderName,
+      config.provider as LLMProviderName,
       config.model,
     );
 

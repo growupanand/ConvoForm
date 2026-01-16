@@ -19,9 +19,9 @@ type LanguageModelInstance = Exclude<LanguageModel, string>;
 // Provider Registry
 // ============================================================================
 
-export type ProviderName = keyof typeof PROVIDERS;
+export type LLMProviderName = keyof typeof LLM_PROVIDERS;
 
-export const PROVIDERS = {
+export const LLM_PROVIDERS = {
   openai: {
     name: "openai" as const,
     models: ["gpt-4o-mini", "gpt-4.1-nano"] as const,
@@ -67,38 +67,44 @@ export const PROVIDERS = {
 // ============================================================================
 
 /** Get list of supported provider names */
-export function getSupportedProviders(): ProviderName[] {
-  return Object.keys(PROVIDERS) as ProviderName[];
+export function getSupportedProviders(): LLMProviderName[] {
+  return Object.keys(LLM_PROVIDERS) as LLMProviderName[];
 }
 
 /** Check if a provider is valid */
-export function isValidProvider(provider: string): provider is ProviderName {
-  return provider in PROVIDERS;
+export function isValidProvider(provider: string): provider is LLMProviderName {
+  return provider in LLM_PROVIDERS;
 }
 
 /** Check if a model is valid for the given provider */
-export function isValidModel(provider: ProviderName, model: string): boolean {
-  const providerConfig = PROVIDERS[provider];
+export function isValidModel(
+  provider: LLMProviderName,
+  model: string,
+): boolean {
+  const providerConfig = LLM_PROVIDERS[provider];
   return providerConfig.models.some((m) => m === model || model.startsWith(m));
 }
 
 /** Get the default model for a provider */
-export function getDefaultModel(provider: ProviderName): string {
-  return PROVIDERS[provider].defaultModel;
+export function getDefaultModel(provider: LLMProviderName): string {
+  return LLM_PROVIDERS[provider].defaultModel;
 }
 
 /** Get a model instance for the given provider and model name */
 export function getProviderModel(
-  provider: ProviderName,
+  provider: LLMProviderName,
   model: string,
 ): LanguageModelInstance {
-  return PROVIDERS[provider].createModel(model);
+  return LLM_PROVIDERS[provider].createModel(model);
 }
 
 /** Get default provider and model configuration */
-export function getDefaultConfig(): { provider: ProviderName; model: string } {
+export function getDefaultConfig(): {
+  provider: LLMProviderName;
+  model: string;
+} {
   return {
     provider: "openai",
-    model: PROVIDERS.openai.defaultModel,
+    model: LLM_PROVIDERS.openai.defaultModel,
   };
 }
