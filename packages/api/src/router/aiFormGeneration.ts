@@ -46,21 +46,18 @@ const generateFieldsInputSchema = z.object({
  * Input schema for creating form from generated fields
  */
 const createFormFromFieldsInputSchema = z.object({
-  formName: z.string().min(1).max(100),
-  formDescription: z.string().min(1).max(500),
-  welcomeScreenTitle: z.string().min(1).max(100),
-  welcomeScreenMessage: z.string().min(1).max(300),
-  endingMessage: z.string().min(1).max(300),
-  selectedFields: z
-    .array(
-      z.object({
-        fieldName: z.string(),
-        fieldDescription: z.string(),
-        fieldConfiguration: z.any(), // Use any for now to avoid complex discriminated union type issues
-      }),
-    )
-    .min(1)
-    .max(15),
+  formName: z.string(),
+  formDescription: z.string(),
+  welcomeScreenTitle: z.string(),
+  welcomeScreenMessage: z.string(),
+  endingMessage: z.string(),
+  selectedFields: z.array(
+    z.object({
+      fieldName: z.string(),
+      fieldDescription: z.string(),
+      fieldConfiguration: z.any(), // Use any for now to avoid complex discriminated union type issues
+    }),
+  ),
   organizationId: z.string(),
 });
 

@@ -73,8 +73,9 @@ export const generatedFormFieldSchema = z.object({
     .describe("Human-readable name for the form field displayed to users"),
   fieldDescription: z
     .string()
+    .min(1)
     .describe(
-      "Description or instructions for the field shown to help users understand what information to provide",
+      "Description or instructions for the field shown to help users understand what information to provide (cannot be empty)",
     ),
   fieldConfiguration: fieldConfigurationSchema.describe(
     "Complete configuration object defining the field type and its specific settings",
@@ -91,6 +92,8 @@ export const generateFormFieldsOutputSchema = z.object({
     .describe("Brief description of the form's purpose"),
   fields: z
     .array(generatedFormFieldSchema)
+    .min(1)
+    .max(15)
     .describe("Array of generated form fields"),
   reasoning: z.string().describe("Explanation of why these fields were chosen"),
   confidence: z
@@ -185,7 +188,7 @@ Generate ${maxFields} or fewer form fields that comprehensively cover the form's
 ### DESIGN PRINCIPLES
 - Choose the most appropriate input type for each field
 - Logical field order: basic info → specific questions → optional fields
-- Clear, descriptive field names and descriptions
+- Clear, descriptive field names and descriptions (descriptions must NOT be empty)
 - Only mark essential fields as required
 - Realistic options for choice fields (2-8 options)
 - Include helpful placeholder text
@@ -227,7 +230,8 @@ fieldConfiguration: { inputType: "fileUpload", inputConfiguration: { helpText?: 
 - confidence: 0-1 score
 - estimatedCompletionTime: Minutes to complete
 
-Each field MUST use the exact fieldConfiguration structure shown above.`;
+Each field MUST use the exact fieldConfiguration structure shown above.
+IMPORTANT: fieldDescription MUST be a non-empty string explaining the field's purpose.`;
 }
 
 /**

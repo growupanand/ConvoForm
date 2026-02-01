@@ -17,11 +17,33 @@ export interface GenerateFormMetadataParams {
 export const generateFormMetadataOutputSchema = z.object({
   formName: z
     .string()
+    .min(1)
+    .max(100)
     .describe("Optimized form name based on context and fields"),
-  formDescription: z.string().describe("Detailed form description"),
-  welcomeScreenTitle: z.string().describe("Welcome screen title"),
-  welcomeScreenMessage: z.string().describe("Welcome screen message to users"),
-  endingMessage: z.string().describe("Message shown after form completion"),
+  formDescription: z
+    .string()
+    .min(1)
+    .max(500)
+    .describe("Detailed form description"),
+  welcomeScreenTitle: z
+    .string()
+    .min(1)
+    .max(100)
+    .describe("Welcome screen title"),
+  welcomeScreenMessage: z
+    .string()
+    .min(1)
+    .max(300)
+    .describe(
+      "Welcome screen message to users (max 280 characters one concise sentence)",
+    ),
+  endingMessage: z
+    .string()
+    .min(1)
+    .max(300)
+    .describe(
+      "Message shown after form completion (max 280 characters one concise sentence)",
+    ),
   estimatedCompletionTime: z
     .number()
     .describe("Estimated completion time in minutes"),
@@ -101,13 +123,13 @@ Generate compelling metadata that encourages form completion while maintaining p
 - Warm and professional
 - Sets the right tone
 
-**welcomeScreenMessage**
+**welcomeScreenMessage** (strictly <280 chars, one concise sentence)
 - Puts users at ease
 - Sets clear expectations
 - Mentions estimated time
 - Addresses privacy if relevant
 
-**endingMessage**
+**endingMessage** (strictly <280 chars, one concise sentence)
 - Thanks user for their time
 - Explains next steps if applicable
 - Provides contact info if relevant
