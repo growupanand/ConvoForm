@@ -12,6 +12,7 @@ import {
   createConversation,
   getOneConversation,
   patchConversation,
+  sendResponseEmail,
 } from "../actions/conversation";
 import { getOrganizationFormsCountByFormId } from "../actions/conversation/getOrganizationFormsCountByFormId";
 import { generateConversationInsights } from "../lib/ai";
@@ -614,6 +615,8 @@ export const conversationRouter = createTRPCRouter({
       if (!updatedConversation) {
         throw new Error("Failed to update conversation with insights");
       }
+
+      await sendResponseEmail(input.conversationId, ctx);
 
       return { success: true, insights };
     }),

@@ -22,4 +22,5 @@ catalog:
   "@types/react": 19.1.2
   "@types/react-dom": 19.1.2
   "@types/node": ^22
+  resend: 3.5.0
   

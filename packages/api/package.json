@@ -21,6 +21,7 @@
     "@vercel/functions": "2.0.3",
     "ai": "catalog:",
     "superjson": "^2.2.1",
+    "resend": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
