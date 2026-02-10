@@ -7,7 +7,7 @@ import "./src/env";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  reactStrictMode: false,
+  reactStrictMode: true,
   env: {
     NEXT_PUBLIC_AXIOM_TOKEN: process.env.AXIOM_TOKEN,
     NEXT_PUBLIC_AXIOM_DATASET: process.env.AXIOM_DATASET,
@@ -64,7 +64,7 @@ const nextConfig: NextConfig = {
 
   /** We already do linting and typechecking as separate tasks in CI */
   eslint: { ignoreDuringBuilds: false },
-  typescript: { ignoreBuildErrors: true },
+  typescript: { ignoreBuildErrors: false },
   async headers() {
     return [
       {
@@ -72,7 +72,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: "*", // Set your origin
+            value: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
           },
           {
             key: "Access-Control-Allow-Methods",

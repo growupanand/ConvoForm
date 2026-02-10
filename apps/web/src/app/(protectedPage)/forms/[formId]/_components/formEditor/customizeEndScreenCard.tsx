@@ -81,7 +81,8 @@ export function CustomizeEndScreenCard({ form }: Readonly<Props>) {
       endScreenCTALabel: form.endScreenCTALabel || "",
       customEndScreenMessage: form.customEndScreenMessage || "",
     },
-    resolver: zodResolver(formHookSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(formHookSchema) as any,
   });
 
   const onSubmit = (data: FormHookData) => {
@@ -150,6 +151,7 @@ export function CustomizeEndScreenCard({ form }: Readonly<Props>) {
                       <FormControl>
                         <Textarea
                           {...field}
+                          value={field.value ?? ""}
                           disabled={isSavingForm}
                           placeholder="Thank you for filling the form!"
                         />
@@ -180,6 +182,7 @@ export function CustomizeEndScreenCard({ form }: Readonly<Props>) {
                   <FormControl>
                     <Input
                       {...field}
+                      value={field.value ?? ""}
                       placeholder="E.g https://yoursite.com"
                       disabled={isSavingForm}
                     />
@@ -200,6 +203,7 @@ export function CustomizeEndScreenCard({ form }: Readonly<Props>) {
                     <FormControl>
                       <Input
                         {...field}
+                        value={field.value ?? ""}
                         placeholder="Default: Done"
                         disabled={isSavingForm}
                       />

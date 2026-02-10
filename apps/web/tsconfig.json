@@ -13,7 +13,7 @@
       "dom.iterable",
       "esnext"
     ],
-
+    "declaration": false
   },
   "include": [
     "next-env.d.ts",

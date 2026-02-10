@@ -55,10 +55,11 @@ export function EditFieldSheet({
   open,
   onOpenChange,
 }: Readonly<Props>) {
-  const formDefaultValue = {
+  const formDefaultValue: FormHookData = {
     fieldName: formField.fieldName,
     fieldDescription: formField.fieldDescription,
-    fieldConfiguration: formField.fieldConfiguration,
+    fieldConfiguration:
+      formField.fieldConfiguration as FormHookData["fieldConfiguration"],
   };
   const queryClient = useQueryClient();
   const updateFormFieldMutation = api.formField.updateFormField.useMutation({
@@ -95,9 +96,10 @@ export function EditFieldSheet({
     });
   };
 
-  const formHook = useForm({
+  const formHook = useForm<FormHookData>({
     defaultValues: formDefaultValue,
-    resolver: zodResolver(formHookSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(formHookSchema) as any,
   });
 
   const selectedInputType = formHook.watch("fieldConfiguration.inputType");
