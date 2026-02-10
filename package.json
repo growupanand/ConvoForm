@@ -29,6 +29,7 @@
     "type-check:turbo": "dotenv -e .env -- biome check --write . --unsafe --no-errors-on-unmatched && dotenv -e .env -- turbo run type-check",
     "type-check-ci": "biome check .",
     "test": "dotenv -e .env -- turbo run test",
+    "e2e": "pnpm --filter @convoform/e2e run e2e",
     "ui:add": "pnpm --filter @convoform/ui ui:add",
     "drizzle-kit": "dotenv -e .env -- pnpm --filter @convoform/db drizzle-kit",
     "drizzle:generate-migration": "dotenv -e .env -- pnpm --filter @convoform/db drizzle:generate-migration",

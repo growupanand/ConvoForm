@@ -1,0 +1,7 @@
+# testing
+/blob-report/
+/coverage
+/playwright/.cache/
+/playwright-report/
+/test-results/
+/playwright/.auth
