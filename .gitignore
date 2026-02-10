@@ -50,3 +50,6 @@ dist
 
 
 temp
+
+# Claude Code plans
+.claude/plans/

@@ -5,22 +5,11 @@ import type { NextRequest } from "next/server";
 // export const runtime = "edge";
 export const maxDuration = 60;
 
-/**
- * Configure basic CORS headers
- * You should extend this to match your needs
- */
-function setCorsHeaders(res: Response) {
-  res.headers.set("Access-Control-Allow-Origin", "*");
-  res.headers.set("Access-Control-Request-Method", "*");
-  res.headers.set("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
-  res.headers.set("Access-Control-Allow-Headers", "*");
-}
-
-export function OPTIONS() {
+export function OPTIONS(req: NextRequest) {
   const response = new Response(null, {
     status: 204,
   });
-  setCorsHeaders(response);
+  applyCorsHeaders(response, req);
   return response;
 }
 
@@ -40,8 +29,40 @@ const handler = async (req: NextRequest) => {
         : undefined,
   });
 
-  setCorsHeaders(response);
+  applyCorsHeaders(response, req);
   return response;
 };
+
+function applyCorsHeaders(res: Response, req: NextRequest) {
+  const origin = req.headers.get("origin");
+  const allowedOrigins = [
+    process.env.NEXT_PUBLIC_APP_URL,
+    "http://localhost:3000",
+  ];
+
+  // Allow all localhost ports in development
+  const isLocalhost = origin?.startsWith("http://localhost:");
+
+  if (
+    origin &&
+    (allowedOrigins.includes(origin) ||
+      (process.env.NODE_ENV === "development" && isLocalhost))
+  ) {
+    res.headers.set("Access-Control-Allow-Origin", origin);
+  } else {
+    // Default to strict if no match (or no origin) - though browsers might block if we don't send ACAO
+    // We can default to the main app URL
+    if (process.env.NEXT_PUBLIC_APP_URL) {
+      res.headers.set(
+        "Access-Control-Allow-Origin",
+        process.env.NEXT_PUBLIC_APP_URL,
+      );
+    }
+  }
+
+  res.headers.set("Access-Control-Request-Method", "*");
+  res.headers.set("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
+  res.headers.set("Access-Control-Allow-Headers", "*");
+}
 
 export { handler as GET, handler as POST };

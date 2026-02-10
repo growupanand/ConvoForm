@@ -69,7 +69,7 @@ export function EditFieldItem({
 
   const fieldDescription = formHook.watch("fieldDescription");
 
-  const { inputRef } = useAutoHeightHook({ value: fieldDescription });
+  const { inputRef } = useAutoHeightHook({ value: fieldDescription ?? "" });
 
   const {
     attributes,

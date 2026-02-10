@@ -1,7 +1,6 @@
 "use client";
 
-import { motion, stagger, useAnimate } from "motion/react";
-import { useEffect } from "react";
+import { motion } from "motion/react";
 
 import {
   EmptyCard,
@@ -18,8 +17,6 @@ type Props = {
 };
 
 export function FormList({ organizationId }: Readonly<Props>) {
-  const [scope, animate] = useAnimate();
-
   const { isLoading, data } = api.form.getAll.useQuery({
     organizationId,
   });
@@ -40,26 +37,12 @@ export function FormList({ organizationId }: Readonly<Props>) {
     );
   };
 
-  const loadListItems = async () => {
-    if (!isLoading && !emptyForms) {
-      animate(
-        ".slide-down-list-item",
-        { opacity: 1, translate: 0 },
-        { delay: stagger(0.1), duration: 0.2 },
-      );
-    }
-  };
-
-  useEffect(() => {
-    loadListItems();
-  }, [forms.length]);
-
   if (isLoading) {
     return <FormListLoading />;
   }
 
   return (
-    <div className="h-full" ref={scope}>
+    <div className="h-full">
       {emptyForms && (
         <EmptyCard
           title="No Forms Yet"
@@ -70,10 +53,12 @@ export function FormList({ organizationId }: Readonly<Props>) {
       )}
       {!emptyForms && (
         <ListCard>
-          {forms.map((form) => (
+          {forms.map((form, index) => (
             <motion.div
               className="slide-down-list-item"
               initial={{ opacity: 0, translate: "0 -0.5rem" }}
+              animate={{ opacity: 1, translate: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.2 }}
               key={form.id}
             >
               <FormListItem

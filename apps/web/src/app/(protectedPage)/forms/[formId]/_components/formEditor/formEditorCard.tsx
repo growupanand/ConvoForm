@@ -92,8 +92,9 @@ export function FormEditorCard({ form, organization }: Readonly<Props>) {
   const isSavingForm = updateForm.isPending;
 
   const formHook = useForm<z.infer<typeof updateFormSchema>>({
-    resolver: zodResolver(updateFormSchema),
-    defaultValues: form,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(updateFormSchema) as any,
+    defaultValues: form as unknown as z.infer<typeof updateFormSchema>,
   });
 
   const isErrorInLandingPageFields =

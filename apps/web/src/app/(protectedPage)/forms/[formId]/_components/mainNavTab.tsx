@@ -1,3 +1,5 @@
+"use client";
+
 import { Skeleton } from "@convoform/ui";
 import { Tabs, TabsList, TabsTrigger } from "@convoform/ui";
 import { usePathname } from "next/navigation";
@@ -56,7 +58,7 @@ export default function MainNavTab({ formId }: Readonly<Props>) {
   );
 }
 
-const MainNavTabSkeleton = () => {
+export const MainNavTabSkeleton = () => {
   return (
     <div className="w-full py-3">
       <div className="grid h-8 grid-cols-2 gap-4">
