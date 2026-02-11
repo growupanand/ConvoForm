@@ -7,7 +7,7 @@ import {
   ratingFieldConfigurationSchema,
   textFieldConfigurationSchema,
 } from "@convoform/db/src/schema";
-import { generateObject } from "ai";
+import { type LanguageModel, generateObject } from "ai";
 import { z } from "zod/v4";
 import { getModelConfig } from "../config";
 
@@ -16,6 +16,7 @@ export interface GenerateFormFieldsParams {
   maxFields?: number;
   templateType?: string;
   metadata?: LLMAnalyticsMetadata;
+  model?: LanguageModel;
 }
 
 /**
@@ -120,10 +121,12 @@ export async function generateFormFields(params: GenerateFormFieldsParams) {
     const maxFields = params.maxFields ?? 8; // Default limit for free tier
 
     const result = await generateObject({
-      model: getModelConfig({
-        ...params.metadata,
-        actionType: "generateFormFields",
-      }),
+      model:
+        params.model ||
+        getModelConfig({
+          ...params.metadata,
+          actionType: "generateFormFields",
+        }),
       temperature: 0.7,
       system: getGenerateFormFieldsSystemPrompt(params, maxFields),
       prompt:

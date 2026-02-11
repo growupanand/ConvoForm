@@ -4,11 +4,11 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import type { GeneratedFormField } from "../ai-actions/generateFormFields";
+import type { GeneratedFormField } from "../src/ai-actions/generateFormFields";
 import {
   type GenerateFormMetadataParams,
   generateFormMetadata,
-} from "../ai-actions/generateFormMetadata";
+} from "../src/ai-actions/generateFormMetadata";
 
 describe("generateFormMetadata", () => {
   test("should generate metadata for job application form", async () => {

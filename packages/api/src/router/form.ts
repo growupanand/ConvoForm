@@ -1,22 +1,19 @@
 import { and, eq } from "@convoform/db";
 import {
   form,
-  formDesign,
-  formField,
-  type insertFormFieldSchema,
   newFormSchema,
   patchFormSchema,
   updateFormSchema,
 } from "@convoform/db/src/schema";
 import { fileUpload } from "@convoform/db/src/schema/fileUploads/fileUpload";
-import { z } from "zod/v4";
-
-import {
-  DEFAULT_FORM_DESIGN,
-  FORM_SECTIONS_ENUMS_VALUES,
-} from "@convoform/db/src/schema/formDesigns/constants";
 import { enforceRateLimit } from "@convoform/rate-limiter";
-import { getOneFormWithFields } from "../actions/form";
+import { z } from "zod/v4";
+import {
+  type CreateFormInput,
+  createForm,
+  getOneFormWithFields,
+  updateForm,
+} from "../actions/form";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
@@ -30,99 +27,8 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      await enforceRateLimit.CORE_CREATE(ctx.userId);
-
-      // Create new form
-      const [savedForm] = await ctx.db
-        .insert(form)
-        .values({
-          userId: ctx.userId,
-          organizationId: input.organizationId,
-          name: input.name,
-          overview: input.overview,
-          welcomeScreenCTALabel: input.welcomeScreenCTALabel,
-          welcomeScreenTitle: input.welcomeScreenTitle,
-          welcomeScreenMessage: input.welcomeScreenMessage,
-          isAIGenerated: input.isAIGenerated,
-          isPublished: input.isPublished,
-          endScreenCTAUrl: input.endScreenCTAUrl,
-          endScreenCTALabel: input.endScreenCTALabel,
-          googleFormId: input.googleFormId,
-        })
-        .returning();
-      if (!savedForm) {
-        throw new Error("Failed to create form");
-      }
-
-      ctx.analytics.track("form:create", {
-        properties: {
-          ...savedForm,
-          importedFromGoogleForms: Boolean(input.googleFormId),
-        },
-        groups: {
-          organization: savedForm.organizationId,
-        },
-      });
-
-      // Create new form fields
-      const emptyFormField: z.infer<typeof insertFormFieldSchema> = {
-        fieldName: "",
-        formId: savedForm.id,
-        fieldDescription: "",
-        fieldConfiguration: {
-          inputType: "text",
-          inputConfiguration: {},
-        },
-      };
-      const givenFormFields = input.formFields.map((field) => ({
-        ...field,
-        formId: savedForm.id,
-      }));
-      const savedFormFields = await ctx.db
-        .insert(formField)
-        .values(givenFormFields.length > 0 ? givenFormFields : [emptyFormField])
-        .returning();
-
-      if (!savedFormFields) {
-        throw new Error("Failed to create form fields");
-      }
-
-      if (givenFormFields.length > 0) {
-        for (const field of savedFormFields) {
-          ctx.analytics.track("formField:create", {
-            properties: {
-              ...field,
-            },
-            groups: {
-              organization: savedForm.organizationId,
-            },
-          });
-        }
-      }
-
-      // Add form fields order
-      const formFieldsOrders = savedFormFields.map((field) => field.id);
-      await ctx.db
-        .update(form)
-        .set({ formFieldsOrders })
-        .where(eq(form.id, savedForm.id))
-        .returning();
-
-      // Create form Design configuration
-      const savedFormDesigns = FORM_SECTIONS_ENUMS_VALUES.map((screenType) => ({
-        formId: savedForm.id,
-        organizationId: input.organizationId,
-        screenType,
-        ...DEFAULT_FORM_DESIGN,
-      }));
-
-      await ctx.db.insert(formDesign).values(savedFormDesigns);
-
-      return {
-        ...savedForm,
-        formFields: [savedFormFields],
-        formDesigns: savedFormDesigns,
-      };
+      // Cast input to CreateFormInput due to type inference mismatch with formFields
+      return await createForm(ctx, input as unknown as CreateFormInput);
     }),
 
   // Get all forms list
@@ -197,34 +103,7 @@ export const formRouter = createTRPCRouter({
   updateForm: authProtectedProcedure
     .input(updateFormSchema.omit({ formFields: true }))
     .mutation(async ({ input, ctx }) => {
-      await enforceRateLimit.CORE_EDIT(ctx.userId);
-
-      const [updatedForm] = await ctx.db
-        .update(form)
-        .set({
-          name: input.name,
-          overview: input.overview,
-          welcomeScreenCTALabel: input.welcomeScreenCTALabel,
-          welcomeScreenTitle: input.welcomeScreenTitle,
-          welcomeScreenMessage: input.welcomeScreenMessage,
-          updatedAt: new Date(),
-          formFieldsOrders: input.formFieldsOrders,
-        })
-        .where(eq(form.id, input.id))
-        .returning();
-
-      if (!updatedForm) {
-        throw new Error("Failed to update form");
-      }
-
-      ctx.analytics.track("form:update", {
-        properties: input,
-        groups: {
-          organization: updatedForm.organizationId,
-        },
-      });
-
-      return updatedForm;
+      return await updateForm(ctx, input);
     }),
 
   delete: authProtectedProcedure

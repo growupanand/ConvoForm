@@ -1,0 +1,11 @@
+{
+  "extends": "@convoform/tsconfig/base.json", 
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "noEmit": true
+  },
+  "include": ["**/*.ts", "**/*.tsx", "playwright.config.ts"]
+}

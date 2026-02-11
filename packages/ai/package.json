@@ -5,7 +5,9 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "bun test ./**/*.mock.test.ts",
+    "test:ai": "bun test ./**/*.ai.test.ts"
   },
   "dependencies": {
     "@ai-sdk/groq": "catalog:",
@@ -20,7 +22,7 @@
   },
   "devDependencies": {
     "@convoform/tsconfig": "workspace:*",
-    "@types/bun": "1.2.19",
+    "@types/bun": "catalog:",
     "@types/node": "catalog:",
     "typescript": "catalog:"
   }

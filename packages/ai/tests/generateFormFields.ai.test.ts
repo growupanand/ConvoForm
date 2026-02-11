@@ -8,7 +8,7 @@ import {
   type GenerateFormFieldsParams,
   generateFormFields,
   generatedFormFieldSchema,
-} from "../ai-actions/generateFormFields";
+} from "../src/ai-actions/generateFormFields";
 
 describe("generateFormFields", () => {
   test("should generate form fields for job application context", async () => {
