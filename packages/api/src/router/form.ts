@@ -1,10 +1,5 @@
 import { and, eq } from "@convoform/db";
-import {
-  form,
-  newFormSchema,
-  patchFormSchema,
-  updateFormSchema,
-} from "@convoform/db/src/schema";
+import { form, newFormSchema, patchFormSchema } from "@convoform/db/src/schema";
 import { fileUpload } from "@convoform/db/src/schema/fileUploads/fileUpload";
 import { enforceRateLimit } from "@convoform/rate-limiter";
 import { z } from "zod/v4";
@@ -14,6 +9,7 @@ import {
   getOneFormWithFields,
   updateForm,
 } from "../actions/form";
+import { updateFormInputSchema } from "../actions/form/updateForm";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
@@ -101,7 +97,7 @@ export const formRouter = createTRPCRouter({
 
   // Update the whole form
   updateForm: authProtectedProcedure
-    .input(updateFormSchema.omit({ formFields: true }))
+    .input(updateFormInputSchema)
     .mutation(async ({ input, ctx }) => {
       return await updateForm(ctx, input);
     }),
