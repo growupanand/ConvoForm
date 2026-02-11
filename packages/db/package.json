@@ -26,7 +26,6 @@
     "drizzle-kit": "^0.30.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.0",
-    "typescript": "catalog:",
-    "vitest": "4.0.18"
+    "typescript": "catalog:"
   }
 }

@@ -8,7 +8,7 @@ import type { FormFieldResponses } from "@convoform/db/src/schema";
 import {
   type GenerateEndMessageParams,
   generateEndMessage,
-} from "../ai-actions/generateEndMessage";
+} from "../src/ai-actions/generateEndMessage";
 
 const mockFormOverview =
   "A comprehensive job application form for software engineers";

@@ -6,7 +6,8 @@
   "types": "src/index.ts",
   "scripts": {
     "type-check": "tsc --noEmit",
-    "test": "bun test"
+    "test": "bun test ./**/*.mock.test.ts",
+    "test:ai": "bun test ./**/*.ai.test.ts"
   },
   "dependencies": {
     "@ai-sdk/groq": "catalog:",

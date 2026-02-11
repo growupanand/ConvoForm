@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { inputTypeEnum } from "@convoform/db/src/schema";
 import { MockLanguageModelV2 } from "ai/test";
-import { extractFieldAnswer } from "../ai-actions/extractFieldAnswer";
+import { extractFieldAnswer } from "../src/ai-actions/extractFieldAnswer";
 
 describe("extractFieldAnswer with MockLanguageModelV2", () => {
   const mockField = {

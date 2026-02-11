@@ -1,7 +1,10 @@
 import { describe, expect, it, mock } from "bun:test";
 import { enforceRateLimit } from "@convoform/rate-limiter";
-import type { TRPCContext } from "../../trpc";
-import { type CreateFormInput, createForm } from "./createForm";
+import {
+  type CreateFormInput,
+  createForm,
+} from "../src/actions/form/createForm";
+import type { TRPCContext } from "../src/trpc";
 
 // Mock rate limiter
 mock.module("@convoform/rate-limiter", () => ({
@@ -62,9 +65,9 @@ describe("createForm Action", () => {
     // Mock DB responses
     const mockSavedForm = {
       id: "form_123",
-      organizationId: mockOrganizationId,
       userId: mockUserId,
       ...validInput,
+      organizationId: mockOrganizationId,
     };
 
     const mockSavedFormFields = [

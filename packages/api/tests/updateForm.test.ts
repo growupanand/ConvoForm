@@ -1,7 +1,7 @@
 import { describe, expect, it, mock } from "bun:test";
 import { form } from "@convoform/db/src/schema";
 import { enforceRateLimit } from "@convoform/rate-limiter";
-import { updateForm } from "./updateForm";
+import { updateForm } from "../src/actions/form/updateForm";
 
 // Mock rate limiter
 mock.module("@convoform/rate-limiter", () => ({

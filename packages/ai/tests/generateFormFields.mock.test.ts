@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { MockLanguageModelV2 } from "ai/test";
-import { generateFormFields } from "../ai-actions/generateFormFields";
+import { generateFormFields } from "../src/ai-actions/generateFormFields";
 
 describe("generateFormFields with MockLanguageModelV2", () => {
   it("should generate form fields", async () => {

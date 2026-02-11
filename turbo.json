@@ -74,6 +74,11 @@
         "^test"
       ]
     },
+    "test:ai": {
+      "dependsOn": [
+        "^test:ai"
+      ]
+    },
     "e2e": {
       "cache": false
     },
