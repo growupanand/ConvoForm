@@ -10,7 +10,7 @@ import type { UseFormReturn } from "react-hook-form";
 
 import { ToggleButton } from "@/components/common/toggleButton";
 import { OptionalText } from ".";
-import type { FormHookData } from "../editFieldSheet";
+import type { FormHookData } from "../useFieldSheet";
 
 type Props = {
   formHook: UseFormReturn<FormHookData>;

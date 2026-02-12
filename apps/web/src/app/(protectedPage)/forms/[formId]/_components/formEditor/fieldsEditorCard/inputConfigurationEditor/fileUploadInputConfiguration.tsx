@@ -10,7 +10,7 @@ import { Badge } from "@convoform/ui";
 import type { UseFormReturn } from "react-hook-form";
 
 import { OptionalText } from ".";
-import type { FormHookData } from "../editFieldSheet";
+import type { FormHookData } from "../useFieldSheet";
 
 type Props = {
   formHook: UseFormReturn<FormHookData>;

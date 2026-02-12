@@ -2,7 +2,7 @@ import type { InputTypeSchema } from "@convoform/db/src/schema";
 import type { UseFormReturn } from "react-hook-form";
 
 import { MutedText } from "@convoform/ui";
-import type { FormHookData } from "../editFieldSheet";
+import type { FormHookData } from "../useFieldSheet";
 import { DatePickerInputConfiguration } from "./datePickerInputConfiguration";
 import { FileUploadInputConfiguration } from "./fileUploadInputConfiguration";
 import { MultiChoiceInputConfiguration } from "./multiChoiceInputConfiguration";
