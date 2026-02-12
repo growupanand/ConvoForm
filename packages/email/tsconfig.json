@@ -1,0 +1,9 @@
+{
+  "extends": "@convoform/tsconfig/base.json",
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
+  },
+  "include": ["src"]
+}

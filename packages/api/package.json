@@ -16,6 +16,7 @@
     "@convoform/db": "workspace:*",
     "@convoform/ai": "workspace:*",
     "@convoform/feature-flags": "workspace:*",
+    "@convoform/email": "workspace:*",
     "@convoform/file-storage": "workspace:*",
     "@convoform/rate-limiter": "workspace:*",
     "@trpc/server": "11.0.0-rc.571",
