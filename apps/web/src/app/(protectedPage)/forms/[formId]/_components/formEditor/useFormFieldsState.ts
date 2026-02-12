@@ -1,6 +1,3 @@
-"use client";
-
-import { api } from "@/trpc/react";
 import {
   type FormField as FormFieldSchema,
   type Form as FormSchema,
@@ -18,11 +15,15 @@ export type HandleUpdateFieldsOrder = (newFieldsOrder: string[]) => void;
 
 export function useFormFieldsState(
   form: FormSchema & { formFields: FormFieldSchema[] },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  updateFormMutation: any,
 ) {
   const [state, setState] = useState<State>({
     fieldsOrders: getSafeFormFieldsOrders(form, form.formFields),
     formFields: form.formFields,
   });
+
+  const { fieldsOrders, formFields } = state;
 
   useEffect(() => {
     setState((cs) => ({
@@ -32,14 +33,12 @@ export function useFormFieldsState(
     }));
   }, [form.formFields]);
 
-  const updateForm = api.form.updateForm.useMutation();
-
   const handleUpdateFieldsOrder: HandleUpdateFieldsOrder = (newFieldsOrder) => {
     // First update instantly in the browser UI, so that dragged fields can be seen in new order
     setState((cs) => ({ ...cs, fieldsOrders: newFieldsOrder }));
 
     // Now update in database
-    const updateFormPromise = updateForm.mutateAsync({
+    const updateFormPromise = updateFormMutation.mutateAsync({
       ...form,
       formFieldsOrders: newFieldsOrder,
     });
@@ -51,8 +50,8 @@ export function useFormFieldsState(
   };
 
   return {
-    fieldsOrders: state.fieldsOrders,
-    formFields: state.formFields,
+    fieldsOrders,
+    formFields,
     handleUpdateFieldsOrder,
   };
 }

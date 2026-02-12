@@ -377,12 +377,15 @@ export const conversationRouter = createTRPCRouter({
             total: 0,
           };
         }
-        const countValue = Number(row.count);
-        fieldStats[row.fieldName].options.push({
-          option: row.option,
-          count: countValue,
-        });
-        fieldStats[row.fieldName].total += countValue;
+        const stats = fieldStats[row.fieldName];
+        if (stats) {
+          const countValue = Number(row.count);
+          stats.options.push({
+            option: row.option,
+            count: countValue,
+          });
+          stats.total += countValue;
+        }
       }
 
       return Object.values(fieldStats).map((field) => ({
@@ -451,15 +454,18 @@ export const conversationRouter = createTRPCRouter({
             sumRatings: 0,
           };
         }
-        const ratingValue = Number.parseInt(row.rating, 10);
-        const countValue = Number(row.count);
-        if (!Number.isNaN(ratingValue)) {
-          fieldStats[row.fieldName].ratings.push({
-            rating: ratingValue,
-            count: countValue,
-          });
-          fieldStats[row.fieldName].totalRatings += countValue;
-          fieldStats[row.fieldName].sumRatings += ratingValue * countValue;
+        const stats = fieldStats[row.fieldName];
+        if (stats) {
+          const ratingValue = Number.parseInt(row.rating, 10);
+          const countValue = Number(row.count);
+          if (!Number.isNaN(ratingValue)) {
+            stats.ratings.push({
+              rating: ratingValue,
+              count: countValue,
+            });
+            stats.totalRatings += countValue;
+            stats.sumRatings += ratingValue * countValue;
+          }
         }
       }
 

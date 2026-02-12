@@ -20,8 +20,7 @@ import {
 } from "@dnd-kit/sortable";
 import { Plus } from "lucide-react";
 import { type KeyboardEvent, useMemo, useRef, useState } from "react";
-
-import type { HandleUpdateFieldsOrder } from "../formEditorCard";
+import type { HandleUpdateFieldsOrder } from "../useFormFieldsState";
 import { AddFieldItemEditor } from "./addFieldItemEditor";
 import { EditFieldItem } from "./editFieldItem";
 import { EditFieldSheet } from "./editFieldSheet";
