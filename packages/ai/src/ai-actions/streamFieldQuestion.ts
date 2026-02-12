@@ -86,6 +86,7 @@ export function streamFieldQuestion(
       model: params.model || getModelConfig(context),
       temperature: 0.3,
       maxOutputTokens: 200,
+      maxRetries: 3,
       system: getGenerateFieldQuestionSystemPrompt(params.formOverview),
       prompt: buildGenerateFieldQuestionPrompt(params),
       onChunk: ({ chunk }) => {

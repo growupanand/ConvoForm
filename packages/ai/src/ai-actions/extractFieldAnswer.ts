@@ -71,6 +71,7 @@ export async function extractFieldAnswer(params: ExtractFieldAnswerParams) {
       prompt: buildExtractFieldAnswerPrompt(params),
       schema: extractFieldAnswerOutputSchema,
       maxOutputTokens: 1000,
+      maxRetries: 3,
     });
 
     extractFieldAnswerSpan?.setAttribute("answer", result.object.answer ?? "");
