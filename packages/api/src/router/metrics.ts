@@ -1,4 +1,4 @@
-import { count, eq } from "@convoform/db";
+import { and, count, eq, gte, sql } from "@convoform/db";
 import { form } from "@convoform/db/src/schema";
 import { z } from "zod/v4";
 
@@ -21,33 +21,38 @@ export const metricsRouter = createTRPCRouter({
 
       const totalCount = result?.value;
 
-      const formCountsDataDayWise = {} as Record<string, any>;
+      const formCountsDataDayWise = {} as Record<string, number>;
       const monthFirstDate = new Date(
         new Date().getFullYear(),
         new Date().getMonth(),
         1,
       );
-      const forms = await ctx.db.query.form.findMany({
-        where: (form, { eq, and, gte }) =>
+
+      const formsGroupedByDay = await ctx.db
+        .select({
+          day: sql<number>`EXTRACT(DAY FROM ${form.createdAt})`.mapWith(Number),
+          count: count(),
+        })
+        .from(form)
+        .where(
           and(
             eq(form.organizationId, input.organizationId),
             gte(form.createdAt, monthFirstDate),
           ),
-        orderBy: (form, { desc }) => [desc(form.createdAt)],
-        columns: {
-          createdAt: true,
-        },
-      });
+        )
+        .groupBy(sql`EXTRACT(DAY FROM ${form.createdAt})`);
 
       const currentMonthDaysArray = getCurrentMonthDaysArray();
       for (const day of currentMonthDaysArray) {
         formCountsDataDayWise[day] = 0;
       }
-      for (const element of forms) {
-        const form = element;
-        const formCreatedAtDay = form.createdAt.getDate();
-        formCountsDataDayWise[formCreatedAtDay] += 1;
+
+      for (const row of formsGroupedByDay) {
+        if (row.day !== null) {
+          formCountsDataDayWise[row.day.toString()] = Number(row.count);
+        }
       }
+
       const formCountDataArray = Object.entries(formCountsDataDayWise).map(
         ([name, value]) => ({
           name,
@@ -55,21 +60,14 @@ export const metricsRouter = createTRPCRouter({
         }),
       );
 
-      let lastCreatedAt =
-        forms.length > 0 && forms[0] ? forms[0].createdAt : null;
+      const [lastForm] = await ctx.db
+        .select({ createdAt: form.createdAt })
+        .from(form)
+        .where(eq(form.organizationId, input.organizationId))
+        .orderBy(sql`${form.createdAt} DESC`)
+        .limit(1);
 
-      // If there is no form created in the lastDaysCount days,
-      // then we will look into database for the last created form
-      if (lastCreatedAt === null) {
-        const lastForm = await ctx.db.query.form.findFirst({
-          where: eq(form.organizationId, input.organizationId),
-          orderBy: (form, { desc }) => [desc(form.createdAt)],
-          columns: {
-            createdAt: true,
-          },
-        });
-        lastCreatedAt = lastForm?.createdAt ?? null;
-      }
+      const lastCreatedAt = lastForm?.createdAt ?? null;
 
       return {
         totalCount,

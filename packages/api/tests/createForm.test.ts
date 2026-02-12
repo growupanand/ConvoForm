@@ -24,6 +24,7 @@ describe("createForm Action", () => {
     update: mock().mockReturnThis(),
     set: mock().mockReturnThis(),
     where: mock().mockReturnThis(),
+    transaction: mock().mockImplementation((cb) => cb(mockDb)),
   } as any;
 
   const mockAnalytics = {

@@ -1,6 +1,7 @@
-import { and, count, eq, inArray } from "@convoform/db";
+import { and, count, eq, inArray, sql } from "@convoform/db";
 import {
   conversation,
+  form,
   insertConversationSchema,
   patchConversationSchema,
   restoreDateFields,
@@ -226,31 +227,26 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const formsWithConversations = await ctx.db.query.form.findMany({
-        where: (form, { eq, and }) =>
+      const results = await ctx.db
+        .select({
+          id: form.id,
+          conversationCount: count(conversation.id),
+        })
+        .from(form)
+        .leftJoin(conversation, eq(form.id, conversation.formId))
+        .where(
           and(
             eq(form.organizationId, input.organizationId),
             inArray(form.id, input.formIds),
           ),
-        columns: {
-          id: true,
-        },
-        with: {
-          conversations: {
-            columns: {
-              id: true,
-            },
-          },
-        },
-        orderBy: (form, { asc }) => [asc(form.createdAt)],
-      });
+        )
+        .groupBy(form.id)
+        .orderBy(form.createdAt);
 
-      return formsWithConversations.map((form) => {
-        return {
-          id: form.id,
-          conversationCount: form.conversations.length,
-        };
-      });
+      return results.map((row) => ({
+        id: row.id,
+        conversationCount: Number(row.conversationCount),
+      }));
     }),
   // Patch partial form
   patch: publicProcedure
@@ -274,57 +270,51 @@ export const conversationRouter = createTRPCRouter({
         filters.push(eq(conversation.formId, formId));
       }
 
-      const conversations = await ctx.db.query.conversation.findMany({
-        columns: {
-          id: true,
-          finishedAt: true,
-          isInProgress: true,
-          createdAt: true,
-          formFieldResponses: true,
-        },
-        where: and(...filters),
-      });
+      const [statsResult] = await ctx.db
+        .select({
+          totalCount: count(),
+          finishedTotalCount: count(conversation.finishedAt),
+          liveTotalCount:
+            sql<number>`count(*) filter (where ${conversation.finishedAt} is null and ${conversation.isInProgress} = true)`.mapWith(
+              Number,
+            ),
+          partialTotalCount:
+            sql<number>`count(*) filter (where ${conversation.finishedAt} is null and ${conversation.isInProgress} = false)`.mapWith(
+              Number,
+            ),
+          totalFinishTime:
+            sql<number>`sum(extract(epoch from (${conversation.finishedAt} - ${conversation.createdAt})) * 1000) filter (where ${conversation.finishedAt} is not null)`.mapWith(
+              Number,
+            ),
+          bouncedCount:
+            sql<number>`count(*) filter (where cardinality(${conversation.formFieldResponses}) = 0 or not exists (select 1 from unnest(${conversation.formFieldResponses}) as resp where resp->>'fieldValue' is not null))`.mapWith(
+              Number,
+            ),
+        })
+        .from(conversation)
+        .where(and(...filters));
 
-      // Calculate all counts in a single pass through the array
-      const stats = conversations.reduce(
-        (acc, conv) => {
-          acc.totalCount++;
-
-          if (conv.finishedAt) {
-            acc.finishedTotalCount++;
-
-            // Calculate the finish time for this conversation (in milliseconds)
-            const finishTime =
-              new Date(conv.finishedAt).getTime() -
-              new Date(conv.createdAt).getTime();
-            acc.totalFinishTime += finishTime;
-          } else if (conv.isInProgress) {
-            acc.liveTotalCount++;
-          } else {
-            acc.partialTotalCount++;
-          }
-
-          // Check for bounce - conversations with no collected data
-          const hasNoFormFieldResponses =
-            !conv.formFieldResponses ||
-            conv.formFieldResponses.filter((i) => i.fieldValue !== null)
-              .length === 0;
-
-          if (hasNoFormFieldResponses) {
-            acc.bouncedCount++;
-          }
-
-          return acc;
-        },
-        {
+      if (!statsResult) {
+        return {
           totalCount: 0,
           finishedTotalCount: 0,
           partialTotalCount: 0,
           liveTotalCount: 0,
           totalFinishTime: 0,
           bouncedCount: 0,
-        },
-      );
+          averageFinishTimeMs: 0,
+          bounceRate: 0,
+        };
+      }
+
+      const stats = {
+        totalCount: Number(statsResult.totalCount),
+        finishedTotalCount: Number(statsResult.finishedTotalCount),
+        partialTotalCount: Number(statsResult.partialTotalCount),
+        liveTotalCount: Number(statsResult.liveTotalCount),
+        totalFinishTime: Number(statsResult.totalFinishTime),
+        bouncedCount: Number(statsResult.bouncedCount),
+      };
 
       // Calculate average finish time if there are any finished conversations
       let averageFinishTimeMs = 0;
@@ -349,81 +339,60 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const formId = input.formId;
+      const results = await ctx.db
+        .select({
+          fieldName: sql<string>`resp->>'fieldName'`.as("fieldName"),
+          option: sql<string>`resp->>'fieldValue'`.as("option"),
+          count: count().as("count"),
+        })
+        .from(conversation)
+        .innerJoin(
+          sql`unnest(${conversation.formFieldResponses}) as resp`,
+          sql`true`,
+        )
+        .where(
+          and(
+            eq(conversation.organizationId, ctx.orgId),
+            eq(conversation.formId, input.formId),
+            sql`resp->'fieldConfiguration'->>'inputType' = 'multipleChoice'`,
+            sql`resp->>'fieldValue' is not null`,
+          ),
+        )
+        .groupBy(sql`resp->>'fieldName'`, sql`resp->>'fieldValue'`);
 
-      // Get all conversations for this form
-      const conversations = await ctx.db.query.conversation.findMany({
-        where: and(
-          eq(conversation.organizationId, ctx.orgId),
-          eq(conversation.formId, formId),
-        ),
-        columns: {
-          formFieldResponses: true,
-        },
-      });
-
-      // Create a map to store stats for each field and option
       const fieldStats: Record<
         string,
         {
           fieldName: string;
-          options: Record<string, number>;
+          options: { option: string; count: number }[];
           total: number;
         }
       > = {};
 
-      // Process all conversations to count options for multiple choice fields
-      for (const conv of conversations) {
-        if (conv.formFieldResponses?.length) {
-          for (const field of conv.formFieldResponses) {
-            // Check if this is a multiple choice field with a value
-            if (
-              field.fieldConfiguration?.inputType === "multipleChoice" &&
-              field.fieldValue
-            ) {
-              const fieldName = field.fieldName;
-              const selectedOption = field.fieldValue;
-
-              // Initialize field in the stats if it doesn't exist
-              if (!fieldStats[fieldName]) {
-                fieldStats[fieldName] = {
-                  fieldName: field.fieldName,
-                  options: {},
-                  total: 0,
-                };
-              }
-
-              // Initialize option counter if it doesn't exist
-              if (!fieldStats[fieldName].options[selectedOption]) {
-                fieldStats[fieldName].options[selectedOption] = 0;
-              }
-
-              // Increment the counter for this option
-              fieldStats[fieldName].options[selectedOption]++;
-              fieldStats[fieldName].total++;
-            }
-          }
+      for (const row of results) {
+        if (!fieldStats[row.fieldName]) {
+          fieldStats[row.fieldName] = {
+            fieldName: row.fieldName,
+            options: [],
+            total: 0,
+          };
         }
+        const countValue = Number(row.count);
+        fieldStats[row.fieldName].options.push({
+          option: row.option,
+          count: countValue,
+        });
+        fieldStats[row.fieldName].total += countValue;
       }
 
-      // Format the results with percentages
-      const results = Object.values(fieldStats).map((field) => {
-        const optionsWithStats = Object.entries(field.options).map(
-          ([option, count]) => ({
-            option,
-            count,
-            percentage: Math.round((count / field.total) * 100),
-          }),
-        );
-
-        return {
-          fieldName: field.fieldName,
-          totalResponses: field.total,
-          options: optionsWithStats,
-        };
-      });
-
-      return results;
+      return Object.values(fieldStats).map((field) => ({
+        fieldName: field.fieldName,
+        totalResponses: field.total,
+        options: field.options.map((opt) => ({
+          ...opt,
+          percentage: Math.round((opt.count / field.total) * 100),
+        })),
+      }));
     }),
   ratingStats: orgProtectedProcedure
     .input(
@@ -432,87 +401,88 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      const formId = input.formId;
+      const results = await ctx.db
+        .select({
+          fieldName: sql<string>`resp->>'fieldName'`.as("fieldName"),
+          rating: sql<string>`resp->>'fieldValue'`.as("rating"),
+          count: count().as("count"),
+          maxRating:
+            sql<number>`coalesce((resp->'fieldConfiguration'->'inputConfiguration'->>'maxRating')::int, 5)`.as(
+              "maxRating",
+            ),
+        })
+        .from(conversation)
+        .innerJoin(
+          sql`unnest(${conversation.formFieldResponses}) as resp`,
+          sql`true`,
+        )
+        .where(
+          and(
+            eq(conversation.organizationId, ctx.orgId),
+            eq(conversation.formId, input.formId),
+            sql`resp->'fieldConfiguration'->>'inputType' = 'rating'`,
+            sql`resp->>'fieldValue' is not null`,
+          ),
+        )
+        .groupBy(
+          sql`resp->>'fieldName'`,
+          sql`resp->>'fieldValue'`,
+          sql`resp->'fieldConfiguration'->'inputConfiguration'->>'maxRating'`,
+        );
 
-      // Get all conversations for this form
-      const conversations = await ctx.db.query.conversation.findMany({
-        where: and(
-          eq(conversation.organizationId, ctx.orgId),
-          eq(conversation.formId, formId),
-        ),
-        columns: {
-          formFieldResponses: true,
-        },
-      });
-
-      // Create a map to store stats for each rating field
       const fieldStats: Record<
         string,
         {
           fieldName: string;
-          ratings: number[];
+          ratings: { rating: number; count: number }[];
           totalRatings: number;
           maxRating: number;
+          sumRatings: number;
         }
       > = {};
 
-      // Process all conversations to collect rating data
-      for (const conv of conversations) {
-        if (conv.formFieldResponses?.length) {
-          for (const field of conv.formFieldResponses) {
-            // Check if this is a rating field with a value
-            if (
-              field.fieldConfiguration?.inputType === "rating" &&
-              field.fieldValue
-            ) {
-              const fieldName = field.fieldName;
-              const ratingValue = Number.parseInt(field.fieldValue, 10);
-
-              if (Number.isNaN(ratingValue)) continue;
-
-              // Initialize field in the stats if it doesn't exist
-              if (!fieldStats[fieldName]) {
-                const maxRating =
-                  field.fieldConfiguration.inputConfiguration?.maxRating || 5;
-                fieldStats[fieldName] = {
-                  fieldName: field.fieldName,
-                  ratings: [],
-                  totalRatings: 0,
-                  maxRating,
-                };
-              }
-
-              // Add this rating to the array
-              fieldStats[fieldName].ratings.push(ratingValue);
-              fieldStats[fieldName].totalRatings++;
-            }
-          }
+      for (const row of results) {
+        if (!fieldStats[row.fieldName]) {
+          fieldStats[row.fieldName] = {
+            fieldName: row.fieldName,
+            ratings: [],
+            totalRatings: 0,
+            maxRating: Number(row.maxRating),
+            sumRatings: 0,
+          };
+        }
+        const ratingValue = Number.parseInt(row.rating, 10);
+        const countValue = Number(row.count);
+        if (!Number.isNaN(ratingValue)) {
+          fieldStats[row.fieldName].ratings.push({
+            rating: ratingValue,
+            count: countValue,
+          });
+          fieldStats[row.fieldName].totalRatings += countValue;
+          fieldStats[row.fieldName].sumRatings += ratingValue * countValue;
         }
       }
 
-      // Calculate statistics for each field
-      const results = Object.values(fieldStats).map((field) => {
-        // Calculate average rating
+      return Object.values(fieldStats).map((field) => {
         const averageRating =
-          field.ratings.length > 0
-            ? (
-                field.ratings.reduce((sum, rating) => sum + rating, 0) /
-                field.ratings.length
-              ).toFixed(1)
+          field.totalRatings > 0
+            ? (field.sumRatings / field.totalRatings).toFixed(1)
             : "0";
 
-        // Calculate distribution of ratings
         const distribution = Array.from(
           { length: field.maxRating },
           (_, i) => i + 1,
         ).map((ratingValue) => {
-          const count = field.ratings.filter((r) => r === ratingValue).length;
+          const ratingData = field.ratings.find(
+            (r) => r.rating === ratingValue,
+          );
+          const countValue = ratingData?.count ?? 0;
           return {
             rating: ratingValue,
-            count,
+            count: countValue,
             percentage:
               field.totalRatings > 0
-                ? Math.round((count / field.totalRatings) * 100)
+                ? Math.round((countValue / field.totalRatings) * 100)
                 : 0,
           };
         });
@@ -525,8 +495,6 @@ export const conversationRouter = createTRPCRouter({
           distribution,
         };
       });
-
-      return results;
     }),
   getDemoFormResponses: publicProcedure
     .input(
