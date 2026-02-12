@@ -1,5 +1,5 @@
 "use client";
-import { use } from "react";
+import { Suspense, use } from "react";
 
 import { useOrganization } from "@clerk/nextjs";
 import { Card, Skeleton } from "@convoform/ui";
@@ -22,24 +22,31 @@ type Props = {
 
 export default function FormPage(props: Props) {
   const params = use(props.params);
-
   const { formId } = params;
 
+  return (
+    <Suspense fallback={<FormPageLoading formId={formId} />}>
+      <FormPageContent formId={formId} />
+    </Suspense>
+  );
+}
+
+function FormPageContent({ formId }: { formId: string }) {
   const { organization, isLoaded } = useOrganization();
-  const { isLoading, data, isError } = api.form.getOneWithFields.useQuery(
+  const [data] = api.form.getOneWithFields.useSuspenseQuery(
     {
       id: formId,
     },
     {
-      throwOnError: false,
+      // throwOnError: false,
     },
   );
 
-  if (isLoading || !isLoaded) {
+  if (!isLoaded) {
     return <FormPageLoading formId={formId} />;
   }
 
-  if (!data || isError || !organization) {
+  if (!data || !organization) {
     return <NotFound />;
   }
 
@@ -51,11 +58,7 @@ export default function FormPage(props: Props) {
             <MainNavTab formId={formId} />
             <div className="relative grow overflow-auto">
               <Card className="  border-0 bg-transparent shadow-none">
-                {isLoading ? (
-                  <FormEditorFormSkeleton />
-                ) : (
-                  <FormEditorCard form={data} organization={organization} />
-                )}
+                <FormEditorCard form={data} organization={organization} />
               </Card>
             </div>
           </div>

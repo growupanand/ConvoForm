@@ -10,22 +10,21 @@ import { ListCard } from "@/components/common/list";
 import { api } from "@/trpc/react";
 import CreateFormButton from "./createFormButton";
 import { FormListItem } from "./formListItem";
-import FormListLoading from "./formListLoading";
 
 type Props = {
   organizationId: string;
 };
 
 export function FormList({ organizationId }: Readonly<Props>) {
-  const { isLoading, data } = api.form.getAll.useQuery({
+  const [data] = api.form.getAll.useSuspenseQuery({
     organizationId,
   });
 
   const forms = data ?? [];
   const emptyForms = forms.length === 0;
 
-  const { data: formWithConversationsCount } =
-    api.conversation.getCountByFormIds.useQuery({
+  const [formWithConversationsCount] =
+    api.conversation.getCountByFormIds.useSuspenseQuery({
       organizationId,
       formIds: forms.map((form) => form.id),
     });
@@ -36,10 +35,6 @@ export function FormList({ organizationId }: Readonly<Props>) {
         ?.conversationCount ?? 0
     );
   };
-
-  if (isLoading) {
-    return <FormListLoading />;
-  }
 
   return (
     <div className="h-full">
