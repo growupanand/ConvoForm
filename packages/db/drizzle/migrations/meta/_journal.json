@@ -204,6 +204,13 @@
       "when": 1758467174767,
       "tag": "0028_melodic_starbolt",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1770868191207,
+      "tag": "0029_bouncy_stryfe",
+      "breakpoints": true
     }
   ]
 }
