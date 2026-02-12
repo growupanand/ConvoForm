@@ -109,38 +109,53 @@ export const formRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      // First, find and delete all files associated with this form
-      const filesToDelete = await ctx.db.query.fileUpload.findMany({
-        where: and(
-          eq(fileUpload.formId, input.id),
-          eq(fileUpload.isDeleted, false),
-        ),
-        columns: {
-          id: true,
-          storedPath: true,
-          originalName: true,
+      // Execute database operations in a transaction
+      const { deletedForm, filesToDelete } = await ctx.db.transaction(
+        async (tx) => {
+          // First, find and delete all files associated with this form
+          const filesToDelete = await tx.query.fileUpload.findMany({
+            where: and(
+              eq(fileUpload.formId, input.id),
+              eq(fileUpload.isDeleted, false),
+            ),
+            columns: {
+              id: true,
+              storedPath: true,
+              originalName: true,
+            },
+          });
+
+          // Mark files as deleted in database
+          for (const file of filesToDelete) {
+            await tx
+              .update(fileUpload)
+              .set({
+                isDeleted: true,
+                updatedAt: new Date(),
+              })
+              .where(eq(fileUpload.id, file.id));
+          }
+
+          // Now delete the form
+          const [deletedForm] = await tx
+            .delete(form)
+            .where(eq(form.id, input.id))
+            .returning();
+
+          return { deletedForm, filesToDelete };
         },
-      });
+      );
 
-      // Delete files from storage and mark as deleted in database
+      // Delete files from storage (after successful DB transaction)
+      // We do this outside the transaction because it's an external side effect
       const fileCleanupErrors: string[] = [];
-      for (const file of filesToDelete) {
-        try {
-          // Mark file as deleted in database first
-          await ctx.db
-            .update(fileUpload)
-            .set({
-              isDeleted: true,
-              updatedAt: new Date(),
-            })
-            .where(eq(fileUpload.id, file.id));
+      if (filesToDelete.length > 0) {
+        // Dynamic import to avoid loading this if not needed
+        const { FileStorageService } = await import("@convoform/file-storage");
+        const fileStorageService = new FileStorageService();
 
-          // Delete from R2 storage
+        for (const file of filesToDelete) {
           try {
-            const { FileStorageService } = await import(
-              "@convoform/file-storage"
-            );
-            const fileStorageService = new FileStorageService();
             await fileStorageService.deleteFile(file.storedPath);
             console.log(
               `Successfully deleted file: ${file.originalName} (${file.id}) for form ${input.id}`,
@@ -149,26 +164,15 @@ export const formRouter = createTRPCRouter({
             const errorMsg = `Failed to delete file from storage: ${file.originalName} (${file.id}) - ${storageError instanceof Error ? storageError.message : "Unknown error"}`;
             console.error(errorMsg);
             fileCleanupErrors.push(errorMsg);
-            // Continue with form deletion even if file storage deletion fails
           }
-        } catch (fileError) {
-          const errorMsg = `Error deleting file ${file.id}: ${fileError instanceof Error ? fileError.message : "Unknown error"}`;
-          console.error(errorMsg);
-          fileCleanupErrors.push(errorMsg);
         }
       }
 
       if (fileCleanupErrors.length > 0) {
         console.warn(
-          `Form deletion proceeding with ${fileCleanupErrors.length} file cleanup errors for form ${input.id}`,
+          `Form deletion completed with ${fileCleanupErrors.length} file cleanup errors for form ${input.id}`,
         );
       }
-
-      // Now delete the form
-      const [deletedForm] = await ctx.db
-        .delete(form)
-        .where(eq(form.id, input.id))
-        .returning();
 
       if (deletedForm) {
         ctx.analytics.track("form:delete", {

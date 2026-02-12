@@ -127,8 +127,12 @@ export class PosthogAnalyticsProvider extends BaseProvider {
           : undefined,
       });
     } catch (error) {
-      // Fail silently and return original model
+      // Log error to console and capture exception in PostHog
       console.error("Failed to create traced model:", error);
+      if (error instanceof Error) {
+        this.captureException(error);
+      }
+      // Fallback to original model to ensure application functionality
       return model;
     }
   };

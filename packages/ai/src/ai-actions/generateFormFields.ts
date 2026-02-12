@@ -132,6 +132,7 @@ export async function generateFormFields(params: GenerateFormFieldsParams) {
       prompt:
         "Generate appropriate form fields that collect the necessary information with optimal user experience.",
       schema: generateFormFieldsOutputSchema,
+      maxRetries: 3,
     });
 
     // Post-process to ensure datePicker fields have proper ISO timestamp format

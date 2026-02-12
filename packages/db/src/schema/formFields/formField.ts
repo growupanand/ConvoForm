@@ -22,7 +22,10 @@ export const formField = pgTable(
       .notNull()
       .references(() => form.id, { onDelete: "cascade", onUpdate: "cascade" }),
   },
-  (formField) => [index("idx_form_field_form_id").on(formField.formId)],
+  (formField) => [
+    index("idx_form_field_form_id").on(formField.formId),
+    index("idx_form_field_config").using("gin", formField.fieldConfiguration),
+  ],
 );
 
 export const formFieldRelations = relations(formField, ({ one }) => ({

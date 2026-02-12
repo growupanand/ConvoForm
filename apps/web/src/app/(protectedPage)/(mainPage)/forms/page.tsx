@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 
 import { getOrgIdOrRedirect } from "@/lib/getOrganizationId";
+import { Suspense } from "react";
 import { PageShell } from "../_components/pageShell";
 import CreateFormButton from "./_components/createFormButton";
 import { FormList } from "./_components/formList";
+import FormListLoading from "./_components/formListLoading";
 import ImportGoogleFormButton from "./_components/importGoogleFormButton";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +29,9 @@ export default async function FormsPage() {
         </div>
       }
     >
-      <FormList organizationId={organizationId} />
+      <Suspense fallback={<FormListLoading />}>
+        <FormList organizationId={organizationId} />
+      </Suspense>
     </PageShell>
   );
 }
