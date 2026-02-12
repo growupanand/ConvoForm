@@ -2,17 +2,15 @@
 
 import type { FormField as FormFieldSchema } from "@convoform/db/src/schema";
 import {
-  Button,
   Form,
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@convoform/ui";
-
-import { ConfirmAction } from "@/components/common/confirmAction";
 import { FieldBasicInfo } from "./fieldBasicInfo";
 import { FieldConfiguration } from "./fieldConfiguration";
+import { FieldSheetActions } from "./fieldSheetActions";
 import { useFieldSheet } from "./useFieldSheet";
 
 type Props = {
@@ -66,28 +64,10 @@ export function EditFieldSheet({
                 selectedInputType={selectedInputType}
               />
             </div>
-            <div className="bg-background sticky bottom-0 mt-auto w-full py-5">
-              <div className="grid gap-2">
-                <Button type="submit" className="w-full" disabled={isFormBusy}>
-                  Save
-                </Button>
-                <ConfirmAction
-                  onConfirm={handleDeleteField}
-                  title="Are you sure you want to delete this field?"
-                  description="This action cannot be undone."
-                  confirmText="Delete field"
-                >
-                  <Button
-                    type="button"
-                    className=" w-full "
-                    disabled={isFormBusy}
-                    variant="ghost"
-                  >
-                    Delete field
-                  </Button>
-                </ConfirmAction>
-              </div>
-            </div>
+            <FieldSheetActions
+              isFormBusy={isFormBusy}
+              onDelete={handleDeleteField}
+            />
           </form>
         </Form>
       </SheetContent>

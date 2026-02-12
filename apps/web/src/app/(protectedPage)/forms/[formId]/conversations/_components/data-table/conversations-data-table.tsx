@@ -1,21 +1,6 @@
 "use client";
 
-import { SafeCellRenderer } from "@/components/queryComponents/table/SafeCellRenderer";
-
-import {
-  getConversationTableData,
-  getFlatConversationTableData,
-} from "@/components/queryComponents/table/utils";
-import { timeAgo } from "@/lib/utils";
 import type { Conversation } from "@convoform/db/src/schema";
-import { Button } from "@convoform/ui";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@convoform/ui";
 import {
   Table,
   TableBody,
@@ -24,173 +9,36 @@ import {
   TableHeader,
   TableRow,
 } from "@convoform/ui";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@convoform/ui";
 import {
-  type ColumnDef,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronLeft, ChevronRight, Download, FileText } from "lucide-react";
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { CSVLink } from "react-csv";
-
-type ConversationData = Pick<
-  Conversation,
-  "id" | "name" | "createdAt" | "finishedAt" | "isInProgress"
->;
-
-type ConversationTableData = Omit<
-  ConversationData,
-  "finishedAt" | "isInProgress"
-> & {
-  status: string;
-};
+import { TableToolbar } from "./TableToolbar";
+import { useConversationColumns } from "./columns";
+import { useTableActions } from "./useTableActions";
 
 export function ConversationsDataTable(props: {
   data: Conversation[];
   formId: string;
 }) {
-  const [data] = useState(props.data);
-  const { formId } = props;
-  const [perPage, setPerPage] = useState("10");
-  const [pageIndex, setPageIndex] = useState(0);
+  const { formId, data } = props;
 
-  useEffect(() => {
-    setPageIndex(0);
-  }, [perPage]);
+  const {
+    tableData,
+    uniqueFormFieldResponsesColumns,
+    csvData,
+    perPage,
+    setPerPage,
+    pageIndex,
+    setPageIndex,
+  } = useTableActions(data);
 
-  const exportFileName = `Responses ${new Date().toLocaleString()}.csv`;
-
-  const { tableData, uniqueFormFieldResponsesColumns, csvData } =
-    useMemo(() => {
-      let formFieldResponsesColumns = [] as string[];
-      const tableData = [];
-      const csvData = [];
-
-      for (const conversation of data) {
-        const {
-          formFieldResponses,
-          id,
-          name,
-          createdAt,
-          finishedAt,
-          isInProgress,
-        } = conversation;
-        const sanitizedFormFieldResponses =
-          getConversationTableData(formFieldResponses);
-        const flattenedFormFieldResponses =
-          getFlatConversationTableData(formFieldResponses);
-        formFieldResponsesColumns = formFieldResponsesColumns.concat(
-          Object.keys(sanitizedFormFieldResponses),
-        );
-
-        // Data for table display (with nested objects for proper rendering)
-        tableData.push({
-          id,
-          name,
-          createdAt,
-          status: finishedAt
-            ? "Finished"
-            : isInProgress
-              ? "In Progress"
-              : "Not Started",
-          ...sanitizedFormFieldResponses,
-        });
-
-        // Data for CSV export (with flattened values)
-        csvData.push({
-          id,
-          name,
-          createdAt: createdAt.toLocaleString(),
-          status: finishedAt
-            ? "Finished"
-            : isInProgress
-              ? "In Progress"
-              : "Not Started",
-          ...flattenedFormFieldResponses,
-        });
-      }
-
-      const uniqueFormFieldResponsesColumns = Array.from(
-        new Set(formFieldResponsesColumns),
-      );
-
-      return {
-        tableData,
-        uniqueFormFieldResponsesColumns,
-        csvData,
-      };
-    }, [data]);
-
-  const baseColumnsDefs: ColumnDef<ConversationTableData>[] = useMemo(() => {
-    return [
-      {
-        accessorKey: "name",
-        header: "Conversation Name",
-        cell: (info) => (
-          <span>
-            <Button
-              variant="link"
-              size="sm"
-              className="font-medium h-auto"
-              asChild
-            >
-              <Link
-                href={`/forms/${formId}/conversations/${info.row.original.id}`}
-              >
-                <FileText className="size-4 me-2 " />
-                <span>{info.row.original.name}</span>
-              </Link>
-            </Button>
-          </span>
-        ),
-      },
-      {
-        accessorKey: "createdAt",
-        header: "Submitted At",
-        cell: (info) => (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="text-muted-foreground ">
-                {timeAgo(info.row.original.createdAt)}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{info.row.original.createdAt.toLocaleString()}</p>
-            </TooltipContent>
-          </Tooltip>
-        ),
-      },
-      {
-        accessorKey: "status",
-        header: "Status",
-      },
-    ];
-  }, [formId]);
-
-  const uniqueFormFieldResponsesColumnsDefs: ColumnDef<ConversationTableData>[] =
-    useMemo(() => {
-      return uniqueFormFieldResponsesColumns.map((column) => {
-        return {
-          accessorKey: column,
-          header: column,
-          cell: (info) => (
-            <SafeCellRenderer
-              value={info.getValue()}
-              className="min-w-[50px] max-w-[200px]"
-            />
-          ),
-        };
-      });
-    }, [uniqueFormFieldResponsesColumns]);
-
-  const columnDefs = [
-    ...baseColumnsDefs,
-    ...uniqueFormFieldResponsesColumnsDefs,
-  ];
+  const columnDefs = useConversationColumns(
+    formId,
+    uniqueFormFieldResponsesColumns,
+  );
 
   const table = useReactTable({
     data: tableData,
@@ -205,66 +53,18 @@ export function ConversationsDataTable(props: {
     },
   });
 
+  const exportFileName = `Responses ${new Date().toLocaleString()}.csv`;
+
   return (
     <>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center justify-end gap-4 text-sm">
-          <Select defaultValue={perPage} onValueChange={setPerPage}>
-            <SelectTrigger className="gap-1 font-semibold">
-              <SelectValue placeholder="Select a page size" />
-              <span className="text-nowrap text-muted-foreground">
-                per page
-              </span>
-            </SelectTrigger>
-            <SelectContent align="end">
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="20">20</SelectItem>
-              <SelectItem value="40">50</SelectItem>
-              <SelectItem value="100">100</SelectItem>
-            </SelectContent>
-          </Select>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="px-2"
-              onClick={() =>
-                setPageIndex(table.getState().pagination.pageIndex - 1)
-              }
-              disabled={table.getState().pagination.pageIndex === 0}
-            >
-              <ChevronLeft className="size-4" />
-            </Button>
-            <span className="text-nowrap">
-              Page{" "}
-              <span className="font-semibold">
-                {table.getState().pagination.pageIndex + 1}
-              </span>{" "}
-              of {table.getPageCount()}
-            </span>
-
-            <Button
-              variant="outline"
-              size="sm"
-              className="px-2"
-              onClick={() =>
-                setPageIndex(table.getState().pagination.pageIndex + 1)
-              }
-              disabled={
-                table.getState().pagination.pageIndex >=
-                table.getPageCount() - 1
-              }
-            >
-              <ChevronRight className="size-4" />
-            </Button>
-          </div>
-        </div>
-        <CSVLink data={csvData} filename={exportFileName}>
-          <Button size="sm" variant="ghost">
-            <Download size={20} className="mr-2" /> <span>Export CSV</span>
-          </Button>
-        </CSVLink>
-      </div>
+      <TableToolbar
+        table={table}
+        perPage={perPage}
+        setPerPage={setPerPage}
+        setPageIndex={setPageIndex}
+        csvData={csvData}
+        exportFileName={exportFileName}
+      />
       <div className="rounded-lg border grow overflow-y-auto">
         <Table>
           <TableHeader className="sticky top-0 bg-background ">
@@ -272,14 +72,12 @@ export function ConversationsDataTable(props: {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id} className="align-top">
-                    {/* <div className="h-10 overflow-hidden resize"> */}
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
-                    {/* </div> */}
                   </TableHead>
                 ))}
               </TableRow>
