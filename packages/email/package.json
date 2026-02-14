@@ -3,6 +3,11 @@
     "version": "0.0.0",
     "main": "./src/index.ts",
     "types": "./src/index.ts",
+    "exports": {
+        ".": "./src/index.ts",
+        "./src/env": "./src/env.ts",
+        "./src/envSchema": "./src/envSchema.ts"
+    },
     "scripts": {
         "type-check": "tsc --noEmit",
         "clean": "rm -rf dist node_modules",
@@ -13,8 +18,10 @@
         "@convoform/logger": "workspace:*",
         "@react-email/components": "1.0.7",
         "@react-email/render": "2.0.4",
+        "@t3-oss/env-core": "0.13.10",
         "react-email": "5.2.1",
-        "resend": "6.9.2"
+        "resend": "6.9.2",
+        "zod": "catalog:"
     },
     "devDependencies": {
         "@convoform/tsconfig": "workspace:*",

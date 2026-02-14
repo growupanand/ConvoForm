@@ -5,7 +5,7 @@
 
 import { type LLMAnalyticsMetadata, analytics } from "@convoform/analytics";
 import type { LanguageModel } from "ai";
-import { getValidatedModelConfig } from "./envSchema";
+import { getValidatedModelConfig } from "./env";
 import {
   type LLMProviderName,
   getDefaultConfig,

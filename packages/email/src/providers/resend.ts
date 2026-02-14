@@ -1,5 +1,6 @@
 import { createLogger } from "@convoform/logger";
 import { Resend } from "resend";
+import { env } from "../env";
 
 import type { EmailProvider, SendEmailOptions } from "../types";
 
@@ -8,23 +9,23 @@ export class ResendProvider implements EmailProvider {
   private logger = createLogger({
     console: { enabled: true },
     axiom: {
-      enabled: !!process.env.AXIOM_TOKEN,
-      token: process.env.AXIOM_TOKEN || "",
-      dataset: process.env.AXIOM_DATASET || "",
+      enabled: !!env.AXIOM_TOKEN,
+      token: env.AXIOM_TOKEN || "",
+      dataset: env.AXIOM_DATASET || "",
     },
   });
 
   constructor() {
-    if (!process.env.RESEND_API_KEY) {
+    if (!env.RESEND_API_KEY) {
       this.logger.warn(
         "RESEND_API_KEY is not set. Email functionality may not work.",
       );
     }
-    this.resend = new Resend(process.env.RESEND_API_KEY || "re_123");
+    this.resend = new Resend(env.RESEND_API_KEY || "re_123");
   }
 
   async sendEmail(options: SendEmailOptions): Promise<void> {
-    if (!process.env.EMAIL_FROM) {
+    if (!env.EMAIL_FROM) {
       this.logger.error("EMAIL_FROM environment variable is not set");
       throw new Error("EMAIL_FROM environment variable is not set");
     }
@@ -35,7 +36,7 @@ export class ResendProvider implements EmailProvider {
         subject: options.subject,
       });
       const response = await this.resend.emails.send({
-        from: options.from || process.env.EMAIL_FROM,
+        from: options.from || env.EMAIL_FROM,
         to: options.to,
         subject: options.subject,
         html: options.html,

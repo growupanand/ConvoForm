@@ -6,6 +6,7 @@ import {
   form,
   user,
 } from "@convoform/db/src/schema";
+import { env } from "../../env";
 import { trpcFetchClient } from "../../lib/trpc-client";
 import type { ActionContext } from "../../types/actionContextType";
 import { getBaseUrl } from "../../utils/url";
@@ -98,7 +99,7 @@ export async function patchConversation(
         to: emailPayload.email,
         formName: emailPayload.formName,
         responseId: emailPayload.responseId,
-        secret: process.env.INTERNAL_API_SECRET || "",
+        secret: env.INTERNAL_EMAIL_API_SECRET || "",
         currentFieldResponses: emailPayload.formFieldResponses,
         transcript: emailPayload.transcript,
         metadata: emailPayload.metadata as Record<string, any>,
