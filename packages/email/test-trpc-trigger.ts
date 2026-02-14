@@ -34,8 +34,6 @@ const payload = {
   },
 };
 
-
-
 async function triggerEmail() {
   const url = "http://localhost:3000/api/trpc/email.sendFormResponse";
 
