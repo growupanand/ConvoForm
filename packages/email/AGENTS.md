@@ -46,5 +46,6 @@ await sendFormResponseEmail({
 ## For AI Agents
 
 ### Working In This Directory
+- **Package manager**: `pnpm`
 - **Source**: `src/index.ts` is the entry point. `src/providers/resend.ts` contains the provider logic.
-- **Testing**: Run `bun test` to execute unit tests. Mocks are in place for Resend.
+- **Testing**: Run `pnpm run test` to execute unit tests. Mocks are in place for Resend.

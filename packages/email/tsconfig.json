@@ -3,7 +3,8 @@
   "compilerOptions": {
     "lib": ["ES2022"],
     "module": "NodeNext",
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "NodeNext",
+    "jsx": "react-jsx"
   },
   "include": ["src"]
 }

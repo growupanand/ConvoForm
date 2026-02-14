@@ -39,7 +39,8 @@
     "AXIOM_TRACING_ENABLED",
     "AXIOM_OTLP_TOKEN",
     "EMAIL_FROM",
-    "RESEND_API_KEY"
+    "RESEND_API_KEY",
+    "INTERNAL_API_SECRET"
   ],
   "globalDependencies": [
     ".env"
