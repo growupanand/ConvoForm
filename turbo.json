@@ -40,7 +40,7 @@
     "AXIOM_OTLP_TOKEN",
     "EMAIL_FROM",
     "RESEND_API_KEY",
-    "INTERNAL_API_SECRET"
+    "INTERNAL_EMAIL_API_SECRET"
   ],
   "globalDependencies": [
     ".env"

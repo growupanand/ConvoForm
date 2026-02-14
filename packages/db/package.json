@@ -3,6 +3,13 @@
   "version": "0.0.0",
   "main": "index.ts",
   "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./src/env": "./src/env.ts",
+    "./src/envSchema": "./src/envSchema.ts",
+    "./src/schema": "./src/schema/index.ts",
+    "./src/*": "./src/*.ts"
+  },
   "scripts": {
     "dev": "drizzle-kit studio --config drizzle.config.ts",
     "dev:turbo": "drizzle-kit studio --config drizzle.config.ts",
@@ -16,6 +23,7 @@
   "dependencies": {
     "@neondatabase/serverless": "0.10.4",
     "@paralleldrive/cuid2": "2.2.2",
+    "@t3-oss/env-core": "0.13.10",
     "drizzle-orm": "0.41.0",
     "drizzle-zod": "0.8.3",
     "zod": "catalog:"

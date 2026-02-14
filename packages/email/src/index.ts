@@ -8,6 +8,7 @@ import type { SendEmailOptions } from "./types";
 
 export * from "./types";
 export * from "./providers/resend";
+export * from "./env";
 
 const emailProvider = new ResendProvider();
 

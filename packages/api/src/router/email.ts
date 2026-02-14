@@ -1,6 +1,7 @@
 import { sendFormResponseEmail } from "@convoform/email";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { env } from "../env";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const emailRouter = createTRPCRouter({
@@ -33,7 +34,7 @@ export const emailRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
-      if (input.secret !== process.env.INTERNAL_API_SECRET) {
+      if (input.secret !== env.INTERNAL_EMAIL_API_SECRET) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
       await sendFormResponseEmail({

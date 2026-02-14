@@ -11,13 +11,14 @@
   },
   "dependencies": {
     "@ai-sdk/groq": "catalog:",
-    "ai-sdk-ollama": "catalog:",
     "@ai-sdk/openai": "catalog:",
     "@convoform/analytics": "workspace:*",
     "@convoform/db": "workspace:*",
     "@convoform/logger": "workspace:*",
     "@convoform/tracing": "workspace:*",
+    "@t3-oss/env-core": "0.13.10",
     "ai": "catalog:",
+    "ai-sdk-ollama": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

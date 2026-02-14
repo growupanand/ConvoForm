@@ -3,4 +3,7 @@
   "extends": "@convoform/tsconfig/base.json",
   "exclude": ["node_modules"],
   "include": ["src/**/*.ts", "index.ts"],
+  "compilerOptions": {
+    "moduleResolution": "bundler"
+  }
 }

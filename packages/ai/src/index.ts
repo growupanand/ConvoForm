@@ -4,3 +4,5 @@ export * from "./config";
 export * from "./managers/conversationManager";
 export * from "./ai-actions";
 export * from "./llm-providers";
+export * from "./envSchema";
+export * from "./env";

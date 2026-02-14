@@ -1,10 +1,10 @@
 /// <reference types="node" />
 
-const INTERNAL_API_SECRET = process.env.INTERNAL_API_SECRET;
+const INTERNAL_EMAIL_API_SECRET = process.env.INTERNAL_EMAIL_API_SECRET;
 
-if (!INTERNAL_API_SECRET) {
+if (!INTERNAL_EMAIL_API_SECRET) {
   console.error(
-    "Error: INTERNAL_API_SECRET is not set in environment variables.",
+    "Error: INTERNAL_EMAIL_API_SECRET is not set in environment variables.",
   );
   console.error(
     "Make sure you are running this script with access to your .env file.",
@@ -18,6 +18,7 @@ const payload = {
   formName: "Test Form Trigger",
   responseId: `test-response-${Date.now()}`,
   respondentEmail: "growupanand@gmail.com",
+  responseLink: "https://example.com/response",
   secret: "sec_cb9a74b0b2e39067687a24a957383605",
   currentFieldResponses: [
     { fieldName: "Name", fieldValue: "Test User" },
@@ -32,6 +33,8 @@ const payload = {
     timestamp: new Date().toISOString(),
   },
 };
+
+
 
 async function triggerEmail() {
   const url = "http://localhost:3000/api/trpc/email.sendFormResponse";
