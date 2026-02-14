@@ -34,6 +34,29 @@ const payload = {
   },
 };
 
+// Simulate signing
+// We need to implement signPayload here or import it if possible.
+// Since this is a script, importing from local package might work if compiled, or we just copy the simple logic.
+
+async function signPayload(payload: string, secret: string) {
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(secret);
+  const data = encoder.encode(payload);
+
+  const key = await crypto.subtle.importKey(
+    "raw",
+    keyData,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+
+  const signature = await crypto.subtle.sign("HMAC", key, data);
+  return Array.from(new Uint8Array(signature))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 async function triggerEmail() {
   const url = "http://localhost:3000/api/trpc/email.sendFormResponse";
 
@@ -43,16 +66,21 @@ async function triggerEmail() {
   try {
     // Construct body for tRPC with superjson
     // Standard tRPC single mutation body with superjson: { json: <input> }
-    const body = {
+    const bodyObj = {
       json: payload,
     };
+    const bodyStr = JSON.stringify(bodyObj);
+
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    const signature = await signPayload(bodyStr, INTERNAL_EMAIL_API_SECRET!);
 
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-ConvoForm-Signature": signature,
       },
-      body: JSON.stringify(body),
+      body: bodyStr,
     });
 
     const responseText = await response.text();

@@ -14,11 +14,19 @@ export function OPTIONS(req: NextRequest) {
 }
 
 const handler = async (req: NextRequest) => {
+  let rawBody: string | undefined;
+  try {
+    const clone = req.clone();
+    rawBody = await clone.text();
+  } catch (error) {
+    console.warn("Failed to read request body for context:", error);
+  }
+
   const response = await fetchRequestHandler({
     endpoint: "/api/trpc",
     router: appRouter,
     req,
-    createContext: createTRPCContext,
+    createContext: (opts) => createTRPCContext({ req: opts.req, rawBody }),
     onError:
       process.env.NODE_ENV === "development"
         ? ({ path, error }: any) => {

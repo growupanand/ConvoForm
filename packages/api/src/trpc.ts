@@ -26,9 +26,15 @@ export type QueryClientMeta = {
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async () => {
+export const createTRPCContext = async (opts?: {
+  req: Request;
+  rawBody?: string;
+}) => {
   return {
     db,
+    req: opts?.req,
+    headers: opts?.req?.headers,
+    rawBody: opts?.rawBody,
     auth: await auth(),
     user: await currentUser(),
   };
