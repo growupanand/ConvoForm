@@ -1,6 +1,7 @@
 packages:
   - "apps/*"
   - "packages/*"
+  - packages/email/.react-email
 
 
 # Define a catalog of version ranges.

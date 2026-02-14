@@ -6,14 +6,24 @@
     "scripts": {
         "type-check": "tsc --noEmit",
         "clean": "rm -rf dist node_modules",
-        "test": "bun test"
+        "test": "bun test",
+        "dev": "email dev --dir src/templates"
     },
     "dependencies": {
-        "resend": "^3.2.0",
-        "@convoform/logger": "workspace:*"
+        "@convoform/logger": "workspace:*",
+        "@react-email/components": "1.0.7",
+        "@react-email/render": "2.0.4",
+        "react-email": "5.2.1",
+        "resend": "6.9.2"
     },
     "devDependencies": {
         "@convoform/tsconfig": "workspace:*",
+        "@react-email/preview-server": "5.2.1",
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
+        "react": "catalog:",
+        "react-dom": "catalog:",
+        "tsx": "^4.7.0",
         "typescript": "catalog:"
     }
 }

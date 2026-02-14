@@ -5,7 +5,7 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@convoform/db";
 import { isRateLimitError } from "@convoform/rate-limiter";
-import { initTRPC } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
 import { TRPC_ERROR_CODES_BY_KEY } from "@trpc/server/unstable-core-do-not-import";
 import superjson from "superjson";
 import { ZodError } from "zod/v4";
@@ -92,3 +92,16 @@ export const createCaller = t.createCallerFactory;
  */
 export const createTRPCRouter = t.router;
 export const mergeRouters = t.mergeRouters;
+
+export const publicProcedure = t.procedure;
+export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.auth.userId) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  return next({
+    ctx: {
+      auth: ctx.auth,
+      user: ctx.user,
+    },
+  });
+});

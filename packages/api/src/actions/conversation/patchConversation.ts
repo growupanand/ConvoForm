@@ -6,8 +6,9 @@ import {
   form,
   user,
 } from "@convoform/db/src/schema";
-import { sendFormResponseEmail } from "@convoform/email";
+import { trpcFetchClient } from "../../lib/trpc-client";
 import type { ActionContext } from "../../types/actionContextType";
+import { getBaseUrl } from "../../utils/url";
 
 export async function patchConversation(
   input: PatchConversation,
@@ -73,6 +74,18 @@ export async function patchConversation(
           email: data.userEmail,
           formName: data.formName,
           responseId: updatedConversation.id,
+          transcript: updatedConversation.transcript.map((t) => ({
+            role: t.role,
+            content: t.content,
+          })),
+          formFieldResponses: updatedConversation.formFieldResponses.map(
+            (field) => ({
+              fieldName: field.fieldName,
+              fieldValue: field.fieldValue,
+            }),
+          ),
+          metadata: updatedConversation.metaData,
+          responseLink: `${getBaseUrl()}/forms/${updatedConversation.formId}/conversations/${updatedConversation.id}`,
         };
       }
     }
@@ -81,10 +94,15 @@ export async function patchConversation(
 
   if (emailPayload?.shouldSendEmail) {
     try {
-      await sendFormResponseEmail({
+      await trpcFetchClient.email.sendFormResponse.mutate({
         to: emailPayload.email,
         formName: emailPayload.formName,
         responseId: emailPayload.responseId,
+        secret: process.env.INTERNAL_API_SECRET || "",
+        currentFieldResponses: emailPayload.formFieldResponses,
+        transcript: emailPayload.transcript,
+        metadata: emailPayload.metadata as Record<string, any>,
+        responseLink: emailPayload.responseLink,
       });
     } catch (error) {
       console.error("Failed to send form response email", error);
