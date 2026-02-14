@@ -1,5 +1,39 @@
 
 
+## [0.19.0](https://github.com/growupanand/ConvoForm/compare/0.18.0...0.19.0) (2026-02-14)
+
+
+### Features
+
+* 🚀 add AI provider: Groq ([8e22d93](https://github.com/growupanand/ConvoForm/commit/8e22d9378d8d73d6c4c8d95de3f903e6ee165202)), closes [#463](https://github.com/growupanand/ConvoForm/issues/463)
+* 🚀 add AI-powered form response insights in conversation details ([67949f3](https://github.com/growupanand/ConvoForm/commit/67949f35549644442378ccf65c818438b3b7a0df)), closes [#444](https://github.com/growupanand/ConvoForm/issues/444)
+* 🚀 add docker support for self hosting ([9cb2fd2](https://github.com/growupanand/ConvoForm/commit/9cb2fd2e64cb2845e58f1f09915254d0e54c9bfd)), closes [#325](https://github.com/growupanand/ConvoForm/issues/325)
+* 🚀 add email package and send form response email on finished ([4d0fa7c](https://github.com/growupanand/ConvoForm/commit/4d0fa7c1439ae4617b3e539a79890158adee7599)), closes [#468](https://github.com/growupanand/ConvoForm/issues/468)
+* 🚀 add ollama provider support ([c657ee2](https://github.com/growupanand/ConvoForm/commit/c657ee2fc46aa84c4a02009cd940e23a63b779f7))
+* 🚀 add OpenTelemetry tracing ([5e3829f](https://github.com/growupanand/ConvoForm/commit/5e3829f670846260a35348119ed1b73d8d5c9b9f)), closes [#466](https://github.com/growupanand/ConvoForm/issues/466)
+* 🚀 collect form respondent metadata (location, device, browser etc) ([355382c](https://github.com/growupanand/ConvoForm/commit/355382c88524b7cd48d4dfffe8c534aeb998db20)), closes [#439](https://github.com/growupanand/ConvoForm/issues/439) [#439](https://github.com/growupanand/ConvoForm/issues/439)
+* 🚀 File upload field support in form submission ([#455](https://github.com/growupanand/ConvoForm/issues/455)) ([ab2411b](https://github.com/growupanand/ConvoForm/commit/ab2411bcc4f58c1444399e877d77964823c333c4)), closes [#454](https://github.com/growupanand/ConvoForm/issues/454) [#454](https://github.com/growupanand/ConvoForm/issues/454)
+* 🚀 sending form response email to user ([76bd6c0](https://github.com/growupanand/ConvoForm/commit/76bd6c0c76a210d236a7ae67bc31f95bc07fe823)), closes [#468](https://github.com/growupanand/ConvoForm/issues/468)
+
+
+### Bug Fixes
+
+* 🐛 conversation name is not generated ([f266637](https://github.com/growupanand/ConvoForm/commit/f266637bdc91b8947655ff982fbab7e9580f025c)), closes [#459](https://github.com/growupanand/ConvoForm/issues/459)
+* 🐛 fix React Server Components CVE vulnerabilities ([2642940](https://github.com/growupanand/ConvoForm/commit/264294038ab8abb685a48658edf8613ca300bbf5))
+* 🐛 invalid value showing in CSV file ([b2fb107](https://github.com/growupanand/ConvoForm/commit/b2fb1076fbd5634219ad0839c7f806f2ec74d57e)), closes [#447](https://github.com/growupanand/ConvoForm/issues/447)
+* 🐛 label text overflow in mcq option ([aa4fd98](https://github.com/growupanand/ConvoForm/commit/aa4fd98516144ad478b6807242f634ea58233121)), closes [#434](https://github.com/growupanand/ConvoForm/issues/434)
+* 🐛 unable to upload file in form submission page (user not found) ([eb69e62](https://github.com/growupanand/ConvoForm/commit/eb69e621ae127ca47ef187e9f204450233c9fdcc))
+
+
+### Improvements
+
+* ⚡️ 456 revamp conversation service for ai sdk v5 ([#457](https://github.com/growupanand/ConvoForm/issues/457)) ([b97f2de](https://github.com/growupanand/ConvoForm/commit/b97f2dedcc753ac2fc6ffcd130ae9bfb91e3f232)), closes [#456](https://github.com/growupanand/ConvoForm/issues/456) [#456](https://github.com/growupanand/ConvoForm/issues/456) [#456](https://github.com/growupanand/ConvoForm/issues/456) [#456](https://github.com/growupanand/ConvoForm/issues/456) [#456](https://github.com/growupanand/ConvoForm/issues/456) [#456](https://github.com/growupanand/ConvoForm/issues/456) [#456](https://github.com/growupanand/ConvoForm/issues/456)
+* 💄 migrated to new shadcn sidebar ([5dbda35](https://github.com/growupanand/ConvoForm/commit/5dbda35b24f491b147574a7e93dac1ffd839409f)), closes [#451](https://github.com/growupanand/ConvoForm/issues/451)
+* 💄 UX improvements ([c111aa6](https://github.com/growupanand/ConvoForm/commit/c111aa6bb47fcbc5d678d76e405f49de611342ac))
+* 💡 pricing config is more readable and usable ([e8b7e51](https://github.com/growupanand/ConvoForm/commit/e8b7e518660bd7166aea52c42617f3812b06bcec))
+* 💡 rate limit package is more readable and easy to use ([6535ed5](https://github.com/growupanand/ConvoForm/commit/6535ed58e12906a0e2c6393e22f113446457ea37))
+* tier 1 critical security and stability fixes ([16a59b0](https://github.com/growupanand/ConvoForm/commit/16a59b0997513a198a68ec4c275d1fbcbb64bb20))
+
 ## [0.18.0](https://github.com/growupanand/ConvoForm/compare/0.17.0...0.18.0) (2025-04-25)
 
 
