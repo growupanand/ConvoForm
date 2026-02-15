@@ -1,0 +1,25 @@
+{
+    "name": "@convoform/integration",
+    "version": "0.0.0",
+    "private": true,
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "scripts": {
+        "lint": "eslint .",
+        "type-check": "tsc --noEmit",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "googleapis": "catalog:",
+        "google-auth-library": "catalog:",
+        "zod": "catalog:",
+        "@convoform/common": "workspace:*"
+    },
+    "devDependencies": {
+        "@convoform/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:",
+        "eslint": "catalog:"
+    }
+}

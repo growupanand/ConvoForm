@@ -7,3 +7,4 @@ export * from "./google";
 export * from "./organizationMembers";
 export * from "./organizations";
 export * from "./users";
+export * from "./integrations";

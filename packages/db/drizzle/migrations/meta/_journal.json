@@ -211,6 +211,13 @@
       "when": 1771147735097,
       "tag": "0029_gifted_kang",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1771151410604,
+      "tag": "0030_serious_stature",
+      "breakpoints": true
     }
   ]
 }
