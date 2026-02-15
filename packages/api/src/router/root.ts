@@ -7,6 +7,7 @@ import { formRouter } from "./form";
 import { formDesignRouter } from "./formDesign";
 import { formFieldRouter } from "./formField";
 import { googleRouter } from "./google";
+import { integrationRouter } from "./integration";
 import { metricsRouter } from "./metrics";
 import { organizationRouter } from "./organization";
 import { usageRouter } from "./usage";
@@ -32,6 +33,7 @@ export const appRouter = createTRPCRouter({
   users: usersRouter,
   aiFormGeneration: aiFormGenerationRouter,
   email: emailRouter,
+  integration: integrationRouter,
 });
 
 // export type definition of API

@@ -15,7 +15,7 @@ export const form = pgTable(
     welcomeScreenMessage: text("welcomeScreenMessage").notNull(),
     welcomeScreenCTALabel: text("welcomeScreenCTALabel").notNull(),
     isPublished: boolean("isPublished").default(true).notNull(),
-    publishedAt: timestamp("publishedAt").default(sql`now()`),
+    publishedAt: timestamp("publishedAt").defaultNow(),
 
     userId: text("userId").notNull(),
     organizationId: text("organizationId").notNull(),
@@ -50,7 +50,10 @@ export const form = pgTable(
   ],
 );
 
+import { formIntegration } from "../integrations/formIntegration";
+
 export const formRelations = relations(form, ({ many }) => ({
   formFields: many(formField),
   conversations: many(conversation),
+  formIntegrations: many(formIntegration),
 }));

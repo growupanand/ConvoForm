@@ -24,4 +24,8 @@ catalog:
   "@types/react-dom": 19.1.2
   "@types/node": ^22
   "@types/bun": 1.2.19
+  googleapis: 144.0.0
+  google-auth-library: 9.15.0
+  vitest: 3.0.7
+  eslint: 9.21.0
   

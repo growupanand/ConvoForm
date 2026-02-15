@@ -1,5 +1,7 @@
 import { env } from "@/env";
 import { getFrontendBaseUrl } from "@/lib/url";
+import { appRouter, createCaller, createTRPCContext } from "@convoform/api";
+import { redirect } from "next/navigation";
 import { type NextRequest, NextResponse } from "next/server";
 
 const GOOGLE_CLIENT_ID = env.GOOGLE_CLIENT_ID;
@@ -16,11 +18,37 @@ export async function GET(request: NextRequest) {
   }
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get("code");
+  const state = searchParams.get("state");
 
   if (!code) {
     return NextResponse.json({ error: "No code provided" }, { status: 400 });
   }
 
+  // Handle Integration Flow (Server-side)
+  if (state?.startsWith("integration_")) {
+    try {
+      const providerWithId = state.replace("integration_", "");
+      const ctx = await createTRPCContext({ req: request });
+      const caller = createCaller(appRouter)(ctx);
+
+      await caller.integration.callback({
+        provider: providerWithId,
+        code,
+      });
+
+      return redirect(
+        `${getFrontendBaseUrl()}/settings/integrations?success=true`,
+      );
+    } catch (error) {
+      console.error("Integration callback error:", error);
+      return redirect(
+        `${getFrontendBaseUrl()}/settings/integrations?error=Failed to connect`,
+      );
+    }
+  }
+
+  // Handle Form Import Flow (Client-side / Popup)
+  // This defaults to correct behavior if state is 'import_mode' or missing (legacy)
   try {
     const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
@@ -37,6 +65,8 @@ export async function GET(request: NextRequest) {
     const tokenData = await tokenResponse.json();
 
     if (!tokenResponse.ok) {
+      // If the token exchange fails, it might be due to checking the wrong flow or invalid code
+      // But since we are here, we handle it as error
       throw new Error(tokenData.error || "Failed to exchange code for token");
     }
 

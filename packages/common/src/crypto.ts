@@ -35,3 +35,95 @@ export async function verifySignature(
   // Since we are generating the signature ourselves to compare, we just check equality.
   return signature === expectedSignature;
 }
+
+export async function encrypt(text: string, key: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+
+  // Hash the key to ensure it's 256-bit
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(key),
+    { name: "PBKDF2" },
+    false,
+    ["deriveKey"],
+  );
+
+  const derivedKey = await crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt: encoder.encode("convoform-salt"), // In production, salt should be random and stored with ciphertext, but for simplicity we use a fixed salt for now as key is already a secret
+      iterations: 100000,
+      hash: "SHA-256",
+    },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"],
+  );
+
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encrypted = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    derivedKey,
+    data,
+  );
+
+  const encryptedArray = new Uint8Array(encrypted);
+  const ivHex = Array.from(iv)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  const encryptedHex = Array.from(encryptedArray)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  return `${ivHex}:${encryptedHex}`;
+}
+
+export async function decrypt(
+  encryptedText: string,
+  key: string,
+): Promise<string> {
+  const [ivHex, encryptedHex] = encryptedText.split(":");
+  if (!ivHex || !encryptedHex) {
+    throw new Error("Invalid encrypted text format");
+  }
+
+  const iv = new Uint8Array(
+    ivHex.match(/.{1,2}/g)?.map((byte) => Number.parseInt(byte, 16)),
+  );
+  const encryptedArray = new Uint8Array(
+    encryptedHex.match(/.{1,2}/g)?.map((byte) => Number.parseInt(byte, 16)),
+  );
+
+  const encoder = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(key),
+    { name: "PBKDF2" },
+    false,
+    ["deriveKey"],
+  );
+
+  const derivedKey = await crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt: encoder.encode("convoform-salt"),
+      iterations: 100000,
+      hash: "SHA-256",
+    },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"],
+  );
+
+  const decrypted = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv },
+    derivedKey,
+    encryptedArray,
+  );
+
+  const decoder = new TextDecoder();
+  return decoder.decode(decrypted);
+}

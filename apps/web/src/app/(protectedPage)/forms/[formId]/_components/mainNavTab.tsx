@@ -35,13 +35,18 @@ export default function MainNavTab({ formId }: Readonly<Props>) {
       link: `/forms/${currentFormId}/conversations`,
       isActive: isAlreadyOnConversationsPage,
     },
+    {
+      name: "Integrations",
+      link: `/forms/${currentFormId}/integrations`,
+      isActive: pathName.includes("integrations"),
+    },
   ] as NavLink[];
 
   const activeTab = tabLinks.find((link) => link.isActive);
 
   return (
     <Tabs value={activeTab?.name} className="w-full">
-      <TabsList className="grid w-full grid-cols-2">
+      <TabsList className="grid w-full grid-cols-3">
         {tabLinks.map((link) => (
           <TabsTrigger
             value={link.name}
@@ -61,8 +66,9 @@ export default function MainNavTab({ formId }: Readonly<Props>) {
 export const MainNavTabSkeleton = () => {
   return (
     <div className="w-full py-3">
-      <div className="grid h-8 grid-cols-2 gap-4">
+      <div className="grid h-8 grid-cols-3 gap-4">
         <Skeleton className=" w-full" />
+        <Skeleton className="w-full" />
         <Skeleton className="w-full" />
       </div>
     </div>
