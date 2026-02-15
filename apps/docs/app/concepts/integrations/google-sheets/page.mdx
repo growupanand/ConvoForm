@@ -1,0 +1,49 @@
+# Google Sheets Integration
+
+ConvoForm allows you to sync your form responses directly to a Google Sheet. This integration ensures that every new response is automatically appended to a sheet of your choice in real-time.
+
+## Prerequisites
+
+Before you can use this integration, you must connect your Google Drive account to ConvoForm.
+
+1. Go to **Account Settings** in ConvoForm.
+2. Navigate to the **Integrations** tab.
+3. Click on the **Connect** button next to Google Drive.
+4. Authorize ConvoForm to access your Google Drive files.
+
+## Setting up the Integration
+
+Once your account is connected, you can enable the integration for specific forms.
+
+1. Navigate to your form's dashboard.
+2. Click on the **Integrations** tab in the sidebar.
+3. Locate the **Google Sheets** card.
+4. Toggle the switch to **Enable** the integration.
+
+## Configuration
+
+After enabling the integration, you need to select a destination spreadsheet.
+
+### Using the File Picker
+
+1. Click on the **Select Spreadsheet** button (or Google Drive icon).
+2. A Google Picker window will open, displaying your Google Drive files.
+3. Select the Google Sheet where you want responses to be saved.
+4. Click **Select**.
+
+The spreadsheet ID will be automatically populated, and the integration will be saved.
+
+### Manual Configuration
+
+If you have the Spreadsheet ID handy, you can also paste it directly into the "Spreadsheet ID" input field. The integration will automatically save your changes when you click outside the input field.
+
+## How it Works
+
+- **New Responses**: When a user submits your form, ConvoForm processes the data and instantly appends a new row to the first sheet of your selected Google Spreadsheet.
+- **Columns**: The columns in the sheet will correspond to your form fields. The first row of your sheet will be used as headers. If headers don't exist, ConvoForm will attempt to map data based on field names.
+- **Metadata**: Additional metadata (like submission time) may also be included.
+
+## Troubleshooting
+
+- **Permissions**: Ensure that the Google account you connected has edit access to the selected spreadsheet.
+- **Disconnected Account**: If you disconnect your Google Drive account from ConvoForm settings, the integration will stop working. You will need to reconnect and re-enable it.
