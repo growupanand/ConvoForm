@@ -19,7 +19,7 @@ export const selectFormSchema = createSelectSchema(form, {
   formFieldsOrders: z.string().array(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  publishedAt: z.coerce.date(),
+  publishedAt: z.coerce.date().nullable(),
 });
 
 export const newFormSchema = insertFormSchema

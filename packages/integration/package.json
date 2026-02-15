@@ -5,21 +5,20 @@
     "main": "./src/index.ts",
     "types": "./src/index.ts",
     "scripts": {
-        "lint": "eslint .",
+        "lint": "biome check .",
         "type-check": "tsc --noEmit",
-        "test": "vitest run"
+        "test": "bun test"
     },
     "dependencies": {
-        "googleapis": "catalog:",
-        "google-auth-library": "catalog:",
+        "googleapis": "144.0.0",
+        "google-auth-library": "9.15.0",
         "zod": "catalog:",
         "@convoform/common": "workspace:*"
     },
     "devDependencies": {
         "@convoform/tsconfig": "workspace:*",
+        "@types/bun": "catalog:",
         "@types/node": "catalog:",
-        "typescript": "catalog:",
-        "vitest": "catalog:",
-        "eslint": "catalog:"
+        "typescript": "catalog:"
     }
 }

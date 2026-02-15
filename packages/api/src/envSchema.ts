@@ -14,4 +14,5 @@ export const apiEnvSchema = {
     ),
   VERCEL_URL: z.string().optional(),
   CLERK_SECRET_KEY: z.string().min(1),
+  ENCRYPTION_KEY: z.string().min(1),
 };

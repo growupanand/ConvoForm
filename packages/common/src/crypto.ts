@@ -90,10 +90,11 @@ export async function decrypt(
   }
 
   const iv = new Uint8Array(
-    ivHex.match(/.{1,2}/g)?.map((byte) => Number.parseInt(byte, 16)),
+    ivHex.match(/.{1,2}/g)?.map((byte) => Number.parseInt(byte, 16)) || [],
   );
   const encryptedArray = new Uint8Array(
-    encryptedHex.match(/.{1,2}/g)?.map((byte) => Number.parseInt(byte, 16)),
+    encryptedHex.match(/.{1,2}/g)?.map((byte) => Number.parseInt(byte, 16)) ||
+      [],
   );
 
   const encoder = new TextEncoder();
