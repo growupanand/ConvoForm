@@ -21,17 +21,19 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@neondatabase/serverless": "0.10.4",
+    "@neondatabase/serverless": "1.0.2",
     "@paralleldrive/cuid2": "2.2.2",
     "@t3-oss/env-core": "0.13.10",
-    "drizzle-orm": "0.41.0",
+    "drizzle-orm": "0.45.1",
     "drizzle-zod": "0.8.3",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@convoform/tsconfig": "workspace:*",
     "@types/node": "catalog:",
+    "@types/pg": "^8.11.6",
     "drizzle-kit": "^0.30.2",
+    "pg": "8.18.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.0",
     "typescript": "catalog:"

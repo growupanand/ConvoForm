@@ -60,11 +60,6 @@ export const conversation = pgTable(
     index("idx_conversation_finished_at")
       .on(conversation.finishedAt)
       .where(sql`${conversation.finishedAt} IS NOT NULL`),
-    index("idx_conversation_field_responses").using(
-      "gin",
-      conversation.formFieldResponses,
-    ),
-    index("idx_conversation_meta_data").using("gin", conversation.metaData),
   ],
 );
 

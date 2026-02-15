@@ -1,6 +1,6 @@
 {
-  "id": "3d06913f-384a-488e-9f3d-14726ebb9ae9",
-  "prevId": "bf5537c2-7840-4d42-99b7-962d3b54759f",
+  "id": "7c47dbb1-2822-477d-afa0-74c146366eb9",
+  "prevId": "3d06913f-384a-488e-9f3d-14726ebb9ae9",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -205,36 +205,6 @@
           "where": "\"Conversation\".\"finishedAt\" IS NOT NULL",
           "concurrently": false,
           "method": "btree",
-          "with": {}
-        },
-        "idx_conversation_field_responses": {
-          "name": "idx_conversation_field_responses",
-          "columns": [
-            {
-              "expression": "formFieldResponses",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "gin",
-          "with": {}
-        },
-        "idx_conversation_meta_data": {
-          "name": "idx_conversation_meta_data",
-          "columns": [
-            {
-              "expression": "metaData",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "gin",
           "with": {}
         }
       },
@@ -541,21 +511,6 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
-        },
-        "idx_form_field_config": {
-          "name": "idx_form_field_config",
-          "columns": [
-            {
-              "expression": "fieldConfiguration",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "gin",
-          "with": {}
         }
       },
       "foreignKeys": {
@@ -646,13 +601,14 @@
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
-          "default": false
+          "default": true
         },
         "publishedAt": {
           "name": "publishedAt",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "now()"
         },
         "userId": {
           "name": "userId",

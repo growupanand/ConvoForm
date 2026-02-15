@@ -14,8 +14,8 @@ export const form = pgTable(
     welcomeScreenTitle: text("welcomeScreenTitle").notNull(),
     welcomeScreenMessage: text("welcomeScreenMessage").notNull(),
     welcomeScreenCTALabel: text("welcomeScreenCTALabel").notNull(),
-    isPublished: boolean("isPublished").default(false).notNull(),
-    publishedAt: timestamp("publishedAt"),
+    isPublished: boolean("isPublished").default(true).notNull(),
+    publishedAt: timestamp("publishedAt").default(sql`now()`),
 
     userId: text("userId").notNull(),
     organizationId: text("organizationId").notNull(),
