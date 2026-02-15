@@ -1,6 +1,4 @@
-import { Button } from "@convoform/ui";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { Zap } from "lucide-react";
 import FormIntegrationsSettings from "./_components/formIntegrationsSettings";
 
 type Props = {
@@ -12,15 +10,11 @@ export default async function IntegrationsPage(props: Props) {
   const { formId } = params;
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center gap-4">
-        <Link href={`/forms/${formId}`}>
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <h1 className="text-2xl font-bold">Integrations</h1>
-      </div>
+    <div>
+      <h2 className="mb-5 font-medium capitalize text-2xl ">
+        <Zap className="h-6 w-6 text-green-600" />
+        <span>Integrations</span>
+      </h2>
       <FormIntegrationsSettings formId={formId} />
     </div>
   );

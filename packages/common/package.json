@@ -7,15 +7,15 @@
   },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "bun test"
   },
   "dependencies": {
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@types/bun": "catalog:",
     "@types/node": "catalog:",
     "typescript": "catalog:",
-    "@convoform/tsconfig": "workspace:*",
-    "vitest": "catalog:"
+    "@convoform/tsconfig": "workspace:*"
   }
 }

@@ -1,22 +1,22 @@
+import { beforeEach, describe, expect, it, mock } from "bun:test";
 import { google } from "googleapis";
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import { GoogleSheetsProvider } from "./google-sheets";
 
 // Mock googleapis
-vi.mock("googleapis", () => ({
+mock.module("googleapis", () => ({
   google: {
     auth: {
-      OAuth2: vi.fn().mockImplementation(() => ({
-        generateAuthUrl: vi.fn().mockReturnValue("https://mock-auth-url.com"),
-        getToken: vi.fn().mockResolvedValue({
+      OAuth2: mock().mockImplementation(() => ({
+        generateAuthUrl: mock().mockReturnValue("https://mock-auth-url.com"),
+        getToken: mock().mockResolvedValue({
           tokens: {
             access_token: "mock-access-token",
             refresh_token: "mock-refresh-token",
             expiry_date: 123456789,
           },
         }),
-        setCredentials: vi.fn(),
-        refreshAccessToken: vi.fn().mockResolvedValue({
+        setCredentials: mock(),
+        refreshAccessToken: mock().mockResolvedValue({
           credentials: {
             access_token: "new-access-token",
             expiry_date: 987654321,
@@ -24,7 +24,7 @@ vi.mock("googleapis", () => ({
         }),
       })),
     },
-    sheets: vi.fn(),
+    sheets: mock(),
   },
 }));
 
@@ -33,9 +33,9 @@ describe("GoogleSheetsProvider", () => {
   const mockSheets = {
     spreadsheets: {
       values: {
-        get: vi.fn(),
-        update: vi.fn(),
-        append: vi.fn(),
+        get: mock(),
+        update: mock(),
+        append: mock(),
       },
     },
   };
@@ -47,7 +47,7 @@ describe("GoogleSheetsProvider", () => {
       "redirect-uri",
     );
     (google.sheets as any).mockReturnValue(mockSheets);
-    vi.clearAllMocks();
+    mock.restore();
   });
 
   it("should generate auth url", () => {

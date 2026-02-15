@@ -9,8 +9,12 @@ export const formIntegration = pgTable(
   "FormIntegration",
   {
     ...getBaseSchema(),
-    formId: text("formId").notNull(),
-    integrationId: text("integrationId").notNull(),
+    formId: text("formId")
+      .notNull()
+      .references(() => form.id, { onDelete: "cascade" }),
+    integrationId: text("integrationId")
+      .notNull()
+      .references(() => integration.id, { onDelete: "cascade" }),
     config: json("config").$type<Record<string, any>>().default({}),
     enabled: boolean("enabled").default(true).notNull(),
   },

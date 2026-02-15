@@ -1,6 +1,5 @@
 "use client";
 
-import { GoogleSheetPicker } from "@/app/(protectedPage)/(mainPage)/forms/[formId]/integrations/_components/google-sheet-picker";
 import { api } from "@/trpc/react";
 import {
   Card,
@@ -15,6 +14,7 @@ import {
   toast,
 } from "@convoform/ui";
 import { Zap } from "lucide-react";
+import { GoogleSheetPicker } from "./google-sheet-picker";
 
 export default function FormIntegrationsSettings({
   formId,
