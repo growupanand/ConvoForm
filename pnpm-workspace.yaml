@@ -24,4 +24,5 @@ catalog:
   "@types/react-dom": 19.1.2
   "@types/node": ^22
   "@types/bun": 1.2.19
+  drizzle-orm: 0.45.1
   

@@ -3,5 +3,6 @@
     "core-concepts": "Core Concepts",
     "form-creation": "Form Creation",
     "supported-field-types": "Supported Field Types",
+    "integrations": "Integrations",
     "tracing": "Distributed Tracing"
 }

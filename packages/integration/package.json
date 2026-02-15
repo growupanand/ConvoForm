@@ -1,0 +1,24 @@
+{
+    "name": "@convoform/integration",
+    "version": "0.0.0",
+    "private": true,
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "scripts": {
+        "lint": "biome check .",
+        "type-check": "tsc --noEmit",
+        "test": "bun test"
+    },
+    "dependencies": {
+        "googleapis": "144.0.0",
+        "google-auth-library": "9.15.0",
+        "zod": "catalog:",
+        "@convoform/common": "workspace:*"
+    },
+    "devDependencies": {
+        "@convoform/tsconfig": "workspace:*",
+        "@types/bun": "catalog:",
+        "@types/node": "catalog:",
+        "typescript": "catalog:"
+    }
+}

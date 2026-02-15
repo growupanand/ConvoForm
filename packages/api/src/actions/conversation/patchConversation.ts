@@ -75,6 +75,7 @@ export async function patchConversation(
           email: data.userEmail,
           formName: data.formName,
           responseId: updatedConversation.id,
+          formId: updatedConversation.formId,
           transcript: updatedConversation.transcript.map((t) => ({
             role: t.role,
             content: t.content,
@@ -94,6 +95,28 @@ export async function patchConversation(
   });
 
   if (emailPayload?.shouldSendEmail) {
+    // Process integrations asynchronously
+    (async () => {
+      const responseData = emailPayload.formFieldResponses.reduce(
+        (acc, field) => {
+          acc[field.fieldName] = field.fieldValue;
+          return acc;
+        },
+        {} as Record<string, any>,
+      );
+
+      try {
+        await trpcFetchClient.integration.sync.mutate({
+          formId: emailPayload.formId,
+          responseId: emailPayload.responseId,
+          data: responseData,
+          metaData: emailPayload.metadata as Record<string, any>,
+        });
+      } catch (error) {
+        console.error("Failed to sync integrations", error);
+      }
+    })();
+
     try {
       await trpcFetchClient.email.sendFormResponse.mutate({
         to: emailPayload.email,

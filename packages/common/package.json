@@ -1,20 +1,21 @@
 {
-    "name": "@convoform/common",
-    "version": "0.0.0",
-    "private": true,
-    "exports": {
-      ".": "./index.ts"
-    },
-    "scripts": {
-      "type-check": "tsc --noEmit"
-    },
-    "dependencies": {
-      "zod": "catalog:"
-    },
-    "devDependencies": {
-      "@types/node": "catalog:",
-      "typescript": "catalog:",
-      "@convoform/tsconfig" : "workspace:*"
-    }
+  "name": "@convoform/common",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./index.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "@convoform/tsconfig": "workspace:*"
   }
-  
+}

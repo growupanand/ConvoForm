@@ -55,6 +55,8 @@ Visit our **[Documentation Site](https://docs.convoform.com)** for detailed guid
    ```bash
    cp .env.example .env
    # Update .env with your API keys (OpenAI, Clerk, etc.)
+   # IMPORTANT: generate a strong ENCRYPTION_KEY for securing integration tokens.
+   # You can generate one using `openssl rand -hex 32`
    ```
 
 4. **Run Development Server**

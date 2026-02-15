@@ -18,7 +18,7 @@ import {
   useSidebar,
 } from "@convoform/ui";
 import { Skeleton } from "@convoform/ui";
-import { FileText, LayoutDashboardIcon } from "lucide-react";
+import { FileText, LayoutDashboardIcon, Zap } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
@@ -42,6 +42,12 @@ export function AppSidebar({ orgId }: { orgId: string }) {
         link: "/forms",
         isActive: pathname.includes("/forms"),
         icon: <FileText />,
+      },
+      {
+        name: "Integrations",
+        link: "/settings/integrations",
+        isActive: pathname.includes("/settings/integrations"),
+        icon: <Zap />,
       },
     ],
     [pathname],
