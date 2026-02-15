@@ -21,7 +21,10 @@ export default function FormIntegrationsSettings({
 }: { formId: string }) {
   // 1. Get user's connected integrations (to know what is available)
   const { data: userIntegrations, isLoading: isLoadingUserIntegrations } =
-    api.integration.list.useQuery();
+    api.integration.list.useQuery(undefined, {
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+    });
 
   // 2. Get form's current integration config
   const {
@@ -41,14 +44,31 @@ export default function FormIntegrationsSettings({
   });
 
   if (isLoadingUserIntegrations || isLoadingFormIntegrations) {
-    return <Skeleton className="h-40 w-full" />;
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                <div className="space-y-2">
+                  <Skeleton className="h-5 w-32" />
+                  <Skeleton className="h-4 w-48" />
+                </div>
+              </div>
+              <Skeleton className="h-6 w-10 rounded-full" />
+            </div>
+          </CardHeader>
+        </Card>
+      </div>
+    );
   }
 
   const googleSheetsIntegration = userIntegrations?.find(
     (i) => i.id === "google_sheets",
   );
   const formGoogleSheet = formIntegrations?.find(
-    (i) => i.integration.provider === "google_sheets",
+    (i) => i.integration?.provider === "google_sheets",
   );
 
   const isConnected = !!googleSheetsIntegration?.connected;
@@ -79,8 +99,6 @@ export default function FormIntegrationsSettings({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Integrations</h2>
-
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -115,6 +133,9 @@ export default function FormIntegrationsSettings({
                   onBlur={(e) => handleSaveConfig(e.target.value)}
                 />
               </div>
+              <p className="text-[0.8rem] text-muted-foreground">
+                Leave blank to auto-create a new spreadsheet on first response.
+              </p>
               <GoogleSheetPicker
                 onSelect={(id, _name, token) => {
                   const input = document.getElementById(
@@ -134,10 +155,14 @@ export default function FormIntegrationsSettings({
                   });
                 }}
               />
-              <p className="text-sm text-muted-foreground">
-                Keep the sheet accessible to the connected account. Using the
-                picker will grant access to existing files.
-              </p>
+              <div className="text-sm text-muted-foreground pt-2 border-t">
+                <p>
+                  To manually link a sheet, copy the ID from the URL:
+                  <code className="bg-muted px-1 py-0.5 rounded text-xs ml-1 inline-block">
+                    .../d/<span className="font-bold">SPREADSHEET_ID</span>/edit
+                  </code>
+                </p>
+              </div>
             </div>
           </CardContent>
         )}

@@ -40,8 +40,7 @@
     "AXIOM_OTLP_TOKEN",
     "EMAIL_FROM",
     "RESEND_API_KEY",
-    "INTERNAL_EMAIL_API_SECRET",
-    "GOOGLE_INTEGRATION_REDIRECT_URI"
+    "INTERNAL_EMAIL_API_SECRET"
   ],
   "globalDependencies": [
     ".env"

@@ -8,6 +8,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  Skeleton,
 } from "@convoform/ui";
 import { toast } from "@convoform/ui";
 import { Zap } from "lucide-react";
@@ -15,7 +16,14 @@ import { useRouter } from "next/navigation";
 
 export default function IntegrationsPage() {
   const router = useRouter();
-  const { data: integrations, isLoading } = api.integration.list.useQuery();
+  const utils = api.useUtils();
+  const { data: integrations, isLoading } = api.integration.list.useQuery(
+    undefined,
+    {
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+    },
+  );
   const connectMutation = api.integration.connect.useMutation({
     onSuccess: (data) => {
       window.location.href = data.url;
@@ -28,7 +36,8 @@ export default function IntegrationsPage() {
   const disconnectMutation = api.integration.disconnect.useMutation({
     onSuccess: () => {
       toast.success("Disconnected successfully");
-      router.refresh();
+      router.refresh(); // Refresh server components
+      utils.integration.list.invalidate(); // Invalidate client cache
     },
     onError: (error) => {
       toast.error(error.message);
@@ -46,12 +55,32 @@ export default function IntegrationsPage() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="container mx-auto py-10 space-y-6">
+        <h1 className="text-3xl font-bold">Integrations</h1>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <Card key={i}>
+              <CardHeader className="flex flex-row items-center gap-4">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-10 w-24" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6">Integrations</h1>
+    <div className="container mx-auto py-10 space-y-6">
+      <h1 className="text-3xl font-bold">Integrations</h1>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {integrations?.map((integration) => (
           <Card key={integration.id}>
