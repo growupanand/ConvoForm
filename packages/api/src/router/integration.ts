@@ -5,6 +5,7 @@ import { decrypt, encrypt } from "@convoform/common";
 import { Schema } from "@convoform/db";
 import { GoogleSheetsProvider } from "@convoform/integration";
 import { and, eq } from "drizzle-orm";
+import { env } from "../env";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 const getGoogleCredentials = () => {
@@ -73,9 +74,7 @@ export const integrationRouter = createTRPCRouter({
       const tokens = await provider.callback(input.code);
 
       // Encrypt tokens before storing
-      // Using a fixed secret for now, should be ENV variable
-      const encryptionKey =
-        process.env.ENCRYPTION_KEY || "default-secret-key-CHANGE-ME";
+      const encryptionKey = env.ENCRYPTION_KEY;
 
       const encryptedAccessToken = await encrypt(
         tokens.accessToken,
@@ -226,8 +225,7 @@ export const integrationRouter = createTRPCRouter({
 
       if (!formIntegrations.length) return { success: true, count: 0 };
 
-      const encryptionKey =
-        process.env.ENCRYPTION_KEY || "default-secret-key-CHANGE-ME";
+      const encryptionKey = env.ENCRYPTION_KEY;
 
       // Prepare response data
       const responseData = { ...input.data };
