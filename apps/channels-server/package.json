@@ -1,0 +1,29 @@
+{
+    "name": "channels-server",
+    "version": "1.0.0",
+    "description": "HTTP server for external channel webhooks (Telegram, WhatsApp, etc.)",
+    "scripts": {
+        "dev": "bun --watch src/index.ts",
+        "dev:turbo": "bun --watch src/index.ts",
+        "start": "bun run dist/index.js",
+        "build": "bun build src/index.ts --outdir ./dist --target bun",
+        "type-check": "tsc --noEmit"
+    },
+    "keywords": [],
+    "author": "Utkarsh Anand",
+    "license": "ISC",
+    "dependencies": {
+        "@convoform/ai": "workspace:*",
+        "@convoform/api": "workspace:*",
+        "@convoform/channels": "workspace:*",
+        "@convoform/db": "workspace:*"
+    },
+    "devDependencies": {
+        "@types/node": "catalog:",
+        "@types/bun": "catalog:",
+        "typescript": "catalog:"
+    },
+    "module": "src/index.ts",
+    "type": "module",
+    "private": true
+}

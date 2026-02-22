@@ -97,6 +97,31 @@ importers:
         specifier: ^2.1.1
         version: 2.8.7
 
+  apps/channels-server:
+    dependencies:
+      '@convoform/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
+      '@convoform/api':
+        specifier: workspace:*
+        version: link:../../packages/api
+      '@convoform/channels':
+        specifier: workspace:*
+        version: link:../../packages/channels
+      '@convoform/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+    devDependencies:
+      '@types/bun':
+        specifier: 'catalog:'
+        version: 1.2.19(@types/react@19.1.2)
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.11
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.3
+
   apps/docs:
     dependencies:
       next:

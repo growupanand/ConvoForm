@@ -123,6 +123,7 @@ async function pollUpdates(): Promise<void> {
  * Read lines from stdin and send them as messages.
  */
 async function handleStdinInput(): Promise<void> {
+  // biome-ignore lint/correctness/noUndeclaredVariables: Bun is the runtime
   const reader = Bun.stdin.stream().getReader();
   const decoder = new TextDecoder();
 

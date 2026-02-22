@@ -206,11 +206,11 @@ A new section in the form settings where users can:
 - [x] Add `channelConnections` DB schema + migration
 - [x] Add `channelType` / `channelSenderId` to conversation schema
 
-### Phase 2: Telegram Adapter ← *current*
-- [ ] Implement `TelegramAdapter` in `packages/channels`
-- [ ] Create `apps/channels-server` (Bun HTTP server)
-- [ ] Wire up webhook routing
-- [ ] Test end-to-end: Telegram message → form question → answer → next question
+### Phase 2: Telegram Adapter ✅
+- [x] Implement `TelegramAdapter` in `packages/channels`
+- [x] Create `apps/channels-server` (Bun HTTP server)
+- [x] Wire up webhook routing
+- [x] Test end-to-end: Telegram message → form question → answer → next question
 
 ### Phase 3: Web UI & Polish
 - [ ] Add channel management UI in form settings
