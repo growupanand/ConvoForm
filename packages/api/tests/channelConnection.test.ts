@@ -18,6 +18,7 @@ describe("channelConnectionRouter", () => {
   const mockOrganizationId = "org_123";
   const mockUserId = "user_123";
   const mockFormId = "form_123";
+  const mockBotId = "123456";
 
   let mockDb: any;
   let mockCtx: any;
@@ -27,6 +28,7 @@ describe("channelConnectionRouter", () => {
       query: {
         form: {
           findFirst: mock(),
+          findMany: mock(),
         },
         channelConnection: {
           findFirst: mock(),
@@ -68,6 +70,7 @@ describe("channelConnectionRouter", () => {
           enabled: true,
           channelConfig: { botToken: "encrypted", secretToken: "secret" },
           organizationId: mockOrganizationId,
+          channelIdentifier: mockBotId,
         },
       ];
 
@@ -94,8 +97,115 @@ describe("channelConnectionRouter", () => {
     });
   });
 
+  describe("listForOrg", () => {
+    it("should return all connections for the organization", async () => {
+      const mockConnections = [
+        {
+          id: "conn_1",
+          formId: "form_1",
+          channelType: "telegram",
+          enabled: true,
+          channelConfig: {},
+          organizationId: mockOrganizationId,
+          channelIdentifier: "111",
+          form: { id: "form_1", name: "Contact Form" },
+        },
+        {
+          id: "conn_2",
+          formId: null,
+          channelType: "telegram",
+          enabled: true,
+          channelConfig: {},
+          organizationId: mockOrganizationId,
+          channelIdentifier: "222",
+          form: null,
+        },
+      ];
+
+      mockDb.query.channelConnection.findMany.mockResolvedValue(
+        mockConnections,
+      );
+
+      const caller = channelConnectionRouter.createCaller(mockCtx);
+      const result = await caller.listForOrg();
+
+      expect(result).toEqual(mockConnections);
+      expect(result).toHaveLength(2);
+    });
+
+    it("should return empty array when no connections exist", async () => {
+      mockDb.query.channelConnection.findMany.mockResolvedValue([]);
+
+      const caller = channelConnectionRouter.createCaller(mockCtx);
+      const result = await caller.listForOrg();
+
+      expect(result).toEqual([]);
+      expect(result).toHaveLength(0);
+    });
+  });
+
+  describe("listAvailableForForm", () => {
+    it("should return unassigned bots and bots on this form", async () => {
+      const mockBots = [
+        {
+          id: "conn_1",
+          formId: mockFormId,
+          channelType: "telegram",
+          channelIdentifier: "111",
+        },
+        {
+          id: "conn_2",
+          formId: null,
+          channelType: "telegram",
+          channelIdentifier: "222",
+        },
+      ];
+
+      mockDb.query.channelConnection.findMany.mockResolvedValue(mockBots);
+
+      const caller = channelConnectionRouter.createCaller(mockCtx);
+      const result = await caller.listAvailableForForm({
+        formId: mockFormId,
+      });
+
+      expect(result).toHaveLength(2);
+    });
+  });
+
   describe("create", () => {
-    it("should create a channel connection with auto-generated secretToken", async () => {
+    it("should create a bot without formId (unassigned)", async () => {
+      const mockConnection = {
+        id: "conn_new",
+        formId: null,
+        channelType: "telegram",
+        enabled: true,
+        channelConfig: {
+          botToken: "encrypted_token_value",
+          secretToken: "generated_secret",
+        },
+        organizationId: mockOrganizationId,
+        channelIdentifier: mockBotId,
+      };
+
+      mockDb.insert.mockReturnValue({
+        values: mock().mockReturnValue({
+          returning: mock().mockResolvedValue([mockConnection]),
+        }),
+      });
+
+      const caller = channelConnectionRouter.createCaller(mockCtx);
+      const result = await caller.create({
+        channelType: "telegram",
+        channelConfig: { botToken: `${mockBotId}:ABC-DEF` },
+      });
+
+      expect(result.id).toBe("conn_new");
+      expect(result.formId).toBeNull();
+      expect(result.channelType).toBe("telegram");
+      expect(result.enabled).toBe(true);
+    });
+
+    it("should create a bot with formId (assigned)", async () => {
       const mockConnection = {
         id: "conn_new",
         formId: mockFormId,
@@ -106,6 +216,7 @@ describe("channelConnectionRouter", () => {
           secretToken: "generated_secret",
         },
         organizationId: mockOrganizationId,
+        channelIdentifier: mockBotId,
       };
 
       mockDb.query.form.findFirst.mockResolvedValue({ id: mockFormId });
@@ -121,15 +232,14 @@ describe("channelConnectionRouter", () => {
       const result = await caller.create({
         formId: mockFormId,
         channelType: "telegram",
-        channelConfig: { botToken: "123456:ABC-DEF" },
+        channelConfig: { botToken: `${mockBotId}:ABC-DEF` },
       });
 
       expect(result.id).toBe("conn_new");
-      expect(result.channelType).toBe("telegram");
-      expect(result.enabled).toBe(true);
+      expect(result.formId).toBe(mockFormId);
     });
 
-    it("should reject duplicate channelType+formId", async () => {
+    it("should reject if form already has a bot of same type", async () => {
       mockDb.query.form.findFirst.mockResolvedValue({ id: mockFormId });
       mockDb.query.channelConnection.findFirst.mockResolvedValue({
         id: "existing_conn",
@@ -140,9 +250,109 @@ describe("channelConnectionRouter", () => {
         caller.create({
           formId: mockFormId,
           channelType: "telegram",
-          channelConfig: { botToken: "123456:ABC-DEF" },
+          channelConfig: { botToken: `${mockBotId}:ABC-DEF` },
         }),
-      ).rejects.toThrow("already exists");
+      ).rejects.toThrow("already assigned");
+    });
+  });
+
+  describe("assignForm", () => {
+    it("should assign a bot to a form", async () => {
+      const mockBot = {
+        id: "conn_1",
+        channelType: "telegram",
+        formId: null,
+        organizationId: mockOrganizationId,
+      };
+
+      const updatedBot = { ...mockBot, formId: mockFormId };
+
+      mockDb.query.channelConnection.findFirst
+        .mockResolvedValueOnce(mockBot) // bot lookup
+        .mockResolvedValueOnce(null); // no existing bot on form
+
+      mockDb.query.form.findFirst.mockResolvedValue({ id: mockFormId });
+
+      mockDb.update.mockReturnValue({
+        set: mock().mockReturnValue({
+          where: mock().mockReturnValue({
+            returning: mock().mockResolvedValue([updatedBot]),
+          }),
+        }),
+      });
+
+      const caller = channelConnectionRouter.createCaller(mockCtx);
+      const result = await caller.assignForm({
+        id: "conn_1",
+        formId: mockFormId,
+      });
+
+      expect(result.formId).toBe(mockFormId);
+    });
+
+    it("should reject if another bot is already on the form", async () => {
+      const mockBot = {
+        id: "conn_1",
+        channelType: "telegram",
+        formId: null,
+        organizationId: mockOrganizationId,
+      };
+
+      mockDb.query.channelConnection.findFirst
+        .mockResolvedValueOnce(mockBot) // bot lookup
+        .mockResolvedValueOnce({ id: "conn_other" }); // existing bot on form
+
+      mockDb.query.form.findFirst.mockResolvedValue({ id: mockFormId });
+
+      const caller = channelConnectionRouter.createCaller(mockCtx);
+      await expect(
+        caller.assignForm({ id: "conn_1", formId: mockFormId }),
+      ).rejects.toThrow("already assigned");
+    });
+
+    it("should throw NOT_FOUND for non-existent bot", async () => {
+      mockDb.query.channelConnection.findFirst.mockResolvedValue(null);
+
+      const caller = channelConnectionRouter.createCaller(mockCtx);
+      await expect(
+        caller.assignForm({ id: "non_existent", formId: mockFormId }),
+      ).rejects.toThrow("Bot not found");
+    });
+  });
+
+  describe("unassignForm", () => {
+    it("should unassign a bot from its form", async () => {
+      const mockBot = {
+        id: "conn_1",
+        formId: mockFormId,
+        organizationId: mockOrganizationId,
+      };
+
+      const updatedBot = { ...mockBot, formId: null };
+
+      mockDb.query.channelConnection.findFirst.mockResolvedValue(mockBot);
+
+      mockDb.update.mockReturnValue({
+        set: mock().mockReturnValue({
+          where: mock().mockReturnValue({
+            returning: mock().mockResolvedValue([updatedBot]),
+          }),
+        }),
+      });
+
+      const caller = channelConnectionRouter.createCaller(mockCtx);
+      const result = await caller.unassignForm({ id: "conn_1" });
+
+      expect(result.formId).toBeNull();
+    });
+
+    it("should throw NOT_FOUND for non-existent bot", async () => {
+      mockDb.query.channelConnection.findFirst.mockResolvedValue(null);
+
+      const caller = channelConnectionRouter.createCaller(mockCtx);
+      await expect(caller.unassignForm({ id: "non_existent" })).rejects.toThrow(
+        "Bot not found",
+      );
     });
   });
 
@@ -153,6 +363,7 @@ describe("channelConnectionRouter", () => {
         enabled: true,
         channelConfig: { botToken: "encrypted", secretToken: "secret" },
         organizationId: mockOrganizationId,
+        channelIdentifier: mockBotId,
       };
 
       const updatedConnection = { ...mockConnection, enabled: false };
@@ -193,6 +404,7 @@ describe("channelConnectionRouter", () => {
       mockDb.query.channelConnection.findFirst.mockResolvedValue({
         id: "conn_1",
         organizationId: mockOrganizationId,
+        channelIdentifier: mockBotId,
       });
 
       mockDb.delete.mockReturnValue({

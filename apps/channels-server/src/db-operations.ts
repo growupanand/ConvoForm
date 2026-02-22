@@ -122,31 +122,64 @@ export interface TelegramChannelConfig {
 }
 
 /**
- * Look up a channel connection for a given form and channel type.
+ * Look up a channel connection by its channel identifier (e.g., bot ID)
+ * and channel type. Only returns enabled connections.
  *
- * @param formId - The form ID to look up
+ * @param channelIdentifier - The channel identifier (e.g., Telegram bot ID)
  * @param channelType - The channel type (e.g., "telegram")
  * @returns The channel connection record, or null if not found/disabled
  *
  * @example
  * ```ts
- * const connection = await getChannelConnection("form_abc", "telegram");
+ * const connection = await getChannelConnection("123456789", "telegram");
  * if (connection) {
  *   const config = connection.channelConfig as TelegramChannelConfig;
  *   console.log("Bot token:", config.botToken);
+ *   console.log("Assigned form:", connection.formId ?? "unassigned");
  * }
  * ```
  */
 export async function getChannelConnection(
-  formId: string,
+  channelIdentifier: string,
   channelType: string,
 ) {
   const result = await db.query.channelConnection.findFirst({
     where: (table, { and, eq }) =>
       and(
-        eq(table.formId, formId),
+        eq(table.channelIdentifier, channelIdentifier),
         eq(table.channelType, channelType),
         eq(table.enabled, true),
+      ),
+  });
+
+  return result ?? null;
+}
+
+/**
+ * Look up a channel connection regardless of its enabled status.
+ * Used during teardown/disconnect when the connection may already be disabled.
+ *
+ * @param channelIdentifier - The channel identifier (e.g., Telegram bot ID)
+ * @param channelType - The channel type (e.g., "telegram")
+ * @returns The channel connection record, or null if not found
+ *
+ * @example
+ * ```ts
+ * const connection = await getChannelConnectionForTeardown("123456789", "telegram");
+ * if (connection) {
+ *   // Use connection.channelConfig to deregister webhook
+ * }
+ * ```
+ */
+export async function getChannelConnectionForTeardown(
+  channelIdentifier: string,
+  channelType: string,
+) {
+  const result = await db.query.channelConnection.findFirst({
+    where: (table, { and, eq }) =>
+      and(
+        eq(table.channelIdentifier, channelIdentifier),
+        eq(table.channelType, channelType),
       ),
   });
 

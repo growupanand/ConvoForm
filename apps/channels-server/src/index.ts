@@ -8,9 +8,10 @@
  * channel adapter → conversation handler pipeline.
  *
  * Routes:
- *   GET  /healthcheck               — Health check
- *   POST /webhook/telegram/:formId  — Receive Telegram updates
- *   POST /setup/telegram            — Register webhook URL with Telegram
+ *   GET  /healthcheck                   — Health check
+ *   POST /webhook/telegram/:botId      — Receive Telegram updates (keyed by bot ID)
+ *   POST /setup/telegram               — Register webhook URL with Telegram
+ *   POST /teardown/telegram            — Deregister webhook URL from Telegram
  */
 
 import {
@@ -23,6 +24,7 @@ import {
   type TelegramChannelConfig,
   buildConversationOperations,
   getChannelConnection,
+  getChannelConnectionForTeardown,
 } from "./db-operations";
 
 const PORT = process.env.CHANNELS_SERVER_PORT ?? 4001;
@@ -34,36 +36,41 @@ const sessionManager = new SessionManager();
 const conversationHandler = new ChannelConversationHandler(sessionManager);
 const conversationOperations = buildConversationOperations();
 
-// Cache of TelegramAdapter instances per formId (to avoid re-creating on every request)
+// Cache of TelegramAdapter instances per botId (channelIdentifier)
 const telegramAdapters = new Map<string, TelegramAdapter>();
 
 /**
- * Get or create a TelegramAdapter for a given form's channel connection.
+ * Get or create a TelegramAdapter for a given bot's channel connection.
  *
- * Decrypts the stored bot token before creating the adapter.
+ * Always checks the DB to verify the connection is enabled, even if the
+ * adapter is cached. This ensures toggling `enabled` in the UI takes effect
+ * immediately without requiring a server restart.
  *
- * @param formId - The form ID to get the adapter for
- * @returns The TelegramAdapter and connection, or null if no connection exists
+ * @param botId - The channel identifier (bot ID) to get the adapter for
+ * @returns The adapter and the associated formId (which may be null), or null if the connection doesn't exist or is disabled
  *
  * @example
  * ```ts
- * const result = await getTelegramAdapter("form_abc");
+ * const result = await getTelegramAdapter("123456789");
  * if (result) {
  *   const msg = result.adapter.parseIncoming(body);
+ *   console.log("Assigned form:", result.formId ?? "unassigned");
  * }
  * ```
  */
-async function getTelegramAdapter(formId: string) {
-  // Check cache first
-  const cached = telegramAdapters.get(formId);
-  if (cached) {
-    return { adapter: cached };
+async function getTelegramAdapter(botId: string) {
+  // Always verify the connection exists and is enabled in the DB
+  const connection = await getChannelConnection(botId, "telegram");
+  if (!connection) {
+    // Connection doesn't exist or is disabled — clear any stale cache
+    telegramAdapters.delete(botId);
+    return null;
   }
 
-  // Look up channel connection from DB
-  const connection = await getChannelConnection(formId, "telegram");
-  if (!connection) {
-    return null;
+  // Return cached adapter if available (connection is confirmed enabled above)
+  const cached = telegramAdapters.get(botId);
+  if (cached) {
+    return { adapter: cached, formId: connection.formId };
   }
 
   const config = connection.channelConfig as unknown as TelegramChannelConfig;
@@ -76,8 +83,8 @@ async function getTelegramAdapter(formId: string) {
     secretToken: config.secretToken,
   });
 
-  telegramAdapters.set(formId, adapter);
-  return { adapter };
+  telegramAdapters.set(botId, adapter);
+  return { adapter, formId: connection.formId };
 }
 
 // ── Route Handlers ──────────────────────────────────────
@@ -86,28 +93,29 @@ async function getTelegramAdapter(formId: string) {
  * Handle incoming Telegram webhook update.
  *
  * Flow:
- * 1. Look up channel connection for the form ID
+ * 1. Look up channel connection by bot ID
  * 2. Verify webhook authenticity
  * 3. Parse incoming message
- * 4. Process through ChannelConversationHandler
- * 5. Send response back via Telegram
+ * 4. Check if a form is assigned — if not, send friendly message
+ * 5. Process through ChannelConversationHandler
+ * 6. Send response back via Telegram
  */
 async function handleTelegramWebhook(
   request: Request,
-  formId: string,
+  botId: string,
 ): Promise<Response> {
   try {
-    // 1. Get adapter for this form
-    const result = await getTelegramAdapter(formId);
+    // 1. Get adapter for this bot
+    const result = await getTelegramAdapter(botId);
     if (!result) {
-      console.error(`No Telegram channel connection found for form: ${formId}`);
+      console.error(`No Telegram channel connection found for bot: ${botId}`);
       return new Response(
-        JSON.stringify({ error: "Channel not configured for this form" }),
+        JSON.stringify({ error: "Channel not configured for this bot" }),
         { status: 404, headers: { "Content-Type": "application/json" } },
       );
     }
 
-    const { adapter } = result;
+    const { adapter, formId } = result;
 
     // 2. Verify webhook
     const isValid = await adapter.verifyWebhook(request);
@@ -124,17 +132,28 @@ async function handleTelegramWebhook(
       return new Response("OK", { status: 200 });
     }
 
+    // 4. Check if a form is assigned
+    if (!formId) {
+      console.log(
+        `[telegram] Bot ${botId} received message but has no form assigned — replying with notice`,
+      );
+      await adapter.sendMessage(message.senderId, {
+        text: "This bot is not connected to any form yet. Please ask the form owner to assign a form to this bot.",
+      });
+      return new Response("OK", { status: 200 });
+    }
+
     console.log(
-      `[telegram] Received message from ${message.senderId} for form ${formId}: "${message.text}"`,
+      `[telegram] Received message from ${message.senderId} for bot ${botId} (form ${formId}): "${message.text}"`,
     );
 
-    // 4. Process through conversation handler
+    // 5. Process through conversation handler
     const responseText = await conversationHandler.handleMessage(message, {
       formId,
       operations: conversationOperations,
     });
 
-    // 5. Send response back
+    // 6. Send response back
     await adapter.sendMessage(message.senderId, { text: responseText });
 
     console.log(
@@ -143,10 +162,7 @@ async function handleTelegramWebhook(
 
     return new Response("OK", { status: 200 });
   } catch (error) {
-    console.error(
-      `[telegram] Error handling webhook for form ${formId}:`,
-      error,
-    );
+    console.error(`[telegram] Error handling webhook for bot ${botId}:`, error);
     // Always return 200 to Telegram to avoid retry storms
     return new Response("OK", { status: 200 });
   }
@@ -155,38 +171,40 @@ async function handleTelegramWebhook(
 /**
  * Handle webhook setup request.
  *
- * Registers the webhook URL with Telegram for a given form.
- * Body: { formId: string, webhookBaseUrl: string }
+ * Registers the webhook URL with Telegram for a given bot.
+ * Body: { channelIdentifier: string, webhookBaseUrl: string }
  */
 async function handleTelegramSetup(request: Request): Promise<Response> {
   try {
-    const { formId, webhookBaseUrl } = (await request.json()) as {
-      formId: string;
+    const { channelIdentifier, webhookBaseUrl } = (await request.json()) as {
+      channelIdentifier: string;
       webhookBaseUrl: string;
     };
 
-    if (!formId || !webhookBaseUrl) {
+    if (!channelIdentifier || !webhookBaseUrl) {
       return new Response(
-        JSON.stringify({ error: "Missing formId or webhookBaseUrl" }),
+        JSON.stringify({
+          error: "Missing channelIdentifier or webhookBaseUrl",
+        }),
         { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
-    const result = await getTelegramAdapter(formId);
+    const result = await getTelegramAdapter(channelIdentifier);
     if (!result) {
       return new Response(
         JSON.stringify({
-          error: "No Telegram channel connection for this form",
+          error: "No Telegram channel connection for this bot",
         }),
         { status: 404, headers: { "Content-Type": "application/json" } },
       );
     }
 
-    const webhookUrl = `${webhookBaseUrl}/webhook/telegram/${formId}`;
+    const webhookUrl = `${webhookBaseUrl}/webhook/telegram/${channelIdentifier}`;
     const apiResult = await result.adapter.setWebhook(webhookUrl);
 
     console.log(
-      `[telegram] Webhook setup for form ${formId}: ${apiResult.ok ? "✓" : "✗"}`,
+      `[telegram] Webhook setup for bot ${channelIdentifier}: ${apiResult.ok ? "✓" : "✗"}`,
     );
 
     return new Response(JSON.stringify(apiResult), {
@@ -206,31 +224,63 @@ async function handleTelegramSetup(request: Request): Promise<Response> {
  * Handle webhook teardown request.
  *
  * Deregisters the webhook from Telegram and clears the cached adapter.
- * Body: { formId: string }
+ * Uses the cached adapter if available, otherwise looks up the connection
+ * from the DB **regardless of enabled status** (since teardown is typically
+ * called after disabling).
+ *
+ * Body: { channelIdentifier: string }
  */
 async function handleTelegramTeardown(request: Request): Promise<Response> {
   try {
-    const { formId } = (await request.json()) as { formId: string };
+    const { channelIdentifier } = (await request.json()) as {
+      channelIdentifier: string;
+    };
 
-    if (!formId) {
-      return new Response(JSON.stringify({ error: "Missing formId" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    // Get the cached adapter (or create from DB if not cached)
-    const result = await getTelegramAdapter(formId);
-    if (result) {
-      // Deregister webhook from Telegram
-      const apiResult = await result.adapter.deleteWebhook();
-      console.log(
-        `[telegram] Webhook teardown for form ${formId}: ${apiResult.ok ? "✓" : "✗"}`,
+    if (!channelIdentifier) {
+      return new Response(
+        JSON.stringify({ error: "Missing channelIdentifier" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        },
       );
     }
 
-    // Always clear the adapter cache for this form
-    telegramAdapters.delete(formId);
+    // Try cached adapter first (it already has the decrypted bot token)
+    const cached = telegramAdapters.get(channelIdentifier);
+    if (cached) {
+      const apiResult = await cached.deleteWebhook();
+      console.log(
+        `[telegram] Webhook teardown for bot ${channelIdentifier}: ${apiResult.ok ? "✓" : "✗"} (from cache)`,
+      );
+    } else {
+      // No cached adapter — look up connection from DB ignoring enabled flag,
+      // since the connection may have just been disabled.
+      const connection = await getChannelConnectionForTeardown(
+        channelIdentifier,
+        "telegram",
+      );
+      if (connection) {
+        const config =
+          connection.channelConfig as unknown as TelegramChannelConfig;
+        const botToken = await decrypt(config.botToken, ENCRYPTION_KEY);
+        const adapter = new TelegramAdapter({
+          botToken,
+          secretToken: config.secretToken,
+        });
+        const apiResult = await adapter.deleteWebhook();
+        console.log(
+          `[telegram] Webhook teardown for bot ${channelIdentifier}: ${apiResult.ok ? "✓" : "✗"} (from DB)`,
+        );
+      } else {
+        console.log(
+          `[telegram] No connection found for bot ${channelIdentifier}, skipping teardown`,
+        );
+      }
+    }
+
+    // Always clear the adapter cache for this bot
+    telegramAdapters.delete(channelIdentifier);
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
@@ -238,7 +288,6 @@ async function handleTelegramTeardown(request: Request): Promise<Response> {
     });
   } catch (error) {
     console.error("[telegram] Error tearing down webhook:", error);
-    // Still clear the cache even on error
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
@@ -280,11 +329,11 @@ Bun.serve({
       );
     }
 
-    // Telegram webhook: POST /webhook/telegram/:formId
+    // Telegram webhook: POST /webhook/telegram/:botId
     const telegramWebhookMatch = pathname.match(/^\/webhook\/telegram\/(.+)$/);
     if (req.method === "POST" && telegramWebhookMatch) {
-      const formId = telegramWebhookMatch[1] ?? "";
-      return handleTelegramWebhook(req, formId);
+      const botId = telegramWebhookMatch[1] ?? "";
+      return handleTelegramWebhook(req, botId);
     }
 
     // Telegram setup: POST /setup/telegram

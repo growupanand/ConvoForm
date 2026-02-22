@@ -2,83 +2,60 @@
 
 import { api } from "@/trpc/react";
 import {
+  Badge,
   Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
   Input,
   Label,
   Skeleton,
   Switch,
   toast,
 } from "@convoform/ui";
-import { Copy, ExternalLink, MessageSquare, Send } from "lucide-react";
+import { ExternalLink, Plus, Send } from "lucide-react";
 import { useCallback, useState } from "react";
 
 /**
- * Telegram channel card with bot token configuration and enable/disable toggle.
- * Webhook is auto-registered on connect — no manual URL input needed.
+ * Dialog for creating a new bot and immediately assigning it to this form.
  *
  * @example
  * ```tsx
- * <TelegramChannelCard
- *   formId="form_abc"
- *   connection={{ id: "conn_1", enabled: true, channelConfig: { webhookUrl: "..." } }}
- *   onRefetch={() => refetch()}
- * />
+ * <CreateAndAssignBotDialog formId="form_abc" onSuccess={() => refetch()} />
  * ```
  */
-function TelegramChannelCard({
+function CreateAndAssignBotDialog({
   formId,
-  connection,
-  onRefetch,
+  onSuccess,
 }: {
   formId: string;
-  connection?: {
-    id: string;
-    enabled: boolean;
-    channelConfig: Record<string, unknown>;
-  };
-  onRefetch: () => void;
+  onSuccess: () => void;
 }) {
+  const [open, setOpen] = useState(false);
   const [botToken, setBotToken] = useState("");
 
   const createMutation = api.channelConnection.create.useMutation({
     onSuccess: () => {
       toast.success(
-        "Telegram channel connected! Webhook registered automatically.",
+        "Telegram bot created and assigned! Webhook registered automatically.",
       );
       setBotToken("");
-      onRefetch();
+      setOpen(false);
+      onSuccess();
     },
-    onError: (err) => {
-      toast.error(err.message);
-    },
+    onError: (err) => toast.error(err.message),
   });
 
-  const updateMutation = api.channelConnection.update.useMutation({
-    onSuccess: () => {
-      toast.success("Settings saved");
-      onRefetch();
-    },
-    onError: (err) => {
-      toast.error(err.message);
-    },
-  });
-
-  const deleteMutation = api.channelConnection.delete.useMutation({
-    onSuccess: () => {
-      toast.success("Telegram channel disconnected");
-      onRefetch();
-    },
-    onError: (err) => {
-      toast.error(err.message);
-    },
-  });
-
-  const handleConnect = useCallback(() => {
+  const handleSubmit = useCallback(() => {
     if (!botToken.trim()) {
       toast.error("Please enter a bot token");
       return;
@@ -90,30 +67,145 @@ function TelegramChannelCard({
     });
   }, [botToken, formId, createMutation]);
 
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="outline">
+          <Plus className="size-4 mr-2" />
+          Create New Bot
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create & Assign Telegram Bot</DialogTitle>
+          <DialogDescription>
+            Enter the bot token from{" "}
+            <a
+              href="https://t.me/BotFather"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline inline-flex items-center gap-1"
+            >
+              @BotFather <ExternalLink className="size-3" />
+            </a>
+            . The bot will be created and assigned to this form.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid gap-2">
+            <Label htmlFor="newBotTokenForm">Bot Token</Label>
+            <Input
+              type="password"
+              id="newBotTokenForm"
+              placeholder="123456789:ABCdefGHI-jklMNO..."
+              value={botToken}
+              onChange={(e) => setBotToken(e.target.value)}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button
+            onClick={handleSubmit}
+            disabled={!botToken.trim() || createMutation.isPending}
+          >
+            {createMutation.isPending ? "Creating..." : "Create & Assign"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/**
+ * Telegram channel card showing the currently assigned bot for this form,
+ * with the ability to assign an existing unassigned bot, create a new bot,
+ * or unassign the current bot.
+ *
+ * @example
+ * ```tsx
+ * <TelegramChannelCard
+ *   formId="form_abc"
+ *   connection={{ id: "conn_1", channelIdentifier: "123456", enabled: true, channelConfig: { webhookUrl: "..." } }}
+ *   availableBots={[{ id: "conn_2", channelIdentifier: "789012", formId: null }]}
+ *   onRefetch={() => refetch()}
+ * />
+ * ```
+ */
+function TelegramChannelCard({
+  formId,
+  connection,
+  availableBots,
+  onRefetch,
+}: {
+  formId: string;
+  connection?: {
+    id: string;
+    channelIdentifier: string;
+    enabled: boolean;
+    channelConfig: Record<string, unknown>;
+  };
+  availableBots: {
+    id: string;
+    channelIdentifier: string;
+    formId: string | null;
+  }[];
+  onRefetch: () => void;
+}) {
+  const updateMutation = api.channelConnection.update.useMutation({
+    onSuccess: () => {
+      toast.success("Settings saved");
+      onRefetch();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const assignMutation = api.channelConnection.assignForm.useMutation({
+    onSuccess: () => {
+      toast.success("Bot assigned to this form");
+      onRefetch();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const unassignMutation = api.channelConnection.unassignForm.useMutation({
+    onSuccess: () => {
+      toast.success("Bot unassigned from this form");
+      onRefetch();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
   const handleToggle = useCallback(
     (checked: boolean) => {
       if (!connection) return;
-      updateMutation.mutate({
-        id: connection.id,
-        enabled: checked,
-      });
+      updateMutation.mutate({ id: connection.id, enabled: checked });
     },
     [connection, updateMutation],
   );
 
-  const handleDisconnect = useCallback(() => {
+  const handleUnassign = useCallback(() => {
     if (!connection) return;
-    deleteMutation.mutate({ id: connection.id });
-  }, [connection, deleteMutation]);
+    unassignMutation.mutate({ id: connection.id });
+  }, [connection, unassignMutation]);
 
-  const isConnected = !!connection;
+  const handleAssign = useCallback(
+    (botId: string) => {
+      assignMutation.mutate({ id: botId, formId });
+    },
+    [formId, assignMutation],
+  );
+
+  const isAssigned = !!connection;
   const isEnabled = connection?.enabled ?? false;
   const webhookUrl = (connection?.channelConfig?.webhookUrl as string) ?? "";
 
+  // Unassigned bots that can be assigned to this form
+  const unassignedBots = availableBots.filter((b) => b.formId === null);
+
   const isPending =
-    createMutation.isPending ||
     updateMutation.isPending ||
-    deleteMutation.isPending;
+    assignMutation.isPending ||
+    unassignMutation.isPending;
 
   return (
     <Card>
@@ -130,7 +222,7 @@ function TelegramChannelCard({
               </CardDescription>
             </div>
           </div>
-          {isConnected && (
+          {isAssigned && (
             <Switch
               checked={isEnabled}
               onCheckedChange={handleToggle}
@@ -140,102 +232,99 @@ function TelegramChannelCard({
         </div>
       </CardHeader>
 
-      {/* Not connected yet — show setup form */}
-      {!isConnected && (
+      {/* No bot assigned — show assignment options */}
+      {!isAssigned && (
         <CardContent className="space-y-4">
-          <div className="grid w-full max-w-sm items-center gap-3">
-            <Label htmlFor="botToken">Bot Token</Label>
-            <Input
-              type="password"
-              id="botToken"
-              placeholder="Enter your Telegram bot token"
-              value={botToken}
-              onChange={(e) => setBotToken(e.target.value)}
-            />
-            <p className="text-[0.8rem] text-muted-foreground">
-              Get a bot token from{" "}
-              <a
-                href="https://t.me/BotFather"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline inline-flex items-center gap-1"
-              >
-                @BotFather <ExternalLink className="size-3" />
-              </a>
+          {unassignedBots.length > 0 ? (
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Assign an existing bot to this form:
+              </p>
+              <div className="space-y-2">
+                {unassignedBots.map((bot) => (
+                  <div
+                    key={bot.id}
+                    className="flex items-center justify-between rounded-lg border p-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-1.5 bg-blue-100 rounded-full">
+                        <Send className="size-3 text-blue-600" />
+                      </div>
+                      <span className="text-sm font-mono">
+                        Bot {bot.channelIdentifier}
+                      </span>
+                      <Badge variant="outline">Unassigned</Badge>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleAssign(bot.id)}
+                      disabled={isPending}
+                    >
+                      Assign
+                    </Button>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-3 pt-2">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs text-muted-foreground">or</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              No unassigned bots available. Create a new bot to connect:
             </p>
-          </div>
-          <Button
-            onClick={handleConnect}
-            disabled={!botToken.trim() || isPending}
-            size="sm"
-          >
-            {createMutation.isPending ? (
-              "Connecting..."
-            ) : (
-              <>
-                <MessageSquare className="size-4 mr-2" />
-                Connect Telegram Bot
-              </>
-            )}
-          </Button>
+          )}
+          <CreateAndAssignBotDialog formId={formId} onSuccess={onRefetch} />
         </CardContent>
       )}
 
-      {/* Connected and enabled — show status */}
-      {isConnected && isEnabled && (
+      {/* Bot assigned and enabled — show status */}
+      {isAssigned && isEnabled && (
         <CardContent className="space-y-4">
           <div className="p-3 bg-green-50 text-green-700 rounded text-sm">
-            ✓ Bot connected and webhook registered. Your Telegram bot is ready
-            to receive messages.
+            ✓ Bot{" "}
+            <span className="font-mono">{connection.channelIdentifier}</span> is
+            connected and ready to receive messages.
           </div>
 
           {webhookUrl && (
             <div className="grid w-full max-w-lg items-center gap-2">
               <Label>Webhook URL</Label>
-              <div className="flex items-center gap-2">
-                <code className="bg-muted px-3 py-2 rounded text-xs break-all flex-1">
-                  {webhookUrl}
-                </code>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => {
-                    navigator.clipboard.writeText(webhookUrl);
-                    toast.info("Webhook URL copied");
-                  }}
-                >
-                  <Copy className="size-4" />
-                </Button>
-              </div>
+              <code className="bg-muted px-3 py-2 rounded text-xs break-all">
+                {webhookUrl}
+              </code>
             </div>
           )}
 
           <Button
-            variant="destructive"
+            variant="outline"
             size="sm"
-            onClick={handleDisconnect}
+            onClick={handleUnassign}
             disabled={isPending}
           >
-            Disconnect
+            Unassign from this form
           </Button>
         </CardContent>
       )}
 
-      {/* Connected but disabled */}
-      {isConnected && !isEnabled && (
-        <CardContent>
+      {/* Bot assigned but disabled */}
+      {isAssigned && !isEnabled && (
+        <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Telegram channel is disabled. Toggle the switch above to re-enable
-            it.
+            Bot{" "}
+            <span className="font-mono">{connection.channelIdentifier}</span> is
+            assigned but disabled. Toggle the switch above to re-enable it.
           </p>
           <Button
-            variant="destructive"
+            variant="outline"
             size="sm"
-            onClick={handleDisconnect}
+            onClick={handleUnassign}
             disabled={isPending}
-            className="mt-3"
           >
-            Disconnect
+            Unassign from this form
           </Button>
         </CardContent>
       )}
@@ -243,22 +332,42 @@ function TelegramChannelCard({
   );
 }
 
+/**
+ * Channel connections settings for a specific form.
+ * Shows the currently assigned bot (if any) and allows assigning/creating bots.
+ *
+ * @example
+ * ```tsx
+ * <ChannelConnectionsSettings formId="form_abc" />
+ * ```
+ */
 export default function ChannelConnectionsSettings({
   formId,
 }: { formId: string }) {
   const {
     data: connections,
-    isLoading,
-    refetch,
+    isLoading: isLoadingConnections,
+    refetch: refetchConnections,
   } = api.channelConnection.listForForm.useQuery(
     { formId },
-    {
-      refetchOnMount: true,
-      refetchOnWindowFocus: true,
-    },
+    { refetchOnMount: true, refetchOnWindowFocus: true },
   );
 
-  if (isLoading) {
+  const {
+    data: availableBots,
+    isLoading: isLoadingAvailable,
+    refetch: refetchAvailable,
+  } = api.channelConnection.listAvailableForForm.useQuery(
+    { formId },
+    { refetchOnMount: true, refetchOnWindowFocus: true },
+  );
+
+  const refetch = useCallback(() => {
+    refetchConnections();
+    refetchAvailable();
+  }, [refetchConnections, refetchAvailable]);
+
+  if (isLoadingConnections || isLoadingAvailable) {
     return (
       <div className="space-y-6">
         <Card>
@@ -291,6 +400,7 @@ export default function ChannelConnectionsSettings({
           telegramConnection
             ? {
                 id: telegramConnection.id,
+                channelIdentifier: telegramConnection.channelIdentifier,
                 enabled: telegramConnection.enabled,
                 channelConfig: telegramConnection.channelConfig as Record<
                   string,
@@ -299,7 +409,12 @@ export default function ChannelConnectionsSettings({
               }
             : undefined
         }
-        onRefetch={() => refetch()}
+        availableBots={(availableBots ?? []).map((b) => ({
+          id: b.id,
+          channelIdentifier: b.channelIdentifier,
+          formId: b.formId,
+        }))}
+        onRefetch={refetch}
       />
     </div>
   );

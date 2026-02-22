@@ -12,23 +12,24 @@ import { getBaseSchema } from "../base";
 import { form } from "../forms/form";
 
 /**
- * Channel connections link forms to external messaging channels
- * (Telegram, WhatsApp, SMS, etc.).
+ * Channel connections represent external messaging channel bots
+ * (Telegram, WhatsApp, SMS, etc.) that can be independently managed.
  *
- * Each row represents a single channel connection for a specific form,
- * storing the channel-specific configuration (e.g., bot token).
+ * A bot can exist without a form (`formId` is nullable) and be
+ * assigned/switched between forms at any time.
  *
  * `channelIdentifier` stores a non-sensitive identifier for the channel
  * account (e.g., the Telegram bot ID from the token format `{bot_id}:{hash}`).
- * This enables duplicate detection across forms without exposing secrets.
+ * This is used as the stable webhook routing key.
  */
 export const channelConnection = pgTable(
   "ChannelConnection",
   {
     ...getBaseSchema(),
-    formId: text("formId")
-      .notNull()
-      .references(() => form.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    formId: text("formId").references(() => form.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
     channelType: text("channelType").notNull(),
     channelConfig: jsonb("channelConfig")
       .$type<Record<string, unknown>>()
@@ -36,8 +37,8 @@ export const channelConnection = pgTable(
       .default({}),
     enabled: boolean("enabled").default(true).notNull(),
     organizationId: text("organizationId").notNull(),
-    /** Non-sensitive channel account identifier (e.g., Telegram bot ID) */
-    channelIdentifier: text("channelIdentifier"),
+    /** Non-sensitive channel account identifier (e.g., Telegram bot ID). Used as stable webhook key. */
+    channelIdentifier: text("channelIdentifier").notNull(),
   },
   (table) => [
     index("idx_channel_connection_form_id").on(table.formId),

@@ -232,6 +232,13 @@
       "when": 1771768507977,
       "tag": "0032_fluffy_santa_claus",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1771775125777,
+      "tag": "0033_red_killmonger",
+      "breakpoints": true
     }
   ]
 }

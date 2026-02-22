@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { encrypt } from "@convoform/common";
 import { Schema } from "@convoform/db";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull, or } from "drizzle-orm";
 import { env } from "../env";
 import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
 import { createTRPCRouter } from "../trpc";
@@ -85,6 +85,67 @@ export const channelConnectionRouter = createTRPCRouter({
     }),
 
   /**
+   * List all channel connections for the current organization.
+   * Includes the associated form name (if assigned) for display.
+   *
+   * @example
+   * ```ts
+   * const connections = await trpc.channelConnection.listForOrg.query();
+   * // => [{ id: "conn_1", channelType: "telegram", enabled: true, form: { id: "form_abc", name: "My Form" } | null, ... }]
+   * ```
+   */
+  listForOrg: orgProtectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.query.channelConnection.findMany({
+      where: eq(Schema.channelConnection.organizationId, ctx.orgId),
+      with: {
+        form: {
+          columns: { id: true, name: true },
+        },
+      },
+    });
+  }),
+
+  /**
+   * List bots available to assign to a form: unassigned bots + bots already on this form.
+   *
+   * @example
+   * ```ts
+   * const bots = await trpc.channelConnection.listAvailableForForm.query({ formId: "form_abc" });
+   * // => [{ id: "conn_1", channelIdentifier: "123456", formId: null, ... }, ...]
+   * ```
+   */
+  listAvailableForForm: orgProtectedProcedure
+    .input(z.object({ formId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.query.channelConnection.findMany({
+        where: and(
+          eq(Schema.channelConnection.organizationId, ctx.orgId),
+          or(
+            isNull(Schema.channelConnection.formId),
+            eq(Schema.channelConnection.formId, input.formId),
+          ),
+        ),
+      });
+    }),
+
+  /**
+   * List all forms belonging to the current organization.
+   * Used by the org-level channels page to populate form assignment dropdowns.
+   *
+   * @example
+   * ```ts
+   * const forms = await trpc.channelConnection.listOrgForms.query();
+   * // => [{ id: "form_abc", name: "Contact Form" }, { id: "form_def", name: "Survey" }]
+   * ```
+   */
+  listOrgForms: orgProtectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.query.form.findMany({
+      where: eq(Schema.form.organizationId, ctx.orgId),
+      columns: { id: true, name: true },
+    });
+  }),
+
+  /**
    * Get a single channel connection by ID.
    *
    * @example
@@ -113,15 +174,23 @@ export const channelConnectionRouter = createTRPCRouter({
     }),
 
   /**
-   * Create a new channel connection for a form.
+   * Create a new channel connection (bot). `formId` is optional — if omitted,
+   * the bot is created unassigned and can be assigned to a form later.
    *
    * Auto-generates a secretToken, encrypts the bot token,
    * and registers the webhook with Telegram via channels-server.
-   * The resulting webhookUrl is stored in channelConfig.
+   * The webhook URL uses the bot ID (channelIdentifier) as the stable key.
    *
    * @example
    * ```ts
-   * const conn = await trpc.channelConnection.create.mutate({
+   * // Create unassigned bot
+   * const bot = await trpc.channelConnection.create.mutate({
+   *   channelType: "telegram",
+   *   channelConfig: { botToken: "123456:ABC-DEF..." },
+   * });
+   *
+   * // Create and immediately assign to a form
+   * const bot = await trpc.channelConnection.create.mutate({
    *   formId: "form_abc",
    *   channelType: "telegram",
    *   channelConfig: { botToken: "123456:ABC-DEF..." },
@@ -131,59 +200,48 @@ export const channelConnectionRouter = createTRPCRouter({
   create: orgProtectedProcedure
     .input(
       z.object({
-        formId: z.string().min(1),
+        formId: z.string().min(1).optional(),
         channelType: channelTypeEnum,
         channelConfig: telegramConfigSchema,
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // Verify form belongs to the org
-      const form = await ctx.db.query.form.findFirst({
-        where: and(
-          eq(Schema.form.id, input.formId),
-          eq(Schema.form.organizationId, ctx.orgId),
-        ),
-        columns: { id: true },
-      });
-
-      if (!form) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Form not found",
+      // If formId is provided, verify the form belongs to the org
+      if (input.formId) {
+        const form = await ctx.db.query.form.findFirst({
+          where: and(
+            eq(Schema.form.id, input.formId),
+            eq(Schema.form.organizationId, ctx.orgId),
+          ),
+          columns: { id: true },
         });
+
+        if (!form) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Form not found",
+          });
+        }
+
+        // Check no other bot of same type is already assigned to this form
+        const formBot = await ctx.db.query.channelConnection.findFirst({
+          where: and(
+            eq(Schema.channelConnection.formId, input.formId),
+            eq(Schema.channelConnection.channelType, input.channelType),
+          ),
+        });
+
+        if (formBot) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: `A ${input.channelType} bot is already assigned to this form. Unassign it first.`,
+          });
+        }
       }
 
-      // Check for duplicate (channelType + formId is unique)
-      const existing = await ctx.db.query.channelConnection.findFirst({
-        where: and(
-          eq(Schema.channelConnection.formId, input.formId),
-          eq(Schema.channelConnection.channelType, input.channelType),
-        ),
-      });
-
-      if (existing) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: `A ${input.channelType} connection already exists for this form`,
-        });
-      }
-
-      // Extract bot ID and check if this bot is already used by another form
+      // Extract bot ID — the unique constraint on channelIdentifier
+      // will prevent duplicates at DB level
       const botId = extractBotId(input.channelConfig.botToken);
-      const botInUse = await ctx.db.query.channelConnection.findFirst({
-        where: and(
-          eq(Schema.channelConnection.channelType, input.channelType),
-          eq(Schema.channelConnection.channelIdentifier, botId),
-        ),
-      });
-
-      if (botInUse) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message:
-            "This Telegram bot is already connected to another form. Each bot can only be linked to one form.",
-        });
-      }
 
       // Encrypt bot token and generate secret token
       const secretToken = generateSecretToken();
@@ -192,15 +250,15 @@ export const channelConnectionRouter = createTRPCRouter({
         env.ENCRYPTION_KEY,
       );
 
-      // Build webhook URL from the known channels-server URL
+      // Build webhook URL using bot ID (stable across form switches)
       const channelsServerUrl =
         env.CHANNELS_SERVER_URL ?? "http://localhost:4001";
-      const webhookUrl = `${channelsServerUrl}/webhook/telegram/${input.formId}`;
+      const webhookUrl = `${channelsServerUrl}/webhook/telegram/${botId}`;
 
       const [connection] = await ctx.db
         .insert(Schema.channelConnection)
         .values({
-          formId: input.formId,
+          formId: input.formId ?? null,
           channelType: input.channelType,
           channelConfig: {
             botToken: encryptedBotToken,
@@ -226,7 +284,7 @@ export const channelConnectionRouter = createTRPCRouter({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            formId: input.formId,
+            channelIdentifier: botId,
             webhookBaseUrl: channelsServerUrl,
           }),
         });
@@ -244,6 +302,118 @@ export const channelConnectionRouter = createTRPCRouter({
       }
 
       return connection;
+    }),
+
+  /**
+   * Assign (or switch) a bot to a form. If the bot was previously on a
+   * different form, it's moved. No webhook changes needed since the
+   * webhook URL is keyed by bot ID, not form ID.
+   *
+   * @example
+   * ```ts
+   * await trpc.channelConnection.assignForm.mutate({
+   *   id: "conn_1",
+   *   formId: "form_abc",
+   * });
+   * ```
+   */
+  assignForm: orgProtectedProcedure
+    .input(
+      z.object({
+        id: z.string().min(1),
+        formId: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Verify bot belongs to org
+      const bot = await ctx.db.query.channelConnection.findFirst({
+        where: and(
+          eq(Schema.channelConnection.id, input.id),
+          eq(Schema.channelConnection.organizationId, ctx.orgId),
+        ),
+      });
+
+      if (!bot) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Bot not found",
+        });
+      }
+
+      // Verify target form belongs to org
+      const form = await ctx.db.query.form.findFirst({
+        where: and(
+          eq(Schema.form.id, input.formId),
+          eq(Schema.form.organizationId, ctx.orgId),
+        ),
+        columns: { id: true },
+      });
+
+      if (!form) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Form not found",
+        });
+      }
+
+      // Check no other bot of same type is already assigned to this form
+      const existingBot = await ctx.db.query.channelConnection.findFirst({
+        where: and(
+          eq(Schema.channelConnection.formId, input.formId),
+          eq(Schema.channelConnection.channelType, bot.channelType),
+        ),
+      });
+
+      if (existingBot && existingBot.id !== input.id) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: `A ${bot.channelType} bot is already assigned to this form. Unassign it first.`,
+        });
+      }
+
+      const [updated] = await ctx.db
+        .update(Schema.channelConnection)
+        .set({ formId: input.formId, updatedAt: new Date() })
+        .where(eq(Schema.channelConnection.id, input.id))
+        .returning();
+
+      return updated;
+    }),
+
+  /**
+   * Unassign a bot from its current form (set `formId = null`).
+   * The bot and its webhook remain active — incoming messages will get
+   * a "not connected to any form" response.
+   *
+   * @example
+   * ```ts
+   * await trpc.channelConnection.unassignForm.mutate({ id: "conn_1" });
+   * ```
+   */
+  unassignForm: orgProtectedProcedure
+    .input(z.object({ id: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const bot = await ctx.db.query.channelConnection.findFirst({
+        where: and(
+          eq(Schema.channelConnection.id, input.id),
+          eq(Schema.channelConnection.organizationId, ctx.orgId),
+        ),
+      });
+
+      if (!bot) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Bot not found",
+        });
+      }
+
+      const [updated] = await ctx.db
+        .update(Schema.channelConnection)
+        .set({ formId: null, updatedAt: new Date() })
+        .where(eq(Schema.channelConnection.id, input.id))
+        .returning();
+
+      return updated;
     }),
 
   /**
@@ -307,11 +477,46 @@ export const channelConnectionRouter = createTRPCRouter({
         .where(eq(Schema.channelConnection.id, input.id))
         .returning();
 
+      // When toggling enabled for a Telegram channel, deregister/re-register
+      // the webhook so Telegram stops/starts sending updates accordingly.
+      if (
+        input.enabled !== undefined &&
+        existing.channelType === "telegram" &&
+        input.enabled !== existing.enabled
+      ) {
+        const channelsServerUrl =
+          env.CHANNELS_SERVER_URL ?? "http://localhost:4001";
+        try {
+          if (input.enabled) {
+            // Re-enabling → re-register webhook
+            await fetch(`${channelsServerUrl}/setup/telegram`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                channelIdentifier: existing.channelIdentifier,
+                webhookBaseUrl: channelsServerUrl,
+              }),
+            });
+          } else {
+            // Disabling → deregister webhook
+            await fetch(`${channelsServerUrl}/teardown/telegram`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                channelIdentifier: existing.channelIdentifier,
+              }),
+            });
+          }
+        } catch (err) {
+          console.error("[channelConnection] Webhook toggle error:", err);
+        }
+      }
+
       return updated;
     }),
 
   /**
-   * Delete a channel connection.
+   * Delete a channel connection (bot).
    *
    * Deregisters the webhook from Telegram, clears the adapter cache,
    * and removes the DB record.
@@ -347,7 +552,9 @@ export const channelConnectionRouter = createTRPCRouter({
           await fetch(`${channelsServerUrl}/teardown/telegram`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ formId: existing.formId }),
+            body: JSON.stringify({
+              channelIdentifier: existing.channelIdentifier,
+            }),
           });
         } catch (err) {
           console.error("[channelConnection] Webhook teardown error:", err);
