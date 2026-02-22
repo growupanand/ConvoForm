@@ -198,13 +198,15 @@ A new section in the form settings where users can:
 
 ## Implementation Phases
 
-### Phase 1: Foundation (Start here)
-- [ ] Create `packages/channels` with `ChannelAdapter` interface and `SessionManager`
-- [ ] Create `ChannelConversationHandler` (bridge to `CoreService`)
-- [ ] Add `channelConnections` DB schema + migration
-- [ ] Add `channelType` / `channelSenderId` to conversation schema
+> **Rule:** Mark each phase's tasks as `[x]` once completed.
 
-### Phase 2: Telegram Adapter
+### Phase 1: Foundation ✅
+- [x] Create `packages/channels` with `ChannelAdapter` interface and `SessionManager`
+- [x] Create `ChannelConversationHandler` (bridge to `CoreService`)
+- [x] Add `channelConnections` DB schema + migration
+- [x] Add `channelType` / `channelSenderId` to conversation schema
+
+### Phase 2: Telegram Adapter ← *current*
 - [ ] Implement `TelegramAdapter` in `packages/channels`
 - [ ] Create `apps/channels-server` (Bun HTTP server)
 - [ ] Wire up webhook routing
