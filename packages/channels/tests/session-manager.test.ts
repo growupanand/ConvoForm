@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it } from "bun:test";
-import { SessionManager } from "../src/session-manager";
+import { InMemorySessionManager } from "../src/session-manager";
 
 describe("SessionManager", () => {
-  let manager: SessionManager;
+  let manager: InMemorySessionManager;
 
   beforeEach(() => {
-    manager = new SessionManager();
+    manager = new InMemorySessionManager();
   });
 
   describe("setSession / getSession", () => {

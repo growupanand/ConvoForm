@@ -1,7 +1,7 @@
 {
     "name": "channels-server",
     "version": "1.0.0",
-    "description": "HTTP server for external channel webhooks (Telegram, WhatsApp, etc.)",
+    "description": "Bun runtime wrapper for channel webhooks (Telegram, WhatsApp, etc.)",
     "scripts": {
         "dev": "bun --watch src/index.ts",
         "dev:turbo": "bun --watch src/index.ts",
@@ -13,11 +13,7 @@
     "author": "Utkarsh Anand",
     "license": "ISC",
     "dependencies": {
-        "@convoform/ai": "workspace:*",
-        "@convoform/api": "workspace:*",
-        "@convoform/channels": "workspace:*",
-        "@convoform/common": "workspace:*",
-        "@convoform/db": "workspace:*"
+        "@convoform/channels": "workspace:*"
     },
     "devDependencies": {
         "@types/node": "catalog:",

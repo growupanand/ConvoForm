@@ -7,8 +7,9 @@
  * Since channel messages are stateless webhooks (unlike the web widget
  * which maintains state client-side), we need server-side session tracking.
  *
- * Phase 1: In-memory Map (development/single-instance)
- * Phase 4: Redis (production/multi-instance)
+ * The SessionManager interface allows pluggable implementations:
+ * - InMemorySessionManager: In-memory Map (persistent servers like Bun)
+ * - DbSessionManager: DB-backed (serverless environments like Vercel)
  */
 
 /**
@@ -23,6 +24,88 @@ export interface SessionData {
   createdAt: Date;
   /** When this session was last accessed */
   lastAccessedAt: Date;
+}
+
+/**
+ * Interface for session managers. Implementations can be backed by
+ * in-memory storage, a database, Redis, etc.
+ *
+ * @example
+ * ```ts
+ * // Use in-memory for persistent servers (Bun, Node.js)
+ * const sessionManager: SessionManager = new InMemorySessionManager();
+ *
+ * // Use DB-backed for serverless (Vercel, Cloudflare Workers)
+ * const sessionManager: SessionManager = new DbSessionManager(db);
+ * ```
+ */
+export interface SessionManager {
+  /**
+   * Retrieve an active session.
+   *
+   * @param channelType - The channel type (e.g., 'telegram')
+   * @param senderId - The channel-specific user ID
+   * @param formId - The form ID
+   * @returns The session data if found, undefined otherwise
+   *
+   * @example
+   * ```ts
+   * const session = manager.getSession("telegram", "12345", "form_abc");
+   * if (session) {
+   *   console.log("Active conversation:", session.conversationId);
+   * }
+   * ```
+   */
+  getSession(
+    channelType: string,
+    senderId: string,
+    formId: string,
+  ): SessionData | undefined | Promise<SessionData | undefined>;
+
+  /**
+   * Create or update a session.
+   *
+   * @param channelType - The channel type
+   * @param senderId - The channel-specific user ID
+   * @param formId - The form ID
+   * @param data - The session data to store
+   *
+   * @example
+   * ```ts
+   * manager.setSession("telegram", "12345", "form_abc", {
+   *   conversationId: "conv_xyz",
+   *   currentFieldId: "field_1",
+   *   createdAt: new Date(),
+   *   lastAccessedAt: new Date(),
+   * });
+   * ```
+   */
+  setSession(
+    channelType: string,
+    senderId: string,
+    formId: string,
+    data: SessionData,
+  ): void | Promise<void>;
+
+  /**
+   * Delete a session (e.g., when a conversation is completed).
+   *
+   * @param channelType - The channel type
+   * @param senderId - The channel-specific user ID
+   * @param formId - The form ID
+   * @returns true if a session was deleted, false if no session existed
+   *
+   * @example
+   * ```ts
+   * const deleted = manager.deleteSession("telegram", "12345", "form_abc");
+   * // deleted === true if the session existed
+   * ```
+   */
+  deleteSession(
+    channelType: string,
+    senderId: string,
+    formId: string,
+  ): boolean | Promise<boolean>;
 }
 
 /**
@@ -53,9 +136,12 @@ function buildSessionKey(
  * Maps `{channelType, senderId, formId}` → `SessionData` to track which
  * conversation a channel user is currently engaged in.
  *
+ * Best for persistent servers (Bun, Node.js) where the process stays alive
+ * between requests. For serverless environments, use `DbSessionManager`.
+ *
  * @example
  * ```ts
- * const sessionManager = new SessionManager();
+ * const sessionManager = new InMemorySessionManager();
  *
  * // Create a new session
  * sessionManager.setSession("telegram", "123456", "form_abc", {
@@ -69,25 +155,9 @@ function buildSessionKey(
  * const session = sessionManager.getSession("telegram", "123456", "form_abc");
  * ```
  */
-export class SessionManager {
+export class InMemorySessionManager implements SessionManager {
   private sessions: Map<string, SessionData> = new Map();
 
-  /**
-   * Retrieve an active session.
-   *
-   * @param channelType - The channel type (e.g., 'telegram')
-   * @param senderId - The channel-specific user ID
-   * @param formId - The form ID
-   * @returns The session data if found, undefined otherwise
-   *
-   * @example
-   * ```ts
-   * const session = manager.getSession("telegram", "12345", "form_abc");
-   * if (session) {
-   *   console.log("Active conversation:", session.conversationId);
-   * }
-   * ```
-   */
   getSession(
     channelType: string,
     senderId: string,
@@ -101,24 +171,6 @@ export class SessionManager {
     return session;
   }
 
-  /**
-   * Create or update a session.
-   *
-   * @param channelType - The channel type
-   * @param senderId - The channel-specific user ID
-   * @param formId - The form ID
-   * @param data - The session data to store
-   *
-   * @example
-   * ```ts
-   * manager.setSession("telegram", "12345", "form_abc", {
-   *   conversationId: "conv_xyz",
-   *   currentFieldId: "field_1",
-   *   createdAt: new Date(),
-   *   lastAccessedAt: new Date(),
-   * });
-   * ```
-   */
   setSession(
     channelType: string,
     senderId: string,
@@ -129,20 +181,6 @@ export class SessionManager {
     this.sessions.set(key, data);
   }
 
-  /**
-   * Delete a session (e.g., when a conversation is completed).
-   *
-   * @param channelType - The channel type
-   * @param senderId - The channel-specific user ID
-   * @param formId - The form ID
-   * @returns true if a session was deleted, false if no session existed
-   *
-   * @example
-   * ```ts
-   * const deleted = manager.deleteSession("telegram", "12345", "form_abc");
-   * // deleted === true if the session existed
-   * ```
-   */
   deleteSession(
     channelType: string,
     senderId: string,

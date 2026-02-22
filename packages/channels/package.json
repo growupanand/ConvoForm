@@ -11,6 +11,8 @@
     },
     "dependencies": {
         "@convoform/ai": "workspace:*",
+        "@convoform/api": "workspace:*",
+        "@convoform/common": "workspace:*",
         "@convoform/db": "workspace:*",
         "@convoform/logger": "workspace:*",
         "ai": "catalog:",

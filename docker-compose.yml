@@ -20,6 +20,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - NEXT_PUBLIC_APP_URL=http://localhost:3000
       - NEXT_PUBLIC_WEBSOCKET_URL=http://localhost:4000
+      - CHANNELS_SERVER_URL=http://channels-server:4001
       - NODE_ENV=production
       - NEXT_PUBLIC_PACKAGE_ENV=production
       - AI_API_KEY=${AI_API_KEY}
@@ -44,6 +45,20 @@ services:
       - "4000:4000"
     environment:
       - NEXT_PUBLIC_APP_URL=http://web:3000
+      - NODE_ENV=production
+    depends_on:
+      - web
+
+  channels-server:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile-channels-server
+    ports:
+      - "4001:4001"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - CHANNELS_SERVER_PORT=4001
       - NODE_ENV=production
     depends_on:
       - web

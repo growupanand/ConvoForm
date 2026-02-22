@@ -1,18 +1,22 @@
 # @convoform/channels
 
-Core abstractions and adapters for multi-channel input support (Telegram, WhatsApp, SMS, etc.).
+Core abstractions, adapters, and runtime-agnostic server for multi-channel input support (Telegram, WhatsApp, SMS, etc.).
 
 ## Architecture
 
 ```
 src/
-├── channel.ts                      # ChannelAdapter abstract class, ChannelMessage, ChannelResponse types
-├── session-manager.ts              # In-memory session tracking (sender → active conversation)
-├── channel-conversation-handler.ts # Bridge between channel adapters and CoreService (AI engine)
+├── channel.ts                         # ChannelAdapter abstract class, ChannelMessage, ChannelResponse types
+├── session-manager.ts                 # SessionManager interface + InMemorySessionManager
+├── db-session-manager.ts              # DbSessionManager (DB-backed, for serverless)
+├── channel-conversation-handler.ts    # Bridge between channel adapters and CoreService (AI engine)
 ├── adapters/
-│   ├── telegram-adapter.ts         # Telegram Bot API adapter
-│   └── telegram-types.ts           # Telegram API type definitions
-└── index.ts                        # Barrel exports
+│   ├── telegram-adapter.ts            # Telegram Bot API adapter
+│   └── telegram-types.ts             # Telegram API type definitions
+├── server/
+│   ├── channel-server.ts              # Runtime-agnostic ChannelServer with handleRequest()
+│   └── operations.ts                  # ChannelServerOperations interface + default DB implementation
+└── index.ts                           # Barrel exports
 ```
 
 ## Key Concepts
@@ -20,38 +24,63 @@ src/
 | Concept | Description |
 |---------|-------------|
 | **ChannelAdapter** | Abstract class each channel implements — `parseIncoming()`, `sendMessage()`, `verifyWebhook()` |
-| **SessionManager** | Maps `{channelType, senderId, formId}` → active conversation. Needed because channel users have no client-side state |
+| **SessionManager** | Interface for tracking `{channelType, senderId, formId}` → active conversation |
+| **InMemorySessionManager** | Map-based implementation for persistent servers (Bun, Node.js) |
+| **DbSessionManager** | DB-backed implementation for serverless (Vercel, Cloudflare Workers) — no new tables needed |
+| **ChannelServer** | Runtime-agnostic HTTP handler — routes webhooks, manages adapters, delegates to `ChannelConversationHandler` |
 | **ChannelConversationHandler** | Consumes AI streams server-side and returns plain text (channels don't support streaming) |
+| **ChannelServerOperations** | Injectable DB operations for conversations and channel connections |
 
 ## Usage
 
+### Bun persistent server
+
 ```ts
 import {
-  ChannelConversationHandler,
-  SessionManager,
-  TelegramAdapter,
+  ChannelServer,
+  InMemorySessionManager,
+  buildChannelServerOperations,
 } from "@convoform/channels";
 
-// 1. Create instances
-const sessionManager = new SessionManager();
-const handler = new ChannelConversationHandler(sessionManager);
-const adapter = new TelegramAdapter({
-  botToken: "123456:ABC-DEF...",
-  secretToken: "my-secret",
+const sessionManager = new InMemorySessionManager();
+const server = new ChannelServer({
+  sessionManager,
+  encryptionKey: process.env.ENCRYPTION_KEY ?? "",
+  operations: buildChannelServerOperations(),
 });
 
-// 2. Parse incoming webhook
-const message = adapter.parseIncoming(webhookBody);
+Bun.serve({
+  port: 4001,
+  fetch: (req) => server.handleRequest(req),
+});
 
-// 3. Process through conversation engine
-if (message) {
-  const responseText = await handler.handleMessage(message, {
-    formId: "form_abc",
-    operations: conversationOperations,
-  });
+// Optional: periodic session cleanup (Bun-only)
+setInterval(() => {
+  sessionManager.clearExpiredSessions(2 * 60 * 60 * 1000);
+}, 30 * 60 * 1000);
+```
 
-  // 4. Send response back
-  await adapter.sendMessage(message.senderId, { text: responseText });
+### Vercel serverless (Next.js API route)
+
+```ts
+import {
+  ChannelServer,
+  DbSessionManager,
+  buildChannelServerOperations,
+} from "@convoform/channels";
+
+const server = new ChannelServer({
+  sessionManager: new DbSessionManager(),
+  encryptionKey: process.env.ENCRYPTION_KEY ?? "",
+  operations: buildChannelServerOperations(),
+});
+
+export async function POST(req: Request) {
+  return server.handleRequest(req);
+}
+
+export async function GET(req: Request) {
+  return server.handleRequest(req);
 }
 ```
 
@@ -60,7 +89,7 @@ if (message) {
 1. Create `src/adapters/your-channel-adapter.ts` extending `ChannelAdapter`
 2. Implement `parseIncoming()`, `sendMessage()`, and `verifyWebhook()`
 3. Export from `src/index.ts`
-4. Add webhook route in `apps/channels-server`
+4. Add webhook route handling in `ChannelServer`
 
 ## Tests
 
@@ -68,4 +97,4 @@ if (message) {
 bun test
 ```
 
-Tests cover `SessionManager`, `TelegramAdapter.parseIncoming()`, and `ChannelConversationHandler` (using `MockLanguageModelV2`).
+Tests cover `InMemorySessionManager`, `TelegramAdapter`, and `ChannelConversationHandler` (using `MockLanguageModelV2`).

@@ -99,21 +99,9 @@ importers:
 
   apps/channels-server:
     dependencies:
-      '@convoform/ai':
-        specifier: workspace:*
-        version: link:../../packages/ai
-      '@convoform/api':
-        specifier: workspace:*
-        version: link:../../packages/api
       '@convoform/channels':
         specifier: workspace:*
         version: link:../../packages/channels
-      '@convoform/common':
-        specifier: workspace:*
-        version: link:../../packages/common
-      '@convoform/db':
-        specifier: workspace:*
-        version: link:../../packages/db
     devDependencies:
       '@types/bun':
         specifier: 'catalog:'
@@ -531,6 +519,12 @@ importers:
       '@convoform/ai':
         specifier: workspace:*
         version: link:../ai
+      '@convoform/api':
+        specifier: workspace:*
+        version: link:../api
+      '@convoform/common':
+        specifier: workspace:*
+        version: link:../common
       '@convoform/db':
         specifier: workspace:*
         version: link:../db

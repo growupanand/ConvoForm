@@ -4,7 +4,7 @@ import { inputTypeEnum } from "@convoform/db/src/schema";
 import type { ChannelMessage } from "../src/channel";
 import { ChannelConversationHandler } from "../src/channel-conversation-handler";
 import type { ConversationOperations } from "../src/channel-conversation-handler";
-import { SessionManager } from "../src/session-manager";
+import { InMemorySessionManager } from "../src/session-manager";
 
 /**
  * Helper to create a mock CoreConversation for testing.
@@ -84,11 +84,11 @@ function createMockMessage(
 }
 
 describe("ChannelConversationHandler", () => {
-  let sessionManager: SessionManager;
+  let sessionManager: InMemorySessionManager;
   let handler: ChannelConversationHandler;
 
   beforeEach(() => {
-    sessionManager = new SessionManager();
+    sessionManager = new InMemorySessionManager();
     handler = new ChannelConversationHandler(sessionManager);
   });
 

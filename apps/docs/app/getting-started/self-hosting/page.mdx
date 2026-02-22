@@ -26,11 +26,34 @@ ConvoForm is designed to be easily self-hosted using Docker.
    ```
    Edit `.env` and fill in your API keys (OpenAI, Clerk, etc.).
 
+   **Important:** Generate strong keys for:
+   - `ENCRYPTION_KEY` — Used to encrypt channel bot tokens stored in the database. Generate with `openssl rand -hex 32`.
+
 3. **Run with Docker Compose:**
 
    ```bash
    docker-compose up --build
    ```
 
+   This starts three services:
+
+   | Service | Port | Description |
+   |---------|------|-------------|
+   | **web** | `3000` | Next.js web application |
+   | **websocket-server** | `4000` | Real-time browser sync |
+   | **channels-server** | `4001` | External channel webhooks (Telegram, etc.) |
+
 4. **Access the Application:**
    Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Telegram Channel Setup
+
+To use Telegram bot integration with a self-hosted instance:
+
+1. Create a bot via [@BotFather](https://t.me/BotFather) on Telegram
+2. In the ConvoForm UI, go to **Channels** and add your bot token
+3. Expose your channels-server to the internet (e.g., via ngrok or a reverse proxy):
+   ```bash
+   ngrok http 4001
+   ```
+4. Set `CHANNELS_SERVER_URL` in your `.env` to the public URL (e.g., `https://xxxx.ngrok.io`)

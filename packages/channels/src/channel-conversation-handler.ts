@@ -110,8 +110,8 @@ export class ChannelConversationHandler {
     const { formId, operations } = opts;
     const { channelType, senderId, text } = message;
 
-    // 1. Look up existing session
-    const existingSession = this.sessionManager.getSession(
+    // 1. Look up existing session (may be async for DB-backed session managers)
+    const existingSession = await this.sessionManager.getSession(
       channelType,
       senderId,
       formId,
@@ -165,7 +165,7 @@ export class ChannelConversationHandler {
       conversation.id,
     );
 
-    this.sessionManager.setSession(channelType, senderId, formId, {
+    await this.sessionManager.setSession(channelType, senderId, formId, {
       conversationId: conversation.id,
       currentFieldId: updatedConversation.currentFieldId,
       createdAt: new Date(),
@@ -191,7 +191,7 @@ export class ChannelConversationHandler {
 
     // Conversation already completed — clean up session
     if (conversation.finishedAt) {
-      this.sessionManager.deleteSession(channelType, senderId, formId);
+      await this.sessionManager.deleteSession(channelType, senderId, formId);
       return "This form has already been completed. Thank you!";
     }
 
@@ -215,15 +215,18 @@ export class ChannelConversationHandler {
 
     // If conversation is complete, clean up the session
     if (updatedConversation.finishedAt) {
-      this.sessionManager.deleteSession(channelType, senderId, formId);
+      await this.sessionManager.deleteSession(channelType, senderId, formId);
     } else {
       // Update session with new currentFieldId
-      this.sessionManager.setSession(channelType, senderId, formId, {
+      const existingSession = await this.sessionManager.getSession(
+        channelType,
+        senderId,
+        formId,
+      );
+      await this.sessionManager.setSession(channelType, senderId, formId, {
         conversationId,
         currentFieldId: updatedConversation.currentFieldId,
-        createdAt:
-          this.sessionManager.getSession(channelType, senderId, formId)
-            ?.createdAt ?? new Date(),
+        createdAt: existingSession?.createdAt ?? new Date(),
         lastAccessedAt: new Date(),
       });
     }

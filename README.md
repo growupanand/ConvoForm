@@ -64,7 +64,7 @@ Visit our **[Documentation Site](https://docs.convoform.com)** for detailed guid
    pnpm run dev
    ```
 
-Visit `http://localhost:3000` for the web app and `http://localhost:3001` for the documentation.
+Visit `http://localhost:3000` for the web app, `http://localhost:3001` for the documentation, and `http://localhost:4001` for the channels server (Telegram webhooks).
 
 ## 🤝 Contributing
 
