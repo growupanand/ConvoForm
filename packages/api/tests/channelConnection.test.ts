@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, mock } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 
 // Mock modules before importing the router (to avoid env validation at load)
 mock.module("@convoform/common", () => ({
@@ -424,6 +424,43 @@ describe("channelConnectionRouter", () => {
       await expect(caller.delete({ id: "non_existent" })).rejects.toThrow(
         "Channel connection not found",
       );
+    });
+  });
+
+  describe("channelServerHealth", () => {
+    const originalFetch = globalThis.fetch;
+
+    afterEach(() => {
+      globalThis.fetch = originalFetch;
+    });
+
+    it("should return isOnline: true when server responds OK", async () => {
+      globalThis.fetch = mock().mockResolvedValue({ ok: true }) as any;
+
+      const caller = channelConnectionRouter.createCaller(mockCtx);
+      const result = await caller.channelServerHealth();
+
+      expect(result).toEqual({ isOnline: true });
+    });
+
+    it("should return isOnline: false when server is unreachable", async () => {
+      globalThis.fetch = mock().mockRejectedValue(
+        new Error("Connection refused"),
+      ) as any;
+
+      const caller = channelConnectionRouter.createCaller(mockCtx);
+      const result = await caller.channelServerHealth();
+
+      expect(result).toEqual({ isOnline: false });
+    });
+
+    it("should return isOnline: false when server returns non-OK status", async () => {
+      globalThis.fetch = mock().mockResolvedValue({ ok: false }) as any;
+
+      const caller = channelConnectionRouter.createCaller(mockCtx);
+      const result = await caller.channelServerHealth();
+
+      expect(result).toEqual({ isOnline: false });
     });
   });
 });

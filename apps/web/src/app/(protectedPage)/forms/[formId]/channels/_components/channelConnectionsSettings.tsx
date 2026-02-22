@@ -22,23 +22,49 @@ import {
   Switch,
   toast,
 } from "@convoform/ui";
-import { ExternalLink, Plus, Send } from "lucide-react";
+import { AlertTriangle, ExternalLink, Plus, Send } from "lucide-react";
 import { useCallback, useState } from "react";
+import { useChannelServerHealth } from "../../../../(mainPage)/channels/_components/useChannelServerHealth";
+
+/**
+ * Alert banner shown when the channels-server is not reachable.
+ * Informs the user that all channel management actions are disabled.
+ *
+ * @example
+ * ```tsx
+ * <ChannelServerOfflineBanner />
+ * ```
+ */
+function ChannelServerOfflineBanner() {
+  return (
+    <div className="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-amber-800 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
+      <AlertTriangle className="size-5 shrink-0" />
+      <div className="text-sm">
+        <p className="font-medium">Channel server is offline</p>
+        <p className="text-amber-700 dark:text-amber-300">
+          Bot management is disabled until the server is running.
+        </p>
+      </div>
+    </div>
+  );
+}
 
 /**
  * Dialog for creating a new bot and immediately assigning it to this form.
  *
  * @example
  * ```tsx
- * <CreateAndAssignBotDialog formId="form_abc" onSuccess={() => refetch()} />
+ * <CreateAndAssignBotDialog formId="form_abc" onSuccess={() => refetch()} disabled={false} />
  * ```
  */
 function CreateAndAssignBotDialog({
   formId,
   onSuccess,
+  disabled,
 }: {
   formId: string;
   onSuccess: () => void;
+  disabled?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [botToken, setBotToken] = useState("");
@@ -70,7 +96,7 @@ function CreateAndAssignBotDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline">
+        <Button size="sm" variant="outline" disabled={disabled}>
           <Plus className="size-4 mr-2" />
           Create New Bot
         </Button>
@@ -128,6 +154,7 @@ function CreateAndAssignBotDialog({
  *   connection={{ id: "conn_1", channelIdentifier: "123456", enabled: true, channelConfig: { webhookUrl: "..." } }}
  *   availableBots={[{ id: "conn_2", channelIdentifier: "789012", formId: null }]}
  *   onRefetch={() => refetch()}
+ *   disabled={false}
  * />
  * ```
  */
@@ -136,6 +163,7 @@ function TelegramChannelCard({
   connection,
   availableBots,
   onRefetch,
+  disabled: serverOffline,
 }: {
   formId: string;
   connection?: {
@@ -150,6 +178,7 @@ function TelegramChannelCard({
     formId: string | null;
   }[];
   onRefetch: () => void;
+  disabled?: boolean;
 }) {
   const updateMutation = api.channelConnection.update.useMutation({
     onSuccess: () => {
@@ -207,6 +236,8 @@ function TelegramChannelCard({
     assignMutation.isPending ||
     unassignMutation.isPending;
 
+  const isDisabled = isPending || !!serverOffline;
+
   return (
     <Card>
       <CardHeader>
@@ -226,7 +257,7 @@ function TelegramChannelCard({
             <Switch
               checked={isEnabled}
               onCheckedChange={handleToggle}
-              disabled={isPending}
+              disabled={isDisabled}
             />
           )}
         </div>
@@ -259,7 +290,7 @@ function TelegramChannelCard({
                       size="sm"
                       variant="outline"
                       onClick={() => handleAssign(bot.id)}
-                      disabled={isPending}
+                      disabled={isDisabled}
                     >
                       Assign
                     </Button>
@@ -277,7 +308,11 @@ function TelegramChannelCard({
               No unassigned bots available. Create a new bot to connect:
             </p>
           )}
-          <CreateAndAssignBotDialog formId={formId} onSuccess={onRefetch} />
+          <CreateAndAssignBotDialog
+            formId={formId}
+            onSuccess={onRefetch}
+            disabled={!!serverOffline}
+          />
         </CardContent>
       )}
 
@@ -303,7 +338,7 @@ function TelegramChannelCard({
             variant="outline"
             size="sm"
             onClick={handleUnassign}
-            disabled={isPending}
+            disabled={isDisabled}
           >
             Unassign from this form
           </Button>
@@ -322,7 +357,7 @@ function TelegramChannelCard({
             variant="outline"
             size="sm"
             onClick={handleUnassign}
-            disabled={isPending}
+            disabled={isDisabled}
           >
             Unassign from this form
           </Button>
@@ -336,6 +371,9 @@ function TelegramChannelCard({
  * Channel connections settings for a specific form.
  * Shows the currently assigned bot (if any) and allows assigning/creating bots.
  *
+ * When the channels-server is offline, all management actions are disabled
+ * and an alert banner is shown.
+ *
  * @example
  * ```tsx
  * <ChannelConnectionsSettings formId="form_abc" />
@@ -344,6 +382,8 @@ function TelegramChannelCard({
 export default function ChannelConnectionsSettings({
   formId,
 }: { formId: string }) {
+  const { isOnline, isLoading: isHealthLoading } = useChannelServerHealth();
+
   const {
     data: connections,
     isLoading: isLoadingConnections,
@@ -392,8 +432,11 @@ export default function ChannelConnectionsSettings({
     (c) => c.channelType === "telegram",
   );
 
+  const serverOffline = !isHealthLoading && !isOnline;
+
   return (
     <div className="space-y-6">
+      {serverOffline && <ChannelServerOfflineBanner />}
       <TelegramChannelCard
         formId={formId}
         connection={
@@ -415,6 +458,7 @@ export default function ChannelConnectionsSettings({
           formId: b.formId,
         }))}
         onRefetch={refetch}
+        disabled={serverOffline}
       />
     </div>
   );

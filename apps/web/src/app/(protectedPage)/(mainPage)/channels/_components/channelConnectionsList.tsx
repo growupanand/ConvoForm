@@ -25,8 +25,16 @@ import {
   Switch,
   toast,
 } from "@convoform/ui";
-import { ExternalLink, MessageSquare, Plus, Send, Unplug } from "lucide-react";
+import {
+  AlertTriangle,
+  ExternalLink,
+  MessageSquare,
+  Plus,
+  Send,
+  Unplug,
+} from "lucide-react";
 import { useCallback, useState } from "react";
+import { useChannelServerHealth } from "./useChannelServerHealth";
 
 /** Channel type display metadata (icon, label, color). */
 const CHANNEL_META: Record<
@@ -43,14 +51,40 @@ const CHANNEL_META: Record<
 const UNASSIGNED_FORM_VALUE = "__unassigned__";
 
 /**
+ * Alert banner shown when the channels-server is not reachable.
+ * Informs the user that all channel management actions are disabled.
+ *
+ * @example
+ * ```tsx
+ * <ChannelServerOfflineBanner />
+ * ```
+ */
+function ChannelServerOfflineBanner() {
+  return (
+    <div className="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-amber-800 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
+      <AlertTriangle className="size-5 shrink-0" />
+      <div className="text-sm">
+        <p className="font-medium">Channel server is offline</p>
+        <p className="text-amber-700 dark:text-amber-300">
+          Bot management is disabled until the server is running.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/**
  * Dialog for creating a new Telegram bot (without requiring a form).
  *
  * @example
  * ```tsx
- * <AddBotDialog onSuccess={() => refetch()} />
+ * <AddBotDialog onSuccess={() => refetch()} disabled={false} />
  * ```
  */
-function AddBotDialog({ onSuccess }: { onSuccess: () => void }) {
+function AddBotDialog({
+  onSuccess,
+  disabled,
+}: { onSuccess: () => void; disabled?: boolean }) {
   const [open, setOpen] = useState(false);
   const [botToken, setBotToken] = useState("");
 
@@ -78,7 +112,7 @@ function AddBotDialog({ onSuccess }: { onSuccess: () => void }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm">
+        <Button size="sm" disabled={disabled}>
           <Plus className="size-4 mr-2" />
           Add Telegram Bot
         </Button>
@@ -134,6 +168,7 @@ function AddBotDialog({ onSuccess }: { onSuccess: () => void }) {
  *   forms={[{ id: "f1", name: "My Form" }, { id: "f2", name: "Survey" }]}
  *   formName="My Form"
  *   onRefetch={() => refetch()}
+ *   disabled={false}
  * />
  * ```
  */
@@ -141,6 +176,7 @@ function BotRow({
   connection,
   forms,
   onRefetch,
+  disabled: serverOffline,
 }: {
   connection: {
     id: string;
@@ -152,6 +188,7 @@ function BotRow({
   forms: { id: string; name: string }[];
   formName: string | null;
   onRefetch: () => void;
+  disabled?: boolean;
 }) {
   const meta = CHANNEL_META[connection.channelType] ?? {
     icon: <MessageSquare className="size-4" />,
@@ -197,6 +234,8 @@ function BotRow({
     unassignMutation.isPending ||
     deleteMutation.isPending;
 
+  const isDisabled = isPending || !!serverOffline;
+
   const handleToggle = useCallback(
     (checked: boolean) => {
       updateMutation.mutate({ id: connection.id, enabled: checked });
@@ -239,7 +278,7 @@ function BotRow({
         <Select
           value={connection.formId ?? UNASSIGNED_FORM_VALUE}
           onValueChange={handleFormChange}
-          disabled={isPending}
+          disabled={isDisabled}
         >
           <SelectTrigger className="w-[180px] h-8 text-xs">
             <SelectValue placeholder="Select a form" />
@@ -277,12 +316,12 @@ function BotRow({
         <Switch
           checked={connection.enabled}
           onCheckedChange={handleToggle}
-          disabled={isPending}
+          disabled={isDisabled}
         />
         <button
           type="button"
           onClick={handleDelete}
-          disabled={isPending}
+          disabled={isDisabled}
           className="p-1.5 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50"
           title="Delete bot"
         >
@@ -298,6 +337,9 @@ function BotRow({
  * Each bot shows its form assignment dropdown and can be managed independently.
  * Uses `useSuspenseQuery` so a parent `<Suspense>` provides the loading state.
  *
+ * When the channels-server is offline, all management actions are disabled
+ * and an alert banner is shown.
+ *
  * @example
  * ```tsx
  * <Suspense fallback={<ChannelConnectionsListLoading />}>
@@ -306,6 +348,8 @@ function BotRow({
  * ```
  */
 export function ChannelConnectionsList() {
+  const { isOnline, isLoading: isHealthLoading } = useChannelServerHealth();
+
   const [connections, { refetch: refetchConnections }] =
     api.channelConnection.listForOrg.useSuspenseQuery(undefined, {
       refetchOnMount: true,
@@ -324,11 +368,14 @@ export function ChannelConnectionsList() {
     refetchConnections();
   }, [refetchConnections]);
 
+  const serverOffline = !isHealthLoading && !isOnline;
+
   if (connections.length === 0) {
     return (
       <div className="space-y-4">
+        {serverOffline && <ChannelServerOfflineBanner />}
         <div className="flex justify-end">
-          <AddBotDialog onSuccess={refetch} />
+          <AddBotDialog onSuccess={refetch} disabled={serverOffline} />
         </div>
         <Card className="border-dashed">
           <CardHeader className="items-center text-center">
@@ -348,12 +395,13 @@ export function ChannelConnectionsList() {
 
   return (
     <div className="space-y-4">
+      {serverOffline && <ChannelServerOfflineBanner />}
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
           {connections.length} bot{connections.length !== 1 && "s"} in your
           organization.
         </p>
-        <AddBotDialog onSuccess={refetch} />
+        <AddBotDialog onSuccess={refetch} disabled={serverOffline} />
       </div>
       <div className="space-y-2">
         {connections.map((conn) => (
@@ -369,6 +417,7 @@ export function ChannelConnectionsList() {
             forms={forms}
             formName={conn.form?.name ?? null}
             onRefetch={refetch}
+            disabled={serverOffline}
           />
         ))}
       </div>

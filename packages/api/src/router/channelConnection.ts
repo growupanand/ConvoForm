@@ -52,6 +52,34 @@ const channelTypeEnum = z.enum(["telegram"]);
 
 export const channelConnectionRouter = createTRPCRouter({
   /**
+   * Check whether the channels-server is running and reachable.
+   * Pings `GET /healthcheck` with a 3-second timeout.
+   *
+   * @returns `{ isOnline: true }` if the server responds with HTTP 200,
+   *          `{ isOnline: false }` on any error or timeout.
+   *
+   * @example
+   * ```ts
+   * const { isOnline } = await trpc.channelConnection.channelServerHealth.query();
+   * if (!isOnline) {
+   *   // Show "server offline" banner, disable channel management UI
+   * }
+   * ```
+   */
+  channelServerHealth: orgProtectedProcedure.query(async () => {
+    const url = env.CHANNELS_SERVER_URL ?? "http://localhost:4001";
+    console.log({ url });
+    try {
+      const res = await fetch(`${url}/healthcheck`, {
+        signal: AbortSignal.timeout(3000),
+      });
+      return { isOnline: res.ok };
+    } catch {
+      return { isOnline: false };
+    }
+  }),
+
+  /**
    * List all channel connections for a specific form.
    *
    * @example
