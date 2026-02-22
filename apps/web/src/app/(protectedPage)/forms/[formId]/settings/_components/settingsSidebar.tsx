@@ -4,19 +4,32 @@ import {
   SecondaryNavigation,
   type SecondaryNavigationItem,
 } from "@/components/common/secondaryNavigation";
-import { Zap } from "lucide-react";
+import { MessageSquare, Zap } from "lucide-react";
 import MainNavTab from "../../_components/mainNavTab";
 
 type Props = {
   formId: string;
 };
 
-export function IntegrationsSidebar({ formId }: Props) {
+/**
+ * Sidebar for the Settings tab, combining Integrations and Channels navigation.
+ *
+ * @example
+ * ```tsx
+ * <SettingsSidebar formId="form_abc" />
+ * ```
+ */
+export function SettingsSidebar({ formId }: Props) {
   const secondaryNavigationItems: SecondaryNavigationItem[] = [
     {
-      title: "Data sync",
-      href: `/forms/${formId}/integrations`,
+      title: "Integrations",
+      href: `/forms/${formId}/settings`,
       icon: <Zap className="size-4" />,
+    },
+    {
+      title: "Channels",
+      href: `/forms/${formId}/settings/channels`,
+      icon: <MessageSquare className="size-4" />,
     },
   ];
 
@@ -30,7 +43,7 @@ export function IntegrationsSidebar({ formId }: Props) {
   );
 }
 
-const IntegrationsSidebarSkeleton = ({ formId }: { formId: string }) => {
+const SettingsSidebarSkeleton = ({ formId }: { formId: string }) => {
   return (
     <div className="h-full w-full flex flex-col space-y-4">
       <div className="space-y-4">
@@ -40,4 +53,4 @@ const IntegrationsSidebarSkeleton = ({ formId }: { formId: string }) => {
   );
 };
 
-IntegrationsSidebar.Skeleton = IntegrationsSidebarSkeleton;
+SettingsSidebar.Skeleton = SettingsSidebarSkeleton;

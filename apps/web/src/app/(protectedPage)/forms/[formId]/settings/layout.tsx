@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { FormEditPageLayout } from "@/components/formEditPageLayout";
-import { IntegrationsSidebar } from "./_components/integrationsSidebar";
+import { SettingsSidebar } from "./_components/settingsSidebar";
 
 type Props = {
   children: React.ReactNode;
@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const metadata: Metadata = {
-  title: "Integrations",
+  title: "Settings",
 };
 
 export default async function Layout(props: Props) {
@@ -20,7 +20,7 @@ export default async function Layout(props: Props) {
   const { children } = props;
 
   return (
-    <FormEditPageLayout leftSidebar={<IntegrationsSidebar formId={formId} />}>
+    <FormEditPageLayout leftSidebar={<SettingsSidebar formId={formId} />}>
       {children}
     </FormEditPageLayout>
   );

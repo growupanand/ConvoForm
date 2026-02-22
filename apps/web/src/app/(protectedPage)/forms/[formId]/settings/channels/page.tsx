@@ -1,11 +1,11 @@
 import { MessageSquare } from "lucide-react";
-import ChannelConnectionsSettings from "./_components/channelConnectionsSettings";
+import ChannelConnectionsSettings from "../../channels/_components/channelConnectionsSettings";
 
 type Props = {
   params: Promise<{ formId: string }>;
 };
 
-export default async function ChannelsPage(props: Props) {
+export default async function ChannelsSettingsPage(props: Props) {
   const params = await props.params;
   const { formId } = params;
 
