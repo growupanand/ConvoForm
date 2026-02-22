@@ -498,6 +498,37 @@ importers:
         specifier: 'catalog:'
         version: 5.8.3
 
+  packages/channels:
+    dependencies:
+      '@convoform/ai':
+        specifier: workspace:*
+        version: link:../ai
+      '@convoform/db':
+        specifier: workspace:*
+        version: link:../db
+      '@convoform/logger':
+        specifier: workspace:*
+        version: link:../logger
+      ai:
+        specifier: 'catalog:'
+        version: 5.0.5(zod@4.1.11)
+      zod:
+        specifier: 'catalog:'
+        version: 4.1.11
+    devDependencies:
+      '@convoform/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/bun':
+        specifier: 'catalog:'
+        version: 1.2.19(@types/react@19.1.2)
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.11
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.3
+
   packages/common:
     dependencies:
       zod:

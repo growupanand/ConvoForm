@@ -38,6 +38,8 @@ export const conversation = pgTable(
       .notNull()
       .default({}),
     currentFieldId: text("currentFieldId"),
+    channelType: text("channelType"),
+    channelSenderId: text("channelSenderId"),
   },
   (conversation) => [
     index("idx_conversation_org_form").on(
@@ -60,6 +62,9 @@ export const conversation = pgTable(
     index("idx_conversation_finished_at")
       .on(conversation.finishedAt)
       .where(sql`${conversation.finishedAt} IS NOT NULL`),
+    index("idx_conversation_channel_type")
+      .on(conversation.channelType)
+      .where(sql`${conversation.channelType} IS NOT NULL`),
   ],
 );
 
