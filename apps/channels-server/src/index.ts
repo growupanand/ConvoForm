@@ -18,6 +18,7 @@ import {
   SessionManager,
   TelegramAdapter,
 } from "@convoform/channels";
+import { decrypt } from "@convoform/common";
 import {
   type TelegramChannelConfig,
   buildConversationOperations,
@@ -25,6 +26,7 @@ import {
 } from "./db-operations";
 
 const PORT = process.env.CHANNELS_SERVER_PORT ?? 4001;
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY ?? "";
 
 // ── Shared Instances ──────────────────────────────────────
 
@@ -37,6 +39,8 @@ const telegramAdapters = new Map<string, TelegramAdapter>();
 
 /**
  * Get or create a TelegramAdapter for a given form's channel connection.
+ *
+ * Decrypts the stored bot token before creating the adapter.
  *
  * @param formId - The form ID to get the adapter for
  * @returns The TelegramAdapter and connection, or null if no connection exists
@@ -63,8 +67,12 @@ async function getTelegramAdapter(formId: string) {
   }
 
   const config = connection.channelConfig as unknown as TelegramChannelConfig;
+
+  // Decrypt the bot token (it's encrypted in the DB by the tRPC router)
+  const botToken = await decrypt(config.botToken, ENCRYPTION_KEY);
+
   const adapter = new TelegramAdapter({
-    botToken: config.botToken,
+    botToken,
     secretToken: config.secretToken,
   });
 
@@ -194,6 +202,50 @@ async function handleTelegramSetup(request: Request): Promise<Response> {
   }
 }
 
+/**
+ * Handle webhook teardown request.
+ *
+ * Deregisters the webhook from Telegram and clears the cached adapter.
+ * Body: { formId: string }
+ */
+async function handleTelegramTeardown(request: Request): Promise<Response> {
+  try {
+    const { formId } = (await request.json()) as { formId: string };
+
+    if (!formId) {
+      return new Response(JSON.stringify({ error: "Missing formId" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // Get the cached adapter (or create from DB if not cached)
+    const result = await getTelegramAdapter(formId);
+    if (result) {
+      // Deregister webhook from Telegram
+      const apiResult = await result.adapter.deleteWebhook();
+      console.log(
+        `[telegram] Webhook teardown for form ${formId}: ${apiResult.ok ? "✓" : "✗"}`,
+      );
+    }
+
+    // Always clear the adapter cache for this form
+    telegramAdapters.delete(formId);
+
+    return new Response(JSON.stringify({ ok: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("[telegram] Error tearing down webhook:", error);
+    // Still clear the cache even on error
+    return new Response(JSON.stringify({ ok: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
+
 // ── Server ──────────────────────────────────────
 
 // Periodic session cleanup (every 30 minutes, clear sessions older than 2 hours)
@@ -238,6 +290,11 @@ Bun.serve({
     // Telegram setup: POST /setup/telegram
     if (req.method === "POST" && pathname === "/setup/telegram") {
       return handleTelegramSetup(req);
+    }
+
+    // Telegram teardown: POST /teardown/telegram
+    if (req.method === "POST" && pathname === "/teardown/telegram") {
+      return handleTelegramTeardown(req);
     }
 
     return new Response("Not Found", { status: 404 });

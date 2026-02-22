@@ -27,6 +27,7 @@ export function useTableActions(data: Conversation[]) {
           createdAt,
           finishedAt,
           isInProgress,
+          channelType,
         } = conversation;
         const sanitizedFormFieldResponses =
           getConversationTableData(formFieldResponses);
@@ -41,6 +42,7 @@ export function useTableActions(data: Conversation[]) {
           id,
           name,
           createdAt,
+          channelType: channelType ?? "web",
           status: finishedAt
             ? "Finished"
             : isInProgress
@@ -54,6 +56,7 @@ export function useTableActions(data: Conversation[]) {
           id,
           name,
           createdAt: createdAt.toLocaleString(),
+          channelType: channelType ?? "web",
           status: finishedAt
             ? "Finished"
             : isInProgress

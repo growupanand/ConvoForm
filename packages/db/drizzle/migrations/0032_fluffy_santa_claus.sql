@@ -1,0 +1,2 @@
+ALTER TABLE "ChannelConnection" ADD COLUMN "channelIdentifier" text;--> statement-breakpoint
+ALTER TABLE "ChannelConnection" ADD CONSTRAINT "uq_channel_connection_identifier" UNIQUE("channelType","channelIdentifier");

@@ -225,6 +225,13 @@
       "when": 1771756414241,
       "tag": "0031_nebulous_princess_powerful",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1771768507977,
+      "tag": "0032_fluffy_santa_claus",
+      "breakpoints": true
     }
   ]
 }

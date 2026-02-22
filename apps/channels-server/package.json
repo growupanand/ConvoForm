@@ -16,6 +16,7 @@
         "@convoform/ai": "workspace:*",
         "@convoform/api": "workspace:*",
         "@convoform/channels": "workspace:*",
+        "@convoform/common": "workspace:*",
         "@convoform/db": "workspace:*"
     },
     "devDependencies": {

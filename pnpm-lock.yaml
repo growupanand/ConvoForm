@@ -108,6 +108,9 @@ importers:
       '@convoform/channels':
         specifier: workspace:*
         version: link:../../packages/channels
+      '@convoform/common':
+        specifier: workspace:*
+        version: link:../../packages/common
       '@convoform/db':
         specifier: workspace:*
         version: link:../../packages/db

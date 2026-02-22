@@ -3,13 +3,13 @@ import { timeAgo } from "@/lib/utils";
 import type { Conversation } from "@convoform/db/src/schema";
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from "@convoform/ui";
 import type { ColumnDef } from "@tanstack/react-table";
-import { FileText } from "lucide-react";
+import { FileText, Globe, Send } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
 
 type ConversationData = Pick<
   Conversation,
-  "id" | "name" | "createdAt" | "finishedAt" | "isInProgress"
+  "id" | "name" | "createdAt" | "finishedAt" | "isInProgress" | "channelType"
 >;
 
 export type ConversationTableData = Omit<
@@ -17,6 +17,7 @@ export type ConversationTableData = Omit<
   "finishedAt" | "isInProgress"
 > & {
   status: string;
+  channelType: string;
 };
 
 export function useConversationColumns(
@@ -65,6 +66,20 @@ export function useConversationColumns(
       {
         accessorKey: "status",
         header: "Status",
+      },
+      {
+        accessorKey: "channelType",
+        header: "Channel",
+        cell: (info) => {
+          const channel = info.row.original.channelType ?? "web";
+          const Icon = channel === "telegram" ? Send : Globe;
+          return (
+            <div className="flex items-center gap-1.5 text-muted-foreground">
+              <Icon className="size-3.5" />
+              <span className="capitalize">{channel}</span>
+            </div>
+          );
+        },
       },
     ];
   }, [formId]);

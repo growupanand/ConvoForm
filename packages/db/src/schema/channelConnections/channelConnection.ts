@@ -17,6 +17,10 @@ import { form } from "../forms/form";
  *
  * Each row represents a single channel connection for a specific form,
  * storing the channel-specific configuration (e.g., bot token).
+ *
+ * `channelIdentifier` stores a non-sensitive identifier for the channel
+ * account (e.g., the Telegram bot ID from the token format `{bot_id}:{hash}`).
+ * This enables duplicate detection across forms without exposing secrets.
  */
 export const channelConnection = pgTable(
   "ChannelConnection",
@@ -32,6 +36,8 @@ export const channelConnection = pgTable(
       .default({}),
     enabled: boolean("enabled").default(true).notNull(),
     organizationId: text("organizationId").notNull(),
+    /** Non-sensitive channel account identifier (e.g., Telegram bot ID) */
+    channelIdentifier: text("channelIdentifier"),
   },
   (table) => [
     index("idx_channel_connection_form_id").on(table.formId),
@@ -39,6 +45,10 @@ export const channelConnection = pgTable(
     unique("uq_channel_connection_type_form").on(
       table.channelType,
       table.formId,
+    ),
+    unique("uq_channel_connection_identifier").on(
+      table.channelType,
+      table.channelIdentifier,
     ),
   ],
 );

@@ -212,11 +212,11 @@ A new section in the form settings where users can:
 - [x] Wire up webhook routing
 - [x] Test end-to-end: Telegram message → form question → answer → next question
 
-### Phase 3: Web UI & Polish
-- [ ] Add channel management UI in form settings
-- [ ] Add tRPC routes for CRUD on `channelConnections`
-- [ ] Filter conversations by channel in the dashboard
-- [ ] Add proper error handling, rate limiting, and security
+### Phase 3: Web UI & Polish ✅
+- [x] Add channel management UI in form settings
+- [x] Add tRPC routes for CRUD on `channelConnections`
+- [x] Filter conversations by channel in the dashboard
+- [x] Add proper error handling, rate limiting, and security
 
 ### Phase 4: Scale & More Channels
 - [ ] Redis-based session manager
