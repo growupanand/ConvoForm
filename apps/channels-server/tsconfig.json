@@ -1,17 +1,16 @@
 {
+  "extends": "@convoform/tsconfig/nextjs.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "lib": ["es2022"],
-    "declaration": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
   "exclude": ["node_modules", "dist", "playground"]
 }

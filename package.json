@@ -11,10 +11,34 @@
   "engines": {
     "node": ">=22"
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*",
+      "packages/email/.react-email"
+    ],
+    "catalog": {
+      "react": "19.1.2",
+      "react-dom": "19.1.2",
+      "zod": "4.1.11",
+      "next": "15.5.8",
+      "typescript": "5.8.3",
+      "bun": "1.2.10",
+      "ai": "5.0.5",
+      "@ai-sdk/groq": "2.0.34",
+      "@ai-sdk/openai": "2.0.0",
+      "ai-sdk-ollama": "^2.0.0",
+      "@ai-sdk/react": "2.0.28",
+      "posthog-node": "5.9.1",
+      "@hookform/resolvers": "5.2.2",
+      "react-hook-form": "7.63.0",
+      "@types/react": "19.1.2",
+      "@types/react-dom": "19.1.2",
+      "@types/node": "^22",
+      "@types/bun": "1.2.19",
+      "drizzle-orm": "0.45.1"
+    }
+  },
   "scripts": {
     "dev": "dotenv -v NEXT_PUBLIC_PACKAGE_ENV=development -e .env -- turbo run dev",
     "dev:turbo": "dotenv -v NEXT_PUBLIC_PACKAGE_ENV=development -e .env -- turbo run dev:turbo",
@@ -62,13 +86,11 @@
     "release-it": "^17.0.1",
     "turbo": "^2.1.1"
   },
-  "pnpm": {
-    "overrides": {
-      "@types/react": "catalog:",
-      "@types/react-dom": "catalog:"
-    }
-  },
   "volta": {
     "node": "22.14.0"
+  },
+  "overrides": {
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:"
   }
 }
