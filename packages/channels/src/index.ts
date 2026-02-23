@@ -1,3 +1,4 @@
+export * from "./analytics";
 export * from "./channel";
 export * from "./session-manager";
 export * from "./db-session-manager";

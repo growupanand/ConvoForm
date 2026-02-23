@@ -18,7 +18,9 @@
  */
 
 import { decrypt } from "@convoform/common";
+import type { ILogger } from "@convoform/logger";
 import { TelegramAdapter } from "../adapters/telegram-adapter";
+import { ChannelAnalytics } from "../analytics";
 import { ChannelConversationHandler } from "../channel-conversation-handler";
 import type { SessionManager } from "../session-manager";
 import type {
@@ -45,6 +47,8 @@ export interface ChannelServerConfig {
   encryptionKey: string;
   /** Database operations for conversations and channel connections */
   operations: ChannelServerOperations;
+  /** Optional logger instance (defaults to singleton via getLogger()) */
+  logger?: ILogger;
 }
 
 /**
@@ -75,6 +79,7 @@ export class ChannelServer {
   private encryptionKey: string;
   private operations: ChannelServerOperations;
   private conversationHandler: ChannelConversationHandler;
+  private analytics: ChannelAnalytics;
 
   /** Cache of TelegramAdapter instances per botId (channelIdentifier) */
   private telegramAdapters = new Map<string, TelegramAdapter>();
@@ -83,8 +88,10 @@ export class ChannelServer {
     this.sessionManager = config.sessionManager;
     this.encryptionKey = config.encryptionKey;
     this.operations = config.operations;
+    this.analytics = new ChannelAnalytics(config.logger);
     this.conversationHandler = new ChannelConversationHandler(
       this.sessionManager,
+      config.logger,
     );
   }
 
@@ -215,10 +222,18 @@ export class ChannelServer {
     request: Request,
     botId: string,
   ): Promise<Response> {
+    const timer = this.analytics.startRequestTrace(
+      "telegram",
+      "handle_webhook",
+    );
+
     try {
       const result = await this.getTelegramAdapter(botId);
       if (!result) {
-        console.error(`No Telegram channel connection found for bot: ${botId}`);
+        this.analytics.trackError("handle_webhook", "No channel connection", {
+          botId,
+          channelType: "telegram",
+        });
         return new Response(
           JSON.stringify({ error: "Channel not configured for this bot" }),
           { status: 404, headers: { "Content-Type": "application/json" } },
@@ -226,32 +241,36 @@ export class ChannelServer {
       }
 
       const { adapter, formId } = result;
+      timer.checkpoint("adapter_resolved");
 
       const isValid = await adapter.verifyWebhook(request);
       if (!isValid) {
+        this.analytics.trackError("handle_webhook", "Unauthorized webhook", {
+          botId,
+          channelType: "telegram",
+        });
         return new Response("Unauthorized", { status: 401 });
       }
+      timer.checkpoint("webhook_verified");
 
       const body = await request.json();
       const message = adapter.parseIncoming(body);
 
       if (!message) {
+        timer.end({ skipped: true, reason: "non_message_update" });
         return new Response("OK", { status: 200 });
       }
 
+      this.analytics.trackWebhookReceived("telegram", botId, message.senderId);
+      timer.checkpoint("message_parsed");
+
       if (!formId) {
-        console.log(
-          `[telegram] Bot ${botId} received message but has no form assigned — replying with notice`,
-        );
         await adapter.sendMessage(message.senderId, {
           text: "This bot is not connected to any form yet. Please ask the form owner to assign a form to this bot.",
         });
+        timer.end({ skipped: true, reason: "no_form_assigned" });
         return new Response("OK", { status: 200 });
       }
-
-      console.log(
-        `[telegram] Received message from ${message.senderId} for bot ${botId} (form ${formId}): "${message.text}"`,
-      );
 
       const responseText = await this.conversationHandler.handleMessage(
         message,
@@ -260,19 +279,34 @@ export class ChannelServer {
           operations: this.operations,
         },
       );
+      timer.checkpoint("conversation_handled");
 
       await adapter.sendMessage(message.senderId, { text: responseText });
 
-      console.log(
-        `[telegram] Sent response to ${message.senderId}: "${responseText.substring(0, 100)}..."`,
+      this.analytics.trackResponseSent(
+        "telegram",
+        botId,
+        message.senderId,
+        responseText.length,
+      );
+
+      const totalMs = timer.end({ success: true });
+
+      this.analytics.trackMessageProcessed(
+        "telegram",
+        botId,
+        message.senderId,
+        formId,
+        totalMs,
       );
 
       return new Response("OK", { status: 200 });
     } catch (error) {
-      console.error(
-        `[telegram] Error handling webhook for bot ${botId}:`,
-        error,
-      );
+      this.analytics.trackError("handle_webhook", error, {
+        botId,
+        channelType: "telegram",
+      });
+      timer.end({ success: false });
       return new Response("OK", { status: 200 });
     }
   }
@@ -312,8 +346,10 @@ export class ChannelServer {
       const webhookUrl = `${webhookBaseUrl}/webhook/telegram/${channelIdentifier}`;
       const apiResult = await result.adapter.setWebhook(webhookUrl);
 
-      console.log(
-        `[telegram] Webhook setup for bot ${channelIdentifier}: ${apiResult.ok ? "✓" : "✗"}`,
+      this.analytics.trackWebhookSetup(
+        "telegram",
+        channelIdentifier,
+        apiResult.ok,
       );
 
       return new Response(JSON.stringify(apiResult), {
@@ -321,7 +357,9 @@ export class ChannelServer {
         headers: { "Content-Type": "application/json" },
       });
     } catch (error) {
-      console.error("[telegram] Error setting up webhook:", error);
+      this.analytics.trackError("webhook_setup", error, {
+        channelType: "telegram",
+      });
       return new Response(
         JSON.stringify({ error: "Failed to setup webhook" }),
         { status: 500, headers: { "Content-Type": "application/json" } },
@@ -348,12 +386,12 @@ export class ChannelServer {
         );
       }
 
+      let teardownSuccess = false;
+
       const cached = this.telegramAdapters.get(channelIdentifier);
       if (cached) {
         const apiResult = await cached.deleteWebhook();
-        console.log(
-          `[telegram] Webhook teardown for bot ${channelIdentifier}: ${apiResult.ok ? "✓" : "✗"} (from cache)`,
-        );
+        teardownSuccess = apiResult.ok;
       } else {
         const connection =
           await this.operations.getChannelConnectionForTeardown(
@@ -369,15 +407,17 @@ export class ChannelServer {
             secretToken: config.secretToken,
           });
           const apiResult = await adapter.deleteWebhook();
-          console.log(
-            `[telegram] Webhook teardown for bot ${channelIdentifier}: ${apiResult.ok ? "✓" : "✗"} (from DB)`,
-          );
+          teardownSuccess = apiResult.ok;
         } else {
-          console.log(
-            `[telegram] No connection found for bot ${channelIdentifier}, skipping teardown`,
-          );
+          teardownSuccess = true; // Nothing to teardown
         }
       }
+
+      this.analytics.trackWebhookTeardown(
+        "telegram",
+        channelIdentifier,
+        teardownSuccess,
+      );
 
       this.telegramAdapters.delete(channelIdentifier);
 
@@ -386,7 +426,9 @@ export class ChannelServer {
         headers: { "Content-Type": "application/json" },
       });
     } catch (error) {
-      console.error("[telegram] Error tearing down webhook:", error);
+      this.analytics.trackError("webhook_teardown", error, {
+        channelType: "telegram",
+      });
       return new Response(JSON.stringify({ ok: true }), {
         status: 200,
         headers: { "Content-Type": "application/json" },

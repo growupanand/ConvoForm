@@ -12,6 +12,8 @@
  * @see https://core.telegram.org/bots/api
  */
 
+import { getLogger } from "@convoform/logger";
+import type { ILogger } from "@convoform/logger";
 import {
   ChannelAdapter,
   type ChannelMessage,
@@ -45,6 +47,8 @@ export interface TelegramAdapterConfig {
    * The header `X-Telegram-Bot-Api-Secret-Token` will be checked against this.
    */
   secretToken?: string;
+  /** Optional logger instance for structured logging */
+  logger?: ILogger;
 }
 
 /**
@@ -71,11 +75,16 @@ export class TelegramAdapter extends ChannelAdapter {
   readonly channelType = "telegram";
   private botToken: string;
   private secretToken?: string;
+  private logger: ILogger;
 
   constructor(config: TelegramAdapterConfig) {
     super();
     this.botToken = config.botToken;
     this.secretToken = config.secretToken;
+    this.logger = (config.logger ?? getLogger()).withContext({
+      component: "channels",
+      module: "telegram-adapter",
+    });
   }
 
   /**
@@ -107,10 +116,18 @@ export class TelegramAdapter extends ChannelAdapter {
 
     // Only handle regular text messages
     if (!update.message?.text) {
+      this.logger.debug("Skipping non-text update", {
+        updateId: update.update_id,
+      });
       return null;
     }
 
     const message = update.message;
+
+    this.logger.debug("Parsed incoming message", {
+      chatId: String(message.chat.id),
+      messageId: message.message_id,
+    });
 
     return {
       // biome-ignore lint/style/noNonNullAssertion: narrowed by the guard above
@@ -150,6 +167,10 @@ export class TelegramAdapter extends ChannelAdapter {
     senderId: string,
     response: ChannelResponse,
   ): Promise<void> {
+    const timer = this.logger.startTimer("telegram_send_message", {
+      senderId,
+    });
+
     const url = `${TELEGRAM_API_BASE}/bot${this.botToken}/sendMessage`;
 
     const res = await fetch(url, {
@@ -164,10 +185,13 @@ export class TelegramAdapter extends ChannelAdapter {
     const data = (await res.json()) as TelegramApiResponse<TelegramMessage>;
 
     if (!data.ok) {
+      timer.end({ success: false, errorCode: data.error_code });
       throw new Error(
         `Telegram sendMessage failed: ${data.description ?? "Unknown error"} (code: ${data.error_code})`,
       );
     }
+
+    timer.end({ success: true });
   }
 
   /**
@@ -190,11 +214,18 @@ export class TelegramAdapter extends ChannelAdapter {
   async verifyWebhook(request: Request): Promise<boolean> {
     // If no secret token configured, accept all (for development)
     if (!this.secretToken) {
+      this.logger.debug("Webhook verification skipped (no secret token)");
       return true;
     }
 
     const headerToken = request.headers.get("x-telegram-bot-api-secret-token");
-    return headerToken === this.secretToken;
+    const isValid = headerToken === this.secretToken;
+
+    this.logger.debug("Webhook verification result", {
+      verified: isValid,
+    });
+
+    return isValid;
   }
 
   /**
@@ -212,6 +243,8 @@ export class TelegramAdapter extends ChannelAdapter {
    * ```
    */
   async setWebhook(webhookUrl: string): Promise<TelegramApiResponse<boolean>> {
+    const timer = this.logger.startTimer("telegram_set_webhook");
+
     const url = `${TELEGRAM_API_BASE}/bot${this.botToken}/setWebhook`;
 
     const body: Record<string, unknown> = { url: webhookUrl };
@@ -225,7 +258,10 @@ export class TelegramAdapter extends ChannelAdapter {
       body: JSON.stringify(body),
     });
 
-    return (await res.json()) as TelegramApiResponse<boolean>;
+    const result = (await res.json()) as TelegramApiResponse<boolean>;
+    timer.end({ success: result.ok });
+
+    return result;
   }
 
   /**
@@ -239,6 +275,8 @@ export class TelegramAdapter extends ChannelAdapter {
    * ```
    */
   async deleteWebhook(): Promise<TelegramApiResponse<boolean>> {
+    const timer = this.logger.startTimer("telegram_delete_webhook");
+
     const url = `${TELEGRAM_API_BASE}/bot${this.botToken}/deleteWebhook`;
 
     const res = await fetch(url, {
@@ -246,6 +284,9 @@ export class TelegramAdapter extends ChannelAdapter {
       headers: { "Content-Type": "application/json" },
     });
 
-    return (await res.json()) as TelegramApiResponse<boolean>;
+    const result = (await res.json()) as TelegramApiResponse<boolean>;
+    timer.end({ success: result.ok });
+
+    return result;
   }
 }

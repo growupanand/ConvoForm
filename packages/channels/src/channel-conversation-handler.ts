@@ -15,6 +15,8 @@
 
 import { CoreService } from "@convoform/ai";
 import type { CoreConversation } from "@convoform/db/src/schema";
+import { getLogger } from "@convoform/logger";
+import type { ILogger } from "@convoform/logger";
 import type { ChannelMessage } from "./channel";
 import type { SessionManager } from "./session-manager";
 
@@ -80,9 +82,14 @@ export interface ConversationOperations {
  */
 export class ChannelConversationHandler {
   private sessionManager: SessionManager;
+  private logger: ILogger;
 
-  constructor(sessionManager: SessionManager) {
+  constructor(sessionManager: SessionManager, logger?: ILogger) {
     this.sessionManager = sessionManager;
+    this.logger = (logger ?? getLogger()).withContext({
+      component: "channels",
+      module: "conversation-handler",
+    });
   }
 
   /**
@@ -110,15 +117,29 @@ export class ChannelConversationHandler {
     const { formId, operations } = opts;
     const { channelType, senderId, text } = message;
 
+    const timer = this.logger.startTimer("handle_message", {
+      channelType,
+      senderId,
+      formId,
+    });
+
     // 1. Look up existing session (may be async for DB-backed session managers)
     const existingSession = await this.sessionManager.getSession(
       channelType,
       senderId,
       formId,
     );
+    timer.checkpoint("session_lookup");
 
     if (existingSession) {
-      return await this.processExistingConversation(
+      this.logger.debug("Resuming existing conversation", {
+        conversationId: existingSession.conversationId,
+        channelType,
+        senderId,
+        formId,
+      });
+
+      const result = await this.processExistingConversation(
         existingSession.conversationId,
         existingSession.currentFieldId,
         text,
@@ -126,16 +147,30 @@ export class ChannelConversationHandler {
         senderId,
         formId,
         operations,
+        timer,
       );
+
+      timer.end({ isNewConversation: false });
+      return result;
     }
 
     // 2. No session — start a new conversation
-    return await this.initializeNewConversation(
+    this.logger.info("Starting new conversation", {
+      channelType,
+      senderId,
+      formId,
+    });
+
+    const result = await this.initializeNewConversation(
       channelType,
       senderId,
       formId,
       operations,
+      timer,
     );
+
+    timer.end({ isNewConversation: true });
+    return result;
   }
 
   /**
@@ -146,11 +181,13 @@ export class ChannelConversationHandler {
     senderId: string,
     formId: string,
     operations: ConversationOperations,
+    timer: ReturnType<ILogger["startTimer"]>,
   ): Promise<string> {
     const conversation = await operations.createConversation(formId, {
       channelType,
       channelSenderId: senderId,
     });
+    timer.checkpoint("conversation_created");
 
     const coreService = new CoreService({
       conversation,
@@ -159,6 +196,7 @@ export class ChannelConversationHandler {
 
     const stream = await coreService.initialize();
     const responseText = await this.consumeStream(stream);
+    timer.checkpoint("ai_stream_consumed");
 
     // Update session with the conversation context
     const updatedConversation = await operations.getConversation(
@@ -171,6 +209,7 @@ export class ChannelConversationHandler {
       createdAt: new Date(),
       lastAccessedAt: new Date(),
     });
+    timer.checkpoint("session_updated");
 
     return responseText;
   }
@@ -186,12 +225,21 @@ export class ChannelConversationHandler {
     senderId: string,
     formId: string,
     operations: ConversationOperations,
+    timer: ReturnType<ILogger["startTimer"]>,
   ): Promise<string> {
     const conversation = await operations.getConversation(conversationId);
+    timer.checkpoint("conversation_fetched");
 
     // Conversation already completed — clean up session
     if (conversation.finishedAt) {
       await this.sessionManager.deleteSession(channelType, senderId, formId);
+
+      this.logger.info("Conversation already completed", {
+        conversationId,
+        channelType,
+        senderId,
+      });
+
       return "This form has already been completed. Thank you!";
     }
 
@@ -208,6 +256,7 @@ export class ChannelConversationHandler {
 
     const stream = await coreService.process(answerText, currentFieldId);
     const responseText = await this.consumeStream(stream);
+    timer.checkpoint("ai_stream_consumed");
 
     // Re-fetch conversation to get the updated state
     const updatedConversation =
@@ -216,6 +265,13 @@ export class ChannelConversationHandler {
     // If conversation is complete, clean up the session
     if (updatedConversation.finishedAt) {
       await this.sessionManager.deleteSession(channelType, senderId, formId);
+
+      this.logger.info("Conversation completed", {
+        conversationId,
+        channelType,
+        senderId,
+        formId,
+      });
     } else {
       // Update session with new currentFieldId
       const existingSession = await this.sessionManager.getSession(
@@ -230,6 +286,7 @@ export class ChannelConversationHandler {
         lastAccessedAt: new Date(),
       });
     }
+    timer.checkpoint("session_updated");
 
     return responseText;
   }
