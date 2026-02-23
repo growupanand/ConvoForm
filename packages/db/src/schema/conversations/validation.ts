@@ -103,6 +103,7 @@ export const respondentMetadataSchema = z
     submittedAt: z.coerce.date().optional(),
     ipAddress: z.string().optional(),
     insights: conversationInsightsSchema.optional(),
+    channel: z.record(z.string(), z.unknown()).optional(),
   })
   .partial();
 

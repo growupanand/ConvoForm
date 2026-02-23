@@ -41,7 +41,11 @@ export interface ConversationOperations {
    */
   createConversation: (
     formId: string,
-    channelInfo: { channelType: string; channelSenderId: string },
+    channelInfo: {
+      channelType: string;
+      channelSenderId: string;
+      metadata?: Record<string, unknown>;
+    },
   ) => Promise<CoreConversation>;
 
   /**
@@ -162,8 +166,7 @@ export class ChannelConversationHandler {
     });
 
     const result = await this.initializeNewConversation(
-      channelType,
-      senderId,
+      message,
       formId,
       operations,
       timer,
@@ -177,15 +180,17 @@ export class ChannelConversationHandler {
    * Initialize a new conversation and return the first question.
    */
   private async initializeNewConversation(
-    channelType: string,
-    senderId: string,
+    message: ChannelMessage,
     formId: string,
     operations: ConversationOperations,
     timer: ReturnType<ILogger["startTimer"]>,
   ): Promise<string> {
+    const { channelType, senderId, metadata } = message;
+
     const conversation = await operations.createConversation(formId, {
       channelType,
       channelSenderId: senderId,
+      metadata,
     });
     timer.checkpoint("conversation_created");
 

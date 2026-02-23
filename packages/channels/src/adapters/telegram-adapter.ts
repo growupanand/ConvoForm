@@ -143,6 +143,7 @@ export class TelegramAdapter extends ChannelAdapter {
               firstName: message.from.first_name,
               lastName: message.from.last_name,
               username: message.from.username,
+              languageCode: message.from.language_code,
             }
           : undefined,
       },

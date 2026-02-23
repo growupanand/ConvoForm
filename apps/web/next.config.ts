@@ -5,7 +5,7 @@ import type { NextConfig } from "next";
 // Validate environment variables
 import "./src/env";
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   output: "standalone",
   reactStrictMode: true,
   env: {
@@ -86,10 +86,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-};
-
-/** @type {import('remark-gfm').Options} */
-// const remarkGFMOptions = {};
+} satisfies NextConfig;
 
 const withMDX = createMDX({
   // Add markdown plugins here, as desired
@@ -100,7 +97,7 @@ const withMDX = createMDX({
     ],
     rehypePlugins: [],
   },
-});
+}) as (config: NextConfig) => NextConfig;
 
 // Enable bundle analyzer in production build
 // const analyzeBundles = withBundleAnalyzer({

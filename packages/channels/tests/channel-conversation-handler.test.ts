@@ -1,4 +1,19 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
+
+mock.module("@convoform/ai", () => ({
+  CoreService: class CoreService {
+    async initialize() {
+      return (async function* () {
+        yield { type: "text-delta", delta: "What is your name?" };
+      })();
+    }
+    async process() {
+      return (async function* () {
+        yield { type: "text-delta", delta: "Got it." };
+      })();
+    }
+  },
+}));
 import type { CoreConversation } from "@convoform/db/src/schema";
 import { inputTypeEnum } from "@convoform/db/src/schema";
 import type { ChannelMessage } from "../src/channel";
@@ -121,7 +136,11 @@ describe("ChannelConversationHandler", () => {
       // Verify createConversation was called with channel info
       expect(operations.createConversation).toHaveBeenCalledWith(
         "form_test_abc",
-        { channelType: "telegram", channelSenderId: "sender_123" },
+        {
+          channelType: "telegram",
+          channelSenderId: "sender_123",
+          metadata: message.metadata,
+        },
       );
 
       // Verify session was created

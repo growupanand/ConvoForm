@@ -152,7 +152,11 @@ export function buildChannelServerOperations(): ChannelServerOperations {
 
     createConversation: async (
       formId: string,
-      channelInfo: { channelType: string; channelSenderId: string },
+      channelInfo: {
+        channelType: string;
+        channelSenderId: string;
+        metadata?: Record<string, unknown>;
+      },
     ): Promise<CoreConversation> => {
       const formWithFields = await getOneFormWithFields(formId, { db });
       if (!formWithFields) {
@@ -177,6 +181,9 @@ export function buildChannelServerOperations(): ChannelServerOperations {
           formOverview: formWithFields.overview,
           channelType: channelInfo.channelType,
           channelSenderId: channelInfo.channelSenderId,
+          metaData: {
+            channel: channelInfo.metadata as Record<string, unknown>,
+          },
         },
         { db },
       );
