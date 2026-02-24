@@ -18,6 +18,9 @@ catalogs:
     '@hookform/resolvers':
       specifier: 5.2.2
       version: 5.2.2
+    '@t3-oss/env-core':
+      specifier: 0.13.10
+      version: 0.13.10
     '@types/bun':
       specifier: 1.2.19
       version: 1.2.19
@@ -157,9 +160,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@ai-sdk/openai':
-        specifier: 'catalog:'
-        version: 2.0.0(zod@4.1.11)
       '@ai-sdk/provider-utils':
         specifier: 3.0.7
         version: 3.0.7(zod@4.1.11)
@@ -548,6 +548,9 @@ importers:
       '@convoform/logger':
         specifier: workspace:*
         version: link:../logger
+      '@t3-oss/env-core':
+        specifier: 'catalog:'
+        version: 0.13.10(typescript@5.8.3)(zod@4.1.11)
       ai:
         specifier: 'catalog:'
         version: 5.0.5(zod@4.1.11)
@@ -596,7 +599,7 @@ importers:
         specifier: 2.2.2
         version: 2.2.2
       '@t3-oss/env-core':
-        specifier: 0.13.10
+        specifier: 'catalog:'
         version: 0.13.10(typescript@5.8.3)(zod@4.1.11)
       drizzle-orm:
         specifier: 'catalog:'

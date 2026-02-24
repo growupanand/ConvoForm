@@ -16,6 +16,7 @@ import {
   ChannelServer,
   InMemorySessionManager,
   buildChannelServerOperations,
+  env,
 } from "@convoform/channels";
 
 // ── Create Server ─────────────────────────────────────────
@@ -24,7 +25,7 @@ const sessionManager = new InMemorySessionManager();
 
 const server = new ChannelServer({
   sessionManager,
-  encryptionKey: process.env.ENCRYPTION_KEY ?? "",
+  encryptionKey: env.ENCRYPTION_KEY,
   operations: buildChannelServerOperations(),
 });
 

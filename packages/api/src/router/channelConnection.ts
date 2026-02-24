@@ -68,7 +68,6 @@ export const channelConnectionRouter = createTRPCRouter({
    */
   channelServerHealth: orgProtectedProcedure.query(async () => {
     const url = env.CHANNELS_SERVER_URL ?? "http://localhost:4001";
-    console.log({ url });
     try {
       const res = await fetch(`${url}/healthcheck`, {
         signal: AbortSignal.timeout(3000),
