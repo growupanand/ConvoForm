@@ -17,6 +17,7 @@ import { CoreService } from "@convoform/ai";
 import type { CoreConversation } from "@convoform/db/src/schema";
 import { getLogger } from "@convoform/logger";
 import type { ILogger } from "@convoform/logger";
+import type { EdgeTracer } from "@convoform/tracing";
 import type { ChannelMessage } from "./channel";
 import type { SessionManager } from "./session-manager";
 
@@ -87,13 +88,19 @@ export interface ConversationOperations {
 export class ChannelConversationHandler {
   private sessionManager: SessionManager;
   private logger: ILogger;
+  private tracer?: EdgeTracer;
 
-  constructor(sessionManager: SessionManager, logger?: ILogger) {
+  constructor(
+    sessionManager: SessionManager,
+    logger?: ILogger,
+    tracer?: EdgeTracer,
+  ) {
     this.sessionManager = sessionManager;
     this.logger = (logger ?? getLogger()).withContext({
       component: "channels",
       module: "conversation-handler",
     });
+    this.tracer = tracer;
   }
 
   /**
@@ -136,12 +143,20 @@ export class ChannelConversationHandler {
     timer.checkpoint("session_lookup");
 
     if (existingSession) {
-      this.logger.debug("Resuming existing conversation", {
+      // Create a conversation-scoped logger with conversationId
+      const conversationLogger = this.logger.withContext({
+        conversationId: existingSession.conversationId,
+      });
+
+      conversationLogger.debug("Resuming existing conversation", {
         conversationId: existingSession.conversationId,
         channelType,
         senderId,
         formId,
       });
+
+      // Set trace ID to conversationId so all spans share one trace
+      this.tracer?.setTraceId(existingSession.conversationId);
 
       const result = await this.processExistingConversation(
         existingSession.conversationId,
@@ -152,9 +167,11 @@ export class ChannelConversationHandler {
         formId,
         operations,
         timer,
+        conversationLogger,
       );
 
       timer.end({ isNewConversation: false });
+      await this.tracer?.flush();
       return result;
     }
 
@@ -173,6 +190,7 @@ export class ChannelConversationHandler {
     );
 
     timer.end({ isNewConversation: true });
+    await this.tracer?.flush();
     return result;
   }
 
@@ -194,9 +212,23 @@ export class ChannelConversationHandler {
     });
     timer.checkpoint("conversation_created");
 
+    // Now that we have the conversationId, set trace ID and create scoped logger
+    this.tracer?.setTraceId(conversation.id);
+    const conversationLogger = this.logger.withContext({
+      conversationId: conversation.id,
+    });
+
+    conversationLogger.info("New conversation created", {
+      conversationId: conversation.id,
+      channelType,
+      senderId,
+      formId,
+    });
+
     const coreService = new CoreService({
       conversation,
       onUpdateConversation: operations.updateConversation,
+      tracer: this.tracer,
     });
 
     const stream = await coreService.initialize();
@@ -231,6 +263,7 @@ export class ChannelConversationHandler {
     formId: string,
     operations: ConversationOperations,
     timer: ReturnType<ILogger["startTimer"]>,
+    conversationLogger: ILogger,
   ): Promise<string> {
     const conversation = await operations.getConversation(conversationId);
     timer.checkpoint("conversation_fetched");
@@ -239,7 +272,7 @@ export class ChannelConversationHandler {
     if (conversation.finishedAt) {
       await this.sessionManager.deleteSession(channelType, senderId, formId);
 
-      this.logger.info("Conversation already completed", {
+      conversationLogger.info("Conversation already completed", {
         conversationId,
         channelType,
         senderId,
@@ -257,6 +290,7 @@ export class ChannelConversationHandler {
     const coreService = new CoreService({
       conversation,
       onUpdateConversation: operations.updateConversation,
+      tracer: this.tracer,
     });
 
     const stream = await coreService.process(answerText, currentFieldId);
@@ -271,7 +305,7 @@ export class ChannelConversationHandler {
     if (updatedConversation.finishedAt) {
       await this.sessionManager.deleteSession(channelType, senderId, formId);
 
-      this.logger.info("Conversation completed", {
+      conversationLogger.info("Conversation completed", {
         conversationId,
         channelType,
         senderId,

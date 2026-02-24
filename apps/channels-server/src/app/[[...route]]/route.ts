@@ -14,14 +14,14 @@
 
 import {
   ChannelServer,
-  InMemorySessionManager,
+  DbSessionManager,
   buildChannelServerOperations,
   env,
 } from "@convoform/channels";
 
 // ── Create Server ─────────────────────────────────────────
 
-const sessionManager = new InMemorySessionManager();
+const sessionManager = new DbSessionManager();
 
 const server = new ChannelServer({
   sessionManager,

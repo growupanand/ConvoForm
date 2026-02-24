@@ -15,6 +15,7 @@
         "@convoform/common": "workspace:*",
         "@convoform/db": "workspace:*",
         "@convoform/logger": "workspace:*",
+        "@convoform/tracing": "workspace:*",
         "@t3-oss/env-core": "catalog:",
         "ai": "catalog:",
         "zod": "catalog:"

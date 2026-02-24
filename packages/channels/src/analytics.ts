@@ -79,21 +79,24 @@ export class ChannelAnalytics {
    * @param channelType - The channel type (e.g., 'telegram')
    * @param botId - The bot/channel identifier
    * @param senderId - The sender's channel-specific ID
+   * @param conversationId - Optional conversation ID for correlation
    *
    * @example
    * ```ts
-   * analytics.trackWebhookReceived("telegram", "bot_123", "user_456");
+   * analytics.trackWebhookReceived("telegram", "bot_123", "user_456", "conv_789");
    * ```
    */
   trackWebhookReceived(
     channelType: string,
     botId: string,
     senderId: string,
+    conversationId?: string,
   ): void {
     this.logger.info("webhook.received", {
       channelType,
       botId,
       senderId,
+      ...(conversationId && { conversationId }),
       event: "webhook.received",
     });
   }
@@ -106,10 +109,11 @@ export class ChannelAnalytics {
    * @param senderId - The sender's channel-specific ID
    * @param formId - The form being filled
    * @param durationMs - Total processing time in milliseconds
+   * @param conversationId - Optional conversation ID for correlation
    *
    * @example
    * ```ts
-   * analytics.trackMessageProcessed("telegram", "bot_123", "user_456", "form_abc", 1250);
+   * analytics.trackMessageProcessed("telegram", "bot_123", "user_456", "form_abc", 1250, "conv_789");
    * ```
    */
   trackMessageProcessed(
@@ -118,6 +122,7 @@ export class ChannelAnalytics {
     senderId: string,
     formId: string,
     durationMs: number,
+    conversationId?: string,
   ): void {
     this.logger.info("message.processed", {
       channelType,
@@ -125,6 +130,7 @@ export class ChannelAnalytics {
       senderId,
       formId,
       duration: Math.round(durationMs * 100) / 100,
+      ...(conversationId && { conversationId }),
       event: "message.processed",
     });
   }
@@ -136,10 +142,11 @@ export class ChannelAnalytics {
    * @param botId - The bot/channel identifier
    * @param senderId - The recipient's channel-specific ID
    * @param responseLength - Character length of the response text
+   * @param conversationId - Optional conversation ID for correlation
    *
    * @example
    * ```ts
-   * analytics.trackResponseSent("telegram", "bot_123", "user_456", 142);
+   * analytics.trackResponseSent("telegram", "bot_123", "user_456", 142, "conv_789");
    * ```
    */
   trackResponseSent(
@@ -147,12 +154,14 @@ export class ChannelAnalytics {
     botId: string,
     senderId: string,
     responseLength: number,
+    conversationId?: string,
   ): void {
     this.logger.info("response.sent", {
       channelType,
       botId,
       senderId,
       responseLength,
+      ...(conversationId && { conversationId }),
       event: "response.sent",
     });
   }
@@ -214,14 +223,14 @@ export class ChannelAnalytics {
    *
    * @param operation - The operation that failed (e.g., 'handle_webhook')
    * @param error - The error that occurred
-   * @param context - Additional context about the failure
+   * @param context - Additional context about the failure (include conversationId when available)
    *
    * @example
    * ```ts
    * try {
    *   await processMessage();
    * } catch (err) {
-   *   analytics.trackError("handle_webhook", err, { botId: "123" });
+   *   analytics.trackError("handle_webhook", err, { botId: "123", conversationId: "conv_789" });
    * }
    * ```
    */
@@ -245,20 +254,26 @@ export class ChannelAnalytics {
    *
    * @param channelType - The channel type
    * @param operation - The operation name (e.g., 'handle_webhook', 'send_message')
+   * @param conversationId - Optional conversation ID for correlation
    * @returns An ITimer for tracking performance
    *
    * @example
    * ```ts
-   * const timer = analytics.startRequestTrace("telegram", "handle_webhook");
+   * const timer = analytics.startRequestTrace("telegram", "handle_webhook", "conv_789");
    * timer.checkpoint("verified_webhook");
    * timer.checkpoint("parsed_message");
    * timer.checkpoint("ai_response_consumed");
    * const totalMs = timer.end({ success: true });
    * ```
    */
-  startRequestTrace(channelType: string, operation: string): ITimer {
+  startRequestTrace(
+    channelType: string,
+    operation: string,
+    conversationId?: string,
+  ): ITimer {
     return this.logger.startTimer(operation, {
       channelType,
+      ...(conversationId && { conversationId }),
       event: `${operation}.trace`,
     });
   }

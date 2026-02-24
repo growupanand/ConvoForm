@@ -17,10 +17,18 @@ import {
   getOneConversation,
   patchConversation,
 } from "@convoform/api/src/actions/conversation";
+import { getOrganizationFormsCountByFormId } from "@convoform/api/src/actions/conversation/getOrganizationFormsCountByFormId";
 import { getOneFormWithFields } from "@convoform/api/src/actions/form";
-import { db } from "@convoform/db";
+import {
+  FEATURE_NAMES,
+  PLAN_IDS,
+  getPlanLimit,
+  isOverLimit,
+} from "@convoform/common";
+import { and, db, eq } from "@convoform/db";
 import {
   type CoreConversation,
+  channelConnection,
   coreConversationSchema,
 } from "@convoform/db/src/schema";
 import type { ConversationOperations } from "../channel-conversation-handler";
@@ -40,6 +48,7 @@ import type { ConversationOperations } from "../channel-conversation-handler";
 export interface TelegramChannelConfig {
   botToken: string;
   secretToken?: string;
+  webhookUrl?: string;
 }
 
 /**
@@ -111,6 +120,19 @@ export interface ChannelServerOperations extends ConversationOperations {
     channelIdentifier: string,
     channelType: string,
   ): Promise<ChannelConnectionRecord | null>;
+
+  /**
+   * Update the configuration of a channel connection.
+   *
+   * @param channelIdentifier - The channel identifier (e.g., Telegram bot ID)
+   * @param channelType - The channel type (e.g., "telegram")
+   * @param newConfig - The new configuration to store
+   */
+  updateChannelConnectionConfig(
+    channelIdentifier: string,
+    channelType: string,
+    newConfig: unknown,
+  ): Promise<void>;
 }
 
 /**
@@ -162,6 +184,9 @@ export function buildChannelServerOperations(): ChannelServerOperations {
       if (!formWithFields) {
         throw new Error(`Form not found: ${formId}`);
       }
+
+      // Check form submission limits (same as web app route.ts)
+      await checkFormSubmissionLimit(formWithFields.id);
 
       const fieldsWithEmptyData = formWithFields.formFields.map((field) => ({
         id: field.id,
@@ -230,5 +255,69 @@ export function buildChannelServerOperations(): ChannelServerOperations {
 
       return (result as ChannelConnectionRecord) ?? null;
     },
+
+    updateChannelConnectionConfig: async (
+      channelIdentifier: string,
+      channelType: string,
+      newConfig: unknown,
+    ): Promise<void> => {
+      await db
+        .update(channelConnection)
+        .set({ channelConfig: newConfig as Record<string, unknown> })
+        .where(
+          and(
+            eq(channelConnection.channelIdentifier, channelIdentifier),
+            eq(channelConnection.channelType, channelType),
+          ),
+        );
+    },
   };
+}
+
+/**
+ * Check if the form's organization has exceeded its submission limit.
+ * Mirrors the web app's `checkNThrowErrorFormSubmissionLimit` logic.
+ *
+ * @param formId - The form ID to check limits for
+ * @throws Error if submissions exceed the plan limit
+ *
+ * @example
+ * ```ts
+ * await checkFormSubmissionLimit("form_abc");
+ * // Throws if limit exceeded: "Form submissions limit exceeded. Maximum 100 responses allowed."
+ * ```
+ */
+async function checkFormSubmissionLimit(formId: string): Promise<void> {
+  // No limit for demo form or development
+  if (formId === "demo" || process.env.NODE_ENV === "development") {
+    return;
+  }
+
+  const totalSubmissionsCount = await getOrganizationFormsCountByFormId(
+    formId,
+    { db },
+  );
+
+  if (!totalSubmissionsCount) {
+    console.error("Unable to get total submissions count", { formId });
+    return;
+  }
+
+  if (
+    isOverLimit(
+      totalSubmissionsCount,
+      PLAN_IDS.FREE, // TODO: Replace with actual user's plan ID
+      FEATURE_NAMES.FORM_RESPONSES,
+    )
+  ) {
+    const limit = getPlanLimit(PLAN_IDS.FREE, FEATURE_NAMES.FORM_RESPONSES);
+    throw new Error(
+      `Form submissions limit exceeded. Maximum ${limit} responses allowed.`,
+      {
+        cause: {
+          statusCode: 403,
+        },
+      },
+    );
+  }
 }

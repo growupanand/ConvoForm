@@ -18,9 +18,7 @@
  *   /quit           — Exit the playground
  */
 
-const BOT_TOKEN =
-  process.env.TELEGRAM_BOT_TOKEN ??
-  "8440638155:AAF2vb94NMd-NOB-M03l5BkGokpyzkiEkpM";
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 
 if (!BOT_TOKEN) {
   console.error(

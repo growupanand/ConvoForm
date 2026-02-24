@@ -19,6 +19,7 @@
 
 import { decrypt } from "@convoform/common";
 import type { ILogger } from "@convoform/logger";
+import { type EdgeTracer, createEdgeTracer } from "@convoform/tracing";
 import { TelegramAdapter } from "../adapters/telegram-adapter";
 import { ChannelAnalytics } from "../analytics";
 import { ChannelConversationHandler } from "../channel-conversation-handler";
@@ -49,6 +50,8 @@ export interface ChannelServerConfig {
   operations: ChannelServerOperations;
   /** Optional logger instance (defaults to singleton via getLogger()) */
   logger?: ILogger;
+  /** Optional EdgeTracer instance (defaults to createEdgeTracer("channel-server")) */
+  tracer?: EdgeTracer;
 }
 
 /**
@@ -80,6 +83,7 @@ export class ChannelServer {
   private operations: ChannelServerOperations;
   private conversationHandler: ChannelConversationHandler;
   private analytics: ChannelAnalytics;
+  private tracer: EdgeTracer;
 
   /** Cache of TelegramAdapter instances per botId (channelIdentifier) */
   private telegramAdapters = new Map<string, TelegramAdapter>();
@@ -88,10 +92,12 @@ export class ChannelServer {
     this.sessionManager = config.sessionManager;
     this.encryptionKey = config.encryptionKey;
     this.operations = config.operations;
+    this.tracer = config.tracer ?? createEdgeTracer("channel-server");
     this.analytics = new ChannelAnalytics(config.logger);
     this.conversationHandler = new ChannelConversationHandler(
       this.sessionManager,
       config.logger,
+      this.tracer,
     );
   }
 
@@ -192,7 +198,11 @@ export class ChannelServer {
 
     const cached = this.telegramAdapters.get(botId);
     if (cached) {
-      return { adapter: cached, formId: connection.formId };
+      return {
+        adapter: cached,
+        formId: connection.formId,
+        channelConfig: connection.channelConfig,
+      };
     }
 
     const config = connection.channelConfig as unknown as TelegramChannelConfig;
@@ -204,7 +214,11 @@ export class ChannelServer {
     });
 
     this.telegramAdapters.set(botId, adapter);
-    return { adapter, formId: connection.formId };
+    return {
+      adapter,
+      formId: connection.formId,
+      channelConfig: connection.channelConfig,
+    };
   }
 
   /**
@@ -272,6 +286,11 @@ export class ChannelServer {
         return new Response("OK", { status: 200 });
       }
 
+      // Start a tracing span for the webhook handling
+      const span = this.tracer.startSpan("channel.handle_webhook", {
+        "conversation.form_id": formId,
+      });
+
       const responseText = await this.conversationHandler.handleMessage(
         message,
         {
@@ -281,6 +300,9 @@ export class ChannelServer {
       );
       timer.checkpoint("conversation_handled");
 
+      // Get conversationId from the tracer (set by the conversation handler)
+      const conversationId = this.tracer.getCurrentTraceId() ?? undefined;
+
       await adapter.sendMessage(message.senderId, { text: responseText });
 
       this.analytics.trackResponseSent(
@@ -288,6 +310,7 @@ export class ChannelServer {
         botId,
         message.senderId,
         responseText.length,
+        conversationId,
       );
 
       const totalMs = timer.end({ success: true });
@@ -298,7 +321,10 @@ export class ChannelServer {
         message.senderId,
         formId,
         totalMs,
+        conversationId,
       );
+
+      span.end();
 
       return new Response("OK", { status: 200 });
     } catch (error) {
@@ -345,6 +371,15 @@ export class ChannelServer {
 
       const webhookUrl = `${webhookBaseUrl}/webhook/telegram/${channelIdentifier}`;
       const apiResult = await result.adapter.setWebhook(webhookUrl);
+
+      if (apiResult.ok) {
+        const config = result.channelConfig as Record<string, unknown>;
+        await this.operations.updateChannelConnectionConfig(
+          channelIdentifier,
+          "telegram",
+          { ...config, webhookUrl },
+        );
+      }
 
       this.analytics.trackWebhookSetup(
         "telegram",

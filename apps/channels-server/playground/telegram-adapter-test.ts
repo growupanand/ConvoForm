@@ -20,9 +20,7 @@ import {
 } from "@convoform/channels";
 import type { ConversationOperations } from "@convoform/channels";
 
-const BOT_TOKEN =
-  process.env.TELEGRAM_BOT_TOKEN ??
-  "8440638155:AAF2vb94NMd-NOB-M03l5BkGokpyzkiEkpM";
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 
 if (!BOT_TOKEN) {
   console.error("\x1b[31m✗ Missing TELEGRAM_BOT_TOKEN\x1b[0m");
