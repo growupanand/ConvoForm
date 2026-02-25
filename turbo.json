@@ -41,7 +41,8 @@
     "EMAIL_FROM",
     "RESEND_API_KEY",
     "INTERNAL_EMAIL_API_SECRET",
-    "ENCRYPTION_KEY"
+    "ENCRYPTION_KEY",
+    "CHANNELS_SERVER_URL"
   ],
   "globalDependencies": [
     ".env"

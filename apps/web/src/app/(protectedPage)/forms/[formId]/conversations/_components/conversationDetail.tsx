@@ -2,11 +2,12 @@ import type { Conversation, Transcript } from "@convoform/db/src/schema";
 import { Badge, SectionHeading } from "@convoform/ui";
 import { CardContent, CardHeader, CardTitle } from "@convoform/ui";
 import { Skeleton } from "@convoform/ui";
+import { Popover, PopoverContent, PopoverTrigger } from "@convoform/ui";
 
 import { ConversationStatusBadge } from "@/components/StatusBadge";
 import { FormFieldResponsesTable } from "@/components/formFieldResponsesTable";
 import { formatDuration } from "@/lib/utils";
-import { FileText, Globe, Timer } from "lucide-react";
+import { FileText, Globe, Info, Send, Timer } from "lucide-react";
 import InsightsCard from "./insightsCard";
 import MetadataCard from "./metadataCard";
 import TranscriptCard from "./transcriptCard";
@@ -48,6 +49,26 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
             "Time taken": {
               value: timeTaken,
               icon: Timer,
+            },
+            Channel: {
+              value:
+                conversation.channelType?.toLowerCase() === "telegram" &&
+                conversation.metaData.channel ? (
+                  <ChannelDetailsPopover
+                    channel={
+                      conversation.metaData.channel as Record<string, unknown>
+                    }
+                    channelType={conversation.channelType}
+                  />
+                ) : (
+                  <span className="capitalize">
+                    {conversation.channelType || "Web"}
+                  </span>
+                ),
+              icon:
+                conversation.channelType?.toLowerCase() === "telegram"
+                  ? Send
+                  : Globe,
             },
             OS: {
               value: conversation.metaData.userAgent?.os?.name,
@@ -182,4 +203,86 @@ function ConversationDetailSectionHeading({
   children: React.ReactNode;
 }) {
   return <SectionHeading className="py-2 mb-2">{children}</SectionHeading>;
+}
+
+function ChannelDetailsPopover({
+  channel,
+  channelType,
+}: { channel: Record<string, unknown>; channelType?: string | null }) {
+  const fromUser = channel.fromUser as Record<string, any> | undefined;
+
+  let channelName = "Channel";
+  if (channelType?.toLowerCase() === "telegram") {
+    channelName = "Telegram";
+  } else if (channelType) {
+    channelName = channelType.charAt(0).toUpperCase() + channelType.slice(1);
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger className="hover:underline flex items-center gap-1.5 decoration-primary underline-offset-4 outline-none">
+        {channelName}
+        <Info className="size-3.5 text-subtle-foreground" />
+      </PopoverTrigger>
+      <PopoverContent className="w-72 p-4 outline-none" sideOffset={10}>
+        <div className="space-y-4">
+          <h4 className="font-semibold text-sm leading-none">
+            {channelName} Profile
+          </h4>
+          <div className="grid grid-cols-2 gap-y-4 gap-x-4 pt-2">
+            {fromUser?.firstName && (
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-medium text-subtle-foreground uppercase tracking-widest">
+                  First Name
+                </span>
+                <span className="text-xs font-medium text-foreground">
+                  {fromUser.firstName}
+                </span>
+              </div>
+            )}
+            {fromUser?.lastName && (
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-medium text-subtle-foreground uppercase tracking-widest">
+                  Last Name
+                </span>
+                <span className="text-xs font-medium text-foreground">
+                  {fromUser.lastName}
+                </span>
+              </div>
+            )}
+            {fromUser?.username && (
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-medium text-subtle-foreground uppercase tracking-widest">
+                  Username
+                </span>
+                <span className="text-xs font-medium text-foreground">
+                  @{fromUser.username}
+                </span>
+              </div>
+            )}
+            {channel.chatType && (
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-medium text-subtle-foreground uppercase tracking-widest">
+                  Chat Type
+                </span>
+                <span className="text-xs font-medium text-foreground capitalize">
+                  {String(channel.chatType)}
+                </span>
+              </div>
+            )}
+            {fromUser?.languageCode && (
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-medium text-subtle-foreground uppercase tracking-widest">
+                  Language
+                </span>
+                <span className="text-xs font-medium text-foreground uppercase">
+                  {fromUser.languageCode}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
 }

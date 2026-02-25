@@ -36,9 +36,12 @@ export default function MainNavTab({ formId }: Readonly<Props>) {
       isActive: isAlreadyOnConversationsPage,
     },
     {
-      name: "Integrations",
-      link: `/forms/${currentFormId}/integrations`,
-      isActive: pathName.includes("integrations"),
+      name: "Settings",
+      link: `/forms/${currentFormId}/settings`,
+      isActive:
+        pathName.includes("settings") ||
+        pathName.includes("integrations") ||
+        pathName.includes("channels"),
     },
   ] as NavLink[];
 

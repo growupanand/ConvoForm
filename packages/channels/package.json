@@ -1,0 +1,29 @@
+{
+    "name": "@convoform/channels",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "main": "src/index.ts",
+    "types": "src/index.ts",
+    "scripts": {
+        "type-check": "tsc --noEmit",
+        "test": "bun test"
+    },
+    "dependencies": {
+        "@convoform/ai": "workspace:*",
+        "@convoform/api": "workspace:*",
+        "@convoform/common": "workspace:*",
+        "@convoform/db": "workspace:*",
+        "@convoform/logger": "workspace:*",
+        "@convoform/tracing": "workspace:*",
+        "@t3-oss/env-core": "catalog:",
+        "ai": "catalog:",
+        "zod": "catalog:"
+    },
+    "devDependencies": {
+        "@convoform/tsconfig": "workspace:*",
+        "@types/bun": "catalog:",
+        "@types/node": "catalog:",
+        "typescript": "catalog:"
+    }
+}

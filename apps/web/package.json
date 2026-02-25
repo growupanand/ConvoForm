@@ -8,11 +8,10 @@
     "dev:turbo": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "next:lint": "next lint",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@ai-sdk/openai": "catalog:",
     "@ai-sdk/provider-utils": "3.0.7",
     "@ai-sdk/react": "catalog:",
     "@clerk/nextjs": "^6.14.3",

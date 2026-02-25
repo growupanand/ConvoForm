@@ -218,6 +218,27 @@
       "when": 1771151410604,
       "tag": "0030_serious_stature",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1771756414241,
+      "tag": "0031_nebulous_princess_powerful",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1771768507977,
+      "tag": "0032_fluffy_santa_claus",
+      "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1771775125777,
+      "tag": "0033_red_killmonger",
+      "breakpoints": true
     }
   ]
 }

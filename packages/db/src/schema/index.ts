@@ -8,3 +8,4 @@ export * from "./organizationMembers";
 export * from "./organizations";
 export * from "./users";
 export * from "./integrations";
+export * from "./channelConnections";

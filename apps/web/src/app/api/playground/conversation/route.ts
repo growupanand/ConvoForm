@@ -121,6 +121,8 @@ const sampleConversation: CoreConversation = {
   formFieldResponses: sampleFormFieldResponses,
   form: sampleForm,
   currentFieldId: null,
+  channelType: null,
+  channelSenderId: null,
 };
 
 export async function GET(_request: NextRequest) {

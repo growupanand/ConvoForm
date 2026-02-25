@@ -1,0 +1,29 @@
+{
+    "name": "channels-server",
+    "version": "1.0.0",
+    "description": "Next.js App Router wrapper for channel webhooks (Telegram, WhatsApp, etc.)",
+    "scripts": {
+        "dev": "next dev -p 4001",
+        "dev:turbo": "next dev --turbopack -p 4001",
+        "start": "next start -p 4001",
+        "build": "next build",
+        "type-check": "tsc --noEmit"
+    },
+    "keywords": [],
+    "author": "Utkarsh Anand",
+    "license": "ISC",
+    "dependencies": {
+        "@convoform/channels": "workspace:*",
+        "next": "catalog:",
+        "react": "catalog:",
+        "react-dom": "catalog:"
+    },
+    "devDependencies": {
+        "@convoform/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
+        "@types/react-dom": "catalog:",
+        "typescript": "catalog:"
+    },
+    "private": true
+}

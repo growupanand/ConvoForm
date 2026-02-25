@@ -29,7 +29,7 @@ export default function TranscriptCard({
       {cleanedTranscript.map((message, index) => {
         return (
           <div
-            key={`${message.role}-${message.content}`}
+            key={`${index}-${message.role}-${message.content}`}
             className="flex flex-col items-start"
           >
             {message.role === "user" ? (

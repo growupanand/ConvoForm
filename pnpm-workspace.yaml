@@ -9,6 +9,7 @@ catalog:
   react: 19.1.2
   react-dom: 19.1.2
   zod: 4.1.11
+  "@t3-oss/env-core": "0.13.10"
   next: 15.5.8
   typescript: 5.8.3
   bun: 1.2.10
