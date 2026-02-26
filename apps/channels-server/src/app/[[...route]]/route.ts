@@ -19,6 +19,9 @@ import {
   env,
 } from "@convoform/channels";
 
+export const runtime = "edge";
+export const maxDuration = 60;
+
 // ── Create Server ─────────────────────────────────────────
 
 const sessionManager = new DbSessionManager();
