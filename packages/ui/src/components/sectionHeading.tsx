@@ -1,5 +1,5 @@
 import type React from "react";
-import { cn } from "src/lib/utils";
+import { cn } from "../lib/utils";
 
 type HeadingProps = {
   children: React.ReactNode;

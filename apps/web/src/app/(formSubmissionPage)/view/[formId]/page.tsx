@@ -10,7 +10,7 @@ import { FormNotPublishedScreen } from "./_components/formNotPublishedScreen";
 import { FormSubmissionPageHeader } from "./_components/header";
 
 interface FormViewerPageProps {
-  params: { formId: string };
+  params: Promise<{ formId: string }>;
 }
 
 export const metadata: Metadata = {

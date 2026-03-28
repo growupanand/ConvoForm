@@ -1,8 +1,6 @@
-import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
-import { formIntegration } from "./formIntegration";
 
 export const integration = pgTable("Integration", {
   ...getBaseSchema(),
@@ -12,7 +10,3 @@ export const integration = pgTable("Integration", {
   encryptedRefreshToken: text("encryptedRefreshToken"),
   expiresAt: timestamp("expiresAt"),
 });
-
-export const integrationRelations = relations(integration, ({ many }) => ({
-  formIntegrations: many(formIntegration),
-}));

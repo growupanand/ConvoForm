@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 type Props = {
   children: React.ReactNode;
-  params: { formId: string };
+  params: Promise<{ formId: string }>;
 };
 
 export const metadata: Metadata = {

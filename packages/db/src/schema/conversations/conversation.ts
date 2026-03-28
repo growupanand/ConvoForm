@@ -1,4 +1,4 @@
-import { relations, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -67,10 +67,3 @@ export const conversation = pgTable(
       .where(sql`${conversation.channelType} IS NOT NULL`),
   ],
 );
-
-export const conversationRelations = relations(conversation, ({ one }) => ({
-  form: one(form, {
-    fields: [conversation.formId],
-    references: [form.id],
-  }),
-}));

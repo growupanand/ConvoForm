@@ -1,4 +1,3 @@
-import { relations } from "drizzle-orm";
 import { boolean, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
@@ -25,10 +24,3 @@ export const formDesign = pgTable("FormDesign", {
   organizationId: text("organizationId").notNull(),
   useDefaultDesign: boolean("useDefaultDesign").default(true).notNull(),
 });
-
-export const formDesignsRelations = relations(formDesign, ({ one }) => ({
-  form: one(form, {
-    fields: [formDesign.formId],
-    references: [form.id],
-  }),
-}));

@@ -1,7 +1,7 @@
+import GroovySittingDoodle from "@images/GroovySittingDoodle.svg";
+import MessyDoodle from "@images/MessyDoodle.svg";
+import UnboxingDoodle from "@images/UnboxingDoodle.svg";
 import Image from "next/image";
-import GroovySittingDoodle from "public/images/GroovySittingDoodle.svg";
-import MessyDoodle from "public/images/MessyDoodle.svg";
-import UnboxingDoodle from "public/images/UnboxingDoodle.svg";
 
 export enum IllustrationImageEnum {
   GroovySittingDoodle = "GroovySittingDoodle",

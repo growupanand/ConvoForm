@@ -6,11 +6,11 @@ packages:
 
 # Define a catalog of version ranges.
 catalog:
-  react: 19.1.2
-  react-dom: 19.1.2
+  react: 19.2.4
+  react-dom: 19.2.4
   zod: 4.1.11
   "@t3-oss/env-core": "0.13.10"
-  next: 15.5.12
+  next: 16.2.1
   typescript: 5.8.3
   bun: 1.2.10
   ai: "5.0.5"
@@ -21,8 +21,8 @@ catalog:
   posthog-node: 5.9.1
   "@hookform/resolvers": "5.2.2"
   react-hook-form: "7.63.0"
-  "@types/react": 19.1.2
-  "@types/react-dom": 19.1.2
+  "@types/react": 19.2.14
+  "@types/react-dom": 19.2.3
   "@types/node": ^22
   "@types/bun": 1.2.19
   drizzle-orm: 0.45.1

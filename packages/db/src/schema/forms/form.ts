@@ -1,9 +1,7 @@
-import { relations, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
-import { conversation } from "../conversations";
-import { formField } from "../formFields";
 
 export const form = pgTable(
   "Form",
@@ -49,11 +47,3 @@ export const form = pgTable(
     index("idx_form_org_published").on(form.organizationId, form.isPublished),
   ],
 );
-
-import { formIntegration } from "../integrations/formIntegration";
-
-export const formRelations = relations(form, ({ many }) => ({
-  formFields: many(formField),
-  conversations: many(conversation),
-  formIntegrations: many(formIntegration),
-}));

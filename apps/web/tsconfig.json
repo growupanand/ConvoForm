@@ -2,10 +2,12 @@
   "extends": "@convoform/tsconfig/nextjs.json",
   "compilerOptions": {
     "incremental": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@images/*": [
+        "./src/images/*"
       ]
     },
     "lib": [
@@ -21,7 +23,7 @@
     "**/*.tsx",
     "**/*.jsx",
     ".next/types/**/*.ts",
-    "**/*.mjs",
+    "**/*.mjs"
   ],
   "exclude": ["node_modules", ".next", ".turbo"]
 }

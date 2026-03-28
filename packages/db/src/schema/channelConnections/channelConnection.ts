@@ -1,4 +1,3 @@
-import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -52,14 +51,4 @@ export const channelConnection = pgTable(
       table.channelIdentifier,
     ),
   ],
-);
-
-export const channelConnectionRelations = relations(
-  channelConnection,
-  ({ one }) => ({
-    form: one(form, {
-      fields: [channelConnection.formId],
-      references: [form.id],
-    }),
-  }),
 );

@@ -1,4 +1,3 @@
-import { relations } from "drizzle-orm";
 import { boolean, index, json, pgTable, text } from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
@@ -22,18 +21,4 @@ export const formIntegration = pgTable(
     index("idx_form_integration_form_id").on(table.formId),
     index("idx_form_integration_integration_id").on(table.integrationId),
   ],
-);
-
-export const formIntegrationRelations = relations(
-  formIntegration,
-  ({ one }) => ({
-    form: one(form, {
-      fields: [formIntegration.formId],
-      references: [form.id],
-    }),
-    integration: one(integration, {
-      fields: [formIntegration.integrationId],
-      references: [integration.id],
-    }),
-  }),
 );
