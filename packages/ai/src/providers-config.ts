@@ -8,11 +8,8 @@ export const PROVIDER_CONFIG = {
   groq: {
     id: "groq",
     name: "Groq",
-    models: [
-      "meta-llama/llama-4-maverick-17b-128e-instruct",
-      "meta-llama/llama-4-scout-17b-16e-instruct",
-    ] as const,
-    defaultModel: "meta-llama/llama-4-scout-17b-16e-instruct",
+    models: ["openai/gpt-oss-120b", "qwen/qwen3.6-27b"] as const,
+    defaultModel: "openai/gpt-oss-120b",
   },
   ollama: {
     id: "ollama", // Added ID consistency
