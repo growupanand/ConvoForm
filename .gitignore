@@ -57,3 +57,5 @@ temp
 .omc
 
 next-env.d.ts
+
+.playwright-mcp
