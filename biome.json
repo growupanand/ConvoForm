@@ -42,7 +42,8 @@
       "templates",
       "*.woff",
       "**/*.sql",
-      "build"
+      "build",
+      "**/*.json"
     ]
   },
   "linter": {
@@ -131,7 +132,8 @@
       "**/.*.js",
       "**/*.js",
       "**/*.cjs",
-      "**/*.ejs"
+      "**/*.ejs",
+      "**/*.json"
     ]
   },
   "javascript": {
