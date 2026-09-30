@@ -9,6 +9,9 @@ import { ReleaseCard } from "./_components/releaseCard";
 
 export const metadata: Metadata = {
   title: "Changelog",
+  alternates: {
+    canonical: "/changelog",
+  },
 };
 
 const firstCommitLink =

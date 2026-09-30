@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: {
     absolute: "ConvoForm | Create Conversational Forms",
   },
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: {
       absolute: "ConvoForm | Create Conversational Forms",

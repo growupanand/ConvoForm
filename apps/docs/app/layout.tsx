@@ -3,6 +3,7 @@ import { Head } from "nextra/components";
 import "nextra-theme-docs/style.css";
 
 export const metadata = {
+  metadataBase: new URL("https://docs.convoform.com"),
   title: "ConvoForm Docs",
   description: "Turn Forms into Conversations with AI",
 };
