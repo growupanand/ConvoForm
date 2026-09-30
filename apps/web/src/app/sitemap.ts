@@ -1,24 +1,40 @@
 import type { MetadataRoute } from "next";
 
+const baseUrl = "https://www.convoform.com";
+
 export default function sitemap(): MetadataRoute.Sitemap {
+  const lastModified = new Date();
+
   return [
     {
-      url: "https://www.convoform.com",
-      lastModified: new Date(),
+      url: `${baseUrl}/`,
+      lastModified,
       changeFrequency: "daily",
       priority: 1,
     },
     {
-      url: "https://www.convoform.com/changelog",
-      lastModified: new Date(),
+      url: `${baseUrl}/changelog`,
+      lastModified,
       changeFrequency: "weekly",
-      priority: 1,
+      priority: 0.8,
     },
     {
-      url: "https://www.convoform.com/privacy",
-      lastModified: new Date(),
+      url: `${baseUrl}/privacy`,
+      lastModified,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/terms`,
+      lastModified,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/view/demo`,
+      lastModified,
       changeFrequency: "monthly",
-      priority: 1,
+      priority: 0.6,
     },
   ];
 }
