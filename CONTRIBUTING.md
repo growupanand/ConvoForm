@@ -9,7 +9,7 @@ Thank you for your interest in contributing to ConvoForm! We welcome contributio
 - Please provide as much detail as possible (screenshots, reproduction steps, etc.).
 
 ### 2. Development Setup
-To set up the project locally, please refer to the **[Quick Start](README.md#quick-start-local-development)** section in the README.
+To set up the project locally, please refer to the **[Quick Start](README.md#%EF%B8%8F-quick-start-local-development)** section in the README.
 
 ### 3. Pull Request Process
 1. **Fork** the repository and create a new branch for your feature or fix.
@@ -32,5 +32,5 @@ To set up the project locally, please refer to the **[Quick Start](README.md#qui
 - If you are adding a new feature, please update the documentation in `apps/docs`.
 
 ## 📜 Code of Conduct
-Please be respectful and considerate of everyone in the community. Let's build something great together!
+Please be respectful and considerate of everyone in the community by following our [Code of Conduct](CODE_OF_CONDUCT.md). Let's build something great together!
 

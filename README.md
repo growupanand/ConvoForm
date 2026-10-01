@@ -27,15 +27,17 @@ ConvoForm transforms traditional, static forms into interactive, AI-powered conv
 
 Visit our **[Documentation Site](https://docs.convoform.com)** for detailed guides, concepts, and API references.
 
-- **[Getting Started / Self Hosting](apps/docs/pages/getting-started/self-hosting.mdx)**
-- **[Conversation Flow Concepts](apps/docs/pages/concepts/conversation-flow.mdx)**
+- **[Getting Started / Self Hosting](https://docs.convoform.com/getting-started/self-hosting)**
+- **[Conversation Flow Concepts](https://docs.convoform.com/concepts/conversation-flow)**
 
 ## 🛠️ Quick Start (Local Development)
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18+)
-- [pnpm](https://pnpm.io/) (v8+)
+- [Node.js](https://nodejs.org/) (v22+)
+- [pnpm](https://pnpm.io/) (v10.8.1)
+- [Bun](https://bun.sh/) (v1.2+ — runs the websocket server)
+- PostgreSQL (local or hosted — the app validates `DATABASE_URL` at startup)
 - [Docker](https://www.docker.com/) (optional, for self-hosting)
 
 ### Installation
@@ -54,7 +56,8 @@ Visit our **[Documentation Site](https://docs.convoform.com)** for detailed guid
 3. **Configure Environment**
    ```bash
    cp .env.example .env
-   # Update .env with your API keys (OpenAI, Clerk, etc.)
+   # Fill in the required keys in .env (the comments in .env.example explain each one):
+   # AI provider, Clerk auth, Resend email, database URL, etc.
    # IMPORTANT: generate a strong ENCRYPTION_KEY for securing integration tokens.
    # You can generate one using `openssl rand -hex 32`
    ```
@@ -64,7 +67,7 @@ Visit our **[Documentation Site](https://docs.convoform.com)** for detailed guid
    pnpm run dev
    ```
 
-Visit `http://localhost:3000` for the web app, `http://localhost:3001` for the documentation, and `http://localhost:4001` for the channels server (Telegram webhooks).
+Visit `http://localhost:3000` for the web app, `http://localhost:3001` for the documentation, `http://localhost:4000` for the websocket server, and `http://localhost:4001` for the channels server (Telegram webhooks).
 
 ## 🤝 Contributing
 
