@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ClerkLoaded,
-  ClerkLoading,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+import { ClerkLoaded, ClerkLoading, Show, UserButton } from "@clerk/nextjs";
 import { Button } from "@convoform/ui";
 import { LayoutDashboard } from "lucide-react";
 
@@ -21,7 +15,7 @@ export function UserSignInButton() {
         <SignInButton />
       </ClerkLoading>
       <ClerkLoaded>
-        <SignedIn>
+        <Show when="signed-in">
           <Link href="/dashboard">
             <Button variant="secondary">
               <LayoutDashboard className="" size={20} />
@@ -29,10 +23,10 @@ export function UserSignInButton() {
             </Button>
           </Link>
           <UserButton />
-        </SignedIn>
-        <SignedOut>
+        </Show>
+        <Show when="signed-out">
           <SignInButton />
-        </SignedOut>
+        </Show>
       </ClerkLoaded>
     </AuthProvider>
   );

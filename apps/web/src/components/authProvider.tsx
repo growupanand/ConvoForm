@@ -12,7 +12,7 @@ export function AuthProvider({
       signInUrl="/auth/sign-in"
       signUpUrl="/auth/register"
       appearance={{
-        layout: {
+        options: {
           termsPageUrl: "/terms",
           privacyPageUrl: "/privacy",
           logoImageUrl: "/logo.png",
