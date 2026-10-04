@@ -1,0 +1,15 @@
+---
+description: Never add Cursor Co-authored-by trailers to git commits
+alwaysApply: true
+---
+
+# Git commits — no Cursor co-author
+
+When creating or amending commits for this repository:
+
+- **Never** add `Co-authored-by: Cursor <cursoragent@cursor.com>` or any other `Co-authored-by` line for Cursor or the agent.
+- Commit messages contain only the subject, optional body, and optional `✅ Closes: #<n>` footer per `AGENTS.md` — nothing else in the trailer block.
+
+If a tool or environment tries to append a Cursor co-author trailer, omit it and commit with a clean message only.
+
+The `.husky/commit-msg` hook removes that trailer if it is injected anyway.

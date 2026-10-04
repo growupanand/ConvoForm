@@ -84,14 +84,30 @@ Update README.md                 ← GitHub web edit, not a commit message
 wip / temp / misc                ← meaningless subject
 ✅ Closes: 488                   ← missing the #
 chore(scope): something          ← no scopes in this repo
+Co-authored-by: Cursor <cursoragent@cursor.com>  ← never add agent co-author trailers
 ```
 
 ### Before you commit
 
 - Stage the exact files you changed (`git add <paths>`), then check `git status`.
 - The `pre-commit` hook runs `pnpm format`, `pnpm lint`, `pnpm type-check` **and then `git add .`** — everything left in the working tree gets swept into the commit. Make sure no unrelated or generated files are sitting there.
-- There is **no `commit-msg` hook**: a malformed message is accepted silently. The format is your responsibility.
+- The **`commit-msg` hook** strips `Co-authored-by: Cursor <cursoragent@cursor.com>` if the IDE injects it; everything else about message format is still your responsibility.
 - Run `pnpm lint-ci` and `pnpm type-check-ci` if you are not confident the hook will catch it.
 - Never commit `.env`, secrets, keys, or lockfile churn you did not intend.
 - Only commit when explicitly asked; never push, force-push, amend published commits, or open a PR unless asked.
+- Never add `Co-authored-by` trailers for Cursor or other agents; the author line should reflect the human maintainer only.
 - `pnpm commit` opens the interactive `czg` prompt (this is what humans use).
+
+## Agent skills
+
+### Issue tracker
+
+GitHub issues on `growupanand/ConvoForm`, with planning on [user project #6](https://github.com/users/growupanand/projects/6). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default Matt Pocock triage state labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`); category labels `bug` and `enhancement` already exist on the repo. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: root `GLOSSARY.md` and `docs/adr/` when present. See `docs/agents/domain.md`.

@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Strip Cursor agent co-author trailers (the IDE may inject them on agent commits).
+if [ -n "$1" ] && [ -f "$1" ]; then
+  grep -v '^Co-authored-by: Cursor <cursoragent@cursor.com>$' "$1" > "$1.__strip__" &&
+    mv "$1.__strip__" "$1"
+fi
