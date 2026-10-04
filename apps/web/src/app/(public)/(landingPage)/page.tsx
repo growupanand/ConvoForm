@@ -1,5 +1,7 @@
 import { Hero } from "@/app/(public)/(landingPage)/_components/hero";
+import { studyAbroadUseCasePath } from "@/lib/marketingPaths";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Achievements } from "./_components/achievements";
 import { DemoSection } from "./_components/demoSection";
 import { LazyLiveDemoResponses } from "./_components/demoSection/LazyLiveDemoResponses";
@@ -44,6 +46,14 @@ export default function Home() {
             conversational forms{" "}
             <span className="text-brand-500">you need</span>
           </h2>
+          <p className="mt-4 text-sm text-subtle-foreground lg:text-base">
+            <Link
+              href={studyAbroadUseCasePath}
+              className="font-medium text-brand-600 underline-offset-4 hover:underline"
+            >
+              Study-abroad consultancies: student intake use case →
+            </Link>
+          </p>
         </div>
       </div>
 
