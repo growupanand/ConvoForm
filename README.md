@@ -73,6 +73,8 @@ Visit `http://localhost:3000` for the web app, `http://localhost:3001` for the d
 
 We love contributions! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
+To report a security vulnerability, see [SECURITY.md](SECURITY.md).
+
 ## 📄 License
 
 This project is open-sourced under the [Apache License 2.0](LICENSE).

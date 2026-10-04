@@ -5,8 +5,11 @@ Thank you for your interest in contributing to ConvoForm! We welcome contributio
 ## 🌟 How to Contribute
 
 ### 1. Reporting Issues
-- Found a bug? Have a feature request? Open an issue on our [GitHub Issues](https://github.com/growupanand/ConvoForm/issues) page.
+- Found a bug? Open a [bug report](https://github.com/growupanand/ConvoForm/issues/new?template=bug_report.yml).
+- Have a feature request? Open a [feature request](https://github.com/growupanand/ConvoForm/issues/new?template=feature_request.yml).
 - Please provide as much detail as possible (screenshots, reproduction steps, etc.).
+- Security issues: see [SECURITY.md](SECURITY.md). Do not file them as public issues.
+
 
 ### 2. Development Setup
 To set up the project locally, please refer to the **[Quick Start](README.md#%EF%B8%8F-quick-start-local-development)** section in the README.
@@ -26,7 +29,9 @@ To set up the project locally, please refer to the **[Quick Start](README.md#%EF
 
 ### 4. Code Style
 - We use **Biome** for linting and formatting.
-- Run `pnpm lint` and `pnpm type-check` before submitting.
+- Run `pnpm lint` and `pnpm type-check` before submitting (same scripts as the pre-commit hook).
+- CI runs `pnpm lint-ci` and `pnpm type-check-ci` (read-only Biome checks). To also type-check every workspace with TypeScript, run `pnpm type-check:turbo`.
+
 
 ### 5. Documentation
 - If you are adding a new feature, please update the documentation in `apps/docs`.
