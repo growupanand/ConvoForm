@@ -64,7 +64,9 @@ export default defineConfig({
     timeout: 120 * 1000,
     cwd: path.resolve(__dirname, "../../"),
     env: {
+      ...process.env,
       NEXT_PUBLIC_PACKAGE_ENV: "development",
+      E2E_MOCK_LLM: "1",
     },
   },
 });

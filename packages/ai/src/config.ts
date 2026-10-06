@@ -5,6 +5,7 @@
 
 import { type LLMAnalyticsMetadata, analytics } from "@convoform/analytics";
 import type { LanguageModel } from "ai";
+import { getE2eMockLanguageModel } from "./e2eMockLanguageModel";
 import { getValidatedModelConfig } from "./env";
 import {
   type LLMProviderName,
@@ -20,6 +21,10 @@ import {
 export function getModelConfig(
   metadata?: LLMAnalyticsMetadata,
 ): Exclude<LanguageModel, string> {
+  if (process.env.E2E_MOCK_LLM === "1") {
+    return getE2eMockLanguageModel();
+  }
+
   try {
     const config = getValidatedModelConfig();
     const baseModel = getProviderModel(
