@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "catalog:",
-    "@clerk/nextjs": "^6.14.3",
+    "@clerk/nextjs": "^7.9.10",
     "@convoform/ai": "workspace:*",
     "@convoform/analytics": "workspace:*",
     "@convoform/common": "workspace:*",
