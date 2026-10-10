@@ -9,7 +9,7 @@ export function UserStats() {
   const recentUsersQuery = api.users.getRecentUsers.useQuery();
 
   const loadingSkeleton = (
-    <div className="flex max-lg:flex-col items-center justify-center lg:gap-2 animate-pulse">
+    <div className="flex max-lg:flex-col items-center justify-center lg:gap-2 animate-pulse max-w-full min-w-0">
       <div className="flex items-center -space-x-1.5 overflow-hidden">
         {Array.from({ length: 5 }).map((_, i) => (
           <div
@@ -19,7 +19,7 @@ export function UserStats() {
           />
         ))}
       </div>
-      <span className="text-base">
+      <span className="max-w-full text-base">
         <span className="font-bold ">
           <span className="inline-block h-4 w-8 bg-gray-200 rounded" /> users
         </span>{" "}
@@ -36,7 +36,7 @@ export function UserStats() {
           loadingComponent={loadingSkeleton}
         >
           {(recentUsers) => (
-            <div className="flex max-lg:flex-col items-center justify-center lg:gap-2">
+            <div className="flex min-w-0 max-w-full items-center justify-center max-lg:flex-col lg:gap-2">
               <div className="flex items-center -space-x-1.5 overflow-hidden">
                 {recentUsers?.map((user) => (
                   <Avatar
@@ -56,7 +56,7 @@ export function UserStats() {
                   </Avatar>
                 ))}
               </div>
-              <span className="text-base">
+              <span className="max-w-full text-base">
                 <span className="font-bold ">{userCount}+ users</span> are
                 boosting 🚀 conversions by{" "}
                 <span className="font-bold ">10x</span>

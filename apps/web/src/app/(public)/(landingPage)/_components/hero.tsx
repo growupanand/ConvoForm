@@ -18,7 +18,7 @@ import { UserStats } from "./userStats";
 
 export function Hero() {
   return (
-    <section className="flex w-full flex-col justify-start items-center lg:items-start gap-2 lg:gap-3 text-center lg:text-left">
+    <section className="flex w-full min-w-0 max-w-full flex-col justify-start items-center lg:items-start gap-2 lg:gap-3 text-center lg:text-left">
       <div className="flex gap-2">
         <Badge
           variant="outline"
@@ -28,7 +28,7 @@ export function Hero() {
             href="https://github.com/growupanand/ConvoForm"
             target="_blank"
             rel="noreferrer nofollow noopener"
-            className="flex items-center"
+            className="flex max-w-full flex-wrap items-center justify-center"
           >
             <span className="mr-1 lg:mr-1.5">
               <Image
@@ -53,7 +53,7 @@ export function Hero() {
         <CardHeader className="mb-6 px-0 space-y-0">
           <h1
             className={cn(
-              "text-3xl lg:text-5xl font-normal text-gray-800 leading-normal lg:leading-normal",
+              "max-w-full text-3xl lg:text-5xl font-normal text-gray-800 leading-normal lg:leading-normal",
               nohemi.className,
             )}
           >
@@ -74,16 +74,16 @@ export function Hero() {
 
         <CardContent className="px-0 flex justify-center lg:justify-start">
           <div className="flex flex-wrap max-lg:flex-col max-lg:items-start justify-start gap-4 font-medium text-accent-foreground ">
-            <span className="flex items-center gap-1 bg-gray-50 rounded-full ">
-              <CheckCircle2 className="size-6 fill-brand-500 text-white" />
+            <span className="flex max-w-full items-center gap-1 rounded-full bg-gray-50">
+              <CheckCircle2 className="size-6 shrink-0 fill-brand-500 text-white" />
               100% Free
             </span>
-            <span className="flex items-center gap-1 bg-gray-50 rounded-full ">
-              <CheckCircle2 className="size-6 fill-brand-500 text-white" />
+            <span className="flex max-w-full items-center gap-1 rounded-full bg-gray-50">
+              <CheckCircle2 className="size-6 shrink-0 fill-brand-500 text-white" />
               No credit card required
             </span>
-            <span className="flex items-center gap-1 bg-gray-50 rounded-full ">
-              <CheckCircle2 className="size-6 fill-brand-500 text-white" />
+            <span className="flex max-w-full items-center gap-1 rounded-full bg-gray-50">
+              <CheckCircle2 className="size-6 shrink-0 fill-brand-500 text-white" />
               Enterprise-grade features
             </span>
           </div>
@@ -93,7 +93,7 @@ export function Hero() {
       <div className="flex max-lg:flex-col justify-center items-center gap-3 mt-6 lg:mt-2">
         <Button
           size="lg"
-          className="rounded-full py-3 lg:py-5 text-base lg:text-base font-montserrat shadow-md hover:shadow-lg transition-all hover:translate-y-[-2px]"
+          className="h-auto max-w-full whitespace-normal rounded-full py-3 text-base font-montserrat shadow-md transition-all hover:translate-y-[-2px] hover:shadow-lg lg:py-5"
           asChild
         >
           <Link href="/auth/register" rel="noreferrer nofollow noopener">
@@ -110,7 +110,7 @@ export function Hero() {
         <Button
           size="lg"
           variant="secondary"
-          className="rounded-full py-3 text-[#673AB7] lg:py-5 text-base lg:text-base font-montserrat shadow-md hover:shadow-lg transition-all hover:translate-y-[-2px]"
+          className="h-auto max-w-full whitespace-normal rounded-full py-3 text-base font-montserrat text-[#673AB7] shadow-md transition-all hover:translate-y-[-2px] hover:shadow-lg lg:py-5"
           asChild
         >
           <Link href="/auth/register" rel="noreferrer nofollow noopener">
@@ -127,7 +127,7 @@ export function Hero() {
         <Button
           variant="outline"
           size="lg"
-          className="lg:hidden mt-4 rounded-full py-3 lg:py-5 text-base font-montserrat hover:bg-gray-50"
+          className="mt-4 h-auto max-w-full whitespace-normal rounded-full py-3 text-base font-montserrat hover:bg-gray-50 lg:hidden lg:py-5"
           asChild
         >
           <Link

@@ -19,11 +19,16 @@ export function PublicLayoutHeader({
       )}
     >
       <header>
-        <div className="flex w-full flex-nowrap items-center justify-between gap-3 p-3">
+        <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-3 p-3">
           <BrandNameLink className="text-xl lg:text-2xl" />
           {!hideSignIn && (
             <nav className="flex items-center gap-3">
-              <Button variant="link" size="sm" asChild>
+              <Button
+                variant="link"
+                size="sm"
+                className="hidden sm:inline-flex"
+                asChild
+              >
                 <Link
                   target="_blank"
                   rel="noopener noreferrer nofollow"

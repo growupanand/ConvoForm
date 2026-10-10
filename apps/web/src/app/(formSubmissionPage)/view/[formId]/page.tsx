@@ -41,7 +41,10 @@ export default async function FormViewPage(
     <FormContextProvider form={formData}>
       <FormDesignLayout>
         {showHeader && <FormSubmissionPageHeader form={formData} />}
-        <div className="container max-w-[800px]  absolute inset-0">
+        <div
+          className="container max-w-[800px]  absolute inset-0"
+          data-marketing-screenshot="public-form"
+        >
           <FormViewer />
         </div>
       </FormDesignLayout>

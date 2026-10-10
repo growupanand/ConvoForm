@@ -1,12 +1,11 @@
 import { Hero } from "@/app/(public)/(landingPage)/_components/hero";
-import { studyAbroadUseCasePath } from "@/lib/marketingPaths";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Achievements } from "./_components/achievements";
 import { DemoSection } from "./_components/demoSection";
 import { LazyLiveDemoResponses } from "./_components/demoSection/LazyLiveDemoResponses";
 import { DemoResponsesShell } from "./_components/demoSection/demoResponsesShell";
 import { Technologies } from "./_components/technologies";
+import { UseCases } from "./_components/useCases";
 
 export const metadata: Metadata = {
   title: {
@@ -26,7 +25,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <main className="container mx-auto">
-      <div className="grid lg:grid-cols-2 gap-8 lg:items-center lg:min-h-[calc(100vh-6rem)]">
+      <div className="grid min-w-0 lg:grid-cols-2 gap-8 lg:items-center lg:min-h-[calc(100vh-6rem)]">
         <Hero />
         <DemoSection />
       </div>
@@ -38,22 +37,18 @@ export default function Home() {
         </DemoResponsesShell>
       </div>
 
+      <div className="my-12">
+        <UseCases />
+      </div>
+
       {/* New headline section */}
-      <div className="py-8 lg:py-14">
-        <div className="container mx-auto px-4 lg:px-10 text-center">
-          <h2 className="text-2xl lg:text-4xl font-bold mb-2 text-gray-800">
+      <div className="min-w-0 py-8 lg:py-14">
+        <div className="container mx-auto min-w-0 max-w-full px-4 text-center lg:px-10">
+          <h2 className="mb-2 max-w-full break-words text-2xl font-bold text-gray-800 lg:text-4xl">
             The <span className="text-brand-500">AI-Powered</span>{" "}
             conversational forms{" "}
             <span className="text-brand-500">you need</span>
           </h2>
-          <p className="mt-4 text-sm text-subtle-foreground lg:text-base">
-            <Link
-              href={studyAbroadUseCasePath}
-              className="font-medium text-brand-600 underline-offset-4 hover:underline"
-            >
-              Study-abroad consultancies: student intake use case →
-            </Link>
-          </p>
         </div>
       </div>
 

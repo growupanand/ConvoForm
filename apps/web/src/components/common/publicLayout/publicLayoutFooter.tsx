@@ -16,10 +16,10 @@ export function PublicLayoutFooter({ className }: { className?: string }) {
       )}
     >
       <footer>
-        <div className="flex  items-start justify-between ">
-          <div className="flex flex-col items-start lg:flex-row lg:gap-5">
+        <div className="flex min-w-0 max-w-full flex-wrap items-start justify-between gap-4">
+          <div className="flex min-w-0 max-w-full flex-col items-start lg:flex-row lg:gap-5">
             <span className="text-subtle-foreground mb-5 p-2">
-              ConvoForm © 2025
+              ConvoForm © {new Date().getFullYear()}
             </span>
             <OtherLinks />
           </div>
@@ -37,17 +37,21 @@ export function PublicLayoutFooter({ className }: { className?: string }) {
 
 const SocialIcons = () => {
   return (
-    <div className="flex items-center justify-end flex-wrap gap-3">
-      <Button variant="secondary" asChild>
+    <div className="flex max-w-full flex-wrap items-center justify-end gap-3">
+      <Button
+        variant="secondary"
+        className="h-auto max-w-full whitespace-normal"
+        asChild
+      >
         <Link
           href="https://discord.gg/aeYtKyn2E2"
           target="_blank"
           rel="noreferrer nofollow noopener"
-          className="flex items-center"
+          className="flex h-auto max-w-full items-center whitespace-normal"
         >
           <span className="mr-1 lg:mr-1.5">
             <Image
-              src="images/icons/discord.svg"
+              src="/images/icons/discord.svg"
               alt="discord"
               width={16}
               height={16}
@@ -65,7 +69,7 @@ const SocialIcons = () => {
       >
         <span>
           <Image
-            src="images/icons/github.svg"
+            src="/images/icons/github.svg"
             alt="github"
             width={20}
             height={20}
@@ -80,8 +84,8 @@ const SocialIcons = () => {
         aria-label="Visit Instagram page"
       >
         <Image
-          src="images/icons/instagram.svg"
-          alt="github"
+          src="/images/icons/instagram.svg"
+          alt="instagram"
           width={20}
           height={20}
         />
@@ -93,8 +97,8 @@ const SocialIcons = () => {
         aria-label="Visit Twitter page"
       >
         <Image
-          src="images/icons/twitter.svg"
-          alt="github"
+          src="/images/icons/twitter.svg"
+          alt="twitter"
           width={20}
           height={20}
         />
@@ -113,21 +117,36 @@ const SocialIcons = () => {
 
 const OtherLinks = () => {
   return (
-    <div className="flex max-lg:flex-col items-start justify-start">
-      <Button variant="link" size="sm" asChild>
+    <div className="flex min-w-0 max-w-full flex-col items-start justify-start lg:flex-row">
+      <Button
+        variant="link"
+        size="sm"
+        className="h-auto max-w-full whitespace-normal"
+        asChild
+      >
         <Link href="/changelog">Changelog</Link>
       </Button>
-      <Button variant="link" size="sm" asChild>
+      <Button
+        variant="link"
+        size="sm"
+        className="h-auto max-w-full whitespace-normal"
+        asChild
+      >
         <Link href="/privacy">Privacy Policy</Link>
       </Button>
-      <Button variant="link" size="sm" asChild>
+      <Button
+        variant="link"
+        size="sm"
+        className="h-auto max-w-full whitespace-normal"
+        asChild
+      >
         <Link
           target="_blank"
           rel="noopener noreferrer nofollow"
           aria-label="Visit npm package website"
           href="https://www.npmjs.com/package/@convoform/react"
         >
-          <span className="flex items-center">
+          <span className="flex max-w-full items-center whitespace-normal">
             <span>@convoform/react</span>{" "}
             <ExternalLink className="ms-2 h-4 w-4" />
           </span>
