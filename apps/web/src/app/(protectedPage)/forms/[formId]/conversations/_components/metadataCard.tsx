@@ -140,9 +140,9 @@ function MetaInfo({
       <div className="text-xs self-start font-medium text-subtle-foreground">
         {label}
       </div>
-      <div className=" flex items-center gap-x-1">
+      <div className=" flex items-center gap-x-1 text-sm text-foreground">
         {Icon ? renderIcon(Icon) : null}
-        <span className="text-foreground ">{value ?? "-"}</span>
+        {value ?? "-"}
       </div>
     </div>
   );

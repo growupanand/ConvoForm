@@ -13,5 +13,12 @@ export const metadata: Metadata = {
 export default function Layout(props: Readonly<Props>) {
   const { children } = props;
 
-  return <Card className="h-full overflow-auto">{children}</Card>;
+  return (
+    <Card
+      className="h-full overflow-auto"
+      data-marketing-screenshot="conversation-detail"
+    >
+      {children}
+    </Card>
+  );
 }

@@ -21,13 +21,15 @@ export function Technologies() {
           url="https://github.com/growupanand/ConvoForm#docker-setup"
         />
         <TechnologyCard
-          icon={<Server className="h-8 w-8 text-[#4A5568]" />}
+          icon={<Server className="h-8 w-8 text-foreground" />}
           title="Self-Hosted"
           description="Deploy on your own infrastructure"
           url="https://github.com/growupanand/ConvoForm#local-setup"
         />
         <TechnologyCard
-          icon={<Database className="h-8 w-8 text-[#3182CE]" />}
+          icon={
+            <Database className="h-8 w-8 text-brand-600 dark:text-brand-400" />
+          }
           title="Cloud Hosted"
           description="Use our hosted version"
           url="https://convoform.com/auth/register"
@@ -52,17 +54,19 @@ const TechnologyCard = ({
 }) => {
   return (
     <Link href={url} className="group">
-      <div className="p-6 rounded-lg border border-gray-100 shadow-sm bg-white hover:shadow-md transition-shadow">
+      <div className="p-6 rounded-lg border border-border shadow-sm bg-card hover:shadow-md transition-shadow">
         <div className="flex items-center space-x-3 mb-3">
           {icon}
-          <h3 className="font-semibold text-lg">{title}</h3>
+          <h3 className="min-w-0 break-words font-semibold text-lg text-card-foreground">
+            {title}
+          </h3>
           {isNew && (
             <span className="px-2 py-1 rounded-full bg-brand-100 text-brand-700 text-xs font-medium">
               New
             </span>
           )}
         </div>
-        <p className="text-gray-600 text-sm">{description}</p>
+        <p className="break-words text-foreground text-sm">{description}</p>
       </div>
     </Link>
   );
