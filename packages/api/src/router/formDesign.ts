@@ -106,7 +106,8 @@ export const formDesignRouter = createTRPCRouter({
         throw new Error("Failed to update formDesign");
       }
 
-      ctx.analytics.track("formDesign:update", {
+      await ctx.analytics.track("formDesign:update", {
+        distinctId: ctx.userId,
         properties: input,
       });
     }),

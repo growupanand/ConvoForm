@@ -2,33 +2,48 @@
 
 import { useUser } from "@clerk/nextjs";
 import { usePostHog } from "posthog-js/react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function PosthogUserInit() {
   const { user } = useUser();
   const posthog = usePostHog();
+  const previousClerkUserIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (user) {
-      const userDetails = {} as Record<string, string>;
+    const clerkUserId = user?.id ?? null;
+    const previousClerkUserId = previousClerkUserIdRef.current;
 
-      if (user.fullName) {
-        userDetails.fullName = user.fullName;
+    if (clerkUserId === null) {
+      if (previousClerkUserId !== null) {
+        posthog.reset();
       }
-
-      if (user.hasImage && user.imageUrl) {
-        userDetails.imageUrl = user.imageUrl;
-      }
-
-      posthog.identify(
-        user.primaryEmailAddress?.emailAddress ?? user.id,
-        userDetails,
-      );
+      previousClerkUserIdRef.current = null;
+      return;
     }
-    return () => {
+
+    if (previousClerkUserId !== null && previousClerkUserId !== clerkUserId) {
       posthog.reset();
-    };
-  }, [user]);
+    }
+
+    if (!user) {
+      return;
+    }
+
+    const userDetails: Record<string, string> = {};
+    const email = user.primaryEmailAddress?.emailAddress;
+    if (email) {
+      userDetails.email = email;
+    }
+    if (user.fullName) {
+      userDetails.name = user.fullName;
+    }
+    if (user.hasImage && user.imageUrl) {
+      userDetails.imageUrl = user.imageUrl;
+    }
+
+    posthog.identify(clerkUserId, userDetails);
+    previousClerkUserIdRef.current = clerkUserId;
+  }, [user, posthog]);
 
   return null;
 }

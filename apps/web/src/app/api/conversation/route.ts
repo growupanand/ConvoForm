@@ -32,6 +32,7 @@ const newConversationRequestSchema = z.object({
   type: z.literal("new"),
   formId: z.string().min(1),
   coreConversation: z.null(),
+  isOwnerPreview: z.boolean().optional(),
 });
 
 const existingConversationRequestSchema = z.object({
@@ -70,6 +71,7 @@ export async function POST(request: NextRequest) {
       const metaData = await respondentMetadataSchema.parseAsync({
         userAgent: userAgentInformation,
         geoDetails: geoInformation,
+        isOwnerPreview: parsedRequestBody.isOwnerPreview,
       });
 
       // Get form with fields (before tracing so we can create conversation)

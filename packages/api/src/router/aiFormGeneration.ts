@@ -192,7 +192,8 @@ export const aiFormGenerationRouter = createTRPCRouter({
         throw new Error("Failed to create form");
       }
 
-      ctx.analytics.track("form:create", {
+      await ctx.analytics.track("form:create", {
+        distinctId: ctx.userId,
         properties: {
           ...savedForm,
           generatedWithAI: true,
@@ -221,7 +222,8 @@ export const aiFormGenerationRouter = createTRPCRouter({
 
       // Track field creation
       for (const field of savedFormFields) {
-        ctx.analytics.track("formField:create", {
+        await ctx.analytics.track("formField:create", {
+          distinctId: ctx.userId,
           properties: {
             ...field,
             generatedWithAI: true,

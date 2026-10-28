@@ -1,9 +1,12 @@
 import { PublicLayoutHeader } from "@/components/common/publicLayout/publicLayoutHeader";
 import { OrganizationList } from "@clerk/nextjs";
 
+import { OrganizationViewAnalytics } from "./organizationViewAnalytics";
+
 export default function Page() {
   return (
     <div className="min-h-screen flex flex-col ">
+      <OrganizationViewAnalytics />
       <PublicLayoutHeader hideSignIn />
       <div className="grow flex items-center justify-center">
         <OrganizationList

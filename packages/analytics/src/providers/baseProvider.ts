@@ -20,5 +20,6 @@ export type Track = (
     groups?: {
       [key in EventGroupName]?: string;
     };
+    distinctId?: string;
   },
-) => void;
+) => Promise<void>;

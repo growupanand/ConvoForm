@@ -63,6 +63,7 @@ export type EventHandlers = {
 
 export type UseConvoFormProps = EventHandlers & {
   formId: string;
+  isOwnerPreview?: boolean;
   apiDomain?: string;
   /** Optional logger instance for client-side logging */
   logger?: ILogger;

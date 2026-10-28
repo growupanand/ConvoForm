@@ -42,7 +42,8 @@ export const formFieldRouter = createTRPCRouter({
         throw new Error("Failed to create form field");
       }
 
-      ctx.analytics.track("formField:create", {
+      await ctx.analytics.track("formField:create", {
+        distinctId: ctx.userId,
         properties: savedFormField,
       });
 
@@ -90,7 +91,8 @@ export const formFieldRouter = createTRPCRouter({
         throw new Error("Failed to update form field");
       }
 
-      ctx.analytics.track("formField:update", {
+      await ctx.analytics.track("formField:update", {
+        distinctId: ctx.userId,
         properties: input,
       });
     }),
@@ -114,7 +116,8 @@ export const formFieldRouter = createTRPCRouter({
         throw new Error("Failed to update form field");
       }
 
-      ctx.analytics.track("formField:update", {
+      await ctx.analytics.track("formField:update", {
+        distinctId: ctx.userId,
         properties: input,
       });
     }),
@@ -132,7 +135,8 @@ export const formFieldRouter = createTRPCRouter({
         throw new Error("Failed to delete form field");
       }
 
-      ctx.analytics.track("formField:delete", {
+      await ctx.analytics.track("formField:delete", {
+        distinctId: ctx.userId,
         properties: deletedFormField,
       });
 

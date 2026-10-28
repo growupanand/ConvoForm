@@ -1,9 +1,9 @@
+import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster, TooltipProvider } from "@convoform/ui";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import type { Viewport } from "next";
-
-import { TRPCReactProvider } from "@/trpc/react";
+import Script from "next/script";
 import "@convoform/tailwind-config/src/globals.css";
 import "nprogress/nprogress.css";
 import { CSPostHogProvider } from "@/components/analytics/analyticsProvider";
@@ -86,6 +86,11 @@ export default function RootLayout({
 
           <Toaster />
         </CSPostHogProvider>
+        <Script
+          src="https://sponsoranysite.com/embed.js"
+          data-site="JtOfXI-4o5np"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
     // </ViewTransition>

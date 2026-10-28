@@ -19,10 +19,6 @@ export const authProtectedProcedure = publicProcedure.use(({ ctx, next }) => {
     });
   }
 
-  // provide analtyics instance to track prodcut events
-  analytics.distinctId =
-    ctx.user.primaryEmailAddress?.emailAddress ?? ctx.auth.userId;
-
   // Make ctx.userId non-nullable in protected procedures
   return next({
     ctx: {

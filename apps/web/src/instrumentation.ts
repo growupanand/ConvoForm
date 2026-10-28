@@ -31,6 +31,6 @@ export const onRequestError = async (
       }
     }
 
-    analytics.captureException(err, distinctId || undefined);
+    await analytics.captureException(err, distinctId || undefined);
   }
 };

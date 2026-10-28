@@ -28,7 +28,7 @@ describe("createForm Action", () => {
   } as any;
 
   const mockAnalytics = {
-    track: mock(),
+    track: mock(() => Promise.resolve()),
   } as any;
 
   const mockCtx = {

@@ -14,6 +14,10 @@ export async function POST(req: NextRequest) {
         data.email_addresses.length > 0
           ? data.email_addresses[0]?.email_address
           : "";
+      const signupMethod =
+        data.external_accounts.length > 0
+          ? data.external_accounts[0]?.provider ?? "oauth"
+          : "email";
       const newUser = insertUserSchema.parse({
         email: email,
         firstName: data.first_name,
@@ -21,7 +25,7 @@ export async function POST(req: NextRequest) {
         userId: data.id,
         imageUrl: data.image_url,
       });
-      await api.webhook.userCreated(newUser);
+      await api.webhook.userCreated({ ...newUser, signupMethod });
       break;
     }
     case "user.deleted":
@@ -40,6 +44,7 @@ export async function POST(req: NextRequest) {
         name: data.name,
         organizationId: data.id,
         slug: data.slug ?? "",
+        createdByClerkUserId: data.created_by,
       };
       await api.webhook.organizationCreated(org);
       break;

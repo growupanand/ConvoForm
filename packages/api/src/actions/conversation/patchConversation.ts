@@ -36,6 +36,7 @@ export async function patchConversation(
       where: eq(conversation.id, id),
       columns: {
         finishedAt: true,
+        metaData: true,
       },
     });
 
@@ -51,16 +52,20 @@ export async function patchConversation(
       throw new Error("Failed to update conversation");
     }
 
-    analytics.track("conversation:update", {
+    await analytics.track("conversation:update", {
       properties: input,
     });
 
+    const isNewlyCompleted =
+      updatedData.finishedAt && !existingConversation?.finishedAt;
+
     // Only send email if the conversation was NOT finished before, and is now finished
-    if (updatedData.finishedAt && !existingConversation?.finishedAt) {
+    if (isNewlyCompleted) {
       const result = await tx
         .select({
           userEmail: user.email,
           formName: form.name,
+          formOwnerClerkUserId: form.userId,
         })
         .from(form)
         .innerJoin(user, eq(form.userId, user.userId))
@@ -68,6 +73,21 @@ export async function patchConversation(
         .limit(1);
 
       const [data] = result;
+
+      const isOwnerPreview =
+        updatedConversation.metaData?.isOwnerPreview === true ||
+        existingConversation?.metaData?.isOwnerPreview === true;
+
+      if (data?.formOwnerClerkUserId) {
+        await analytics.track("conversation:complete", {
+          distinctId: data.formOwnerClerkUserId,
+          properties: {
+            formId: updatedConversation.formId,
+            conversationId: updatedConversation.id,
+            isOwnerPreview,
+          },
+        });
+      }
 
       if (data?.userEmail) {
         return {
