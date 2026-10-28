@@ -167,7 +167,8 @@ export const fileUploadRouter = createTRPCRouter({
           throw new Error("Failed to save file metadata");
         }
 
-        analytics.track("fileUpload:create", {
+        await analytics.track("fileUpload:create", {
+          distinctId: ctx.auth.userId ?? undefined,
           properties: {
             fileId: savedFileUpload.id,
             organizationId,
@@ -280,7 +281,8 @@ export const fileUploadRouter = createTRPCRouter({
           })
           .where(eq(fileUpload.id, fileId));
 
-        ctx.analytics.track("fileUpload:view", {
+        await ctx.analytics.track("fileUpload:view", {
+          distinctId: ctx.userId,
           properties: {
             fileId,
             organizationId: ctx.auth.orgId,
@@ -380,7 +382,8 @@ export const fileUploadRouter = createTRPCRouter({
           // File is marked as deleted in DB, so this is not critical
         });
 
-        ctx.analytics.track("fileUpload:delete", {
+        await ctx.analytics.track("fileUpload:delete", {
+          distinctId: ctx.userId,
           properties: {
             fileId,
             organizationId,

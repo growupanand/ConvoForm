@@ -31,9 +31,14 @@ type ContextProps = {
   children: React.ReactNode;
   form: Form;
   disableFetchFormDesign?: boolean;
+  isOwnerPreview?: boolean;
 };
 
-function FormContextProviderInner({ children, form }: Readonly<ContextProps>) {
+function FormContextProviderInner({
+  children,
+  form,
+  isOwnerPreview,
+}: Readonly<ContextProps>) {
   const [currentSection, setCurrentSection] =
     useState<FormSections>(DEFAULT_FORM_SECTION);
 
@@ -49,6 +54,7 @@ function FormContextProviderInner({ children, form }: Readonly<ContextProps>) {
 
   const convoFormHook = useConvoForm({
     formId: form.id,
+    isOwnerPreview,
     logger, // Pass logger for client-side TTFB tracking
     tracer, // Pass tracer for distributed tracing
   });
@@ -120,13 +126,14 @@ export function FormContextProvider({
   children,
   form,
   disableFetchFormDesign,
+  isOwnerPreview,
 }: Readonly<ContextProps>) {
   return (
     <FormDesignProvider
       formId={form.id}
       disableFetchFormDesign={disableFetchFormDesign}
     >
-      <FormContextProviderInner form={form}>
+      <FormContextProviderInner form={form} isOwnerPreview={isOwnerPreview}>
         {children}
       </FormContextProviderInner>
     </FormDesignProvider>

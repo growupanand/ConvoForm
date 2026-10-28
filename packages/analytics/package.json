@@ -6,7 +6,8 @@
     ".": "./index.ts"
   },
   "scripts": {
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "bun test"
   },
   "dependencies": {
     "@posthog/ai": "6.4.2",
@@ -16,6 +17,7 @@
   },
   "devDependencies": {
     "@convoform/tsconfig": "workspace:*",
+    "@types/bun": "catalog:",
     "@types/node": "catalog:",
     "typescript": "catalog:"
   }

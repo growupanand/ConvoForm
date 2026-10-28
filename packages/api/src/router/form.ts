@@ -85,7 +85,8 @@ export const formRouter = createTRPCRouter({
         throw new Error("Failed to update form");
       }
 
-      ctx.analytics.track("form:update", {
+      await ctx.analytics.track("form:update", {
+        distinctId: ctx.userId,
         properties: input,
         groups: {
           organization: updatedForm.organizationId,
@@ -175,7 +176,8 @@ export const formRouter = createTRPCRouter({
       }
 
       if (deletedForm) {
-        ctx.analytics.track("form:delete", {
+        await ctx.analytics.track("form:delete", {
+          distinctId: ctx.userId,
           properties: {
             ...deletedForm,
             filesDeleted: filesToDelete.length,

@@ -29,7 +29,7 @@ export async function createConversation(
     throw new Error("Failed to create conversation");
   }
 
-  analytics.track("conversation:create", {
+  await analytics.track("conversation:create", {
     properties: {
       ...result,
     },

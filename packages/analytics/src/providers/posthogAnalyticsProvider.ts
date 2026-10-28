@@ -7,7 +7,7 @@ import { BaseProvider, type Identify, type Track } from "./baseProvider";
 
 export class PosthogAnalyticsProvider extends BaseProvider {
   private client: PostHog | undefined;
-  distinctId = "unkown";
+  distinctId = "unknown";
 
   constructor() {
     super();
@@ -38,35 +38,34 @@ export class PosthogAnalyticsProvider extends BaseProvider {
     this.distinctId = userId;
   };
 
-  track: Track = (eventName, { properties, groups }) => {
-    const userId = properties?.userId ?? this.distinctId;
+  track: Track = async (eventName, { properties, groups, distinctId }) => {
+    const resolvedDistinctId =
+      distinctId ??
+      (typeof properties?.userId === "string"
+        ? properties.userId
+        : undefined) ??
+      this.distinctId;
+
+    const email =
+      typeof properties?.email === "string" ? properties.email : undefined;
 
     this.client?.capture({
-      distinctId: userId,
+      distinctId: resolvedDistinctId,
       event: eventName,
       properties: {
         ...properties,
         appVersion: repoPackageVersion,
-        isUserEmployee: isUserEmployee(userId),
+        isUserEmployee: isUserEmployee(email ?? resolvedDistinctId),
       },
       groups,
     });
+
+    await this.client?.flush();
   };
 
-  alias = (
-    /** user email, number, etc */
-    customId: string,
-    userId: string,
-  ) => {
-    this.client?.alias({
-      alias: customId,
-      distinctId: userId,
-    });
-    this.distinctId = customId;
-  };
-
-  captureException = (error: Error, distinctId?: string) => {
+  captureException = async (error: Error, distinctId?: string) => {
     this.client?.captureException(error, distinctId);
+    await this.client?.flush();
   };
 
   /**
@@ -130,7 +129,7 @@ export class PosthogAnalyticsProvider extends BaseProvider {
       // Log error to console and capture exception in PostHog
       console.error("Failed to create traced model:", error);
       if (error instanceof Error) {
-        this.captureException(error);
+        void this.captureException(error);
       }
       // Fallback to original model to ensure application functionality
       return model;

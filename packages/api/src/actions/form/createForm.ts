@@ -57,7 +57,8 @@ export async function createForm(ctx: Context, input: CreateFormInput) {
       throw new Error("Failed to create form");
     }
 
-    ctx.analytics?.track("form:create", {
+    await ctx.analytics?.track("form:create", {
+      distinctId: ctx.userId,
       properties: {
         ...savedForm,
         importedFromGoogleForms: Boolean(input.googleFormId),
@@ -92,7 +93,8 @@ export async function createForm(ctx: Context, input: CreateFormInput) {
 
     if (givenFormFields.length > 0) {
       for (const field of savedFormFields) {
-        ctx.analytics?.track("formField:create", {
+        await ctx.analytics?.track("formField:create", {
+          distinctId: ctx.userId,
           properties: {
             ...field,
           },

@@ -43,7 +43,8 @@ export async function updateForm(ctx: Context, input: UpdateFormInput) {
     throw new Error("Failed to update form");
   }
 
-  ctx.analytics?.track("form:update", {
+  await ctx.analytics?.track("form:update", {
+    distinctId: ctx.userId,
     properties: input,
     groups: {
       organization: updatedForm.organizationId,

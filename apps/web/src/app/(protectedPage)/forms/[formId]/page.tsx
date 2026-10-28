@@ -51,7 +51,7 @@ function FormPageContent({ formId }: { formId: string }) {
   }
 
   return (
-    <FormContextProvider form={data}>
+    <FormContextProvider form={data} isOwnerPreview>
       <FormEditPageLayout
         leftSidebar={
           <div className="h-full w-full flex flex-col space-y-4">

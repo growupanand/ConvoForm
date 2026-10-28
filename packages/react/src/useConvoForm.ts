@@ -214,8 +214,16 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
       formId: props.formId,
       type: isConversationInitialized ? "existing" : "new",
       coreConversation: conversation,
+      ...(isConversationInitialized || !props.isOwnerPreview
+        ? {}
+        : { isOwnerPreview: true }),
     };
-  }, [conversation, props.formId]);
+  }, [
+    conversation,
+    props.formId,
+    props.isOwnerPreview,
+    isConversationInitialized,
+  ]);
 
   const submitAnswer = useCallback(
     async (answerText: string) => {

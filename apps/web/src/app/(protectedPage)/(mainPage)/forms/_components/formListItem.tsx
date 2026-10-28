@@ -25,7 +25,8 @@ import Link from "next/link";
 import { ConfirmAction } from "@/components/common/confirmAction";
 import { LinkN } from "@/components/common/linkN";
 import { ListItem } from "@/components/common/listItem";
-import { copyLinkToClipboard, getFormSubmissionLink } from "@/lib/url";
+import { copyFormShareLink } from "@/lib/analytics/copyFormShareLink";
+import { getFormSubmissionLink } from "@/lib/url";
 import { api } from "@/trpc/react";
 
 type Props = {
@@ -36,7 +37,7 @@ type Props = {
 export function FormListItem({ form, conversationsCount }: Readonly<Props>) {
   const formSubmissionLink = getFormSubmissionLink(form.id);
   const handleCopyLinkToClipboard = () => {
-    copyLinkToClipboard(formSubmissionLink);
+    copyFormShareLink(formSubmissionLink, form.id);
     toast.success("Link copied to clipboard");
   };
 

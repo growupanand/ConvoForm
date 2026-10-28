@@ -7,6 +7,7 @@ import { AddressBar } from "@/components/common/browserWindow";
 import { CopyLinkButton } from "@/components/common/copyLinkButton";
 import { EmptyCard } from "@/components/common/emptyCard";
 import { TableComponentLoading } from "@/components/queryComponents/table/table";
+import { copyFormShareLink } from "@/lib/analytics/copyFormShareLink";
 import { getFrontendBaseUrl } from "@/lib/url";
 import type { Conversation } from "@convoform/db/src/schema";
 import { useParams } from "next/navigation";
@@ -43,7 +44,7 @@ function ConversationsTableSkeleton() {
 function ConversationsTableEmpty({ formId }: { formId: string }) {
   const formLink = `${getFrontendBaseUrl()}/view/${formId}`;
   const copyLinkToClipboard = () => {
-    navigator.clipboard.writeText(formLink);
+    copyFormShareLink(formLink, formId);
     toast.info("Link copied to clipboard");
   };
   return (

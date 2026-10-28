@@ -104,6 +104,7 @@ export const respondentMetadataSchema = z
     ipAddress: z.string().optional(),
     insights: conversationInsightsSchema.optional(),
     channel: z.record(z.string(), z.unknown()).optional(),
+    isOwnerPreview: z.boolean().optional(),
   })
   .partial();
 

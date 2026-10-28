@@ -5,7 +5,7 @@ import { toast } from "@convoform/ui";
 import { ExternalLink, RotateCw } from "lucide-react";
 import Link from "next/link";
 
-import { copyLinkToClipboard } from "@/lib/url";
+import { copyFormShareLink } from "@/lib/analytics/copyFormShareLink";
 import { cn } from "@/lib/utils";
 import { CopyLinkButton } from "./copyLinkButton";
 
@@ -77,7 +77,7 @@ const ActionButtons = ({
 }) => {
   const handleCopyLinkToClipboard = () => {
     if (!link) return;
-    copyLinkToClipboard(link);
+    copyFormShareLink(link);
     toast.info("Link copied to clipboard");
   };
 

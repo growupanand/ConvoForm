@@ -13,20 +13,28 @@ import { z } from "zod/v4";
 import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
 
+const userCreatedInputSchema = insertUserSchema.extend({
+  signupMethod: z.string().optional(),
+});
+
 export const webhookRouter = createTRPCRouter({
   userCreated: publicProcedure
-    .input(insertUserSchema)
+    .input(userCreatedInputSchema)
     .mutation(async ({ input, ctx }) => {
+      const { signupMethod, ...userInput } = input;
       try {
-        const [newUser] = await ctx.db.insert(user).values(input).returning();
+        const [newUser] = await ctx.db
+          .insert(user)
+          .values(userInput)
+          .returning();
 
-        analytics.track("user:create", {
-          properties: newUser,
+        await analytics.track("user:create", {
+          distinctId: newUser?.userId,
+          properties: {
+            ...newUser,
+            method: signupMethod,
+          },
         });
-
-        if (newUser?.email) {
-          analytics.alias(newUser.email, newUser.id);
-        }
       } catch (e: any) {
         console.error({
           message: "Webhook event error: Unable to save user data",
@@ -47,7 +55,8 @@ export const webhookRouter = createTRPCRouter({
           .delete(user)
           .where(eq(user.id, input.userId))
           .returning();
-        analytics.track("user:delete", {
+        await analytics.track("user:delete", {
+          distinctId: deletedUser?.userId,
           properties: deletedUser,
         });
       } catch (e: any) {
@@ -66,7 +75,8 @@ export const webhookRouter = createTRPCRouter({
           .insert(organizationMember)
           .values(input)
           .returning();
-        analytics.track("organizationMember:create", {
+        await analytics.track("organizationMember:create", {
+          distinctId: data?.userId,
           properties: data,
         });
       } catch (e: any) {
@@ -90,7 +100,8 @@ export const webhookRouter = createTRPCRouter({
           .where(eq(organizationMember.memberId, input.membershipId))
           .returning();
 
-        analytics.track("organizationMember:delete", {
+        await analytics.track("organizationMember:delete", {
+          distinctId: data?.userId,
           properties: data,
         });
       } catch (e: any) {
@@ -120,7 +131,7 @@ export const webhookRouter = createTRPCRouter({
           .delete(organization)
           .where(eq(organization.organizationId, input.organizationId))
           .returning();
-        analytics.track("organization:delete", {
+        await analytics.track("organization:delete", {
           properties: data,
         });
       } catch (e: any) {
@@ -132,14 +143,20 @@ export const webhookRouter = createTRPCRouter({
       }
     }),
   organizationCreated: publicProcedure
-    .input(insertOrganizationSchema)
+    .input(
+      insertOrganizationSchema.extend({
+        createdByClerkUserId: z.string().optional(),
+      }),
+    )
     .mutation(async ({ input, ctx }) => {
+      const { createdByClerkUserId, ...organizationInput } = input;
       try {
         const [data] = await ctx.db
           .insert(organization)
-          .values(input)
+          .values(organizationInput)
           .returning();
-        analytics.track("organization:create", {
+        await analytics.track("organization:create", {
+          distinctId: createdByClerkUserId,
           properties: data,
         });
       } catch (e: any) {
