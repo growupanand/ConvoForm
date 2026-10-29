@@ -94,3 +94,41 @@ export const deleteTestUser = async (userId: string) => {
     console.error("Failed to delete test user:", error);
   }
 };
+
+export const createOnboardingTestUser = async () => {
+  const email = `e2e_onboarding_${Date.now()}@example.com`;
+  const password = "Password123!@#";
+  const user = await clerkClient.users.createUser({
+    emailAddress: [email],
+    password,
+    firstName: "Ava",
+    lastName: "Stone",
+    skipPasswordChecks: true,
+    skipPasswordRequirement: true,
+  });
+
+  return { user, email, password };
+};
+
+export const deleteOnboardingTestUser = async (userId: string) => {
+  try {
+    const memberships = await clerkClient.users.getOrganizationMembershipList({
+      userId,
+      limit: 20,
+    });
+
+    for (const membership of memberships.data) {
+      try {
+        await clerkClient.organizations.deleteOrganization(
+          membership.organization.id,
+        );
+      } catch (error) {
+        console.error("Failed to delete onboarding test organization", error);
+      }
+    }
+  } catch (error) {
+    console.error("Failed to list onboarding test organizations", error);
+  }
+
+  await deleteTestUser(userId);
+};

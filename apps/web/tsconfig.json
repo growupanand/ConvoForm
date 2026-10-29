@@ -25,5 +25,5 @@
     ".next/types/**/*.ts",
     "**/*.mjs"
   ],
-  "exclude": ["node_modules", ".next", ".turbo"]
+  "exclude": ["node_modules", ".next", ".turbo", "**/*.test.ts"]
 }

@@ -1,4 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 const isPublicRoute = createRouteMatcher([
   "/",
@@ -29,6 +30,20 @@ export default clerkMiddleware(async (auth, request) => {
   if (!isPublicRoute(request)) {
     await auth.protect();
   }
+
+  const { userId, orgId } = await auth();
+  if (!userId || orgId || isPublicRoute(request)) {
+    return;
+  }
+
+  const { pathname } = request.nextUrl;
+  if (pathname.startsWith("/organizations") || pathname.startsWith("/api")) {
+    return;
+  }
+
+  // Document redirect. redirect() inside a server layout becomes a client
+  // navigation and crashes the App Router for users who have no active org.
+  return NextResponse.redirect(new URL("/organizations", request.url));
 });
 
 export const config = {
