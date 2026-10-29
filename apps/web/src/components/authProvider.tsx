@@ -8,7 +8,7 @@ export function AuthProvider({
   return (
     <ClerkProvider
       signInFallbackRedirectUrl="/dashboard"
-      signUpFallbackRedirectUrl="/dashboard"
+      signUpFallbackRedirectUrl="/forms"
       signInUrl="/auth/sign-in"
       signUpUrl="/auth/register"
       appearance={{

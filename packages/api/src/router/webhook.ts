@@ -71,6 +71,16 @@ export const webhookRouter = createTRPCRouter({
     .input(insertOrganizationMemberSchema)
     .mutation(async ({ input, ctx }) => {
       try {
+        const [existingMember] = await ctx.db
+          .select({ id: organizationMember.id })
+          .from(organizationMember)
+          .where(eq(organizationMember.memberId, input.memberId))
+          .limit(1);
+
+        if (existingMember) {
+          return;
+        }
+
         const [data] = await ctx.db
           .insert(organizationMember)
           .values(input)
@@ -151,6 +161,18 @@ export const webhookRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { createdByClerkUserId, ...organizationInput } = input;
       try {
+        const [existingOrganization] = await ctx.db
+          .select({ id: organization.id })
+          .from(organization)
+          .where(
+            eq(organization.organizationId, organizationInput.organizationId),
+          )
+          .limit(1);
+
+        if (existingOrganization) {
+          return;
+        }
+
         const [data] = await ctx.db
           .insert(organization)
           .values(organizationInput)

@@ -8,7 +8,8 @@
     "dev:turbo": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "bun test src/lib/personalWorkspace.test.ts"
   },
   "dependencies": {
     "@ai-sdk/provider-utils": "3.0.7",
