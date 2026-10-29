@@ -6,6 +6,7 @@ import {
 } from "@convoform/db/src/schema";
 import type { z } from "zod/v4";
 import type { ActionContext } from "../../types/actionContextType";
+import { buildConversationAnalyticsTrackPayload } from "./conversationAnalytics";
 
 export async function createConversation(
   input: z.infer<typeof insertConversationSchema>,
@@ -29,11 +30,10 @@ export async function createConversation(
     throw new Error("Failed to create conversation");
   }
 
-  await analytics.track("conversation:create", {
-    properties: {
-      ...result,
-    },
-  });
+  await analytics.track(
+    "conversation:create",
+    buildConversationAnalyticsTrackPayload(result),
+  );
 
   const parsedFormFieldResponses = formFieldResponses.map((collection) => {
     if (collection.fieldConfiguration === undefined) {

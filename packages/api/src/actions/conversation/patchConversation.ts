@@ -10,6 +10,7 @@ import { env } from "../../env";
 import { trpcFetchClient } from "../../lib/trpc-client";
 import type { ActionContext } from "../../types/actionContextType";
 import { getBaseUrl } from "../../utils/url";
+import { buildConversationAnalyticsTrackPayload } from "./conversationAnalytics";
 
 export async function patchConversation(
   input: PatchConversation,
@@ -52,9 +53,10 @@ export async function patchConversation(
       throw new Error("Failed to update conversation");
     }
 
-    await analytics.track("conversation:update", {
-      properties: input,
-    });
+    await analytics.track(
+      "conversation:update",
+      buildConversationAnalyticsTrackPayload(updatedConversation),
+    );
 
     const isNewlyCompleted =
       updatedData.finishedAt && !existingConversation?.finishedAt;
@@ -65,7 +67,6 @@ export async function patchConversation(
         .select({
           userEmail: user.email,
           formName: form.name,
-          formOwnerClerkUserId: form.userId,
         })
         .from(form)
         .innerJoin(user, eq(form.userId, user.userId))
@@ -78,16 +79,15 @@ export async function patchConversation(
         updatedConversation.metaData?.isOwnerPreview === true ||
         existingConversation?.metaData?.isOwnerPreview === true;
 
-      if (data?.formOwnerClerkUserId) {
-        await analytics.track("conversation:complete", {
-          distinctId: data.formOwnerClerkUserId,
-          properties: {
-            formId: updatedConversation.formId,
-            conversationId: updatedConversation.id,
+      await analytics.track("conversation:complete", {
+        ...buildConversationAnalyticsTrackPayload({
+          ...updatedConversation,
+          metaData: {
+            ...updatedConversation.metaData,
             isOwnerPreview,
           },
-        });
-      }
+        }),
+      });
 
       if (data?.userEmail) {
         return {

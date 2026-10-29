@@ -7,7 +7,6 @@ import { BaseProvider, type Identify, type Track } from "./baseProvider";
 
 export class PosthogAnalyticsProvider extends BaseProvider {
   private client: PostHog | undefined;
-  distinctId = "unknown";
 
   constructor() {
     super();
@@ -35,16 +34,41 @@ export class PosthogAnalyticsProvider extends BaseProvider {
         name,
       },
     });
-    this.distinctId = userId;
   };
 
-  track: Track = async (eventName, { properties, groups, distinctId }) => {
+  private resolveDistinctId(
+    eventName: string,
+    distinctId: string | undefined,
+    properties?: Record<string, unknown>,
+  ): string | undefined {
     const resolvedDistinctId =
       distinctId ??
       (typeof properties?.userId === "string"
         ? properties.userId
         : undefined) ??
-      this.distinctId;
+      (typeof properties?.conversationId === "string"
+        ? properties.conversationId
+        : undefined);
+
+    if (!resolvedDistinctId) {
+      console.warn(
+        `Analytics: skipped "${eventName}" because distinctId is missing`,
+      );
+    }
+
+    return resolvedDistinctId;
+  }
+
+  track: Track = async (eventName, { properties, groups, distinctId }) => {
+    const resolvedDistinctId = this.resolveDistinctId(
+      eventName,
+      distinctId,
+      properties,
+    );
+
+    if (!resolvedDistinctId) {
+      return;
+    }
 
     const email =
       typeof properties?.email === "string" ? properties.email : undefined;
@@ -96,14 +120,23 @@ export class PosthogAnalyticsProvider extends BaseProvider {
 
     // Check if LLM analytics is enabled
     const isEnabled = true; // TODO: Enable analytics based on environment variable
-    console.log("createTraceModel > isEnabled", { isEnabled });
     if (!isEnabled) {
+      return model;
+    }
+
+    const posthogDistinctId =
+      metadata?.userId ?? metadata?.conversationId ?? undefined;
+
+    if (!posthogDistinctId) {
+      console.warn(
+        "Analytics: LLM tracing skipped because distinctId is missing",
+      );
       return model;
     }
 
     try {
       return withTracing(model, this.client, {
-        posthogDistinctId: metadata?.userId || this.distinctId,
+        posthogDistinctId,
         posthogTraceId: metadata?.traceId,
         posthogProperties: {
           appVersion: repoPackageVersion,

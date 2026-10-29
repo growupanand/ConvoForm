@@ -43,6 +43,7 @@ describe("patchConversation analytics", () => {
     const updatedRow = {
       id: "conv_1",
       formId: "form_1",
+      organizationId: "org_1",
       finishedAt,
       metaData: { isOwnerPreview: true },
       transcript: [],
@@ -72,7 +73,6 @@ describe("patchConversation analytics", () => {
                   {
                     userEmail: "owner@example.com",
                     formName: "Form",
-                    formOwnerClerkUserId: "user_owner",
                   },
                 ]),
               ),
@@ -101,12 +101,13 @@ describe("patchConversation analytics", () => {
       expect.any(Object),
     );
     expect(trackMock).toHaveBeenCalledWith("conversation:complete", {
-      distinctId: "user_owner",
-      properties: {
+      distinctId: "conv_1",
+      groups: { organization: "org_1" },
+      properties: expect.objectContaining({
         formId: "form_1",
         conversationId: "conv_1",
         isOwnerPreview: true,
-      },
+      }),
     });
     expect(trackMock.mock.calls.length).toBe(2);
   });

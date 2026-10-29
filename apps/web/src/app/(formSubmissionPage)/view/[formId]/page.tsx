@@ -5,6 +5,9 @@ import { notFound } from "next/navigation";
 import { FormViewer } from "@/components/formViewer";
 import { FormContextProvider } from "@/components/formViewer/formContext";
 import { api } from "@/trpc/server";
+import { auth } from "@clerk/nextjs/server";
+import { isFormOrganizationMember } from "@convoform/api/src/actions/conversation/isFormOrganizationMember";
+import { db } from "@convoform/db";
 import { FormDesignLayout } from "./_components/formDesignLayout";
 import { FormNotPublishedScreen } from "./_components/formNotPublishedScreen";
 import { FormSubmissionPageHeader } from "./_components/header";
@@ -37,8 +40,15 @@ export default async function FormViewPage(
   const { showOrganizationName, showOrganizationLogo } = formData;
   const showHeader = showOrganizationName || showOrganizationLogo;
 
+  const { userId } = await auth();
+  const isOwnerPreview = await isFormOrganizationMember(
+    formData.organizationId,
+    userId,
+    { db },
+  );
+
   return (
-    <FormContextProvider form={formData}>
+    <FormContextProvider form={formData} isOwnerPreview={isOwnerPreview}>
       <FormDesignLayout>
         {showHeader && <FormSubmissionPageHeader form={formData} />}
         <div
