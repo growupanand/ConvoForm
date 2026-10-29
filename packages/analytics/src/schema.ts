@@ -56,6 +56,7 @@ export const llmActionType = z.enum([
   "generateEndMessage",
   "generateFormFields",
   "generateFormMetadata",
+  "generateConversationInsights",
 ]);
 
 export type LLMActionType = z.infer<typeof llmActionType>;

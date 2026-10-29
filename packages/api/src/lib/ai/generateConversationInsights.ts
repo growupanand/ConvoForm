@@ -1,18 +1,20 @@
-import { openai } from "@ai-sdk/openai";
+import { getModelConfig } from "@convoform/ai";
+import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import {
   type FormFieldResponses,
   type Transcript,
   conversationInsightsSchema,
 } from "@convoform/db/src/schema";
-// services/insightsService.ts
 import { generateObject } from "ai";
 
 /**
- * Analyzes conversation transcript and form data to generate insights
+ * Analyzes conversation transcript and form data to generate insights.
+ * Uses the same model as form submission (`CONVERSATION_MODEL` / `AI_API_KEY`).
  */
 export async function generateConversationInsights(
   transcript: Transcript[],
   formFieldResponses: FormFieldResponses[],
+  metadata?: LLMAnalyticsMetadata,
 ) {
   // Format the conversation data
   const formattedTranscript = transcript
@@ -24,7 +26,10 @@ export async function generateConversationInsights(
 
   // Use generateObject with our schema for structured output
   const result = await generateObject({
-    model: openai("gpt-4o-mini"),
+    model: getModelConfig({
+      ...metadata,
+      actionType: "generateConversationInsights",
+    }),
     system:
       "You analyze conversations and provide structured insights about form submissions.",
     prompt: `

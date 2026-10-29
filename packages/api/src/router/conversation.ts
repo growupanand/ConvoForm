@@ -571,6 +571,11 @@ export const conversationRouter = createTRPCRouter({
       const insights = await generateConversationInsights(
         conversationData.transcript,
         conversationData.formFieldResponses,
+        {
+          conversationId: conversationData.id,
+          formId: conversationData.formId,
+          organizationId: conversationData.organizationId,
+        },
       );
 
       // Update conversation with insights

@@ -9,7 +9,6 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@ai-sdk/openai": "catalog:",
     "@clerk/nextjs": "^6.14.3",
     "@convoform/ai": "workspace:*",
     "@convoform/analytics": "workspace:*",
