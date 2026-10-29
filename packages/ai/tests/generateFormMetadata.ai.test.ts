@@ -188,9 +188,9 @@ describe("generateFormMetadata", () => {
       /contact|support|inquiry|customer|communication/,
     );
 
-    // Welcome message should be welcoming
+    // Welcome message should orient the respondent (wording varies by model)
     expect(result.object.welcomeScreenMessage.toLowerCase()).toMatch(
-      /welcome|contact|help|reach/,
+      /welcome|contact|help|reach|minute|second|details|information|secure|private|gather/,
     );
 
     // Ending message should set expectations

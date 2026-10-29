@@ -32,8 +32,8 @@ export function getModelConfig(
       config.model,
     );
 
-    // If metadata provided and analytics enabled, return traced model
-    if (metadata) {
+    // Trace LLM calls only when we can attribute them in PostHog
+    if (metadata?.userId ?? metadata?.conversationId) {
       return analytics.createTracedModel(baseModel, metadata) as Exclude<
         LanguageModel,
         string
