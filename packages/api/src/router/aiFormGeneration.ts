@@ -107,7 +107,7 @@ export const aiFormGenerationRouter = createTRPCRouter({
   generateFieldsProtected: authProtectedProcedure
     .input(generateFieldsInputSchema)
     .output(generateFormFieldsOutputSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       // Check user's current plan and apply limits
       const maxFields = Math.min(
         input.maxFields ?? 8,
@@ -121,6 +121,11 @@ export const aiFormGenerationRouter = createTRPCRouter({
         formContext: input.formContext,
         maxFields,
         templateType: input.templateType,
+        metadata: {
+          userId: ctx.userId,
+          organizationId: ctx.auth.orgId ?? undefined,
+          actionType: "generateFormFields",
+        },
       };
 
       try {
@@ -146,11 +151,16 @@ export const aiFormGenerationRouter = createTRPCRouter({
       }),
     )
     .output(generateFormMetadataOutputSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const params: GenerateFormMetadataParams = {
         formContext: input.formContext,
         selectedFields: input.selectedFields,
         organizationName: input.organizationName,
+        metadata: {
+          userId: ctx.userId,
+          organizationId: ctx.auth.orgId ?? undefined,
+          actionType: "generateFormMetadata",
+        },
       };
 
       try {

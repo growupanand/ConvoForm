@@ -1,5 +1,6 @@
 import { checkNThrowErrorFormSubmissionLimit } from "@/actions";
 import { createNextjsLogger } from "@/lib/logger";
+import { auth } from "@clerk/nextjs/server";
 import {
   CoreService,
   type CoreServiceUIMessage,
@@ -10,6 +11,7 @@ import {
   createConversation,
   patchConversation,
 } from "@convoform/api/src/actions/conversation";
+import { isFormOrganizationMember } from "@convoform/api/src/actions/conversation/isFormOrganizationMember";
 import { getOneFormWithFields } from "@convoform/api/src/actions/form";
 import type { ActionContext } from "@convoform/api/src/types/actionContextType";
 import { db } from "@convoform/db";
@@ -67,13 +69,6 @@ export async function POST(request: NextRequest) {
       const userAgentInformation = userAgent({ headers: await headers() });
       const geoInformation = geolocation({ headers: await headers() });
 
-      // Parse metadata using the schema
-      const metaData = await respondentMetadataSchema.parseAsync({
-        userAgent: userAgentInformation,
-        geoDetails: geoInformation,
-        isOwnerPreview: parsedRequestBody.isOwnerPreview,
-      });
-
       // Get form with fields (before tracing so we can create conversation)
       const formWithFormFields = await getOneFormWithFields(
         parsedRequestBody.formId,
@@ -83,6 +78,22 @@ export async function POST(request: NextRequest) {
       if (!formWithFormFields) {
         throw new Error("Form not found");
       }
+
+      const { userId } = await auth();
+      const isOwnerPreviewFromMembership = await isFormOrganizationMember(
+        formWithFormFields.organizationId,
+        userId,
+        { db },
+      );
+
+      // Parse metadata using the schema
+      const metaData = await respondentMetadataSchema.parseAsync({
+        userAgent: userAgentInformation,
+        geoDetails: geoInformation,
+        isOwnerPreview:
+          parsedRequestBody.isOwnerPreview === true ||
+          isOwnerPreviewFromMembership,
+      });
 
       // Check form submission limits
       await checkNThrowErrorFormSubmissionLimit(formWithFormFields);

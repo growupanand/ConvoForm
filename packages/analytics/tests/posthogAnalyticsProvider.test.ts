@@ -48,4 +48,26 @@ describe("PosthogAnalyticsProvider", () => {
     );
     expect(flushMock).toHaveBeenCalled();
   });
+
+  it("skips capture when distinctId is missing", async () => {
+    const warnMock = mock(() => undefined);
+    const originalWarn = console.warn;
+    console.warn = warnMock;
+
+    try {
+      const { PosthogAnalyticsProvider } = await import(
+        "../src/providers/posthogAnalyticsProvider"
+      );
+      const provider = new PosthogAnalyticsProvider();
+
+      await provider.track("conversation:update", {
+        properties: { formId: "form_1" },
+      });
+
+      expect(captureMock).not.toHaveBeenCalled();
+      expect(warnMock).toHaveBeenCalled();
+    } finally {
+      console.warn = originalWarn;
+    }
+  });
 });
