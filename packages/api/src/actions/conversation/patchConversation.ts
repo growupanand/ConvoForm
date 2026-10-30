@@ -11,6 +11,8 @@ import { trpcFetchClient } from "../../lib/trpc-client";
 import type { ActionContext } from "../../types/actionContextType";
 import { getBaseUrl } from "../../utils/url";
 import { buildConversationAnalyticsTrackPayload } from "./conversationAnalytics";
+import { generateAndSaveInsights } from "./generateAndSaveInsights";
+import { mergeConversationMetaDataForPatch } from "./mergeConversationMetaDataForPatch";
 
 export async function patchConversation(
   input: PatchConversation,
@@ -23,7 +25,7 @@ export async function patchConversation(
     ...updatedData
   } = input;
 
-  const emailPayload = await ctx.db.transaction(async (tx) => {
+  const patchResult = await ctx.db.transaction(async (tx) => {
     // Lock the conversation row to prevent race conditions
     await tx.execute(
       sql`SELECT 1 FROM ${conversation} WHERE ${conversation.id} = ${id} FOR NO KEY UPDATE`,
@@ -41,11 +43,23 @@ export async function patchConversation(
       },
     });
 
+    const { metaData: incomingMetaData, ...restUpdatedData } = updatedData;
+
+    const patchSet = {
+      ...restUpdatedData,
+      ...(incomingMetaData !== undefined
+        ? {
+            metaData: mergeConversationMetaDataForPatch(
+              incomingMetaData,
+              existingConversation?.metaData,
+            ),
+          }
+        : {}),
+    };
+
     const [updatedConversation] = await tx
       .update(conversation)
-      .set({
-        ...updatedData,
-      })
+      .set(patchSet)
       .where(eq(conversation.id, id))
       .returning();
 
@@ -53,10 +67,12 @@ export async function patchConversation(
       throw new Error("Failed to update conversation");
     }
 
-    await analytics.track(
-      "conversation:update",
-      buildConversationAnalyticsTrackPayload(updatedConversation),
-    );
+    if (!existingConversation?.finishedAt) {
+      await analytics.track(
+        "conversation:update",
+        buildConversationAnalyticsTrackPayload(updatedConversation),
+      );
+    }
 
     const isNewlyCompleted =
       updatedData.finishedAt && !existingConversation?.finishedAt;
@@ -91,28 +107,62 @@ export async function patchConversation(
 
       if (data?.userEmail) {
         return {
-          shouldSendEmail: true,
-          email: data.userEmail,
-          formName: data.formName,
-          responseId: updatedConversation.id,
-          formId: updatedConversation.formId,
-          transcript: updatedConversation.transcript.map((t) => ({
-            role: t.role,
-            content: t.content,
-          })),
-          formFieldResponses: updatedConversation.formFieldResponses.map(
-            (field) => ({
-              fieldName: field.fieldName,
-              fieldValue: field.fieldValue,
-            }),
-          ),
-          metadata: updatedConversation.metaData,
-          responseLink: `${getBaseUrl()}/forms/${updatedConversation.formId}/conversations/${updatedConversation.id}`,
+          emailPayload: {
+            shouldSendEmail: true as const,
+            email: data.userEmail,
+            formName: data.formName,
+            responseId: updatedConversation.id,
+            formId: updatedConversation.formId,
+            transcript: updatedConversation.transcript.map((t) => ({
+              role: t.role,
+              content: t.content,
+            })),
+            formFieldResponses: updatedConversation.formFieldResponses.map(
+              (field) => ({
+                fieldName: field.fieldName,
+                fieldValue: field.fieldValue,
+              }),
+            ),
+            metadata: updatedConversation.metaData,
+            responseLink: `${getBaseUrl()}/forms/${updatedConversation.formId}/conversations/${updatedConversation.id}`,
+          },
+          isNewlyCompleted,
+          updatedConversation,
         };
       }
     }
-    return null;
+    return {
+      emailPayload: null,
+      isNewlyCompleted,
+      updatedConversation: isNewlyCompleted ? updatedConversation : null,
+    };
   });
+
+  const { emailPayload, isNewlyCompleted, updatedConversation } = patchResult;
+
+  if (isNewlyCompleted && updatedConversation) {
+    try {
+      await generateAndSaveInsights(
+        {
+          id: updatedConversation.id,
+          formId: updatedConversation.formId,
+          organizationId: updatedConversation.organizationId,
+          finishedAt: updatedConversation.finishedAt,
+          transcript: updatedConversation.transcript,
+          formFieldResponses: updatedConversation.formFieldResponses,
+          metaData: updatedConversation.metaData,
+        },
+        ctx,
+        {
+          trigger: "completed",
+          isPartial: false,
+          completionStatus: "completed",
+        },
+      );
+    } catch (error) {
+      console.error("Failed to generate insights on completion", error);
+    }
+  }
 
   if (emailPayload?.shouldSendEmail) {
     // Process integrations asynchronously

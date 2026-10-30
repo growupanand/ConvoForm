@@ -40,8 +40,6 @@ export async function POST(req: NextRequest) {
           await api.conversation.generateInsights({ conversationId });
         } catch (error) {
           console.error("Failed to generate insights:", error);
-          const { analytics } = await import("@convoform/analytics");
-          analytics.captureException(error as Error);
         }
         break;
       }

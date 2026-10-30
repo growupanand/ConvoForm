@@ -15,7 +15,7 @@ import {
   patchConversation,
 } from "../actions/conversation";
 import { getOrganizationFormsCountByFormId } from "../actions/conversation/getOrganizationFormsCountByFormId";
-import { generateConversationInsights } from "../lib/ai";
+import { handleWebsocketConversationStoppedInsights } from "../actions/conversation/handleWebsocketConversationStoppedInsights";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
 import { publicProcedure } from "../procedures/publicProcedure";
@@ -548,52 +548,9 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      // Fetch the conversation
-      const conversationData = await ctx.db.query.conversation.findFirst({
-        where: eq(conversation.id, input.conversationId),
-      });
-
-      if (!conversationData) {
-        throw new Error(
-          `Conversation with ID ${input.conversationId} not found`,
-        );
-      }
-
-      // Check if conversation is completed
-      if (
-        conversationData.isInProgress ||
-        conversationData.transcript === null
-      ) {
-        throw new Error("Cannot generate insights for incomplete conversation");
-      }
-
-      // Generate insights
-      const insights = await generateConversationInsights(
-        conversationData.transcript,
-        conversationData.formFieldResponses,
-        {
-          conversationId: conversationData.id,
-          formId: conversationData.formId,
-          organizationId: conversationData.organizationId,
-        },
+      return await handleWebsocketConversationStoppedInsights(
+        input.conversationId,
+        ctx,
       );
-
-      // Update conversation with insights
-      const [updatedConversation] = await ctx.db
-        .update(conversation)
-        .set({
-          metaData: {
-            ...conversationData.metaData,
-            insights,
-          },
-        })
-        .where(eq(conversation.id, input.conversationId))
-        .returning();
-
-      if (!updatedConversation) {
-        throw new Error("Failed to update conversation with insights");
-      }
-
-      return { success: true, insights };
     }),
 });

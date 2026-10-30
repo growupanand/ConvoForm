@@ -96,13 +96,24 @@ export const conversationInsightsSchema = z.object({
   ),
 });
 
+export const storedConversationInsightsSchema =
+  conversationInsightsSchema.extend({
+    generatedAt: z.coerce.date(),
+    isPartial: z.boolean().optional(),
+    completionStatus: z.enum(["completed", "abandoned"]).optional(),
+  });
+
+export type StoredConversationInsights = z.infer<
+  typeof storedConversationInsightsSchema
+>;
+
 export const respondentMetadataSchema = z
   .object({
     userAgent: userAgentSchema.optional(),
     geoDetails: geoDetailsSchema.optional(),
     submittedAt: z.coerce.date().optional(),
     ipAddress: z.string().optional(),
-    insights: conversationInsightsSchema.optional(),
+    insights: storedConversationInsightsSchema.optional(),
     channel: z.record(z.string(), z.unknown()).optional(),
     isOwnerPreview: z.boolean().optional(),
   })

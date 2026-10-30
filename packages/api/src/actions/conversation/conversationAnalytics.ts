@@ -33,7 +33,6 @@ export function buildConversationAnalyticsTrackPayload(
       conversationId: conversation.id,
       formId: conversation.formId,
       organizationId: conversation.organizationId,
-      name: conversation.name,
       isInProgress: conversation.isInProgress,
       finishedAt: conversation.finishedAt,
       answeredFieldsCount,

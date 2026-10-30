@@ -7,7 +7,6 @@ describe("buildConversationAnalyticsTrackPayload", () => {
       id: "conv_abc",
       formId: "form_1",
       organizationId: "org_1",
-      name: "New Conversation",
       isInProgress: true,
       metaData: { isOwnerPreview: true },
       formFieldResponses: [
@@ -24,7 +23,6 @@ describe("buildConversationAnalyticsTrackPayload", () => {
       conversationId: "conv_abc",
       formId: "form_1",
       organizationId: "org_1",
-      name: "New Conversation",
       isInProgress: true,
       finishedAt: undefined,
       answeredFieldsCount: 1,
@@ -32,6 +30,7 @@ describe("buildConversationAnalyticsTrackPayload", () => {
       transcriptMessageCount: 1,
       isOwnerPreview: true,
     });
+    expect(payload.properties).not.toHaveProperty("name");
     expect(payload.properties).not.toHaveProperty("transcript");
     expect(payload.properties).not.toHaveProperty("formFieldResponses");
   });
