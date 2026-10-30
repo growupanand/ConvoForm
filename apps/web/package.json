@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "type-check": "tsc --noEmit",
-    "test": "bun test src/lib/personalWorkspace.test.ts"
+    "test": "bun test"
   },
   "dependencies": {
     "@ai-sdk/provider-utils": "3.0.7",

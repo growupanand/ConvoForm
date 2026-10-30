@@ -45,4 +45,10 @@ export const RATE_LIMIT_CONFIGS = {
     prefix: RateLimitPrefix.FILE,
     description: "File upload operations",
   },
+  [RateLimitCategory.DESKTOP_HANDOFF]: {
+    requests: 3,
+    window: "1d",
+    prefix: RateLimitPrefix.API,
+    description: "Continue-on-desktop emails to the signed-in user",
+  },
 } as const;

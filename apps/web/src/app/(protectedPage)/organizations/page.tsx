@@ -20,7 +20,7 @@ export default async function Page() {
   return (
     <div className="min-h-screen flex flex-col ">
       <PublicLayoutHeader hideSignIn />
-      <div className="grow flex items-center justify-center">
+      <div className="flex grow items-center justify-center px-4">
         {resolution.kind === "activate" ? (
           <ActivatePersonalOrganization
             organizationId={resolution.organizationId}
