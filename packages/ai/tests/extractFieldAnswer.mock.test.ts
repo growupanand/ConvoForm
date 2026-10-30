@@ -96,4 +96,56 @@ describe("extractFieldAnswer with MockLanguageModelV2", () => {
     expect(result.object.answer).toBeNull();
     expect(result.object.isValid).toBe(false);
   });
+
+  it("overrides LLM validity when rating is out of range", async () => {
+    const ratingField = {
+      ...mockField,
+      fieldName: "Experience rating",
+      fieldDescription: "Rate your experience from 1 to 5",
+      fieldConfiguration: {
+        inputType: inputTypeEnum.enum.rating,
+        inputConfiguration: { maxRating: 5 },
+      },
+    };
+
+    const model = new MockLanguageModelV2({
+      doGenerate: async () => ({
+        finishReason: "stop",
+        usage: { inputTokens: 10, outputTokens: 20, totalTokens: 30 },
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify({
+              answer: "6",
+              confidence: 0.95,
+              reasoning: "User gave rating 6",
+              isValid: true,
+            }),
+          },
+        ],
+        warnings: [],
+      }),
+    });
+
+    const result = await extractFieldAnswer({
+      formOverview: "Feedback Form",
+      transcript: [
+        {
+          role: "assistant" as const,
+          content: "On a scale of 1 to 5, how would you rate your experience?",
+          createdAt: new Date(),
+        },
+        {
+          role: "user" as const,
+          content: "6",
+          createdAt: new Date(),
+        },
+      ],
+      currentField: ratingField,
+      model,
+    });
+
+    expect(result.object.isValid).toBe(false);
+    expect(result.object.answer).toBe("6");
+  });
 });

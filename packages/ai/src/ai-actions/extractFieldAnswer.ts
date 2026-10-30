@@ -1,11 +1,13 @@
 import type { LLMAnalyticsMetadata } from "@convoform/analytics";
 import type { FormFieldResponses, Transcript } from "@convoform/db/src/schema";
+import { inputTypeEnum } from "@convoform/db/src/schema/formFields/validation";
 import { getLogger } from "@convoform/logger";
 import type { EdgeTracer } from "@convoform/tracing";
 import { type LanguageModel, generateObject } from "ai";
 import { z } from "zod/v4";
 import { getModelConfig, getModelInfo } from "../config";
 import { buildConversationContextPrompt } from "../prompts/promptHelpers";
+import { enforceRatingAnswerConstraints } from "../utils/validateRatingAnswer";
 
 export type ExtractFieldAnswerParams = {
   formOverview: string;
@@ -92,9 +94,31 @@ export async function extractFieldAnswer(params: ExtractFieldAnswerParams) {
       });
     }
 
+    const fieldConfig = params.currentField.fieldConfiguration;
+    let validatedObject = result.object;
+    if (fieldConfig.inputType === inputTypeEnum.enum.rating) {
+      const maxRating = fieldConfig.inputConfiguration.maxRating ?? 5;
+      validatedObject = enforceRatingAnswerConstraints(
+        result.object,
+        maxRating,
+      );
+      if (validatedObject.isValid !== result.object.isValid) {
+        extractFieldAnswerSpan?.setAttribute(
+          "is_valid",
+          validatedObject.isValid,
+        );
+      }
+      if (validatedObject.answer !== result.object.answer) {
+        extractFieldAnswerSpan?.setAttribute(
+          "answer",
+          validatedObject.answer ?? "",
+        );
+      }
+    }
+
     extractFieldAnswerSpan?.end();
 
-    return result;
+    return { ...result, object: validatedObject };
   } catch (error) {
     logger.error("extractFieldAnswer failed", {
       error: error instanceof Error ? error.message : String(error),
@@ -158,11 +182,16 @@ export function buildExtractFieldAnswerPrompt(
   params: ExtractFieldAnswerParams,
 ): string {
   const conversationContext = buildConversationContextPrompt(params.transcript);
+  const fieldConfig = params.currentField.fieldConfiguration;
+  const ratingRangeHint =
+    fieldConfig.inputType === inputTypeEnum.enum.rating
+      ? `\nValid rating range: 1 to ${fieldConfig.inputConfiguration.maxRating ?? 5} (inclusive)`
+      : "";
 
   return `### FIELD TO EXTRACT
 Name: ${params.currentField.fieldName}
 Description: ${params.currentField.fieldDescription}
-Field Type: ${params.currentField.fieldConfiguration.inputType}
+Field Type: ${fieldConfig.inputType}${ratingRangeHint}
 
 ### CONVERSATION TRANSCRIPT
 ${conversationContext}

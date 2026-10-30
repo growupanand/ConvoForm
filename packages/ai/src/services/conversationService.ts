@@ -1,5 +1,6 @@
 import type { CoreConversation } from "@convoform/db/src/schema";
 import { shouldSkipValidation } from "@convoform/db/src/schema/formFields/utils";
+import { inputTypeEnum } from "@convoform/db/src/schema/formFields/validation";
 import { type ILogger, createConversationLogger } from "@convoform/logger";
 import type { EdgeTracer } from "@convoform/tracing";
 import {
@@ -14,6 +15,7 @@ import { streamFieldQuestion } from "../ai-actions/streamFieldQuestion";
 import type { ConversationManager } from "../managers/conversationManager";
 import { extractFieldInputType } from "../utils";
 import type { ConversationAIMetadata } from "../utils/llmAnalyticsUtils";
+import { validateSaveExactRatingAnswer } from "../utils/validateRatingAnswer";
 
 export type ConversationServiceUIMessage = UIMessage<
   never, // metadata type
@@ -152,12 +154,29 @@ export class ConversationService {
     );
 
     if (skipValidation) {
-      validatedAnswer = {
-        object: {
-          isValid: true,
-          answer: sanitizedAnswerText,
-        },
-      };
+      const fieldConfig = currentField.fieldConfiguration;
+      if (fieldConfig.inputType === inputTypeEnum.enum.rating) {
+        const maxRating = fieldConfig.inputConfiguration.maxRating ?? 5;
+        const ratingValidation = validateSaveExactRatingAnswer(
+          sanitizedAnswerText,
+          maxRating,
+        );
+        validatedAnswer = {
+          object: {
+            isValid: ratingValidation.isValid,
+            answer: ratingValidation.isValid
+              ? ratingValidation.answer
+              : sanitizedAnswerText,
+          },
+        };
+      } else {
+        validatedAnswer = {
+          object: {
+            isValid: true,
+            answer: sanitizedAnswerText,
+          },
+        };
+      }
     } else {
       validatedAnswer = await extractFieldAnswer({
         ...this.conversationManager.getConversation(),
