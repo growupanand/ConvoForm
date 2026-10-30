@@ -1,17 +1,17 @@
 {
-    "compilerOptions": {
-      "target": "ES2022",             // Target a modern JavaScript version
-      "module": "ESNext",           // Node.js compatible module format
-      "moduleResolution": "bundler", // Better for Bun
-      "lib": ["es2022"],       // Standard libraries (client-side Socket.IO may need "dom")
-      "declaration": true,            // Generate .d.ts type definition files
-      "outDir": "./dist",             // Output directory for compiled code
-      "rootDir": "./src",             // Source code location
-      "strict": true,                 // Enforce stricter type checking
-      "esModuleInterop": true,        // Improved interoperability with CommonJS modules 
-      "resolveJsonModule": true       // Allow importing JSON modules 
-    },
-    "include": ["src"],               // Include only the "src" directory for compilation
-    "exclude": ["node_modules", "dist"] // Standard exclusions
-  }
-  
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022"],
+    "types": ["@cloudflare/workers-types"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true
+  },
+  "include": ["src/**/*.ts", "worker-configuration.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}

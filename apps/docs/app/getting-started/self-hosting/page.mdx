@@ -40,8 +40,10 @@ ConvoForm is designed to be easily self-hosted using Docker.
    | Service | Port | Description |
    |---------|------|-------------|
    | **web** | `3000` | Next.js web application |
-   | **websocket-server** | `4000` | Real-time browser sync |
+   | **websocket-server** | `8787` | Real-time browser sync |
    | **channels-server** | `4001` | External channel webhooks (Telegram, etc.) |
+
+   The realtime service is a Cloudflare Worker. Docker starts it with Wrangler on port `8787`, and the browser connects to `ws://localhost:8787`.
 
 4. **Access the Application:**
    Open [http://localhost:3000](http://localhost:3000) in your browser.

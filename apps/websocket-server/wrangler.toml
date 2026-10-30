@@ -1,0 +1,19 @@
+name = "convoform-realtime"
+main = "src/worker.ts"
+compatibility_date = "2026-10-01"
+
+[durable_objects]
+bindings = [
+  { name = "REALTIME", class_name = "RealtimeHub" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RealtimeHub"]
+
+# Used by `wrangler deploy`. `pnpm dev` overrides this with the local app URL.
+[vars]
+NEXT_PUBLIC_APP_URL = "https://www.convoform.com"
+
+[dev]
+port = 8787

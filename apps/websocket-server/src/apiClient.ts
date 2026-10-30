@@ -1,13 +1,9 @@
-import { API_DOMAIN_URL } from "./constants";
-
-const isValidEndpoint =
-  typeof API_DOMAIN_URL === "string" && API_DOMAIN_URL.trim().length > 0;
-
-async function fetchApi<T = any>(
+async function fetchApi<T = unknown>(
   input: RequestInfo,
+  apiDomainUrl: string,
   init?: RequestInit,
 ): Promise<T> {
-  if (!isValidEndpoint) {
+  if (apiDomainUrl.trim().length === 0) {
     throw new Error("API endpoint is not set");
   }
 
@@ -19,8 +15,12 @@ async function fetchApi<T = any>(
   return response.json();
 }
 
-export async function apiClient(method: string, payload: Record<string, any>) {
-  return fetchApi(`${API_DOMAIN_URL}/api/webhook/websocket`, {
+export async function apiClient(
+  method: string,
+  payload: Record<string, unknown>,
+  apiDomainUrl: string,
+) {
+  return fetchApi(`${apiDomainUrl}/api/webhook/websocket`, apiDomainUrl, {
     method,
     headers: {
       "Content-Type": "application/json",

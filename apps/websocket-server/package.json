@@ -1,24 +1,22 @@
 {
   "name": "websocket-server",
   "version": "1.0.0",
-  "description": "This is websocket server for convoform.",
+  "description": "Realtime server for ConvoForm, running on Cloudflare Workers.",
   "scripts": {
-    "dev": "bun --watch src/index.ts",
-    "dev:turbo": "bun --watch src/index.ts",
-    "start": "bun run dist/index.js",
-    "build": "bun build src/index.ts --outdir ./dist --target bun"
+    "dev": "wrangler dev --port 8787 --var NEXT_PUBLIC_APP_URL:${NEXT_PUBLIC_APP_URL:-http://localhost:3000}",
+    "dev:turbo": "wrangler dev --port 8787 --var NEXT_PUBLIC_APP_URL:${NEXT_PUBLIC_APP_URL:-http://localhost:3000}",
+    "deploy": "wrangler deploy",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [],
   "author": "Utkarsh Anand",
   "license": "ISC",
-"dependencies": {
-  },
   "devDependencies": {
+    "@cloudflare/workers-types": "5.20261030.1",
     "@types/node": "catalog:",
     "typescript": "catalog:",
-    "@types/bun": "latest"
+    "wrangler": "4.156.0"
   },
-  "module": "src/index.ts",
-  "type": "module",
-  "private": true
+  "private": true,
+  "type": "module"
 }

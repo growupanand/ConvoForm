@@ -36,7 +36,7 @@ Visit our **[Documentation Site](https://docs.convoform.com)** for detailed guid
 
 - [Node.js](https://nodejs.org/) (v22+)
 - [pnpm](https://pnpm.io/) (v10.8.1)
-- [Bun](https://bun.sh/) (v1.2+ — runs the websocket server)
+- [Bun](https://bun.sh/) (v1.2+ — runs unit tests)
 - PostgreSQL (local or hosted — the app validates `DATABASE_URL` at startup)
 - [Docker](https://www.docker.com/) (optional, for self-hosting)
 
@@ -67,7 +67,7 @@ Visit our **[Documentation Site](https://docs.convoform.com)** for detailed guid
    pnpm run dev
    ```
 
-Visit `http://localhost:3000` for the web app, `http://localhost:3001` for the documentation, `http://localhost:4000` for the websocket server, and `http://localhost:4001` for the channels server (Telegram webhooks).
+Visit `http://localhost:3000` for the web app, `http://localhost:3001` for the documentation, `http://localhost:8787/healthcheck` for the realtime server, and `http://localhost:4001` for the channels server (Telegram webhooks).
 
 ## 🤝 Contributing
 

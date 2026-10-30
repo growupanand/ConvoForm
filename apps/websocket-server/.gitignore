@@ -1,4 +1,3 @@
-# dependencies (bun install)
 node_modules
 
 # output
@@ -12,8 +11,7 @@ coverage
 
 # logs
 logs
-_.log
-report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+*.log
 
 # dotenv environment variable files
 .env
@@ -21,11 +19,13 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .env.test.local
 .env.production.local
 .env.local
+.dev.vars
 
 # caches
 .eslintcache
 .cache
 *.tsbuildinfo
+.wrangler
 
 # IntelliJ based IDEs
 .idea
