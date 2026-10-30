@@ -7,7 +7,7 @@
     "defaultBranch": "main"
   },
   "files": {
-    "ignore": ["**/*.yml", "**/*.yaml", "**/*.md"]
+    "ignore": ["**/*.yml", "**/*.yaml", "**/*.md", "**/.wrangler/**"]
   },
   "formatter": {
     "enabled": true,
@@ -150,5 +150,18 @@
     },
     "globals": ["React", "JSX"]
   },
-  "overrides": [{ "include": ["*.js?(x)", "*.ts?(x)"] }]
+  "overrides": [
+    { "include": ["*.js?(x)", "*.ts?(x)"] },
+    {
+      "include": ["apps/websocket-server/**"],
+      "javascript": {
+        "globals": [
+          "DurableObjectNamespace",
+          "Env",
+          "ExportedHandler",
+          "WebSocketPair"
+        ]
+      }
+    }
+  ]
 }

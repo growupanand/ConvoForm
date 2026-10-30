@@ -5,7 +5,7 @@ services:
       dockerfile: ./docker/Dockerfile-web
       args:
         - NEXT_PUBLIC_APP_URL=http://localhost:3000
-        - NEXT_PUBLIC_WEBSOCKET_URL=http://localhost:4000
+        - NEXT_PUBLIC_WEBSOCKET_URL=ws://localhost:8787
         - NODE_ENV=production
         - NEXT_PUBLIC_PACKAGE_ENV=production
         - CONVERSATION_MODEL=${CONVERSATION_MODEL}
@@ -19,7 +19,7 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - NEXT_PUBLIC_APP_URL=http://localhost:3000
-      - NEXT_PUBLIC_WEBSOCKET_URL=http://localhost:4000
+      - NEXT_PUBLIC_WEBSOCKET_URL=ws://localhost:8787
       - CHANNELS_SERVER_URL=http://channels-server:4001
       - NODE_ENV=production
       - NEXT_PUBLIC_PACKAGE_ENV=production
@@ -42,7 +42,7 @@ services:
       context: .
       dockerfile: ./docker/Dockerfile-websocket-server
     ports:
-      - "4000:4000"
+      - "8787:8787"
     environment:
       - NEXT_PUBLIC_APP_URL=http://web:3000
       - NODE_ENV=production
