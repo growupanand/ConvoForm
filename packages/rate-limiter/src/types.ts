@@ -20,6 +20,8 @@ export enum RateLimitCategory {
   AI_PROTECTED_SESSION = "ai:protected-session",
   /** File upload operations */
   FILE_UPLOAD = "file:upload",
+  /** Continue-on-desktop email for a signed-in user */
+  DESKTOP_HANDOFF = "email:desktop-handoff",
 }
 
 /**

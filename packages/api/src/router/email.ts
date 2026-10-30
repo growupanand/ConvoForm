@@ -2,7 +2,9 @@ import { verifySignature } from "@convoform/common";
 import { sendFormResponseEmail } from "@convoform/email";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { sendContinueOnDesktopLink } from "../actions/email/sendContinueOnDesktopLink";
 import { env } from "../env";
+import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const emailRouter = createTRPCRouter({
@@ -78,4 +80,13 @@ export const emailRouter = createTRPCRouter({
         responseLink: input.responseLink,
       });
     }),
+
+  sendContinueOnDesktop: authProtectedProcedure.mutation(async ({ ctx }) => {
+    return sendContinueOnDesktopLink({
+      userId: ctx.userId,
+      orgId: ctx.auth.orgId,
+      user: ctx.user,
+      analytics: ctx.analytics,
+    });
+  }),
 });

@@ -163,4 +163,20 @@ export const enforceRateLimit = {
       customErrorMessage,
     );
   },
+
+  /**
+   * Continue-on-desktop emails (3 requests per day, per user)
+   * @param identifier - Optional unique identifier for the user/client (defaults to "anonymous")
+   * @param customErrorMessage - Optional custom error message
+   */
+  DESKTOP_HANDOFF: async (
+    identifier?: string,
+    customErrorMessage?: string,
+  ): Promise<void> => {
+    return enforceRateLimitInternal(
+      identifier,
+      RateLimitCategory.DESKTOP_HANDOFF,
+      customErrorMessage,
+    );
+  },
 } as const;

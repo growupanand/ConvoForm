@@ -15,6 +15,9 @@ export const eventAction = z.enum([
   "view",
   "share",
   "complete",
+  "emailSent",
+  "linkCopied",
+  "whatsappShared",
 ]);
 export type EventAction = z.infer<typeof eventAction>;
 
@@ -28,6 +31,7 @@ export const eventObject = z.enum([
   "collectData",
   "organizationMember",
   "fileUpload",
+  "mobileHandoff",
 ]);
 export type EventObject = z.infer<typeof eventObject>;
 

@@ -5,6 +5,7 @@
     "types": "./src/index.ts",
     "exports": {
         ".": "./src/index.ts",
+        "./continueOnDesktop": "./src/continueOnDesktop.ts",
         "./src/env": "./src/env.ts",
         "./src/envSchema": "./src/envSchema.ts"
     },

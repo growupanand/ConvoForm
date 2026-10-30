@@ -1,5 +1,7 @@
 import { render } from "@react-email/render";
+import { CONTINUE_ON_DESKTOP_SUBJECT } from "./continueOnDesktop";
 import { ResendProvider } from "./providers/resend";
+import { ContinueOnDesktopEmail } from "./templates/continue-on-desktop-email";
 import {
   FormResponseEmail,
   type FormResponseEmailProps,
@@ -43,6 +45,16 @@ export async function sendFormResponseEmail({
   await sendEmail({
     to,
     subject,
+    html,
+  });
+}
+
+export async function sendContinueOnDesktopEmail({ to }: { to: string }) {
+  const html = await render(ContinueOnDesktopEmail());
+
+  await sendEmail({
+    to,
+    subject: CONTINUE_ON_DESKTOP_SUBJECT,
     html,
   });
 }
