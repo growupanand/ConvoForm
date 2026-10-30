@@ -18,6 +18,7 @@
     "@convoform/feature-flags": "workspace:*",
     "@convoform/file-storage": "workspace:*",
     "@convoform/integration": "workspace:*",
+    "@convoform/logger": "workspace:*",
     "@convoform/rate-limiter": "workspace:*",
     "drizzle-orm": "catalog:",
     "@t3-oss/env-core": "0.13.10",

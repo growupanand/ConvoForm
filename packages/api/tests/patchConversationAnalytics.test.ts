@@ -24,12 +24,21 @@ mock.module("../src/env", () => ({
   env: { INTERNAL_EMAIL_API_SECRET: "secret" },
 }));
 
+const generateAndSaveInsightsMock = mock(() =>
+  Promise.resolve({ success: true, skipped: false }),
+);
+
+mock.module("../src/actions/conversation/generateAndSaveInsights", () => ({
+  generateAndSaveInsights: generateAndSaveInsightsMock,
+}));
+
 describe("patchConversation analytics", () => {
   beforeEach(() => {
     trackMock.mockClear();
   });
 
   it("emits conversation:complete once for the form owner on first finish", async () => {
+    generateAndSaveInsightsMock.mockClear();
     const { patchConversation } = await import(
       "../src/actions/conversation/patchConversation"
     );
@@ -110,5 +119,63 @@ describe("patchConversation analytics", () => {
       }),
     });
     expect(trackMock.mock.calls.length).toBe(2);
+    expect(generateAndSaveInsightsMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not emit conversation:update after the conversation is already finished", async () => {
+    const { patchConversation } = await import(
+      "../src/actions/conversation/patchConversation"
+    );
+
+    const finishedAt = new Date();
+    const existingRow = {
+      finishedAt,
+      metaData: {},
+    };
+
+    const updatedRow = {
+      id: "conv_1",
+      formId: "form_1",
+      organizationId: "org_1",
+      finishedAt,
+      metaData: {},
+      transcript: [],
+      formFieldResponses: [],
+    };
+
+    const mockTx = {
+      execute: mock(() => Promise.resolve()),
+      query: {
+        conversation: {
+          findFirst: mock(() => Promise.resolve(existingRow)),
+        },
+      },
+      update: mock().mockReturnValue({
+        set: mock().mockReturnValue({
+          where: mock().mockReturnValue({
+            returning: mock(() => Promise.resolve([updatedRow])),
+          }),
+        }),
+      }),
+    };
+
+    const mockDb = {
+      transaction: mock((cb: (tx: typeof mockTx) => Promise<unknown>) =>
+        cb(mockTx),
+      ),
+    };
+
+    trackMock.mockClear();
+
+    await patchConversation(
+      {
+        id: "conv_1",
+        finishedAt,
+        transcript: [{ role: "user", content: "late patch" }],
+      } as any,
+      { db: mockDb as any },
+    );
+
+    expect(trackMock).not.toHaveBeenCalled();
   });
 });

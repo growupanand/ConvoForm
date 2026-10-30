@@ -15,6 +15,7 @@ export async function generateConversationInsights(
   transcript: Transcript[],
   formFieldResponses: FormFieldResponses[],
   metadata?: LLMAnalyticsMetadata,
+  options?: { isPartial?: boolean },
 ) {
   // Format the conversation data
   const formattedTranscript = transcript
@@ -39,6 +40,12 @@ ${formattedTranscript}
 
 The form asked the following questions:
 ${formQuestions.join("\n")}
+
+${
+  options?.isPartial
+    ? "This conversation was abandoned before the form was fully completed. Summarize only what was collected and make clear in the TLDR that the submission is incomplete."
+    : "The form was completed successfully. Summarize the full conversation including all answers collected."
+}
 
 Generate insights about the conversation including a brief summary (TLDR), any external queries outside the form questions, the user's tone, and overall sentiment.
 `,

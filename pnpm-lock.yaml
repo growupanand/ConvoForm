@@ -496,6 +496,9 @@ importers:
       '@convoform/integration':
         specifier: workspace:*
         version: link:../integration
+      '@convoform/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@convoform/rate-limiter':
         specifier: workspace:*
         version: link:../rate-limiter
