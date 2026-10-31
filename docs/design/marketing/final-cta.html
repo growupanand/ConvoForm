@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ConvoForm — final CTA section · MOCKUP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{--b50:#eff6ff;--b100:#dbeafe;--b200:#bfdbfe;--b300:#93c5fd;--b400:#60a5fa;--b500:#3b82f6;--b600:#2563eb;--b700:#1d4ed8;--ink:#0f172a;--muted:#475569;--slate:#94a3b8;--hair:#cbd5e1}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fafbfc;color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  body{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:48px 20px}
+  .badge{position:fixed;right:14px;bottom:14px;z-index:50;background:#fbbf24;color:#451a03;font:700 11px/1 Inter,sans-serif;padding:7px 11px;border-radius:999px;border:1px solid #f59e0b;letter-spacing:.02em}
+  .ctx{max-width:1120px;width:100%;margin:0 auto 14px;font:400 11px/1 "JetBrains Mono",ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--slate);display:flex;align-items:center;gap:10px}
+  .ctx::after{content:"";flex:1;border-top:1px solid #e2e8f0}
+
+  .cta{position:relative;max-width:1120px;width:100%;margin:0 auto;border:1.25px solid var(--hair);border-radius:32px;background:#fff;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:24px;padding:64px 56px 64px 64px;isolation:isolate}
+  .cta::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(circle at 1px 1px,rgba(15,23,42,.075) 1px,transparent 0);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse 70% 90% at 72% 50%,#000 25%,transparent 80%);mask-image:radial-gradient(ellipse 70% 90% at 72% 50%,#000 25%,transparent 80%)}
+  .cta::after{content:"";position:absolute;z-index:-2;width:720px;height:520px;right:-120px;top:50%;margin-top:-260px;background:radial-gradient(ellipse,rgba(147,197,253,.42),rgba(191,219,254,.15) 45%,transparent 70%);filter:blur(30px);pointer-events:none}
+  .eyebrow{font:500 11px/1 "JetBrains Mono",ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--b600);display:inline-flex;align-items:center;gap:8px}
+  .eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--b600);display:block}
+  h2{margin-top:18px;font:700 clamp(34px,4.6vw,56px)/1.04 "Bricolage Grotesque",Inter,sans-serif;letter-spacing:-.03em;max-width:560px}
+  h2 em{font-style:normal;background:linear-gradient(90deg,var(--b600),var(--b400));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{margin-top:16px;max-width:470px;font-size:17px;line-height:1.55;color:var(--muted)}
+  .ctas{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font:600 15px/1 Inter,sans-serif;padding:15px 24px;text-decoration:none;transition:transform .15s,background .15s,border-color .15s;white-space:nowrap}
+  .btn-primary{background:var(--b600);color:#fff;box-shadow:0 10px 26px -12px rgba(37,99,235,.7)}
+  .btn-primary:hover{background:var(--b700);transform:translateY(-1px)}
+  .btn-secondary{background:rgba(255,255,255,.7);color:var(--ink);border:1.25px solid var(--hair)}
+  .btn-secondary:hover{border-color:var(--slate);transform:translateY(-1px)}
+  .proof{margin-top:20px;font:400 12px/1.5 "JetBrains Mono",ui-monospace,monospace;letter-spacing:.02em;color:#64748b;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+  .proof .sep{color:var(--hair)}
+  .proof a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--hair)}
+  .proof .star{color:var(--b600)}
+
+  .vis{position:relative}
+  #sv{visibility:hidden;display:block;width:100%;height:auto;overflow:visible}
+  #sv text{font-family:Inter,system-ui,sans-serif}
+  #sv .mono{font-family:"JetBrains Mono",ui-monospace,monospace;letter-spacing:.06em}
+  #sv rect,#sv line,#sv path{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+  .caption{max-width:1120px;width:100%;margin:12px auto 0;text-align:center;font:400 11px/1.4 "JetBrains Mono",ui-monospace,monospace;letter-spacing:.04em;color:var(--slate)}
+
+  @media (max-width:860px){
+    body{padding:56px 14px 32px;justify-content:flex-start}
+    .badge{position:absolute;top:16px;bottom:auto;right:auto;left:50%;transform:translateX(-50%);font-size:10px;padding:5px 9px}
+    .cta{grid-template-columns:1fr;padding:36px 22px 26px;border-radius:26px;gap:8px;text-align:left}
+    .cta::before{-webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 80%,#000 25%,transparent 80%);mask-image:radial-gradient(ellipse 90% 60% at 50% 80%,#000 25%,transparent 80%)}
+    .cta::after{width:520px;height:420px;right:50%;margin-right:-260px;top:auto;bottom:-140px;margin-top:0}
+    h2{font-size:36px}
+    .sub{font-size:15.5px}
+    .ctas{flex-direction:column;align-items:stretch}
+    .proof{font-size:11px}
+    .vis{order:2;margin:10px -6px 0}
+  }
+</style>
+</head>
+<body>
+<div class="badge">MOCKUP</div>
+<div class="ctx">Landing page · final CTA section</div>
+<section class="cta" aria-labelledby="ctaH">
+  <div class="txt">
+    <span class="eyebrow"><i></i>Get started</span>
+    <h2 id="ctaH">Ready to let your form <em>talk back?</em></h2>
+    <p class="sub">Turn your next form into a conversation that asks the right follow-up and hands you clean answers.</p>
+    <div class="ctas">
+      <a class="btn btn-primary" href="#">Create your free form <span aria-hidden="true">→</span></a>
+      <a class="btn btn-secondary" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Try the demo</a>
+    </div>
+    <p class="proof"><span>Free to start</span><span class="sep">·</span><span>No credit card</span><span class="sep">·</span><a href="#">Open source <span class="star">★</span> 102</a></p>
+  </div>
+  <div class="vis"><svg id="sv" viewBox="16 84 428 196" role="img" aria-label="Line drawing: pieces of a form drift in and become a chat bubble asking, Hi! What should I call you?"></svg></div>
+</section>
+<p class="caption">Illustrative example · Mockup of the final CTA section</p>
+
+<script>
+(() => {
+  const q = new URLSearchParams(location.search);
+  if (q.get('h') === '2') document.getElementById('ctaH').innerHTML = 'Your next form doesn’t have to be <em style="white-space:nowrap">a form.</em>';
+
+  const NS = 'http://www.w3.org/2000/svg', sv = document.getElementById('sv');
+  const el = (tag, at, parent = sv) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); parent.appendChild(e); return e; };
+  const S = '#94a3b8', B = '#2563eb', SW = 1.25;
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const P = (a, b, t) => clamp((t - a) / (b - a));
+  const io = t => { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+  const out = t => 1 - Math.pow(1 - clamp(t), 3);
+  const backOut = t => { t = clamp(t); const c1 = 1.6, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+  const L = (a, b, k) => a + (b - a) * k;
+
+  const T = 6;
+  const IN0 = 0, IN1 = 1.3, M0 = 1.3, M1 = 2.1, TY0 = 2.2, TY1 = 3.6, R0 = 4.0, F0 = 5.35, F1 = 5.95;
+  const MSG = 'Hi! What should I call you?';
+
+  // ---------- fragments of a form ----------
+  const gIn = el('g', {}), gLab = el('g', {}), gSub = el('g', {});
+  const inRect = el('rect', { fill: '#fff', 'fill-opacity': .6, stroke: S, 'stroke-width': SW }, gIn);
+  const labTxt = el('text', { class: 'mono', 'font-size': 9.5, fill: S, x: 0, y: 0 }, gLab); labTxt.textContent = 'FULL NAME *';
+  const labLine = el('line', { x1: 0, y1: 8, x2: 74, y2: 8, stroke: S, 'stroke-width': SW }, gLab);
+  const subRect = el('rect', { x: -36, y: -14, width: 72, height: 28, rx: 4, fill: 'none', stroke: S, 'stroke-width': SW }, gSub);
+  const subTxt = el('text', { 'font-size': 11.5, fill: S, 'text-anchor': 'middle', x: 0, y: 4, 'font-weight': 500 }, gSub); subTxt.textContent = 'Submit';
+  // ---------- conversation ----------
+  const tag = el('text', { class: 'mono', 'font-size': 9.5, fill: S, x: 42, y: 112 }); tag.textContent = 'CONVOFORM';
+  const tagDot = el('circle', { cx: 34, cy: 109, r: 2.6, fill: B });
+  const tail = el('path', { d: 'M40 170 l-9 9 l14 -3', fill: 'none', stroke: B, 'stroke-width': SW });
+  const msgTxt = el('text', { 'font-size': 16, fill: '#0f172a', x: 48, y: 152, 'font-weight': 500 });
+  const cursor = el('line', { stroke: B, 'stroke-width': 1.5 });
+  const rG = el('g', {});
+  const rRect = el('rect', { rx: 18, fill: B, 'fill-opacity': .06, stroke: B, 'stroke-width': SW }, rG);
+  const rTxt = el('text', { 'font-size': 16, fill: B, 'font-weight': 600, 'text-anchor': 'middle' }, rG); rTxt.textContent = 'Priya';
+  const rTag = el('text', { class: 'mono', 'font-size': 9.5, fill: S, 'text-anchor': 'end' }); rTag.textContent = 'YOU';
+
+  // measure final text
+  msgTxt.textContent = MSG; const fullW = msgTxt.getComputedTextLength(); msgTxt.textContent = '';
+  rTxt.textContent = 'Priya'; const rW = rTxt.getComputedTextLength() + 40;
+  const BB = { x: 30, y: 124, w: fullW + 38, h: 46 };          // AI bubble box
+  const RB = { x: 430 - rW, y: 196, w: rW, h: 40 };            // reply bubble box
+  rRect.setAttribute('x', RB.x); rRect.setAttribute('y', RB.y); rRect.setAttribute('width', RB.w); rRect.setAttribute('height', RB.h);
+  rTxt.setAttribute('x', RB.x + RB.w / 2); rTxt.setAttribute('y', RB.y + 26);
+  rTag.setAttribute('x', RB.x + RB.w - 4); rTag.setAttribute('y', RB.y + RB.h + 16);
+  // pre-compute char x positions for the cursor
+  const charX = [0]; for (let i = 1; i <= MSG.length; i++) { msgTxt.textContent = MSG.slice(0, i); charX.push(msgTxt.getComputedTextLength()); } msgTxt.textContent = '';
+
+  // ---------- blue dots ----------
+  let sd = 13; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+  const dots = Array.from({ length: 16 }, (_, i) => {
+    const side = i % 4; const u = rnd();
+    const sx = side % 2 === 0 ? 470 + u * 20 : 120 + u * 340, sy = side % 2 === 0 ? 90 + u * 190 : 300 + u * 20;
+    // target on the bubble outline
+    const k = rnd(), per = 2 * (BB.w + BB.h); let d = k * per, tx, ty;
+    if (d < BB.w) { tx = BB.x + d; ty = BB.y; } else if ((d -= BB.w) < BB.h) { tx = BB.x + BB.w; ty = BB.y + d; } else if ((d -= BB.h) < BB.w) { tx = BB.x + BB.w - d; ty = BB.y + BB.h; } else { tx = BB.x; ty = BB.y + BB.h - (d - BB.w); }
+    return { e: el('circle', { r: 1.6 + rnd() * 1.4, fill: B }), sx, sy, mx: 60 + rnd() * 370, my: 96 + rnd() * 170, tx, ty, ph: rnd() * 6.28, dl: rnd() * .4 };
+  });
+  sv.appendChild(rTag);
+
+  // floating mid positions for the fragments (pre-morph)
+  const FR = {
+    in: { sx: 150, sy: 300, sr: -14, mx: 46, my: 196, mr: -6, w: 190, h: 30, rx: 3 },
+    lab: { sx: 470, sy: 110, sr: 10, mx: 318, my: 102, mr: 5 },
+    sub: { sx: 480, sy: 280, sr: 16, mx: 360, my: 240, mr: 7 },
+  };
+
+  function render(t, time) {
+    const fade = 1 - io(P(F0, F1, t));
+    const drift = io(P(IN0, IN1, t)), morph = io(P(M0, M1, t));
+    const fl = (ph, a = 3) => Math.sin(time * 1.3 + ph) * a * (1 - morph);
+    // input box → AI bubble
+    {
+      const f = FR.in, x = L(L(f.sx, f.mx, drift), BB.x, morph) + fl(0), y = L(L(f.sy, f.my, drift), BB.y, morph) + fl(1.7);
+      const w = L(f.w, BB.w, morph), h = L(f.h, BB.h, morph), r = L(L(f.sr, f.mr, drift), 0, morph);
+      inRect.setAttribute('x', 0); inRect.setAttribute('y', 0); inRect.setAttribute('width', w); inRect.setAttribute('height', h);
+      inRect.setAttribute('rx', L(3, 20, morph));
+      inRect.setAttribute('stroke', morph > .5 ? B : S);
+      inRect.setAttribute('stroke-opacity', morph > .5 ? L(.4, .9, (morph - .5) * 2) : 1);
+      inRect.setAttribute('fill', morph > .5 ? '#fff' : '#fff');
+      gIn.setAttribute('transform', `translate(${x.toFixed(2)},${y.toFixed(2)}) rotate(${r.toFixed(2)} ${w / 2} ${h / 2})`);
+      gIn.setAttribute('opacity', (P(IN0, IN0 + .6, t) * fade).toFixed(3));
+    }
+    // label + submit get absorbed into the bubble
+    const absorb = (g, f, ph, cx, cy) => {
+      const k = io(P(M0 - .05, M1 - .15, t));
+      const x = L(L(f.sx, f.mx, drift), cx, k) + fl(ph), y = L(L(f.sy, f.my, drift), cy, k) + fl(ph + 1);
+      const r = L(L(f.sr, f.mr, drift), 0, k), s = 1 - .75 * k;
+      g.setAttribute('transform', `translate(${x.toFixed(2)},${y.toFixed(2)}) rotate(${r.toFixed(2)}) scale(${s.toFixed(3)})`);
+      g.setAttribute('opacity', (P(IN0 + .15, IN0 + .8, t) * (1 - P(M0 + .2, M1 - .1, t)) * fade).toFixed(3));
+    };
+    absorb(gLab, FR.lab, 2.3, BB.x + 40, BB.y + 18);
+    absorb(gSub, FR.sub, 4.1, BB.x + BB.w - 30, BB.y + BB.h / 2);
+    // conversation bits
+    const tg = out(P(M1 - .2, M1 + .3, t)) * fade;
+    tag.setAttribute('opacity', tg); tagDot.setAttribute('opacity', tg);
+    tail.setAttribute('opacity', (out(P(M1 - .1, M1 + .25, t)) * .9 * fade).toFixed(3));
+    tail.setAttribute('d', `M${BB.x + 26} ${BB.y + BB.h - .6} L${BB.x + 6} ${BB.y + BB.h + 9} L${BB.x + 13} ${BB.y + BB.h - 3}`);
+    tail.setAttribute('fill', '#fff');
+    const n = Math.round(MSG.length * P(TY0, TY1, t));
+    msgTxt.textContent = MSG.slice(0, n); msgTxt.setAttribute('opacity', fade);
+    msgTxt.setAttribute('x', BB.x + 19); msgTxt.setAttribute('y', BB.y + 28.5);
+    const cx = BB.x + 19 + charX[n] + 2;
+    cursor.setAttribute('x1', cx); cursor.setAttribute('x2', cx); cursor.setAttribute('y1', BB.y + 13); cursor.setAttribute('y2', BB.y + 31);
+    const typing = t >= TY0 && t < TY1;
+    const blink = typing ? 1 : (Math.floor(time / .5) % 2 === 0 ? 1 : 0);
+    const curOn = t >= TY0 - .3 && t < R0 + .1 ? blink : 0;
+    cursor.setAttribute('opacity', (curOn * fade).toFixed(2));
+    // reply
+    const rk = P(R0, R0 + .35, t), rs = .85 + .15 * backOut(rk);
+    rG.setAttribute('opacity', (clamp(rk * 2) * fade).toFixed(3));
+    rG.setAttribute('transform', `translate(${RB.x + RB.w} ${RB.y + RB.h}) scale(${rs.toFixed(3)}) translate(${-(RB.x + RB.w)} ${-(RB.y + RB.h)})`);
+    rTag.setAttribute('opacity', (out(P(R0 + .3, R0 + .7, t)) * fade).toFixed(3));
+    // dots
+    dots.forEach((d, i) => {
+      const a = io(P(IN0 + d.dl * .5, IN1 + d.dl * .3, t)), m = io(P(M0 + d.dl * .3, M1 + .1, t));
+      const x = L(L(d.sx, d.mx, a), d.tx, m) + Math.sin(time * 1.1 + d.ph) * 4 * (1 - m);
+      const y = L(L(d.sy, d.my, a), d.ty, m) + Math.cos(time * .9 + d.ph) * 4 * (1 - m);
+      d.e.setAttribute('cx', x.toFixed(2)); d.e.setAttribute('cy', y.toFixed(2));
+      d.e.setAttribute('opacity', (L(.55, 0, P(M1 - .15, M1 + .35, t)) * P(0, .5, t) * fade).toFixed(3));
+    });
+  }
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fixed = q.has('t') ? +q.get('t') : reduce ? 4.9 : null;
+  const go = () => {
+    sv.style.visibility = 'visible';
+    if (fixed !== null) { render(fixed % T, fixed); window.__ready = true; return; }
+    // play only while the section is in view
+    let visible = true, acc = 0, last = performance.now();
+    if ('IntersectionObserver' in window) new IntersectionObserver(es => { visible = es[0].isIntersecting; }, { threshold: .2 }).observe(sv);
+    const loop = now => { const dt = Math.min(.1, (now - last) / 1000); last = now; if (visible) { acc += dt; render(acc % T, acc); } requestAnimationFrame(loop); };
+    render(0, 0); requestAnimationFrame(loop); window.__ready = true;
+  };
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(go);
+})();
+</script>
+</body>
+</html>
+

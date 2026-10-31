@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Changelog · ConvoForm (MOCKUP)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ===== ConvoForm marketing shell — extracted verbatim from landing v2 (v2build/template.html) ===== */
+  :root{--b50:#eff6ff;--b100:#dbeafe;--b200:#bfdbfe;--b300:#93c5fd;--b400:#60a5fa;--b500:#3b82f6;--b600:#2563eb;--b700:#1d4ed8;
+    --ink:#0f172a;--muted:#475569;--text:#64748b;--slate:#94a3b8;--hair:#cbd5e1;--hair2:#e2e8f0;--line:#e2e8f0;
+    --mono:"JetBrains Mono",ui-monospace,monospace;--disp:"Bricolage Grotesque",Inter,sans-serif;--hw:1.25px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fafbfc;color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  html{scroll-behavior:smooth}
+  html.static{scroll-behavior:auto}
+  a{color:inherit}
+  .mono{font-family:var(--mono)}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+  .sec{position:relative;padding:112px 0}
+  .eyebrow{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--b600);display:inline-flex;align-items:center;gap:8px}
+  .eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--b600);display:block}
+  h2{margin-top:16px;font:700 clamp(32px,4.2vw,50px)/1.06 var(--disp);letter-spacing:-.03em;max-width:760px}
+  h1 em,h2 em{font-style:normal;background:linear-gradient(90deg,var(--b600),var(--b400));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{margin-top:16px;max-width:620px;font-size:17px;line-height:1.6;color:var(--muted)}
+  .center{text-align:center}.center h2,.center .lead{margin-left:auto;margin-right:auto}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font:600 15px/1 Inter,sans-serif;padding:15px 24px;text-decoration:none;transition:transform .15s,background .15s,border-color .15s;white-space:nowrap}
+  .btn-primary{background:var(--b600);color:#fff;box-shadow:0 10px 26px -14px rgba(37,99,235,.7)}
+  .btn-primary:hover{background:var(--b700);transform:translateY(-1px)}
+  .btn-secondary{background:rgba(255,255,255,.7);color:var(--ink);border:var(--hw) solid var(--hair)}
+  .btn-secondary:hover{border-color:var(--slate);transform:translateY(-1px)}
+  .btn-sm{padding:10px 16px;font-size:14px}
+  .grid-bg::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(circle at 1px 1px,rgba(15,23,42,.07) 1px,transparent 0);background-size:22px 22px}
+  .confirm{background:#fef3c7;color:#92400e;border:1px dashed #f59e0b;border-radius:6px;padding:0 6px;font-size:12px;font-weight:600}
+  .ph{color:var(--text);border-bottom:1px dashed var(--slate);font-weight:500}
+  svg.hl{overflow:visible}
+  svg.hl *{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ---------- badge + header ---------- */
+  .mockstrip{display:none}
+  header{position:sticky;top:0;z-index:60;background:rgba(250,251,252,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hair2)}
+  .hd{position:relative;display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font:600 22px/1 var(--disp);letter-spacing:-.01em;text-decoration:none}
+  .logo span{color:var(--b600)}
+  .badge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#451a03;font:700 11px/1 Inter,sans-serif;padding:7px 11px;border-radius:999px;border:1px solid #f59e0b;letter-spacing:.02em;white-space:nowrap}
+  .nav{display:flex;align-items:center;gap:6px}
+  .nav .lk{font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;padding:9px 12px;border-radius:999px}
+  .nav .lk:hover{color:var(--ink)}
+  .nav .gh{display:inline-flex;align-items:center;gap:7px;border:var(--hw) solid var(--hair);padding:7px 12px;font:500 12.5px/1 var(--mono);color:var(--muted)}
+  .nav .gh b{color:var(--b600);font-weight:500}
+  .nav .lk.on{color:var(--b600);background:#fff;box-shadow:inset 0 0 0 var(--hw) var(--b200)}
+  /* ---------- 11 · footer ---------- */
+  footer{margin-top:24px;border-top:var(--hw) solid var(--hair)}
+  .ft{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:36px 24px 44px}
+  .ft nav{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px;color:var(--muted)}
+  .ft nav a{text-decoration:none}.ft nav a:hover{color:var(--ink)}
+  .ft .made{font:400 12px/1.4 var(--mono);color:var(--slate)}
+  .ft nav a.on{color:var(--b600)}
+  @media (max-width:900px){
+    .mockstrip{display:flex;position:fixed;top:0;left:0;right:0;height:20px;z-index:70;align-items:center;justify-content:center;background:#fbbf24;color:#451a03;font:700 10px/1 Inter,sans-serif;letter-spacing:.06em}
+    body{padding-top:20px}
+    header{top:20px}
+    .badge{display:none}
+    .hd{height:58px}
+    .logo{font-size:20px}
+    .nav .hide-m{display:none}
+    .nav .lk{padding:8px 8px}
+    .wrap{padding:0 16px}
+    .sec{padding:76px 0}
+    .lead{font-size:16px}
+    .ft{flex-direction:column;align-items:flex-start;padding:30px 16px 40px}
+  }
+
+
+  /* ---------- sub-page hero (shared by every marketing page) ---------- */
+  .phero{position:relative;isolation:isolate;padding:64px 0 32px}
+  .phero::before{-webkit-mask-image:linear-gradient(to bottom,#000 20%,transparent 90%);mask-image:linear-gradient(to bottom,#000 20%,transparent 90%)}
+  .crumb{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--slate);display:flex;gap:8px;align-items:center}
+  .crumb a{text-decoration:none}.crumb a:hover{color:var(--ink)}
+  .crumb b{color:var(--b600);font-weight:500}
+  .phero h1{margin-top:18px;font:700 clamp(36px,5vw,62px)/1.04 var(--disp);letter-spacing:-.035em}
+  .tag{display:inline-flex;align-items:center;gap:6px;font:500 10.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:5px 9px;border:var(--hw) solid var(--hair);color:var(--muted);background:#fff}
+  .tag.feat{border-color:var(--b200);color:var(--b600);background:var(--b50)}
+  .tag.imp{border-color:var(--hair);color:var(--muted)}
+  .tag.fix{border-style:dashed;border-color:var(--slate);color:var(--muted)}
+  .tag i{font-style:normal;color:var(--slate)}
+  @media (max-width:900px){ .phero{padding:40px 0 24px} }
+
+
+/* ---------- page ---------- */
+
+  .cl-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+  .cl-hero .lead{margin-top:14px}
+  .cl-links{display:flex;gap:10px;flex-wrap:wrap}
+  .cl-links .btn svg{width:14px;height:14px}
+  .tl{position:relative;max-width:980px;margin:24px auto 0;padding:8px 0 0}
+  .tl::before{content:"";position:absolute;left:200px;top:0;bottom:0;border-left:var(--hw) solid var(--hair)}
+  .tl::after{content:"";position:absolute;left:200px;bottom:-40px;height:40px;border-left:var(--hw) dashed var(--hair)}
+  .rel{position:relative;display:grid;grid-template-columns:200px 1fr;scroll-margin-top:96px}
+  .rel+.rel .rb{border-top:var(--hw) solid var(--hair2)}
+  .rd{padding:36px 32px 0 0;text-align:right;font:500 12.5px/1.4 var(--mono);color:var(--text)}
+  .rd time{display:block}
+  .rd .new{display:inline-block;margin-top:8px;font:600 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--b600);border-radius:999px;padding:5px 8px}
+  .dot{position:absolute;left:200px;top:38px;width:11px;height:11px;margin-left:-5px;border-radius:50%;background:#fafbfc;border:var(--hw) solid var(--slate)}
+  .rel.latest .dot{border-color:var(--b600);background:var(--b600);box-shadow:0 0 0 5px var(--b50)}
+  .rel:target .dot{border-color:var(--b600);box-shadow:0 0 0 5px var(--b50)}
+  .rb{padding:30px 0 34px 40px;min-width:0}
+  .rh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .ver{font:500 12px/1 var(--mono);color:var(--b600);border:var(--hw) solid var(--b200);border-radius:6px;padding:5px 7px;background:#fff}
+  .rh h2{margin:0;font:600 clamp(21px,2.2vw,26px)/1.2 var(--disp);letter-spacing:-.015em;max-width:none;flex:1 1 320px}
+  .rh h2 a{text-decoration:none}
+  .perma{flex:none;width:30px;height:30px;display:grid;place-items:center;border-radius:8px;border:var(--hw) solid transparent;color:var(--slate);opacity:.55;transition:opacity .15s,border-color .15s,color .15s;align-self:center}
+  .perma svg{width:15px;height:15px}
+  .rel:hover .perma,.perma:focus-visible,.rel:target .perma{opacity:1;border-color:var(--hair);color:var(--b600);background:#fff}
+  .tags{margin-top:14px;display:flex;gap:6px;flex-wrap:wrap}
+  .notes{margin-top:16px;list-style:none;display:grid;gap:9px}
+  .notes li{position:relative;padding-left:20px;font-size:15.5px;line-height:1.6;color:var(--muted)}
+  .notes li::before{content:"";position:absolute;left:2px;top:.78em;width:9px;border-top:var(--hw) solid var(--b300)}
+  .fixes{margin-top:12px;padding-left:20px;font-size:14px;line-height:1.6;color:var(--text)}
+  .meta{margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font:400 12px/1.4 var(--mono);color:var(--slate)}
+  .meta a{display:inline-flex;align-items:center;gap:5px;text-decoration:none;color:var(--muted);border-bottom:1px dotted var(--hair)}
+  .meta a:hover{color:var(--b600)}
+  .meta svg{width:12px;height:12px}
+  .meta .sep{color:var(--hair)}
+  .more-wrap{position:relative;max-width:980px;margin:56px auto 0;padding-left:240px}
+  .older{display:none;margin-top:20px;list-style:none;border:var(--hw) solid var(--hair);border-radius:18px;background:rgba(255,255,255,.7);overflow:hidden}
+  .older.on{display:block}
+  .older li+li{border-top:1px solid var(--hair2)}
+  .older a{display:grid;grid-template-columns:110px 1fr auto;gap:12px;align-items:center;padding:12px 18px;text-decoration:none;font-size:14px;color:var(--muted)}
+  .older a:hover{background:var(--b50)}
+  .older .ver{justify-self:start}
+  .older time{font:400 12.5px/1 var(--mono)}
+  .older .c{font:400 12px/1 var(--mono);color:var(--slate)}
+  .older .first .ver{color:var(--ink);border-color:var(--hair)}
+  .voice{margin:64px auto 0;max-width:980px;border:var(--hw) solid var(--hair);border-radius:22px;background:#fff;padding:26px 28px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .voice h3{font:600 20px/1.2 var(--disp)}
+  .voice p{margin-top:6px;font-size:15px;color:var(--muted)}
+  .srcnote{max-width:980px;margin:18px auto 0;font:400 11.5px/1.5 var(--mono);color:var(--slate)}
+  @media (max-width:900px){
+    .cl-hero{align-items:flex-start}
+    .cl-links{width:100%}.cl-links .btn{flex:1}
+    .tl{margin-top:8px}
+    .tl::before,.tl::after{left:5px}
+    .rel{grid-template-columns:1fr;padding-left:28px}
+    .rel+.rel .rb{border-top:0}
+    .rel+.rel{border-top:var(--hw) solid var(--hair2)}
+    .rd{padding:26px 0 0;text-align:left;display:flex;align-items:center;gap:10px}
+    .rd .new{margin-top:0}
+    .dot{left:5px;top:28px}
+    .rb{padding:12px 0 28px}
+    .rh{gap:10px}
+    .rh h2{font-size:20px;flex-basis:calc(100% - 50px);order:2}
+    .rh .ver{order:1}
+    .rh .perma{order:1;margin-left:auto;opacity:1;border-color:var(--hair2)}
+    .notes li{font-size:15px}
+    .more-wrap{padding-left:28px;margin-top:40px}
+    .more-wrap .btn{width:100%}.more-wrap .btn .mono{display:none}
+    .older a{grid-template-columns:auto 1fr;padding:12px 14px}
+    .older .c{grid-column:2;justify-self:start}
+    .voice{padding:22px 20px;margin-top:48px}
+    .voice .btn{width:100%}
+  }
+
+</style>
+</head>
+<body>
+<div class="mockstrip">MOCKUP — NOT LIVE</div>
+
+<!-- 1 · HEADER -->
+<header>
+  <div class="wrap hd">
+    <a class="logo" href="convoform-landing-v2.html"><span>Convo</span>Form</a>
+    <span class="badge">MOCKUP — not live</span>
+    <nav class="nav">
+      <a class="lk hide-m" href="page-study-abroad.html">Use cases</a>
+      <a class="lk gh hide-m" href="https://github.com/growupanand/ConvoForm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>GitHub <b>★ 102</b></a>
+      <a class="lk" href="#">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="#">Start free</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="phero grid-bg">
+  <div class="wrap">
+    <div class="cl-hero" style="max-width:980px;margin:0 auto">
+      <div>
+        <span class="eyebrow"><i></i>Product updates</span>
+        <h1>Changelog</h1>
+        <p class="lead">Product updates and new features</p>
+      </div>
+      <div class="cl-links">
+        <a class="btn btn-secondary btn-sm" href="https://github.com/growupanand/ConvoForm/releases">GitHub releases <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+        <a class="btn btn-secondary btn-sm" href="https://convoform.canny.io/feature-requests">Suggest a feature <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="sec" style="padding-top:8px;padding-bottom:80px">
+  <div class="wrap">
+    <div class="tl">
+    <article class="rel latest" id="v0-19-0">
+      <div class="rd"><time datetime="2026-02-14">February 14, 2026</time><span class="new">Latest</span></div>
+      <i class="dot" aria-hidden="true"></i>
+      <div class="rb">
+        <div class="rh"><span class="ver">v0.19.0</span><h2><a href="#v0-19-0">AI response insights, file uploads and Docker self-hosting</a></h2><a class="perma" href="#v0-19-0" aria-label="Permalink to v0.19.0" title="Copy link to v0.19.0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg></a></div>
+        <div class="tags"><span class="tag feat">Feature<i>×9</i></span><span class="tag imp">Improvement<i>×6</i></span><span class="tag fix">Fix<i>×5</i></span></div>
+        <ul class="notes"><li>AI-powered insights for each response: a TL;DR, tone, sentiment and the respondent’s queries.</li><li>More AI providers: Groq and Ollama.</li><li>File upload field, so respondents can attach documents and images.</li><li>Respondent metadata (device, browser, location) and automatic emails when a form is finished.</li><li>Docker Compose support for self-hosting, plus a refreshed sidebar.</li></ul>
+        <p class="fixes">Fixes: file upload “user not found”, MCQ label overflow, invalid CSV values, missing conversation names, React Server Components CVEs.</p>
+        <div class="meta"><span>20 commits</span><span class="sep">·</span><a href="https://github.com/growupanand/ConvoForm/releases/tag/0.19.0">Release on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></div>
+      </div>
+    </article>
+    <article class="rel" id="v0-18-0">
+      <div class="rd"><time datetime="2025-04-26">April 26, 2025</time></div>
+      <i class="dot" aria-hidden="true"></i>
+      <div class="rb">
+        <div class="rh"><span class="ver">v0.18.0</span><h2><a href="#v0-18-0">Google Forms import and new answer inputs</a></h2><a class="perma" href="#v0-18-0" aria-label="Permalink to v0.18.0" title="Copy link to v0.18.0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg></a></div>
+        <div class="tags"><span class="tag feat">Feature<i>×10</i></span><span class="tag imp">Improvement<i>×1</i></span><span class="tag fix">Fix<i>×2</i></span></div>
+        <ul class="notes"><li>Import a Google Form from Drive: text, date, multiple choice and scale/rating questions.</li><li>New Rating input, and multi-select for multiple choice.</li><li>Date input understands natural language (“next Friday”) and has a time picker.</li><li>Paragraph mode for long text answers.</li><li>Sentry replaced with PostHog error tracking; first-load shared JS down from 237 KB to 112 KB.</li></ul>
+        <p class="fixes">Fixes: calendar UI, table cell rendering.</p>
+        <div class="meta"><span>13 commits</span><span class="sep">·</span><a href="https://github.com/growupanand/ConvoForm/releases/tag/0.18.0">Release on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></div>
+      </div>
+    </article>
+    <article class="rel" id="v0-17-0">
+      <div class="rd"><time datetime="2025-04-18">April 18, 2025</time></div>
+      <i class="dot" aria-hidden="true"></i>
+      <div class="rb">
+        <div class="rh"><span class="ver">v0.17.0</span><h2><a href="#v0-17-0">Richer response analytics</a></h2><a class="perma" href="#v0-17-0" aria-label="Permalink to v0.17.0" title="Copy link to v0.17.0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg></a></div>
+        <div class="tags"><span class="tag feat">Feature<i>×3</i></span><span class="tag imp">Improvement<i>×5</i></span></div>
+        <ul class="notes"><li>Multiple-choice stats on the responses stats page.</li><li>Average completion time and bounce rate in response analytics.</li><li>Upgraded to Next.js 15 and moved realtime to a Bun websocket server.</li><li>Form viewer is more responsive across screen sizes.</li></ul>
+        
+        <div class="meta"><span>8 commits</span><span class="sep">·</span><a href="https://github.com/growupanand/ConvoForm/releases/tag/0.17.0">Release on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></div>
+      </div>
+    </article>
+    <article class="rel" id="v0-16-0">
+      <div class="rd"><time datetime="2024-12-28">December 28, 2024</time></div>
+      <i class="dot" aria-hidden="true"></i>
+      <div class="rb">
+        <div class="rh"><span class="ver">v0.16.0</span><h2><a href="#v0-16-0">Response stats and a Start Over button</a></h2><a class="perma" href="#v0-16-0" aria-label="Permalink to v0.16.0" title="Copy link to v0.16.0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg></a></div>
+        <div class="tags"><span class="tag feat">Feature<i>×2</i></span><span class="tag imp">Improvement<i>×5</i></span><span class="tag fix">Fix<i>×1</i></span></div>
+        <ul class="notes"><li>Stats page showing completed, partial and in-progress responses.</li><li>Responses table now paginates.</li><li>“Start Over” button lets a respondent reset and begin again.</li></ul>
+        <p class="fixes">Fix: public tRPC routes not working unless listed in middleware.</p>
+        <div class="meta"><span>8 commits</span><span class="sep">·</span><a href="https://github.com/growupanand/ConvoForm/releases/tag/0.16.0">Release on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></div>
+      </div>
+    </article>
+    <article class="rel" id="v0-15-0">
+      <div class="rd"><time datetime="2024-10-14">October 14, 2024</time></div>
+      <i class="dot" aria-hidden="true"></i>
+      <div class="rb">
+        <div class="rh"><span class="ver">v0.15.0</span><h2><a href="#v0-15-0">Faster submissions and AI form templates</a></h2><a class="perma" href="#v0-15-0" aria-label="Permalink to v0.15.0" title="Copy link to v0.15.0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg></a></div>
+        <div class="tags"><span class="tag feat">Feature<i>×1</i></span><span class="tag imp">Improvement<i>×5</i></span><span class="tag fix">Fix<i>×1</i></span></div>
+        <ul class="notes"><li>Fill the AI form generator from a template.</li><li>Faster form submission API.</li><li>Smoother question typing effect and new UI animations.</li></ul>
+        <p class="fixes">Fix: form design changes not showing in incognito mode.</p>
+        <div class="meta"><span>7 commits</span><span class="sep">·</span><a href="https://github.com/growupanand/ConvoForm/releases/tag/0.15.0">Release on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></div>
+      </div>
+    </article>
+    <article class="rel" id="v0-14-0">
+      <div class="rd"><time datetime="2024-09-25">September 25, 2024</time></div>
+      <i class="dot" aria-hidden="true"></i>
+      <div class="rb">
+        <div class="rh"><span class="ver">v0.14.0</span><h2><a href="#v0-14-0">Form design editor</a></h2><a class="perma" href="#v0-14-0" aria-label="Permalink to v0.14.0" title="Copy link to v0.14.0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg></a></div>
+        <div class="tags"><span class="tag feat">Feature<i>×1</i></span><span class="tag imp">Improvement<i>×3</i></span></div>
+        <ul class="notes"><li>Design editor for a form’s background and font colour.</li><li>New form editor layout and a redesigned changelog page.</li><li>Each form’s response count is shown in the workspace.</li></ul>
+        
+        <div class="meta"><span>4 commits</span><span class="sep">·</span><a href="https://github.com/growupanand/ConvoForm/releases/tag/0.14.0">Release on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></div>
+      </div>
+    </article>
+    <article class="rel" id="v0-13-0">
+      <div class="rd"><time datetime="2024-09-15">September 15, 2024</time></div>
+      <i class="dot" aria-hidden="true"></i>
+      <div class="rb">
+        <div class="rh"><span class="ver">v0.13.0</span><h2><a href="#v0-13-0">Custom end-screen link and bug reports</a></h2><a class="perma" href="#v0-13-0" aria-label="Permalink to v0.13.0" title="Copy link to v0.13.0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg></a></div>
+        <div class="tags"><span class="tag feat">Feature<i>×2</i></span><span class="tag imp">Improvement<i>×5</i></span><span class="tag fix">Fix<i>×2</i></span></div>
+        <ul class="notes"><li>Add a custom link to the final screen after submission.</li><li>Floating “Report bug” button.</li><li>App UI limited to desktop screens; mobile-only components removed.</li></ul>
+        <p class="fixes">Fixes: error opening older conversations, new form not showing in workspace until reload.</p>
+        <div class="meta"><span>9 commits</span><span class="sep">·</span><a href="https://github.com/growupanand/ConvoForm/releases/tag/0.13.0">Release on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></div>
+      </div>
+    </article>
+    <article class="rel" id="v0-12-0">
+      <div class="rd"><time datetime="2024-07-26">July 26, 2024</time></div>
+      <i class="dot" aria-hidden="true"></i>
+      <div class="rb">
+        <div class="rh"><span class="ver">v0.12.0</span><h2><a href="#v0-12-0">Date picker answers</a></h2><a class="perma" href="#v0-12-0" aria-label="Permalink to v0.12.0" title="Copy link to v0.12.0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg></a></div>
+        <div class="tags"><span class="tag feat">Feature<i>×1</i></span><span class="tag imp">Improvement<i>×1</i></span></div>
+        <ul class="notes"><li>Date picker answer input.</li><li>Multiple-choice answers save the exact selected value.</li></ul>
+        
+        <div class="meta"><span>2 commits</span><span class="sep">·</span><a href="https://github.com/growupanand/ConvoForm/releases/tag/0.12.0">Release on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></div>
+      </div>
+    </article>
+    </div>
+    <div class="more-wrap">
+      <button class="btn btn-secondary" id="loadOlder" type="button" aria-expanded="false" aria-controls="older">Load older releases <span class="mono" style="font-size:12px;color:var(--slate)">0.11.0 → first commit</span></button>
+      <ol class="older" id="older"><li><a href="#"><span class="ver">v0.11.0</span><time datetime="2024-07-15">July 15, 2024</time><span class="c">5 commits</span></a></li><li><a href="#"><span class="ver">v0.10.0</span><time datetime="2024-07-13">July 13, 2024</time><span class="c">17 commits</span></a></li><li><a href="#"><span class="ver">v0.9.2</span><time datetime="2024-06-10">June 10, 2024</time><span class="c">1 commit</span></a></li><li><a href="#"><span class="ver">v0.9.1</span><time datetime="2024-06-02">June 2, 2024</time><span class="c">1 commit</span></a></li><li><a href="#"><span class="ver">v0.9.0</span><time datetime="2024-05-18">May 18, 2024</time><span class="c">1 commit</span></a></li><li><a href="#"><span class="ver">v0.8.0</span><time datetime="2024-05-05">May 5, 2024</time><span class="c">2 commits</span></a></li><li><a href="#"><span class="ver">v0.7.0</span><time datetime="2024-05-01">May 1, 2024</time><span class="c">3 commits</span></a></li><li><a href="#"><span class="ver">v0.6.1</span><time datetime="2024-04-07">April 7, 2024</time><span class="c">3 commits</span></a></li><li><a href="#"><span class="ver">v0.6.0</span><time datetime="2024-04-03">April 3, 2024</time><span class="c">14 commits</span></a></li><li><a href="#"><span class="ver">v0.5.0</span><time datetime="2024-02-27">February 27, 2024</time><span class="c">15 commits</span></a></li><li><a href="#"><span class="ver">v0.4.0</span><time datetime="2024-02-13">February 13, 2024</time><span class="c">11 commits</span></a></li><li><a href="#"><span class="ver">v0.3.0</span><time datetime="2024-02-02">February 2, 2024</time><span class="c">12 commits</span></a></li><li><a href="#"><span class="ver">v0.2.1</span><time datetime="2024-01-23">January 23, 2024</time><span class="c">1 commit</span></a></li><li><a href="#"><span class="ver">v0.2.0</span><time datetime="2024-01-23">January 23, 2024</time><span class="c">2 commits</span></a></li><li><a href="#"><span class="ver">v0.1.1</span><time datetime="2024-01-21">January 21, 2024</time><span class="c">0 commits</span></a></li><li class="first"><a href="https://github.com/growupanand/ConvoForm/commit/386b516dc3f86c32113c114592cc22dca7f549c8"><span class="ver">Let’s Go!</span><time datetime="2023-11-23">November 23, 2023</time><span class="c">First commit</span></a></li></ol>
+    </div>
+    <div class="voice">
+      <div><h3>Your voice matters</h3><p>Have an idea that would make our product better? We're all ears!</p></div>
+      <a class="btn btn-primary btn-sm" href="https://convoform.canny.io/feature-requests">Suggest a feature</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap ft">
+    <a class="logo" href="convoform-landing-v2.html"><span>Convo</span>Form</a>
+    <nav><a href="page-study-abroad.html">Use cases</a><a href="https://docs.convoform.com">Documentation</a><a href="page-changelog.html" class="on" aria-current="page">Changelog</a><a href="https://github.com/growupanand/ConvoForm">GitHub</a><a href="page-privacy.html">Privacy</a><a href="#">Terms</a></nav>
+    <span class="made">Made by <span class="ph">[name]</span></span>
+  </div>
+</footer>
+
+<script>
+/* ---------- shared player: each animation keeps its own clock, advanced only while it is on screen ---------- */
+const QS = new URLSearchParams(location.search);
+const STATIC = QS.has('static') || matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (STATIC) document.documentElement.classList.add('static');
+const ANIMS = [];
+function registerAnim(el, render, final, o = {}) { const a = Object.assign({ el, render, final, acc: 0, vis: false }, o); ANIMS.push(a); return a; }
+</script>
+<script>
+
+document.getElementById('loadOlder').addEventListener('click', e => { const o = document.getElementById('older'), on = o.classList.toggle('on'); e.currentTarget.setAttribute('aria-expanded', on); e.currentTarget.firstChild.textContent = on ? 'Hide older releases ' : 'Load older releases '; });
+document.querySelectorAll('.perma').forEach(a => a.addEventListener('click', () => { try { navigator.clipboard.writeText(location.href.split('#')[0] + a.getAttribute('href')); } catch (e) {} }));
+
+</script>
+<script>
+(() => {
+  /* ---------- player (from landing v2) — .reveal elements get .in once on screen ---------- */
+  function start() {
+    ANIMS.forEach(a => a.render(STATIC ? a.final : 0));
+    const rev = [...document.querySelectorAll('.reveal')];
+    if (STATIC) { rev.forEach(r => r.classList.add('in')); window.__ready = true; addEventListener('resize', () => ANIMS.forEach(a => { a.onResize && a.onResize(); a.render(a.final); })); return; }
+    const ob = new IntersectionObserver(es => es.forEach(e => { ANIMS.forEach(a => { if (a.el === e.target) a.vis = e.isIntersecting; }); }), { threshold: .2 });
+    ANIMS.forEach(a => ob.observe(a.el));
+    const ro = new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); o.unobserve(e.target); } }), { threshold: .3 });
+    rev.forEach(r => ro.observe(r));
+    addEventListener('resize', () => ANIMS.forEach(a => { a.onResize && a.onResize(); a.render(a.acc); }));
+    let last = performance.now();
+    const loop = now => { const dt = Math.min(.1, (now - last) / 1000); last = now; ANIMS.forEach(a => { if (a.vis) { a.acc += dt; a.render(a.acc); } }); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop); window.__ready = true;
+  }
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(start);
+})();
+
+</script>
+</body>
+</html>
+

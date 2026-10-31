@@ -1,0 +1,1424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ConvoForm — Forms that talk back (landing page v2 · MOCKUP)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{--b50:#eff6ff;--b100:#dbeafe;--b200:#bfdbfe;--b300:#93c5fd;--b400:#60a5fa;--b500:#3b82f6;--b600:#2563eb;--b700:#1d4ed8;
+    --ink:#0f172a;--muted:#475569;--text:#64748b;--slate:#94a3b8;--hair:#cbd5e1;--hair2:#e2e8f0;--line:#e2e8f0;
+    --mono:"JetBrains Mono",ui-monospace,monospace;--disp:"Bricolage Grotesque",Inter,sans-serif;--hw:1.25px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fafbfc;color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  html{scroll-behavior:smooth}
+  html.static{scroll-behavior:auto}
+  a{color:inherit}
+  .mono{font-family:var(--mono)}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+  .sec{position:relative;padding:112px 0}
+  .eyebrow{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--b600);display:inline-flex;align-items:center;gap:8px}
+  .eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--b600);display:block}
+  h2{margin-top:16px;font:700 clamp(32px,4.2vw,50px)/1.06 var(--disp);letter-spacing:-.03em;max-width:760px}
+  h1 em,h2 em{font-style:normal;background:linear-gradient(90deg,var(--b600),var(--b400));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{margin-top:16px;max-width:620px;font-size:17px;line-height:1.6;color:var(--muted)}
+  .center{text-align:center}.center h2,.center .lead{margin-left:auto;margin-right:auto}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font:600 15px/1 Inter,sans-serif;padding:15px 24px;text-decoration:none;transition:transform .15s,background .15s,border-color .15s;white-space:nowrap}
+  .btn-primary{background:var(--b600);color:#fff;box-shadow:0 10px 26px -14px rgba(37,99,235,.7)}
+  .btn-primary:hover{background:var(--b700);transform:translateY(-1px)}
+  .btn-secondary{background:rgba(255,255,255,.7);color:var(--ink);border:var(--hw) solid var(--hair)}
+  .btn-secondary:hover{border-color:var(--slate);transform:translateY(-1px)}
+  .btn-sm{padding:10px 16px;font-size:14px}
+  .grid-bg::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(circle at 1px 1px,rgba(15,23,42,.07) 1px,transparent 0);background-size:22px 22px}
+  .confirm{background:#fef3c7;color:#92400e;border:1px dashed #f59e0b;border-radius:6px;padding:0 6px;font-size:12px;font-weight:600}
+  .ph{color:var(--text);border-bottom:1px dashed var(--slate);font-weight:500}
+  svg.hl{overflow:visible}
+  svg.hl *{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ---------- badge + header ---------- */
+  .mockstrip{display:none}
+  header{position:sticky;top:0;z-index:60;background:rgba(250,251,252,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hair2)}
+  .hd{position:relative;display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font:600 22px/1 var(--disp);letter-spacing:-.01em;text-decoration:none}
+  .logo span{color:var(--b600)}
+  .badge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#451a03;font:700 11px/1 Inter,sans-serif;padding:7px 11px;border-radius:999px;border:1px solid #f59e0b;letter-spacing:.02em;white-space:nowrap}
+  .nav{display:flex;align-items:center;gap:6px}
+  .nav .lk{font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;padding:9px 12px;border-radius:999px}
+  .nav .lk:hover{color:var(--ink)}
+  .nav .gh{display:inline-flex;align-items:center;gap:7px;border:var(--hw) solid var(--hair);padding:7px 12px;font:500 12.5px/1 var(--mono);color:var(--muted)}
+  .nav .gh b{color:var(--b600);font-weight:500}
+
+  /* ---------- 2 · hero (option 3b) ---------- */
+  #hero{position:relative;text-align:center;padding:56px 0 24px;isolation:isolate;overflow:hidden}
+  #hero::before{-webkit-mask-image:linear-gradient(to bottom,#000 30%,transparent 85%);mask-image:linear-gradient(to bottom,#000 30%,transparent 85%)}
+  #hero h1 em{white-space:nowrap}
+  #hero h1{font:700 clamp(40px,6.4vw,76px)/1.02 var(--disp);letter-spacing:-.035em}
+  #hero .sub{max-width:620px;margin:18px auto 0;font-size:clamp(15.5px,1.5vw,18px);line-height:1.55;color:var(--muted)}
+  #hero .ctas{display:flex;gap:12px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+  .pstrip{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin:22px auto 0;font:400 12px/1.4 var(--mono);color:var(--text);letter-spacing:.01em}
+  .pstrip li{display:flex;align-items:center;gap:7px;white-space:nowrap}
+  .pstrip svg{width:13px;height:13px;flex:none}
+  #hero .stage{position:relative;max-width:1040px;height:400px;margin:26px auto 0;border-radius:28px;overflow:hidden}
+  #hero .stage::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(15,23,42,.08) 1px,transparent 0);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%)}
+  #hero .orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;pointer-events:none}
+  #hero .orb.a{width:420px;height:420px;left:50%;top:50%;margin:-210px 0 0 -210px;background:radial-gradient(circle,var(--b300),transparent 65%)}
+  #hero .orb.b{width:260px;height:260px;left:18%;top:12%;background:radial-gradient(circle,#c7d2fe,transparent 65%);animation:float 11s ease-in-out infinite}
+  #hero .orb.c{width:240px;height:240px;right:12%;bottom:4%;background:radial-gradient(circle,var(--b200),transparent 65%);animation:float 9s ease-in-out infinite reverse}
+  html.static #hero .orb{animation:none}
+  @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-20px)}}
+  #hero canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  #hero .fcard{position:absolute;left:0;top:0;background:#eef1f5;border:1px solid #c8ced8;border-radius:4px}
+  #hero .fp{position:absolute;left:0;top:0;will-change:transform,opacity;transform-origin:center;text-align:left}
+  #hero .fp.title{font:600 13.5px/1 Inter,sans-serif;color:#475569}
+  #hero .fp.lab{font:400 12px/1 Inter,sans-serif;color:#64748b;white-space:nowrap}
+  #hero .fp.lab .req{color:#dc2626;font-size:11px;margin-left:8px;opacity:0}
+  #hero .fp.in{background:#fff;border:1px solid #b8c0cc;border-radius:2px}
+  #hero .fp.in.err{border-color:#ef4444;box-shadow:0 0 0 2px rgba(239,68,68,.15)}
+  #hero .fp.sub{background:#9aa5b4;color:#fff;font:500 12px/1 Inter,sans-serif;border-radius:2px;display:grid;place-items:center}
+  #hero .chat{position:absolute;left:50%;top:50%;width:min(440px,calc(100% - 28px));transform:translate(-50%,-50%);background:rgba(255,255,255,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:var(--hw) solid var(--b200);border-radius:22px;box-shadow:0 22px 50px -30px rgba(37,99,235,.4);padding:12px 14px;opacity:0;text-align:left}
+  #hero .chat-h{display:flex;align-items:center;gap:9px;padding:2px 2px 10px;border-bottom:1px solid #f1f5f9}
+  #hero .av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--b500),var(--b700));display:grid;place-items:center;color:#fff;font:700 10px/1 Inter}
+  #hero .chat-h b{font:600 13px/1 Inter,sans-serif}
+  #hero .chat-h small{margin-left:auto;font:400 10.5px/1 var(--mono);letter-spacing:.04em;color:var(--b600);display:flex;align-items:center;gap:5px;text-transform:uppercase}
+  #hero .chat-h small::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--b600)}
+  #hero .msgs{display:flex;flex-direction:column;gap:7px;padding:10px 0 4px}
+  #hero .m{max-width:80%;font-size:13.5px;line-height:1.35;padding:8px 12px;border-radius:16px;opacity:0;transform-origin:left bottom;white-space:nowrap}
+  #hero .m.ai{align-self:flex-start;background:#f1f5f9;color:var(--ink);border-bottom-left-radius:5px}
+  #hero .m.u{align-self:flex-end;background:var(--b600);color:#fff;border-bottom-right-radius:5px;transform-origin:right bottom}
+  #hero .m.fu{background:var(--b50);color:var(--b700);box-shadow:inset 0 0 0 1.25px var(--b300)}
+  #hero .m .dots{display:none;gap:4px;padding:3px 2px}
+  #hero .m .dots i{width:6px;height:6px;border-radius:50%;background:#94a3b8;display:block}
+  #hero .m.typing .dots{display:flex}
+  #hero .m.typing .tx{display:none}
+  #hero .chips{display:flex;flex-wrap:wrap;gap:6px;padding-top:9px;margin-top:6px;border-top:1px dashed #e2e8f0;min-height:36px}
+  #hero .chip{font:500 11.5px/1 Inter,sans-serif;color:#475569;background:#fff;border:1px solid #e2e8f0;border-radius:999px;padding:6px 9px;opacity:0;display:inline-flex;gap:5px;align-items:center;white-space:nowrap}
+  #hero .chip b{font-weight:600;color:var(--ink)}
+  #hero .chip svg{width:11px;height:11px}
+  .caption{margin-top:12px;text-align:center;font:400 11px/1.4 var(--mono);letter-spacing:.04em;color:var(--slate)}
+
+  /* ---------- 3 · existing demo placeholder ---------- */
+  #demo{padding:56px 0 24px}
+  .exist{border:2px dashed #fbbf24;background:rgba(255,251,235,.55);border-radius:28px;padding:28px}
+  .exist-h{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:22px}
+  .exist-h .tag{background:#fbbf24;color:#451a03;font:700 11px/1 Inter;padding:7px 11px;border-radius:999px}
+  .exist-h span:last-child{font-size:14px;font-weight:500;color:#78350f}
+  .ex-desk{display:flex;justify-content:center;align-items:flex-start;gap:32px}
+  .bw{position:relative;width:600px;flex:none}
+  .bw-win{height:600px;border:1px solid var(--hair2);border-radius:12px;background:#fff;overflow:hidden}
+  .bw-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#f1f5f9;border-bottom:1px solid var(--hair2)}
+  .bw-bar i{width:11px;height:11px;border-radius:50%;display:block}
+  .bw-url{margin-left:10px;flex:1;background:#fff;border-radius:6px;padding:5px 10px;font-size:12px;color:var(--text)}
+  .bw-body{height:560px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px;text-align:center}
+  .bw-body .k{font:600 11px/1 var(--mono);letter-spacing:.06em;color:var(--slate)}
+  .bw-body .t{font:600 24px/1.2 var(--disp);color:#334155}
+  .bw-body .q{margin-top:12px;width:100%;max-width:360px;border:1px solid var(--hair2);background:#f8fafc;border-radius:12px;padding:16px;text-align:left;font-size:14px;color:var(--text)}
+  .bw-body .q div{margin-top:12px;height:40px;border:1px solid var(--hair2);border-radius:8px;background:#fff}
+  .bw-body small{font-size:12px;color:var(--slate);max-width:360px}
+  .lrd{position:absolute;left:-40px;top:80px;width:300px;border:1px solid var(--hair2);background:rgba(255,255,255,.8);border-radius:22px;padding:8px;box-shadow:0 0 0 2px var(--b200)}
+  .lrd .h{position:absolute;top:-28px;left:4px;font-size:14px;font-weight:500;color:var(--b600)}
+  .lrd table{width:100%;border-collapse:collapse;font-size:12px;text-align:left}
+  .lrd td{padding:8px;border-top:1px solid var(--hair2)}.lrd tr:first-child td{border-top:0}
+  .lrd td:first-child{color:var(--text);font-weight:500}
+  .rcard{width:100%;max-width:420px;border:1px solid var(--hair2);border-radius:12px;background:#fff;padding:20px}
+  .rcard .h{font-weight:600;color:var(--b600)}
+  .rcard .f{margin-top:4px;font-size:14px;color:var(--text)}.rcard .f u{color:var(--b600)}
+  .rcard .rows{margin-top:16px;display:grid;gap:8px}.rcard .rows i{display:block;height:32px;border-radius:4px;background:#f1f5f9}.rcard .rows i:nth-child(even){background:#f8fafc}
+  .rcard small{display:block;margin-top:16px;font-size:12px;color:var(--slate)}
+  .ex-mob{display:none}
+  .ex-mob p{font-size:14px;color:#78350f;line-height:1.5}
+  .ex-mob code{font-family:var(--mono);font-size:12px}
+  .mcard{margin-top:16px;border:1px solid var(--hair2);border-radius:18px;background:#fff;padding:16px}
+  .mcard .u{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--hair2);padding-bottom:8px;font-size:12px;color:var(--text)}
+  .mcard .u i{width:8px;height:8px;border-radius:50%;background:#4ade80}
+  .mcard .ms{display:grid;gap:8px;padding:12px 0;font-size:14px}
+  .mcard .ms div{width:fit-content;max-width:85%;padding:8px 12px;border-radius:16px}
+  .mcard .ms .a{background:#f1f5f9;border-top-left-radius:4px}
+  .mcard .ms .b{margin-left:auto;background:var(--b600);color:#fff;border-top-right-radius:4px}
+  .mcard .btn{width:100%}
+
+  /* ---------- 4 · how it works (option 1 hairline) ---------- */
+  #how .scen{display:flex;align-items:center;justify-content:center;gap:10px;margin:44px auto 10px;font:500 11px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--slate)}
+  #how .scen b{color:var(--ink);font-weight:500}
+  #how .pips{display:flex;gap:5px;align-items:center}
+  #how .pips i{width:10px;height:0;border-top:1px solid var(--hair);display:block}
+  #how .pips i.on{border-color:var(--b600);width:22px}
+  #how .lstage{position:relative;max-width:1080px;margin:0 auto}
+  #how .lstage::after{content:"";position:absolute;left:50%;top:50%;width:900px;height:380px;margin:-190px 0 0 -450px;background:radial-gradient(ellipse,rgba(147,197,253,.32),transparent 65%);filter:blur(40px);z-index:-1;pointer-events:none}
+  #howSv{display:block;width:100%;height:auto;overflow:visible}
+  #howSv text{font-family:Inter,system-ui,sans-serif}
+  #howSv .mono{font-family:var(--mono);letter-spacing:.06em}
+  #howSv path,#howSv line,#howSv rect,#howSv circle{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+  .steps{max-width:1080px;margin:48px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+  .step{border-top:var(--hw) solid var(--hair);padding-top:18px}
+  .step .n{font:500 11px/1 var(--mono);letter-spacing:.08em;color:var(--b600)}
+  .step h3{margin-top:12px;font:600 20px/1.2 var(--disp);letter-spacing:-.01em}
+  .step p{margin-top:8px;font-size:15px;line-height:1.55;color:var(--muted)}
+
+  /* ---------- 5 · before / after ---------- */
+  #why{isolation:isolate}
+  .tabs{display:inline-flex;gap:4px;margin-top:32px;padding:4px;border:var(--hw) solid var(--hair);border-radius:999px;background:rgba(255,255,255,.6)}
+  .tab{appearance:none;border:var(--hw) solid transparent;background:none;border-radius:999px;padding:9px 16px;font:500 12px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--text);cursor:pointer}
+  .tab.on{border-color:var(--b300);color:var(--b600);background:#fff}
+  .ba-grid{margin-top:28px;display:grid;grid-template-columns:1fr 1.25fr;gap:24px;align-items:stretch}
+  .pane{position:relative;border-radius:22px;padding:26px 26px 24px;background:rgba(255,255,255,.6)}
+  .pane.st{border:var(--hw) dashed var(--hair)}
+  .pane.cv{border:var(--hw) solid var(--b200);background:#fff}
+  .pane.cv::after{content:"";position:absolute;inset:10% -6% -10%;z-index:-1;background:radial-gradient(ellipse,rgba(147,197,253,.35),transparent 65%);filter:blur(30px)}
+  .mlab{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--slate);display:flex;align-items:center;gap:8px}
+  .mlab::before{content:"";width:10px;border-top:var(--hw) solid currentColor;opacity:.7}
+  .mlab.b{color:var(--b600)}
+  .sf{margin-top:22px}
+  .sf-l{font-size:13px;color:var(--text)}
+  .sf-in{margin-top:8px;height:42px;border:var(--hw) solid var(--hair);border-radius:4px;display:flex;align-items:center;padding:0 12px;font-size:15px;color:#64748b;background:#fff}
+  .sf-in .c{display:inline-block;width:1px;height:18px;background:#64748b;margin-left:1px}
+  .sf-btn{margin-top:14px;display:inline-block;padding:9px 16px;border:var(--hw) solid var(--hair);border-radius:4px;font:500 12px/1 Inter;color:var(--slate)}
+  .saved{margin-top:22px;padding-top:16px;border-top:1px dashed var(--hair);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .saved .k{font:500 10.5px/1 var(--mono);letter-spacing:.08em;color:var(--slate)}
+  .saved b{font:600 20px/1.1 var(--disp);color:var(--slate)}
+  .pane.cv .saved b{color:var(--b600)}
+  .saved svg{width:22px;height:22px}
+  .sf-note{margin-top:10px;font-size:14px;line-height:1.5;color:var(--text)}
+  .cvm{margin-top:18px;display:flex;flex-direction:column;gap:9px;min-height:196px}
+  .bub{position:relative;max-width:82%;padding:9px 13px;border-radius:16px;font-size:14.5px;line-height:1.35;border:var(--hw) solid var(--hair);background:#fff;opacity:0}
+  .bub.ai{align-self:flex-start;border-bottom-left-radius:5px}
+  .bub.u{align-self:flex-end;border-color:var(--ink);border-bottom-right-radius:5px;font-weight:500}
+  .bub.fu{border-color:var(--b400);color:var(--b700);background:var(--b50)}
+  .bub .vg{background-image:linear-gradient(var(--b600),var(--b600));background-repeat:no-repeat;background-position:0 100%;background-size:0 1.25px;padding-bottom:1px}
+  .futag{display:block;font:500 9.5px/1 var(--mono);letter-spacing:.08em;color:var(--b600);margin-bottom:6px}
+  .ba-table{margin-top:24px;border:var(--hw) solid var(--hair);border-radius:18px;background:rgba(255,255,255,.7);overflow:hidden}
+  .tt-h{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 18px;border-bottom:var(--hw) solid var(--hair2);font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text)}
+  .tt-h .il{color:var(--slate);border:1px dashed var(--hair);border-radius:999px;padding:4px 8px;font-size:10px}
+  .tt-row{display:grid;grid-template-columns:repeat(var(--n,5),1fr)}
+  .cell{padding:14px 18px;border-left:1px solid var(--hair2);opacity:0}
+  .cell:first-child{border-left:0}
+  .cell .k{font:500 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--slate)}
+  .cell .v{margin-top:8px;font-size:15px;font-weight:500;color:var(--ink)}
+  .cell.hl .v{color:var(--b600)}
+  .cell.hl .k{color:var(--b600)}
+
+  /* ---------- 6 · use cases ---------- */
+  .uc{margin-top:40px;display:grid;grid-template-columns:1fr 1fr;border:var(--hw) solid var(--hair);border-radius:26px;background:rgba(255,255,255,.7);text-decoration:none;overflow:hidden;transition:border-color .2s}
+  .uc:hover{border-color:var(--b300)}
+  .uc-t{padding:40px}
+  .feat{display:inline-flex;align-items:center;gap:8px;font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--b600);border:var(--hw) solid var(--b200);border-radius:999px;padding:6px 10px 6px 8px}
+  .feat svg{width:15px;height:15px}
+  .uc h3{margin-top:20px;font:600 clamp(24px,2.6vw,32px)/1.12 var(--disp);letter-spacing:-.02em}
+  .uc p{margin-top:12px;font-size:15.5px;line-height:1.6;color:var(--muted);max-width:440px}
+  .uc .go{margin-top:26px;display:inline-flex;gap:6px;font-weight:600;font-size:14.5px;color:var(--b600)}
+  .uc-f{position:relative;padding:40px;border-left:var(--hw) solid var(--hair2);display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:center;isolation:isolate}
+  .uc-f::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(circle at 1px 1px,rgba(15,23,42,.07) 1px,transparent 0);background-size:22px 22px}
+  .fch{border:var(--hw) solid var(--hair);border-radius:14px;background:#fff;padding:12px 14px}
+  .fch .k{font:500 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--slate)}
+  .fch .v{margin-top:7px;font-size:14px;font-weight:500}
+  .more{margin-top:16px;font-size:14px;color:var(--text)}
+
+  /* ---------- 7 · trust ---------- */
+  #trust{isolation:isolate}
+  .tgrid{margin-top:44px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .tc{border:var(--hw) solid var(--hair);border-radius:20px;padding:20px;background:rgba(255,255,255,.6)}
+  .tc .art{height:96px;border-bottom:1px dashed var(--hair2);margin:-4px -4px 18px;display:flex;align-items:center;justify-content:center}
+  .tc svg{width:160px;height:80px;overflow:visible}
+  .tc svg *{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+  .tc h3{font:600 17px/1.2 var(--disp)}
+  .tc p{margin-top:8px;font-size:14.5px;line-height:1.55;color:var(--muted)}
+  .dont{margin-top:20px;border:var(--hw) solid var(--hair);border-radius:20px;padding:26px 28px;background:rgba(255,255,255,.6)}
+  .dont h3{font:600 20px/1.2 var(--disp)}
+  .dont ul{list-style:none;margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px 32px}
+  .dont li{display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.5;color:var(--muted)}
+  .dont li svg{flex:none;width:22px;height:22px;margin-top:1px;overflow:visible}
+  .dont li svg *{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+  .dont li .x{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .5s cubic-bezier(.65,0,.35,1)}
+  .dont.in li .x{stroke-dashoffset:0}
+  .dont.in li:nth-child(2) .x{transition-delay:.12s}.dont.in li:nth-child(3) .x{transition-delay:.24s}.dont.in li:nth-child(4) .x{transition-delay:.36s}
+  html.static .dont li .x{transition:none}
+
+  /* ---------- 8 · founder ---------- */
+  .fwrap{max-width:820px;margin:0 auto}
+  .draft{display:inline-flex;align-items:center;gap:8px;font:600 11px/1 var(--mono);letter-spacing:.06em;color:#9a3412;background:#fff7ed;border:1px dashed #fb923c;border-radius:8px;padding:8px 10px;margin-bottom:14px}
+  .fcard2{position:relative;border:var(--hw) solid var(--hair);border-radius:26px;padding:44px 48px;background:rgba(255,255,255,.7)}
+  .fcard2 .qm{position:absolute;top:-14px;left:40px;background:#fafbfc;padding:0 10px;font:700 44px/1 var(--disp);color:var(--b300)}
+  .fcard2 blockquote{font:500 clamp(20px,2.2vw,26px)/1.4 var(--disp);letter-spacing:-.01em;color:#1e293b}
+  .fcap{margin-top:28px;padding-top:22px;border-top:1px dashed var(--hair);display:flex;align-items:center;gap:14px}
+  .avph{width:48px;height:48px;border-radius:50%;border:var(--hw) dashed var(--slate);display:grid;place-items:center;font:400 10px/1 var(--mono);color:var(--slate);flex:none}
+  .fcap .nm{font-size:15px}
+  .fcap .rl{margin-top:4px;font-size:13.5px;color:var(--text)}
+  .fcap .rl a{color:var(--b600);text-decoration:none;border-bottom:1px solid var(--b200)}
+
+  /* ---------- 9 · faq ---------- */
+  .faq{max-width:820px;margin:36px auto 0;border-top:var(--hw) solid var(--hair)}
+  .faq details{border-bottom:var(--hw) solid var(--hair)}
+  .faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 2px;font:600 18px/1.3 var(--disp)}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary>span{display:flex;align-items:baseline}
+  .faq summary .n{flex:none}
+  .faq summary .n{font:500 11px/1 var(--mono);color:var(--slate);margin-right:14px;letter-spacing:.06em}
+  .faq summary .pl{flex:none;width:28px;height:28px;border:var(--hw) solid var(--hair);border-radius:50%;position:relative;transition:transform .25s,border-color .2s}
+  .faq summary .pl::before,.faq summary .pl::after{content:"";position:absolute;left:50%;top:50%;width:11px;height:0;border-top:var(--hw) solid var(--ink);transform:translate(-50%,-50%)}
+  .faq summary .pl::after{transform:translate(-50%,-50%) rotate(90deg)}
+  .faq details[open] .pl{transform:rotate(45deg);border-color:var(--b300)}
+  .faq details[open] summary{color:var(--b700)}
+  .faq .ans{padding:0 44px 24px 2px;font-size:15.5px;line-height:1.65;color:var(--muted)}
+
+  /* ---------- 10 · final CTA ---------- */
+  #cta .panel{position:relative;border:var(--hw) solid var(--hair);border-radius:32px;background:#fff;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:24px;padding:64px 56px 64px 64px;isolation:isolate}
+  #cta .panel::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(circle at 1px 1px,rgba(15,23,42,.075) 1px,transparent 0);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse 70% 90% at 72% 50%,#000 25%,transparent 80%);mask-image:radial-gradient(ellipse 70% 90% at 72% 50%,#000 25%,transparent 80%)}
+  #cta .panel::after{content:"";position:absolute;z-index:-2;width:720px;height:520px;right:-120px;top:50%;margin-top:-260px;background:radial-gradient(ellipse,rgba(147,197,253,.42),rgba(191,219,254,.15) 45%,transparent 70%);filter:blur(30px);pointer-events:none}
+  #cta h2{margin-top:18px;font-size:clamp(34px,4.6vw,56px);line-height:1.04;max-width:560px}
+  #cta .sub{margin-top:16px;max-width:470px;font-size:17px;line-height:1.55;color:var(--muted)}
+  #cta .ctas{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+  #cta .proof{margin-top:20px;font:400 12px/1.5 var(--mono);letter-spacing:.02em;color:var(--text);display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+  #cta .proof .sep{color:var(--hair)}
+  #cta .proof a{text-decoration:none;border-bottom:1px dotted var(--hair);white-space:nowrap}
+  #cta .proof .star{color:var(--b600)}
+  #ctaSv{visibility:hidden;display:block;width:100%;height:auto;overflow:visible}
+  #ctaSv text{font-family:Inter,system-ui,sans-serif}
+  #ctaSv .mono{font-family:var(--mono);letter-spacing:.06em}
+  #ctaSv rect,#ctaSv line,#ctaSv path{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ---------- 11 · footer ---------- */
+  footer{margin-top:24px;border-top:var(--hw) solid var(--hair)}
+  .ft{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:36px 24px 44px}
+  .ft nav{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px;color:var(--muted)}
+  .ft nav a{text-decoration:none}.ft nav a:hover{color:var(--ink)}
+  .ft .made{font:400 12px/1.4 var(--mono);color:var(--slate)}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:1100px){
+    .tgrid{grid-template-columns:repeat(2,1fr)}
+    .ex-desk{display:none}.ex-mob{display:block}
+  }
+  @media (max-width:900px){
+    .mockstrip{display:flex;position:fixed;top:0;left:0;right:0;height:20px;z-index:70;align-items:center;justify-content:center;background:#fbbf24;color:#451a03;font:700 10px/1 Inter,sans-serif;letter-spacing:.06em}
+    body{padding-top:20px}
+    header{top:20px}
+    .badge{display:none}
+    .hd{height:58px}
+    .logo{font-size:20px}
+    .nav .hide-m{display:none}
+    .nav .lk{padding:8px 8px}
+    .wrap{padding:0 16px}
+    .sec{padding:76px 0}
+    .lead{font-size:16px}
+    #hero{padding-top:36px}
+    #hero .ctas{flex-direction:column;align-items:stretch;max-width:340px;margin-left:auto;margin-right:auto}
+    .pstrip{display:grid;grid-template-columns:1fr 1fr;max-width:343px;gap:10px 14px;font-size:11px;text-align:left}
+    .pstrip li{white-space:normal;align-items:flex-start}
+    .pstrip svg{margin-top:1px}
+    #hero .stage{height:420px;border-radius:22px;margin-left:-4px;margin-right:-4px}
+    #hero .m{font-size:13px}
+    #hero .orb.a{width:300px;height:300px;margin:-150px 0 0 -150px}
+    .exist{padding:18px;border-radius:22px}
+    #how .lstage{max-width:345px}
+    #how .lstage::after{width:420px;margin-left:-210px;height:600px;margin-top:-300px}
+    .steps{grid-template-columns:1fr;gap:22px;margin-top:36px}
+    .ba-grid{grid-template-columns:1fr;gap:14px}
+    .pane{padding:20px 18px}
+    .tabs{display:flex;width:100%}
+    .tab{flex:1;padding:10px 8px;font-size:11px}
+    .tt-row{grid-template-columns:1fr 1fr}
+    .cell{border-left:0;border-top:1px solid var(--hair2)}
+    .cell:nth-child(even){border-left:1px solid var(--hair2)}
+    .cell:nth-child(-n+2){border-top:0}
+    .cell:last-child:nth-child(odd){grid-column:1 / -1}
+    .tt-h{padding:12px 14px}
+    .cell{padding:12px 14px}
+    .uc{grid-template-columns:1fr;border-radius:22px}
+    .uc-t{padding:26px 22px}
+    .uc-f{padding:22px;border-left:0;border-top:var(--hw) solid var(--hair2)}
+    .fch{padding:10px 12px}.fch .v{font-size:13.5px}
+    .tgrid{grid-template-columns:1fr;gap:12px}
+    .dont{padding:22px 20px}
+    .dont ul{grid-template-columns:1fr}
+    .fcard2{padding:34px 22px 26px;border-radius:22px}
+    .fcard2 .qm{left:20px}
+    .faq summary{font-size:16.5px;padding:18px 0}
+    .faq .ans{padding:0 0 20px;font-size:15px}
+    #cta .panel{grid-template-columns:1fr;padding:36px 22px 26px;border-radius:26px;gap:8px}
+    #cta .panel::before{-webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 80%,#000 25%,transparent 80%);mask-image:radial-gradient(ellipse 90% 60% at 50% 80%,#000 25%,transparent 80%)}
+    #cta .panel::after{width:520px;height:420px;right:50%;margin-right:-260px;top:auto;bottom:-140px;margin-top:0}
+    #cta h2{font-size:36px}
+    #cta .sub{font-size:15.5px}
+    #cta .ctas{flex-direction:column;align-items:stretch}
+    #cta .proof{font-size:11px}
+    #cta .proof .s2{display:none}
+    #cta .proof .os{flex-basis:100%;border-bottom:0}
+    #cta .proof .os span.u{border-bottom:1px dotted var(--hair)}
+    #cta .vis{order:2;margin:10px -6px 0}
+    .ft{flex-direction:column;align-items:flex-start;padding:30px 16px 40px}
+  }
+</style>
+</head>
+<body>
+<div class="mockstrip">MOCKUP — NOT LIVE</div>
+
+<!-- 1 · HEADER -->
+<header>
+  <div class="wrap hd">
+    <a class="logo" href="#"><span>Convo</span>Form</a>
+    <span class="badge">MOCKUP — not live</span>
+    <nav class="nav">
+      <a class="lk hide-m" href="#use-cases">Use cases</a>
+      <a class="lk gh hide-m" href="https://github.com/growupanand/ConvoForm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>GitHub <b>★ 102</b></a>
+      <a class="lk" href="#">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="#">Start free</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- 2 · HERO -->
+<section id="hero" class="grid-bg">
+  <div class="wrap">
+    <h1>Forms that <em>talk back.</em></h1>
+    <p class="sub">ConvoForm chats with people, asks follow-ups when an answer is vague, and hands you clean, structured data.</p>
+    <div class="ctas">
+      <a class="btn btn-primary" href="#">Create your free form <span aria-hidden="true">→</span></a>
+      <a class="btn btn-secondary" href="#demo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Try the demo</a>
+    </div>
+    <ul class="pstrip">
+      <li><svg class="hl" viewBox="0 0 16 16" fill="none" stroke="#2563eb" stroke-width="1.25" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="#bfdbfe"/><path d="M5.2 8.2l1.9 1.9 3.8-4"/></svg>No credit card</li>
+      <li><svg class="hl" viewBox="0 0 16 16" fill="none" stroke="#2563eb" stroke-width="1.25" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="#bfdbfe"/><path d="M5.2 8.2l1.9 1.9 3.8-4"/></svg>Open source (Apache 2.0)</li>
+      <li><svg class="hl" viewBox="0 0 16 16" fill="none" stroke="#2563eb" stroke-width="1.25" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="#bfdbfe"/><path d="M5.2 8.2l1.9 1.9 3.8-4"/></svg>Cloud or self-host</li>
+      <li><svg class="hl" viewBox="0 0 16 16" fill="none" stroke="#2563eb" stroke-width="1.25" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="#bfdbfe"/><path d="M5.2 8.2l1.9 1.9 3.8-4"/></svg>Works in any phone browser</li>
+    </ul>
+    <div class="stage" id="heroStage" role="img" aria-label="A stiff static form breaks apart and comes back together as a friendly conversation that asks a follow-up">
+      <div class="orb a" id="heroOrbA"></div><div class="orb b"></div><div class="orb c"></div>
+      <canvas id="heroDots"></canvas>
+      <div class="chat" id="heroChat">
+        <div class="chat-h"><span class="av">CF</span><b id="heroChatName">ConvoForm</b><small>live</small></div>
+        <div class="msgs" id="heroMsgs"></div>
+        <div class="chips" id="heroChips"></div>
+      </div>
+    </div>
+    <p class="caption">Illustrative example</p>
+  </div>
+</section>
+
+<!-- 3 · EXISTING DEMO (unchanged) -->
+<section id="demo">
+  <div class="wrap">
+    <div class="exist">
+      <div class="exist-h"><span class="tag">EXISTING SECTION — UNCHANGED</span><span>Existing live demo + live responses table — unchanged</span></div>
+      <div class="ex-desk">
+        <div class="bw">
+          <div class="lrd"><div class="h">⚡ Live Response Data</div>
+            <table><tr><td>Name</td><td>…</td></tr><tr><td>Email</td><td>…</td></tr><tr><td>…</td><td>fills in as the visitor answers</td></tr></table>
+          </div>
+          <div class="bw-win">
+            <div class="bw-bar"><i style="background:#f87171"></i><i style="background:#fbbf24"></i><i style="background:#4ade80"></i><span class="bw-url">https://www.convoform.com/view/demo</span></div>
+            <div class="bw-body">
+              <div class="k">DEMOFORMCARD · FORMVIEWER</div>
+              <div class="t">The real demo form runs here</div>
+              <div class="q">AI question appears here…<div></div></div>
+              <small>600 × 600 BrowserWindow, live AI conversation with the "demo" form</small>
+            </div>
+          </div>
+        </div>
+        <div class="rcard">
+          <div class="h">📥 Live Form Responses</div>
+          <div class="f">From: <u>Sample Survey</u></div>
+          <div class="rows"><i></i><i></i><i></i><i></i><i></i></div>
+          <small>DemoResponsesShell + LazyLiveDemoResponses (real recent demo responses)</small>
+        </div>
+      </div>
+      <div class="ex-mob">
+        <p>Below 1024px the existing demo is hidden today. The demo components stay as they are; phones get this lightweight card linking to <code>/view/demo</code>.</p>
+        <div class="mcard">
+          <div class="u"><i></i>convoform.com/view/demo</div>
+          <div class="ms"><div class="a">Hi! What should I call you?</div><div class="b">Priya</div></div>
+          <a href="#" class="btn btn-primary">Try it on your phone</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · HOW IT WORKS -->
+<section id="how" class="sec">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow"><i></i>How it works</span>
+      <h2>From a form to <em>clean answers</em></h2>
+      <p class="lead">Fields become questions. Vague replies get a follow-up. Every answer lands in its column.</p>
+    </div>
+    <div class="scen"><span>Example</span><b id="howScen">Study abroad enquiry</b><span class="pips" id="howPips"><i></i><i></i><i></i></span></div>
+    <div class="lstage"><svg id="howSv" role="img" aria-label="Line drawing: a static form's fields peel off into a conversation that asks a follow-up, and the answers flow into a clean data table"></svg></div>
+    <div class="steps">
+      <div class="step"><span class="n">01</span><h3>Design your form</h3><p>Describe it and let AI draft the fields, or build from scratch.</p></div>
+      <div class="step"><span class="n">02</span><h3>Share the link</h3><p>Put it in your Instagram bio or send it in a WhatsApp reply. People chat in their phone browser, no app needed.</p></div>
+      <div class="step"><span class="n">03</span><h3>Review clean answers</h3><p>See each answer in a table with the full transcript. Export to CSV or send to Google Sheets.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · WHY A CONVERSATION -->
+<section id="why" class="sec" style="padding-top:40px">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow"><i></i>Why a conversation</span>
+      <h2>A vague answer <em>isn't an answer</em></h2>
+      <p class="lead">A static form saves whatever was typed. ConvoForm notices when a reply is unclear and asks a follow-up.</p>
+      <div class="tabs" role="tablist"><button class="tab on" data-k="study" role="tab">Study abroad</button><button class="tab" data-k="job" role="tab">Job application</button></div>
+    </div>
+    <div id="ba">
+      <div class="ba-grid">
+        <div class="pane st">
+          <div class="mlab">Static form</div>
+          <div class="sf"><div class="sf-l" id="baSL">Budget *</div><div class="sf-in"><span id="baSV"></span><span class="c" id="baSC"></span></div><span class="sf-btn">Submit</span></div>
+          <div class="saved" id="baSS"><span class="k">SAVED</span><b id="baSSv">20</b></div>
+          <p class="sf-note" id="baSN">Your team still has to call to find out what it means.</p>
+        </div>
+        <div class="pane cv">
+          <div class="mlab b">ConvoForm</div>
+          <div class="cvm" id="baMsgs"></div>
+          <div class="saved" id="baCS"><span class="k">SAVED</span><b id="baCSv"></b>
+            <svg class="hl" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#93c5fd" stroke-width="1.25" pathLength="1" id="baRing"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#2563eb" stroke-width="1.75" pathLength="1" id="baTick"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="ba-table">
+        <div class="tt-h"><span>What your team sees</span><span class="il">Illustrative data</span></div>
+        <div class="tt-row" id="baRow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · USE CASES -->
+<section id="use-cases" class="sec" style="padding-top:40px">
+  <div class="wrap">
+    <span class="eyebrow"><i></i>Use cases</span>
+    <h2>Who is ConvoForm for?</h2>
+    <a class="uc" href="#">
+      <div class="uc-t">
+        <span class="feat"><svg class="hl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M2 9.5 12 5l10 4.5L12 14z"/><path d="M6 11.5V16c0 1.6 2.7 3 6 3s6-1.4 6-3v-4.5"/><path d="M22 9.5V14"/></svg>Featured</span>
+        <h3>Study-abroad consultancies</h3>
+        <p>Collect a full student profile, with destination, course, intake, marks, budget and test status, before the first counselling call.</p>
+        <span class="go">See the use case <span aria-hidden="true">→</span></span>
+      </div>
+      <div class="uc-f">
+        <div class="fch"><div class="k">Destination</div><div class="v">Canada / still exploring</div></div>
+        <div class="fch"><div class="k">Course</div><div class="v">Subject + level</div></div>
+        <div class="fch"><div class="k">Intake</div><div class="v">Month + year</div></div>
+        <div class="fch"><div class="k">Marks</div><div class="v">CGPA + scale</div></div>
+        <div class="fch"><div class="k">Budget</div><div class="v">₹ + per year / total</div></div>
+        <div class="fch"><div class="k">Tests</div><div class="v">IELTS score / not yet</div></div>
+      </div>
+    </a>
+    <p class="more">More use cases coming.</p>
+  </div>
+</section>
+
+<!-- 7 · TRUST & PRIVACY -->
+<section id="trust" class="sec" style="padding-top:40px">
+  <div class="wrap">
+    <span class="eyebrow"><i></i>Trust &amp; privacy</span>
+    <h2 style="max-width:900px">Your respondents' data, <em>handled plainly</em></h2>
+    <div class="tgrid">
+      <div class="tc"><div class="art"><svg id="trA" viewBox="0 0 160 80" fill="none" aria-hidden="true"></svg></div><h3>Open source</h3><p>All code is public on GitHub under Apache 2.0. Anyone can check how it works.</p></div>
+      <div class="tc"><div class="art"><svg id="trB" viewBox="0 0 160 80" fill="none" aria-hidden="true"></svg></div><h3>Self-host if you want</h3><p>Run it on your own server with Docker Compose and your own PostgreSQL, or use our cloud.</p></div>
+      <div class="tc"><div class="art"><svg id="trC" viewBox="0 0 160 80" fill="none" aria-hidden="true"></svg></div><h3>We don't sell data</h3><p>Our privacy policy says we do not sell personal information.</p></div>
+      <div class="tc"><div class="art"><svg id="trD" viewBox="0 0 160 80" fill="none" aria-hidden="true"></svg></div><h3>Your data, your export</h3><p>Download responses as CSV or send them to Google Sheets.</p></div>
+    </div>
+    <div class="dont" id="dont">
+      <h3>What ConvoForm doesn't do</h3>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.25"><path d="M2 9.5 12 5l10 4.5L12 14z"/><path d="M6 11.5V16c0 1.6 2.7 3 6 3s6-1.4 6-3v-4.5"/><path class="x" pathLength="1" d="M3 21 21 3" stroke="#fafbfc" stroke-width="4"/><path class="x" pathLength="1" d="M3 21 21 3" stroke="#64748b" stroke-width="1.25"/></svg>It doesn't recommend universities or judge visa eligibility. Your team does that.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.25"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r=".8"/><circle cx="4.5" cy="12" r=".8"/><circle cx="4.5" cy="18" r=".8"/><path class="x" pathLength="1" d="M3 21 21 3" stroke="#fafbfc" stroke-width="4"/><path class="x" pathLength="1" d="M3 21 21 3" stroke="#64748b" stroke-width="1.25"/></svg>It doesn't rank or qualify people. It checks that each answer meets the field.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.25"><path d="M4 5h16v11H10l-5 4v-4H4z"/><path class="x" pathLength="1" d="M3 21 21 3" stroke="#fafbfc" stroke-width="4"/><path class="x" pathLength="1" d="M3 21 21 3" stroke="#64748b" stroke-width="1.25"/></svg>It isn't a WhatsApp bot. People open your link and chat in the browser.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.25"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path class="x" pathLength="1" d="M3 21 21 3" stroke="#fafbfc" stroke-width="4"/><path class="x" pathLength="1" d="M3 21 21 3" stroke="#64748b" stroke-width="1.25"/></svg>It doesn't replace your CRM, book calls or send follow-ups.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · FOUNDER NOTE -->
+<section id="founder" class="sec" style="padding-top:40px">
+  <div class="wrap fwrap">
+    <div class="draft">DRAFT — placeholder text for you to rewrite in your own words</div>
+    <figure class="fcard2">
+      <span class="qm" aria-hidden="true">“</span>
+      <blockquote>I built ConvoForm because forms collect what people type, not what they mean. It's open source, so you can see exactly how it handles your respondents' answers. If something doesn't work for you, tell me and I'll fix it.</blockquote>
+      <figcaption class="fcap">
+        <span class="avph">photo</span>
+        <span><span class="nm ph">[Your name: GrowUpAnand or Utkarsh Anand]</span><span class="rl" style="display:block">Builder of ConvoForm · <a href="https://x.com/growupanand">@growupanand</a></span></span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 9 · FAQ -->
+<section id="faq" class="sec" style="padding-top:40px">
+  <div class="wrap">
+    <div class="center"><span class="eyebrow"><i></i>FAQ</span><h2>Questions, answered</h2></div>
+    <div class="faq">
+      <details open><summary><span><span class="n">01</span>Is it free?</span><i class="pl"></i></summary><div class="ans">Yes, you can create forms and collect responses for free with no credit card. <span class="confirm">[confirm: any limits on the cloud plan, and whether paid plans are planned]</span></div></details>
+      <details><summary><span><span class="n">02</span>Can I self-host?</span><i class="pl"></i></summary><div class="ans">Yes. ConvoForm is open source (Apache 2.0). Follow the self-hosting guide on docs.convoform.com to run it with Docker Compose and your own PostgreSQL database and AI provider key.</div></details>
+      <details><summary><span><span class="n">03</span>Does it work on WhatsApp and mobile?</span><i class="pl"></i></summary><div class="ans">Share your form link anywhere, including WhatsApp and your Instagram bio. People tap it and chat in their phone's browser. ConvoForm doesn't run inside WhatsApp and doesn't send WhatsApp messages.</div></details>
+      <details><summary><span><span class="n">04</span>Where is my data stored?</span><i class="pl"></i></summary><div class="ans">On the cloud version, forms and responses are stored in a PostgreSQL database run by ConvoForm, and answers are processed by an AI model to run the conversation. If you self-host, everything stays on your own server and database. <span class="confirm">[confirm: cloud database region and which AI provider is named]</span></div></details>
+      <details><summary><span><span class="n">05</span>Can I import my existing Google Form?</span><i class="pl"></i></summary><div class="ans">Yes. Sign in, then import a Google Form from your Google Drive to turn it into a conversational form.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · FINAL CTA -->
+<section id="cta" class="sec" style="padding-top:40px;padding-bottom:72px">
+  <div class="wrap">
+    <div class="panel" aria-labelledby="ctaH">
+      <div class="txt">
+        <span class="eyebrow"><i></i>Get started</span>
+        <h2 id="ctaH">Ready to let your form <em>talk back?</em></h2>
+        <p class="sub">Turn your next form into a conversation that asks the right follow-up and hands you clean answers.</p>
+        <div class="ctas">
+          <a class="btn btn-primary" href="#">Create your free form <span aria-hidden="true">→</span></a>
+          <a class="btn btn-secondary" href="#demo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Try the demo</a>
+        </div>
+        <p class="proof"><span>Free to start</span><span class="sep">·</span><span>No credit card</span><span class="sep s2">·</span><a class="os" href="https://github.com/growupanand/ConvoForm"><span class="u">Open source <span class="star">★</span> 102</span></a></p>
+      </div>
+      <div class="vis"><svg id="ctaSv" viewBox="16 84 428 196" role="img" aria-label="Line drawing: pieces of a form drift in and become a chat bubble asking, Hi! What should I call you?"></svg></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- 11 · FOOTER -->
+<footer>
+  <div class="wrap ft">
+    <a class="logo" href="#"><span>Convo</span>Form</a>
+    <nav><a href="#use-cases">Use cases</a><a href="#">Documentation</a><a href="#">Changelog</a><a href="https://github.com/growupanand/ConvoForm">GitHub</a><a href="#">Privacy</a><a href="#">Terms</a></nav>
+    <span class="made">Made by <span class="ph">[name]</span></span>
+  </div>
+</footer>
+
+<script>
+/* ---------- shared player: each animation keeps its own clock, advanced only while it is on screen ---------- */
+const QS = new URLSearchParams(location.search);
+const STATIC = QS.has('static') || matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (STATIC) document.documentElement.classList.add('static');
+const ANIMS = [];
+function registerAnim(el, render, final, o = {}) { const a = Object.assign({ el, render, final, acc: 0, vis: false }, o); ANIMS.push(a); return a; }
+</script>
+<script>
+
+(() => {
+  const SCEN = [
+    { title: 'Enquiry form', fields: ['Full name', 'Email', 'Budget', 'Notes'], req: 1,
+      msgs: [['ai', 'Hi! What should I call you?'], ['u', 'Priya'], ['ai', "What's your budget?"], ['u', 'around 20'], ['fu', '₹20 lakh per year, or in total?'], ['u', 'per year']],
+      chips: [[1, 'Name', 'Priya'], [5, 'Budget', '₹20 lakh / year']] },
+    { title: 'Job application', fields: ['Full name', 'Email', 'Experience', 'Notes'], req: 1,
+      msgs: [['ai', 'Hi! What should I call you?'], ['u', 'Rahul'], ['ai', 'How many years of experience?'], ['u', '3-4'], ['fu', 'Closer to 3 or 4?'], ['u', '4, mostly React']],
+      chips: [[1, 'Name', 'Rahul'], [5, 'Experience', '4 yrs (React)']] },
+  ];
+  const T = 8;
+  // timeline (seconds within a loop)
+  const A0 = 0, A1 = .95;        // dots assemble the form
+  const SUBMIT = 1.25, REQ0 = 1.35, REQ1 = 2.0; // submit pressed → "required"
+  const B0 = 2.1, B1 = 2.95;     // form breaks into fragments
+  const R0 = 3.3, R1 = 4.0;      // fragments flow into the conversation
+  const MSG = [[3.72, 4.3], [4.7], [4.95, 5.25], [5.65], [5.9, 6.25], [6.7]]; // [typing start, shown] / [shown]
+  const D0 = 7.35, D1 = 8.0;     // dissolve back to dots
+  const tick = '<svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+
+  const stage = document.getElementById('heroStage'), chat = document.getElementById('heroChat');
+  const msgsEl = document.getElementById('heroMsgs'), chipsEl = document.getElementById('heroChips');
+  const canvas = document.getElementById('heroDots'), ctx = canvas.getContext('2d');
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const P = (a, b, t) => clamp((t - a) / (b - a));
+  const io = t => { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+  const out = t => 1 - Math.pow(1 - clamp(t), 3);
+  const backOut = t => { t = clamp(t); const c1 = 1.7, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+  const lerp = (a, b, k) => a + (b - a) * k;
+  const mkRnd = s => () => (s = (s * 16807) % 2147483647) / 2147483647;
+
+  let W, H, cur = -1, pieces = [], fcard, msgEls = [], chipEls = [], dots = [], chatRect;
+
+  function build(si) {
+    cur = si; const sc = SCEN[si];
+    stage.querySelectorAll('.fp,.fcard').forEach(e => e.remove());
+    const r = stage.getBoundingClientRect(); W = r.width; H = r.height;
+    const dpr = devicePixelRatio || 1; canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const mobile = W < 640;
+    // ---- form geometry ----
+    const fw = Math.min(360, W - 40), fh = 350, fx = (W - fw) / 2, fy = (H - fh) / 2;
+    fcard = document.createElement('div'); fcard.className = 'fcard';
+    Object.assign(fcard.style, { width: fw + 'px', height: fh + 'px' }); fcard._x = fx; fcard._y = fy;
+    stage.insertBefore(fcard, chat);
+    const defs = [{ cls: 'title', html: sc.title, x: fx + 20, y: fy + 20, w: 160, h: 14 }];
+    sc.fields.forEach((f, i) => {
+      const ly = fy + 52 + i * 58;
+      defs.push({ cls: 'lab', html: f + ' *' + (i === sc.req ? '<span class="req">Required</span>' : ''), x: fx + 20, y: ly, w: 150, h: 12, req: i === sc.req });
+      defs.push({ cls: 'in', x: fx + 20, y: ly + 17, w: fw - 40, h: i === 3 ? 44 : 30, req: i === sc.req });
+    });
+    defs.push({ cls: 'sub', html: 'Submit', x: fx + 20, y: fy + 302, w: 84, h: 30 });
+    const rnd = mkRnd(41 + si * 7);
+    pieces = defs.map(d => {
+      const e = document.createElement('div'); e.className = 'fp ' + d.cls; if (d.html) e.innerHTML = d.html;
+      e.style.height = d.h + 'px';
+      if (d.cls === 'lab' || d.cls === 'title') { stage.insertBefore(e, chat); d.w = Math.ceil(e.offsetWidth) + 2; }
+      e.style.width = d.w + 'px';
+      stage.insertBefore(e, chat);
+      return Object.assign(d, { e, rot: (rnd() - .5) * 26, ph: rnd() * 6.28, sp: .6 + rnd() * .6, sc: d.cls === 'in' ? (mobile ? .44 : .58) : 1, delay: rnd() * .25 });
+    });
+    // scattered positions for the break, without collisions
+    const placed = [], amp = 7;
+    pieces.forEach(p => {
+      const w = p.w * p.sc, h = p.h * p.sc;
+      const rad = Math.abs(p.rot) * Math.PI / 180, bw = w * Math.cos(rad) + h * Math.sin(rad), bh = w * Math.sin(rad) + h * Math.cos(rad);
+      let best = null, bestD = -1;
+      for (let k = 0; k < 2000; k++) {
+        const c = { x: 10 + amp + rnd() * (W - bw - 20 - 2 * amp), y: 10 + amp + rnd() * (H - bh - 20 - 2 * amp), w: bw, h: bh };
+        // distance to nearest placed (bigger is better)
+        let dmin = 1e9;
+        placed.forEach(q => { const dx = Math.max(q.x - (c.x + c.w), c.x - (q.x + q.w), 0), dy = Math.max(q.y - (c.y + c.h), c.y - (q.y + q.h), 0); dmin = Math.min(dmin, Math.max(dx, dy)); });
+        if (dmin > 2 * amp + 10) { best = c; break; }
+        if (dmin > bestD) { bestD = dmin; best = c; }
+      }
+      placed.push(best);
+      // chaos centre for this piece
+      p.cx = best.x + best.w / 2; p.cy = best.y + best.h / 2;
+    });
+    // ---- conversation ----
+    document.getElementById('heroChatName').textContent = 'ConvoForm';
+    msgsEl.innerHTML = ''; chipsEl.innerHTML = '';
+    msgEls = sc.msgs.map(([k, s]) => {
+      const e = document.createElement('div'); e.className = 'm ' + (k === 'u' ? 'u' : k === 'fu' ? 'ai fu' : 'ai');
+      e.innerHTML = `<span class="tx"></span>` + (k !== 'u' ? '<span class="dots"><i></i><i></i><i></i></span>' : '');
+      e.querySelector('.tx').textContent = s; msgsEl.appendChild(e); return e;
+    });
+    chipEls = sc.chips.map(([at, k, v]) => { const e = document.createElement('span'); e.className = 'chip'; e.innerHTML = `${k}: <b></b>${tick}`; e.querySelector('b').textContent = v; e._at = at; chipsEl.appendChild(e); return e; });
+    chat.style.transform = 'translate(-50%,-50%)';
+    const cr = chat.getBoundingClientRect();
+    chatRect = { x: cr.left - r.left, y: cr.top - r.top, w: cr.width, h: cr.height };
+    // ---- dots: chaos home, form outline target, chat outline target ----
+    const drnd = mkRnd(97);
+    const perim = (x, y, w, h, u) => { const L = 2 * (w + h); let d = u * L; if (d < w) return [x + d, y]; d -= w; if (d < h) return [x + w, y + d]; d -= h; if (d < w) return [x + w - d, y + h]; d -= w; return [x, y + h - d]; };
+    const N = mobile ? 110 : 160;
+    const inputs = pieces.filter(p => p.cls === 'in' || p.cls === 'sub');
+    dots = Array.from({ length: N }, (_, i) => {
+      let fpt;
+      if (i % 5 < 2) { const p = inputs[i % inputs.length]; fpt = perim(p.x, p.y, p.w, p.h, drnd()); } else fpt = perim(fx, fy, fw, fh, drnd());
+      const cpt = perim(chatRect.x + 6, chatRect.y + 6, chatRect.w - 12, chatRect.h - 12, drnd());
+      return { hx: drnd() * W, hy: drnd() * H, fx: fpt[0], fy: fpt[1], cx: cpt[0], cy: cpt[1], ph: drnd() * 6.28, sp: .4 + drnd(), r: 1 + drnd() * 1.6, dl: drnd() * .18 };
+    });
+  }
+
+  function render(g) {
+    const si = Math.floor(g / T) % SCEN.length, t = g % T, time = g;
+    if (si !== cur) build(si);
+    // ---------- form pieces ----------
+    const cardOp = io(P(A0 + .45, A1, t)) * (1 - io(P(B0, B0 + .4, t)));
+    fcard.style.opacity = cardOp;
+    fcard.style.transform = `translate(${fcard._x}px,${fcard._y}px) scale(${1 + .04 * P(B0, B0 + .4, t)})`;
+    fcard.style.filter = t > B0 ? `blur(${4 * P(B0, B0 + .4, t)}px)` : '';
+    pieces.forEach((p, i) => {
+      const appear = io(P(A0 + .4 + i * .035, A1 + i * .02, t));
+      const brk = io(P(B0 + p.delay * .6, B1, t));
+      const back = io(P(R0 + p.delay, R1 - .1, t));
+      const ox = p.x + p.w / 2, oy = p.y + p.h / 2;
+      const dx = Math.sin(time * p.sp + p.ph) * 7 * brk, dy = Math.cos(time * p.sp * .8 + p.ph) * 7 * brk;
+      let x = lerp(ox, p.cx, brk) + dx, y = lerp(oy, p.cy, brk) + dy;
+      // flow back toward the chat centre, shrinking to dots
+      x = lerp(x, W / 2, back * .85); y = lerp(y, H / 2, back * .85);
+      const s = lerp(1, p.sc, brk) * (1 - .8 * back);
+      let op = appear * (t < B0 ? 1 : .92) * (1 - P(R0 + p.delay + .1, R1 - .15, t));
+      if (t >= R1) op = 0;
+      p.e.style.opacity = op.toFixed(3);
+      p.e.style.transform = `translate(${(x - p.w / 2).toFixed(1)}px,${(y - p.h / 2).toFixed(1)}px) rotate(${(p.rot * brk).toFixed(1)}deg) scale(${s.toFixed(3)}) translateY(${((1 - appear) * 6).toFixed(1)}px)`;
+      p.e.style.filter = back > 0 ? `blur(${(3 * back).toFixed(2)}px)` : '';
+      // the stiff moment: submit pressed with an empty required field
+      if (p.cls === 'sub') p.e.style.background = t > SUBMIT && t < SUBMIT + .18 ? '#7b8696' : '';
+      if (p.req) {
+        const on = t > REQ0 && t < REQ1 && Math.floor((t - REQ0) / .16) % 2 === 0 || (t > REQ0 + .5 && t < REQ1);
+        if (p.cls === 'in') p.e.classList.toggle('err', on && t < B0);
+        else { const rq = p.e.querySelector('.req'); rq.style.opacity = t > REQ0 && t < B0 + .3 ? 1 : 0; }
+      }
+    });
+    // ---------- conversation ----------
+    const cIn = io(P(R1 - .35, R1 + .1, t)), cOut = io(P(D0, D0 + .45, t));
+    const cOp = cIn * (1 - cOut);
+    chat.style.opacity = cOp;
+    chat.style.transform = `translate(-50%,-50%) scale(${(.95 + .05 * cIn) * (1 - .03 * cOut)})`;
+    chat.style.filter = cOut > 0 ? `blur(${(5 * cOut).toFixed(2)}px)` : cIn < 1 ? `blur(${(4 * (1 - cIn)).toFixed(2)}px)` : '';
+    let lastShown = -1;
+    msgEls.forEach((e, i) => {
+      const [a, b] = MSG[i]; const shownAt = b == null ? a : b;
+      const vis = t >= a;
+      const k = backOut(P(a, a + .28, t));
+      e.style.opacity = vis ? clamp(P(a, a + .15, t)) : 0;
+      e.style.transform = `scale(${vis ? .85 + .15 * k : .85}) translateY(${vis ? (1 - clamp(k)) * 6 : 6}px)`;
+      e.classList.toggle('typing', b != null && t < b);
+      if (b != null && t >= b && t < b + .25) e.style.transform = `scale(${.94 + .06 * backOut(P(b, b + .25, t))})`;
+      if (t >= shownAt) lastShown = i;
+      const dd = e.querySelectorAll('.dots i');
+      dd.forEach((d, j) => { const q = Math.sin(time * 9 - j * .9); d.style.transform = `translateY(${(-2.5 * Math.max(0, q)).toFixed(1)}px)`; d.style.opacity = .45 + .45 * Math.max(0, q); });
+    });
+    chipEls.forEach(c => { const at = MSG[c._at][0] + .2; const k = out(P(at, at + .3, t)); c.style.opacity = k; c.style.transform = `translateY(${(1 - k) * 4}px)`; });
+    document.getElementById('heroOrbA').style.transform = `scale(${.9 + .22 * cOp + .08 * Math.sin(time * .8)})`;
+
+    // ---------- dots ----------
+    ctx.clearRect(0, 0, W, H);
+    dots.forEach(d => {
+      const hx = d.hx + Math.sin(time * d.sp + d.ph) * 22, hy = d.hy + Math.cos(time * d.sp * .9 + d.ph) * 16;
+      let x, y, a;
+      const toForm = io(P(A0 + d.dl, A1, t)), fromForm = io(P(B0 + d.dl * .5, B1, t));
+      const toChat = io(P(R0 + d.dl, R1, t)), fromChat = io(P(D0 + d.dl * .5, D1 - .05, t));
+      if (t < B0) { x = lerp(hx, d.fx, toForm); y = lerp(hy, d.fy, toForm); a = lerp(.4, .14, toForm); }
+      else if (t < R0) { const fx = d.fx + (d.fx - W / 2) * .15; x = lerp(fx, hx, fromForm); y = lerp(d.fy, hy, fromForm); a = lerp(.14, .5, fromForm); }
+      else if (t < D0) { const wob = Math.sin(time * 1.6 + d.ph) * 2; x = lerp(hx, d.cx + wob, toChat); y = lerp(hy, d.cy + wob, toChat); a = lerp(.5, .16, toChat); }
+      else { x = lerp(d.cx, hx, fromChat); y = lerp(d.cy, hy, fromChat); a = lerp(.16, .4, fromChat); }
+      ctx.beginPath(); ctx.arc(x, y, d.r, 0, 6.283); ctx.fillStyle = `rgba(37,99,235,${a.toFixed(3)})`; ctx.fill();
+    });
+  }
+
+  registerAnim(stage, g => render(g), 7.05, { onResize: () => { cur = -1; } });
+})();
+
+</script>
+<script>
+
+(() => {
+  // ---------- scenarios ----------
+  // fields: [label, formLabel]. steps: who, text, field, fu (follow-up), fast
+  const SCEN = [
+    { name: 'Job application', title: 'Job application', chat: 'Hiring assistant',
+      fields: [['Name','Full name'],['Role','Role applying for'],['Experience','Years of experience'],['Notice period','Notice period']],
+      convo: [
+        { q: 'How many years of experience do you have?', a: 'around 3-4', f: 2, fu: 'Closer to 3 or 4?', a2: '4, mostly React', save: '4 yrs (React)' },
+        { q: 'Nice! Which role are you applying for?', a: 'frontend', f: 1, save: 'Frontend Developer' },
+        { q: 'And your notice period?', a: 'asap', f: 3, save: 'Immediate' },
+        { q: 'Lastly, your full name?', a: 'rahul mehta', f: 0, save: 'Rahul Mehta' },
+      ] },
+    { name: 'Study abroad enquiry', title: 'Study abroad enquiry', chat: 'Admissions assistant',
+      fields: [['Name','Full name'],['Country','Preferred country'],['Intake','Intake'],['Budget','Budget']],
+      convo: [
+        { q: "What's your budget for studying abroad?", a: '20', f: 3, fu: '₹20 lakh per year, or in total?', a2: 'per year', save: '₹20 lakh / year' },
+        { q: 'Which country are you considering?', a: 'maybe canada', f: 1, save: 'Canada' },
+        { q: 'When would you like to start?', a: 'sept next yr', f: 2, save: 'Sep 2027' },
+        { q: 'Lastly, your name?', a: 'priya s', f: 0, save: 'Priya S.' },
+      ] },
+    { name: 'Event enquiry', title: 'Event enquiry', chat: 'Events assistant',
+      fields: [['Name','Your name'],['Guests','Number of guests'],['Date','Event date'],['City','City']],
+      convo: [
+        { q: 'How many guests are you expecting?', a: '100ish', f: 1, fu: 'Around 100, or could it go higher?', a2: 'max 120', save: '100–120' },
+        { q: 'Which date are you planning for?', a: '14 feb', f: 2, save: '14 Feb 2027' },
+        { q: 'And the city?', a: 'blr', f: 3, save: 'Bengaluru' },
+        { q: 'Great, your name?', a: 'ankit', f: 0, save: 'Ankit' },
+      ] },
+  ];
+  const T = 10.8;
+
+  // ---------- schedule ----------
+  function schedule(sc) {
+    const ev = [], saves = [], ask = []; let c = 1.2;
+    sc.convo.forEach((step, i) => {
+      const fast = i > 0;
+      const typeDur = s => fast ? Math.min(.4, .1 + s.length * .026) : Math.min(.75, .12 + s.length * .035);
+      const dq = fast ? .4 : .5, rd = fast ? .22 : .5, pz = fast ? .15 : .4;
+      const q = { type: 'ai', text: step.q, dots: c, at: c + dq, f: step.f, peel: true };
+      ev.push(q); ask.push({ f: step.f, at: c }); c += dq + rd;
+      let u = { type: 'u', text: step.a, at: c, end: c + typeDur(step.a) }; ev.push(u); c += typeDur(step.a) + pz;
+      if (step.fu) {
+        u.vague = c;
+        ev.push({ type: 'ai', text: step.fu, dots: c, at: c + .45, fu: true }); c += .45 + .65;
+        u = { type: 'u', text: step.a2, at: c, end: c + typeDur(step.a2) }; ev.push(u); c += typeDur(step.a2) + .3;
+      }
+      saves.push({ f: step.f, at: c, fill: c + .15, v: step.save, from: u }); c += fast ? .12 : .25;
+    });
+    return { ev, saves, ask, end: c + .15 };
+  }
+  const SCHED = SCEN.map(schedule);
+  window.__sched = SCHED.map(x => x.end.toFixed(2));
+
+  // ---------- helpers ----------
+  const NS = 'http://www.w3.org/2000/svg';
+  const sv = document.getElementById('howSv');
+  const C = { ink: '#0f172a', line: '#94a3b8', faint: '#cbd5e1', text: '#64748b', blue: '#2563eb', blueF: '#93c5fd' };
+  const SW = 1.25;
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const ease = t => 1 - Math.pow(1 - clamp(t), 3);
+  const io = t => { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+  const P = (a, b, t) => clamp((t - a) / (b - a));
+  function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); (parent || sv).appendChild(e); return e; }
+  function stroke(tag, attrs, parent, color = C.line) { return el(tag, Object.assign({ fill: 'none', stroke: color, 'stroke-width': SW }, attrs), parent); }
+  function txt(s, x, y, attrs, parent) { const e = el('text', Object.assign({ x, y }, attrs), parent); e.textContent = s; return e; }
+  function draw(e, p) { if (e._L == null) e._L = e.getTotalLength() + 1; e.style.strokeDasharray = e._L; e.style.strokeDashoffset = e._L * (1 - clamp(p)); e.style.opacity = p <= 0 ? 0 : ''; }
+  let meas; function W(s, size, weight = 400, mono) { meas.setAttribute('font-size', size); meas.setAttribute('font-weight', weight); meas.setAttribute('class', mono ? 'mono' : ''); meas.textContent = s; return meas.getComputedTextLength(); }
+  const bubblePath = (w, h, side, r = 9) => side === 'ai'
+    ? `M0,${h} V${r} Q0,0 ${r},0 H${w - r} Q${w},0 ${w},${r} V${h - r} Q${w},${h} ${w - r},${h} Z`
+    : `M${w},${h} V${r} Q${w},0 ${w - r},0 H${r} Q0,0 0,${r} V${h - r} Q0,${h} ${r},${h} Z`;
+
+  // ---------- layout ----------
+  const mq = matchMedia('(max-width:900px)');
+  function layout(mobile) {
+    if (!mobile) return { mobile, W: 1080, H: 336,
+      form: { x: 0, y: 30, w: 236, h: 300 }, chat: { x: 300, y: 30, w: 440, h: 300 }, table: { x: 800, y: 30, w: 280, rowH: 60 },
+      fieldGap: 52, fs: 12.5 };
+    return { mobile, W: 345, H: 664,
+      form: { x: 0, y: 30, w: 345, h: 310 }, chat: { x: 0, y: 30, w: 345, h: 310 }, table: { x: 0, y: 398, w: 345, rowH: 54 },
+      fieldGap: 54, fs: 12.5 };
+  }
+
+  // ---------- build ----------
+  let L, cur = -1, mode = null, R = {};
+  function build(si) {
+    const sc = SCEN[si], S = SCHED[si];
+    cur = si; mode = mq.matches; L = layout(mode);
+    document.getElementById('howScen').textContent = sc.name;
+    [...document.getElementById('howPips').children].forEach((p, i) => p.classList.toggle('on', i === si));
+    sv.innerHTML = ''; sv.setAttribute('viewBox', `0 0 ${L.W} ${L.H}`);
+    meas = el('text', { x: -999, y: -999, 'font-size': 12.5, opacity: 0 });
+    const { form: F, chat: Ch, table: Tb } = L;
+    R = { root: el('g', {}) };
+    const g = R.root;
+    // defs: chat mask
+    const defs = el('defs', {}, g);
+    const ay0 = Ch.y + 46, ay1 = Ch.y + Ch.h - 44;
+    defs.innerHTML = `<linearGradient id="howFadeG" gradientUnits="userSpaceOnUse" x1="0" y1="${ay0}" x2="0" y2="${ay0 + 26}"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff"/></linearGradient>
+      <mask id="howChatM" maskUnits="userSpaceOnUse" x="${Ch.x - 20}" y="${ay0}" width="${Ch.w + 40}" height="${ay1 - ay0}"><rect x="${Ch.x - 20}" y="${ay0}" width="${Ch.w + 40}" height="${ay1 - ay0}" fill="url(#howFadeG)"/></mask>`;
+    Object.assign(R, { ay0, ay1 });
+
+    // stage labels
+    const lab = (s, x, y) => { const gg = el('g', {}, g); const ln = stroke('line', { x1: x, y1: y - 4, x2: x + 10, y2: y - 4 }, gg, C.faint); const t = txt(s, x + 16, y, { class: 'mono', 'font-size': 10, fill: C.line }, gg); return { g: gg, ln, t }; };
+    R.lab = [lab('01  STATIC FORM', F.x, 14), lab('02  CONVERSATION', L.mobile ? Ch.x : Ch.x, 14), lab('03  CLEAN DATA', Tb.x, Tb.y - 16)];
+
+    // ---- form ----
+    R.form = el('g', {}, g);
+    R.fOut = stroke('rect', { x: F.x + .5, y: F.y + .5, width: F.w - 1, height: F.h - 1 }, R.form);
+    R.fTitle = txt(sc.title, F.x + 18, F.y + 30, { 'font-size': 12.5, 'font-weight': 600, fill: '#334155' }, R.form);
+    R.fTitleLn = stroke('line', { x1: F.x + 18, y1: F.y + 42, x2: F.x + F.w - 18, y2: F.y + 42 }, R.form, C.faint);
+    R.fields = sc.fields.map((f, i) => {
+      const ly = F.y + 70 + i * L.fieldGap;
+      const t = txt(f[1] + ' *', F.x + 18, ly, { 'font-size': 11, fill: C.text }, R.form);
+      const line = stroke('line', { x1: F.x + 18, y1: ly + 22, x2: F.x + F.w - 18, y2: ly + 22 }, R.form);
+      const tk = stroke('path', { d: `M${F.x + F.w - 30},${ly - 4} l3,3 l6,-6` }, R.form, C.blue);
+      return { t, line, tk, y: ly + 22, x0: F.x + 18, x1: F.x + F.w - 18 };
+    });
+    const sy = F.y + 70 + 4 * L.fieldGap - 6;
+    R.fSub = stroke('rect', { x: F.x + 18, y: sy, width: 72, height: 22, rx: 2 }, R.form);
+    R.fSubT = txt('SUBMIT', F.x + 54, sy + 14.5, { class: 'mono', 'font-size': 9.5, fill: C.line, 'text-anchor': 'middle' }, R.form);
+
+    // ---- chat frame ----
+    R.chat = el('g', {}, g);
+    const cm = 10, X0 = Ch.x, X1 = Ch.x + Ch.w, Y0 = Ch.y, Y1 = Ch.y + Ch.h;
+    R.corners = [`M${X0},${Y0 + cm} V${Y0} H${X0 + cm}`, `M${X1 - cm},${Y0} H${X1} V${Y0 + cm}`, `M${X1},${Y1 - cm} V${Y1} H${X1 - cm}`, `M${X0 + cm},${Y1} H${X0} V${Y1 - cm}`].map(d => stroke('path', { d }, R.chat));
+    R.av = stroke('circle', { cx: X0 + 22, cy: Y0 + 20, r: 8 }, R.chat, C.blue);
+    R.avDot = el('circle', { cx: X0 + 22, cy: Y0 + 20, r: 2, fill: C.blue }, R.chat);
+    R.cName = txt(sc.chat, X0 + 38, Y0 + 24, { 'font-size': 12, 'font-weight': 500, fill: C.ink }, R.chat);
+    R.cLive = txt('LIVE', X1 - 14, Y0 + 24, { class: 'mono', 'font-size': 9.5, fill: C.blue, 'text-anchor': 'end' }, R.chat);
+    R.cHd = stroke('line', { x1: X0 + 14, y1: Y0 + 38, x2: X1 - 14, y2: Y0 + 38 }, R.chat, C.faint);
+    const iy = Y1 - 14;
+    R.inLn = stroke('line', { x1: X0 + 14, y1: iy, x2: X1 - 40, y2: iy }, R.chat);
+    R.send = stroke('path', { d: `M${X1 - 26},${iy - 5} l6,-5 l-6,-5 M${X1 - 31},${iy - 10} h11` }, R.chat);
+    R.cur = stroke('line', { x1: X0 + 16, y1: iy - 15, x2: X0 + 16, y2: iy - 4 }, R.chat, C.ink);
+    R.list = el('g', { mask: 'url(#howChatM)' }, R.chat);
+    R.peels = el('g', {}, g);
+
+    // bubbles
+    const fs = L.fs, bh = 28, pad = 12, maxW = Ch.w - 28;
+    R.msgs = S.ev.map(e => {
+      const tw = W(e.text, fs, e.type === 'u' ? 500 : 400);
+      const w = Math.min(maxW, tw + pad * 2);
+      const gg = el('g', {}, R.list);
+      const col = e.fu ? C.blue : e.type === 'u' ? C.ink : C.line;
+      const b = stroke('path', { d: bubblePath(w, bh, e.type) }, gg, col);
+      const t = txt('', pad, 18.5, { 'font-size': fs, 'font-weight': e.type === 'u' ? 500 : 400, fill: e.fu ? C.blue : C.ink }, gg);
+      const o = { e, g: gg, b, t, w, h: bh };
+      if (e.type === 'u') o.caret = stroke('line', { x1: 0, y1: 8, x2: 0, y2: 20 }, gg, C.ink);
+      if (e.vague != null) o.und = stroke('path', { d: `M${pad},23 h${tw}` }, gg, C.blue);
+      if (e.fu) o.tag = txt('↳ FOLLOW-UP', w + 8, 18, { class: 'mono', 'font-size': 9, fill: C.blue }, gg);
+      if (e.peel && !L.mobile) o.peel = stroke('path', {}, R.peels, C.blue);
+      return o;
+    });
+
+    // ---- table ----
+    R.table = el('g', {}, g);
+    const rows = sc.fields.length, TH = 30 + rows * Tb.rowH, tx0 = Tb.x, tx1 = Tb.x + Tb.w;
+    R.tOut = stroke('rect', { x: tx0 + .5, y: Tb.y + .5, width: Tb.w - 1, height: TH - 1 }, R.table);
+    R.tHT = txt('NEW RESPONSE', tx0 + 12, Tb.y + 19, { class: 'mono', 'font-size': 9.5, fill: C.text }, R.table);
+    R.tCnt = txt('0/' + rows, tx1 - 12, Tb.y + 19, { class: 'mono', 'font-size': 9.5, fill: C.line, 'text-anchor': 'end' }, R.table);
+    R.tCol = stroke('line', { x1: tx1 - 40, y1: Tb.y + 30, x2: tx1 - 40, y2: Tb.y + TH }, R.table, C.faint);
+    R.rows = sc.fields.map((f, i) => {
+      const ry = Tb.y + 30 + i * Tb.rowH;
+      const ln = stroke('line', { x1: tx0, y1: ry, x2: tx1, y2: ry }, R.table, i === 0 ? C.line : C.faint);
+      const k = txt(f[0].toUpperCase(), tx0 + 12, ry + 21, { class: 'mono', 'font-size': 9.5, fill: C.line }, R.table);
+      const v = txt('—', tx0 + 12, ry + Tb.rowH - 15, { 'font-size': 13.5, 'font-weight': 500, fill: C.faint }, R.table);
+      const cx = tx1 - 20, cy = ry + Tb.rowH / 2;
+      const box = stroke('circle', { cx, cy, r: 7 }, R.table, C.faint);
+      const tk = stroke('path', { d: `M${cx - 3.5},${cy} l2.5,2.6 l4.8,-5` }, R.table, C.blue);
+      const ring = stroke('circle', { cx, cy, r: 7 }, R.table, C.blue);
+      const edge = stroke('line', { x1: tx0, y1: ry + 6, x2: tx0, y2: ry + Tb.rowH - 6 }, R.table, C.blue);
+      edge.setAttribute('stroke-width', 2);
+      return { ln, k, v, box, tk, ring, edge, ry, cx, cy };
+    });
+    R.TH = TH;
+
+    // ---- flow lines ----
+    R.flow = el('g', {}, g);
+    const arrow = (x, y, dir) => dir === 'r' ? `M${x - 5},${y - 4} L${x},${y} L${x - 5},${y + 4}` : `M${x - 4},${y - 5} L${x},${y} L${x + 4},${y - 5}`;
+    if (!L.mobile) {
+      // flow arrows run along the label row, above the stages, so the peel lines and answer paths never cross them
+      const fy = 10, l1 = F.x + 16 + W('01  STATIC FORM', 10, 400, true) + 18, l2 = Ch.x + 16 + W('02  CONVERSATION', 10, 400, true) + 18;
+      R.flows = [[`M${l1},${fy} H${Ch.x - 14}`, arrow(Ch.x - 14, fy, 'r')], [`M${l2},${fy} H${Tb.x - 14}`, arrow(Tb.x - 14, fy, 'r')]];
+    } else {
+      const x = L.W / 2; R.flows = [[`M${x},${Y1 + 10} V${Tb.y - 30}`, arrow(x, Tb.y - 30, 'd')]];
+    }
+    R.flows = R.flows.map(([a, b]) => [stroke('path', { d: a }, R.flow, C.faint), stroke('path', { d: b }, R.flow, C.faint)]);
+    R.trav = el('g', {}, g);
+    R.travs = S.saves.map(() => ({ p: stroke('path', {}, R.trav, C.blue), dot: el('circle', { r: 2.6, fill: C.blue }, R.trav), halo: stroke('circle', { r: 6 }, R.trav, C.blueF) }));
+  }
+
+  // ---------- render ----------
+  function render(g) {
+    const si = Math.floor(g / T) % 3, t = g % T, S = SCHED[si];
+    if (si !== cur || mq.matches !== mode) build(si);
+    const M = L.mobile, F = L.form, Ch = L.chat, Tb = L.table;
+    R.root.style.opacity = 1 - P(T - .55, T - .1, t);
+
+    // labels
+    const chatOn = t >= 1.15, dataOn = t >= S.saves[0].fill;
+    R.lab.forEach((l, i) => { l.g.style.opacity = ease(P(0, .3, t)); });
+    const act = [!chatOn, chatOn && t < S.end, dataOn];
+    R.lab.forEach((l, i) => { l.t.setAttribute('fill', act[i] ? C.blue : C.line); l.ln.setAttribute('stroke', act[i] ? C.blue : C.faint); });
+    if (M) { const m = P(.95, 1.2, t); R.lab[0].g.style.opacity = ease(P(0, .3, t)) * (1 - m); R.lab[1].g.style.opacity = m; }
+
+    // form intro (+ mobile retract)
+    const ret = M ? 1 - io(P(.85, 1.15, t)) : 1;
+    draw(R.fOut, io(P(0, .55, t)) * ret);
+    const fT = ease(P(.15, .45, t)) * ret; R.fTitle.style.opacity = fT; draw(R.fTitleLn, io(P(.2, .5, t)) * ret);
+    let asking = -1; S.ask.forEach(a => { if (t >= a.at) asking = a.f; });
+    if (t >= S.end) asking = -1;
+    R.fields.forEach((f, i) => {
+      const a = .25 + i * .08;
+      f.t.style.opacity = ease(P(a, a + .25, t)) * ret;
+      draw(f.line, io(P(a, a + .3, t)) * ret);
+      const sv_ = S.saves.find(s => s.f === i), saved = sv_ && t >= sv_.fill;
+      const isAsk = i === asking && !saved;
+      f.line.setAttribute('stroke', isAsk ? C.blue : C.line);
+      f.t.setAttribute('fill', isAsk ? C.blue : C.text);
+      if (saved && !M) { f.line.style.strokeDasharray = '2 4'; f.line.style.strokeDashoffset = 0; f.line.setAttribute('stroke', C.faint); }
+      draw(f.tk, M ? 0 : (sv_ ? io(P(sv_.fill, sv_.fill + .3, t)) : 0));
+    });
+    draw(R.fSub, io(P(.55, .85, t)) * ret); R.fSubT.style.opacity = ease(P(.65, .9, t)) * ret;
+    R.form.style.opacity = M ? 1 : 1 - .4 * ease(P(1.2, 1.6, t));
+
+    // chat frame
+    const c0 = M ? .95 : .35;
+    R.corners.forEach(c => draw(c, io(P(c0, c0 + .35, t))));
+    draw(R.av, io(P(c0 + .1, c0 + .4, t))); R.avDot.style.opacity = ease(P(c0 + .3, c0 + .45, t));
+    R.cName.style.opacity = R.cLive.style.opacity = ease(P(c0 + .15, c0 + .4, t));
+    R.cLive.style.opacity = ease(P(c0 + .15, c0 + .4, t)) * (.55 + .45 * Math.abs(Math.sin(t * 2.2)));
+    draw(R.cHd, io(P(c0 + .1, c0 + .45, t))); draw(R.inLn, io(P(c0 + .2, c0 + .55, t))); draw(R.send, io(P(c0 + .4, c0 + .6, t)));
+
+    // message layout & scroll
+    const GAP = 10, areaH = R.ay1 - R.ay0 - 4;
+    let acc = 0; const ys = [];
+    R.msgs.forEach(o => { const st = o.e.type === 'ai' ? o.e.dots : o.e.at; const k = ease(P(st, st + .22, t)); ys.push(acc); acc += (o.h + GAP) * k; });
+    const off = Math.max(0, acc - GAP - areaH);
+    let waiting = t > c0 + .5 && t < S.end;
+    R.msgs.forEach((o, i) => {
+      const e = o.e, st = e.type === 'ai' ? e.dots : e.at;
+      if (t < st) { o.g.style.display = 'none'; if (o.peel) o.peel.style.opacity = 0; return; }
+      o.g.style.display = '';
+      const bx = e.type === 'ai' ? Ch.x + 14 : Ch.x + Ch.w - 14 - o.w;
+      const by = R.ay0 + 2 + ys[i] - off;
+      o.g.setAttribute('transform', `translate(${bx},${by})`);
+      if (e.type === 'ai') {
+        const pe = (o.peel ? (e.at - e.dots) * .45 : 0);
+        if (o.peel) {
+          const f = R.fields[e.f];
+          const tx = bx, ty = by + o.h;
+          o.peel.setAttribute('d', `M${f.x0},${f.y} H${f.x1} C${f.x1 + 50},${f.y} ${tx - 50},${ty} ${tx},${ty}`);
+          o.peel._L = null;
+          draw(o.peel, io(P(e.dots, e.dots + pe, t)));
+          o.peel.style.opacity = t < e.dots ? 0 : 1 - P(e.at + .1, e.at + .55, t);
+        }
+        draw(o.b, io(P(e.dots + pe, e.at, t)));
+        o.t.textContent = e.text; o.t.style.opacity = ease(P(e.at - .05, e.at + .15, t));
+        if (o.tag) o.tag.style.opacity = ease(P(e.at, e.at + .25, t));
+        if (t >= e.at) waiting = true;
+      } else {
+        waiting = waiting && false;
+        draw(o.b, io(P(e.at, e.at + .16, t)));
+        const p = P(e.at + .06, e.end, t), n = Math.round(e.text.length * p);
+        const s = e.text.slice(0, n); o.t.textContent = s;
+        const cw = s ? W(s, L.fs, 500) : 0;
+        o.caret.setAttribute('x1', 12 + cw + 1.5); o.caret.setAttribute('x2', 12 + cw + 1.5);
+        o.caret.style.opacity = p < 1 ? 1 : 0;
+        if (o.und) draw(o.und, io(P(e.vague, e.vague + .35, t)));
+      }
+    });
+    // input cursor blinks while waiting for the person to answer
+    let lastAi = -1, lastU = -1;
+    S.ev.forEach(e => { if (e.type === 'ai' && t >= e.at) lastAi = Math.max(lastAi, e.at); if (e.type === 'u' && t >= e.at) lastU = Math.max(lastU, e.at); });
+    const idle = (t > c0 + .5 && lastAi < 0) || lastAi > lastU || t >= S.end;
+    R.cur.style.opacity = idle ? (Math.floor(t * 2.4) % 2 ? .15 : 1) * ease(P(c0 + .5, c0 + .7, t)) : 0;
+
+    // table intro
+    const tb0 = M ? .4 : .3;
+    draw(R.tOut, io(P(tb0, tb0 + .55, t)));
+    R.tHT.style.opacity = ease(P(tb0 + .2, tb0 + .45, t));
+    draw(R.tCol, io(P(tb0 + .3, tb0 + .65, t)));
+    let nSaved = 0;
+    R.rows.forEach((r, i) => {
+      const a = tb0 + .12 + i * .05;
+      draw(r.ln, io(P(a, a + .4, t)));
+      r.k.style.opacity = ease(P(a + .2, a + .45, t));
+      draw(r.box, io(P(a + .2, a + .45, t)));
+      const s = S.saves.find(x => x.f === i);
+      if (s && t >= s.fill) {
+        nSaved++;
+        const k = ease(P(s.fill, s.fill + .3, t));
+        r.v.textContent = s.v; r.v.setAttribute('fill', C.ink); r.v.style.opacity = k;
+        r.v.setAttribute('transform', `translate(${(1 - k) * -6},0)`);
+        draw(r.tk, io(P(s.fill + .08, s.fill + .38, t)));
+        r.box.setAttribute('stroke', C.blue);
+        const rp = P(s.fill + .05, s.fill + .8, t);
+        r.ring.setAttribute('r', 7 + 11 * ease(rp)); r.ring.style.opacity = rp > 0 && rp < 1 ? (1 - rp) * .8 : 0;
+        r.edge.style.opacity = Math.sin(P(s.fill, s.fill + 1, t) * Math.PI);
+      } else {
+        r.v.textContent = '—'; r.v.setAttribute('fill', C.faint); r.v.style.opacity = ease(P(a + .3, a + .55, t)); r.v.removeAttribute('transform');
+        draw(r.tk, 0); r.box.setAttribute('stroke', C.faint); r.ring.style.opacity = 0; r.edge.style.opacity = 0;
+      }
+    });
+    R.tCnt.textContent = nSaved + '/' + R.rows.length + (nSaved === R.rows.length ? ' ✓' : '');
+    R.tCnt.setAttribute('fill', nSaved ? C.blue : C.line);
+    R.tCnt.style.opacity = ease(P(tb0 + .2, tb0 + .45, t));
+
+    // flow lines
+    R.flows.forEach(([a, b], i) => { const s0 = (M ? 1.0 : .6) + i * .15; draw(a, io(P(s0, s0 + .35, t))); draw(b, io(P(s0 + .3, s0 + .45, t))); });
+
+    // answers travelling to the table
+    S.saves.forEach((s, i) => {
+      const tr = R.travs[i], o = R.msgs.find(m => m.e === s.from);
+      const t0 = s.from.end + .05, t1 = s.fill;
+      if (t < t0 || !o) { tr.p.style.opacity = 0; tr.dot.style.opacity = 0; tr.halo.style.opacity = 0; return; }
+      const idx = R.msgs.indexOf(o);
+      const by = R.ay0 + 2 + ys[idx] - off;
+      const row = R.rows[s.f];
+      let d;
+      if (!M) {
+        const sx = Ch.x + Ch.w - 10, sy = by + o.h / 2, ex = Tb.x - 3, ey = row.ry + Tb.rowH / 2;
+        d = `M${sx},${sy} C${sx + 40},${sy} ${ex - 40},${ey} ${ex},${ey}`;
+      } else {
+        const sx = Ch.x + Ch.w - 6, sy = by + o.h / 2, ex = row.cx + 9, ey = row.cy;
+        d = `M${sx},${sy} C${sx + 4},${sy + 60} ${ex + 4},${ey - 80} ${ex},${ey}`;
+      }
+      tr.p.setAttribute('d', d); tr.p._L = null;
+      const k = io(P(t0, t1, t));
+      draw(tr.p, k);
+      tr.p.style.opacity = .55 * (1 - P(t1 + .05, t1 + .5, t));
+      const pt = tr.p.getPointAtLength((tr.p._L - 1) * k);
+      const vis = k > 0 && t < t1 + .08 ? 1 : 0;
+      tr.dot.setAttribute('cx', pt.x); tr.dot.setAttribute('cy', pt.y); tr.dot.style.opacity = vis;
+      tr.halo.setAttribute('cx', pt.x); tr.halo.setAttribute('cy', pt.y); tr.halo.style.opacity = vis * .7;
+    });
+  }
+
+  registerAnim(sv, g => render(g + T), Math.min(T - .7, SCHED[1].end + .7));
+})();
+
+</script>
+<script>
+
+(() => {
+  const q = new URLSearchParams(location.search);
+
+  const NS = 'http://www.w3.org/2000/svg', sv = document.getElementById('ctaSv');
+  const el = (tag, at, parent = sv) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); parent.appendChild(e); return e; };
+  const S = '#94a3b8', B = '#2563eb', SW = 1.25;
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const P = (a, b, t) => clamp((t - a) / (b - a));
+  const io = t => { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+  const out = t => 1 - Math.pow(1 - clamp(t), 3);
+  const backOut = t => { t = clamp(t); const c1 = 1.6, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+  const L = (a, b, k) => a + (b - a) * k;
+
+  const T = 6;
+  const IN0 = 0, IN1 = 1.3, M0 = 1.3, M1 = 2.1, TY0 = 2.2, TY1 = 3.6, R0 = 4.0, F0 = 5.35, F1 = 5.95;
+  const MSG = 'Hi! What should I call you?';
+
+  // ---------- fragments of a form ----------
+  const gIn = el('g', {}), gLab = el('g', {}), gSub = el('g', {});
+  const inRect = el('rect', { fill: '#fff', 'fill-opacity': .6, stroke: S, 'stroke-width': SW }, gIn);
+  const labTxt = el('text', { class: 'mono', 'font-size': 9.5, fill: S, x: 0, y: 0 }, gLab); labTxt.textContent = 'FULL NAME *';
+  const labLine = el('line', { x1: 0, y1: 8, x2: 74, y2: 8, stroke: S, 'stroke-width': SW }, gLab);
+  const subRect = el('rect', { x: -36, y: -14, width: 72, height: 28, rx: 4, fill: 'none', stroke: S, 'stroke-width': SW }, gSub);
+  const subTxt = el('text', { 'font-size': 11.5, fill: S, 'text-anchor': 'middle', x: 0, y: 4, 'font-weight': 500 }, gSub); subTxt.textContent = 'Submit';
+  // ---------- conversation ----------
+  const tag = el('text', { class: 'mono', 'font-size': 9.5, fill: S, x: 42, y: 112 }); tag.textContent = 'CONVOFORM';
+  const tagDot = el('circle', { cx: 34, cy: 109, r: 2.6, fill: B });
+  const tail = el('path', { d: 'M40 170 l-9 9 l14 -3', fill: 'none', stroke: B, 'stroke-width': SW });
+  const msgTxt = el('text', { 'font-size': 16, fill: '#0f172a', x: 48, y: 152, 'font-weight': 500 });
+  const cursor = el('line', { stroke: B, 'stroke-width': 1.5 });
+  const rG = el('g', {});
+  const rRect = el('rect', { rx: 18, fill: B, 'fill-opacity': .06, stroke: B, 'stroke-width': SW }, rG);
+  const rTxt = el('text', { 'font-size': 16, fill: B, 'font-weight': 600, 'text-anchor': 'middle' }, rG); rTxt.textContent = 'Priya';
+  const rTag = el('text', { class: 'mono', 'font-size': 9.5, fill: S, 'text-anchor': 'end' }); rTag.textContent = 'YOU';
+
+  // measure final text
+  msgTxt.textContent = MSG; const fullW = msgTxt.getComputedTextLength(); msgTxt.textContent = '';
+  rTxt.textContent = 'Priya'; const rW = rTxt.getComputedTextLength() + 40;
+  const BB = { x: 30, y: 124, w: fullW + 38, h: 46 };          // AI bubble box
+  const RB = { x: 430 - rW, y: 196, w: rW, h: 40 };            // reply bubble box
+  rRect.setAttribute('x', RB.x); rRect.setAttribute('y', RB.y); rRect.setAttribute('width', RB.w); rRect.setAttribute('height', RB.h);
+  rTxt.setAttribute('x', RB.x + RB.w / 2); rTxt.setAttribute('y', RB.y + 26);
+  rTag.setAttribute('x', RB.x + RB.w - 4); rTag.setAttribute('y', RB.y + RB.h + 16);
+  // pre-compute char x positions for the cursor
+  const charX = [0]; for (let i = 1; i <= MSG.length; i++) { msgTxt.textContent = MSG.slice(0, i); charX.push(msgTxt.getComputedTextLength()); } msgTxt.textContent = '';
+
+  // ---------- blue dots ----------
+  let sd = 13; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+  const dots = Array.from({ length: 16 }, (_, i) => {
+    const side = i % 4; const u = rnd();
+    const sx = side % 2 === 0 ? 470 + u * 20 : 120 + u * 340, sy = side % 2 === 0 ? 90 + u * 190 : 300 + u * 20;
+    // target on the bubble outline
+    const k = rnd(), per = 2 * (BB.w + BB.h); let d = k * per, tx, ty;
+    if (d < BB.w) { tx = BB.x + d; ty = BB.y; } else if ((d -= BB.w) < BB.h) { tx = BB.x + BB.w; ty = BB.y + d; } else if ((d -= BB.h) < BB.w) { tx = BB.x + BB.w - d; ty = BB.y + BB.h; } else { tx = BB.x; ty = BB.y + BB.h - (d - BB.w); }
+    return { e: el('circle', { r: 1.6 + rnd() * 1.4, fill: B }), sx, sy, mx: 60 + rnd() * 370, my: 96 + rnd() * 170, tx, ty, ph: rnd() * 6.28, dl: rnd() * .4 };
+  });
+  sv.appendChild(rTag);
+
+  // floating mid positions for the fragments (pre-morph)
+  const FR = {
+    in: { sx: 150, sy: 300, sr: -14, mx: 46, my: 196, mr: -6, w: 190, h: 30, rx: 3 },
+    lab: { sx: 470, sy: 110, sr: 10, mx: 318, my: 102, mr: 5 },
+    sub: { sx: 480, sy: 280, sr: 16, mx: 360, my: 240, mr: 7 },
+  };
+
+  function render(t, time) {
+    const fade = 1 - io(P(F0, F1, t));
+    const drift = io(P(IN0, IN1, t)), morph = io(P(M0, M1, t));
+    const fl = (ph, a = 3) => Math.sin(time * 1.3 + ph) * a * (1 - morph);
+    // input box → AI bubble
+    {
+      const f = FR.in, x = L(L(f.sx, f.mx, drift), BB.x, morph) + fl(0), y = L(L(f.sy, f.my, drift), BB.y, morph) + fl(1.7);
+      const w = L(f.w, BB.w, morph), h = L(f.h, BB.h, morph), r = L(L(f.sr, f.mr, drift), 0, morph);
+      inRect.setAttribute('x', 0); inRect.setAttribute('y', 0); inRect.setAttribute('width', w); inRect.setAttribute('height', h);
+      inRect.setAttribute('rx', L(3, 20, morph));
+      inRect.setAttribute('stroke', morph > .5 ? B : S);
+      inRect.setAttribute('stroke-opacity', morph > .5 ? L(.4, .9, (morph - .5) * 2) : 1);
+      inRect.setAttribute('fill', morph > .5 ? '#fff' : '#fff');
+      gIn.setAttribute('transform', `translate(${x.toFixed(2)},${y.toFixed(2)}) rotate(${r.toFixed(2)} ${w / 2} ${h / 2})`);
+      gIn.setAttribute('opacity', (P(IN0, IN0 + .6, t) * fade).toFixed(3));
+    }
+    // label + submit get absorbed into the bubble
+    const absorb = (g, f, ph, cx, cy) => {
+      const k = io(P(M0 - .05, M1 - .15, t));
+      const x = L(L(f.sx, f.mx, drift), cx, k) + fl(ph), y = L(L(f.sy, f.my, drift), cy, k) + fl(ph + 1);
+      const r = L(L(f.sr, f.mr, drift), 0, k), s = 1 - .75 * k;
+      g.setAttribute('transform', `translate(${x.toFixed(2)},${y.toFixed(2)}) rotate(${r.toFixed(2)}) scale(${s.toFixed(3)})`);
+      g.setAttribute('opacity', (P(IN0 + .15, IN0 + .8, t) * (1 - P(M0 + .2, M1 - .1, t)) * fade).toFixed(3));
+    };
+    absorb(gLab, FR.lab, 2.3, BB.x + 40, BB.y + 18);
+    absorb(gSub, FR.sub, 4.1, BB.x + BB.w - 30, BB.y + BB.h / 2);
+    // conversation bits
+    const tg = out(P(M1 - .2, M1 + .3, t)) * fade;
+    tag.setAttribute('opacity', tg); tagDot.setAttribute('opacity', tg);
+    tail.setAttribute('opacity', (out(P(M1 - .1, M1 + .25, t)) * .9 * fade).toFixed(3));
+    tail.setAttribute('d', `M${BB.x + 26} ${BB.y + BB.h - .6} L${BB.x + 6} ${BB.y + BB.h + 9} L${BB.x + 13} ${BB.y + BB.h - 3}`);
+    tail.setAttribute('fill', '#fff');
+    const n = Math.round(MSG.length * P(TY0, TY1, t));
+    msgTxt.textContent = MSG.slice(0, n); msgTxt.setAttribute('opacity', fade);
+    msgTxt.setAttribute('x', BB.x + 19); msgTxt.setAttribute('y', BB.y + 28.5);
+    const cx = BB.x + 19 + charX[n] + 2;
+    cursor.setAttribute('x1', cx); cursor.setAttribute('x2', cx); cursor.setAttribute('y1', BB.y + 13); cursor.setAttribute('y2', BB.y + 31);
+    const typing = t >= TY0 && t < TY1;
+    const blink = typing ? 1 : (Math.floor(time / .5) % 2 === 0 ? 1 : 0);
+    const curOn = t >= TY0 - .3 && t < R0 + .1 ? blink : 0;
+    cursor.setAttribute('opacity', (curOn * fade).toFixed(2));
+    // reply
+    const rk = P(R0, R0 + .35, t), rs = .85 + .15 * backOut(rk);
+    rG.setAttribute('opacity', (clamp(rk * 2) * fade).toFixed(3));
+    rG.setAttribute('transform', `translate(${RB.x + RB.w} ${RB.y + RB.h}) scale(${rs.toFixed(3)}) translate(${-(RB.x + RB.w)} ${-(RB.y + RB.h)})`);
+    rTag.setAttribute('opacity', (out(P(R0 + .3, R0 + .7, t)) * fade).toFixed(3));
+    // dots
+    dots.forEach((d, i) => {
+      const a = io(P(IN0 + d.dl * .5, IN1 + d.dl * .3, t)), m = io(P(M0 + d.dl * .3, M1 + .1, t));
+      const x = L(L(d.sx, d.mx, a), d.tx, m) + Math.sin(time * 1.1 + d.ph) * 4 * (1 - m);
+      const y = L(L(d.sy, d.my, a), d.ty, m) + Math.cos(time * .9 + d.ph) * 4 * (1 - m);
+      d.e.setAttribute('cx', x.toFixed(2)); d.e.setAttribute('cy', y.toFixed(2));
+      d.e.setAttribute('opacity', (L(.55, 0, P(M1 - .15, M1 + .35, t)) * P(0, .5, t) * fade).toFixed(3));
+    });
+  }
+
+  registerAnim(sv, g => { sv.style.visibility = 'visible'; render(g % T, g); }, 4.9);
+})();
+
+</script>
+<script>
+(() => {
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const P = (a, b, t) => clamp((t - a) / (b - a));
+  const io = t => { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+  const out = t => 1 - Math.pow(1 - clamp(t), 3);
+  const NS = 'http://www.w3.org/2000/svg';
+  const mk = (tag, at, parent) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); parent.appendChild(e); return e; };
+  const draw = (e, p) => { e.style.strokeDasharray = 1; e.style.strokeDashoffset = 1 - clamp(p); e.style.opacity = p <= 0 ? 0 : 1; };
+  const S = '#94a3b8', H = '#cbd5e1', B = '#2563eb', BF = '#93c5fd', SW = 1.25;
+  const ln = (svg, d, c = S, extra = {}) => mk('path', Object.assign({ d, stroke: c, 'stroke-width': SW, fill: 'none', pathLength: 1 }, extra), svg);
+
+  /* ---------- 5 · before / after ---------- */
+  const BA = {
+    study: { label: 'Budget *', a: '20', note: 'Your team still has to call to find out what it means.',
+      msgs: [['ai', "What's your budget for studying abroad?"], ['u', '20', true], ['fu', '₹20 lakh per year, or in total?'], ['u', 'per year']], saved: '₹20 lakh per year',
+      row: [['Name', 'Priya S.'], ['Destination', 'Canada'], ['Course', 'MSc Data Science'], ['Intake', 'Sep 2027'], ['Budget', '₹20 lakh per year', 1]] },
+    job: { label: 'Years of experience *', a: '3-4', note: 'Your team still has to call to find out what it means.',
+      msgs: [['ai', 'Years of experience?'], ['u', '3-4', true], ['fu', 'Closer to 3 or 4?'], ['u', '4, mostly React']], saved: '4 yrs (React)',
+      row: [['Name', 'Rahul'], ['Role', 'Frontend Developer'], ['Experience', '4 yrs (React)', 1], ['Notice', 'Immediate']] },
+  };
+  const $ = id => document.getElementById(id);
+  let baK = 'study', baEls = null;
+  const MT = [.35, 1.0, 1.85, 2.6]; // bubble times
+  function baBuild() {
+    const d = BA[baK];
+    $('baSL').textContent = d.label; $('baSSv').textContent = d.a; $('baSN').textContent = d.note;
+    const box = $('baMsgs'); box.innerHTML = '';
+    const msgs = d.msgs.map(([k, s, vague]) => {
+      const e = document.createElement('div'); e.className = 'bub ' + (k === 'u' ? 'u' : k === 'fu' ? 'ai fu' : 'ai');
+      if (k === 'fu') e.innerHTML = '<span class="futag">↳ FOLLOW-UP</span>';
+      const tx = document.createElement('span'); if (vague) tx.className = 'vg'; e.appendChild(tx);
+      e._s = s; e._tx = tx; e._k = k; box.appendChild(e); return e;
+    });
+    $('baCSv').textContent = d.saved;
+    const row = $('baRow'); row.innerHTML = ''; row.style.setProperty('--n', d.row.length);
+    const cells = d.row.map(([k, v, hl]) => { const c = document.createElement('div'); c.className = 'cell' + (hl ? ' hl' : ''); c.innerHTML = '<div class="k"></div><div class="v"></div>'; c.firstChild.textContent = k; c.lastChild.textContent = v; row.appendChild(c); return c; });
+    baEls = { d, msgs, cells };
+  }
+  function baRender(t) {
+    if (!baEls) baBuild();
+    const { d, msgs, cells } = baEls;
+    // static side: typed, then saved as-is (dull)
+    const n = Math.round(d.a.length * P(.15, .5, t));
+    $('baSV').textContent = d.a.slice(0, n);
+    $('baSC').style.opacity = t < .6 ? (Math.floor(t * 3) % 2 ? .2 : 1) : 0;
+    const ss = out(P(.7, 1.0, t)); $('baSS').style.opacity = ss; $('baSN').style.opacity = out(P(.85, 1.15, t));
+    // conversation side
+    msgs.forEach((e, i) => {
+      const at = MT[i], k = out(P(at, at + .3, t));
+      e.style.opacity = k; e.style.transform = `translateY(${((1 - k) * 8).toFixed(1)}px)`;
+      if (e._k === 'u') { const m = Math.round(e._s.length * P(at + .05, at + .05 + Math.min(.5, .1 + e._s.length * .04), t)); e._tx.textContent = e._s.slice(0, m); }
+      else e._tx.textContent = e._s;
+      if (e._tx.className === 'vg') e._tx.style.backgroundSize = `${(io(P(1.45, 1.8, t)) * 100).toFixed(1)}% 1.25px`;
+    });
+    const cs = out(P(3.2, 3.5, t)); $('baCS').style.opacity = cs; $('baCS').style.transform = `translateY(${((1 - cs) * 6).toFixed(1)}px)`;
+    draw($('baRing'), io(P(3.25, 3.75, t))); draw($('baTick'), io(P(3.6, 3.95, t)));
+    cells.forEach((c, i) => { const a = 3.9 + i * .1, k = out(P(a, a + .35, t)); c.style.opacity = k; c.style.transform = `translateY(${((1 - k) * 5).toFixed(1)}px)`; });
+    const hl = cells.find(c => c.classList.contains('hl'));
+    if (hl) hl.style.background = `rgba(239,246,255,${(.9 * Math.sin(P(4.3, 5.6, t) * Math.PI) + (t > 5.6 ? .5 : 0)).toFixed(3)})`;
+  }
+  const baA = registerAnim($('ba'), baRender, 6);
+  document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === b));
+    baK = b.dataset.k; baEls = null; baA.acc = 0; baRender(STATIC ? 6 : 0);
+  }));
+
+  /* ---------- 7 · trust animations ---------- */
+  // A · open source: </> draws, star fills blue
+  {
+    const sv = $('trA');
+    const l = ln(sv, 'M58 22 L38 40 L58 58'), r = ln(sv, 'M102 22 L122 40 L102 58'), sl = ln(sv, 'M88 16 L72 64');
+    const star = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, R = i % 2 ? 4.2 : 9; star.push((138 + R * Math.cos(a)).toFixed(2) + ' ' + (16 + R * Math.sin(a)).toFixed(2)); }
+    const st = mk('path', { d: 'M' + star.join(' L') + ' Z', stroke: B, 'stroke-width': SW, fill: B, 'fill-opacity': 0, pathLength: 1 }, sv);
+    const halo = mk('circle', { cx: 138, cy: 16, r: 10, stroke: BF, 'stroke-width': SW, fill: 'none', opacity: 0 }, sv);
+    registerAnim(sv, t => {
+      draw(l, io(P(0, .6, t))); draw(r, io(P(.1, .7, t))); draw(sl, io(P(.3, .8, t)));
+      draw(st, io(P(.75, 1.15, t))); st.setAttribute('fill-opacity', io(P(1.15, 1.4, t)));
+      const lp = t > 1.4 ? ((t - 1.4) % 3.2) / 3.2 : -1;
+      const k = lp >= 0 ? P(0, .4, lp) : 0;
+      halo.setAttribute('r', 9 + 9 * out(k)); halo.setAttribute('opacity', lp >= 0 && k < 1 ? (.8 * (1 - k)).toFixed(3) : 0);
+      st.setAttribute('transform', `rotate(${(lp >= 0 ? 72 * io(P(0, .35, lp)) : 0).toFixed(2)} 138 16)`);
+      sl.setAttribute('stroke', lp >= 0 && lp < .5 ? B : S);
+    }, 1.45);
+  }
+  // B · self-host: server with blinking lights, dotted line toggling server ↔ cloud
+  {
+    const sv = $('trB');
+    const srv = ln(sv, 'M20 14 H64 V66 H20 Z'), s1 = ln(sv, 'M20 31 H64'), s2 = ln(sv, 'M20 48 H64');
+    const bays = [22.5, 39.5, 56.5].map(y => ln(sv, `M28 ${y} H42`, H));
+    const lights = [22.5, 39.5, 56.5].map(y => mk('circle', { cx: 56, cy: y, r: 2.2, fill: B, opacity: 0 }, sv));
+    const cloud = ln(sv, 'M110 54 H140 C147 54 151 48 149 42 C147 37 142 35 138 36 C136 29 129 25 122 27 C116 29 113 34 113 38 C107 38 103 42 104 47 C105 51 107 54 110 54 Z');
+    const dl = mk('path', { d: 'M70 40 H100', stroke: S, 'stroke-width': SW, 'stroke-dasharray': '1.5 4.5', fill: 'none' }, sv);
+    const dot = mk('circle', { r: 3, fill: B, opacity: 0 }, sv);
+    const tA = mk('text', { x: 42, y: 79, 'font-size': 7.5, fill: S, 'text-anchor': 'middle', 'font-family': 'JetBrains Mono, monospace', 'letter-spacing': '.6' }, sv); tA.textContent = 'YOUR SERVER';
+    const tB = mk('text', { x: 127, y: 70, 'font-size': 7.5, fill: S, 'text-anchor': 'middle', 'font-family': 'JetBrains Mono, monospace', 'letter-spacing': '.6' }, sv); tB.textContent = 'OUR CLOUD';
+    registerAnim(sv, t => {
+      draw(srv, io(P(0, .6, t))); draw(s1, io(P(.3, .6, t))); draw(s2, io(P(.35, .65, t))); bays.forEach((b, i) => draw(b, io(P(.45 + i * .06, .7 + i * .06, t))));
+      draw(cloud, io(P(.35, 1.0, t)));
+      const on = P(.9, 1.2, t); dl.setAttribute('opacity', on); tA.setAttribute('opacity', on); tB.setAttribute('opacity', on);
+      lights.forEach((e, i) => e.setAttribute('opacity', t < .7 ? 0 : (.35 + .65 * (Math.floor(t * 2.6 + i * 1.7) % 3 === 0 ? 1 : 0)).toFixed(2)));
+      dl.setAttribute('stroke-dashoffset', (-t * 10).toFixed(2));
+      // toggle: 0 = self-host (server lit), 1 = cloud
+      const ph = t < 1.2 ? 0 : ((t - 1.2) % 4) / 4, side = ph < .5 ? 0 : 1, lp = (ph % .5) / .5;
+      const m = io(P(0, .3, lp)), x = side === 0 ? 100 - 30 * m : 70 + 30 * m;
+      dot.setAttribute('cx', x.toFixed(2)); dot.setAttribute('cy', 40); dot.setAttribute('opacity', t < 1.2 ? 0 : 1);
+      const srvOn = t >= 1.2 && side === 0 && lp > .25, clOn = t >= 1.2 && side === 1 && lp > .25;
+      srv.setAttribute('stroke', srvOn ? B : S); cloud.setAttribute('stroke', clOn ? B : S);
+      tA.setAttribute('fill', srvOn ? B : S); tB.setAttribute('fill', clOn ? B : S);
+    }, 2.4);
+  }
+  // C · we don't sell data: shield draws, tick locks in
+  {
+    const sv = $('trC');
+    const sh = ln(sv, 'M80 8 L106 17 V38 C106 56 94 66 80 72 C66 66 54 56 54 38 V17 Z');
+    const inner = ln(sv, 'M80 15 L99 21.5 V38 C99 52 90 60 80 65 C70 60 61 52 61 38 V21.5 Z', H);
+    const tk = ln(sv, 'M70 40 L77 47 L91 32', B, { 'stroke-width': 1.75 });
+    const ring = mk('circle', { cx: 80, cy: 40, r: 30, stroke: BF, 'stroke-width': SW, fill: 'none', opacity: 0 }, sv);
+    registerAnim(sv, t => {
+      draw(sh, io(P(0, .8, t))); draw(inner, io(P(.25, .95, t))); draw(tk, io(P(.85, 1.2, t)));
+      const lk = P(1.2, 1.45, t); tk.setAttribute('stroke-width', (1.75 + 1 * Math.sin(lk * Math.PI)).toFixed(2));
+      sh.setAttribute('stroke', t > 1.2 ? B : S);
+      const lp = t > 1.2 ? ((t - 1.2) % 3.6) / 3.6 : -1, k = lp >= 0 ? P(0, .45, lp) : 0;
+      ring.setAttribute('r', (32 + 14 * out(k)).toFixed(2)); ring.setAttribute('opacity', lp >= 0 && k < 1 ? (.7 * (1 - k)).toFixed(3) : 0);
+    }, 2.95);
+  }
+  // D · your data, your export: table rows slide out into CSV + Sheets
+  {
+    const sv = $('trD');
+    const tb = ln(sv, 'M12 14 H72 V66 H12 Z'), th = ln(sv, 'M12 27 H72'), r1 = ln(sv, 'M12 40 H72', H), r2 = ln(sv, 'M12 53 H72', H), cl = ln(sv, 'M34 14 V66', H);
+    const csv = ln(sv, 'M96 16 H112 L120 24 V50 H96 Z'), fold = ln(sv, 'M112 16 V24 H120');
+    const ctx = mk('text', { x: 108, y: 41, 'font-size': 7.5, fill: S, 'text-anchor': 'middle', 'font-family': 'JetBrains Mono, monospace' }, sv); ctx.textContent = 'CSV';
+    const sh = ln(sv, 'M128 16 H152 V50 H128 Z'), sh1 = ln(sv, 'M128 27 H152', H), sh2 = ln(sv, 'M128 38 H152', H), sh3 = ln(sv, 'M138 16 V50', H);
+    const l1 = mk('text', { x: 108, y: 64, 'font-size': 7, fill: S, 'text-anchor': 'middle', 'font-family': 'JetBrains Mono, monospace' }, sv); l1.textContent = 'EXPORT';
+    const l2 = mk('text', { x: 140, y: 64, 'font-size': 7, fill: S, 'text-anchor': 'middle', 'font-family': 'JetBrains Mono, monospace' }, sv); l2.textContent = 'SHEETS';
+    const mv = mk('path', { stroke: B, 'stroke-width': 1.75, fill: 'none', opacity: 0 }, sv);
+    registerAnim(sv, t => {
+      draw(tb, io(P(0, .6, t))); draw(th, io(P(.2, .5, t))); draw(r1, io(P(.3, .6, t))); draw(r2, io(P(.35, .65, t))); draw(cl, io(P(.3, .6, t)));
+      draw(csv, io(P(.4, .9, t))); draw(fold, io(P(.8, 1.0, t))); draw(sh, io(P(.5, 1.0, t))); [sh1, sh2, sh3].forEach(e => draw(e, io(P(.8, 1.1, t))));
+      const tx = P(.9, 1.2, t); [ctx, l1, l2].forEach(e => e.setAttribute('opacity', tx));
+      const lp = t < 1.2 ? -1 : ((t - 1.2) % 3.2) / 3.2, n = t < 1.2 ? 0 : Math.floor((t - 1.2) / 1.6) % 2, hp = t < 1.2 ? -1 : ((t - 1.2) % 1.6) / 1.6;
+      let hitC = false, hitS = false;
+      if (hp >= 0) {
+        const k = io(P(.05, .55, hp)), y0 = n === 0 ? 33.5 : 46.5, x0 = 40, tx_ = n === 0 ? 108 : 140, ty = n === 0 ? 32 : 32;
+        const x = x0 + (tx_ - 8 - x0) * k, y = y0 + (ty - y0) * k, w = 26 - 12 * k;
+        mv.setAttribute('d', `M${x.toFixed(2)} ${y.toFixed(2)} h${w.toFixed(2)}`);
+        mv.setAttribute('opacity', (P(0, .08, hp) * (1 - P(.5, .62, hp))).toFixed(3));
+        const hit = hp > .52 && hp < .9; hitC = hit && n === 0; hitS = hit && n === 1;
+        (n === 0 ? r1 : r2).setAttribute('stroke', hp < .5 ? BF : H);
+      } else mv.setAttribute('opacity', 0);
+      csv.setAttribute('stroke', hitC ? B : S); fold.setAttribute('stroke', hitC ? B : S); ctx.setAttribute('fill', hitC ? B : S);
+      sh.setAttribute('stroke', hitS ? B : S); l2.setAttribute('fill', hitS ? B : S); l1.setAttribute('fill', hitC ? B : S);
+    }, 1.25);
+  }
+
+  /* ---------- player ---------- */
+  function start() {
+    ANIMS.forEach(a => a.render(STATIC ? a.final : 0));
+    const dont = $('dont');
+    if (STATIC) { dont.classList.add('in'); window.__ready = true; addEventListener('resize', () => ANIMS.forEach(a => { a.onResize && a.onResize(); a.render(a.final); })); return; }
+    const ob = new IntersectionObserver(es => es.forEach(e => { ANIMS.forEach(a => { if (a.el === e.target) a.vis = e.isIntersecting; }); }), { threshold: .2 });
+    ANIMS.forEach(a => ob.observe(a.el));
+    new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { dont.classList.add('in'); o.disconnect(); } }), { threshold: .3 }).observe(dont);
+    addEventListener('resize', () => ANIMS.forEach(a => { a.onResize && a.onResize(); a.render(a.acc); }));
+    let last = performance.now();
+    const loop = now => { const dt = Math.min(.1, (now - last) / 1000); last = now; ANIMS.forEach(a => { if (a.vis) { a.acc += dt; a.render(a.acc); } }); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop); window.__ready = true;
+  }
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(start);
+})();
+
+</script>
+</body>
+</html>
+

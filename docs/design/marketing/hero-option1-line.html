@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ConvoForm hero — option 1 · hairline (form → chat → table) · MOCKUP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{--b50:#eff6ff;--b100:#dbeafe;--b200:#bfdbfe;--b300:#93c5fd;--b400:#60a5fa;--b500:#3b82f6;--b600:#2563eb;--b700:#1d4ed8;--ink:#0f172a;--muted:#475569;--line:#e2e8f0}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fafbfc;color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  .wrap{overflow:hidden;position:relative}
+  .badge{position:fixed;right:14px;bottom:14px;z-index:50;background:#fbbf24;color:#451a03;font:700 11px/1 Inter,sans-serif;padding:7px 11px;border-radius:999px;border:1px solid #f59e0b;letter-spacing:.02em}
+  @media(max-width:900px){.badge{position:absolute;top:20px;bottom:auto;right:auto;left:50%;transform:translateX(-50%);font-size:10px;padding:5px 9px}}
+  nav{display:flex;align-items:center;justify-content:space-between;max-width:1160px;margin:0 auto;padding:14px 20px}
+  .logo{font:600 22px/1 "Bricolage Grotesque",Inter,sans-serif}
+  .logo span{color:var(--b600)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font:600 15px/1 Inter,sans-serif;padding:14px 22px;text-decoration:none;transition:transform .15s,background .15s;white-space:nowrap}
+  .btn-primary{background:var(--b600);color:#fff}
+  .btn-primary:hover{background:var(--b700);transform:translateY(-1px)}
+  .btn-secondary{background:transparent;color:var(--ink);border:1px solid #cbd5e1}
+  .btn-sm{padding:10px 16px;font-size:14px}
+  .hero{position:relative;text-align:center;padding:10px 20px 0;max-width:1160px;margin:0 auto}
+  .hero::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(circle at 1px 1px,rgba(15,23,42,.07) 1px,transparent 0);background-size:22px 22px;-webkit-mask-image:linear-gradient(to bottom,#000 40%,transparent);mask-image:linear-gradient(to bottom,#000 40%,transparent)}
+  .glow{position:absolute;left:50%;top:330px;width:900px;height:380px;margin-left:-450px;background:radial-gradient(ellipse,rgba(147,197,253,.45),transparent 65%);filter:blur(40px);z-index:-1;pointer-events:none}
+  h1{font:700 clamp(40px,6vw,68px)/1.02 "Bricolage Grotesque",Inter,sans-serif;letter-spacing:-.03em}
+  h1 em{font-style:normal;background:linear-gradient(90deg,var(--b600),var(--b400));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{max-width:620px;margin:14px auto 0;font-size:clamp(15px,1.5vw,17.5px);line-height:1.55;color:var(--muted)}
+  .ctas{display:flex;gap:12px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+
+  .scen{display:flex;align-items:center;justify-content:center;gap:10px;margin:20px auto 8px;font:500 11px/1 "JetBrains Mono",ui-monospace,monospace;letter-spacing:.04em;text-transform:uppercase;color:#94a3b8}
+  .scen b{color:var(--ink);font-weight:500}
+  .pips{display:flex;gap:5px;align-items:center}
+  .pips i{width:10px;height:0;border-top:1px solid #cbd5e1;display:block}
+  .pips i.on{border-color:var(--b600);width:22px}
+  .stage{max-width:1080px;margin:0 auto}
+  #sv{display:block;width:100%;height:auto;overflow:visible}
+  #sv text{font-family:Inter,system-ui,sans-serif}
+  #sv .mono{font-family:"JetBrains Mono",ui-monospace,monospace;letter-spacing:.06em}
+  #sv path,#sv line,#sv rect,#sv circle,#sv polyline{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+  .caption{max-width:1080px;margin:14px auto 36px;text-align:center;font:400 11px/1.4 "JetBrains Mono",ui-monospace,monospace;letter-spacing:.04em;color:#94a3b8}
+  @media (max-width:900px){
+    nav .btn-secondary{display:none}
+    .ctas{flex-direction:column;align-items:stretch;max-width:340px;margin-left:auto;margin-right:auto}
+    .stage{max-width:345px}
+  }
+</style>
+</head>
+<body>
+<div class="badge">MOCKUP</div>
+<nav>
+  <div class="logo"><span>Convo</span>Form</div>
+  <div style="display:flex;gap:8px"><a class="btn btn-secondary btn-sm" href="#">GitHub ★ 102</a><a class="btn btn-primary btn-sm" href="#">Start free</a></div>
+</nav>
+<div class="wrap"><section class="hero">
+  <h1>Forms that <em>talk back.</em></h1>
+  <p class="sub">ConvoForm chats with people, asks follow-ups when an answer is vague, and hands you clean, structured data.</p>
+  <div class="ctas">
+    <a class="btn btn-primary" href="#">Create your free form <span aria-hidden="true">→</span></a>
+    <a class="btn btn-secondary" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Try the demo</a>
+  </div>
+  <div class="scen"><span>Example</span><b id="scenName">Job application</b><span class="pips" id="pips"><i></i><i></i><i></i></span></div>
+  <div class="stage"><svg id="sv" role="img" aria-label="Line drawing: a static form's fields peel off into a conversation that asks a follow-up, and the answers flow into a clean data table"></svg></div>
+  <p class="caption">Illustrative example · Mockup of hero option 1 (hairline)</p>
+</section></div>
+
+<script>
+(() => {
+  // ---------- scenarios ----------
+  // fields: [label, formLabel]. steps: who, text, field, fu (follow-up), fast
+  const SCEN = [
+    { name: 'Job application', title: 'Job application', chat: 'Hiring assistant',
+      fields: [['Name','Full name'],['Role','Role applying for'],['Experience','Years of experience'],['Notice period','Notice period']],
+      convo: [
+        { q: 'How many years of experience do you have?', a: 'around 3-4', f: 2, fu: 'Closer to 3 or 4?', a2: '4, mostly React', save: '4 yrs (React)' },
+        { q: 'Nice! Which role are you applying for?', a: 'frontend', f: 1, save: 'Frontend Developer' },
+        { q: 'And your notice period?', a: 'asap', f: 3, save: 'Immediate' },
+        { q: 'Lastly, your full name?', a: 'rahul mehta', f: 0, save: 'Rahul Mehta' },
+      ] },
+    { name: 'Study abroad enquiry', title: 'Study abroad enquiry', chat: 'Admissions assistant',
+      fields: [['Name','Full name'],['Country','Preferred country'],['Intake','Intake'],['Budget','Budget']],
+      convo: [
+        { q: "What's your budget for studying abroad?", a: '20', f: 3, fu: '₹20 lakh per year, or in total?', a2: 'per year', save: '₹20 lakh / year' },
+        { q: 'Which country are you considering?', a: 'maybe canada', f: 1, save: 'Canada' },
+        { q: 'When would you like to start?', a: 'sept next yr', f: 2, save: 'Sep 2027' },
+        { q: 'Lastly, your name?', a: 'priya s', f: 0, save: 'Priya S.' },
+      ] },
+    { name: 'Event enquiry', title: 'Event enquiry', chat: 'Events assistant',
+      fields: [['Name','Your name'],['Guests','Number of guests'],['Date','Event date'],['City','City']],
+      convo: [
+        { q: 'How many guests are you expecting?', a: '100ish', f: 1, fu: 'Around 100, or could it go higher?', a2: 'max 120', save: '100–120' },
+        { q: 'Which date are you planning for?', a: '14 feb', f: 2, save: '14 Feb 2027' },
+        { q: 'And the city?', a: 'blr', f: 3, save: 'Bengaluru' },
+        { q: 'Great, your name?', a: 'ankit', f: 0, save: 'Ankit' },
+      ] },
+  ];
+  const T = 10.8;
+
+  // ---------- schedule ----------
+  function schedule(sc) {
+    const ev = [], saves = [], ask = []; let c = 1.2;
+    sc.convo.forEach((step, i) => {
+      const fast = i > 0;
+      const typeDur = s => fast ? Math.min(.4, .1 + s.length * .026) : Math.min(.75, .12 + s.length * .035);
+      const dq = fast ? .4 : .5, rd = fast ? .22 : .5, pz = fast ? .15 : .4;
+      const q = { type: 'ai', text: step.q, dots: c, at: c + dq, f: step.f, peel: true };
+      ev.push(q); ask.push({ f: step.f, at: c }); c += dq + rd;
+      let u = { type: 'u', text: step.a, at: c, end: c + typeDur(step.a) }; ev.push(u); c += typeDur(step.a) + pz;
+      if (step.fu) {
+        u.vague = c;
+        ev.push({ type: 'ai', text: step.fu, dots: c, at: c + .45, fu: true }); c += .45 + .65;
+        u = { type: 'u', text: step.a2, at: c, end: c + typeDur(step.a2) }; ev.push(u); c += typeDur(step.a2) + .3;
+      }
+      saves.push({ f: step.f, at: c, fill: c + .15, v: step.save, from: u }); c += fast ? .12 : .25;
+    });
+    return { ev, saves, ask, end: c + .15 };
+  }
+  const SCHED = SCEN.map(schedule);
+  window.__sched = SCHED.map(x => x.end.toFixed(2));
+
+  // ---------- helpers ----------
+  const NS = 'http://www.w3.org/2000/svg';
+  const sv = document.getElementById('sv');
+  const C = { ink: '#0f172a', line: '#94a3b8', faint: '#cbd5e1', text: '#64748b', blue: '#2563eb', blueF: '#93c5fd' };
+  const SW = 1.25;
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const ease = t => 1 - Math.pow(1 - clamp(t), 3);
+  const io = t => { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+  const P = (a, b, t) => clamp((t - a) / (b - a));
+  function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); (parent || sv).appendChild(e); return e; }
+  function stroke(tag, attrs, parent, color = C.line) { return el(tag, Object.assign({ fill: 'none', stroke: color, 'stroke-width': SW }, attrs), parent); }
+  function txt(s, x, y, attrs, parent) { const e = el('text', Object.assign({ x, y }, attrs), parent); e.textContent = s; return e; }
+  function draw(e, p) { if (e._L == null) e._L = e.getTotalLength() + 1; e.style.strokeDasharray = e._L; e.style.strokeDashoffset = e._L * (1 - clamp(p)); e.style.opacity = p <= 0 ? 0 : ''; }
+  let meas; function W(s, size, weight = 400, mono) { meas.setAttribute('font-size', size); meas.setAttribute('font-weight', weight); meas.setAttribute('class', mono ? 'mono' : ''); meas.textContent = s; return meas.getComputedTextLength(); }
+  const bubblePath = (w, h, side, r = 9) => side === 'ai'
+    ? `M0,${h} V${r} Q0,0 ${r},0 H${w - r} Q${w},0 ${w},${r} V${h - r} Q${w},${h} ${w - r},${h} Z`
+    : `M${w},${h} V${r} Q${w},0 ${w - r},0 H${r} Q0,0 0,${r} V${h - r} Q0,${h} ${r},${h} Z`;
+
+  // ---------- layout ----------
+  const mq = matchMedia('(max-width:900px)');
+  function layout(mobile) {
+    if (!mobile) return { mobile, W: 1080, H: 336,
+      form: { x: 0, y: 30, w: 236, h: 300 }, chat: { x: 300, y: 30, w: 440, h: 300 }, table: { x: 800, y: 30, w: 280, rowH: 60 },
+      fieldGap: 52, fs: 12.5 };
+    return { mobile, W: 345, H: 664,
+      form: { x: 0, y: 30, w: 345, h: 310 }, chat: { x: 0, y: 30, w: 345, h: 310 }, table: { x: 0, y: 398, w: 345, rowH: 54 },
+      fieldGap: 54, fs: 12.5 };
+  }
+
+  // ---------- build ----------
+  let L, cur = -1, mode = null, R = {};
+  function build(si) {
+    const sc = SCEN[si], S = SCHED[si];
+    cur = si; mode = mq.matches; L = layout(mode);
+    document.getElementById('scenName').textContent = sc.name;
+    [...document.getElementById('pips').children].forEach((p, i) => p.classList.toggle('on', i === si));
+    sv.innerHTML = ''; sv.setAttribute('viewBox', `0 0 ${L.W} ${L.H}`);
+    meas = el('text', { x: -999, y: -999, 'font-size': 12.5, opacity: 0 });
+    const { form: F, chat: Ch, table: Tb } = L;
+    R = { root: el('g', {}) };
+    const g = R.root;
+    // defs: chat mask
+    const defs = el('defs', {}, g);
+    const ay0 = Ch.y + 46, ay1 = Ch.y + Ch.h - 44;
+    defs.innerHTML = `<linearGradient id="fadeG" gradientUnits="userSpaceOnUse" x1="0" y1="${ay0}" x2="0" y2="${ay0 + 26}"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff"/></linearGradient>
+      <mask id="chatM" maskUnits="userSpaceOnUse" x="${Ch.x - 20}" y="${ay0}" width="${Ch.w + 40}" height="${ay1 - ay0}"><rect x="${Ch.x - 20}" y="${ay0}" width="${Ch.w + 40}" height="${ay1 - ay0}" fill="url(#fadeG)"/></mask>`;
+    Object.assign(R, { ay0, ay1 });
+
+    // stage labels
+    const lab = (s, x, y) => { const gg = el('g', {}, g); const ln = stroke('line', { x1: x, y1: y - 4, x2: x + 10, y2: y - 4 }, gg, C.faint); const t = txt(s, x + 16, y, { class: 'mono', 'font-size': 10, fill: C.line }, gg); return { g: gg, ln, t }; };
+    R.lab = [lab('01  STATIC FORM', F.x, 14), lab('02  CONVERSATION', L.mobile ? Ch.x : Ch.x, 14), lab('03  CLEAN DATA', Tb.x, Tb.y - 16)];
+
+    // ---- form ----
+    R.form = el('g', {}, g);
+    R.fOut = stroke('rect', { x: F.x + .5, y: F.y + .5, width: F.w - 1, height: F.h - 1 }, R.form);
+    R.fTitle = txt(sc.title, F.x + 18, F.y + 30, { 'font-size': 12.5, 'font-weight': 600, fill: '#334155' }, R.form);
+    R.fTitleLn = stroke('line', { x1: F.x + 18, y1: F.y + 42, x2: F.x + F.w - 18, y2: F.y + 42 }, R.form, C.faint);
+    R.fields = sc.fields.map((f, i) => {
+      const ly = F.y + 70 + i * L.fieldGap;
+      const t = txt(f[1] + ' *', F.x + 18, ly, { 'font-size': 11, fill: C.text }, R.form);
+      const line = stroke('line', { x1: F.x + 18, y1: ly + 22, x2: F.x + F.w - 18, y2: ly + 22 }, R.form);
+      const tk = stroke('path', { d: `M${F.x + F.w - 30},${ly - 4} l3,3 l6,-6` }, R.form, C.blue);
+      return { t, line, tk, y: ly + 22, x0: F.x + 18, x1: F.x + F.w - 18 };
+    });
+    const sy = F.y + 70 + 4 * L.fieldGap - 6;
+    R.fSub = stroke('rect', { x: F.x + 18, y: sy, width: 72, height: 22, rx: 2 }, R.form);
+    R.fSubT = txt('SUBMIT', F.x + 54, sy + 14.5, { class: 'mono', 'font-size': 9.5, fill: C.line, 'text-anchor': 'middle' }, R.form);
+
+    // ---- chat frame ----
+    R.chat = el('g', {}, g);
+    const cm = 10, X0 = Ch.x, X1 = Ch.x + Ch.w, Y0 = Ch.y, Y1 = Ch.y + Ch.h;
+    R.corners = [`M${X0},${Y0 + cm} V${Y0} H${X0 + cm}`, `M${X1 - cm},${Y0} H${X1} V${Y0 + cm}`, `M${X1},${Y1 - cm} V${Y1} H${X1 - cm}`, `M${X0 + cm},${Y1} H${X0} V${Y1 - cm}`].map(d => stroke('path', { d }, R.chat));
+    R.av = stroke('circle', { cx: X0 + 22, cy: Y0 + 20, r: 8 }, R.chat, C.blue);
+    R.avDot = el('circle', { cx: X0 + 22, cy: Y0 + 20, r: 2, fill: C.blue }, R.chat);
+    R.cName = txt(sc.chat, X0 + 38, Y0 + 24, { 'font-size': 12, 'font-weight': 500, fill: C.ink }, R.chat);
+    R.cLive = txt('LIVE', X1 - 14, Y0 + 24, { class: 'mono', 'font-size': 9.5, fill: C.blue, 'text-anchor': 'end' }, R.chat);
+    R.cHd = stroke('line', { x1: X0 + 14, y1: Y0 + 38, x2: X1 - 14, y2: Y0 + 38 }, R.chat, C.faint);
+    const iy = Y1 - 14;
+    R.inLn = stroke('line', { x1: X0 + 14, y1: iy, x2: X1 - 40, y2: iy }, R.chat);
+    R.send = stroke('path', { d: `M${X1 - 26},${iy - 5} l6,-5 l-6,-5 M${X1 - 31},${iy - 10} h11` }, R.chat);
+    R.cur = stroke('line', { x1: X0 + 16, y1: iy - 15, x2: X0 + 16, y2: iy - 4 }, R.chat, C.ink);
+    R.list = el('g', { mask: 'url(#chatM)' }, R.chat);
+    R.peels = el('g', {}, g);
+
+    // bubbles
+    const fs = L.fs, bh = 28, pad = 12, maxW = Ch.w - 28;
+    R.msgs = S.ev.map(e => {
+      const tw = W(e.text, fs, e.type === 'u' ? 500 : 400);
+      const w = Math.min(maxW, tw + pad * 2);
+      const gg = el('g', {}, R.list);
+      const col = e.fu ? C.blue : e.type === 'u' ? C.ink : C.line;
+      const b = stroke('path', { d: bubblePath(w, bh, e.type) }, gg, col);
+      const t = txt('', pad, 18.5, { 'font-size': fs, 'font-weight': e.type === 'u' ? 500 : 400, fill: e.fu ? C.blue : C.ink }, gg);
+      const o = { e, g: gg, b, t, w, h: bh };
+      if (e.type === 'u') o.caret = stroke('line', { x1: 0, y1: 8, x2: 0, y2: 20 }, gg, C.ink);
+      if (e.vague != null) o.und = stroke('path', { d: `M${pad},23 h${tw}` }, gg, C.blue);
+      if (e.fu) o.tag = txt('↳ FOLLOW-UP', w + 8, 18, { class: 'mono', 'font-size': 9, fill: C.blue }, gg);
+      if (e.peel && !L.mobile) o.peel = stroke('path', {}, R.peels, C.blue);
+      return o;
+    });
+
+    // ---- table ----
+    R.table = el('g', {}, g);
+    const rows = sc.fields.length, TH = 30 + rows * Tb.rowH, tx0 = Tb.x, tx1 = Tb.x + Tb.w;
+    R.tOut = stroke('rect', { x: tx0 + .5, y: Tb.y + .5, width: Tb.w - 1, height: TH - 1 }, R.table);
+    R.tHT = txt('NEW RESPONSE', tx0 + 12, Tb.y + 19, { class: 'mono', 'font-size': 9.5, fill: C.text }, R.table);
+    R.tCnt = txt('0/' + rows, tx1 - 12, Tb.y + 19, { class: 'mono', 'font-size': 9.5, fill: C.line, 'text-anchor': 'end' }, R.table);
+    R.tCol = stroke('line', { x1: tx1 - 40, y1: Tb.y + 30, x2: tx1 - 40, y2: Tb.y + TH }, R.table, C.faint);
+    R.rows = sc.fields.map((f, i) => {
+      const ry = Tb.y + 30 + i * Tb.rowH;
+      const ln = stroke('line', { x1: tx0, y1: ry, x2: tx1, y2: ry }, R.table, i === 0 ? C.line : C.faint);
+      const k = txt(f[0].toUpperCase(), tx0 + 12, ry + 21, { class: 'mono', 'font-size': 9.5, fill: C.line }, R.table);
+      const v = txt('—', tx0 + 12, ry + Tb.rowH - 15, { 'font-size': 13.5, 'font-weight': 500, fill: C.faint }, R.table);
+      const cx = tx1 - 20, cy = ry + Tb.rowH / 2;
+      const box = stroke('circle', { cx, cy, r: 7 }, R.table, C.faint);
+      const tk = stroke('path', { d: `M${cx - 3.5},${cy} l2.5,2.6 l4.8,-5` }, R.table, C.blue);
+      const ring = stroke('circle', { cx, cy, r: 7 }, R.table, C.blue);
+      const edge = stroke('line', { x1: tx0, y1: ry + 6, x2: tx0, y2: ry + Tb.rowH - 6 }, R.table, C.blue);
+      edge.setAttribute('stroke-width', 2);
+      return { ln, k, v, box, tk, ring, edge, ry, cx, cy };
+    });
+    R.TH = TH;
+
+    // ---- flow lines ----
+    R.flow = el('g', {}, g);
+    const arrow = (x, y, dir) => dir === 'r' ? `M${x - 5},${y - 4} L${x},${y} L${x - 5},${y + 4}` : `M${x - 4},${y - 5} L${x},${y} L${x + 4},${y - 5}`;
+    if (!L.mobile) {
+      const fy = F.y + F.h / 2;
+      R.flows = [[`M${F.x + F.w + 10},${fy} H${Ch.x - 12}`, arrow(Ch.x - 12, fy, 'r')], [`M${X1 + 12},${fy} H${Tb.x - 12}`, arrow(Tb.x - 12, fy, 'r')]];
+    } else {
+      const x = L.W / 2; R.flows = [[`M${x},${Y1 + 10} V${Tb.y - 30}`, arrow(x, Tb.y - 30, 'd')]];
+    }
+    R.flows = R.flows.map(([a, b]) => [stroke('path', { d: a }, R.flow, C.faint), stroke('path', { d: b }, R.flow, C.faint)]);
+    R.trav = el('g', {}, g);
+    R.travs = S.saves.map(() => ({ p: stroke('path', {}, R.trav, C.blue), dot: el('circle', { r: 2.6, fill: C.blue }, R.trav), halo: stroke('circle', { r: 6 }, R.trav, C.blueF) }));
+  }
+
+  // ---------- render ----------
+  function render(g) {
+    const si = Math.floor(g / T) % 3, t = g % T, S = SCHED[si];
+    if (si !== cur || mq.matches !== mode) build(si);
+    const M = L.mobile, F = L.form, Ch = L.chat, Tb = L.table;
+    R.root.style.opacity = 1 - P(T - .55, T - .1, t);
+
+    // labels
+    const chatOn = t >= 1.15, dataOn = t >= S.saves[0].fill;
+    R.lab.forEach((l, i) => { l.g.style.opacity = ease(P(0, .3, t)); });
+    const act = [!chatOn, chatOn && t < S.end, dataOn];
+    R.lab.forEach((l, i) => { l.t.setAttribute('fill', act[i] ? C.blue : C.line); l.ln.setAttribute('stroke', act[i] ? C.blue : C.faint); });
+    if (M) { const m = P(.95, 1.2, t); R.lab[0].g.style.opacity = ease(P(0, .3, t)) * (1 - m); R.lab[1].g.style.opacity = m; }
+
+    // form intro (+ mobile retract)
+    const ret = M ? 1 - io(P(.85, 1.15, t)) : 1;
+    draw(R.fOut, io(P(0, .55, t)) * ret);
+    const fT = ease(P(.15, .45, t)) * ret; R.fTitle.style.opacity = fT; draw(R.fTitleLn, io(P(.2, .5, t)) * ret);
+    let asking = -1; S.ask.forEach(a => { if (t >= a.at) asking = a.f; });
+    if (t >= S.end) asking = -1;
+    R.fields.forEach((f, i) => {
+      const a = .25 + i * .08;
+      f.t.style.opacity = ease(P(a, a + .25, t)) * ret;
+      draw(f.line, io(P(a, a + .3, t)) * ret);
+      const sv_ = S.saves.find(s => s.f === i), saved = sv_ && t >= sv_.fill;
+      const isAsk = i === asking && !saved;
+      f.line.setAttribute('stroke', isAsk ? C.blue : C.line);
+      f.t.setAttribute('fill', isAsk ? C.blue : C.text);
+      if (saved && !M) { f.line.style.strokeDasharray = '2 4'; f.line.style.strokeDashoffset = 0; f.line.setAttribute('stroke', C.faint); }
+      draw(f.tk, M ? 0 : (sv_ ? io(P(sv_.fill, sv_.fill + .3, t)) : 0));
+    });
+    draw(R.fSub, io(P(.55, .85, t)) * ret); R.fSubT.style.opacity = ease(P(.65, .9, t)) * ret;
+    R.form.style.opacity = M ? 1 : 1 - .4 * ease(P(1.2, 1.6, t));
+
+    // chat frame
+    const c0 = M ? .95 : .35;
+    R.corners.forEach(c => draw(c, io(P(c0, c0 + .35, t))));
+    draw(R.av, io(P(c0 + .1, c0 + .4, t))); R.avDot.style.opacity = ease(P(c0 + .3, c0 + .45, t));
+    R.cName.style.opacity = R.cLive.style.opacity = ease(P(c0 + .15, c0 + .4, t));
+    R.cLive.style.opacity = ease(P(c0 + .15, c0 + .4, t)) * (.55 + .45 * Math.abs(Math.sin(t * 2.2)));
+    draw(R.cHd, io(P(c0 + .1, c0 + .45, t))); draw(R.inLn, io(P(c0 + .2, c0 + .55, t))); draw(R.send, io(P(c0 + .4, c0 + .6, t)));
+
+    // message layout & scroll
+    const GAP = 10, areaH = R.ay1 - R.ay0 - 4;
+    let acc = 0; const ys = [];
+    R.msgs.forEach(o => { const st = o.e.type === 'ai' ? o.e.dots : o.e.at; const k = ease(P(st, st + .22, t)); ys.push(acc); acc += (o.h + GAP) * k; });
+    const off = Math.max(0, acc - GAP - areaH);
+    let waiting = t > c0 + .5 && t < S.end;
+    R.msgs.forEach((o, i) => {
+      const e = o.e, st = e.type === 'ai' ? e.dots : e.at;
+      if (t < st) { o.g.style.display = 'none'; if (o.peel) o.peel.style.opacity = 0; return; }
+      o.g.style.display = '';
+      const bx = e.type === 'ai' ? Ch.x + 14 : Ch.x + Ch.w - 14 - o.w;
+      const by = R.ay0 + 2 + ys[i] - off;
+      o.g.setAttribute('transform', `translate(${bx},${by})`);
+      if (e.type === 'ai') {
+        const pe = (o.peel ? (e.at - e.dots) * .45 : 0);
+        if (o.peel) {
+          const f = R.fields[e.f];
+          const tx = bx, ty = by + o.h;
+          o.peel.setAttribute('d', `M${f.x0},${f.y} H${f.x1} C${f.x1 + 50},${f.y} ${tx - 50},${ty} ${tx},${ty}`);
+          o.peel._L = null;
+          draw(o.peel, io(P(e.dots, e.dots + pe, t)));
+          o.peel.style.opacity = t < e.dots ? 0 : 1 - P(e.at + .1, e.at + .55, t);
+        }
+        draw(o.b, io(P(e.dots + pe, e.at, t)));
+        o.t.textContent = e.text; o.t.style.opacity = ease(P(e.at - .05, e.at + .15, t));
+        if (o.tag) o.tag.style.opacity = ease(P(e.at, e.at + .25, t));
+        if (t >= e.at) waiting = true;
+      } else {
+        waiting = waiting && false;
+        draw(o.b, io(P(e.at, e.at + .16, t)));
+        const p = P(e.at + .06, e.end, t), n = Math.round(e.text.length * p);
+        const s = e.text.slice(0, n); o.t.textContent = s;
+        const cw = s ? W(s, L.fs, 500) : 0;
+        o.caret.setAttribute('x1', 12 + cw + 1.5); o.caret.setAttribute('x2', 12 + cw + 1.5);
+        o.caret.style.opacity = p < 1 ? 1 : 0;
+        if (o.und) draw(o.und, io(P(e.vague, e.vague + .35, t)));
+      }
+    });
+    // input cursor blinks while waiting for the person to answer
+    let lastAi = -1, lastU = -1;
+    S.ev.forEach(e => { if (e.type === 'ai' && t >= e.at) lastAi = Math.max(lastAi, e.at); if (e.type === 'u' && t >= e.at) lastU = Math.max(lastU, e.at); });
+    const idle = (t > c0 + .5 && lastAi < 0) || lastAi > lastU || t >= S.end;
+    R.cur.style.opacity = idle ? (Math.floor(t * 2.4) % 2 ? .15 : 1) * ease(P(c0 + .5, c0 + .7, t)) : 0;
+
+    // table intro
+    const tb0 = M ? .4 : .3;
+    draw(R.tOut, io(P(tb0, tb0 + .55, t)));
+    R.tHT.style.opacity = ease(P(tb0 + .2, tb0 + .45, t));
+    draw(R.tCol, io(P(tb0 + .3, tb0 + .65, t)));
+    let nSaved = 0;
+    R.rows.forEach((r, i) => {
+      const a = tb0 + .12 + i * .05;
+      draw(r.ln, io(P(a, a + .4, t)));
+      r.k.style.opacity = ease(P(a + .2, a + .45, t));
+      draw(r.box, io(P(a + .2, a + .45, t)));
+      const s = S.saves.find(x => x.f === i);
+      if (s && t >= s.fill) {
+        nSaved++;
+        const k = ease(P(s.fill, s.fill + .3, t));
+        r.v.textContent = s.v; r.v.setAttribute('fill', C.ink); r.v.style.opacity = k;
+        r.v.setAttribute('transform', `translate(${(1 - k) * -6},0)`);
+        draw(r.tk, io(P(s.fill + .08, s.fill + .38, t)));
+        r.box.setAttribute('stroke', C.blue);
+        const rp = P(s.fill + .05, s.fill + .8, t);
+        r.ring.setAttribute('r', 7 + 11 * ease(rp)); r.ring.style.opacity = rp > 0 && rp < 1 ? (1 - rp) * .8 : 0;
+        r.edge.style.opacity = Math.sin(P(s.fill, s.fill + 1, t) * Math.PI);
+      } else {
+        r.v.textContent = '—'; r.v.setAttribute('fill', C.faint); r.v.style.opacity = ease(P(a + .3, a + .55, t)); r.v.removeAttribute('transform');
+        draw(r.tk, 0); r.box.setAttribute('stroke', C.faint); r.ring.style.opacity = 0; r.edge.style.opacity = 0;
+      }
+    });
+    R.tCnt.textContent = nSaved + '/' + R.rows.length + (nSaved === R.rows.length ? ' ✓' : '');
+    R.tCnt.setAttribute('fill', nSaved ? C.blue : C.line);
+    R.tCnt.style.opacity = ease(P(tb0 + .2, tb0 + .45, t));
+
+    // flow lines
+    R.flows.forEach(([a, b], i) => { const s0 = (M ? 1.0 : .6) + i * .15; draw(a, io(P(s0, s0 + .35, t))); draw(b, io(P(s0 + .3, s0 + .45, t))); });
+
+    // answers travelling to the table
+    S.saves.forEach((s, i) => {
+      const tr = R.travs[i], o = R.msgs.find(m => m.e === s.from);
+      const t0 = s.from.end + .05, t1 = s.fill;
+      if (t < t0 || !o) { tr.p.style.opacity = 0; tr.dot.style.opacity = 0; tr.halo.style.opacity = 0; return; }
+      const idx = R.msgs.indexOf(o);
+      const by = R.ay0 + 2 + ys[idx] - off;
+      const row = R.rows[s.f];
+      let d;
+      if (!M) {
+        const sx = Ch.x + Ch.w - 10, sy = by + o.h / 2, ex = Tb.x - 3, ey = row.ry + Tb.rowH / 2;
+        d = `M${sx},${sy} C${sx + 40},${sy} ${ex - 40},${ey} ${ex},${ey}`;
+      } else {
+        const sx = Ch.x + Ch.w - 6, sy = by + o.h / 2, ex = row.cx + 9, ey = row.cy;
+        d = `M${sx},${sy} C${sx + 4},${sy + 60} ${ex + 4},${ey - 80} ${ex},${ey}`;
+      }
+      tr.p.setAttribute('d', d); tr.p._L = null;
+      const k = io(P(t0, t1, t));
+      draw(tr.p, k);
+      tr.p.style.opacity = .55 * (1 - P(t1 + .05, t1 + .5, t));
+      const pt = tr.p.getPointAtLength((tr.p._L - 1) * k);
+      const vis = k > 0 && t < t1 + .08 ? 1 : 0;
+      tr.dot.setAttribute('cx', pt.x); tr.dot.setAttribute('cy', pt.y); tr.dot.style.opacity = vis;
+      tr.halo.setAttribute('cx', pt.x); tr.halo.setAttribute('cy', pt.y); tr.halo.style.opacity = vis * .7;
+    });
+  }
+
+  // ---------- params ----------
+  const q = new URLSearchParams(location.search);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const s = q.has('s') ? +q.get('s') : 1;
+  let fixed = null;
+  if (q.has('t')) fixed = +q.get('t');
+  else if (q.get('state') === 'form') fixed = s * T + 1.12;
+  else if (q.get('state') === 'chat') fixed = s * T + (SCHED[s].saves[0].from.end + SCHED[s].saves[0].fill) / 2 + .04;
+  else if (q.get('state') === 'data' || reduce) fixed = s * T + Math.min(T - .7, SCHED[s].end + .7);
+
+  function go() {
+    if (fixed !== null) { render(fixed); window.__ready = true; addEventListener('resize', () => render(fixed)); return; }
+    const t0 = performance.now();
+    const loop = now => { render(((now - t0) / 1000) % (3 * T)); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop); window.__ready = true;
+  }
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(go);
+})();
+</script>
+</body>
+</html>
+

@@ -1,0 +1,293 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-31T18:30:00.000Z",
+  "title": "Design System: ConvoForm",
+  "extensions": {
+    "colorMeta": {
+      "paper": { "role": "neutral", "displayName": "Paper" },
+      "surface": { "role": "neutral", "displayName": "Surface" },
+      "ink": { "role": "neutral", "displayName": "Ink" },
+      "muted": { "role": "neutral", "displayName": "Muted" },
+      "text": { "role": "neutral", "displayName": "Text" },
+      "slate": { "role": "neutral", "displayName": "Slate (decorative only)" },
+      "hair": { "role": "neutral", "displayName": "Hair" },
+      "hair-soft": { "role": "neutral", "displayName": "Hair Soft" },
+      "blue-600": {
+        "role": "primary",
+        "displayName": "Signal Blue",
+        "tonalRamp": [
+          "#1d4ed8",
+          "#2563eb",
+          "#3b82f6",
+          "#60a5fa",
+          "#93c5fd",
+          "#bfdbfe",
+          "#dbeafe",
+          "#eff6ff"
+        ]
+      },
+      "blue-700": { "role": "primary", "displayName": "Deep Signal Blue" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero h1 only." },
+      "headline": { "displayName": "Headline", "purpose": "Section h2s." },
+      "title-lg": {
+        "displayName": "Title Large",
+        "purpose": "Feature card titles."
+      },
+      "title": { "displayName": "Title", "purpose": "Step and panel titles." },
+      "title-sm": {
+        "displayName": "Title Small",
+        "purpose": "Trust card titles."
+      },
+      "quote": { "displayName": "Quote", "purpose": "Founder note." },
+      "lead": { "displayName": "Lead", "purpose": "Section intros." },
+      "body": { "displayName": "Body", "purpose": "Card copy and answers." },
+      "body-sm": { "displayName": "Body Small", "purpose": "Secondary copy." },
+      "button": { "displayName": "Button", "purpose": "Button labels." },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase mono eyebrows, steps, tabs, field keys."
+      },
+      "label-text": {
+        "displayName": "Label Text",
+        "purpose": "Mono running text: proof strip, footer credit."
+      }
+    },
+    "shadows": [
+      {
+        "name": "button-primary-glow",
+        "value": "0 10px 26px -14px rgba(37,99,235,.7)",
+        "purpose": "Primary buttons only."
+      },
+      {
+        "name": "floating-chat",
+        "value": "0 22px 50px -30px rgba(37,99,235,.4)",
+        "purpose": "Hero chat window."
+      },
+      {
+        "name": "focus-halo",
+        "value": "0 0 0 2px #bfdbfe",
+        "purpose": "Highlighted overlay card."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.33, 1, 0.68, 1)",
+        "purpose": "Elements arriving: fades, slides, chips, cells."
+      },
+      {
+        "name": "ease-in-out",
+        "value": "cubic-bezier(0.65, 0, 0.35, 1)",
+        "purpose": "Line draws and A-to-B movement."
+      },
+      {
+        "name": "ease-pop",
+        "value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "purpose": "Chat bubble and chip pop-in only."
+      },
+      {
+        "name": "duration-micro",
+        "value": "150ms",
+        "purpose": "Button hover."
+      },
+      {
+        "name": "duration-fast",
+        "value": "200ms",
+        "purpose": "Border colour on hover."
+      },
+      {
+        "name": "duration-toggle",
+        "value": "250ms",
+        "purpose": "FAQ toggle, small state changes."
+      },
+      {
+        "name": "duration-pop",
+        "value": "280ms",
+        "purpose": "Bubble and chip pop-in."
+      },
+      {
+        "name": "duration-draw",
+        "value": "500ms",
+        "purpose": "One-shot hairline stroke draws."
+      },
+      {
+        "name": "stagger",
+        "value": "120ms",
+        "purpose": "Delay between sibling items in a reveal."
+      },
+      {
+        "name": "loop-hero",
+        "value": "8s",
+        "purpose": "Hero form-to-conversation loop."
+      },
+      {
+        "name": "loop-scene",
+        "value": "6s-10.8s",
+        "purpose": "Section loops."
+      },
+      {
+        "name": "ambient",
+        "value": "9s-11s ease-in-out infinite",
+        "purpose": "Background orb drift."
+      },
+      {
+        "name": "in-view-threshold",
+        "value": "0.2 (loops) / 0.3 (one-shot)",
+        "purpose": "IntersectionObserver thresholds that start animations."
+      },
+      {
+        "name": "frame-delta-max",
+        "value": "100ms",
+        "purpose": "Clamp per-frame advance so paused clocks never jump."
+      }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "900px" },
+      { "name": "tablet", "value": "1100px" },
+      { "name": "demo-desktop", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main call to action.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Start for free</a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 999px; font: 600 15px/1 Inter, system-ui, sans-serif; padding: 15px 24px; text-decoration: none; background: #2563eb; color: #fff; box-shadow: 0 10px 26px -14px rgba(37,99,235,.7); transition: transform .15s, background .15s; } .ds-btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 2px solid #2563eb; outline-offset: 3px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Secondary action next to a primary button.",
+      "html": "<a class=\"ds-btn-secondary\" href=\"#\">Try the demo</a>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 999px; font: 600 15px/1 Inter, system-ui, sans-serif; padding: 15px 24px; text-decoration: none; background: rgba(255,255,255,.7); color: #0f172a; border: 1.25px solid #cbd5e1; transition: transform .15s, border-color .15s; } .ds-btn-secondary:hover { border-color: #94a3b8; transform: translateY(-1px); } .ds-btn-secondary:focus-visible { outline: 2px solid #2563eb; outline-offset: 3px; }"
+    },
+    {
+      "name": "Eyebrow",
+      "kind": "custom",
+      "refersTo": "eyebrow",
+      "description": "Mono label above a section heading.",
+      "html": "<span class=\"ds-eyebrow\"><i></i>How it works</span>",
+      "css": ".ds-eyebrow { font: 500 11px/1 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; color: #2563eb; display: inline-flex; align-items: center; gap: 8px; } .ds-eyebrow i { width: 6px; height: 6px; border-radius: 50%; background: #2563eb; display: block; }"
+    },
+    {
+      "name": "Tabs",
+      "kind": "nav",
+      "refersTo": "tab",
+      "description": "Pill tab track for switching examples.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab ds-tab-on\" role=\"tab\" aria-selected=\"true\">Study abroad</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Job</button></div>",
+      "css": ".ds-tabs { display: inline-flex; gap: 4px; padding: 4px; border: 1.25px solid #cbd5e1; border-radius: 999px; background: rgba(255,255,255,.6); } .ds-tab { appearance: none; border: 1.25px solid transparent; background: none; border-radius: 999px; padding: 9px 16px; font: 500 12px/1 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .04em; text-transform: uppercase; color: #64748b; cursor: pointer; } .ds-tab:hover { color: #0f172a; } .ds-tab:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; } .ds-tab-on { border-color: #93c5fd; color: #2563eb; background: #fff; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Hairline card on paper.",
+      "html": "<div class=\"ds-card\"><h3>Your data stays yours</h3><p>Export to CSV or sync to Google Sheets at any time.</p></div>",
+      "css": ".ds-card { border: 1.25px solid #cbd5e1; border-radius: 20px; padding: 20px; background: rgba(255,255,255,.6); max-width: 280px; } .ds-card h3 { margin: 0; font: 600 17px/1.2 'Bricolage Grotesque', Inter, sans-serif; color: #0f172a; } .ds-card p { margin: 8px 0 0; font: 400 14.5px/1.55 Inter, system-ui, sans-serif; color: #475569; }"
+    },
+    {
+      "name": "Answer Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "A captured answer.",
+      "html": "<span class=\"ds-chip\">Budget <b>₹20 lakh / year</b></span>",
+      "css": ".ds-chip { display: inline-flex; gap: 5px; align-items: center; font: 500 11.5px/1 Inter, system-ui, sans-serif; color: #475569; background: #fff; border: 1px solid #e2e8f0; border-radius: 999px; padding: 6px 9px; white-space: nowrap; } .ds-chip b { font-weight: 600; color: #0f172a; }"
+    },
+    {
+      "name": "Conversation",
+      "kind": "custom",
+      "refersTo": "chat-bubble-follow-up",
+      "description": "Assistant, user and follow-up bubbles; the signature image.",
+      "html": "<div class=\"ds-chat\"><div class=\"ds-bub ds-ai\">What's your budget?</div><div class=\"ds-bub ds-u\">around 20</div><div class=\"ds-bub ds-fu\"><span class=\"ds-futag\">FOLLOW-UP</span>₹20 lakh per year, or in total?</div></div>",
+      "css": ".ds-chat { display: flex; flex-direction: column; gap: 9px; max-width: 360px; font: 400 14.5px/1.35 Inter, system-ui, sans-serif; } .ds-bub { max-width: 82%; padding: 9px 13px; border-radius: 16px; border: 1.25px solid #cbd5e1; background: #fff; color: #0f172a; } .ds-ai { align-self: flex-start; border-bottom-left-radius: 5px; } .ds-u { align-self: flex-end; border-color: #0f172a; border-bottom-right-radius: 5px; font-weight: 500; } .ds-fu { align-self: flex-start; border-color: #60a5fa; color: #1d4ed8; background: #eff6ff; border-bottom-left-radius: 5px; } .ds-futag { display: block; font: 500 9.5px/1 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .08em; color: #2563eb; margin-bottom: 6px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Drafting Table",
+    "overview": "A clean sheet of off-white paper, ruled with fine hairlines, where a form is drawn in pencil and then comes alive as a conversation. Everything structural is line work: 1.25px strokes, dotted grids, dashed dividers for \"before\" states. The single blue ink marks only what matters: the action, the follow-up question, the answer that got fixed. Display type is confident and slightly characterful (Bricolage Grotesque), reading text is quiet (Inter), and anything that names a thing (labels, steps, field keys) is set in small uppercase mono like an annotation on a drawing.\n\nThe page should feel calm, honest and precise, closer to a well-made tool than to an agency showcase. Motion exists to explain (a form breaking into a conversation, a line flowing from a form into a spreadsheet), never to decorate, and it always settles into a readable final state.",
+    "keyCharacteristics": [
+      "Off-white paper (`paper`) with white `surface` panels; flat, defined by hairlines rather than shadows.",
+      "One accent: `blue-600`. The rest of the blue scale only tints, glows and states.",
+      "Three type voices: Bricolage Grotesque for headings, Inter for body, JetBrains Mono for labels.",
+      "1.25px hairline borders everywhere; dashed hairlines mean \"static / before / placeholder\".",
+      "Line-art (hairline SVG) illustrations and viewport-triggered motion with a static final frame.",
+      "Mobile first: the typical visitor is on a phone, coming from Instagram."
+    ],
+    "rules": [
+      {
+        "name": "The In-View Rule",
+        "body": "Animations start only when their element is on screen: an IntersectionObserver at `threshold: 0.2` for looping scenes, `0.3` for one-shot reveals (which disconnect after firing). Wait for `document.fonts.ready` before measuring or starting.",
+        "section": "motion"
+      },
+      {
+        "name": "The Pause-Offscreen Rule",
+        "body": "Each animation keeps its own clock and advances it only while visible. Scrolling away freezes it; scrolling back resumes where it stopped. Clamp the per-frame delta (max 0.1s) so a backgrounded tab never jumps.",
+        "section": "motion"
+      },
+      {
+        "name": "The Static-Final-State Rule",
+        "body": "Under `prefers-reduced-motion: reduce` (and `?static=1` for review), render every animation at its final, fully informative frame, drop transitions, and use `scroll-behavior: auto`. The static frame must tell the whole story on its own.",
+        "section": "motion"
+      },
+      {
+        "name": "The One Accent Rule",
+        "body": "`blue-600` is the only accent and covers well under 10% of any screen. No second hue, no purple, no amber outside mockup-only badges.",
+        "section": "colors"
+      },
+      {
+        "name": "The Solid Emphasis Rule",
+        "body": "Emphasised words in `h1`/`h2` are solid `blue-600`. No gradient text, anywhere (owner decision on #513; the mockups' gradient `em` is superseded).",
+        "section": "colors"
+      },
+      {
+        "name": "The Readable Ink Rule",
+        "body": "Text someone needs to read uses `ink`, `muted` or `text` (4.5:1 or better on `paper`). `slate` fails contrast for small text and is for decoration only.",
+        "section": "colors"
+      },
+      {
+        "name": "The Annotation Rule",
+        "body": "Mono is for naming things (labels, keys, steps, captions), never for sentences longer than one line.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tight Display Rule",
+        "body": "Display and headline sizes always carry negative tracking (`-0.035em` / `-0.03em`); body text never does.",
+        "section": "typography"
+      },
+      {
+        "name": "The Demo Slot Rule",
+        "body": "The live demo sits directly under the hero. Its component tree (`demoSection/`) is never restyled or rewritten; only the wrapper around it may change.",
+        "section": "layout"
+      },
+      {
+        "name": "The Hairline-Not-Shadow Rule",
+        "body": "A card is separated from the page by a 1.25px `hair` border, not by a drop shadow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep `paper` as the page background and use `blue-600` as the single accent.",
+      "Do use 1.25px hairlines for every card, button outline, tab track and divider rule.",
+      "Do set headings in Bricolage Grotesque, body in Inter and labels in JetBrains Mono, all via `next/font`.",
+      "Do start animations in view, pause them off-screen and give them a complete static final frame for reduced motion.",
+      "Do design at 360px first and check there is no horizontal scroll.",
+      "Do write prices and example values in INR and label sample data \"Illustrative\".",
+      "Do follow the mockups in `docs/design/marketing/` for layout and motion intent."
+    ],
+    "donts": [
+      "Don't use gradient text; emphasis is solid `blue-600`.",
+      "Don't add a second accent colour or reuse the mockups' amber \"MOCKUP\" badges on the real site.",
+      "Don't use Nohemi, Montserrat or Geist on public pages.",
+      "Don't use drop shadows to separate cards; only the documented blue-tinted shadows exist.",
+      "Don't use `slate` for text people need to read.",
+      "Don't invent stats, testimonials, logos, user counts or prices.",
+      "Don't modify `demoSection/` or anything inside it.",
+      "Don't ship an animation that loops while off-screen or ignores `prefers-reduced-motion`."
+    ]
+  }
+}

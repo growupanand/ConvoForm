@@ -6,7 +6,7 @@ This is maintenance, not design. Do not redesign anything, do not open files out
 
 Three kinds of drift travel under "out of date". Keep them apart:
 
-- **Tool version.** The installed skill is older than the published one. `impeccable context` reports that at boot as `UPDATE_AVAILABLE` and `npx impeccable update` fixes it. Not this command's job.
+- **Tool version.** The installed skill is older than the published one. `impeccable context` reports that at boot as `UPDATE_AVAILABLE` and `npx impeccable update` fixes it, or the harness's plugin manager for a plugin install. Not this command's job.
 - **Schema drift.** An artifact was written by an older Impeccable: fields nothing reads, fields now expected, files in retired locations. Mechanical, and this command repairs most of it.
 - **Truth drift.** The code moved on and the document no longer describes it. No file comparison settles this. `document` owns DESIGN.md, `init` owns PRODUCT.md, and this command's job is to hand them a specific gap rather than a vague suspicion.
 
@@ -46,7 +46,7 @@ The same restraint applies to `workspace-context-inherited`. Inheritance is a de
 
 - `workspace-platform-native-evidence` is the finding that matters most here: a workspace carrying native build files while inheriting a root record that resolves to web gets web guidance for its whole life and never loads [ios.md](ios.md) or [android.md](android.md). The repair is a child PRODUCT.md in that workspace, because one inherited record cannot hold two platforms.
 - `config-project-roots-match-nothing` means every `projectRoots` glob missed, so the repo root is silently standing in as the active project. A renamed workspace directory is the usual cause. Report the patterns and ask which directories they should name.
-- `config-invalid-build-path` and `config-build-path-unset` both concern one key, `buildPath` in `.impeccable/config.json` (or the gitignored `.impeccable/config.local.json`, which wins for that developer). It holds `comp` or `code` and sets whether new surfaces are built from a generated comp or straight in code. An unread value does not fall back to the opposite path, so a project meaning `code` has been building comp-led; report the exact value. The unset finding fires only where a project has done direction work and never recorded a preference, and the offer belongs in it only when image generation exists in your tool surface. Without image generation there is nothing to choose and nothing to say.
+- `config-invalid-build-path` and `config-build-path-unset` both concern one key, `buildPath` in `.impeccable/config.json` (or the gitignored `.impeccable/config.local.json`, which wins for that developer). It holds `comp` or `code` and sets whether new Persuade and Experience surfaces are built from a generated comp or straight in code; Operate and Read surfaces are code-led whatever it holds. An unread value does not fall back to the opposite path, so a project meaning `code` has been building comp-led; report the exact value. The unset finding fires only where a project has done direction work and never recorded a preference, and the offer belongs in it only when image generation exists in your tool surface. Without image generation there is nothing to choose and nothing to say.
 - Use the `workspaces` table to show the user which apps carry their own context, which inherit, and which have none, before proposing any change.
 
 ## Opting out of the boot check

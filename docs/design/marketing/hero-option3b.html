@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ConvoForm hero — option 3b (form becomes a conversation) · MOCKUP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --b50:#eff6ff;--b100:#dbeafe;--b200:#bfdbfe;--b300:#93c5fd;--b400:#60a5fa;--b500:#3b82f6;--b600:#2563eb;--b700:#1d4ed8;
+    --ink:#0f172a;--muted:#475569;--line:#e2e8f0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#f8fafc;color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  .badge{position:fixed;right:14px;bottom:14px;z-index:50;background:#fbbf24;color:#451a03;font:700 11px/1 Inter,sans-serif;padding:7px 11px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.12);border:2px solid #fff;letter-spacing:.02em}
+  nav{display:flex;align-items:center;justify-content:space-between;max-width:1120px;margin:0 auto;padding:16px 20px}
+  .logo{font:600 22px/1 "Bricolage Grotesque",Inter,sans-serif;letter-spacing:-.01em}
+  .logo span{color:var(--b600)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font:600 15px/1 Inter,sans-serif;padding:14px 22px;text-decoration:none;transition:transform .15s,box-shadow .15s,background .15s;white-space:nowrap}
+  .btn-primary{background:var(--b600);color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.08),0 8px 22px -8px rgba(37,99,235,.6)}
+  .btn-primary:hover{background:var(--b700);transform:translateY(-1px)}
+  .btn-secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn-secondary:hover{border-color:#cbd5e1;transform:translateY(-1px)}
+  .btn-sm{padding:10px 16px;font-size:14px}
+
+  .hero{position:relative;text-align:center;padding:18px 20px 0;max-width:1120px;margin:0 auto}
+  h1{font:700 clamp(40px,6.4vw,72px)/1.02 "Bricolage Grotesque",Inter,sans-serif;letter-spacing:-.03em;color:var(--ink)}
+  h1 em{font-style:normal;background:linear-gradient(90deg,var(--b600),var(--b400));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{max-width:620px;margin:16px auto 0;font-size:clamp(15px,1.6vw,18px);line-height:1.55;color:var(--muted)}
+  .ctas{display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+
+  /* stage */
+  .stage{position:relative;max-width:1040px;height:400px;margin:22px auto 0;border-radius:28px;overflow:hidden}
+  .stage::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(15,23,42,.08) 1px,transparent 0);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%)}
+  .orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;pointer-events:none}
+  .orb.a{width:420px;height:420px;left:50%;top:50%;margin:-210px 0 0 -210px;background:radial-gradient(circle,var(--b300),transparent 65%)}
+  .orb.b{width:260px;height:260px;left:18%;top:12%;background:radial-gradient(circle,#c7d2fe,transparent 65%);animation:float 11s ease-in-out infinite}
+  .orb.c{width:240px;height:240px;right:12%;bottom:4%;background:radial-gradient(circle,var(--b200),transparent 65%);animation:float 9s ease-in-out infinite reverse}
+  @keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-20px)}}
+  canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+  /* 1 · the dated static form (pieces are positioned by JS) */
+  .fcard{position:absolute;left:0;top:0;background:#eef1f5;border:1px solid #c8ced8;border-radius:4px;box-shadow:0 1px 0 rgba(15,23,42,.04)}
+  .fp{position:absolute;left:0;top:0;will-change:transform,opacity;transform-origin:center;text-align:left}
+  .fp.title{font:600 13.5px/1 Inter,sans-serif;color:#475569}
+  .fp.lab{font:400 12px/1 Inter,sans-serif;color:#64748b;white-space:nowrap}
+  .fp.lab,.fp.title{width:auto}
+  .fp.lab .req{color:#dc2626;font-size:11px;margin-left:8px;opacity:0}
+  .fp.in{background:#fff;border:1px solid #b8c0cc;border-radius:2px}
+  .fp.in.err{border-color:#ef4444;box-shadow:0 0 0 2px rgba(239,68,68,.15)}
+  .fp.sub{background:#9aa5b4;color:#fff;font:500 12px/1 Inter,sans-serif;border-radius:2px;display:grid;place-items:center}
+
+  /* 3 · the conversation */
+  .chat{position:absolute;left:50%;top:50%;width:min(440px,calc(100% - 28px));transform:translate(-50%,-50%);background:rgba(255,255,255,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(191,219,254,.95);border-radius:22px;box-shadow:0 1px 2px rgba(15,23,42,.04),0 24px 60px -24px rgba(37,99,235,.45);padding:12px 14px 12px;opacity:0;text-align:left}
+  .chat-h{display:flex;align-items:center;gap:9px;padding:2px 2px 10px;border-bottom:1px solid #f1f5f9}
+  .av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--b500),var(--b700));display:grid;place-items:center;color:#fff;font:700 10px/1 Inter}
+  .chat-h b{font:600 13px/1 Inter,sans-serif}
+  .chat-h small{margin-left:auto;font-size:11px;color:#10b981;display:flex;align-items:center;gap:5px}
+  .chat-h small::before{content:"";width:6px;height:6px;border-radius:50%;background:#10b981}
+  .msgs{display:flex;flex-direction:column;gap:7px;padding:10px 0 4px}
+  .m{max-width:80%;font-size:13.5px;line-height:1.35;padding:8px 12px;border-radius:16px;opacity:0;transform-origin:left bottom;white-space:nowrap}
+  .m.ai{align-self:flex-start;background:#f1f5f9;color:var(--ink);border-bottom-left-radius:5px}
+  .m.u{align-self:flex-end;background:var(--b600);color:#fff;border-bottom-right-radius:5px;transform-origin:right bottom}
+  .m.fu{background:var(--b50);color:var(--b700);box-shadow:inset 0 0 0 1.5px var(--b300)}
+  .m .dots{display:none;gap:4px;padding:3px 2px}
+  .m .dots i{width:6px;height:6px;border-radius:50%;background:#94a3b8;display:block}
+  .m.typing .dots{display:flex}.m.typing .tx{display:none}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;padding-top:9px;margin-top:6px;border-top:1px dashed #e2e8f0;min-height:36px}
+  .chip{font:500 11.5px/1 Inter,sans-serif;color:#475569;background:#fff;border:1px solid #e2e8f0;border-radius:999px;padding:6px 9px;opacity:0;display:inline-flex;gap:5px;align-items:center;white-space:nowrap}
+  .chip b{font-weight:600;color:var(--ink)}
+  .chip svg{width:11px;height:11px}
+
+  .caption{max-width:1040px;margin:10px auto 40px;text-align:center;font-size:12px;color:#94a3b8;padding:0 20px}
+
+  @media (max-width:640px){
+    nav .btn-secondary{display:none}
+    .hero{padding-top:20px}
+    .ctas{flex-direction:column;align-items:stretch;max-width:340px;margin-left:auto;margin-right:auto}
+    .stage{height:420px;margin-top:22px;border-radius:22px}
+    .m{font-size:13px}
+    .orb.a{width:300px;height:300px;margin:-150px 0 0 -150px}
+    .badge{position:absolute;top:20px;bottom:auto;right:auto;left:50%;transform:translateX(-50%);font-size:10px;padding:5px 9px}
+  }
+</style>
+</head>
+<body>
+<div class="badge">MOCKUP</div>
+<nav>
+  <div class="logo"><span>Convo</span>Form</div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-secondary btn-sm" href="#">GitHub ★ 102</a>
+    <a class="btn btn-primary btn-sm" href="#">Start free</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Forms that <em>talk back.</em></h1>
+  <p class="sub">ConvoForm chats with people, asks follow-ups when an answer is vague, and hands you clean, structured data.</p>
+  <div class="ctas">
+    <a class="btn btn-primary" href="#">Create your free form <span aria-hidden="true">→</span></a>
+    <a class="btn btn-secondary" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="#2563eb" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Try the demo</a>
+  </div>
+
+  <div class="stage" id="stage" role="img" aria-label="A stiff static form breaks apart and comes back together as a friendly conversation that asks a follow-up">
+    <div class="orb a" id="orbA"></div><div class="orb b"></div><div class="orb c"></div>
+    <canvas id="dots"></canvas>
+    <div class="chat" id="chat">
+      <div class="chat-h"><span class="av">CF</span><b id="chatName">ConvoForm</b><small>online</small></div>
+      <div class="msgs" id="msgs"></div>
+      <div class="chips" id="chips"></div>
+    </div>
+  </div>
+  <p class="caption">Illustrative example · Mockup of hero option 3b</p>
+</section>
+
+<script>
+(() => {
+  const SCEN = [
+    { title: 'Enquiry form', fields: ['Full name', 'Email', 'Budget', 'Notes'], req: 1,
+      msgs: [['ai', 'Hi! What should I call you?'], ['u', 'Priya'], ['ai', "What's your budget?"], ['u', 'around 20'], ['fu', '₹20 lakh per year, or in total?'], ['u', 'per year']],
+      chips: [[1, 'Name', 'Priya'], [5, 'Budget', '₹20 lakh / year']] },
+    { title: 'Job application', fields: ['Full name', 'Email', 'Experience', 'Notes'], req: 1,
+      msgs: [['ai', 'Hi! What should I call you?'], ['u', 'Rahul'], ['ai', 'How many years of experience?'], ['u', '3-4'], ['fu', 'Closer to 3 or 4?'], ['u', '4, mostly React']],
+      chips: [[1, 'Name', 'Rahul'], [5, 'Experience', '4 yrs (React)']] },
+  ];
+  const T = 8;
+  // timeline (seconds within a loop)
+  const A0 = 0, A1 = .95;        // dots assemble the form
+  const SUBMIT = 1.25, REQ0 = 1.35, REQ1 = 2.0; // submit pressed → "required"
+  const B0 = 2.1, B1 = 2.95;     // form breaks into fragments
+  const R0 = 3.3, R1 = 4.0;      // fragments flow into the conversation
+  const MSG = [[4.0, 4.3], [4.7], [4.95, 5.25], [5.65], [5.9, 6.25], [6.7]]; // [typing start, shown] / [shown]
+  const D0 = 7.35, D1 = 8.0;     // dissolve back to dots
+  const tick = '<svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+
+  const stage = document.getElementById('stage'), chat = document.getElementById('chat');
+  const msgsEl = document.getElementById('msgs'), chipsEl = document.getElementById('chips');
+  const canvas = document.getElementById('dots'), ctx = canvas.getContext('2d');
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const P = (a, b, t) => clamp((t - a) / (b - a));
+  const io = t => { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+  const out = t => 1 - Math.pow(1 - clamp(t), 3);
+  const backOut = t => { t = clamp(t); const c1 = 1.7, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+  const lerp = (a, b, k) => a + (b - a) * k;
+  const mkRnd = s => () => (s = (s * 16807) % 2147483647) / 2147483647;
+
+  let W, H, cur = -1, pieces = [], fcard, msgEls = [], chipEls = [], dots = [], chatRect;
+
+  function build(si) {
+    cur = si; const sc = SCEN[si];
+    stage.querySelectorAll('.fp,.fcard').forEach(e => e.remove());
+    const r = stage.getBoundingClientRect(); W = r.width; H = r.height;
+    const dpr = devicePixelRatio || 1; canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const mobile = W < 640;
+    // ---- form geometry ----
+    const fw = Math.min(360, W - 40), fh = 350, fx = (W - fw) / 2, fy = (H - fh) / 2;
+    fcard = document.createElement('div'); fcard.className = 'fcard';
+    Object.assign(fcard.style, { width: fw + 'px', height: fh + 'px' }); fcard._x = fx; fcard._y = fy;
+    stage.insertBefore(fcard, chat);
+    const defs = [{ cls: 'title', html: sc.title, x: fx + 20, y: fy + 20, w: 160, h: 14 }];
+    sc.fields.forEach((f, i) => {
+      const ly = fy + 52 + i * 58;
+      defs.push({ cls: 'lab', html: f + ' *' + (i === sc.req ? '<span class="req">Required</span>' : ''), x: fx + 20, y: ly, w: 150, h: 12, req: i === sc.req });
+      defs.push({ cls: 'in', x: fx + 20, y: ly + 17, w: fw - 40, h: i === 3 ? 44 : 30, req: i === sc.req });
+    });
+    defs.push({ cls: 'sub', html: 'Submit', x: fx + 20, y: fy + 302, w: 84, h: 30 });
+    const rnd = mkRnd(41 + si * 7);
+    pieces = defs.map(d => {
+      const e = document.createElement('div'); e.className = 'fp ' + d.cls; if (d.html) e.innerHTML = d.html;
+      e.style.height = d.h + 'px';
+      if (d.cls === 'lab' || d.cls === 'title') { stage.insertBefore(e, chat); d.w = Math.ceil(e.offsetWidth) + 2; }
+      e.style.width = d.w + 'px';
+      stage.insertBefore(e, chat);
+      return Object.assign(d, { e, rot: (rnd() - .5) * 26, ph: rnd() * 6.28, sp: .6 + rnd() * .6, sc: d.cls === 'in' ? (mobile ? .44 : .58) : 1, delay: rnd() * .25 });
+    });
+    // scattered positions for the break, without collisions
+    const placed = [], amp = 7;
+    pieces.forEach(p => {
+      const w = p.w * p.sc, h = p.h * p.sc;
+      const rad = Math.abs(p.rot) * Math.PI / 180, bw = w * Math.cos(rad) + h * Math.sin(rad), bh = w * Math.sin(rad) + h * Math.cos(rad);
+      let best = null, bestD = -1;
+      for (let k = 0; k < 2000; k++) {
+        const c = { x: 10 + amp + rnd() * (W - bw - 20 - 2 * amp), y: 10 + amp + rnd() * (H - bh - 20 - 2 * amp), w: bw, h: bh };
+        // distance to nearest placed (bigger is better)
+        let dmin = 1e9;
+        placed.forEach(q => { const dx = Math.max(q.x - (c.x + c.w), c.x - (q.x + q.w), 0), dy = Math.max(q.y - (c.y + c.h), c.y - (q.y + q.h), 0); dmin = Math.min(dmin, Math.max(dx, dy)); });
+        if (dmin > 2 * amp + 10) { best = c; break; }
+        if (dmin > bestD) { bestD = dmin; best = c; }
+      }
+      placed.push(best);
+      // chaos centre for this piece
+      p.cx = best.x + best.w / 2; p.cy = best.y + best.h / 2;
+    });
+    // ---- conversation ----
+    document.getElementById('chatName').textContent = 'ConvoForm';
+    msgsEl.innerHTML = ''; chipsEl.innerHTML = '';
+    msgEls = sc.msgs.map(([k, s]) => {
+      const e = document.createElement('div'); e.className = 'm ' + (k === 'u' ? 'u' : k === 'fu' ? 'ai fu' : 'ai');
+      e.innerHTML = `<span class="tx"></span>` + (k !== 'u' ? '<span class="dots"><i></i><i></i><i></i></span>' : '');
+      e.querySelector('.tx').textContent = s; msgsEl.appendChild(e); return e;
+    });
+    chipEls = sc.chips.map(([at, k, v]) => { const e = document.createElement('span'); e.className = 'chip'; e.innerHTML = `${k}: <b></b>${tick}`; e.querySelector('b').textContent = v; e._at = at; chipsEl.appendChild(e); return e; });
+    chat.style.transform = 'translate(-50%,-50%)';
+    const cr = chat.getBoundingClientRect();
+    chatRect = { x: cr.left - r.left, y: cr.top - r.top, w: cr.width, h: cr.height };
+    // ---- dots: chaos home, form outline target, chat outline target ----
+    const drnd = mkRnd(97);
+    const perim = (x, y, w, h, u) => { const L = 2 * (w + h); let d = u * L; if (d < w) return [x + d, y]; d -= w; if (d < h) return [x + w, y + d]; d -= h; if (d < w) return [x + w - d, y + h]; d -= w; return [x, y + h - d]; };
+    const N = mobile ? 110 : 160;
+    const inputs = pieces.filter(p => p.cls === 'in' || p.cls === 'sub');
+    dots = Array.from({ length: N }, (_, i) => {
+      let fpt;
+      if (i % 5 < 2) { const p = inputs[i % inputs.length]; fpt = perim(p.x, p.y, p.w, p.h, drnd()); } else fpt = perim(fx, fy, fw, fh, drnd());
+      const cpt = perim(chatRect.x + 6, chatRect.y + 6, chatRect.w - 12, chatRect.h - 12, drnd());
+      return { hx: drnd() * W, hy: drnd() * H, fx: fpt[0], fy: fpt[1], cx: cpt[0], cy: cpt[1], ph: drnd() * 6.28, sp: .4 + drnd(), r: 1 + drnd() * 1.6, dl: drnd() * .18 };
+    });
+  }
+
+  function render(g) {
+    const si = Math.floor(g / T) % SCEN.length, t = g % T, time = g;
+    if (si !== cur) build(si);
+    // ---------- form pieces ----------
+    const cardOp = io(P(A0 + .45, A1, t)) * (1 - io(P(B0, B0 + .4, t)));
+    fcard.style.opacity = cardOp;
+    fcard.style.transform = `translate(${fcard._x}px,${fcard._y}px) scale(${1 + .04 * P(B0, B0 + .4, t)})`;
+    fcard.style.filter = t > B0 ? `blur(${4 * P(B0, B0 + .4, t)}px)` : '';
+    pieces.forEach((p, i) => {
+      const appear = io(P(A0 + .4 + i * .035, A1 + i * .02, t));
+      const brk = io(P(B0 + p.delay * .6, B1, t));
+      const back = io(P(R0 + p.delay, R1 - .1, t));
+      const ox = p.x + p.w / 2, oy = p.y + p.h / 2;
+      const dx = Math.sin(time * p.sp + p.ph) * 7 * brk, dy = Math.cos(time * p.sp * .8 + p.ph) * 7 * brk;
+      let x = lerp(ox, p.cx, brk) + dx, y = lerp(oy, p.cy, brk) + dy;
+      // flow back toward the chat centre, shrinking to dots
+      x = lerp(x, W / 2, back * .85); y = lerp(y, H / 2, back * .85);
+      const s = lerp(1, p.sc, brk) * (1 - .8 * back);
+      let op = appear * (t < B0 ? 1 : .92) * (1 - P(R0 + p.delay + .1, R1 - .15, t));
+      if (t >= R1) op = 0;
+      p.e.style.opacity = op.toFixed(3);
+      p.e.style.transform = `translate(${(x - p.w / 2).toFixed(1)}px,${(y - p.h / 2).toFixed(1)}px) rotate(${(p.rot * brk).toFixed(1)}deg) scale(${s.toFixed(3)}) translateY(${((1 - appear) * 6).toFixed(1)}px)`;
+      p.e.style.filter = back > 0 ? `blur(${(3 * back).toFixed(2)}px)` : '';
+      // the stiff moment: submit pressed with an empty required field
+      if (p.cls === 'sub') p.e.style.background = t > SUBMIT && t < SUBMIT + .18 ? '#7b8696' : '';
+      if (p.req) {
+        const on = t > REQ0 && t < REQ1 && Math.floor((t - REQ0) / .16) % 2 === 0 || (t > REQ0 + .5 && t < REQ1);
+        if (p.cls === 'in') p.e.classList.toggle('err', on && t < B0);
+        else { const rq = p.e.querySelector('.req'); rq.style.opacity = t > REQ0 && t < B0 + .3 ? 1 : 0; }
+      }
+    });
+    // ---------- conversation ----------
+    const cIn = io(P(R1 - .35, R1 + .1, t)), cOut = io(P(D0, D0 + .45, t));
+    const cOp = cIn * (1 - cOut);
+    chat.style.opacity = cOp;
+    chat.style.transform = `translate(-50%,-50%) scale(${(.95 + .05 * cIn) * (1 - .03 * cOut)})`;
+    chat.style.filter = cOut > 0 ? `blur(${(5 * cOut).toFixed(2)}px)` : cIn < 1 ? `blur(${(4 * (1 - cIn)).toFixed(2)}px)` : '';
+    let lastShown = -1;
+    msgEls.forEach((e, i) => {
+      const [a, b] = MSG[i]; const shownAt = b == null ? a : b;
+      const vis = t >= a;
+      const k = backOut(P(a, a + .28, t));
+      e.style.opacity = vis ? clamp(P(a, a + .15, t)) : 0;
+      e.style.transform = `scale(${vis ? .85 + .15 * k : .85}) translateY(${vis ? (1 - clamp(k)) * 6 : 6}px)`;
+      e.classList.toggle('typing', b != null && t < b);
+      if (b != null && t >= b && t < b + .25) e.style.transform = `scale(${.94 + .06 * backOut(P(b, b + .25, t))})`;
+      if (t >= shownAt) lastShown = i;
+      const dd = e.querySelectorAll('.dots i');
+      dd.forEach((d, j) => { const q = Math.sin(time * 9 - j * .9); d.style.transform = `translateY(${(-2.5 * Math.max(0, q)).toFixed(1)}px)`; d.style.opacity = .45 + .45 * Math.max(0, q); });
+    });
+    chipEls.forEach(c => { const at = MSG[c._at][0] + .2; const k = out(P(at, at + .3, t)); c.style.opacity = k; c.style.transform = `translateY(${(1 - k) * 4}px)`; });
+    document.getElementById('orbA').style.transform = `scale(${.9 + .22 * cOp + .08 * Math.sin(time * .8)})`;
+
+    // ---------- dots ----------
+    ctx.clearRect(0, 0, W, H);
+    dots.forEach(d => {
+      const hx = d.hx + Math.sin(time * d.sp + d.ph) * 22, hy = d.hy + Math.cos(time * d.sp * .9 + d.ph) * 16;
+      let x, y, a;
+      const toForm = io(P(A0 + d.dl, A1, t)), fromForm = io(P(B0 + d.dl * .5, B1, t));
+      const toChat = io(P(R0 + d.dl, R1, t)), fromChat = io(P(D0 + d.dl * .5, D1 - .05, t));
+      if (t < B0) { x = lerp(hx, d.fx, toForm); y = lerp(hy, d.fy, toForm); a = lerp(.4, .14, toForm); }
+      else if (t < R0) { const fx = d.fx + (d.fx - W / 2) * .15; x = lerp(fx, hx, fromForm); y = lerp(d.fy, hy, fromForm); a = lerp(.14, .5, fromForm); }
+      else if (t < D0) { const wob = Math.sin(time * 1.6 + d.ph) * 2; x = lerp(hx, d.cx + wob, toChat); y = lerp(hy, d.cy + wob, toChat); a = lerp(.5, .16, toChat); }
+      else { x = lerp(d.cx, hx, fromChat); y = lerp(d.cy, hy, fromChat); a = lerp(.16, .4, fromChat); }
+      ctx.beginPath(); ctx.arc(x, y, d.r, 0, 6.283); ctx.fillStyle = `rgba(37,99,235,${a.toFixed(3)})`; ctx.fill();
+    });
+  }
+
+  const q = new URLSearchParams(location.search);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const s = q.has('s') ? +q.get('s') % SCEN.length : 0;
+  const st = q.get('state');
+  let fixed = q.has('t') ? +q.get('t') : st === 'form' ? s * T + 1.75 : st === 'break' ? s * T + 3.05 : (st === 'chat' || reduce) ? s * T + 7.05 : null;
+  function go() {
+    if (fixed !== null) { render(fixed); window.__ready = true; addEventListener('resize', () => { cur = -1; render(fixed); }); return; }
+    const t0 = performance.now();
+    addEventListener('resize', () => { cur = -1; });
+    const loop = now => { render(((now - t0) / 1000) % (T * SCEN.length)); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop); window.__ready = true;
+  }
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(go);
+})();
+</script>
+</body>
+</html>
+
