@@ -32,11 +32,20 @@ export default defineConfig({
     { name: "setup", testMatch: /.*\.setup\.ts/ },
     {
       name: "chromium",
+      testIgnore: /.*\.smoke\.spec\.ts/,
       use: {
         ...devices["Desktop Chrome"],
         storageState: "playwright/.auth/user.json",
       },
       dependencies: ["setup"],
+    },
+    {
+      // Signed-out public pages; no auth setup or storageState.
+      name: "landing-smoke",
+      testMatch: /.*\.smoke\.spec\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+      },
     },
     // {
     //   name: "firefox",

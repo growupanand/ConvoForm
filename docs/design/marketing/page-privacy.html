@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Privacy Policy · ConvoForm (MOCKUP)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ===== ConvoForm marketing shell — extracted verbatim from landing v2 (v2build/template.html) ===== */
+  :root{--b50:#eff6ff;--b100:#dbeafe;--b200:#bfdbfe;--b300:#93c5fd;--b400:#60a5fa;--b500:#3b82f6;--b600:#2563eb;--b700:#1d4ed8;
+    --ink:#0f172a;--muted:#475569;--text:#64748b;--slate:#94a3b8;--hair:#cbd5e1;--hair2:#e2e8f0;--line:#e2e8f0;
+    --mono:"JetBrains Mono",ui-monospace,monospace;--disp:"Bricolage Grotesque",Inter,sans-serif;--hw:1.25px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fafbfc;color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  html{scroll-behavior:smooth}
+  html.static{scroll-behavior:auto}
+  a{color:inherit}
+  .mono{font-family:var(--mono)}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+  .sec{position:relative;padding:112px 0}
+  .eyebrow{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--b600);display:inline-flex;align-items:center;gap:8px}
+  .eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--b600);display:block}
+  h2{margin-top:16px;font:700 clamp(32px,4.2vw,50px)/1.06 var(--disp);letter-spacing:-.03em;max-width:760px}
+  h1 em,h2 em{font-style:normal;background:linear-gradient(90deg,var(--b600),var(--b400));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{margin-top:16px;max-width:620px;font-size:17px;line-height:1.6;color:var(--muted)}
+  .center{text-align:center}.center h2,.center .lead{margin-left:auto;margin-right:auto}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font:600 15px/1 Inter,sans-serif;padding:15px 24px;text-decoration:none;transition:transform .15s,background .15s,border-color .15s;white-space:nowrap}
+  .btn-primary{background:var(--b600);color:#fff;box-shadow:0 10px 26px -14px rgba(37,99,235,.7)}
+  .btn-primary:hover{background:var(--b700);transform:translateY(-1px)}
+  .btn-secondary{background:rgba(255,255,255,.7);color:var(--ink);border:var(--hw) solid var(--hair)}
+  .btn-secondary:hover{border-color:var(--slate);transform:translateY(-1px)}
+  .btn-sm{padding:10px 16px;font-size:14px}
+  .grid-bg::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(circle at 1px 1px,rgba(15,23,42,.07) 1px,transparent 0);background-size:22px 22px}
+  .confirm{background:#fef3c7;color:#92400e;border:1px dashed #f59e0b;border-radius:6px;padding:0 6px;font-size:12px;font-weight:600}
+  .ph{color:var(--text);border-bottom:1px dashed var(--slate);font-weight:500}
+  svg.hl{overflow:visible}
+  svg.hl *{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ---------- badge + header ---------- */
+  .mockstrip{display:none}
+  header{position:sticky;top:0;z-index:60;background:rgba(250,251,252,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hair2)}
+  .hd{position:relative;display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font:600 22px/1 var(--disp);letter-spacing:-.01em;text-decoration:none}
+  .logo span{color:var(--b600)}
+  .badge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#451a03;font:700 11px/1 Inter,sans-serif;padding:7px 11px;border-radius:999px;border:1px solid #f59e0b;letter-spacing:.02em;white-space:nowrap}
+  .nav{display:flex;align-items:center;gap:6px}
+  .nav .lk{font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;padding:9px 12px;border-radius:999px}
+  .nav .lk:hover{color:var(--ink)}
+  .nav .gh{display:inline-flex;align-items:center;gap:7px;border:var(--hw) solid var(--hair);padding:7px 12px;font:500 12.5px/1 var(--mono);color:var(--muted)}
+  .nav .gh b{color:var(--b600);font-weight:500}
+  .nav .lk.on{color:var(--b600);background:#fff;box-shadow:inset 0 0 0 var(--hw) var(--b200)}
+  /* ---------- 11 · footer ---------- */
+  footer{margin-top:24px;border-top:var(--hw) solid var(--hair)}
+  .ft{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:36px 24px 44px}
+  .ft nav{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px;color:var(--muted)}
+  .ft nav a{text-decoration:none}.ft nav a:hover{color:var(--ink)}
+  .ft .made{font:400 12px/1.4 var(--mono);color:var(--slate)}
+  .ft nav a.on{color:var(--b600)}
+  @media (max-width:900px){
+    .mockstrip{display:flex;position:fixed;top:0;left:0;right:0;height:20px;z-index:70;align-items:center;justify-content:center;background:#fbbf24;color:#451a03;font:700 10px/1 Inter,sans-serif;letter-spacing:.06em}
+    body{padding-top:20px}
+    header{top:20px}
+    .badge{display:none}
+    .hd{height:58px}
+    .logo{font-size:20px}
+    .nav .hide-m{display:none}
+    .nav .lk{padding:8px 8px}
+    .wrap{padding:0 16px}
+    .sec{padding:76px 0}
+    .lead{font-size:16px}
+    .ft{flex-direction:column;align-items:flex-start;padding:30px 16px 40px}
+  }
+
+
+  /* ---------- sub-page hero (shared by every marketing page) ---------- */
+  .phero{position:relative;isolation:isolate;padding:64px 0 32px}
+  .phero::before{-webkit-mask-image:linear-gradient(to bottom,#000 20%,transparent 90%);mask-image:linear-gradient(to bottom,#000 20%,transparent 90%)}
+  .crumb{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--slate);display:flex;gap:8px;align-items:center}
+  .crumb a{text-decoration:none}.crumb a:hover{color:var(--ink)}
+  .crumb b{color:var(--b600);font-weight:500}
+  .phero h1{margin-top:18px;font:700 clamp(36px,5vw,62px)/1.04 var(--disp);letter-spacing:-.035em}
+  .tag{display:inline-flex;align-items:center;gap:6px;font:500 10.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:5px 9px;border:var(--hw) solid var(--hair);color:var(--muted);background:#fff}
+  .tag.feat{border-color:var(--b200);color:var(--b600);background:var(--b50)}
+  .tag.imp{border-color:var(--hair);color:var(--muted)}
+  .tag.fix{border-style:dashed;border-color:var(--slate);color:var(--muted)}
+  .tag i{font-style:normal;color:var(--slate)}
+  @media (max-width:900px){ .phero{padding:40px 0 24px} }
+
+
+/* ---------- page ---------- */
+
+  .pp-hero .wrap,.pp .wrap{max-width:1120px}
+  .pp-hero h1{margin-top:4px}
+  .upd{display:inline-flex;align-items:center;gap:8px;margin-top:20px;font:500 12px/1 var(--mono);color:var(--muted);border:var(--hw) solid var(--hair);background:#fff;border-radius:999px;padding:8px 12px}
+  .upd i{width:6px;height:6px;border-radius:50%;background:var(--b600)}
+  .pp{padding:16px 0 96px}
+  .pp-grid{display:grid;grid-template-columns:240px minmax(0,68ch);gap:72px;justify-content:center;align-items:start}
+  .toc{position:sticky;top:96px;max-height:calc(100vh - 120px);overflow:auto;padding-top:6px}
+  .toc .tl{font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--slate);margin-bottom:14px}
+  .toc ol{list-style:none;border-left:var(--hw) solid var(--hair)}
+  .toc a{display:flex;gap:10px;padding:7px 0 7px 16px;margin-left:calc(-1 * var(--hw));border-left:var(--hw) solid transparent;text-decoration:none;font-size:14px;line-height:1.4;color:var(--muted);transition:color .15s,border-color .15s}
+  .toc a span{font:400 11px/1.9 var(--mono);color:var(--slate)}
+  .toc a:hover{color:var(--ink)}
+  .toc a.on{color:var(--b600);border-left-color:var(--b600)}
+  .toc a.on span{color:var(--b600)}
+  .toc .back{display:inline-block;margin-top:22px;font:400 12px/1 var(--mono);color:var(--slate);text-decoration:none}
+  .tocm{display:none}
+  article.doc{counter-reset:s;font-size:16.5px;line-height:1.75;color:var(--muted)}
+  .pp-sec{counter-increment:s;padding:34px 0;border-top:var(--hw) solid var(--hair2);scroll-margin-top:88px}
+  .pp-sec:first-child{border-top:0;padding-top:6px}
+  .pp-sec h2{font:600 clamp(22px,2.3vw,27px)/1.25 var(--disp);letter-spacing:-.015em;color:var(--ink);max-width:none;display:flex;gap:14px;align-items:baseline}
+  .pp-sec h2::before{content:counter(s,decimal-leading-zero);font:500 12px/1 var(--mono);color:var(--b600);flex:none;transform:translateY(-3px)}
+  .pp-sec h2 a{text-decoration:none}
+  .pp-sec h2 a:hover{text-decoration:underline;text-decoration-color:var(--b200);text-underline-offset:5px}
+  .pp-sec h3{margin-top:24px;font:600 17px/1.3 var(--disp);color:var(--ink)}
+  .pp-sec p{margin-top:14px}
+  .pp-sec ul{margin-top:14px;list-style:none;display:grid;gap:10px}
+  .pp-sec li{position:relative;padding-left:22px}
+  .pp-sec li::before{content:"";position:absolute;left:3px;top:.85em;width:9px;border-top:var(--hw) solid var(--b300)}
+  .pp-sec strong{color:var(--ink);font-weight:600}
+  .pp-sec a:not(h2 a){color:var(--b600);text-decoration:underline;text-decoration-color:var(--b200);text-underline-offset:3px;overflow-wrap:anywhere}
+  .tnote{margin-top:40px;border:var(--hw) dashed #d97706;background:#fffbeb;border-radius:16px;padding:18px 20px;font-size:14px;line-height:1.6;color:#78350f}
+  .tnote b{font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:8px;color:#b45309}
+  .tnote a{color:#92400e}
+  @media (max-width:900px){
+    .pp-grid{grid-template-columns:minmax(0,1fr);gap:0}
+    .toc{display:none}
+    .tocm{display:block;position:sticky;top:84px;z-index:5;margin-bottom:22px;border:var(--hw) solid var(--hair);border-radius:14px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px)}
+    .tocm summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 16px;font:500 12px/1.2 var(--mono);color:var(--muted)}
+    .tocm summary::-webkit-details-marker{display:none}
+    .tocm summary .cur{color:var(--b600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1;text-align:right}
+    .tocm summary svg{width:14px;height:14px;flex:none;transition:transform .2s}
+    .tocm[open] summary svg{transform:rotate(180deg)}
+    .tocm ol{list-style:none;border-top:var(--hw) solid var(--hair2);padding:6px 0;max-height:60vh;overflow:auto}
+    .tocm a{display:flex;gap:10px;padding:10px 16px;text-decoration:none;font-size:15px;color:var(--muted)}
+    .tocm a span{font:400 11px/1.9 var(--mono);color:var(--slate)}
+    .tocm a.on{color:var(--b600)}
+    article.doc{font-size:16px}
+    .pp-sec{padding:28px 0}
+  }
+
+</style>
+</head>
+<body id="top">
+<div class="mockstrip">MOCKUP — NOT LIVE</div>
+
+<!-- 1 · HEADER -->
+<header>
+  <div class="wrap hd">
+    <a class="logo" href="convoform-landing-v2.html"><span>Convo</span>Form</a>
+    <span class="badge">MOCKUP — not live</span>
+    <nav class="nav">
+      <a class="lk hide-m" href="page-study-abroad.html">Use cases</a>
+      <a class="lk gh hide-m" href="https://github.com/growupanand/ConvoForm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>GitHub <b>★ 102</b></a>
+      <a class="lk" href="#">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="#">Start free</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="phero grid-bg pp-hero">
+  <div class="wrap">
+    <span class="eyebrow"><i></i>Legal</span>
+    <h1>Privacy Policy</h1>
+    <span class="upd"><i></i>Last updated · <time datetime="2025-04-25">25-April-2025</time></span>
+  </div>
+</section>
+<section class="pp">
+  <div class="wrap pp-grid">
+    <nav class="toc" aria-label="On this page">
+      <div class="tl">On this page</div>
+      <ol><li><a href="#introduction" data-t="introduction"><span>01</span>Introduction</a></li><li><a href="#information-we-collect" data-t="information-we-collect"><span>02</span>Information We Collect</a></li><li><a href="#how-we-use-your-information" data-t="how-we-use-your-information"><span>03</span>How We Use Your Information</a></li><li><a href="#data-sharing-and-disclosure" data-t="data-sharing-and-disclosure"><span>04</span>Data Sharing and Disclosure</a></li><li><a href="#data-security" data-t="data-security"><span>05</span>Data Security</a></li><li><a href="#your-privacy-rights" data-t="your-privacy-rights"><span>06</span>Your Privacy Rights</a></li><li><a href="#google-api-services-user-data-policy" data-t="google-api-services-user-data-policy"><span>07</span>Google API Services User Data Policy</a></li><li><a href="#childrens-privacy" data-t="childrens-privacy"><span>08</span>Children's Privacy</a></li><li><a href="#changes-to-this-privacy-policy" data-t="changes-to-this-privacy-policy"><span>09</span>Changes to This Privacy Policy</a></li><li><a href="#contact-us" data-t="contact-us"><span>10</span>Contact Us</a></li></ol>
+      <a class="back" href="#top">↑ Back to top</a>
+    </nav>
+    <div style="min-width:0">
+      <details class="tocm">
+        <summary><span>On this page</span><span class="cur" id="tocCur">Introduction</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <ol><li><a href="#introduction" data-t="introduction"><span>01</span>Introduction</a></li><li><a href="#information-we-collect" data-t="information-we-collect"><span>02</span>Information We Collect</a></li><li><a href="#how-we-use-your-information" data-t="how-we-use-your-information"><span>03</span>How We Use Your Information</a></li><li><a href="#data-sharing-and-disclosure" data-t="data-sharing-and-disclosure"><span>04</span>Data Sharing and Disclosure</a></li><li><a href="#data-security" data-t="data-security"><span>05</span>Data Security</a></li><li><a href="#your-privacy-rights" data-t="your-privacy-rights"><span>06</span>Your Privacy Rights</a></li><li><a href="#google-api-services-user-data-policy" data-t="google-api-services-user-data-policy"><span>07</span>Google API Services User Data Policy</a></li><li><a href="#childrens-privacy" data-t="childrens-privacy"><span>08</span>Children's Privacy</a></li><li><a href="#changes-to-this-privacy-policy" data-t="changes-to-this-privacy-policy"><span>09</span>Changes to This Privacy Policy</a></li><li><a href="#contact-us" data-t="contact-us"><span>10</span>Contact Us</a></li></ol>
+      </details>
+      <article class="doc">
+<section class="pp-sec" id="introduction"><h2><a href="#introduction">Introduction</a></h2>
+<p>ConvoForm ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our conversational form building service.</p>
+</section>
+<section class="pp-sec" id="information-we-collect"><h2><a href="#information-we-collect">Information We Collect</a></h2>
+<h3>Information You Provide</h3>
+<ul>
+<li><strong>Account Information</strong>: When you create an account, we collect your name, email address, and other profile information.</li>
+<li><strong>Form Data</strong>: We collect the content and structure of the forms you create, as well as responses submitted through these forms.</li>
+<li><strong>Google Drive Information</strong>: When you authorize ConvoForm to access your Google Drive to import forms, we only access the necessary information with your explicit permission.</li>
+</ul>
+<h3>Information Automatically Collected</h3>
+<ul>
+<li><strong>Usage Data</strong>: We collect information about how you interact with our service, including browser type, pages viewed, time spent on pages, and referring pages.</li>
+<li><strong>Cookies and Similar Technologies</strong>: We use cookies to maintain session information and enhance your experience.</li>
+</ul>
+</section>
+<section class="pp-sec" id="how-we-use-your-information"><h2><a href="#how-we-use-your-information">How We Use Your Information</a></h2>
+<p>We use the information we collect to:</p>
+<ul>
+<li>Provide, maintain, and improve our services</li>
+<li>Process and complete transactions</li>
+<li>Send you technical notices and support messages</li>
+<li>Respond to your comments and questions</li>
+<li>Understand how users use our service for internal analytics and reporting</li>
+<li>Import form data from Google Drive (only when you explicitly authorize this feature)</li>
+</ul>
+</section>
+<section class="pp-sec" id="data-sharing-and-disclosure"><h2><a href="#data-sharing-and-disclosure">Data Sharing and Disclosure</a></h2>
+<p>We do not sell your personal information. We may share your information in the following situations:</p>
+<ul>
+<li><strong>With Your Consent</strong>: We may share information when you direct us to do so.</li>
+<li><strong>Service Providers</strong>: We may share information with third-party vendors who provide services on our behalf.</li>
+<li><strong>Legal Requirements</strong>: We may disclose information if required by law or to protect rights, property, or safety.</li>
+</ul>
+</section>
+<section class="pp-sec" id="data-security"><h2><a href="#data-security">Data Security</a></h2>
+<p>We implement appropriate technical and organizational measures to protect your personal information. However, no method of transmission over the Internet or electronic storage is 100% secure, so we cannot guarantee absolute security.</p>
+</section>
+<section class="pp-sec" id="your-privacy-rights"><h2><a href="#your-privacy-rights">Your Privacy Rights</a></h2>
+<p>Depending on your location, you may have rights regarding your personal information, including:</p>
+<ul>
+<li>Accessing, correcting, or deleting your personal information</li>
+<li>Withdrawing consent for processing your information</li>
+<li>Objecting to certain processing activities</li>
+<li>Data portability</li>
+</ul>
+<p>To exercise these rights, please contact us using the information provided below.</p>
+</section>
+<section class="pp-sec" id="google-api-services-user-data-policy"><h2><a href="#google-api-services-user-data-policy">Google API Services User Data Policy</a></h2>
+<p>ConvoForm accesses Google API Services and adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements. Our access is limited to the following:</p>
+<ul>
+<li>We only request access to Google Drive data that is necessary for importing form content.</li>
+<li>We only use this access to provide or improve user-facing features that are prominent in the requesting application's user interface.</li>
+<li>We do not transfer this Google user data to others unless doing so is necessary to provide and improve these features, comply with applicable law, or as part of a merger, acquisition, or sale of assets.</li>
+<li>We do not use this Google user data for serving advertisements.</li>
+<li><strong>We do not use Google Workspace APIs data to develop, improve, or train generalized AI and/or ML models.</strong></li>
+<li>We do not allow humans to read this data unless: (1) we have your affirmative agreement; (2) it is necessary for security purposes; (3) it is necessary to comply with applicable law; or (4) our use is limited to internal operations and the data have been aggregated and anonymized.</li>
+</ul>
+</section>
+<section class="pp-sec" id="childrens-privacy"><h2><a href="#childrens-privacy">Children's Privacy</a></h2>
+<p>Our service is not directed to children under 13 (or the applicable age in your jurisdiction). We do not knowingly collect personal information from children.</p>
+</section>
+<section class="pp-sec" id="changes-to-this-privacy-policy"><h2><a href="#changes-to-this-privacy-policy">Changes to This Privacy Policy</a></h2>
+<p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.</p>
+</section>
+<section class="pp-sec" id="contact-us"><h2><a href="#contact-us">Contact Us</a></h2>
+<p>If you have any questions about this Privacy Policy, please contact us at:</p>
+<ul>
+<li>Email: <a href="mailto:contact@convoform.com">contact@convoform.com</a> or <a href="mailto:growupanand@gmail.com">growupanand@gmail.com</a></li>
+<li>Website: <a href="https://www.convoform.com">https://www.convoform.com</a></li>
+</ul>
+</section>
+      </article>
+      <aside class="tnote"><b>Mockup note · Terms</b>Terms and Conditions (<a href="#">/terms</a>, “Last Updated: 02-May-2025”) would use this identical template: same hero, “Last updated” pill, sticky table of contents with scrollspy, collapsible “On this page” on mobile, and numbered sections with hairline dividers. Only the MDX content changes.</aside>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap ft">
+    <a class="logo" href="convoform-landing-v2.html"><span>Convo</span>Form</a>
+    <nav><a href="page-study-abroad.html">Use cases</a><a href="https://docs.convoform.com">Documentation</a><a href="page-changelog.html">Changelog</a><a href="https://github.com/growupanand/ConvoForm">GitHub</a><a href="page-privacy.html" class="on" aria-current="page">Privacy</a><a href="#">Terms</a></nav>
+    <span class="made">Made by <span class="ph">[name]</span></span>
+  </div>
+</footer>
+
+<script>
+/* ---------- shared player: each animation keeps its own clock, advanced only while it is on screen ---------- */
+const QS = new URLSearchParams(location.search);
+const STATIC = QS.has('static') || matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (STATIC) document.documentElement.classList.add('static');
+const ANIMS = [];
+function registerAnim(el, render, final, o = {}) { const a = Object.assign({ el, render, final, acc: 0, vis: false }, o); ANIMS.push(a); return a; }
+</script>
+<script>
+
+(() => {
+  const secs = [...document.querySelectorAll('.pp-sec')], links = [...document.querySelectorAll('.toc a[data-t], .tocm a[data-t]')], cur = document.getElementById('tocCur'), dm = document.querySelector('.tocm');
+  const set = id => { links.forEach(a => a.classList.toggle('on', a.dataset.t === id)); const a = links.find(a => a.dataset.t === id); if (a && cur) cur.textContent = a.lastChild.textContent; };
+  set(secs[0].id);
+  const vis = new Set();
+  const io = new IntersectionObserver(es => { es.forEach(e => e.isIntersecting ? vis.add(e.target.id) : vis.delete(e.target.id)); const f = secs.find(s => vis.has(s.id)); if (f) set(f.id); }, { rootMargin: '-30% 0px -60% 0px' });
+  secs.forEach(s => io.observe(s));
+  addEventListener('scroll', () => { if (innerHeight + scrollY >= document.body.scrollHeight - 4) set(secs[secs.length - 1].id); }, { passive: true });
+  document.querySelectorAll('.tocm a').forEach(a => a.addEventListener('click', () => dm.open = false));
+})();
+
+</script>
+<script>
+(() => {
+  /* ---------- player (from landing v2) — .reveal elements get .in once on screen ---------- */
+  function start() {
+    ANIMS.forEach(a => a.render(STATIC ? a.final : 0));
+    const rev = [...document.querySelectorAll('.reveal')];
+    if (STATIC) { rev.forEach(r => r.classList.add('in')); window.__ready = true; addEventListener('resize', () => ANIMS.forEach(a => { a.onResize && a.onResize(); a.render(a.final); })); return; }
+    const ob = new IntersectionObserver(es => es.forEach(e => { ANIMS.forEach(a => { if (a.el === e.target) a.vis = e.isIntersecting; }); }), { threshold: .2 });
+    ANIMS.forEach(a => ob.observe(a.el));
+    const ro = new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); o.unobserve(e.target); } }), { threshold: .3 });
+    rev.forEach(r => ro.observe(r));
+    addEventListener('resize', () => ANIMS.forEach(a => { a.onResize && a.onResize(); a.render(a.acc); }));
+    let last = performance.now();
+    const loop = now => { const dt = Math.min(.1, (now - last) / 1000); last = now; ANIMS.forEach(a => { if (a.vis) { a.acc += dt; a.render(a.acc); } }); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop); window.__ready = true;
+  }
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(start);
+})();
+
+</script>
+</body>
+</html>
+

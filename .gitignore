@@ -59,3 +59,8 @@ temp
 next-env.d.ts
 
 .playwright-mcp
+
+# Impeccable: per-developer config, hook cache, and the engine binary (the launcher re-downloads it)
+.impeccable/config.local.json
+.impeccable/hook.cache.json
+.agents/skills/impeccable/scripts/bin/

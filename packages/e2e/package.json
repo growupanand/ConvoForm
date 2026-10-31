@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "e2e": "playwright test",
+        "e2e:smoke": "playwright test --project=landing-smoke",
         "e2e:ui": "playwright test --ui",
         "e2e:debug": "playwright test --debug",
         "codegen": "playwright codegen",

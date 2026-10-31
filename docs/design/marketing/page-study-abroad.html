@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Student Intake Forms for Study Abroad Consultants · ConvoForm (MOCKUP)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ===== ConvoForm marketing shell — extracted verbatim from landing v2 (v2build/template.html) ===== */
+  :root{--b50:#eff6ff;--b100:#dbeafe;--b200:#bfdbfe;--b300:#93c5fd;--b400:#60a5fa;--b500:#3b82f6;--b600:#2563eb;--b700:#1d4ed8;
+    --ink:#0f172a;--muted:#475569;--text:#64748b;--slate:#94a3b8;--hair:#cbd5e1;--hair2:#e2e8f0;--line:#e2e8f0;
+    --mono:"JetBrains Mono",ui-monospace,monospace;--disp:"Bricolage Grotesque",Inter,sans-serif;--hw:1.25px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fafbfc;color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  html{scroll-behavior:smooth}
+  html.static{scroll-behavior:auto}
+  a{color:inherit}
+  .mono{font-family:var(--mono)}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+  .sec{position:relative;padding:112px 0}
+  .eyebrow{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--b600);display:inline-flex;align-items:center;gap:8px}
+  .eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--b600);display:block}
+  h2{margin-top:16px;font:700 clamp(32px,4.2vw,50px)/1.06 var(--disp);letter-spacing:-.03em;max-width:760px}
+  h1 em,h2 em{font-style:normal;background:linear-gradient(90deg,var(--b600),var(--b400));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{margin-top:16px;max-width:620px;font-size:17px;line-height:1.6;color:var(--muted)}
+  .center{text-align:center}.center h2,.center .lead{margin-left:auto;margin-right:auto}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font:600 15px/1 Inter,sans-serif;padding:15px 24px;text-decoration:none;transition:transform .15s,background .15s,border-color .15s;white-space:nowrap}
+  .btn-primary{background:var(--b600);color:#fff;box-shadow:0 10px 26px -14px rgba(37,99,235,.7)}
+  .btn-primary:hover{background:var(--b700);transform:translateY(-1px)}
+  .btn-secondary{background:rgba(255,255,255,.7);color:var(--ink);border:var(--hw) solid var(--hair)}
+  .btn-secondary:hover{border-color:var(--slate);transform:translateY(-1px)}
+  .btn-sm{padding:10px 16px;font-size:14px}
+  .grid-bg::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(circle at 1px 1px,rgba(15,23,42,.07) 1px,transparent 0);background-size:22px 22px}
+  .confirm{background:#fef3c7;color:#92400e;border:1px dashed #f59e0b;border-radius:6px;padding:0 6px;font-size:12px;font-weight:600}
+  .ph{color:var(--text);border-bottom:1px dashed var(--slate);font-weight:500}
+  svg.hl{overflow:visible}
+  svg.hl *{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ---------- badge + header ---------- */
+  .mockstrip{display:none}
+  header{position:sticky;top:0;z-index:60;background:rgba(250,251,252,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hair2)}
+  .hd{position:relative;display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font:600 22px/1 var(--disp);letter-spacing:-.01em;text-decoration:none}
+  .logo span{color:var(--b600)}
+  .badge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fbbf24;color:#451a03;font:700 11px/1 Inter,sans-serif;padding:7px 11px;border-radius:999px;border:1px solid #f59e0b;letter-spacing:.02em;white-space:nowrap}
+  .nav{display:flex;align-items:center;gap:6px}
+  .nav .lk{font-size:14px;font-weight:500;color:var(--muted);text-decoration:none;padding:9px 12px;border-radius:999px}
+  .nav .lk:hover{color:var(--ink)}
+  .nav .gh{display:inline-flex;align-items:center;gap:7px;border:var(--hw) solid var(--hair);padding:7px 12px;font:500 12.5px/1 var(--mono);color:var(--muted)}
+  .nav .gh b{color:var(--b600);font-weight:500}
+  .nav .lk.on{color:var(--b600);background:#fff;box-shadow:inset 0 0 0 var(--hw) var(--b200)}
+  /* ---------- 11 · footer ---------- */
+  footer{margin-top:24px;border-top:var(--hw) solid var(--hair)}
+  .ft{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:36px 24px 44px}
+  .ft nav{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px;color:var(--muted)}
+  .ft nav a{text-decoration:none}.ft nav a:hover{color:var(--ink)}
+  .ft .made{font:400 12px/1.4 var(--mono);color:var(--slate)}
+  .ft nav a.on{color:var(--b600)}
+  @media (max-width:900px){
+    .mockstrip{display:flex;position:fixed;top:0;left:0;right:0;height:20px;z-index:70;align-items:center;justify-content:center;background:#fbbf24;color:#451a03;font:700 10px/1 Inter,sans-serif;letter-spacing:.06em}
+    body{padding-top:20px}
+    header{top:20px}
+    .badge{display:none}
+    .hd{height:58px}
+    .logo{font-size:20px}
+    .nav .hide-m{display:none}
+    .nav .lk{padding:8px 8px}
+    .wrap{padding:0 16px}
+    .sec{padding:76px 0}
+    .lead{font-size:16px}
+    .ft{flex-direction:column;align-items:flex-start;padding:30px 16px 40px}
+  }
+
+
+  /* ---------- sub-page hero (shared by every marketing page) ---------- */
+  .phero{position:relative;isolation:isolate;padding:64px 0 32px}
+  .phero::before{-webkit-mask-image:linear-gradient(to bottom,#000 20%,transparent 90%);mask-image:linear-gradient(to bottom,#000 20%,transparent 90%)}
+  .crumb{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--slate);display:flex;gap:8px;align-items:center}
+  .crumb a{text-decoration:none}.crumb a:hover{color:var(--ink)}
+  .crumb b{color:var(--b600);font-weight:500}
+  .phero h1{margin-top:18px;font:700 clamp(36px,5vw,62px)/1.04 var(--disp);letter-spacing:-.035em}
+  .tag{display:inline-flex;align-items:center;gap:6px;font:500 10.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:5px 9px;border:var(--hw) solid var(--hair);color:var(--muted);background:#fff}
+  .tag.feat{border-color:var(--b200);color:var(--b600);background:var(--b50)}
+  .tag.imp{border-color:var(--hair);color:var(--muted)}
+  .tag.fix{border-style:dashed;border-color:var(--slate);color:var(--muted)}
+  .tag i{font-style:normal;color:var(--slate)}
+  @media (max-width:900px){ .phero{padding:40px 0 24px} }
+
+/* ===== shared components — verbatim from landing v2 ===== */
+  /* ---------- 5 · before / after ---------- */
+  #why{isolation:isolate}
+  .tabs{display:inline-flex;gap:4px;margin-top:32px;padding:4px;border:var(--hw) solid var(--hair);border-radius:999px;background:rgba(255,255,255,.6)}
+  .tab{appearance:none;border:var(--hw) solid transparent;background:none;border-radius:999px;padding:9px 16px;font:500 12px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--text);cursor:pointer}
+  .tab.on{border-color:var(--b300);color:var(--b600);background:#fff}
+  .ba-grid{margin-top:28px;display:grid;grid-template-columns:1fr 1.25fr;gap:24px;align-items:stretch}
+  .pane{position:relative;border-radius:22px;padding:26px 26px 24px;background:rgba(255,255,255,.6)}
+  .pane.st{border:var(--hw) dashed var(--hair)}
+  .pane.cv{border:var(--hw) solid var(--b200);background:#fff}
+  .pane.cv::after{content:"";position:absolute;inset:10% -6% -10%;z-index:-1;background:radial-gradient(ellipse,rgba(147,197,253,.35),transparent 65%);filter:blur(30px)}
+  .mlab{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--slate);display:flex;align-items:center;gap:8px}
+  .mlab::before{content:"";width:10px;border-top:var(--hw) solid currentColor;opacity:.7}
+  .mlab.b{color:var(--b600)}
+  .sf{margin-top:22px}
+  .sf-l{font-size:13px;color:var(--text)}
+  .sf-in{margin-top:8px;height:42px;border:var(--hw) solid var(--hair);border-radius:4px;display:flex;align-items:center;padding:0 12px;font-size:15px;color:#64748b;background:#fff}
+  .sf-in .c{display:inline-block;width:1px;height:18px;background:#64748b;margin-left:1px}
+  .sf-btn{margin-top:14px;display:inline-block;padding:9px 16px;border:var(--hw) solid var(--hair);border-radius:4px;font:500 12px/1 Inter;color:var(--slate)}
+  .saved{margin-top:22px;padding-top:16px;border-top:1px dashed var(--hair);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .saved .k{font:500 10.5px/1 var(--mono);letter-spacing:.08em;color:var(--slate)}
+  .saved b{font:600 20px/1.1 var(--disp);color:var(--slate)}
+  .pane.cv .saved b{color:var(--b600)}
+  .saved svg{width:22px;height:22px}
+  .sf-note{margin-top:10px;font-size:14px;line-height:1.5;color:var(--text)}
+  .cvm{margin-top:18px;display:flex;flex-direction:column;gap:9px;min-height:196px}
+  .bub{position:relative;max-width:82%;padding:9px 13px;border-radius:16px;font-size:14.5px;line-height:1.35;border:var(--hw) solid var(--hair);background:#fff;opacity:0}
+  .bub.ai{align-self:flex-start;border-bottom-left-radius:5px}
+  .bub.u{align-self:flex-end;border-color:var(--ink);border-bottom-right-radius:5px;font-weight:500}
+  .bub.fu{border-color:var(--b400);color:var(--b700);background:var(--b50)}
+  .bub .vg{background-image:linear-gradient(var(--b600),var(--b600));background-repeat:no-repeat;background-position:0 100%;background-size:0 1.25px;padding-bottom:1px}
+  .futag{display:block;font:500 9.5px/1 var(--mono);letter-spacing:.08em;color:var(--b600);margin-bottom:6px}
+  .ba-table{margin-top:24px;border:var(--hw) solid var(--hair);border-radius:18px;background:rgba(255,255,255,.7);overflow:hidden}
+  .tt-h{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 18px;border-bottom:var(--hw) solid var(--hair2);font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text)}
+  .tt-h .il{color:var(--slate);border:1px dashed var(--hair);border-radius:999px;padding:4px 8px;font-size:10px}
+  .tt-row{display:grid;grid-template-columns:repeat(var(--n,5),1fr)}
+  .cell{padding:14px 18px;border-left:1px solid var(--hair2);opacity:0}
+  .cell:first-child{border-left:0}
+  .cell .k{font:500 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--slate)}
+  .cell .v{margin-top:8px;font-size:15px;font-weight:500;color:var(--ink)}
+  .cell.hl .v{color:var(--b600)}
+  .cell.hl .k{color:var(--b600)}
+  .dont{margin-top:20px;border:var(--hw) solid var(--hair);border-radius:20px;padding:26px 28px;background:rgba(255,255,255,.6)}
+  .dont h3{font:600 20px/1.2 var(--disp)}
+  .dont ul{list-style:none;margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px 32px}
+  .dont li{display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.5;color:var(--muted)}
+  .dont li svg{flex:none;width:22px;height:22px;margin-top:1px;overflow:visible}
+  .dont li svg *{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+  .dont li .x{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .5s cubic-bezier(.65,0,.35,1)}
+  .dont.in li .x{stroke-dashoffset:0}
+  .dont.in li:nth-child(2) .x{transition-delay:.12s}.dont.in li:nth-child(3) .x{transition-delay:.24s}.dont.in li:nth-child(4) .x{transition-delay:.36s}
+  html.static .dont li .x{transition:none}
+  /* ---------- 9 · faq ---------- */
+  .faq{max-width:820px;margin:36px auto 0;border-top:var(--hw) solid var(--hair)}
+  .faq details{border-bottom:var(--hw) solid var(--hair)}
+  .faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 2px;font:600 18px/1.3 var(--disp)}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary>span{display:flex;align-items:baseline}
+  .faq summary .n{flex:none}
+  .faq summary .n{font:500 11px/1 var(--mono);color:var(--slate);margin-right:14px;letter-spacing:.06em}
+  .faq summary .pl{flex:none;width:28px;height:28px;border:var(--hw) solid var(--hair);border-radius:50%;position:relative;transition:transform .25s,border-color .2s}
+  .faq summary .pl::before,.faq summary .pl::after{content:"";position:absolute;left:50%;top:50%;width:11px;height:0;border-top:var(--hw) solid var(--ink);transform:translate(-50%,-50%)}
+  .faq summary .pl::after{transform:translate(-50%,-50%) rotate(90deg)}
+  .faq details[open] .pl{transform:rotate(45deg);border-color:var(--b300)}
+  .faq details[open] summary{color:var(--b700)}
+  .faq .ans{padding:0 44px 24px 2px;font-size:15.5px;line-height:1.65;color:var(--muted)}
+  /* ---------- 10 · final CTA ---------- */
+  #cta .panel{position:relative;border:var(--hw) solid var(--hair);border-radius:32px;background:#fff;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:24px;padding:64px 56px 64px 64px;isolation:isolate}
+  #cta .panel::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(circle at 1px 1px,rgba(15,23,42,.075) 1px,transparent 0);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse 70% 90% at 72% 50%,#000 25%,transparent 80%);mask-image:radial-gradient(ellipse 70% 90% at 72% 50%,#000 25%,transparent 80%)}
+  #cta .panel::after{content:"";position:absolute;z-index:-2;width:720px;height:520px;right:-120px;top:50%;margin-top:-260px;background:radial-gradient(ellipse,rgba(147,197,253,.42),rgba(191,219,254,.15) 45%,transparent 70%);filter:blur(30px);pointer-events:none}
+  #cta h2{margin-top:18px;font-size:clamp(34px,4.6vw,56px);line-height:1.04;max-width:560px}
+  #cta .sub{margin-top:16px;max-width:470px;font-size:17px;line-height:1.55;color:var(--muted)}
+  #cta .ctas{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+  #cta .proof{margin-top:20px;font:400 12px/1.5 var(--mono);letter-spacing:.02em;color:var(--text);display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+  #cta .proof .sep{color:var(--hair)}
+  #cta .proof a{text-decoration:none;border-bottom:1px dotted var(--hair);white-space:nowrap}
+  #cta .proof .star{color:var(--b600)}
+  #ctaSv{visibility:hidden;display:block;width:100%;height:auto;overflow:visible}
+  #ctaSv text{font-family:Inter,system-ui,sans-serif}
+  #ctaSv .mono{font-family:var(--mono);letter-spacing:.06em}
+  #ctaSv rect,#ctaSv line,#ctaSv path{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+  @media (max-width:900px){
+    .ba-grid{grid-template-columns:1fr;gap:14px}
+    .pane{padding:20px 18px}
+    .tabs{display:flex;width:100%}
+    .tab{flex:1;padding:10px 8px;font-size:11px}
+    .tt-row{grid-template-columns:1fr 1fr}
+    .cell{border-left:0;border-top:1px solid var(--hair2)}
+    .cell:nth-child(even){border-left:1px solid var(--hair2)}
+    .cell:nth-child(-n+2){border-top:0}
+    .cell:last-child:nth-child(odd){grid-column:1 / -1}
+    .tt-h{padding:12px 14px}
+    .cell{padding:12px 14px}
+    .dont{padding:22px 20px}
+    .dont ul{grid-template-columns:1fr}
+    .faq summary{font-size:16.5px;padding:18px 0}
+    .faq .ans{padding:0 0 20px;font-size:15px}
+    #cta .panel{grid-template-columns:1fr;padding:36px 22px 26px;border-radius:26px;gap:8px}
+    #cta .panel::before{-webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 80%,#000 25%,transparent 80%);mask-image:radial-gradient(ellipse 90% 60% at 50% 80%,#000 25%,transparent 80%)}
+    #cta .panel::after{width:520px;height:420px;right:50%;margin-right:-260px;top:auto;bottom:-140px;margin-top:0}
+    #cta h2{font-size:36px}
+    #cta .sub{font-size:15.5px}
+    #cta .ctas{flex-direction:column;align-items:stretch}
+    #cta .proof{font-size:11px}
+    #cta .proof .s2{display:none}
+    #cta .proof .os{flex-basis:100%;border-bottom:0}
+    #cta .proof .os span.u{border-bottom:1px dotted var(--hair)}
+    #cta .vis{order:2;margin:10px -6px 0}
+  }
+
+  .steps{max-width:1080px;margin:48px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+  .step{border-top:var(--hw) solid var(--hair);padding-top:18px}
+  .step .n{font:500 11px/1 var(--mono);letter-spacing:.08em;color:var(--b600)}
+  .step h3{margin-top:12px;font:600 20px/1.2 var(--disp);letter-spacing:-.01em}
+  .step p{margin-top:8px;font-size:15px;line-height:1.55;color:var(--muted)}
+  .feat{display:inline-flex;align-items:center;gap:8px;font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--b600);border:var(--hw) solid var(--b200);border-radius:999px;padding:6px 10px 6px 8px}
+  .feat svg{width:15px;height:15px}
+  .fch{border:var(--hw) solid var(--hair);border-radius:14px;background:#fff;padding:12px 14px}
+  .fch .k{font:500 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--slate)}
+  .fch .v{margin-top:7px;font-size:14px;font-weight:500}
+  .more{margin-top:16px;font-size:14px;color:var(--text)}
+  @media (max-width:900px){
+    .steps{grid-template-columns:1fr;gap:22px;margin-top:36px}
+    .uc-f{padding:22px;border-left:0;border-top:var(--hw) solid var(--hair2)}
+    .fch{padding:10px 12px}.fch .v{font-size:13.5px}
+    .tt-h{font-size:10px}.tt-h>span{white-space:nowrap}
+  }
+
+/* ---------- page ---------- */
+
+  #hero.phero{padding-bottom:56px}
+  .sa-hero{display:grid;grid-template-columns:1.08fr .92fr;gap:56px;align-items:center}
+  .sa-hero .kick{margin-top:18px;font:500 13px/1.4 var(--mono);letter-spacing:.02em;color:var(--b600)}
+  .sa-hero h1{margin-top:14px;max-width:620px}
+  .sa-hero .intro{margin-top:18px;max-width:560px;font-size:17.5px;line-height:1.6;color:var(--muted)}
+  .sa-hero .ctas{margin-top:28px;display:flex;gap:12px;flex-wrap:wrap}
+  .sa-hero .note{margin-top:16px;max-width:520px;font-size:14px;line-height:1.55;color:var(--text);display:flex;gap:9px;align-items:flex-start}
+  .sa-hero .note svg{width:15px;height:15px;flex:none;margin-top:2px}
+  .pcard{position:relative;border:var(--hw) solid var(--hair);border-radius:26px;background:rgba(255,255,255,.75);overflow:hidden;isolation:isolate}
+  .pcard::after{content:"";position:absolute;inset:-20% -20% auto auto;width:360px;height:360px;z-index:-1;background:radial-gradient(circle,rgba(147,197,253,.38),transparent 65%);filter:blur(30px)}
+  .pcard .pc-h{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 20px;border-bottom:var(--hw) solid var(--hair2);font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text)}
+  .pcard .pc-h .il{color:var(--slate);border:1px dashed var(--hair);border-radius:999px;padding:4px 8px;font-size:10px}
+  .pcard .pc-b{position:relative;padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px;isolation:isolate}
+  .pcard .pc-b::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(circle at 1px 1px,rgba(15,23,42,.07) 1px,transparent 0);background-size:22px 22px}
+  .pcard .fch.hl{border-color:var(--b300)}.pcard .fch.hl .k{color:var(--b600)}.pcard .fch.hl .v{color:var(--b700)}
+  .pcard .pc-f{padding:14px 20px;border-top:var(--hw) solid var(--hair2);font-size:13px;line-height:1.5;color:var(--text)}
+  .pain{display:grid;grid-template-columns:1fr 1fr;gap:20px 56px;align-items:end}
+  .pain h2{margin-top:16px}
+  .pain p{font-size:16.5px;line-height:1.65;color:var(--muted)}
+  .pain p+p{margin-top:12px}
+  .steps .lk2{display:inline-flex;gap:6px;margin-top:12px;font-size:14px;font-weight:600;color:var(--b600);text-decoration:none;border-bottom:1px solid var(--b200)}
+  .after{margin-top:40px;display:flex;justify-content:center}
+  .fgrid{margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);border:var(--hw) solid var(--hair);border-radius:22px;background:rgba(255,255,255,.7);overflow:hidden}
+  .fd{padding:24px 24px 26px;border-left:var(--hw) solid var(--hair2);border-top:var(--hw) solid var(--hair2)}
+  .fd:nth-child(3n+1){border-left:0}.fd:nth-child(-n+3){border-top:0}
+  .fd .chip{display:inline-flex;align-items:center;gap:8px;font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--b600);border:var(--hw) solid var(--b200);background:var(--b50);border-radius:999px;padding:6px 10px}
+  .fd .chip svg{width:14px;height:14px}
+  .fd .lb{margin-top:18px;font:500 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--slate)}
+  .fd .ask{margin-top:7px;font:600 17px/1.35 var(--disp);letter-spacing:-.005em;color:var(--ink)}
+  .fd .why{margin-top:7px;font-size:14.5px;line-height:1.55;color:var(--muted)}
+  .fd .ex{margin-top:14px;padding-top:12px;border-top:1px dashed var(--hair);font:400 12px/1.4 var(--mono);color:var(--text)}
+  .fd .ex b{font-weight:500;color:var(--ink)}
+  .fnote{margin-top:18px;max-width:820px;display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.6;color:var(--muted)}
+  .fnote svg{flex:none;width:20px;height:20px;margin-top:1px}
+  .scope{margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .sc{border:var(--hw) solid var(--hair);border-radius:22px;padding:28px;background:rgba(255,255,255,.6)}
+  .sc.yes{border-color:var(--b200);background:#fff}
+  .sc h3{font:600 20px/1.2 var(--disp);letter-spacing:-.01em}
+  .sc ul{list-style:none;margin-top:18px;display:grid;gap:14px}
+  .sc li{display:flex;gap:12px;align-items:flex-start;font-size:15.5px;line-height:1.55;color:var(--muted)}
+  .sc li svg{flex:none;width:20px;height:20px;margin-top:2px;overflow:visible}
+  .sc li svg *{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+  .sc.no li .x{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .5s cubic-bezier(.65,0,.35,1)}
+  .sc.no.in li .x{stroke-dashoffset:0}
+  .sc.no.in li:nth-child(2) .x{transition-delay:.15s}
+  html.static .sc.no li .x{transition:none}
+  #cta .after-note{margin-top:20px;max-width:470px;font:400 12.5px/1.6 var(--mono);letter-spacing:.01em;color:var(--text)}
+  #cta h2 em{white-space:nowrap}
+  @media (max-width:900px){ #cta h2 em{white-space:normal} #cta .panel>*{min-width:0} }
+  @media (max-width:1100px){ .fgrid{grid-template-columns:1fr 1fr} .fd:nth-child(n){border-left:var(--hw) solid var(--hair2);border-top:var(--hw) solid var(--hair2)} .fd:nth-child(2n+1){border-left:0} .fd:nth-child(-n+2){border-top:0} }
+  @media (max-width:900px){
+    .sa-hero{grid-template-columns:1fr;gap:32px}
+    .sa-hero .intro{font-size:16px}
+    .sa-hero .ctas{flex-direction:column;align-items:stretch}
+    .pcard{border-radius:22px}
+    .pcard .pc-h{padding:13px 14px;font-size:10px}.pcard .pc-h>span{white-space:nowrap}
+    .pcard .pc-b{padding:14px;gap:8px}
+    .pcard .pc-f{padding:12px 14px}
+    .pain{grid-template-columns:1fr;gap:14px}
+    .fgrid{grid-template-columns:1fr;border-radius:20px}
+    .fd:nth-child(n){border-left:0;border-top:var(--hw) solid var(--hair2)}
+    .fd:first-child{border-top:0}
+    .fd{padding:20px 18px 22px}
+    .scope{grid-template-columns:1fr;gap:14px}
+    .sc{padding:22px 20px}
+    .after .btn{width:100%;max-width:400px}
+  }
+
+</style>
+</head>
+<body>
+<div class="mockstrip">MOCKUP — NOT LIVE</div>
+
+<!-- 1 · HEADER -->
+<header>
+  <div class="wrap hd">
+    <a class="logo" href="convoform-landing-v2.html"><span>Convo</span>Form</a>
+    <span class="badge">MOCKUP — not live</span>
+    <nav class="nav">
+      <a class="lk hide-m on" href="page-study-abroad.html" aria-current="page">Use cases</a>
+      <a class="lk gh hide-m" href="https://github.com/growupanand/ConvoForm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>GitHub <b>★ 102</b></a>
+      <a class="lk" href="#">Sign in</a>
+      <a class="btn btn-primary btn-sm" href="#">Start free</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section id="hero" class="phero grid-bg">
+  <div class="wrap sa-hero">
+    <div>
+      <nav class="crumb" aria-label="Breadcrumb"><a href="page-study-abroad.html">Use cases</a><span>/</span><b>Study abroad</b></nav>
+      <p class="kick">AI student intake forms for study-abroad consultancies</p>
+      <h1>Start counselling with a student profile, <em>not a blank slate</em></h1>
+      <p class="intro">Collect destination, course, intake, marks, budget and test status before the first call. Students answer in their own words; ConvoForm can ask a follow-up when details are unclear.</p>
+      <div class="ctas"><a class="btn btn-primary" href="https://www.convoform.com/auth/register">Create a student intake form <span aria-hidden="true">→</span></a></div>
+      <p class="note"><svg class="hl" viewBox="0 0 16 16" fill="none" stroke="#94a3b8" stroke-width="1.25" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v4M8 4.9v.1"/></svg>Your counsellors make the recommendations. ConvoForm helps collect the context.</p>
+    </div>
+    <div class="pcard" role="img" aria-label="Example student profile with six collected fields">
+      <div class="pc-h"><span>Student profile</span><span class="il">Illustrative data</span></div>
+      <div class="pc-b"><div class="fch"><div class="k">Destination</div><div class="v">Canada, UK</div></div><div class="fch"><div class="k">Course</div><div class="v">Master's, Computer Science</div></div><div class="fch"><div class="k">Intake</div><div class="v">September 2027</div></div><div class="fch"><div class="k">Marks</div><div class="v">84%</div></div><div class="fch hl"><div class="k">Budget</div><div class="v">₹20 lakh per year, tuition + living</div></div><div class="fch"><div class="k">Tests</div><div class="v">IELTS not taken yet</div></div></div>
+      <div class="pc-f">Collected information stores shorter values, like “84%” or “₹20 lakh per year, tuition + living”.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN + BEFORE/AFTER (study only, no tabs) -->
+<section id="why" class="sec" style="padding-top:56px">
+  <div class="wrap">
+    <div class="pain">
+      <div><span class="eyebrow"><i></i>The problem</span><h2>A name and phone number <em>aren't enough</em> to start counselling</h2></div>
+      <div>
+        <p>An enquiry often arrives with a name and a phone number. Country, course, intake, marks, budget and test status still have to come out before counselling can be useful.</p>
+        <p>A standard form can ask for a currency and a test status directly. Free-text still needs a follow-up when the meaning is unclear: a budget of “20” does not say the currency or what the amount covers, and “not yet” is a status, not a score.</p>
+      </div>
+    </div>
+    <div id="ba">
+      <div class="ba-grid">
+        <div class="pane st">
+          <div class="mlab">Standard form</div>
+          <div class="sf"><div class="sf-l" id="baSL">Budget *</div><div class="sf-in"><span id="baSV"></span><span class="c" id="baSC"></span></div><span class="sf-btn">Submit</span></div>
+          <div class="saved" id="baSS"><span class="k">SAVED</span><b id="baSSv">20</b></div>
+          <p class="sf-note" id="baSN"></p>
+        </div>
+        <div class="pane cv">
+          <div class="mlab b">ConvoForm</div>
+          <div class="cvm" id="baMsgs"></div>
+          <div class="saved" id="baCS"><span class="k">SAVED</span><b id="baCSv"></b>
+            <svg class="hl" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#93c5fd" stroke-width="1.25" pathLength="1" id="baRing"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#2563eb" stroke-width="1.75" pathLength="1" id="baTick"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="ba-table">
+        <div class="tt-h"><span>What your counsellor sees</span><span class="il">Illustrative data</span></div>
+        <div class="tt-row" id="baRow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section id="how" class="sec" style="padding-top:40px">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow"><i></i>How it works</span>
+      <h2>Keep the fields. <em>Change how you ask</em> for them.</h2>
+      <p class="lead">You decide which details matter. ConvoForm asks for them in a conversation, and can follow up when an answer is unclear.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><span class="n">01</span><h3>Define the profile you need</h3><p>Describe the fields you need, including a budget with its currency and scope, marks with a grading scale, and an intake with its year. Review the generated form before you share it.</p><a class="lk2" href="https://docs.convoform.com/concepts/form-creation">How form creation works <span aria-hidden="true">→</span></a></div>
+      <div class="step"><span class="n">02</span><h3>Share the form link</h3><p>Publish the form and share its link from your website, social bio or enquiry replies. When an answer does not meet a field, ConvoForm can ask a follow-up before it saves the answer and moves on.</p></div>
+      <div class="step"><span class="n">03</span><h3>Review the answers before following up</h3><p>Review the collected answers and the conversation, then decide what still needs checking. A counsellor still needs to verify the student's details and assess suitable options.</p></div>
+    </div>
+    <div class="after"><a class="btn btn-primary" href="https://www.convoform.com/auth/register">Create a student intake form <span aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+
+<!-- FIELDS -->
+<section id="fields" class="sec" style="padding-top:40px">
+  <div class="wrap">
+    <span class="eyebrow"><i></i>The six fields</span>
+    <h2>Collect the six details <em>your first call needs</em></h2>
+    <p class="lead">This study-abroad example uses six fields. Adjust the descriptions to match your consultancy's process.</p>
+    <div class="fgrid"><div class="fd"><span class="chip"><svg class="hl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Destination</span><div class="lb">What to ask for</div><div class="ask">Preferred country, or that the student is still exploring</div><div class="lb">Why it helps the counsellor</div><p class="why">Establish the starting point without treating uncertainty as a bad lead</p><div class="ex">e.g. <b>Canada, UK</b></div></div><div class="fd"><span class="chip"><svg class="hl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M2 9.5 12 5l10 4.5L12 14z"/><path d="M6 11.5V16c0 1.6 2.7 3 6 3s6-1.4 6-3v-4.5"/></svg>Course</span><div class="lb">What to ask for</div><div class="ask">Subject area and intended level of study</div><div class="lb">Why it helps the counsellor</div><p class="why">Understand what the student wants to pursue</p><div class="ex">e.g. <b>Master's, Computer Science</b></div></div><div class="fd"><span class="chip"><svg class="hl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Intake</span><div class="lb">What to ask for</div><div class="ask">Preferred start month or term, with the year</div><div class="lb">Why it helps the counsellor</div><p class="why">Understand the student's timeline</p><div class="ex">e.g. <b>September 2027</b></div></div><div class="fd"><span class="chip"><svg class="hl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Marks</span><div class="lb">What to ask for</div><div class="ask">Latest qualification, marks or CGPA, and grading scale</div><div class="lb">Why it helps the counsellor</div><p class="why">Prepare for an academic-profile discussion</p><div class="ex">e.g. <b>84%</b></div></div><div class="fd"><span class="chip"><svg class="hl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M7 5h10M7 9h10M9.5 5c3.3 0 4.5 1.8 4.5 4s-1.7 4-4.5 4H7l7 6"/></svg>Budget</span><div class="lb">What to ask for</div><div class="ask">Approximate amount, currency, and whether it includes living costs</div><div class="lb">Why it helps the counsellor</div><p class="why">Start a realistic conversation about affordability</p><div class="ex">e.g. <b>₹20 lakh per year, tuition + living</b></div></div><div class="fd"><span class="chip"><svg class="hl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M9 4h6l1 3H8z"/><rect x="5" y="6" width="14" height="15" rx="2"/><path d="M9 12h6M9 16h4"/></svg>Tests</span><div class="lb">What to ask for</div><div class="ask">Relevant test, score if taken, or current preparation status</div><div class="lb">Why it helps the counsellor</div><p class="why">Know what is already available and what needs planning</p><div class="ex">e.g. <b>IELTS not taken yet</b></div></div></div>
+    <p class="fnote"><svg class="hl" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.25" aria-hidden="true"><circle cx="12" cy="12" r="9.5" stroke="#bfdbfe"/><path d="M12 11v5.5M12 7.6v.1"/></svg>A student who hasn't chosen a country or taken IELTS may still be worth speaking to. Configure the intake to capture “not decided” and “not taken yet” honestly, rather than pushing students to invent an answer.</p>
+  </div>
+</section>
+
+<!-- SCOPE -->
+<section id="scope" class="sec" style="padding-top:40px">
+  <div class="wrap">
+    <span class="eyebrow"><i></i>Scope</span>
+    <h2>What you can use today, <em>and what isn't included</em></h2>
+    <div class="scope">
+      <div class="sc yes">
+        <h3>Available today</h3>
+        <ul>
+          <li><svg class="hl" viewBox="0 0 16 16" fill="none" stroke="#2563eb" stroke-width="1.25" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="#bfdbfe"/><path d="M5.2 8.2l1.9 1.9 3.8-4"/></svg>Create a conversational form and describe what each answer should contain.</li>
+          <li><svg class="hl" viewBox="0 0 16 16" fill="none" stroke="#2563eb" stroke-width="1.25" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="#bfdbfe"/><path d="M5.2 8.2l1.9 1.9 3.8-4"/></svg>Publish a link. When an answer does not meet a field, ConvoForm can ask a follow-up.</li>
+          <li><svg class="hl" viewBox="0 0 16 16" fill="none" stroke="#2563eb" stroke-width="1.25" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="#bfdbfe"/><path d="M5.2 8.2l1.9 1.9 3.8-4"/></svg>Review the collected answers and the conversation before you follow up.</li>
+        </ul>
+      </div>
+      <div class="sc no reveal">
+        <h3>Not included in this intake workflow today</h3>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.25"><path d="M4 5h16v11H10l-5 4v-4H4z"/><path class="x" pathLength="1" d="M3 21 21 3" stroke="#fafbfc" stroke-width="4"/><path class="x" pathLength="1" d="M3 21 21 3" stroke="#64748b" stroke-width="1.25"/></svg>Today, ConvoForm collects answers and lets your team review the conversation. It does not score leads, send WhatsApp summaries or book counselling appointments. Your team handles follow-up.</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.25"><path d="M2 9.5 12 5l10 4.5L12 14z"/><path d="M6 11.5V16c0 1.6 2.7 3 6 3s6-1.4 6-3v-4.5"/><path class="x" pathLength="1" d="M3 21 21 3" stroke="#fafbfc" stroke-width="4"/><path class="x" pathLength="1" d="M3 21 21 3" stroke="#64748b" stroke-width="1.25"/></svg>AI can misunderstand an answer. Accepted answers are not verified academic records, proof of funds or an admissions assessment. Review important details with the student.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="sec" style="padding-top:40px">
+  <div class="wrap">
+    <div class="center"><span class="eyebrow"><i></i>FAQ</span><h2>Questions from <em>consultancy owners</em></h2></div>
+    <div class="faq"><details open><summary><span><span class="n">01</span>What should a study-abroad enquiry form collect?</span><i class="pl"></i></summary><div class="ans">Start with destination, course, intake, marks, budget and test status. Include enough detail to make the answers usable, such as the intake year, grading scale and budget currency. Collect only the additional personal information your team actually needs for follow-up.</div></details><details><summary><span><span class="n">02</span>How is this different from a standard enquiry form?</span><i class="pl"></i></summary><div class="ans">A standard form collects values in fields. ConvoForm asks for those values through a conversation and can generate a clarification when an answer doesn't meet the field requirements. You still control the information to collect; the AI generates the wording of the questions.</div></details><details><summary><span><span class="n">03</span>Is this just conditional branching?</span><i class="pl"></i></summary><div class="ans">Not in its core follow-up flow. Conditional branching selects a question or path you've set up. ConvoForm generates a question using the current field and conversation context when an answer needs clarification. It then continues through the configured fields. That doesn't mean the AI can run an unrestricted counselling conversation or make admissions decisions.</div></details><details><summary><span><span class="n">04</span>Can students answer if they haven't taken IELTS or chosen a country?</span><i class="pl"></i></summary><div class="ans">Design the relevant fields to accept that status. “Not taken yet” or “still deciding” can be useful information for a counsellor. Test the form before sharing it so the requirements don't force a score or a destination from a student who doesn't have one.</div></details><details><summary><span><span class="n">05</span>Can I use it for enquiries from Instagram or WhatsApp?</span><i class="pl"></i></summary><div class="ans">You can share the published web-form link in your social bio or enquiry replies. The student completes the conversation on the web. Sharing a link through WhatsApp is different from running the intake inside WhatsApp. ConvoForm does not send WhatsApp summaries or run a native WhatsApp bot.</div></details><details><summary><span><span class="n">06</span>Does ConvoForm automatically qualify or rank students?</span><i class="pl"></i></summary><div class="ans">It checks whether an answer satisfies a form field's requirements. That's different from deciding whether a student is ready to apply or ranking a sales lead. Your team still reviews the profile and decides what to do next.</div></details><details><summary><span><span class="n">07</span>Will it recommend universities or assess visa eligibility?</span><i class="pl"></i></summary><div class="ans">This intake collects information. It isn't a university-matching service or a visa adviser. Your counsellors remain responsible for recommendations, current entry requirements and any visa guidance.</div></details><details><summary><span><span class="n">08</span>Does it replace our CRM or follow-up process?</span><i class="pl"></i></summary><div class="ans">No. ConvoForm collects answers and lets your team review the conversation. It does not hand off to a CRM, book a counselling appointment, or send follow-up messages. Your team handles follow-up.</div></details></div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="cta" class="sec" style="padding-top:40px;padding-bottom:72px">
+  <div class="wrap">
+    <div class="panel" aria-labelledby="ctaH">
+      <div class="txt">
+        <span class="eyebrow"><i></i>Get started</span>
+        <h2 id="ctaH">Give your next counselling call <em>a better starting point</em></h2>
+        <p class="sub">Collect the student's plans and current situation before the call. Let your counsellor spend that conversation understanding the student, rather than starting from a name and number.</p>
+        <div class="ctas"><a class="btn btn-primary" href="https://www.convoform.com/auth/register">Create a student intake form <span aria-hidden="true">→</span></a></div>
+        <p class="after-note">Start with destination, course, intake, marks, budget and tests. Review the form, test a few unclear answers, then share it.</p>
+      </div>
+      <div class="vis"><svg id="ctaSv" viewBox="16 84 428 196" role="img" aria-label="Line drawing: pieces of a form drift in and become a chat bubble asking, Hi! What should I call you?"></svg></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap ft">
+    <a class="logo" href="convoform-landing-v2.html"><span>Convo</span>Form</a>
+    <nav><a href="page-study-abroad.html" class="on" aria-current="page">Use cases</a><a href="https://docs.convoform.com">Documentation</a><a href="page-changelog.html">Changelog</a><a href="https://github.com/growupanand/ConvoForm">GitHub</a><a href="page-privacy.html">Privacy</a><a href="#">Terms</a></nav>
+    <span class="made">Made by <span class="ph">[name]</span></span>
+  </div>
+</footer>
+
+<script>
+/* ---------- shared player: each animation keeps its own clock, advanced only while it is on screen ---------- */
+const QS = new URLSearchParams(location.search);
+const STATIC = QS.has('static') || matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (STATIC) document.documentElement.classList.add('static');
+const ANIMS = [];
+function registerAnim(el, render, final, o = {}) { const a = Object.assign({ el, render, final, acc: 0, vis: false }, o); ANIMS.push(a); return a; }
+</script>
+<script>
+window.BA_SETS = { study: { label: 'Budget *', a: '20', note: 'Saved as typed. Your counsellor still has to call to ask 20 what, and for what.',
+  msgs: [['ai', 'What budget do you have in mind for your studies?'], ['u', '20', true], ['fu', 'Thanks! Is that in INR, and does 20 cover tuition only or living costs too?'], ['u', '20 lakh INR a year, incl. living']], saved: '₹20 lakh per year, tuition + living',
+  row: [['Destination', 'Canada, UK'], ['Course', "Master's, CS"], ['Intake', 'Sept 2027'], ['Marks', '84%'], ['Budget', '₹20 lakh/yr, tuition + living', 1], ['Tests', 'IELTS not taken yet']] } };
+</script>
+<script>
+(() => {
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const P = (a, b, t) => clamp((t - a) / (b - a));
+  const io = t => { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+  const out = t => 1 - Math.pow(1 - clamp(t), 3);
+  const NS = 'http://www.w3.org/2000/svg';
+  const mk = (tag, at, parent) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); parent.appendChild(e); return e; };
+  const draw = (e, p) => { e.style.strokeDasharray = 1; e.style.strokeDashoffset = 1 - clamp(p); e.style.opacity = p <= 0 ? 0 : 1; };
+  const S = '#94a3b8', H = '#cbd5e1', B = '#2563eb', BF = '#93c5fd', SW = 1.25;
+  const ln = (svg, d, c = S, extra = {}) => mk('path', Object.assign({ d, stroke: c, 'stroke-width': SW, fill: 'none', pathLength: 1 }, extra), svg);
+
+  const BA = window.BA_SETS;
+  const $ = id => document.getElementById(id);
+  let baK = window.BA_KEY || Object.keys(BA)[0], baEls = null;
+  const MT = [.35, 1.0, 1.85, 2.6]; // bubble times
+  function baBuild() {
+    const d = BA[baK];
+    $('baSL').textContent = d.label; $('baSSv').textContent = d.a; $('baSN').textContent = d.note;
+    const box = $('baMsgs'); box.innerHTML = '';
+    const msgs = d.msgs.map(([k, s, vague]) => {
+      const e = document.createElement('div'); e.className = 'bub ' + (k === 'u' ? 'u' : k === 'fu' ? 'ai fu' : 'ai');
+      if (k === 'fu') e.innerHTML = '<span class="futag">↳ FOLLOW-UP</span>';
+      const tx = document.createElement('span'); if (vague) tx.className = 'vg'; e.appendChild(tx);
+      e._s = s; e._tx = tx; e._k = k; box.appendChild(e); return e;
+    });
+    $('baCSv').textContent = d.saved;
+    const row = $('baRow'); row.innerHTML = ''; row.style.setProperty('--n', d.row.length);
+    const cells = d.row.map(([k, v, hl]) => { const c = document.createElement('div'); c.className = 'cell' + (hl ? ' hl' : ''); c.innerHTML = '<div class="k"></div><div class="v"></div>'; c.firstChild.textContent = k; c.lastChild.textContent = v; row.appendChild(c); return c; });
+    baEls = { d, msgs, cells };
+  }
+  function baRender(t) {
+    if (!baEls) baBuild();
+    const { d, msgs, cells } = baEls;
+    // static side: typed, then saved as-is (dull)
+    const n = Math.round(d.a.length * P(.15, .5, t));
+    $('baSV').textContent = d.a.slice(0, n);
+    $('baSC').style.opacity = t < .6 ? (Math.floor(t * 3) % 2 ? .2 : 1) : 0;
+    const ss = out(P(.7, 1.0, t)); $('baSS').style.opacity = ss; $('baSN').style.opacity = out(P(.85, 1.15, t));
+    // conversation side
+    msgs.forEach((e, i) => {
+      const at = MT[i], k = out(P(at, at + .3, t));
+      e.style.opacity = k; e.style.transform = `translateY(${((1 - k) * 8).toFixed(1)}px)`;
+      if (e._k === 'u') { const m = Math.round(e._s.length * P(at + .05, at + .05 + Math.min(.5, .1 + e._s.length * .04), t)); e._tx.textContent = e._s.slice(0, m); }
+      else e._tx.textContent = e._s;
+      if (e._tx.className === 'vg') e._tx.style.backgroundSize = `${(io(P(1.45, 1.8, t)) * 100).toFixed(1)}% 1.25px`;
+    });
+    const cs = out(P(3.2, 3.5, t)); $('baCS').style.opacity = cs; $('baCS').style.transform = `translateY(${((1 - cs) * 6).toFixed(1)}px)`;
+    draw($('baRing'), io(P(3.25, 3.75, t))); draw($('baTick'), io(P(3.6, 3.95, t)));
+    cells.forEach((c, i) => { const a = 3.9 + i * .1, k = out(P(a, a + .35, t)); c.style.opacity = k; c.style.transform = `translateY(${((1 - k) * 5).toFixed(1)}px)`; });
+    const hl = cells.find(c => c.classList.contains('hl'));
+    if (hl) hl.style.background = `rgba(239,246,255,${(.9 * Math.sin(P(4.3, 5.6, t) * Math.PI) + (t > 5.6 ? .5 : 0)).toFixed(3)})`;
+  }
+  const baA = registerAnim($('ba'), baRender, 6);
+  document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === b));
+    baK = b.dataset.k; baEls = null; baA.acc = 0; baRender(STATIC ? 6 : 0);
+  }));
+})();
+
+</script>
+<script>
+
+(() => {
+  const q = new URLSearchParams(location.search);
+
+  const NS = 'http://www.w3.org/2000/svg', sv = document.getElementById('ctaSv');
+  const el = (tag, at, parent = sv) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); parent.appendChild(e); return e; };
+  const S = '#94a3b8', B = '#2563eb', SW = 1.25;
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const P = (a, b, t) => clamp((t - a) / (b - a));
+  const io = t => { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+  const out = t => 1 - Math.pow(1 - clamp(t), 3);
+  const backOut = t => { t = clamp(t); const c1 = 1.6, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+  const L = (a, b, k) => a + (b - a) * k;
+
+  const T = 6;
+  const IN0 = 0, IN1 = 1.3, M0 = 1.3, M1 = 2.1, TY0 = 2.2, TY1 = 3.6, R0 = 4.0, F0 = 5.35, F1 = 5.95;
+  const MSG = 'Hi! What should I call you?';
+
+  // ---------- fragments of a form ----------
+  const gIn = el('g', {}), gLab = el('g', {}), gSub = el('g', {});
+  const inRect = el('rect', { fill: '#fff', 'fill-opacity': .6, stroke: S, 'stroke-width': SW }, gIn);
+  const labTxt = el('text', { class: 'mono', 'font-size': 9.5, fill: S, x: 0, y: 0 }, gLab); labTxt.textContent = 'FULL NAME *';
+  const labLine = el('line', { x1: 0, y1: 8, x2: 74, y2: 8, stroke: S, 'stroke-width': SW }, gLab);
+  const subRect = el('rect', { x: -36, y: -14, width: 72, height: 28, rx: 4, fill: 'none', stroke: S, 'stroke-width': SW }, gSub);
+  const subTxt = el('text', { 'font-size': 11.5, fill: S, 'text-anchor': 'middle', x: 0, y: 4, 'font-weight': 500 }, gSub); subTxt.textContent = 'Submit';
+  // ---------- conversation ----------
+  const tag = el('text', { class: 'mono', 'font-size': 9.5, fill: S, x: 42, y: 112 }); tag.textContent = 'CONVOFORM';
+  const tagDot = el('circle', { cx: 34, cy: 109, r: 2.6, fill: B });
+  const tail = el('path', { d: 'M40 170 l-9 9 l14 -3', fill: 'none', stroke: B, 'stroke-width': SW });
+  const msgTxt = el('text', { 'font-size': 16, fill: '#0f172a', x: 48, y: 152, 'font-weight': 500 });
+  const cursor = el('line', { stroke: B, 'stroke-width': 1.5 });
+  const rG = el('g', {});
+  const rRect = el('rect', { rx: 18, fill: B, 'fill-opacity': .06, stroke: B, 'stroke-width': SW }, rG);
+  const rTxt = el('text', { 'font-size': 16, fill: B, 'font-weight': 600, 'text-anchor': 'middle' }, rG); rTxt.textContent = 'Priya';
+  const rTag = el('text', { class: 'mono', 'font-size': 9.5, fill: S, 'text-anchor': 'end' }); rTag.textContent = 'YOU';
+
+  // measure final text
+  msgTxt.textContent = MSG; const fullW = msgTxt.getComputedTextLength(); msgTxt.textContent = '';
+  rTxt.textContent = 'Priya'; const rW = rTxt.getComputedTextLength() + 40;
+  const BB = { x: 30, y: 124, w: fullW + 38, h: 46 };          // AI bubble box
+  const RB = { x: 430 - rW, y: 196, w: rW, h: 40 };            // reply bubble box
+  rRect.setAttribute('x', RB.x); rRect.setAttribute('y', RB.y); rRect.setAttribute('width', RB.w); rRect.setAttribute('height', RB.h);
+  rTxt.setAttribute('x', RB.x + RB.w / 2); rTxt.setAttribute('y', RB.y + 26);
+  rTag.setAttribute('x', RB.x + RB.w - 4); rTag.setAttribute('y', RB.y + RB.h + 16);
+  // pre-compute char x positions for the cursor
+  const charX = [0]; for (let i = 1; i <= MSG.length; i++) { msgTxt.textContent = MSG.slice(0, i); charX.push(msgTxt.getComputedTextLength()); } msgTxt.textContent = '';
+
+  // ---------- blue dots ----------
+  let sd = 13; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+  const dots = Array.from({ length: 16 }, (_, i) => {
+    const side = i % 4; const u = rnd();
+    const sx = side % 2 === 0 ? 470 + u * 20 : 120 + u * 340, sy = side % 2 === 0 ? 90 + u * 190 : 300 + u * 20;
+    // target on the bubble outline
+    const k = rnd(), per = 2 * (BB.w + BB.h); let d = k * per, tx, ty;
+    if (d < BB.w) { tx = BB.x + d; ty = BB.y; } else if ((d -= BB.w) < BB.h) { tx = BB.x + BB.w; ty = BB.y + d; } else if ((d -= BB.h) < BB.w) { tx = BB.x + BB.w - d; ty = BB.y + BB.h; } else { tx = BB.x; ty = BB.y + BB.h - (d - BB.w); }
+    return { e: el('circle', { r: 1.6 + rnd() * 1.4, fill: B }), sx, sy, mx: 60 + rnd() * 370, my: 96 + rnd() * 170, tx, ty, ph: rnd() * 6.28, dl: rnd() * .4 };
+  });
+  sv.appendChild(rTag);
+
+  // floating mid positions for the fragments (pre-morph)
+  const FR = {
+    in: { sx: 150, sy: 300, sr: -14, mx: 46, my: 196, mr: -6, w: 190, h: 30, rx: 3 },
+    lab: { sx: 470, sy: 110, sr: 10, mx: 318, my: 102, mr: 5 },
+    sub: { sx: 480, sy: 280, sr: 16, mx: 360, my: 240, mr: 7 },
+  };
+
+  function render(t, time) {
+    const fade = 1 - io(P(F0, F1, t));
+    const drift = io(P(IN0, IN1, t)), morph = io(P(M0, M1, t));
+    const fl = (ph, a = 3) => Math.sin(time * 1.3 + ph) * a * (1 - morph);
+    // input box → AI bubble
+    {
+      const f = FR.in, x = L(L(f.sx, f.mx, drift), BB.x, morph) + fl(0), y = L(L(f.sy, f.my, drift), BB.y, morph) + fl(1.7);
+      const w = L(f.w, BB.w, morph), h = L(f.h, BB.h, morph), r = L(L(f.sr, f.mr, drift), 0, morph);
+      inRect.setAttribute('x', 0); inRect.setAttribute('y', 0); inRect.setAttribute('width', w); inRect.setAttribute('height', h);
+      inRect.setAttribute('rx', L(3, 20, morph));
+      inRect.setAttribute('stroke', morph > .5 ? B : S);
+      inRect.setAttribute('stroke-opacity', morph > .5 ? L(.4, .9, (morph - .5) * 2) : 1);
+      inRect.setAttribute('fill', morph > .5 ? '#fff' : '#fff');
+      gIn.setAttribute('transform', `translate(${x.toFixed(2)},${y.toFixed(2)}) rotate(${r.toFixed(2)} ${w / 2} ${h / 2})`);
+      gIn.setAttribute('opacity', (P(IN0, IN0 + .6, t) * fade).toFixed(3));
+    }
+    // label + submit get absorbed into the bubble
+    const absorb = (g, f, ph, cx, cy) => {
+      const k = io(P(M0 - .05, M1 - .15, t));
+      const x = L(L(f.sx, f.mx, drift), cx, k) + fl(ph), y = L(L(f.sy, f.my, drift), cy, k) + fl(ph + 1);
+      const r = L(L(f.sr, f.mr, drift), 0, k), s = 1 - .75 * k;
+      g.setAttribute('transform', `translate(${x.toFixed(2)},${y.toFixed(2)}) rotate(${r.toFixed(2)}) scale(${s.toFixed(3)})`);
+      g.setAttribute('opacity', (P(IN0 + .15, IN0 + .8, t) * (1 - P(M0 + .2, M1 - .1, t)) * fade).toFixed(3));
+    };
+    absorb(gLab, FR.lab, 2.3, BB.x + 40, BB.y + 18);
+    absorb(gSub, FR.sub, 4.1, BB.x + BB.w - 30, BB.y + BB.h / 2);
+    // conversation bits
+    const tg = out(P(M1 - .2, M1 + .3, t)) * fade;
+    tag.setAttribute('opacity', tg); tagDot.setAttribute('opacity', tg);
+    tail.setAttribute('opacity', (out(P(M1 - .1, M1 + .25, t)) * .9 * fade).toFixed(3));
+    tail.setAttribute('d', `M${BB.x + 26} ${BB.y + BB.h - .6} L${BB.x + 6} ${BB.y + BB.h + 9} L${BB.x + 13} ${BB.y + BB.h - 3}`);
+    tail.setAttribute('fill', '#fff');
+    const n = Math.round(MSG.length * P(TY0, TY1, t));
+    msgTxt.textContent = MSG.slice(0, n); msgTxt.setAttribute('opacity', fade);
+    msgTxt.setAttribute('x', BB.x + 19); msgTxt.setAttribute('y', BB.y + 28.5);
+    const cx = BB.x + 19 + charX[n] + 2;
+    cursor.setAttribute('x1', cx); cursor.setAttribute('x2', cx); cursor.setAttribute('y1', BB.y + 13); cursor.setAttribute('y2', BB.y + 31);
+    const typing = t >= TY0 && t < TY1;
+    const blink = typing ? 1 : (Math.floor(time / .5) % 2 === 0 ? 1 : 0);
+    const curOn = t >= TY0 - .3 && t < R0 + .1 ? blink : 0;
+    cursor.setAttribute('opacity', (curOn * fade).toFixed(2));
+    // reply
+    const rk = P(R0, R0 + .35, t), rs = .85 + .15 * backOut(rk);
+    rG.setAttribute('opacity', (clamp(rk * 2) * fade).toFixed(3));
+    rG.setAttribute('transform', `translate(${RB.x + RB.w} ${RB.y + RB.h}) scale(${rs.toFixed(3)}) translate(${-(RB.x + RB.w)} ${-(RB.y + RB.h)})`);
+    rTag.setAttribute('opacity', (out(P(R0 + .3, R0 + .7, t)) * fade).toFixed(3));
+    // dots
+    dots.forEach((d, i) => {
+      const a = io(P(IN0 + d.dl * .5, IN1 + d.dl * .3, t)), m = io(P(M0 + d.dl * .3, M1 + .1, t));
+      const x = L(L(d.sx, d.mx, a), d.tx, m) + Math.sin(time * 1.1 + d.ph) * 4 * (1 - m);
+      const y = L(L(d.sy, d.my, a), d.ty, m) + Math.cos(time * .9 + d.ph) * 4 * (1 - m);
+      d.e.setAttribute('cx', x.toFixed(2)); d.e.setAttribute('cy', y.toFixed(2));
+      d.e.setAttribute('opacity', (L(.55, 0, P(M1 - .15, M1 + .35, t)) * P(0, .5, t) * fade).toFixed(3));
+    });
+  }
+
+  registerAnim(sv, g => { sv.style.visibility = 'visible'; render(g % T, g); }, 4.9);
+})();
+
+</script>
+<script>
+
+</script>
+<script>
+(() => {
+  /* ---------- player (from landing v2) — .reveal elements get .in once on screen ---------- */
+  function start() {
+    ANIMS.forEach(a => a.render(STATIC ? a.final : 0));
+    const rev = [...document.querySelectorAll('.reveal')];
+    if (STATIC) { rev.forEach(r => r.classList.add('in')); window.__ready = true; addEventListener('resize', () => ANIMS.forEach(a => { a.onResize && a.onResize(); a.render(a.final); })); return; }
+    const ob = new IntersectionObserver(es => es.forEach(e => { ANIMS.forEach(a => { if (a.el === e.target) a.vis = e.isIntersecting; }); }), { threshold: .2 });
+    ANIMS.forEach(a => ob.observe(a.el));
+    const ro = new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); o.unobserve(e.target); } }), { threshold: .3 });
+    rev.forEach(r => ro.observe(r));
+    addEventListener('resize', () => ANIMS.forEach(a => { a.onResize && a.onResize(); a.render(a.acc); }));
+    let last = performance.now();
+    const loop = now => { const dt = Math.min(.1, (now - last) / 1000); last = now; ANIMS.forEach(a => { if (a.vis) { a.acc += dt; a.render(a.acc); } }); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop); window.__ready = true;
+  }
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(start);
+})();
+
+</script>
+</body>
+</html>
+

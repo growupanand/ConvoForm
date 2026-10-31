@@ -1,0 +1,28 @@
+---
+description: Public marketing UI must follow DESIGN.md and PRODUCT.md and leave the live demo untouched
+globs: apps/web/src/app/(public)/**,apps/web/src/components/common/publicLayout/**
+alwaysApply: false
+---
+
+# Marketing site design
+
+These files are the public marketing site (landing page, use-case pages, changelog, privacy, terms, and the public header and footer).
+
+Before changing any UI here, read:
+
+- `DESIGN.md`: colours, type (Bricolage Grotesque / Inter / JetBrains Mono via `next/font`), spacing, radius, 1.25px hairlines, motion tokens and the motion rules. Its tokens are normative.
+- `PRODUCT.md`: who the site is for (small teams and agencies, including Indian study-abroad consultancies arriving on mobile from Instagram and sharing on WhatsApp), INR pricing and examples, and the plain, honest voice.
+- `docs/design/marketing/`: the approved HTML mockups. `convoform-landing-v2.html` is the reference landing page. Where a mockup disagrees with `DESIGN.md`, `DESIGN.md` wins.
+
+## Demo-section guardrail
+
+- Do not modify `apps/web/src/app/(public)/(landingPage)/_components/demoSection/` or any component inside it.
+- The live demo (form id `demo`) stays exactly as it is, positioned directly under the hero. Only its surrounding wrapper may change.
+- The landing smoke test (`packages/e2e/src/tests/landing.smoke.spec.ts`) must keep passing: the page loads, **Sign in** reaches the Clerk sign-in page, and the demo form accepts a message.
+
+## Always
+
+- No invented proof: no stats, testimonials, logos, user counts or prices that aren't real.
+- Emphasis is solid `#2563eb`; no gradient text.
+- Animations start in view, pause off-screen and show a static final state under `prefers-reduced-motion`.
+- No horizontal scroll at 360px wide.

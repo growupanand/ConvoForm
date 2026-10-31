@@ -6,20 +6,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ ! -f \".codex/skills/impeccable/scripts/impeccable\" ] || \".codex/skills/impeccable/scripts/impeccable\" hook",
-            "commandWindows": "if exist \".codex/skills/impeccable/scripts/impeccable.cmd\" (\".codex/skills/impeccable/scripts/impeccable.cmd\" hook & exit /b)",
-            "timeout": 5,
-            "statusMessage": "Checking UI changes"
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write|apply_patch",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "[ ! -f \".codex/skills/impeccable/scripts/impeccable\" ] || \".codex/skills/impeccable/scripts/impeccable\" hook",
-            "commandWindows": "if exist \".codex/skills/impeccable/scripts/impeccable.cmd\" (\".codex/skills/impeccable/scripts/impeccable.cmd\" hook & exit /b)",
+            "command": "\".agents/skills/impeccable/scripts/impeccable\" hook",
+            "commandWindows": "cmd /c if exist \".agents\\skills\\impeccable\\scripts\\impeccable.cmd\" \".agents\\skills\\impeccable\\scripts\\impeccable.cmd\" hook",
             "timeout": 5,
             "statusMessage": "Checking UI changes"
           }
@@ -31,19 +19,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ ! -f \".codex/skills/impeccable/scripts/impeccable\" ] || \".codex/skills/impeccable/scripts/impeccable\" hook",
-            "commandWindows": "if exist \".codex/skills/impeccable/scripts/impeccable.cmd\" (\".codex/skills/impeccable/scripts/impeccable.cmd\" hook & exit /b)",
-            "timeout": 30,
-            "statusMessage": "Design deep pass"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "[ ! -f \".codex/skills/impeccable/scripts/impeccable\" ] || \".codex/skills/impeccable/scripts/impeccable\" hook",
-            "commandWindows": "if exist \".codex/skills/impeccable/scripts/impeccable.cmd\" (\".codex/skills/impeccable/scripts/impeccable.cmd\" hook & exit /b)",
+            "command": "\".agents/skills/impeccable/scripts/impeccable\" hook",
+            "commandWindows": "cmd /c if exist \".agents\\skills\\impeccable\\scripts\\impeccable.cmd\" \".agents\\skills\\impeccable\\scripts\\impeccable.cmd\" hook",
             "timeout": 30,
             "statusMessage": "Design deep pass"
           }
