@@ -96,11 +96,11 @@ export function HowItWorksStage({
         ref={stageRef}
         role="img"
         aria-label="Line drawing: a static form's fields peel off into a conversation that asks a follow-up, and the answers flow into a clean data table"
-        className="relative isolate mx-auto mt-2.5 aspect-[345/664] w-full max-w-[420px] min-[900px]:aspect-[1080/336] min-[900px]:max-w-[1080px]"
+        className="relative isolate mx-auto mt-2.5 aspect-[345/664] w-full max-w-[420px] overflow-hidden rounded-[22px] border border-marketing-hair bg-marketing-paper min-[900px]:aspect-[1080/336] min-[900px]:max-w-[1080px] min-[900px]:rounded-[28px]"
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-1/2 -z-10 size-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-marketing-blue-300/30 blur-[40px] min-[900px]:h-[380px] min-[900px]:w-[900px]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(15,23,42,0.07)_1px,transparent_0)] bg-[length:22px_22px] [mask-image:radial-gradient(ellipse_at_center,#000_30%,transparent_75%)]"
         />
 
         <div
