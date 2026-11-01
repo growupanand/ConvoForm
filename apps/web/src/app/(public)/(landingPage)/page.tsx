@@ -30,9 +30,12 @@ export default function Home() {
       {/* The real demo form stays exactly as it is, directly under the hero. */}
       <section
         id="demo"
-        aria-label="Live demo"
-        className="mx-auto w-full max-w-[1160px] scroll-mt-20 px-4 pt-2 min-[900px]:pt-4"
+        aria-labelledby="demo-heading"
+        className="mx-auto w-full max-w-[1160px] scroll-mt-20 px-4 pt-2 font-sans min-[900px]:pt-4"
       >
+        <h2 id="demo-heading" className="sr-only">
+          Live demo
+        </h2>
         <DemoSection />
       </section>
 

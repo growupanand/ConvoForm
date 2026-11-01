@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 import { HeroStage } from "./heroStage";
@@ -9,6 +10,23 @@ const proofPoints = [
   "Works in any phone browser",
 ] as const;
 
+const secondaryCtaClass =
+  "inline-flex items-center justify-center gap-2 rounded-full border-[1.25px] border-marketing-hair bg-white/70 px-6 py-[15px] font-body text-[15px] font-semibold leading-none text-marketing-ink transition duration-150 hover:-translate-y-px hover:border-marketing-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600";
+
+function DemoPlayIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      className="fill-marketing-blue-600"
+      aria-hidden="true"
+    >
+      <path d="M8 5v14l11-7z" />
+    </svg>
+  );
+}
+
 function ProofCheck() {
   return (
     <svg
@@ -19,8 +37,8 @@ function ProofCheck() {
       strokeWidth="1.25"
       aria-hidden="true"
     >
-      <circle cx="8" cy="8" r="6.5" stroke="#bfdbfe" />
-      <path d="M5.2 8.2l1.9 1.9 3.8-4" stroke="#2563eb" />
+      <circle cx="8" cy="8" r="6.5" className="stroke-marketing-blue-200" />
+      <path d="M5.2 8.2l1.9 1.9 3.8-4" className="stroke-marketing-blue-600" />
     </svg>
   );
 }
@@ -56,17 +74,17 @@ export function Hero() {
           </Link>
           <Link
             href="#demo"
-            className="inline-flex items-center justify-center gap-2 rounded-full border-[1.25px] border-marketing-hair bg-white/70 px-6 py-[15px] font-body text-[15px] font-semibold leading-none text-marketing-ink transition duration-150 hover:-translate-y-px hover:border-marketing-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600"
+            className={cn(secondaryCtaClass, "hidden lg:inline-flex")}
           >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="#2563eb"
-              aria-hidden="true"
-            >
-              <path d="M8 5v14l11-7z" />
-            </svg>
+            <DemoPlayIcon />
+            Try the demo
+          </Link>
+          <Link
+            href="/view/demo"
+            rel="noopener noreferrer nofollow"
+            className={cn(secondaryCtaClass, "inline-flex lg:hidden")}
+          >
+            <DemoPlayIcon />
             Try the demo
           </Link>
         </div>
@@ -74,7 +92,7 @@ export function Hero() {
         <Link
           href="/view/demo"
           rel="noopener noreferrer nofollow"
-          className="mt-4 inline-flex items-center gap-1.5 rounded-full px-2 py-1 font-mono text-[12px] leading-none text-marketing-blue-600 underline decoration-marketing-blue-200 underline-offset-4 min-[900px]:hidden"
+          className="mt-4 inline-flex items-center gap-1.5 rounded-full px-2 py-1 font-mono text-[12px] leading-none text-marketing-blue-600 underline decoration-marketing-blue-200 underline-offset-4 lg:hidden"
         >
           Try it on your phone <span aria-hidden="true">→</span>
         </Link>

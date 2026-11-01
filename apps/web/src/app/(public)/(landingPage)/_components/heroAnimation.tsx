@@ -3,48 +3,17 @@
 import { cn } from "@/lib/utils";
 import { Fragment, useEffect, useRef, useState } from "react";
 
-const SCENARIOS = [
-  {
-    title: "Enquiry form",
-    fields: ["Full name", "Email", "Budget", "Notes"],
-    requiredIndex: 2,
-    messages: [
-      { kind: "ai", text: "Hi! What should I call you?" },
-      { kind: "user", text: "Priya" },
-      { kind: "ai", text: "What's your budget for studying abroad?" },
-      { kind: "user", text: "around 20" },
-      { kind: "followUp", text: "₹20 lakh per year, or in total?" },
-      { kind: "user", text: "per year" },
-    ],
-    chips: [
-      { messageIndex: 1, label: "Name", value: "Priya" },
-      { messageIndex: 5, label: "Budget", value: "₹20 lakh / year" },
-    ],
-  },
-  {
-    title: "Job application",
-    fields: ["Full name", "Email", "Experience", "Notes"],
-    requiredIndex: 2,
-    messages: [
-      { kind: "ai", text: "Hi! What should I call you?" },
-      { kind: "user", text: "Alex" },
-      { kind: "ai", text: "How many years of experience?" },
-      { kind: "user", text: "3-4" },
-      { kind: "followUp", text: "Closer to 3 or 4?" },
-      { kind: "user", text: "4, mostly React" },
-    ],
-    chips: [
-      { messageIndex: 1, label: "Name", value: "Alex" },
-      { messageIndex: 5, label: "Experience", value: "4 yrs (React)" },
-    ],
-  },
-] as const;
+import {
+  HERO_FORM_HOLD_SECONDS,
+  HERO_LOOP_SECONDS,
+  HERO_SCENARIOS,
+} from "./heroScenarios";
 
 // One loop per scenario. Timings follow the shared 8s hero loop token.
-const LOOP = 8;
+const LOOP = HERO_LOOP_SECONDS;
 const TIMELINE = {
   assembleStart: 0,
-  assembleEnd: 0.95,
+  assembleEnd: HERO_FORM_HOLD_SECONDS,
   submit: 1.25,
   requiredStart: 1.35,
   requiredEnd: 2,
@@ -63,20 +32,6 @@ const MESSAGE_TIMES: ReadonlyArray<readonly [number, number?]> = [
   [5.9, 6.25],
   [6.7],
 ];
-
-const COLOR = {
-  ink: "#0f172a",
-  hair: "#cbd5e1",
-  hairSoft: "#e2e8f0",
-  slate: "#94a3b8",
-  text: "#64748b",
-  muted: "#475569",
-  blue: "#2563eb",
-  blueSoft: "#93c5fd",
-  formBorder: "#c8ced8",
-  inputBorder: "#b8c0cc",
-  formFill: "#eef1f5",
-};
 
 const clamp = (value: number, min = 0, max = 1) =>
   Math.min(max, Math.max(min, value));
@@ -175,9 +130,19 @@ async function waitForFonts() {
   await document.fonts.ready;
 }
 
-export default function HeroAnimation() {
-  const [scenarioIndex, setScenarioIndex] = useState(0);
-  const scenario = SCENARIOS[scenarioIndex] ?? SCENARIOS[0];
+type HeroAnimationProps = {
+  initialTime?: number;
+  onReady?: () => void;
+};
+
+export default function HeroAnimation({
+  initialTime = 0,
+  onReady,
+}: HeroAnimationProps) {
+  const initialScenarioIndex =
+    Math.floor(initialTime / LOOP) % HERO_SCENARIOS.length;
+  const [scenarioIndex, setScenarioIndex] = useState(initialScenarioIndex);
+  const scenario = HERO_SCENARIOS[scenarioIndex] ?? HERO_SCENARIOS[0];
 
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -188,9 +153,17 @@ export default function HeroAnimation() {
   const chipRefs = useRef<Array<HTMLSpanElement | null>>([]);
 
   const geometryRef = useRef<Geometry | null>(null);
-  const clockRef = useRef(0);
-  const activeScenarioRef = useRef(0);
+  const clockRef = useRef(initialTime);
+  const activeScenarioRef = useRef(initialScenarioIndex);
   const visibleRef = useRef(false);
+  const readyRef = useRef(false);
+  const onReadyRef = useRef(onReady);
+  const dotColorRef = useRef("");
+
+  useEffect(() => {
+    onReadyRef.current = onReady;
+  }, [onReady]);
+
   const renderFrameRef = useRef<(time: number, clock: number) => void>(
     () => undefined,
   );
@@ -232,7 +205,7 @@ export default function HeroAnimation() {
       const appear = easeInOut(
         progress(
           TIMELINE.assembleStart + 0.4 + index * 0.035,
-          TIMELINE.assembleEnd + index * 0.02,
+          TIMELINE.assembleEnd,
           time,
         ),
       );
@@ -292,7 +265,7 @@ export default function HeroAnimation() {
       if (piece.kind === "submit") {
         piece.element.style.background =
           time > TIMELINE.submit && time < TIMELINE.submit + 0.18
-            ? "#7b8696"
+            ? "var(--marketing-text)"
             : "";
       }
 
@@ -306,10 +279,10 @@ export default function HeroAnimation() {
 
         if (piece.kind === "input") {
           piece.element.style.borderColor = invalid
-            ? "#ef4444"
-            : COLOR.inputBorder;
+            ? "var(--marketing-error)"
+            : "var(--marketing-hair)";
           piece.element.style.boxShadow = invalid
-            ? "0 0 0 2px rgba(239,68,68,0.15)"
+            ? "0 0 0 2px var(--marketing-error-ring)"
             : "";
         } else if (piece.requiredElement) {
           piece.requiredElement.style.opacity =
@@ -357,7 +330,7 @@ export default function HeroAnimation() {
 
       const text = element.querySelector<HTMLElement>(".message-text");
       const dots = element.querySelector<HTMLElement>(".message-dots");
-      if (text) text.style.opacity = isTyping ? "0" : "1";
+      if (text) text.style.display = isTyping ? "none" : "block";
       if (dots) dots.style.display = isTyping ? "flex" : "none";
     }
 
@@ -432,9 +405,12 @@ export default function HeroAnimation() {
 
       context.beginPath();
       context.arc(x, y, dot.radius, 0, Math.PI * 2);
-      context.fillStyle = `rgba(37, 99, 235, ${alpha.toFixed(3)})`;
+      context.globalAlpha = alpha;
+      context.fillStyle = dotColorRef.current;
       context.fill();
     }
+
+    context.globalAlpha = 1;
   };
 
   renderFrameRef.current = renderFrame;
@@ -452,6 +428,11 @@ export default function HeroAnimation() {
       const width = stage.clientWidth;
       const height = stage.clientHeight;
       if (!width || !height) return;
+
+      const stageStyles = getComputedStyle(stage);
+      dotColorRef.current =
+        stageStyles.getPropertyValue("--marketing-blue-600").trim() ||
+        stageStyles.color;
 
       const mobile = width < 640;
       const formWidth = Math.min(360, width - 40);
@@ -712,6 +693,11 @@ export default function HeroAnimation() {
 
       if (!cancelled) {
         renderFrameRef.current(clockRef.current % LOOP, clockRef.current);
+
+        if (!readyRef.current) {
+          readyRef.current = true;
+          onReadyRef.current?.();
+        }
       }
     };
 
@@ -736,33 +722,31 @@ export default function HeroAnimation() {
     const stage = stageRef.current;
     if (!stage) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          visibleRef.current = entry.isIntersecting;
-        }
-      },
-      { threshold: 0.2 },
-    );
-    observer.observe(stage);
-
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     let animationFrame = 0;
-    let last = performance.now();
+    let last = 0;
+
+    const stop = () => {
+      if (animationFrame !== 0) {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = 0;
+      }
+    };
 
     const loop = (now: number) => {
       animationFrame = requestAnimationFrame(loop);
 
+      if (!visibleRef.current || !geometryRef.current) {
+        last = now;
+        return;
+      }
+
       const delta = Math.min(0.1, (now - last) / 1000);
       last = now;
-
-      if (!visibleRef.current || !geometryRef.current) return;
-
       clockRef.current += delta;
 
       const nextScenario =
-        Math.floor(clockRef.current / LOOP) % SCENARIOS.length;
+        Math.floor(clockRef.current / LOOP) % HERO_SCENARIOS.length;
 
       if (nextScenario !== activeScenarioRef.current) {
         activeScenarioRef.current = nextScenario;
@@ -772,11 +756,45 @@ export default function HeroAnimation() {
       renderFrameRef.current(clockRef.current % LOOP, clockRef.current);
     };
 
-    animationFrame = requestAnimationFrame(loop);
+    const start = () => {
+      if (animationFrame !== 0 || motionQuery.matches || document.hidden)
+        return;
+      if (!visibleRef.current) return;
+
+      last = performance.now();
+      animationFrame = requestAnimationFrame(loop);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          visibleRef.current = entry.isIntersecting;
+          if (entry.isIntersecting) start();
+          else stop();
+        }
+      },
+      { threshold: 0.2 },
+    );
+    observer.observe(stage);
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) stop();
+      else start();
+    };
+
+    const handleMotionChange = () => {
+      if (motionQuery.matches) stop();
+      else start();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    motionQuery.addEventListener("change", handleMotionChange);
 
     return () => {
-      cancelAnimationFrame(animationFrame);
+      stop();
       observer.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      motionQuery.removeEventListener("change", handleMotionChange);
     };
   }, []);
 
@@ -790,7 +808,7 @@ export default function HeroAnimation() {
       <div
         ref={formCardRef}
         aria-hidden="true"
-        className="absolute left-0 top-0 rounded-[4px] border border-[#c8ced8] bg-[#eef1f5]"
+        className="absolute left-0 top-0 rounded-[4px] border border-marketing-hair bg-marketing-hair-soft"
       />
 
       <div
@@ -825,10 +843,9 @@ export default function HeroAnimation() {
             }}
             aria-hidden="true"
             className={cn(
-              "absolute left-0 top-0 rounded-[2px] border bg-white",
+              "absolute left-0 top-0 rounded-[2px] border border-marketing-hair bg-white",
               index === 3 ? "h-[44px]" : "h-[30px]",
             )}
-            style={{ borderColor: COLOR.inputBorder }}
           />
         </Fragment>
       ))}
@@ -838,7 +855,7 @@ export default function HeroAnimation() {
           pieceRefs.current[submitIndex] = element;
         }}
         aria-hidden="true"
-        className="absolute left-0 top-0 grid h-[30px] w-[84px] place-items-center rounded-[2px] bg-[#9aa5b4] font-body text-xs font-medium leading-none text-white transition-colors duration-150"
+        className="absolute left-0 top-0 grid h-[30px] w-[84px] place-items-center rounded-[2px] bg-marketing-slate font-body text-xs font-medium leading-none text-white transition-colors duration-150"
       >
         Submit
       </div>
@@ -873,7 +890,7 @@ export default function HeroAnimation() {
                 message.kind === "user"
                   ? "self-end rounded-br-[5px] bg-marketing-blue-600 text-white"
                   : message.kind === "followUp"
-                    ? "self-start rounded-bl-[5px] bg-marketing-blue-50 text-marketing-blue-700 shadow-[inset_0_0_0_1.25px_#93c5fd]"
+                    ? "self-start rounded-bl-[5px] bg-marketing-blue-50 text-marketing-blue-700 shadow-[inset_0_0_0_1.25px_var(--marketing-blue-300)]"
                     : "self-start rounded-bl-[5px] bg-slate-100 text-marketing-ink",
               )}
             >
@@ -902,10 +919,9 @@ export default function HeroAnimation() {
               <b className="font-semibold text-marketing-ink">{chip.value}</b>
               <svg
                 viewBox="0 0 12 12"
-                className="size-2.5"
+                className="size-2.5 stroke-marketing-blue-600"
                 aria-hidden="true"
                 fill="none"
-                stroke={COLOR.blue}
                 strokeWidth="2.4"
                 strokeLinecap="round"
                 strokeLinejoin="round"

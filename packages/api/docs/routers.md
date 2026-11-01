@@ -19,7 +19,6 @@ The API is structured into several routers, combined in the root `appRouter`.
 | `usageRouter` | Usage tracking and limits |
 | `webhookRouter` | Webhook handlers for external events (Clerk, etc.) |
 | `googleRouter` | Google Drive/Forms integration |
-| `usersRouter` | User management and stats |
 
 ---
 
@@ -203,11 +202,3 @@ Integration with Google Drive/Forms.
 
 - **`getGoogleForms`**: List Google Forms in user's Drive.
 - **`getGoogleForm`**: Get details of a specific Google Form for import.
-
----
-
-## `usersRouter`
-
-### Procedures
-
-- **`getTotalCount`**: Total system users count.

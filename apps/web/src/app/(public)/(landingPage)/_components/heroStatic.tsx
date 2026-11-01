@@ -1,19 +1,10 @@
 import { cn } from "@/lib/utils";
+import { HERO_SCENARIOS } from "./heroScenarios";
 
-const messages = [
-  { kind: "ai", text: "Hi! What should I call you?" },
-  { kind: "user", text: "Priya" },
-  { kind: "ai", text: "What's your budget for studying abroad?" },
-  { kind: "user", text: "around 20" },
-  { kind: "followUp", text: "₹20 lakh per year, or in total?" },
-  { kind: "user", text: "per year" },
-] as const;
+const scenario = HERO_SCENARIOS[0];
 
-const chips = [
-  { label: "Name", value: "Priya" },
-  { label: "Budget", value: "₹20 lakh / year" },
-] as const;
-
+// The final, fully informative frame. Only shown under
+// `prefers-reduced-motion: reduce`.
 export function HeroStatic() {
   return (
     <div
@@ -35,16 +26,16 @@ export function HeroStatic() {
         </div>
 
         <div className="flex flex-col gap-[7px] pb-1 pt-2.5">
-          {messages.map((message, index) => (
+          {scenario.messages.map((message, index) => (
             <div
               // biome-ignore lint/suspicious/noArrayIndexKey: static illustration
               key={index}
               className={cn(
-                "max-w-[80%] whitespace-nowrap rounded-2xl px-3 py-2 font-body text-[13.5px] leading-[1.35]",
+                "w-fit max-w-[80%] whitespace-normal rounded-2xl px-3 py-2 font-body text-[13.5px] leading-[1.35]",
                 message.kind === "user"
                   ? "self-end rounded-br-[5px] bg-marketing-blue-600 text-white"
                   : message.kind === "followUp"
-                    ? "self-start rounded-bl-[5px] bg-marketing-blue-50 text-marketing-blue-700 shadow-[inset_0_0_0_1.25px_#93c5fd]"
+                    ? "self-start rounded-bl-[5px] bg-marketing-blue-50 text-marketing-blue-700 shadow-[inset_0_0_0_1.25px_var(--marketing-blue-300)]"
                     : "self-start rounded-bl-[5px] bg-slate-100 text-marketing-ink",
               )}
             >
@@ -54,7 +45,7 @@ export function HeroStatic() {
         </div>
 
         <div className="mt-1.5 flex min-h-9 flex-wrap gap-1.5 border-t border-dashed border-marketing-hair-soft pt-2.5">
-          {chips.map((chip) => (
+          {scenario.chips.map((chip) => (
             <span
               key={chip.label}
               className="inline-flex items-center gap-1.5 rounded-full border border-marketing-hair-soft bg-marketing-surface px-2.5 py-1.5 font-body text-[11.5px] font-medium leading-none text-marketing-muted"
@@ -63,14 +54,12 @@ export function HeroStatic() {
               <b className="font-semibold text-marketing-ink">{chip.value}</b>
               <svg
                 viewBox="0 0 12 12"
-                className="size-2.5"
+                className="size-2.5 stroke-marketing-blue-600"
                 aria-hidden="true"
                 fill="none"
-                stroke="currentColor"
                 strokeWidth="2.4"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                color="#2563eb"
               >
                 <path d="M2.2 6.3 4.6 8.7 9.8 3.3" />
               </svg>

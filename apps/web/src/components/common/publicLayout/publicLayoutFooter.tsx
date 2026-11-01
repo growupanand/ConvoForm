@@ -16,6 +16,7 @@ const footerLinks = [
     href: "https://github.com/growupanand/ConvoForm",
     external: true,
   },
+  { label: "Email", href: "mailto:contact@convoform.com", external: false },
   { label: "Privacy", href: "/privacy", external: false },
   { label: "Terms", href: "/terms", external: false },
 ] as const;

@@ -1,5 +1,6 @@
 import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster, TooltipProvider } from "@convoform/ui";
+import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import type { Viewport } from "next";
 import Script from "next/script";
@@ -73,13 +74,14 @@ export default function RootLayout({
     <html
       lang="en"
       className={cn(
+        GeistSans.variable,
         bricolageGrotesque.variable,
         inter.variable,
         jetBrainsMono.variable,
       )}
       suppressHydrationWarning
     >
-      <body className="antialiased font-body bg-background">
+      <body className="antialiased font-sans bg-background">
         <CSPostHogProvider>
           <TooltipProvider delayDuration={200}>
             <GoogleAuthProvider>

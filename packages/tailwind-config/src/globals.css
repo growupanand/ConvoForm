@@ -49,6 +49,26 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Marketing design tokens (see DESIGN.md) */
+    --marketing-paper: #fafbfc;
+    --marketing-surface: #ffffff;
+    --marketing-ink: #0f172a;
+    --marketing-muted: #475569;
+    --marketing-text: #64748b;
+    --marketing-slate: #94a3b8;
+    --marketing-hair: #cbd5e1;
+    --marketing-hair-soft: #e2e8f0;
+    --marketing-blue-50: #eff6ff;
+    --marketing-blue-100: #dbeafe;
+    --marketing-blue-200: #bfdbfe;
+    --marketing-blue-300: #93c5fd;
+    --marketing-blue-400: #60a5fa;
+    --marketing-blue-500: #3b82f6;
+    --marketing-blue-600: #2563eb;
+    --marketing-blue-700: #1d4ed8;
+    --marketing-error: #dc2626;
+    --marketing-error-ring: rgba(220, 38, 38, 0.15);
   }
 
   .dark {
