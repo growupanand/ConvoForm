@@ -1,22 +1,27 @@
+import { LegalPage, LegalSection } from "@/components/marketing/legalPage";
+
 export const metadata = {
+  title: "Privacy Policy",
+  description:
+    "How ConvoForm collects, uses, discloses and safeguards the information you share when you build conversational forms.",
   alternates: {
     canonical: "/privacy",
   },
 };
 
-<div className="w-screen">
-<div className="container mx-auto max-w-[800px] p-10">
+<LegalPage
+  title="Privacy Policy"
+  lastUpdated="2025-04-25"
+  lastUpdatedLabel="25-April-2025"
+>
 
-
-# Privacy Policy
-
-**Last Updated:** 25-April-2025
-
-## Introduction
+<LegalSection id="introduction" title="Introduction">
 
 ConvoForm ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our conversational form building service.
 
-## Information We Collect
+</LegalSection>
+
+<LegalSection id="information-we-collect" title="Information We Collect">
 
 ### Information You Provide
 
@@ -29,7 +34,9 @@ ConvoForm ("we", "our", or "us") is committed to protecting your privacy. This P
 - **Usage Data**: We collect information about how you interact with our service, including browser type, pages viewed, time spent on pages, and referring pages.
 - **Cookies and Similar Technologies**: We use cookies to maintain session information and enhance your experience.
 
-## How We Use Your Information
+</LegalSection>
+
+<LegalSection id="how-we-use-your-information" title="How We Use Your Information">
 
 We use the information we collect to:
 
@@ -40,7 +47,9 @@ We use the information we collect to:
 - Understand how users use our service for internal analytics and reporting
 - Import form data from Google Drive (only when you explicitly authorize this feature)
 
-## Data Sharing and Disclosure
+</LegalSection>
+
+<LegalSection id="data-sharing-and-disclosure" title="Data Sharing and Disclosure">
 
 We do not sell your personal information. We may share your information in the following situations:
 
@@ -48,11 +57,15 @@ We do not sell your personal information. We may share your information in the f
 - **Service Providers**: We may share information with third-party vendors who provide services on our behalf.
 - **Legal Requirements**: We may disclose information if required by law or to protect rights, property, or safety.
 
-## Data Security
+</LegalSection>
+
+<LegalSection id="data-security" title="Data Security">
 
 We implement appropriate technical and organizational measures to protect your personal information. However, no method of transmission over the Internet or electronic storage is 100% secure, so we cannot guarantee absolute security.
 
-## Your Privacy Rights
+</LegalSection>
+
+<LegalSection id="your-privacy-rights" title="Your Privacy Rights">
 
 Depending on your location, you may have rights regarding your personal information, including:
 
@@ -63,7 +76,9 @@ Depending on your location, you may have rights regarding your personal informat
 
 To exercise these rights, please contact us using the information provided below.
 
-## Google API Services User Data Policy
+</LegalSection>
+
+<LegalSection id="google-api-services-user-data-policy" title="Google API Services User Data Policy">
 
 ConvoForm accesses Google API Services and adheres to the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy), including the Limited Use requirements. Our access is limited to the following:
 
@@ -73,20 +88,28 @@ ConvoForm accesses Google API Services and adheres to the [Google API Services U
 - We do not use this Google user data for serving advertisements.
 - **We do not use Google Workspace APIs data to develop, improve, or train generalized AI and/or ML models.**
 - We do not allow humans to read this data unless: (1) we have your affirmative agreement; (2) it is necessary for security purposes; (3) it is necessary to comply with applicable law; or (4) our use is limited to internal operations and the data have been aggregated and anonymized.
-## Children's Privacy
+
+</LegalSection>
+
+<LegalSection id="childrens-privacy" title="Children's Privacy">
 
 Our service is not directed to children under 13 (or the applicable age in your jurisdiction). We do not knowingly collect personal information from children.
 
-## Changes to This Privacy Policy
+</LegalSection>
+
+<LegalSection id="changes-to-this-privacy-policy" title="Changes to This Privacy Policy">
 
 We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.
 
-## Contact Us
+</LegalSection>
+
+<LegalSection id="contact-us" title="Contact Us">
 
 If you have any questions about this Privacy Policy, please contact us at:
 
 - Email: [contact@convoform.com](mailto:contact@convoform.com) or [growupanand@gmail.com](mailto:growupanand@gmail.com)
 - Website: [https://www.convoform.com](https://www.convoform.com)
 
-</div>
-</div>
+</LegalSection>
+
+</LegalPage>

@@ -11,6 +11,7 @@ const isPublicRoute = createRouteMatcher([
   "/auth/(.*)",
   "/api/trpc/(.*)",
   "/changelog",
+  "/use-cases",
   "/use-cases/(.*)",
   "/articles/(.*)",
   "/privacy",

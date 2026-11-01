@@ -146,9 +146,13 @@ function SavedCheck({ final }: { final: boolean }) {
 function SceneMarkup({
   scenario,
   final,
+  columns = 5,
+  valuesLabel = "What your team sees",
 }: {
   scenario: BeforeAfterScenario;
   final: boolean;
+  columns?: 5 | 6;
+  valuesLabel?: string;
 }) {
   return (
     <>
@@ -231,13 +235,20 @@ function SceneMarkup({
 
       <div className="mt-6 overflow-hidden rounded-[18px] border-[1.25px] border-marketing-hair bg-white/70">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-marketing-hair-soft px-[18px] py-[13px] font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-text">
-          <span>What your team sees</span>
+          <span>{valuesLabel}</span>
           <span className="rounded-full border border-dashed border-marketing-hair px-2 py-1 text-[10px] text-marketing-label">
             Illustrative data
           </span>
         </div>
 
-        <div className="grid grid-cols-2 min-[900px]:grid-cols-5">
+        <div
+          className={cn(
+            "grid grid-cols-2",
+            columns === 6
+              ? "min-[900px]:grid-cols-6"
+              : "min-[900px]:grid-cols-5",
+          )}
+        >
           {scenario.values.map((item, index) => {
             const lastOdd =
               scenario.values.length % 2 === 1 &&
@@ -306,12 +317,16 @@ function draw(element: SVGElement, amount: number) {
   element.style.opacity = amount <= 0 ? "0" : "1";
 }
 
-function BeforeAfterScene({
+export function BeforeAfterScene({
   scenario,
   active,
+  columns,
+  valuesLabel,
 }: {
   scenario: BeforeAfterScenario;
   active: boolean;
+  columns?: 5 | 6;
+  valuesLabel?: string;
 }) {
   const animatedRef = useRef<HTMLDivElement>(null);
 
@@ -487,10 +502,20 @@ function BeforeAfterScene({
         ref={animatedRef}
         className="col-start-1 row-start-1 motion-reduce:hidden"
       >
-        <SceneMarkup scenario={scenario} final={false} />
+        <SceneMarkup
+          scenario={scenario}
+          final={false}
+          columns={columns}
+          valuesLabel={valuesLabel}
+        />
       </div>
       <div className="col-start-1 row-start-1 hidden motion-reduce:block">
-        <SceneMarkup scenario={scenario} final />
+        <SceneMarkup
+          scenario={scenario}
+          final
+          columns={columns}
+          valuesLabel={valuesLabel}
+        />
       </div>
     </div>
   );
