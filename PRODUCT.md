@@ -53,7 +53,7 @@ The form asks the follow-up question a counsellor would otherwise ask by hand ("
 ## Evidence on Hand
 
 - Real: the live demo form, the open-source repo and its GitHub stars, the changelog, and the study-abroad use-case copy (`apps/web/src/app/(public)/use-cases/study-abroad/`).
-- Founder photo: `apps/web/public/images/founder/utkarsh-anand.jpg` once added, falling back to `https://github.com/growupanand.png`.
+- Founder photo: `https://github.com/growupanand.png` until `apps/web/public/images/founder/utkarsh-anand.jpg` is committed.
 - **Absent, never fabricate:** customer logos, testimonials, user or response counts, ratings, benchmarks, press, and paid-plan prices. Example data in illustrations must be labelled "Illustrative".
 
 ## Product Principles

@@ -5,7 +5,11 @@ import { BeforeAfterSection } from "./_components/beforeAfter";
 import { DemoSection } from "./_components/demoSection";
 import { LazyLiveDemoResponses } from "./_components/demoSection/LazyLiveDemoResponses";
 import { DemoResponsesShell } from "./_components/demoSection/demoResponsesShell";
+import { FaqSection } from "./_components/faq/faqSection";
+import { FinalCtaSection } from "./_components/finalCta/finalCtaSection";
+import { FounderNote } from "./_components/founder/founderNote";
 import { HowItWorksSection } from "./_components/howItWorks/howItWorksSection";
+import { TrustSection } from "./_components/trust/trustSection";
 import { UseCases } from "./_components/useCases";
 
 export const metadata: Metadata = {
@@ -61,6 +65,14 @@ export default function Home() {
       <div className="my-10">
         <Achievements />
       </div>
+
+      <TrustSection />
+
+      <FounderNote />
+
+      <FaqSection />
+
+      <FinalCtaSection />
     </main>
   );
 }

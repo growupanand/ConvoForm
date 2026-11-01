@@ -193,6 +193,9 @@ importers:
       '@convoform/feature-flags':
         specifier: workspace:*
         version: link:../../packages/feature-flags
+      '@convoform/file-storage':
+        specifier: workspace:*
+        version: link:../../packages/file-storage
       '@convoform/logger':
         specifier: workspace:*
         version: link:../../packages/logger
