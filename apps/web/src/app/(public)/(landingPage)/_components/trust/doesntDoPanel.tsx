@@ -8,8 +8,8 @@ const ITEMS = [
     text: "It doesn't make decisions for you. ConvoForm collects clear answers; your team decides what to do with them.",
     icon: (
       <>
-        <path d="M2 9.5 12 5l10 4.5L12 14z" />
-        <path d="M6 11.5V16c0 1.6 2.7 3 6 3s6-1.4 6-3v-4.5" />
+        <circle cx="12" cy="8" r="3.5" />
+        <path d="M5 20c0-3.4 3.1-6 7-6s7 2.6 7 6" />
       </>
     ),
   },

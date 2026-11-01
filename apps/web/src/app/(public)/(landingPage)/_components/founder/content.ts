@@ -12,7 +12,9 @@ export const FOUNDER_ROLE = "Builder of ConvoForm";
 export const FOUNDER_SIGNATURE = `${FOUNDER_NAME} · ${FOUNDER_ROLE}`;
 export const FOUNDER_GITHUB_URL = "https://github.com/growupanand";
 
-/** Drop the owner's photo here (square, at least 256px). */
-export const FOUNDER_PHOTO_PATH = "/images/founder/utkarsh-anand.jpg";
-/** Shown until the local photo exists. */
-export const FOUNDER_PHOTO_FALLBACK_URL = "https://github.com/growupanand.png";
+/**
+ * GitHub avatar until the owner's photo is committed to
+ * `public/images/founder/` (square, at least 256px). Point this back at the
+ * local file once it exists.
+ */
+export const FOUNDER_PHOTO_URL = "https://github.com/growupanand.png";
