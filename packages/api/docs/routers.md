@@ -211,4 +211,3 @@ Integration with Google Drive/Forms.
 ### Procedures
 
 - **`getTotalCount`**: Total system users count.
-- **`getRecentUsers`**: List of recently joined users.

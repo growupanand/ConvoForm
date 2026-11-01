@@ -135,16 +135,16 @@ export default function ImportGoogleFormButton({ organizationId }: Props) {
       />
       <Button
         variant="outline"
-        className="cursor-pointer font-semibold font-montserrat"
+        className="cursor-pointer font-semibold"
         onClick={fetchGoogleForms}
         disabled={isAuthenticating}
       >
         {isAuthenticating ? (
-          <Loader2 className="mr-2 size-4 animate-spin text-[#673AB7]" />
+          <Loader2 className="mr-2 size-4 animate-spin text-brand-600" />
         ) : (
-          <FileText className="mr-2 size-4 text-[#673AB7]" />
+          <FileText className="mr-2 size-4 text-brand-600" />
         )}
-        <span className="text-[#673AB7]">Import Google Form</span>
+        <span className="text-brand-600">Import Google Form</span>
       </Button>
     </div>
   );

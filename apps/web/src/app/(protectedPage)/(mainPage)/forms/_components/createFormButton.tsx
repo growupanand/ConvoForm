@@ -82,10 +82,7 @@ export default function CreateFormButton({ organizationId }: Readonly<Props>) {
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="secondary"
-            className="cursor-pointer font-semibold font-montserrat"
-          >
+          <Button variant="secondary" className="cursor-pointer font-semibold">
             {isCreatingForm && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
@@ -96,7 +93,7 @@ export default function CreateFormButton({ organizationId }: Readonly<Props>) {
         <DropdownMenuContent className=" p-3" align="start">
           <DropdownMenuGroup className="grid gap-2">
             <DropdownMenuItem
-              className="cursor-pointer px-3 font-semibold font-montserrat"
+              className="cursor-pointer px-3 font-semibold"
               disabled={isCreatingForm}
               onClick={() => handleCreateBlankForm(newFormData)}
             >
@@ -105,7 +102,7 @@ export default function CreateFormButton({ organizationId }: Readonly<Props>) {
             </DropdownMenuItem>
             <DropdownMenuItem
               disabled={isCreatingForm}
-              className="cursor-pointer px-3 font-semibold font-montserrat"
+              className="cursor-pointer px-3 font-semibold"
               onClick={() => setOpen(true)}
             >
               <Sparkles size={16} className="mr-2" />

@@ -4,6 +4,8 @@ import { AuthProvider } from "@/components/authProvider";
 import Spinner from "@/components/common/spinner";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { isMobileAllowedPath } from "@/lib/isMobileAllowedPath";
+import { cn } from "@/lib/utils";
+import { GeistSans } from "geist/font/sans";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { Suspense } from "react";
@@ -38,5 +40,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   }
 
-  return <AuthProvider>{content}</AuthProvider>;
+  return (
+    <AuthProvider>
+      <div className={cn(GeistSans.variable, "font-sans")}>{content}</div>
+    </AuthProvider>
+  );
 }

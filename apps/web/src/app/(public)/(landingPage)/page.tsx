@@ -24,20 +24,29 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="container mx-auto">
-      <div className="grid min-w-0 lg:grid-cols-2 gap-8 lg:items-center lg:min-h-[calc(100vh-6rem)]">
-        <Hero />
+    <main className="min-w-0">
+      <Hero />
+
+      {/* The real demo form stays exactly as it is, directly under the hero. */}
+      <section
+        id="demo"
+        aria-label="Live demo"
+        className="mx-auto w-full max-w-[1160px] scroll-mt-20 px-4 pt-2 min-[900px]:pt-4"
+      >
         <DemoSection />
-      </div>
+      </section>
 
       {/* Live Responses Section */}
-      <div className="my-12 flex justify-center max-lg:hidden">
+      <div className="mx-auto my-12 flex max-w-[1160px] justify-center px-4 max-lg:hidden">
         <DemoResponsesShell>
           <LazyLiveDemoResponses />
         </DemoResponsesShell>
       </div>
 
-      <div className="my-12">
+      <div
+        id="use-cases"
+        className="mx-auto my-12 max-w-[1160px] scroll-mt-20 px-4"
+      >
         <UseCases />
       </div>
 
@@ -53,7 +62,7 @@ export default function Home() {
       </div>
 
       {/* Technologies section with Docker support */}
-      <div className="my-12">
+      <div className="mx-auto my-12 max-w-[1160px] px-4">
         <Technologies />
       </div>
 

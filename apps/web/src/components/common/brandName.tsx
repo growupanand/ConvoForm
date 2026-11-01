@@ -9,13 +9,10 @@ export default function BrandNameLink({ className }: Props) {
   return (
     <Link href="/">
       <span
-        className={cn(
-          "text-foreground font-semibold font-montserrat",
-          className,
-        )}
+        className={cn("font-display text-foreground font-semibold", className)}
       >
         <span className="flex items-center justify-start gap-0">
-          <span className="text-brand-500">Convo</span>
+          <span className="text-brand-600">Convo</span>
           <span>Form</span>
         </span>
       </span>

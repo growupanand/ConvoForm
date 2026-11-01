@@ -43,7 +43,7 @@ export const EndScreen = (props: Props) => {
             <div className="flex items-center justify-center mt-10">
               <Button
                 size="lg"
-                className="font-montserrat whitespace-break-spaces rounded-full  font-medium transition-all hover:scale-110 active:scale-100 text-xl h-auto py-2 gap-2"
+                className="whitespace-break-spaces rounded-full  font-medium transition-all hover:scale-110 active:scale-100 text-xl h-auto py-2 gap-2"
               >
                 <Link
                   // biome-ignore lint/style/noNonNullAssertion: <explanation>

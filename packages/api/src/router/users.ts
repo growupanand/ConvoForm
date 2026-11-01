@@ -9,17 +9,4 @@ export const usersRouter = createTRPCRouter({
 
     return result?.value || 0;
   }),
-
-  getRecentUsers: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.db.query.user.findMany({
-      orderBy: (user, { desc }) => [desc(user.createdAt)],
-      limit: 5,
-      columns: {
-        id: true,
-        imageUrl: true,
-        firstName: true,
-        lastName: true,
-      },
-    });
-  }),
 });

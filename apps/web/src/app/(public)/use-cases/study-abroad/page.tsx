@@ -1,4 +1,3 @@
-import { nohemi } from "@/app/fonts/customFonts";
 import { ScreenshotFrame } from "@/components/common/screenshotFrame";
 
 import { studyAbroadUseCasePath } from "@/lib/marketingPaths";
@@ -142,11 +141,7 @@ const sectionSpacing = "mt-16 border-t pt-12 lg:mt-20";
 
 function CreateIntakeLink() {
   return (
-    <Button
-      size="lg"
-      className="rounded-full px-6 font-montserrat text-base"
-      asChild
-    >
+    <Button size="lg" className="rounded-full px-6 text-base" asChild>
       <Link href="/auth/register" rel="noreferrer nofollow noopener">
         Create a student intake form
       </Link>
@@ -165,8 +160,7 @@ function SectionHeading({
     <h2
       id={id}
       className={cn(
-        "text-3xl leading-tight text-foreground lg:text-4xl",
-        nohemi.className,
+        "font-display text-3xl leading-tight text-foreground lg:text-4xl",
       )}
     >
       {children}
@@ -181,8 +175,7 @@ export default function StudyAbroadUseCasePage() {
         <div>
           <h1
             className={cn(
-              "max-w-xl text-4xl leading-tight text-foreground lg:text-5xl lg:leading-tight",
-              nohemi.className,
+              "font-display max-w-xl text-4xl leading-tight text-foreground lg:text-5xl lg:leading-tight",
             )}
           >
             Start counselling with a student profile, not a blank slate
@@ -254,8 +247,7 @@ export default function StudyAbroadUseCasePage() {
                 >
                   <span
                     className={cn(
-                      "pt-0.5 text-2xl leading-none text-brand-600",
-                      nohemi.className,
+                      "font-display pt-0.5 text-2xl leading-none text-brand-600",
                     )}
                     aria-hidden
                   >
