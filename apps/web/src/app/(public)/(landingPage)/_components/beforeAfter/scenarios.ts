@@ -73,7 +73,7 @@ export const BEFORE_AFTER_SCENARIOS: Record<
       { kind: "user", text: "4, mostly React" },
     ],
     values: [
-      { key: "Name", value: "Rahul" },
+      { key: "Name", value: "Rahul Mehta" },
       { key: "Role", value: "Frontend Developer" },
       { key: "Experience", value: "4 yrs (React)", highlighted: true },
       { key: "Notice", value: "Immediate" },

@@ -9,6 +9,7 @@
       "ink": { "role": "neutral", "displayName": "Ink" },
       "muted": { "role": "neutral", "displayName": "Muted" },
       "text": { "role": "neutral", "displayName": "Text" },
+      "label": { "role": "neutral", "displayName": "Label" },
       "slate": { "role": "neutral", "displayName": "Slate (decorative only)" },
       "hair": { "role": "neutral", "displayName": "Hair" },
       "hair-soft": { "role": "neutral", "displayName": "Hair Soft" },
@@ -246,7 +247,7 @@
       },
       {
         "name": "The Readable Ink Rule",
-        "body": "Text someone needs to read uses `ink`, `muted` or `text` (4.5:1 or better on `paper`). `slate` fails contrast for small text and is for decoration only.",
+        "body": "Text someone needs to read uses `ink`, `muted`, `text` or `label` (4.5:1 or better on `paper`). `slate` fails contrast for small text and is for decoration only.",
         "section": "colors"
       },
       {

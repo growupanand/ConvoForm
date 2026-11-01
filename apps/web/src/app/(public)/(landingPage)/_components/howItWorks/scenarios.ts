@@ -2,6 +2,16 @@
 // tell the same story with the same fields, answers and values.
 export const SCENARIO_SECONDS = 10.8;
 
+/**
+ * The frame each breakpoint starts on. Desktop is the drawn-but-empty form;
+ * mobile is after the form has retracted, with the conversation frame drawn.
+ * The static placeholder mirrors these exact frames.
+ */
+export const HOW_IT_WORKS_START_CLOCK = {
+  desktop: 0.95,
+  mobile: 1.425,
+} as const;
+
 export type HowItWorksScenario = {
   /** Label shown above the stage, e.g. "Study abroad enquiry". */
   name: string;

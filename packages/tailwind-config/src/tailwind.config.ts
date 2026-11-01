@@ -55,6 +55,7 @@ const config: Config = {
           ink: "#0f172a",
           muted: "#475569",
           text: "#64748b",
+          label: "#64748b",
           slate: "#94a3b8",
           hair: "#cbd5e1",
           "hair-soft": "#e2e8f0",

@@ -7,6 +7,7 @@ colors:
   ink: "#0f172a"
   muted: "#475569"
   text: "#64748b"
+  label: "#64748b"
   slate: "#94a3b8"
   hair: "#cbd5e1"
   hair-soft: "#e2e8f0"
@@ -226,7 +227,8 @@ Cool, near-white paper and slate inks, with a single confident blue.
 - **Surface** (`surface`): cards, panels, chat windows, inputs.
 - **Ink** (`ink`): headings and primary text.
 - **Muted** (`muted`): body copy, leads, nav links.
-- **Text** (`text`): secondary copy, captions, small labels that must be read.
+- **Text** (`text`): secondary copy and captions.
+- **Label** (`label`): small mono annotation text such as "Saved", "Illustrative data" and table field keys. It shares `text`'s value (`#64748b`) but names the role so labels never fall back to `slate`.
 - **Slate** (`slate`): decorative only: FAQ numbers, dividers' glyphs, illustration strokes, disabled states.
 - **Hair** (`hair`): the 1.25px hairline on cards, buttons, tabs, FAQ rules.
 - **Hair Soft** (`hair-soft`): 1px inner dividers, header bottom border, table cell rules.
@@ -237,7 +239,7 @@ Cool, near-white paper and slate inks, with a single confident blue.
 
 **The Solid Emphasis Rule.** Emphasised words in `h1`/`h2` are solid `blue-600`. No gradient text, anywhere (owner decision on #513; the mockups' gradient `em` is superseded).
 
-**The Readable Ink Rule.** Text someone needs to read uses `ink`, `muted` or `text` (4.5:1 or better on `paper`). `slate` fails contrast for small text and is for decoration only.
+**The Readable Ink Rule.** Text someone needs to read uses `ink`, `muted`, `text` or `label` (4.5:1 or better on `paper`). `slate` fails contrast for small text and is for decoration only.
 
 ## Typography
 
@@ -259,7 +261,7 @@ Load all three from Google Fonts through `next/font/google` (`Bricolage_Grotesqu
 - **Quote** (`quote`): the founder note.
 - **Lead** (`lead`): section intros, colour `muted`, max width 620px. The hero subline is `clamp(15.5px, 1.5vw, 18px)` / 1.55.
 - **Body** (`body`) and **Body Small** (`body-sm`): card copy, answers, footer links. Keep lines to about 65ch.
-- **Label** (`label`): eyebrows, step numbers, tabs and field keys; uppercase, colour `blue-600` for eyebrows, `text` otherwise. Field keys in tables may drop to 10px.
+- **Label** (`label`): eyebrows, step numbers, tabs and field keys; uppercase, colour `blue-600` for eyebrows, `label` otherwise. Field keys in tables may drop to 10px.
 - **Label Text** (`label-text`): mono running text like the proof strip and footer credit.
 
 ### Named Rules

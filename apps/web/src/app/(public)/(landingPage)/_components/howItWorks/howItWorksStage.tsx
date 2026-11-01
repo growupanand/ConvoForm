@@ -73,7 +73,7 @@ export function HowItWorksStage({
     <div>
       <div
         aria-hidden="true"
-        className="mt-11 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 font-mono text-[11px] uppercase leading-none tracking-[0.04em] text-marketing-slate"
+        className="mt-11 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 font-mono text-[11px] uppercase leading-none tracking-[0.04em] text-marketing-label"
       >
         <span>Example</span>
         <span className="text-marketing-ink">{scenario?.name}</span>
@@ -94,7 +94,9 @@ export function HowItWorksStage({
 
       <div
         ref={stageRef}
-        className="relative isolate mx-auto mt-2.5 aspect-[345/664] w-full max-w-[1080px] min-[900px]:aspect-[1080/336]"
+        role="img"
+        aria-label="Line drawing: a static form's fields peel off into a conversation that asks a follow-up, and the answers flow into a clean data table"
+        className="relative isolate mx-auto mt-2.5 aspect-[345/664] w-full max-w-[420px] min-[900px]:aspect-[1080/336] min-[900px]:max-w-[1080px]"
       >
         <div
           aria-hidden="true"

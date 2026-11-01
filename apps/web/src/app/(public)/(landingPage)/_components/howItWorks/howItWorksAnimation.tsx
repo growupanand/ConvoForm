@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import {
   type ConversationEvent,
   HOW_IT_WORKS_SCENARIOS,
+  HOW_IT_WORKS_START_CLOCK,
   SCENARIO_SECONDS,
   type ScenarioSchedule,
   scheduleScenario,
@@ -24,6 +25,7 @@ const C = {
   line: "var(--marketing-slate)",
   faint: "var(--marketing-hair)",
   text: "var(--marketing-text)",
+  label: "var(--marketing-label)",
   blue: "var(--marketing-blue-600)",
   blueFaint: "var(--marketing-blue-300)",
   surface: "var(--marketing-surface)",
@@ -153,7 +155,8 @@ export default function HowItWorksAnimation({
   const layoutRef = useRef<Layout | null>(null);
   const visibleRef = useRef(false);
   const readyRef = useRef(false);
-  const clockRef = useRef(0.95);
+  const clockRef = useRef<number>(HOW_IT_WORKS_START_CLOCK.desktop);
+  const didInitialiseRef = useRef(false);
   const activeScenarioRef = useRef(0);
   const reportedScenarioRef = useRef(-1);
   const onReadyRef = useRef(onReady);
@@ -188,7 +191,7 @@ export default function HowItWorksAnimation({
 
     for (const [index, label] of R.labels.entries()) {
       label.g.style.opacity = String(easeOut(progress(0, 0.3, time)));
-      label.t.setAttribute("fill", activeStage[index] ? C.blue : C.line);
+      label.t.setAttribute("fill", activeStage[index] ? C.blue : C.label);
       label.ln.setAttribute("stroke", activeStage[index] ? C.blue : C.faint);
     }
 
@@ -475,7 +478,7 @@ export default function HowItWorksAnimation({
     R.tableCount.textContent = `${savedCount}/${R.rows.length}${
       savedCount === R.rows.length ? " ✓" : ""
     }`;
-    R.tableCount.setAttribute("fill", savedCount ? C.blue : C.line);
+    R.tableCount.setAttribute("fill", savedCount ? C.blue : C.label);
     R.tableCount.style.opacity = String(
       easeOut(progress(tableStart + 0.2, tableStart + 0.45, time)),
     );
@@ -566,8 +569,14 @@ export default function HowItWorksAnimation({
       const scenarioIndex = Math.floor(clockRef.current / T) % SCENARIOS.length;
       const schedule = SCHEDULES[scenarioIndex];
       if (!schedule) return;
-      const mobile = window.matchMedia("(max-width: 900px)").matches;
+      const mobile = !window.matchMedia("(min-width: 900px)").matches;
       const layout = getLayout(mobile);
+      if (!didInitialiseRef.current) {
+        clockRef.current = mobile
+          ? HOW_IT_WORKS_START_CLOCK.mobile
+          : HOW_IT_WORKS_START_CLOCK.desktop;
+        didInitialiseRef.current = true;
+      }
       const built = buildScene(svg, layout, scenarioIndex, schedule);
       layoutRef.current = layout;
       builtRef.current = built;
@@ -745,7 +754,7 @@ function buildScene(
   const defs = createEl(root, "defs");
   const areaTop = Ch.y + 46;
   const areaBottom = Ch.y + Ch.h - 44;
-  defs.innerHTML = `<linearGradient id="howItWorksFade" gradientUnits="userSpaceOnUse" x1="0" y1="${areaTop}" x2="0" y2="${areaTop + 26}"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff"/></linearGradient><mask id="howItWorksChatMask" maskUnits="userSpaceOnUse" x="${Ch.x - 20}" y="${areaTop}" width="${Ch.w + 40}" height="${areaBottom - areaTop}"><rect x="${Ch.x - 20}" y="${areaTop}" width="${Ch.w + 40}" height="${areaBottom - areaTop}" fill="url(#howItWorksFade)"/></mask>`;
+  defs.innerHTML = `<linearGradient id="howItWorksFade" gradientUnits="userSpaceOnUse" x1="0" y1="${areaTop}" x2="0" y2="${areaTop + 26}"><stop offset="0" stop-color="${C.surface}" stop-opacity="0"/><stop offset="1" stop-color="${C.surface}"/></linearGradient><mask id="howItWorksChatMask" maskUnits="userSpaceOnUse" x="${Ch.x - 20}" y="${areaTop}" width="${Ch.w + 40}" height="${areaBottom - areaTop}"><rect x="${Ch.x - 20}" y="${areaTop}" width="${Ch.w + 40}" height="${areaBottom - areaTop}" fill="url(#howItWorksFade)"/></mask>`;
 
   const label = (text: string, x: number, y: number): LabelParts => {
     const group = createEl(root, "g");
@@ -764,7 +773,7 @@ function buildScene(
       "font-family": MONO_FONT,
       "font-size": 10,
       "letter-spacing": ".06em",
-      fill: C.line,
+      fill: C.label,
     });
     labelText.textContent = text;
     return { g: group, ln: line, t: labelText };
@@ -846,7 +855,7 @@ function buildScene(
     "font-family": MONO_FONT,
     "font-size": 9.5,
     "letter-spacing": ".06em",
-    fill: C.line,
+    fill: C.label,
     "text-anchor": "middle",
   });
   formSubmitText.textContent = "SUBMIT";
@@ -1032,7 +1041,7 @@ function buildScene(
     "font-family": MONO_FONT,
     "font-size": 9.5,
     "letter-spacing": ".06em",
-    fill: C.line,
+    fill: C.label,
     "text-anchor": "end",
   });
   tableCount.textContent = `0/${rowCount}`;
@@ -1065,7 +1074,7 @@ function buildScene(
       "font-family": MONO_FONT,
       "font-size": 9.5,
       "letter-spacing": ".06em",
-      fill: C.line,
+      fill: C.label,
     });
     keyText.textContent = key.toUpperCase();
     const value = createEl(table, "text", {
