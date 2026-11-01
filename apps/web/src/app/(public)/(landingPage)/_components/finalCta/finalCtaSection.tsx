@@ -4,10 +4,10 @@ import Link from "next/link";
 import { FinalCtaStage } from "./finalCtaStage";
 
 const primaryCtaClass =
-  "inline-flex items-center justify-center gap-2 rounded-full bg-marketing-blue-600 px-6 py-[15px] font-body text-[15px] font-semibold leading-none text-white shadow-[0_10px_26px_-14px_rgba(37,99,235,0.7)] transition duration-150 hover:-translate-y-px hover:bg-marketing-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600";
+  "inline-flex items-center justify-center gap-2 rounded-full bg-marketing-blue-600 px-6 py-[15px] font-body text-[15px] font-semibold leading-none text-white shadow-marketing-primary transition duration-150 hover:-translate-y-px hover:bg-marketing-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600";
 
 const secondaryCtaClass =
-  "inline-flex items-center justify-center gap-2 rounded-full border-[1.25px] border-marketing-hair bg-white/70 px-6 py-[15px] font-body text-[15px] font-semibold leading-none text-marketing-ink transition duration-150 hover:-translate-y-px hover:border-marketing-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600";
+  "inline-flex items-center justify-center gap-2 rounded-full border-[1.25px] border-marketing-hair bg-marketing-surface/70 px-6 py-[15px] font-body text-[15px] font-semibold leading-none text-marketing-ink transition duration-150 hover:-translate-y-px hover:border-marketing-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600";
 
 function DemoPlayIcon() {
   return (
@@ -15,7 +15,11 @@ function DemoPlayIcon() {
       width="14"
       height="14"
       viewBox="0 0 24 24"
-      className="fill-marketing-blue-600"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinejoin="round"
+      className="text-marketing-blue-600"
       aria-hidden="true"
     >
       <path d="M8 5v14l11-7z" />
@@ -34,11 +38,7 @@ export function FinalCtaSection() {
         <div className="relative isolate overflow-hidden rounded-[26px] border-[1.25px] border-marketing-hair bg-marketing-surface px-[22px] pb-[26px] pt-9 min-[900px]:grid min-[900px]:grid-cols-2 min-[900px]:items-center min-[900px]:gap-6 min-[900px]:rounded-[32px] min-[900px]:py-16 min-[900px]:pl-16 min-[900px]:pr-14">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_1px_1px,rgba(15,23,42,0.075)_1px,transparent_0)] bg-[length:22px_22px] [mask-image:radial-gradient(ellipse_90%_60%_at_50%_80%,#000_25%,transparent_80%)] min-[900px]:[mask-image:radial-gradient(ellipse_70%_90%_at_72%_50%,#000_25%,transparent_80%)]"
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -bottom-[140px] left-1/2 -z-20 h-[420px] w-[520px] -translate-x-1/2 bg-[radial-gradient(ellipse,rgba(147,197,253,0.42),rgba(191,219,254,0.15)_45%,transparent_70%)] blur-[30px] min-[900px]:bottom-auto min-[900px]:left-auto min-[900px]:right-[-120px] min-[900px]:top-1/2 min-[900px]:h-[520px] min-[900px]:w-[720px] min-[900px]:-translate-y-1/2 min-[900px]:translate-x-0"
+            className="pointer-events-none absolute inset-0 -z-10 bg-marketing-dot-grid bg-[length:22px_22px] [mask-image:radial-gradient(ellipse_90%_60%_at_50%_80%,#000_25%,transparent_80%)] min-[900px]:[mask-image:radial-gradient(ellipse_70%_90%_at_72%_50%,#000_25%,transparent_80%)]"
           />
 
           <div className="min-w-0">

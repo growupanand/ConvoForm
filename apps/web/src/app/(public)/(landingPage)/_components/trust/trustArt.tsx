@@ -55,7 +55,7 @@ export function TrustArt({
           observer.disconnect();
         }
       },
-      { threshold: 0.2 },
+      { rootMargin: "300px 0px", threshold: 0 },
     );
 
     observer.observe(art);
@@ -72,7 +72,7 @@ export function TrustArt({
       <div
         aria-hidden="true"
         className={cn(
-          "transition-opacity duration-150",
+          "transition-opacity duration-150 motion-reduce:transition-none motion-safe:[[data-js]_&]:opacity-0",
           ready ? "opacity-0" : "opacity-100",
         )}
       >
@@ -83,7 +83,7 @@ export function TrustArt({
         <div
           aria-hidden="true"
           className={cn(
-            "absolute inset-0 transition-opacity duration-150",
+            "absolute inset-0 transition-opacity duration-150 motion-reduce:transition-none",
             ready ? "opacity-100" : "opacity-0",
           )}
         >

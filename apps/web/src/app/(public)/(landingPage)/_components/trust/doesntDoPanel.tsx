@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 
 const ITEMS = [
   {
-    id: "universities",
-    text: "It doesn't recommend universities or judge visa eligibility. Your team does that.",
+    id: "decisions",
+    text: "It doesn't make decisions for you. ConvoForm collects clear answers; your team decides what to do with them.",
     icon: (
       <>
         <path d="M2 9.5 12 5l10 4.5L12 14z" />
@@ -100,7 +100,7 @@ export function DoesntDoPanel() {
   return (
     <div
       ref={panelRef}
-      className="mt-5 rounded-[20px] border-[1.25px] border-marketing-hair bg-white/60 px-5 py-[22px] min-[900px]:px-7 min-[900px]:py-[26px]"
+      className="mt-5 rounded-[20px] border-[1.25px] border-marketing-hair bg-marketing-surface/60 px-5 py-[22px] min-[900px]:px-7 min-[900px]:py-[26px]"
     >
       <h3 className="font-display text-[20px] font-semibold leading-[1.2] text-marketing-ink">
         What ConvoForm doesn&apos;t do
@@ -128,16 +128,20 @@ export function DoesntDoPanel() {
                 d="M3 21 21 3"
                 pathLength={1}
                 strokeDasharray={1}
+                strokeDashoffset={1}
                 stroke="var(--marketing-paper)"
                 strokeWidth="4"
+                className="motion-reduce:[stroke-dashoffset:0] [html:not([data-js])_&]:[stroke-dashoffset:0]"
               />
               <path
                 data-cross=""
                 d="M3 21 21 3"
                 pathLength={1}
                 strokeDasharray={1}
+                strokeDashoffset={1}
                 stroke="var(--marketing-text)"
                 strokeWidth="1.25"
+                className="motion-reduce:[stroke-dashoffset:0] [html:not([data-js])_&]:[stroke-dashoffset:0]"
               />
             </svg>
             <span>{item.text}</span>

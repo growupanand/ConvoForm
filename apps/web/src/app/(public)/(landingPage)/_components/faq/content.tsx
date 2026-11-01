@@ -1,5 +1,5 @@
 import { PLAN_LIMITS, formatFileSize } from "@convoform/common";
-import { BETA_LIMITS } from "@convoform/file-storage";
+import { BETA_LIMITS } from "@convoform/file-storage/constants";
 import type { ReactNode } from "react";
 
 /**
@@ -9,15 +9,8 @@ import type { ReactNode } from "react";
  */
 export const AI_PROVIDER: string | null = null;
 
-/**
- * Owner TODO (#516): confirm the "existing users will hear about it first"
- * promise, or set this to an empty string to remove the clause.
- */
-const PAID_PLANS_PROMISE =
-  "If we ever add paid plans, existing users will hear about it first, and you can always self-host the open-source version for free.";
-
-const freeResponses = PLAN_LIMITS.FREE_RESPONSES;
-const freeStorage = formatFileSize(PLAN_LIMITS.FREE_STORAGE_BYTES);
+const betaResponses = PLAN_LIMITS.FREE_RESPONSES;
+const betaStorage = formatFileSize(BETA_LIMITS.MAX_STORAGE_PER_ORG);
 const maxFileSize = formatFileSize(BETA_LIMITS.MAX_FILE_SIZE);
 const retentionDays = BETA_LIMITS.RETENTION_DAYS;
 
@@ -37,10 +30,10 @@ export const FAQ_ITEMS: FaqItem[] = [
     question: "Is it free?",
     answer: (
       <>
-        Yes. ConvoForm is free to use right now, with no credit card. The free
-        plan includes up to {freeResponses} responses in total per organization
-        and {freeStorage} of file storage (files up to {maxFileSize} each, kept
-        for {retentionDays} days). {PAID_PLANS_PROMISE}
+        Yes. ConvoForm is in beta, and every feature is free while we&apos;re in
+        beta. The beta limits are {betaResponses} responses per organization and{" "}
+        {betaStorage} of file storage (files up to {maxFileSize} each, kept for{" "}
+        {retentionDays} days).
       </>
     ),
   },

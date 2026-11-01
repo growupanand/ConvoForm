@@ -81,6 +81,9 @@ export default function RootLayout({
       )}
       suppressHydrationWarning
     >
+      <head>
+        <script>{'document.documentElement.dataset.js = "1";'}</script>
+      </head>
       <body className="antialiased font-sans bg-background">
         <CSPostHogProvider>
           <TooltipProvider delayDuration={200}>

@@ -71,7 +71,7 @@ export function TrustSection() {
           {CARDS.map((card) => (
             <div
               key={card.id}
-              className="rounded-[20px] border-[1.25px] border-marketing-hair bg-white/60 p-5"
+              className="rounded-[20px] border-[1.25px] border-marketing-hair bg-marketing-surface/60 p-5"
             >
               <div className="-mx-1 -mt-1 mb-[18px] flex h-24 items-center justify-center border-b border-dashed border-marketing-hair-soft">
                 <TrustArt icon={card.icon} label={card.label} />

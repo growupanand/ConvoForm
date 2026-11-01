@@ -96,6 +96,13 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      backgroundImage: {
+        "marketing-dot-grid":
+          "radial-gradient(circle at 1px 1px, rgba(15,23,42,0.07) 1px, transparent 0)",
+      },
+      boxShadow: {
+        "marketing-primary": "0 10px 26px -14px rgba(37,99,235,0.7)",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
