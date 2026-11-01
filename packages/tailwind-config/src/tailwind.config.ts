@@ -49,6 +49,26 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
         brand: colors.blue,
+        marketing: {
+          paper: "#fafbfc",
+          surface: "#ffffff",
+          ink: "#0f172a",
+          muted: "#475569",
+          text: "#64748b",
+          slate: "#94a3b8",
+          hair: "#cbd5e1",
+          "hair-soft": "#e2e8f0",
+          blue: {
+            50: "#eff6ff",
+            100: "#dbeafe",
+            200: "#bfdbfe",
+            300: "#93c5fd",
+            400: "#60a5fa",
+            500: "#3b82f6",
+            600: "#2563eb",
+            700: "#1d4ed8",
+          },
+        },
         emphasis: {
           DEFAULT: "hsl(var(--emphasis))",
           foreground: "hsl(var(--emphasis-foreground))",
@@ -95,15 +115,20 @@ const config: Config = {
         "bounce-lg": "bounce-lg 1s ease-out infinite",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"], // Add generic fallbacks
-        montserrat: [
-          "var(--font-montserrat)",
+        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        display: [
+          "var(--font-bricolage)",
+          "var(--font-inter)",
           "system-ui",
-          "-apple-system",
-          "Segoe UI",
-          "Roboto",
           "sans-serif",
-        ], // Add generic sans-serif fallback
+        ],
+        body: ["var(--font-inter)", "system-ui", "sans-serif"],
+        mono: [
+          "var(--font-jetbrains-mono)",
+          "ui-monospace",
+          "SFMono-Regular",
+          "monospace",
+        ],
       },
       transitionDuration: {
         "2000": "2000ms",

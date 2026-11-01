@@ -54,7 +54,6 @@ export default function MainNavTab({ formId }: Readonly<Props>) {
           <TabsTrigger
             value={link.name}
             key={`${link.link}-${link.name}`}
-            className="font-montserrat"
             asChild
             disabled={link.disabled}
           >

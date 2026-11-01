@@ -46,7 +46,7 @@ export const SectionCardTitle = ({
   children,
 }: { children: React.ReactNode }) => {
   return (
-    <CardTitle className="font-montserrat text-lg lg:text-xl font-semibold tracking-tight text-muted-foreground">
+    <CardTitle className="font-display text-lg lg:text-xl font-semibold tracking-tight text-muted-foreground">
       {children}
     </CardTitle>
   );

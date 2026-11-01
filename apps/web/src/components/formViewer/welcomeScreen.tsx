@@ -94,7 +94,7 @@ export const WelcomeScreen = ({
             <Button
               disabled={isStartingConversation}
               size="lg"
-              className="font-montserrat whitespace-break-spaces rounded-full  font-medium transition-all hover:scale-110 active:scale-100 text-2xl h-auto py-4 gap-2"
+              className="whitespace-break-spaces rounded-full  font-medium transition-all hover:scale-110 active:scale-100 text-2xl h-auto py-4 gap-2"
               onClick={handleCTAClick}
             >
               {isStartingConversation && (

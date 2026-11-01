@@ -12,7 +12,6 @@ import { integrationRouter } from "./integration";
 import { metricsRouter } from "./metrics";
 import { organizationRouter } from "./organization";
 import { usageRouter } from "./usage";
-import { usersRouter } from "./users";
 import { webhookRouter } from "./webhook";
 
 /**
@@ -32,7 +31,6 @@ export const appRouter = createTRPCRouter({
   formDesign: formDesignRouter,
   usage: usageRouter,
   google: googleRouter,
-  users: usersRouter,
   aiFormGeneration: aiFormGenerationRouter,
   email: emailRouter,
   integration: integrationRouter,

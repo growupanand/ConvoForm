@@ -11,7 +11,7 @@ import { GoogleAuthProvider } from "@/contexts/GoogleAuthContext";
 import { cn } from "@/lib/utils";
 // TODO: Disabled because getting some unexpected transitions when switching any page
 // import { unstable_ViewTransition as ViewTransition } from "react";
-import { montserrat } from "./fonts";
+import { bricolageGrotesque, inter, jetBrainsMono } from "./fonts";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -73,7 +73,12 @@ export default function RootLayout({
     // <ViewTransition>
     <html
       lang="en"
-      className={cn(GeistSans.variable, montserrat.variable)}
+      className={cn(
+        GeistSans.variable,
+        bricolageGrotesque.variable,
+        inter.variable,
+        jetBrainsMono.variable,
+      )}
       suppressHydrationWarning
     >
       <body className="antialiased font-sans bg-background">

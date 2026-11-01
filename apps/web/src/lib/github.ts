@@ -5,15 +5,22 @@ const schema = z.object({
 });
 
 export async function getGitHubStars() {
-  const res = await fetch(
-    "https://api.github.com/repos/growupanand/ConvoForm",
-    { next: { revalidate: 600 } }, // 10min
-  );
-  const json = await res.json();
-  const github = schema.safeParse(json);
+  try {
+    const res = await fetch(
+      "https://api.github.com/repos/growupanand/ConvoForm",
+      { next: { revalidate: 600 } }, // 10min
+    );
 
-  if (!github.success) return 0;
-  return github.data.stargazers_count;
+    if (!res.ok) return 0;
+
+    const json = await res.json();
+    const github = schema.safeParse(json);
+
+    if (!github.success) return 0;
+    return github.data.stargazers_count;
+  } catch {
+    return 0;
+  }
 }
 
 /**

@@ -1,143 +1,116 @@
-import { Badge } from "@convoform/ui";
-import { Button } from "@convoform/ui";
-import { Card, CardContent, CardHeader } from "@convoform/ui";
-import {
-  CheckCircle2,
-  ChevronRight,
-  ExternalLink,
-  FileText,
-} from "lucide-react";
-import Image from "next/image";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-import { nohemi } from "@/app/fonts/customFonts";
-import { AnimatedTypingDots } from "@/components/common/typingDots";
-import { cn } from "@/lib/utils";
-import { GithubStars } from "./githubStar";
-import { UserStats } from "./userStats";
+import { HeroStage } from "./heroStage";
+
+const proofPoints = [
+  "No credit card",
+  "Open source (Apache 2.0)",
+  "Cloud or self-host",
+  "Works in any phone browser",
+] as const;
+
+const secondaryCtaClass =
+  "inline-flex items-center justify-center gap-2 rounded-full border-[1.25px] border-marketing-hair bg-white/70 px-6 py-[15px] font-body text-[15px] font-semibold leading-none text-marketing-ink transition duration-150 hover:-translate-y-px hover:border-marketing-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600";
+
+function DemoPlayIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      className="fill-marketing-blue-600"
+      aria-hidden="true"
+    >
+      <path d="M8 5v14l11-7z" />
+    </svg>
+  );
+}
+
+function ProofCheck() {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      className="mt-px size-[13px] shrink-0"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.25"
+      aria-hidden="true"
+    >
+      <circle cx="8" cy="8" r="6.5" className="stroke-marketing-blue-200" />
+      <path d="M5.2 8.2l1.9 1.9 3.8-4" className="stroke-marketing-blue-600" />
+    </svg>
+  );
+}
 
 export function Hero() {
   return (
-    <section className="flex w-full min-w-0 max-w-full flex-col justify-start items-center lg:items-start gap-2 lg:gap-3 text-center lg:text-left">
-      <div className="flex gap-2">
-        <Badge
-          variant="outline"
-          className="group text-xs font-medium px-2 py-0.5 lg:px-3 lg:py-2 lg:text-sm"
-        >
+    <section className="relative isolate overflow-hidden px-4 pb-6 pt-9 text-center min-[900px]:pt-14">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_1px_1px,rgba(15,23,42,0.07)_1px,transparent_0)] bg-[length:22px_22px] [mask-image:linear-gradient(to_bottom,#000_30%,transparent_85%)]"
+      />
+
+      <div className="mx-auto max-w-[1160px]">
+        <h1 className="mx-auto max-w-[900px] font-display text-[clamp(40px,6.4vw,76px)] font-bold leading-[1.02] tracking-[-0.035em] text-marketing-ink">
+          Forms that{" "}
+          <span className="whitespace-nowrap text-marketing-blue-600">
+            talk back.
+          </span>
+        </h1>
+
+        <p className="mx-auto mt-[18px] max-w-[620px] font-body text-[clamp(15.5px,1.5vw,18px)] leading-[1.55] text-marketing-muted">
+          ConvoForm chats with people, asks follow-ups when an answer is vague,
+          and hands you clean, structured data.
+        </p>
+
+        <div className="mx-auto mt-[26px] flex max-w-[340px] flex-col items-stretch gap-3 min-[900px]:max-w-none min-[900px]:flex-row min-[900px]:justify-center">
           <Link
-            href="https://github.com/growupanand/ConvoForm"
-            target="_blank"
-            rel="noreferrer nofollow noopener"
-            className="flex max-w-full flex-wrap items-center justify-center"
+            href="/auth/register"
+            rel="noopener noreferrer nofollow"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-marketing-blue-600 px-6 py-[15px] font-body text-[15px] font-semibold leading-none text-white shadow-[0_10px_26px_-14px_rgba(37,99,235,0.7)] transition duration-150 hover:-translate-y-px hover:bg-marketing-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600"
           >
-            <span className="mr-1 lg:mr-1.5">
-              <Image
-                src="images/icons/github.svg"
-                alt="github"
-                width={10}
-                height={10}
-                className="lg:size-[13px] size-[10px]"
-              />
-            </span>
-            <span className="font-normal">Proudly Open Source</span>
-            <ChevronRight
-              className="ml-1 transition-all group-hover:translate-x-0.5"
-              size="10px"
-            />
-            <GithubStars />
+            Create your free form <span aria-hidden="true">→</span>
           </Link>
-        </Badge>
-      </div>
-
-      <Card className="border-none bg-transparent shadow-none w-full">
-        <CardHeader className="mb-6 px-0 space-y-0">
-          <h1
-            className={cn(
-              "max-w-full text-3xl lg:text-5xl font-normal text-gray-800 leading-normal lg:leading-normal",
-              nohemi.className,
-            )}
+          <Link
+            href="#demo"
+            className={cn(secondaryCtaClass, "hidden lg:inline-flex")}
           >
-            Turn Static Forms
-            <br />
-            Into Smart
-            <span className="mx-1 lg:mx-2 rounded-full px-2 bg-white border lg:px-5 align-middle">
-              <AnimatedTypingDots dotClassName="bg-gray-700 lg:size-3 size-1.5" />
-            </span>{" "}
-            <br />
-            <span className="bg-brand-500 rounded-full px-3 lg:px-4 me-1 lg:me-5 text-white relative inline-flex">
-              Convo
-              <span className="max-lg:hidden z-10 absolute -bottom-1 lg:-bottom-5 left-0 lg:left-2 rotate-[20deg] size-0 border-brand-500 border-r-[10px] border-t-[10px] lg:border-r-[30px] lg:border-t-[30px] border-r-transparent" />
-            </span>
-            Forms
-          </h1>
-        </CardHeader>
-
-        <CardContent className="px-0 flex justify-center lg:justify-start">
-          <div className="flex flex-wrap max-lg:flex-col max-lg:items-start justify-start gap-4 font-medium text-accent-foreground ">
-            <span className="flex max-w-full items-center gap-1 rounded-full bg-gray-50">
-              <CheckCircle2 className="size-6 shrink-0 fill-brand-500 text-white" />
-              100% Free
-            </span>
-            <span className="flex max-w-full items-center gap-1 rounded-full bg-gray-50">
-              <CheckCircle2 className="size-6 shrink-0 fill-brand-500 text-white" />
-              No credit card required
-            </span>
-            <span className="flex max-w-full items-center gap-1 rounded-full bg-gray-50">
-              <CheckCircle2 className="size-6 shrink-0 fill-brand-500 text-white" />
-              Enterprise-grade features
-            </span>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="flex max-lg:flex-col justify-center items-center gap-3 mt-6 lg:mt-2">
-        <Button
-          size="lg"
-          className="h-auto max-w-full whitespace-normal rounded-full py-3 text-base font-montserrat shadow-md transition-all hover:translate-y-[-2px] hover:shadow-lg lg:py-5"
-          asChild
-        >
-          <Link href="/auth/register" rel="noreferrer nofollow noopener">
-            Start Building
+            <DemoPlayIcon />
+            Try the demo
           </Link>
-        </Button>
-
-        <div className="flex items-center gap-2 ">
-          <div className="h-[1px] w-4 bg-gray-300 " />
-          <span className="text-sm text-gray-500 font-medium">OR</span>
-          <div className="h-[1px] w-4 bg-gray-300 " />
-        </div>
-
-        <Button
-          size="lg"
-          variant="secondary"
-          className="h-auto max-w-full whitespace-normal rounded-full py-3 text-base font-montserrat text-[#673AB7] shadow-md transition-all hover:translate-y-[-2px] hover:shadow-lg lg:py-5"
-          asChild
-        >
-          <Link href="/auth/register" rel="noreferrer nofollow noopener">
-            <FileText className="size-6 me-2 text-[#673AB7]" />
-            Import Google Form
-          </Link>
-        </Button>
-      </div>
-      {/* User stats added to hero section */}
-      <div className="mt-6 lg:mt-2 w-full flex justify-center lg:justify-start">
-        <UserStats />
-      </div>
-      <div>
-        <Button
-          variant="outline"
-          size="lg"
-          className="mt-4 h-auto max-w-full whitespace-normal rounded-full py-3 text-base font-montserrat hover:bg-gray-50 lg:hidden lg:py-5"
-          asChild
-        >
           <Link
             href="/view/demo"
-            target="_blank"
-            rel="noreferrer nofollow noopener"
+            rel="noopener noreferrer nofollow"
+            className={cn(secondaryCtaClass, "inline-flex lg:hidden")}
           >
-            See demo form <ExternalLink className="size-4 ms-2" />
+            <DemoPlayIcon />
+            Try the demo
           </Link>
-        </Button>
+        </div>
+
+        <Link
+          href="/view/demo"
+          rel="noopener noreferrer nofollow"
+          className="mt-4 inline-flex items-center gap-1.5 rounded-full px-2 py-1 font-mono text-[12px] leading-none text-marketing-blue-600 underline decoration-marketing-blue-200 underline-offset-4 lg:hidden"
+        >
+          Try it on your phone <span aria-hidden="true">→</span>
+        </Link>
+
+        <ul className="mx-auto mt-[22px] grid max-w-[343px] grid-cols-2 gap-x-3.5 gap-y-2.5 text-left font-mono text-[11px] leading-[1.4] tracking-[0.01em] text-marketing-text min-[900px]:flex min-[900px]:max-w-none min-[900px]:flex-wrap min-[900px]:justify-center min-[900px]:gap-x-[22px] min-[900px]:text-xs">
+          {proofPoints.map((point) => (
+            <li key={point} className="flex items-start gap-[7px]">
+              <ProofCheck />
+              <span>{point}</span>
+            </li>
+          ))}
+        </ul>
+
+        <HeroStage />
+
+        <p className="mt-3 text-center font-mono text-[11px] leading-[1.4] tracking-[0.04em] text-marketing-slate">
+          Illustrative example
+        </p>
       </div>
     </section>
   );

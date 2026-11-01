@@ -7,12 +7,11 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
-import { Button } from "@convoform/ui";
 import { LayoutDashboard } from "lucide-react";
+import Link from "next/link";
 
 import { AuthProvider } from "@/components/authProvider";
 import { SignInButton } from "@/components/common/publicLayout/signInButton";
-import Link from "next/link";
 
 export function UserSignInButton() {
   return (
@@ -22,13 +21,16 @@ export function UserSignInButton() {
       </ClerkLoading>
       <ClerkLoaded>
         <SignedIn>
-          <Link href="/dashboard">
-            <Button variant="secondary">
-              <LayoutDashboard className="" size={20} />
-              <span className="ml-2 max-lg:hidden">Go to Dashboard</span>
-            </Button>
-          </Link>
-          <UserButton />
+          <div className="flex items-center gap-2">
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 rounded-full px-2.5 py-2 text-sm font-medium text-marketing-muted transition-colors duration-150 hover:text-marketing-ink"
+            >
+              <LayoutDashboard className="size-4" aria-hidden="true" />
+              <span className="max-[899px]:hidden">Dashboard</span>
+            </Link>
+            <UserButton />
+          </div>
         </SignedIn>
         <SignedOut>
           <SignInButton />
