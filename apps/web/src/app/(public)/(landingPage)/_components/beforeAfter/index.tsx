@@ -1,0 +1,624 @@
+"use client";
+
+import { cn } from "@/lib/utils";
+import { useEffect, useRef, useState } from "react";
+
+import {
+  BEFORE_AFTER_SCENARIOS,
+  BEFORE_AFTER_TABS,
+  type BeforeAfterId,
+  type BeforeAfterMessage,
+  type BeforeAfterScenario,
+} from "./scenarios";
+
+const tabClass =
+  "flex-1 rounded-full border-[1.25px] px-4 py-[9px] font-mono text-[11px] uppercase leading-none tracking-[0.04em] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600 min-[900px]:flex-none";
+
+const LOOP_SECONDS = 6;
+const MESSAGE_TIMES = [0.35, 1, 1.85, 2.6] as const;
+
+const clamp = (value: number, min = 0, max = 1) =>
+  Math.min(max, Math.max(min, value));
+const progress = (start: number, end: number, time: number) =>
+  clamp((time - start) / (end - start));
+const easeOut = (value: number) => 1 - (1 - clamp(value)) ** 3;
+const easeInOut = (value: number) => {
+  const amount = clamp(value);
+  return amount < 0.5 ? 4 * amount ** 3 : 1 - (-2 * amount + 2) ** 3 / 2;
+};
+
+function PanelLabel({
+  children,
+  highlighted = false,
+}: {
+  children: React.ReactNode;
+  highlighted?: boolean;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-2 font-mono text-[11px] uppercase leading-none tracking-[0.08em]",
+        highlighted ? "text-marketing-blue-600" : "text-marketing-label",
+      )}
+    >
+      <span
+        aria-hidden="true"
+        className={cn(
+          "h-px w-2.5",
+          highlighted ? "bg-marketing-blue-600" : "bg-marketing-slate",
+        )}
+      />
+      {children}
+    </div>
+  );
+}
+
+function Message({
+  message,
+  final,
+  index,
+}: {
+  message: BeforeAfterMessage;
+  final: boolean;
+  index: number;
+}) {
+  if (message.kind === "followUp") {
+    return (
+      <div
+        data-ba="message"
+        data-index={index}
+        style={final ? undefined : { opacity: 0, transform: "translateY(8px)" }}
+        className="w-fit max-w-[85%] self-start rounded-2xl rounded-bl-[5px] border-[1.25px] border-marketing-blue-300 bg-marketing-blue-50 px-3.5 py-2.5 font-body text-[14.5px] leading-[1.35] text-marketing-blue-700"
+      >
+        <span className="mb-1.5 block font-mono text-[9.5px] uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
+          ↳ Follow-up
+        </span>
+        <span data-ba="message-text">{message.text}</span>
+      </div>
+    );
+  }
+
+  const isUser = message.kind === "user";
+
+  return (
+    <div
+      data-ba="message"
+      data-index={index}
+      style={final ? undefined : { opacity: 0, transform: "translateY(8px)" }}
+      className={cn(
+        "w-fit max-w-[82%] rounded-2xl border-[1.25px] px-3.5 py-2.5 font-body text-[14.5px] leading-[1.35]",
+        isUser
+          ? "self-end rounded-br-[5px] border-marketing-ink bg-white font-medium text-marketing-ink"
+          : "self-start rounded-bl-[5px] border-marketing-hair bg-white text-marketing-ink",
+      )}
+    >
+      <span
+        data-ba="message-text"
+        data-vague={message.vague ? "true" : undefined}
+        className={cn(
+          message.vague &&
+            "bg-[linear-gradient(var(--marketing-blue-600),var(--marketing-blue-600))] bg-[length:0_1.25px] bg-bottom bg-no-repeat pb-px",
+        )}
+        style={
+          final && message.vague ? { backgroundSize: "100% 1.25px" } : undefined
+        }
+      >
+        {message.text}
+      </span>
+    </div>
+  );
+}
+
+function SavedCheck({ final }: { final: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 22 22"
+      fill="none"
+      aria-hidden="true"
+      className="size-[22px] shrink-0"
+    >
+      <circle
+        data-ba="ring"
+        cx="11"
+        cy="11"
+        r="10"
+        pathLength={1}
+        strokeDasharray={final ? undefined : 1}
+        strokeDashoffset={final ? undefined : 1}
+        className="stroke-marketing-blue-200"
+        strokeWidth="1.25"
+      />
+      <path
+        data-ba="tick"
+        d="M6 11.5 9.2 14.7 16 7.8"
+        pathLength={1}
+        strokeDasharray={final ? undefined : 1}
+        strokeDashoffset={final ? undefined : 1}
+        className="stroke-marketing-blue-600"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function SceneMarkup({
+  scenario,
+  final,
+}: {
+  scenario: BeforeAfterScenario;
+  final: boolean;
+}) {
+  return (
+    <>
+      <div className="mt-7 grid grid-cols-1 gap-6 min-[900px]:grid-cols-[1fr_1.25fr]">
+        <div className="relative rounded-[22px] border-[1.25px] border-dashed border-marketing-hair bg-white/60 p-6 min-[900px]:p-[26px]">
+          <PanelLabel>Static form</PanelLabel>
+
+          <div className="mt-5">
+            <div className="font-body text-[13px] leading-none text-marketing-text">
+              {scenario.fieldLabel}
+            </div>
+            <div className="mt-2 flex h-[42px] items-center rounded-[4px] border-[1.25px] border-marketing-hair bg-white px-3 font-body text-[15px] text-marketing-text">
+              <span data-ba="typed" className="whitespace-pre">
+                {final ? scenario.typed : ""}
+              </span>
+              <span
+                data-ba="caret"
+                aria-hidden="true"
+                style={final ? { opacity: 0 } : undefined}
+                className="ml-px inline-block h-[18px] w-px shrink-0 bg-marketing-text"
+              />
+            </div>
+            <div className="mt-3.5 inline-flex items-center rounded-[4px] border-[1.25px] border-marketing-hair px-4 py-[9px] font-body text-[12px] font-medium leading-none text-marketing-label">
+              Submit
+            </div>
+          </div>
+
+          <div
+            data-ba="static-saved"
+            style={final ? undefined : { opacity: 0 }}
+            className="mt-5 flex flex-wrap items-center gap-3 border-t border-dashed border-marketing-hair pt-4"
+          >
+            <span className="font-mono text-[10.5px] uppercase leading-none tracking-[0.08em] text-marketing-label">
+              Saved
+            </span>
+            <b className="font-display text-[20px] font-semibold leading-[1.1] text-marketing-label">
+              {scenario.typed}
+            </b>
+          </div>
+          <p
+            data-ba="note"
+            style={final ? undefined : { opacity: 0 }}
+            className="mt-2.5 font-body text-[14px] leading-[1.5] text-marketing-text"
+          >
+            {scenario.staticNote}
+          </p>
+        </div>
+
+        <div className="relative rounded-[22px] border-[1.25px] border-marketing-blue-200 bg-white p-6 min-[900px]:p-[26px]">
+          <PanelLabel highlighted>ConvoForm</PanelLabel>
+
+          <div className="mt-4 flex min-h-[196px] flex-col justify-center gap-[9px]">
+            {scenario.messages.map((message, index) => (
+              <Message
+                key={`${message.kind}-${index}`}
+                message={message}
+                final={final}
+                index={index}
+              />
+            ))}
+          </div>
+
+          <div
+            data-ba="convo-saved"
+            style={
+              final ? undefined : { opacity: 0, transform: "translateY(6px)" }
+            }
+            className="mt-4 flex flex-wrap items-center gap-3 border-t border-dashed border-marketing-hair pt-4"
+          >
+            <span className="font-mono text-[10.5px] uppercase leading-none tracking-[0.08em] text-marketing-label">
+              Saved
+            </span>
+            <b className="font-display text-[20px] font-semibold leading-[1.1] text-marketing-blue-600">
+              {scenario.saved}
+            </b>
+            <SavedCheck final={final} />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 overflow-hidden rounded-[18px] border-[1.25px] border-marketing-hair bg-white/70">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-marketing-hair-soft px-[18px] py-[13px] font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-text">
+          <span>What your team sees</span>
+          <span className="rounded-full border border-dashed border-marketing-hair px-2 py-1 text-[10px] text-marketing-label">
+            Illustrative data
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 min-[900px]:grid-cols-5">
+          {scenario.values.map((item, index) => {
+            const lastOdd =
+              scenario.values.length % 2 === 1 &&
+              index === scenario.values.length - 1;
+
+            return (
+              <div
+                key={item.key}
+                data-ba="cell"
+                data-index={index}
+                style={
+                  final
+                    ? undefined
+                    : { opacity: 0, transform: "translateY(5px)" }
+                }
+                className={cn(
+                  "relative px-[18px] py-3.5",
+                  index >= 2 && "border-t border-marketing-hair-soft",
+                  index % 2 === 1 && "border-l border-marketing-hair-soft",
+                  lastOdd && "col-span-2 min-[900px]:col-span-1",
+                  "min-[900px]:border-l min-[900px]:border-t-0 min-[900px]:border-marketing-hair-soft min-[900px]:first:border-l-0",
+                )}
+              >
+                {item.highlighted ? (
+                  <span
+                    data-ba="cell-bg"
+                    aria-hidden="true"
+                    style={{ opacity: final ? 0.5 : 0 }}
+                    className="absolute inset-0 bg-marketing-blue-50"
+                  />
+                ) : null}
+                <div className="relative">
+                  <div
+                    className={cn(
+                      "font-mono text-[10px] uppercase leading-none tracking-[0.08em]",
+                      item.highlighted
+                        ? "text-marketing-blue-600"
+                        : "text-marketing-label",
+                    )}
+                  >
+                    {item.key}
+                  </div>
+                  <div
+                    className={cn(
+                      "mt-2 font-body text-[15px] font-medium leading-tight",
+                      item.highlighted
+                        ? "text-marketing-blue-600"
+                        : "text-marketing-ink",
+                    )}
+                  >
+                    {item.value}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+}
+
+function draw(element: SVGElement, amount: number) {
+  element.style.strokeDasharray = "1";
+  element.style.strokeDashoffset = String(1 - clamp(amount));
+  element.style.opacity = amount <= 0 ? "0" : "1";
+}
+
+function BeforeAfterScene({
+  scenario,
+  active,
+}: {
+  scenario: BeforeAfterScenario;
+  active: boolean;
+}) {
+  const animatedRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!active) return;
+
+    const root = animatedRef.current;
+    if (!root) return;
+
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (motionQuery.matches) return;
+
+    const typed = root.querySelector<HTMLElement>('[data-ba="typed"]');
+    const caret = root.querySelector<HTMLElement>('[data-ba="caret"]');
+    const staticSaved = root.querySelector<HTMLElement>(
+      '[data-ba="static-saved"]',
+    );
+    const note = root.querySelector<HTMLElement>('[data-ba="note"]');
+    const convoSaved = root.querySelector<HTMLElement>(
+      '[data-ba="convo-saved"]',
+    );
+    const ring = root.querySelector<SVGElement>('[data-ba="ring"]');
+    const tick = root.querySelector<SVGElement>('[data-ba="tick"]');
+    const highlight = root.querySelector<HTMLElement>('[data-ba="cell-bg"]');
+
+    const messages = Array.from(
+      root.querySelectorAll<HTMLElement>('[data-ba="message"]'),
+    ).map((element) => ({
+      element,
+      text: element.querySelector<HTMLElement>('[data-ba="message-text"]'),
+      vague:
+        element.querySelector<HTMLElement>('[data-ba="message-text"]')?.dataset
+          .vague === "true",
+    }));
+    const cells = Array.from(
+      root.querySelectorAll<HTMLElement>('[data-ba="cell"]'),
+    );
+
+    const render = (time: number) => {
+      const typedCount = Math.round(
+        scenario.typed.length * progress(0.15, 0.5, time),
+      );
+      if (typed) typed.textContent = scenario.typed.slice(0, typedCount);
+      if (caret) {
+        caret.style.opacity =
+          time < 0.6 ? (Math.floor(time * 3) % 2 ? "0.2" : "1") : "0";
+      }
+
+      if (staticSaved) {
+        staticSaved.style.opacity = String(easeOut(progress(0.7, 1, time)));
+      }
+      if (note)
+        note.style.opacity = String(easeOut(progress(0.85, 1.15, time)));
+
+      for (const [index, message] of messages.entries()) {
+        const text = scenario.messages[index];
+        if (!text) continue;
+
+        const at = MESSAGE_TIMES[index] ?? LOOP_SECONDS;
+        const shown = easeOut(progress(at, at + 0.3, time));
+        message.element.style.opacity = String(shown);
+        message.element.style.transform = `translateY(${((1 - shown) * 8).toFixed(1)}px)`;
+
+        if (message.text) {
+          if (text.kind === "user") {
+            const typedAmount = progress(
+              at + 0.05,
+              at + 0.05 + Math.min(0.5, 0.1 + text.text.length * 0.04),
+              time,
+            );
+            message.text.textContent = text.text.slice(
+              0,
+              Math.round(text.text.length * typedAmount),
+            );
+          } else {
+            message.text.textContent = text.text;
+          }
+
+          if (message.vague) {
+            message.text.style.backgroundSize = `${(easeInOut(progress(1.45, 1.8, time)) * 100).toFixed(1)}% 1.25px`;
+          }
+        }
+      }
+
+      if (convoSaved) {
+        const shown = easeOut(progress(3.2, 3.5, time));
+        convoSaved.style.opacity = String(shown);
+        convoSaved.style.transform = `translateY(${((1 - shown) * 6).toFixed(1)}px)`;
+      }
+      if (ring) draw(ring, easeInOut(progress(3.25, 3.75, time)));
+      if (tick) draw(tick, easeInOut(progress(3.6, 3.95, time)));
+
+      for (const [index, cell] of cells.entries()) {
+        const at = 3.9 + index * 0.1;
+        const shown = easeOut(progress(at, at + 0.35, time));
+        cell.style.opacity = String(shown);
+        cell.style.transform = `translateY(${((1 - shown) * 5).toFixed(1)}px)`;
+      }
+
+      if (highlight) {
+        const amount =
+          0.9 * Math.sin(progress(4.3, 5.6, time) * Math.PI) +
+          (time > 5.6 ? 0.5 : 0);
+        highlight.style.opacity = amount.toFixed(3);
+      }
+    };
+
+    render(0);
+
+    let frame = 0;
+    let last = 0;
+    let clock = 0;
+    let visible = false;
+
+    const stop = () => {
+      if (frame !== 0) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
+    };
+
+    const loop = (now: number) => {
+      frame = requestAnimationFrame(loop);
+      const delta = Math.min(0.1, (now - last) / 1000);
+      last = now;
+      clock = (clock + delta) % LOOP_SECONDS;
+      render(clock);
+    };
+
+    const start = () => {
+      if (frame !== 0 || !visible || document.hidden || motionQuery.matches) {
+        return;
+      }
+      last = performance.now();
+      frame = requestAnimationFrame(loop);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          visible = entry.isIntersecting;
+          if (visible) start();
+          else stop();
+        }
+      },
+      { threshold: 0.2 },
+    );
+    observer.observe(root);
+
+    const handleVisibility = () => {
+      if (document.hidden) stop();
+      else start();
+    };
+    const handleMotion = () => {
+      if (motionQuery.matches) stop();
+      else start();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    motionQuery.addEventListener("change", handleMotion);
+
+    return () => {
+      stop();
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibility);
+      motionQuery.removeEventListener("change", handleMotion);
+    };
+  }, [active, scenario]);
+
+  return (
+    <div className="grid">
+      <div
+        ref={animatedRef}
+        className="col-start-1 row-start-1 motion-reduce:hidden"
+      >
+        <SceneMarkup scenario={scenario} final={false} />
+      </div>
+      <div className="col-start-1 row-start-1 hidden motion-reduce:block">
+        <SceneMarkup scenario={scenario} final />
+      </div>
+    </div>
+  );
+}
+
+export function BeforeAfterSection() {
+  const [activeId, setActiveId] = useState<BeforeAfterId>("study");
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  const activate = (index: number) => {
+    const tab = BEFORE_AFTER_TABS[index];
+    if (!tab) return;
+    setActiveId(tab.id);
+    tabRefs.current[index]?.focus();
+  };
+
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    index: number,
+  ) => {
+    let next = index;
+
+    switch (event.key) {
+      case "ArrowRight":
+      case "ArrowDown":
+        next = (index + 1) % BEFORE_AFTER_TABS.length;
+        break;
+      case "ArrowLeft":
+      case "ArrowUp":
+        next =
+          (index - 1 + BEFORE_AFTER_TABS.length) % BEFORE_AFTER_TABS.length;
+        break;
+      case "Home":
+        next = 0;
+        break;
+      case "End":
+        next = BEFORE_AFTER_TABS.length - 1;
+        break;
+      default:
+        return;
+    }
+
+    event.preventDefault();
+    activate(next);
+  };
+
+  return (
+    <section
+      id="why-a-conversation"
+      aria-labelledby="why-a-conversation-heading"
+      className="relative isolate min-w-0 overflow-x-clip px-4 pb-[76px] pt-10 min-[900px]:pb-[112px]"
+    >
+      <div className="mx-auto min-w-0 max-w-[1160px]">
+        <div className="text-center">
+          <span className="inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
+            <span
+              aria-hidden="true"
+              className="size-1.5 rounded-full bg-marketing-blue-600"
+            />
+            Why a conversation
+          </span>
+          <h2
+            id="why-a-conversation-heading"
+            className="mx-auto mt-3 max-w-[760px] font-display text-[clamp(32px,4.2vw,50px)] font-bold leading-[1.06] tracking-[-0.03em] text-marketing-ink"
+          >
+            A vague answer{" "}
+            <span className="text-marketing-blue-600">isn't an answer</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-[620px] font-body text-[17px] leading-[1.6] text-marketing-muted">
+            A static form saves whatever was typed. ConvoForm notices when a
+            reply is unclear and asks a follow-up.
+          </p>
+
+          <div
+            role="tablist"
+            aria-label="Before and after examples"
+            className="mt-8 inline-flex w-full max-w-[340px] gap-1 rounded-full border-[1.25px] border-marketing-hair bg-white/60 p-1 min-[900px]:w-auto min-[900px]:max-w-none"
+          >
+            {BEFORE_AFTER_TABS.map((tab, index) => {
+              const selected = tab.id === activeId;
+              return (
+                <button
+                  key={tab.id}
+                  ref={(element) => {
+                    tabRefs.current[index] = element;
+                  }}
+                  type="button"
+                  role="tab"
+                  id={`before-after-tab-${tab.id}`}
+                  aria-selected={selected}
+                  aria-controls={`before-after-panel-${tab.id}`}
+                  tabIndex={selected ? 0 : -1}
+                  onClick={() => activate(index)}
+                  onKeyDown={(event) => handleKeyDown(event, index)}
+                  className={cn(
+                    tabClass,
+                    selected
+                      ? "border-marketing-blue-300 bg-white text-marketing-blue-600"
+                      : "border-transparent text-marketing-text hover:text-marketing-ink",
+                  )}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {BEFORE_AFTER_TABS.map((tab) => {
+          const selected = tab.id === activeId;
+          return (
+            <div
+              key={tab.id}
+              role="tabpanel"
+              id={`before-after-panel-${tab.id}`}
+              aria-labelledby={`before-after-tab-${tab.id}`}
+              // biome-ignore lint/a11y/noNoninteractiveTabindex: tab panels are focus targets in the WAI-ARIA tab pattern
+              tabIndex={0}
+              hidden={!selected}
+            >
+              <BeforeAfterScene
+                scenario={BEFORE_AFTER_SCENARIOS[tab.id]}
+                active={selected}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}

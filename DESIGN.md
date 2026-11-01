@@ -7,6 +7,7 @@ colors:
   ink: "#0f172a"
   muted: "#475569"
   text: "#64748b"
+  label: "#64748b"
   slate: "#94a3b8"
   hair: "#cbd5e1"
   hair-soft: "#e2e8f0"
@@ -179,7 +180,7 @@ The page should feel calm, honest and precise, closer to a well-made tool than t
 **Key Characteristics:**
 
 - Off-white paper (`paper`) with white `surface` panels; flat, defined by hairlines rather than shadows.
-- One accent: `blue-600`. The rest of the blue scale only tints, glows and states.
+- One accent: `blue-600`. The rest of the blue scale only tints edges and states.
 - Three type voices: Bricolage Grotesque for headings, Inter for body, JetBrains Mono for labels.
 - 1.25px hairline borders everywhere; dashed hairlines mean "static / before / placeholder".
 - Line-art (hairline SVG) illustrations and viewport-triggered motion with a static final frame.
@@ -202,7 +203,7 @@ Motion tokens (machine-readable copies live in `.impeccable/design.json`):
 | `stagger` | `120ms` | Delay between sibling items in a reveal |
 | `loop-hero` | `8s` | Hero "form shatters into conversation" loop |
 | `loop-scene` | `6s` to `10.8s` | Section loops (before/after, trust icons, how it works) |
-| `ambient` | `9s` to `11s`, `ease-in-out` | Background orb drift, the only infinite CSS animation |
+| `ambient` | `9s` to `11s`, `ease-in-out` | Reserved for non-illustration motion; never behind stages |
 | `hover-lift` | `translateY(-1px)` | Buttons on hover |
 
 **The In-View Rule.** Animations start only when their element is on screen: an IntersectionObserver at `threshold: 0.2` for looping scenes, `0.3` for one-shot reveals (which disconnect after firing). Wait for `document.fonts.ready` before measuring or starting.
@@ -218,7 +219,7 @@ Cool, near-white paper and slate inks, with a single confident blue.
 ### Primary
 
 - **Signal Blue** (`blue-600`): the one accent. Primary buttons, eyebrows, active tabs, links, emphasised words in headings, the "fixed" answer, step numbers. Hover deepens to **Deep Signal Blue** (`blue-700`), which is also the text colour on follow-up bubbles.
-- **Blue tints** (`blue-50` to `blue-500`): never used as a second accent. `blue-50` fills follow-up bubbles; `blue-200`/`blue-300` are the hairline colour of featured panels and active borders; `blue-300`/`blue-400` and `blue-200` feed soft background glows.
+- **Blue tints** (`blue-50` to `blue-500`): never used as a second accent. `blue-50` fills follow-up bubbles; `blue-200`/`blue-300` are the hairline colour of featured panels and active borders. Blue never fills an illustration stage background.
 
 ### Neutral
 
@@ -226,7 +227,8 @@ Cool, near-white paper and slate inks, with a single confident blue.
 - **Surface** (`surface`): cards, panels, chat windows, inputs.
 - **Ink** (`ink`): headings and primary text.
 - **Muted** (`muted`): body copy, leads, nav links.
-- **Text** (`text`): secondary copy, captions, small labels that must be read.
+- **Text** (`text`): secondary copy and captions.
+- **Label** (`label`): small mono annotation text such as "Saved", "Illustrative data" and table field keys. It shares `text`'s value (`#64748b`) but names the role so labels never fall back to `slate`.
 - **Slate** (`slate`): decorative only: FAQ numbers, dividers' glyphs, illustration strokes, disabled states.
 - **Hair** (`hair`): the 1.25px hairline on cards, buttons, tabs, FAQ rules.
 - **Hair Soft** (`hair-soft`): 1px inner dividers, header bottom border, table cell rules.
@@ -237,7 +239,7 @@ Cool, near-white paper and slate inks, with a single confident blue.
 
 **The Solid Emphasis Rule.** Emphasised words in `h1`/`h2` are solid `blue-600`. No gradient text, anywhere (owner decision on #513; the mockups' gradient `em` is superseded).
 
-**The Readable Ink Rule.** Text someone needs to read uses `ink`, `muted` or `text` (4.5:1 or better on `paper`). `slate` fails contrast for small text and is for decoration only.
+**The Readable Ink Rule.** Text someone needs to read uses `ink`, `muted`, `text` or `label` (4.5:1 or better on `paper`). `slate` fails contrast for small text and is for decoration only.
 
 ## Typography
 
@@ -259,7 +261,7 @@ Load all three from Google Fonts through `next/font/google` (`Bricolage_Grotesqu
 - **Quote** (`quote`): the founder note.
 - **Lead** (`lead`): section intros, colour `muted`, max width 620px. The hero subline is `clamp(15.5px, 1.5vw, 18px)` / 1.55.
 - **Body** (`body`) and **Body Small** (`body-sm`): card copy, answers, footer links. Keep lines to about 65ch.
-- **Label** (`label`): eyebrows, step numbers, tabs and field keys; uppercase, colour `blue-600` for eyebrows, `text` otherwise. Field keys in tables may drop to 10px.
+- **Label** (`label`): eyebrows, step numbers, tabs and field keys; uppercase, colour `blue-600` for eyebrows, `label` otherwise. Field keys in tables may drop to 10px.
 - **Label Text** (`label-text`): mono running text like the proof strip and footer credit.
 
 ### Named Rules
@@ -282,17 +284,19 @@ Load all three from Google Fonts through `next/font/google` (`Bricolage_Grotesqu
 
 ## Elevation & Depth
 
-Flat by default. Depth comes from hairlines, white panels on paper, a faint dotted grid and soft, blurred blue glows behind the one featured element in a section. Shadows are rare and always blue-tinted.
+Flat by default. Depth comes from hairlines, white panels on paper and a faint dotted grid inside framed illustration stages. Shadows are rare and always blue-tinted; illustration stages have none.
 
 ### Shadow Vocabulary
 
 - **Primary button glow** (`box-shadow: 0 10px 26px -14px rgba(37,99,235,.7)`): primary buttons only.
 - **Floating chat** (`box-shadow: 0 22px 50px -30px rgba(37,99,235,.4)`): the hero chat window.
 - **Focus halo** (`box-shadow: 0 0 0 2px #bfdbfe`): a highlighted overlay card.
-- **Background glow:** a radial gradient of `blue-300` at about 32 to 42% alpha, blurred 30 to 60px, placed behind a featured panel. Never more than one per section.
-- **Dot grid:** `radial-gradient(circle at 1px 1px, rgba(15,23,42,.07) 1px, transparent 0)` at `22px 22px`, usually masked to fade at the edges.
+- **Illustration stage:** a `paper` fill, 1px `hair` border, `xl`/28px radius on desktop (22px on mobile), and no shadow. The dot grid lives inside this frame only.
+- **Dot grid:** `radial-gradient(circle at 1px 1px, rgba(15,23,42,.07) 1px, transparent 0)` at `22px 22px`, masked with a radial gradient to fade toward the edges.
 
 **The Hairline-Not-Shadow Rule.** A card is separated from the page by a 1.25px `hair` border, not by a drop shadow.
+
+**The Quiet Stage Rule.** No gradient glows behind illustrations; stages use hairline frame + masked dot grid. Blue appears only in the drawing itself (active field, follow-up bubble, tick, data chips), never in the stage background.
 
 ## Shapes
 

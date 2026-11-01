@@ -9,6 +9,7 @@
       "ink": { "role": "neutral", "displayName": "Ink" },
       "muted": { "role": "neutral", "displayName": "Muted" },
       "text": { "role": "neutral", "displayName": "Text" },
+      "label": { "role": "neutral", "displayName": "Label" },
       "slate": { "role": "neutral", "displayName": "Slate (decorative only)" },
       "hair": { "role": "neutral", "displayName": "Hair" },
       "hair-soft": { "role": "neutral", "displayName": "Hair Soft" },
@@ -130,7 +131,7 @@
       {
         "name": "ambient",
         "value": "9s-11s ease-in-out infinite",
-        "purpose": "Background orb drift."
+        "purpose": "Reserved for non-illustration motion; never behind stages."
       },
       {
         "name": "in-view-threshold",
@@ -212,7 +213,7 @@
     "overview": "A clean sheet of off-white paper, ruled with fine hairlines, where a form is drawn in pencil and then comes alive as a conversation. Everything structural is line work: 1.25px strokes, dotted grids, dashed dividers for \"before\" states. The single blue ink marks only what matters: the action, the follow-up question, the answer that got fixed. Display type is confident and slightly characterful (Bricolage Grotesque), reading text is quiet (Inter), and anything that names a thing (labels, steps, field keys) is set in small uppercase mono like an annotation on a drawing.\n\nThe page should feel calm, honest and precise, closer to a well-made tool than to an agency showcase. Motion exists to explain (a form breaking into a conversation, a line flowing from a form into a spreadsheet), never to decorate, and it always settles into a readable final state.",
     "keyCharacteristics": [
       "Off-white paper (`paper`) with white `surface` panels; flat, defined by hairlines rather than shadows.",
-      "One accent: `blue-600`. The rest of the blue scale only tints, glows and states.",
+      "One accent: `blue-600`. The rest of the blue scale only tints edges and states.",
       "Three type voices: Bricolage Grotesque for headings, Inter for body, JetBrains Mono for labels.",
       "1.25px hairline borders everywhere; dashed hairlines mean \"static / before / placeholder\".",
       "Line-art (hairline SVG) illustrations and viewport-triggered motion with a static final frame.",
@@ -246,7 +247,7 @@
       },
       {
         "name": "The Readable Ink Rule",
-        "body": "Text someone needs to read uses `ink`, `muted` or `text` (4.5:1 or better on `paper`). `slate` fails contrast for small text and is for decoration only.",
+        "body": "Text someone needs to read uses `ink`, `muted`, `text` or `label` (4.5:1 or better on `paper`). `slate` fails contrast for small text and is for decoration only.",
         "section": "colors"
       },
       {
@@ -268,6 +269,11 @@
         "name": "The Hairline-Not-Shadow Rule",
         "body": "A card is separated from the page by a 1.25px `hair` border, not by a drop shadow.",
         "section": "elevation"
+      },
+      {
+        "name": "The Quiet Stage Rule",
+        "body": "No gradient glows behind illustrations; stages use hairline frame + masked dot grid. Blue appears only in the drawing itself (active field, follow-up bubble, tick, data chips), never in the stage background.",
+        "section": "elevation"
       }
     ],
     "dos": [
@@ -286,6 +292,7 @@
       "Don't use drop shadows to separate cards; only the documented blue-tinted shadows exist.",
       "Don't use `slate` for text people need to read.",
       "Don't invent stats, testimonials, logos, user counts or prices.",
+      "Don't put gradient glows behind illustration stages.",
       "Don't modify `demoSection/` or anything inside it.",
       "Don't ship an animation that loops while off-screen or ignores `prefers-reduced-motion`."
     ]
