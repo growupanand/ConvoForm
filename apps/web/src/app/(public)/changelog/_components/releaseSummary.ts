@@ -1,10 +1,9 @@
-import type { Commit, CommitCategory, Release } from "@convoform/release";
-
-const HIGHLIGHT_LIMIT = 5;
-const FIX_LIMIT = 6;
+import type { CommitCategory, Release } from "@convoform/release";
 
 const conventionalPrefix =
   /^(feat|fix|chore|refactor|style|perf|docs|ci|test|build|revert)(\([^)]*\))?!?:\s*/i;
+
+const categoryOrder: CommitCategory[] = ["features", "improvements", "fixes"];
 
 export function releaseAnchor(version: string) {
   return `v${version.replace(/\./g, "-")}`;
@@ -22,61 +21,60 @@ export function commitTitle(message: string) {
     .replace(/\s*\(#?\d+\)\s*$/, "")
     .trim();
 
-  if (!title) return "";
+  if (!title) return firstLine;
   return title.charAt(0).toUpperCase() + title.slice(1);
 }
 
-function uniqueTitles(commits: Commit[]) {
-  const seen = new Set<string>();
-  const titles: string[] = [];
+export type ReleaseCommit = {
+  title: string;
+  href: string;
+};
 
-  for (const commit of commits) {
-    const title = commitTitle(commit.message);
-    if (!title || seen.has(title)) continue;
-    seen.add(title);
-    titles.push(title);
-  }
-
-  return titles;
-}
+export type ReleaseGroup = {
+  category: CommitCategory;
+  commits: ReleaseCommit[];
+};
 
 export type ReleaseSummary = {
   version: string;
   isoDate: string;
   anchor: string;
   counts: Record<CommitCategory, number>;
-  highlights: string[];
-  fixes: string[];
+  groups: ReleaseGroup[];
+  hasNotes: boolean;
   commitCount: number;
 };
 
-export function summarizeRelease(release: Release): ReleaseSummary {
-  const byCategory = (category: CommitCategory) =>
-    release.commits.filter((commit) => commit.type === category);
-
-  const features = byCategory("features");
-  const improvements = byCategory("improvements");
-  const fixes = byCategory("fixes");
-
-  const highlights = uniqueTitles([...features, ...improvements]).slice(
-    0,
-    HIGHLIGHT_LIMIT,
-  );
-  const fixTitles = uniqueTitles(fixes)
-    .map((title) => title.replace(/^fix\s+/i, ""))
-    .slice(0, FIX_LIMIT);
+export function summarizeRelease(
+  release: Release,
+  hasNotes = false,
+): ReleaseSummary {
+  const groups = categoryOrder
+    .map((category) => ({
+      category,
+      commits: release.commits
+        .filter((commit) => commit.type === category)
+        .map((commit) => ({
+          title: commitTitle(commit.message) || "View commit",
+          href: commit.href,
+        })),
+    }))
+    .filter((group) => group.commits.length > 0);
 
   return {
     version: release.version,
     isoDate: release.isoDate,
     anchor: releaseAnchor(release.version),
     counts: {
-      features: features.length,
-      improvements: improvements.length,
-      fixes: fixes.length,
+      features: release.commits.filter((commit) => commit.type === "features")
+        .length,
+      improvements: release.commits.filter(
+        (commit) => commit.type === "improvements",
+      ).length,
+      fixes: release.commits.filter((commit) => commit.type === "fixes").length,
     },
-    highlights,
-    fixes: fixTitles,
+    groups,
+    hasNotes,
     commitCount: release.commits.length,
   };
 }

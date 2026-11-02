@@ -2,12 +2,19 @@ import { studyAbroadUseCasePath } from "@/lib/marketingPaths";
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const useCasesDescription =
+  "See how teams use ConvoForm to collect the details they need before the first call, starting with study-abroad student intake.";
+
 export const metadata: Metadata = {
   title: "Use cases",
-  description:
-    "See how teams use ConvoForm to collect the details they need before the first call, starting with study-abroad student intake.",
+  description: useCasesDescription,
   alternates: {
     canonical: "/use-cases",
+  },
+  openGraph: {
+    title: "Use cases",
+    description: useCasesDescription,
+    images: ["/api/og"],
   },
 };
 
@@ -21,7 +28,7 @@ const fieldChips = [
 ] as const;
 
 const cardClass =
-  "group relative isolate flex min-w-0 flex-col overflow-hidden rounded-[22px] border-[1.25px] border-marketing-hair bg-marketing-surface/75 p-6 transition-colors duration-200 hover:border-marketing-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600 min-[900px]:rounded-[26px] min-[900px]:p-9";
+  "group relative isolate flex min-w-0 flex-col overflow-hidden rounded-[22px] border-[1.25px] border-marketing-hair bg-marketing-surface p-6 transition-colors duration-200 hover:border-marketing-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600 min-[900px]:rounded-[26px] min-[900px]:p-9";
 
 export default function UseCasesPage() {
   return (
@@ -68,7 +75,7 @@ export default function UseCasesPage() {
               <Link href={studyAbroadUseCasePath} className={cardClass}>
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 -z-10 bg-marketing-dot-grid bg-[length:22px_22px] opacity-60"
+                  className="pointer-events-none absolute inset-0 -z-10 bg-marketing-dot-grid bg-[length:22px_22px] [mask-image:radial-gradient(ellipse_90%_60%_at_50%_80%,#000_25%,transparent_80%)] min-[900px]:[mask-image:radial-gradient(ellipse_70%_90%_at_72%_50%,#000_25%,transparent_80%)]"
                 />
 
                 <span className="font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600">

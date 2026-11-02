@@ -26,36 +26,35 @@ export function LegalToc({
 
     if (elements.length === 0) return;
 
-    const visible = new Set<string>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) visible.add(entry.target.id);
-          else visible.delete(entry.target.id);
+    const updateActive = () => {
+      const offset = window.scrollY + 140;
+      let current = elements[0]?.id ?? "";
+
+      for (const element of elements) {
+        if (element.getBoundingClientRect().top + window.scrollY <= offset) {
+          current = element.id;
+        } else {
+          break;
         }
+      }
 
-        const firstVisible = sections.find((section) =>
-          visible.has(section.id),
-        );
-        if (firstVisible) setActiveId(firstVisible.id);
-      },
-      { rootMargin: "-30% 0px -60% 0px" },
-    );
-
-    for (const element of elements) observer.observe(element);
-
-    const handleScroll = () => {
       const atBottom =
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 4;
-      if (atBottom) setActiveId(sections[sections.length - 1]?.id ?? "");
+      if (atBottom) {
+        current = sections[sections.length - 1]?.id ?? current;
+      }
+
+      setActiveId(current);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    updateActive();
+    window.addEventListener("scroll", updateActive, { passive: true });
+    window.addEventListener("resize", updateActive);
 
     return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", updateActive);
+      window.removeEventListener("resize", updateActive);
     };
   }, [sections]);
 
@@ -110,7 +109,7 @@ export function LegalToc({
   return (
     <nav
       aria-label="On this page"
-      className="sticky top-24 hidden max-h-[calc(100vh-120px)] overflow-auto pt-1.5 min-[900px]:block"
+      className="sticky top-24 hidden max-h-[calc(100vh-120px)] self-start overflow-auto pt-1.5 min-[900px]:block"
     >
       <div className="mb-3.5 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.1em] text-marketing-label">
         On this page

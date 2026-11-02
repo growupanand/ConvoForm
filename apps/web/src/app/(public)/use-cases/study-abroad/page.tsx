@@ -247,10 +247,10 @@ function Hero() {
           </p>
         </div>
 
-        <figure className="relative isolate overflow-hidden rounded-[22px] border-[1.25px] border-marketing-hair bg-marketing-surface/75 min-[900px]:rounded-[26px]">
+        <figure className="relative isolate min-w-0">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 -z-10 bg-marketing-dot-grid bg-[length:22px_22px]"
+            className="pointer-events-none absolute inset-0 -z-10 bg-marketing-dot-grid bg-[length:22px_22px] [mask-image:radial-gradient(ellipse_at_center,#000_30%,transparent_75%)]"
           />
 
           <div className="flex items-center justify-between gap-2.5 border-b-[1.25px] border-marketing-hair-soft px-3.5 py-[13px] font-mono text-[10px] uppercase leading-none tracking-[0.08em] text-marketing-text min-[900px]:px-5 min-[900px]:py-4 min-[900px]:text-[11px]">
@@ -339,12 +339,13 @@ function PainAndBeforeAfter() {
             active
             columns={6}
             valuesLabel="What your counsellor sees"
+            ariaLabel="Student budget example: a static form saves “20” as typed, while ConvoForm asks whether that is in INR and what the amount covers, then records “₹20 lakh per year, tuition + living”."
           />
         </div>
 
         <p className="mt-5 max-w-[820px] font-body text-sm leading-[1.6] text-marketing-text">
-          This follow-up asks for the currency and whether the amount covers
-          tuition or living costs. It refers to “20k”, not the amount as typed.
+          The student types &quot;20&quot;. The follow-up asks whether that is
+          in INR and whether the amount covers tuition, living costs, or both.
         </p>
       </div>
     </section>
@@ -436,7 +437,7 @@ function Fields() {
           {intakeFields.map((field) => (
             <div
               key={field.id}
-              className="min-w-0 bg-marketing-surface/70 p-5 min-[900px]:px-6 min-[900px]:py-6"
+              className="min-w-0 bg-marketing-surface p-5 min-[900px]:px-6 min-[900px]:py-6"
             >
               <span className="inline-flex items-center gap-2 rounded-full border-[1.25px] border-marketing-blue-200 bg-marketing-blue-50 px-2.5 py-1.5 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
                 <FieldIcon id={field.id} />
@@ -594,7 +595,7 @@ function FinalCta() {
   return (
     <section
       aria-labelledby="close-heading"
-      className="min-w-0 px-4 pb-[72px] pt-8 min-[900px]:pt-12"
+      className="min-w-0 px-4 pb-[72px] pt-10"
     >
       <div className="mx-auto min-w-0 max-w-[1160px]">
         <div className="relative isolate overflow-hidden rounded-[26px] border-[1.25px] border-marketing-hair bg-marketing-surface px-[22px] pb-[26px] pt-9 min-[900px]:grid min-[900px]:grid-cols-2 min-[900px]:items-center min-[900px]:gap-6 min-[900px]:rounded-[32px] min-[900px]:py-16 min-[900px]:pl-16 min-[900px]:pr-14">

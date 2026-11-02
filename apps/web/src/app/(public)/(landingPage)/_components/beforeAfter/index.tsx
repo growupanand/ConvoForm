@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 
+import styles from "./beforeAfter.module.css";
 import {
   BEFORE_AFTER_SCENARIOS,
   BEFORE_AFTER_TABS,
@@ -88,8 +89,8 @@ function Message({
       className={cn(
         "w-fit max-w-[82%] rounded-2xl border-[1.25px] px-3.5 py-2.5 font-body text-[14.5px] leading-[1.35]",
         isUser
-          ? "self-end rounded-br-[5px] border-marketing-ink bg-white font-medium text-marketing-ink"
-          : "self-start rounded-bl-[5px] border-marketing-hair bg-white text-marketing-ink",
+          ? "self-end rounded-br-[5px] border-marketing-ink bg-marketing-surface font-medium text-marketing-ink"
+          : "self-start rounded-bl-[5px] border-marketing-hair bg-marketing-surface text-marketing-ink",
       )}
     >
       <span
@@ -157,14 +158,14 @@ function SceneMarkup({
   return (
     <>
       <div className="mt-7 grid grid-cols-1 gap-6 min-[900px]:grid-cols-[1fr_1.25fr]">
-        <div className="relative rounded-[22px] border-[1.25px] border-dashed border-marketing-hair bg-white/60 p-6 min-[900px]:p-[26px]">
+        <div className="relative rounded-[22px] border-[1.25px] border-dashed border-marketing-hair bg-marketing-surface/60 p-6 min-[900px]:p-[26px]">
           <PanelLabel>Static form</PanelLabel>
 
           <div className="mt-5">
             <div className="font-body text-[13px] leading-none text-marketing-text">
               {scenario.fieldLabel}
             </div>
-            <div className="mt-2 flex h-[42px] items-center rounded-[4px] border-[1.25px] border-marketing-hair bg-white px-3 font-body text-[15px] text-marketing-text">
+            <div className="mt-2 flex h-[42px] items-center rounded-[4px] border-[1.25px] border-marketing-hair bg-marketing-surface px-3 font-body text-[15px] text-marketing-text">
               <span data-ba="typed" className="whitespace-pre">
                 {final ? scenario.typed : ""}
               </span>
@@ -201,7 +202,7 @@ function SceneMarkup({
           </p>
         </div>
 
-        <div className="relative rounded-[22px] border-[1.25px] border-marketing-blue-200 bg-white p-6 min-[900px]:p-[26px]">
+        <div className="relative rounded-[22px] border-[1.25px] border-marketing-blue-200 bg-marketing-surface p-6 min-[900px]:p-[26px]">
           <PanelLabel highlighted>ConvoForm</PanelLabel>
 
           <div className="mt-4 flex min-h-[196px] flex-col justify-center gap-[9px]">
@@ -233,7 +234,7 @@ function SceneMarkup({
         </div>
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-[18px] border-[1.25px] border-marketing-hair bg-white/70">
+      <div className="mt-6 overflow-hidden rounded-[18px] border-[1.25px] border-marketing-hair bg-marketing-surface/70">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-marketing-hair-soft px-[18px] py-[13px] font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-text">
           <span>{valuesLabel}</span>
           <span className="rounded-full border border-dashed border-marketing-hair px-2 py-1 text-[10px] text-marketing-label">
@@ -317,16 +318,22 @@ function draw(element: SVGElement, amount: number) {
   element.style.opacity = amount <= 0 ? "0" : "1";
 }
 
+function sceneAriaLabel(scenario: BeforeAfterScenario) {
+  return `Before and after: a static form saves “${scenario.typed}” exactly as typed, while ConvoForm asks a follow-up question and records “${scenario.saved}”.`;
+}
+
 export function BeforeAfterScene({
   scenario,
   active,
   columns,
   valuesLabel,
+  ariaLabel,
 }: {
   scenario: BeforeAfterScenario;
   active: boolean;
   columns?: 5 | 6;
   valuesLabel?: string;
+  ariaLabel?: string;
 }) {
   const animatedRef = useRef<HTMLDivElement>(null);
 
@@ -497,10 +504,15 @@ export function BeforeAfterScene({
   }, [active, scenario]);
 
   return (
-    <div className="grid">
+    <div
+      role="img"
+      aria-label={ariaLabel ?? sceneAriaLabel(scenario)}
+      className={cn("grid", styles.stage)}
+    >
       <div
         ref={animatedRef}
-        className="col-start-1 row-start-1 motion-reduce:hidden"
+        aria-hidden="true"
+        className={cn("col-start-1 row-start-1", styles.animated)}
       >
         <SceneMarkup
           scenario={scenario}
@@ -509,7 +521,10 @@ export function BeforeAfterScene({
           valuesLabel={valuesLabel}
         />
       </div>
-      <div className="col-start-1 row-start-1 hidden motion-reduce:block">
+      <div
+        aria-hidden="true"
+        className={cn("col-start-1 row-start-1 invisible", styles.staticFinal)}
+      >
         <SceneMarkup
           scenario={scenario}
           final
@@ -592,7 +607,7 @@ export function BeforeAfterSection() {
           <div
             role="tablist"
             aria-label="Before and after examples"
-            className="mt-8 inline-flex w-full max-w-[340px] gap-1 rounded-full border-[1.25px] border-marketing-hair bg-white/60 p-1 min-[900px]:w-auto min-[900px]:max-w-none"
+            className="mt-8 inline-flex w-full max-w-[340px] gap-1 rounded-full border-[1.25px] border-marketing-hair bg-marketing-surface/60 p-1 min-[900px]:w-auto min-[900px]:max-w-none"
           >
             {BEFORE_AFTER_TABS.map((tab, index) => {
               const selected = tab.id === activeId;
@@ -613,7 +628,7 @@ export function BeforeAfterSection() {
                   className={cn(
                     tabClass,
                     selected
-                      ? "border-marketing-blue-300 bg-white text-marketing-blue-600"
+                      ? "border-marketing-blue-300 bg-marketing-surface text-marketing-blue-600"
                       : "border-transparent text-marketing-text hover:text-marketing-ink",
                   )}
                 >

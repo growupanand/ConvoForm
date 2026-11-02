@@ -1,18 +1,19 @@
-"use client";
-
-// Rendered as a client component so the release summaries travel as data
-// instead of a second serialized React tree. This keeps the page HTML small.
 import { formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import type { CommitCategory } from "@convoform/release";
 
 import styles from "./changelogTimeline.module.css";
-import { type ReleaseSummary, releaseGithubUrl } from "./releaseSummary";
+import { ReleaseNotes } from "./releaseNotes";
+import {
+  type ReleaseGroup,
+  type ReleaseSummary,
+  releaseGithubUrl,
+} from "./releaseSummary";
 
 const categoryLabels: Record<CommitCategory, string> = {
-  features: "Feature",
-  improvements: "Improvement",
-  fixes: "Fix",
+  features: "Features",
+  improvements: "Improvements",
+  fixes: "Fixes",
 };
 
 function LinkIcon() {
@@ -72,7 +73,37 @@ function CategoryTags({ counts }: { counts: ReleaseSummary["counts"] }) {
   );
 }
 
-function ReleaseEntry({
+function CommitGroups({ groups }: { groups: ReleaseGroup[] }) {
+  return (
+    <div className={styles.commitGroups}>
+      {groups.map((group) => (
+        <div key={group.category} className={styles.commitGroup}>
+          <h3 className={styles.commitHeading}>
+            {categoryLabels[group.category]}
+            <span className={styles.commitCount}>{group.commits.length}</span>
+          </h3>
+
+          <ul className={styles.commitList}>
+            {group.commits.map((commit, index) => (
+              <li key={`${group.category}-${index}-${commit.href}`}>
+                <a
+                  href={commit.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.commitLink}
+                >
+                  {commit.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function ReleaseEntry({
   release,
   latest,
 }: {
@@ -116,20 +147,9 @@ function ReleaseEntry({
 
         <CategoryTags counts={release.counts} />
 
-        {release.highlights.length > 0 ? (
-          <ul className={styles.notes}>
-            {release.highlights.map((highlight) => (
-              <li key={highlight}>{highlight}</li>
-            ))}
-          </ul>
-        ) : null}
+        {release.hasNotes ? <ReleaseNotes version={release.version} /> : null}
 
-        {release.fixes.length > 0 ? (
-          <p className={styles.fixes}>
-            {release.fixes.length === 1 ? "Fix: " : "Fixes: "}
-            {release.fixes.join(", ")}.
-          </p>
-        ) : null}
+        <CommitGroups groups={release.groups} />
 
         <div className={styles.meta}>
           <span>{commitLabel}</span>
@@ -146,6 +166,44 @@ function ReleaseEntry({
           </a>
         </div>
       </div>
+    </li>
+  );
+}
+
+export function OlderReleaseEntry({
+  release,
+}: {
+  release: ReleaseSummary;
+}) {
+  const versionLabel = `v${release.version}`;
+  const commitLabel = `${release.commitCount} ${
+    release.commitCount === 1 ? "commit" : "commits"
+  }`;
+
+  return (
+    <li id={release.anchor} className={styles.olderRelease}>
+      <div className={styles.olderHead}>
+        <h2 className={styles.olderTitle}>
+          <a href={`#${release.anchor}`} className={styles.olderVersion}>
+            {versionLabel}
+          </a>
+        </h2>
+        <time dateTime={release.isoDate} className={styles.olderDate}>
+          {formatDate(release.isoDate)}
+        </time>
+        <a
+          href={releaseGithubUrl(release.version)}
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          className={styles.olderReleaseLink}
+        >
+          {commitLabel} · Release on GitHub
+        </a>
+      </div>
+
+      {release.hasNotes ? <ReleaseNotes version={release.version} /> : null}
+
+      <CommitGroups groups={release.groups} />
     </li>
   );
 }

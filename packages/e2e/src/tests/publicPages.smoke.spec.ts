@@ -74,6 +74,11 @@ test.describe("Public pages", () => {
     await expect(button).toHaveAttribute("aria-expanded", "true");
     await expect(older).toBeVisible();
     await expect(page.locator("#v0-11-0")).toBeVisible();
+    await expect(
+      page
+        .locator("#v0-11-0")
+        .getByRole("link", { name: /added submission progress bar/i }),
+    ).toBeVisible();
   });
 
   test("changelog deep-links expand older releases", async ({ page }) => {
@@ -105,6 +110,20 @@ test.describe("Public pages", () => {
 
   test("unknown public URLs render the new 404 shell", async ({ page }) => {
     const response = await page.goto("/use-cases/this-page-does-not-exist");
+
+    expect(response?.status()).toBe(404);
+    await expect(
+      page.getByRole("heading", { level: 1, name: /wrong turn/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /back to home/i }),
+    ).toBeVisible();
+  });
+
+  test("unknown top-level URLs render the 404 shell instead of sign-in", async ({
+    page,
+  }) => {
+    const response = await page.goto("/pricing");
 
     expect(response?.status()).toBe(404);
     await expect(
@@ -151,5 +170,24 @@ test.describe("Public pages at 360px", () => {
 
     await expect(page).toHaveURL(/#data-security$/);
     await expect(page.locator("details[open]")).toHaveCount(0);
+  });
+});
+
+test.describe("Public pages without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+
+  test("the before/after stage shows its static final frame", async ({
+    page,
+  }) => {
+    await page.goto("/use-cases/study-abroad");
+
+    const stage = page.locator('main [role="img"]').first();
+    const layers = stage.locator(":scope > div");
+
+    await expect(layers.nth(0)).toBeHidden();
+    await expect(layers.nth(1)).toBeVisible();
+    await expect(
+      layers.nth(1).getByText("₹20 lakh per year, tuition + living").first(),
+    ).toBeVisible();
   });
 });

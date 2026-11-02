@@ -91,7 +91,7 @@ export function LegalPage({
   });
 
   return (
-    <main className="min-w-0">
+    <main id="top" className="min-w-0">
       <section className="relative isolate min-w-0 overflow-x-clip px-4 pb-6 pt-10 min-[900px]:pb-8 min-[900px]:pt-16">
         <div
           aria-hidden="true"

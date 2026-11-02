@@ -2,19 +2,27 @@ import { releaseSchema, releases } from "@convoform/release";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { ChangelogTimeline } from "./_components/changelogTimeline";
 import {
-  type OlderRelease,
-  OlderReleases,
-} from "./_components/loadOlderReleases";
-import { releaseAnchor, summarizeRelease } from "./_components/releaseSummary";
+  ChangelogTimeline,
+  OlderReleaseEntry,
+} from "./_components/changelogTimeline";
+import { OlderReleases } from "./_components/loadOlderReleases";
+import { hasReleaseNotes } from "./_components/releaseNotes";
+import { summarizeRelease } from "./_components/releaseSummary";
+
+const changelogDescription =
+  "Product updates and new features in ConvoForm, release by release.";
 
 export const metadata: Metadata = {
   title: "Changelog",
-  description:
-    "Product updates and new features in ConvoForm, release by release.",
+  description: changelogDescription,
   alternates: {
     canonical: "/changelog",
+  },
+  openGraph: {
+    title: "Changelog",
+    description: changelogDescription,
+    images: ["/api/og"],
   },
 };
 
@@ -49,19 +57,20 @@ function getReleases() {
 }
 
 export default function ChangelogPage() {
-  const parsedReleases = getReleases();
+  const parsedReleases = getReleases().filter(
+    (release) => release.commits.length > 0 || hasReleaseNotes(release.version),
+  );
   const latestReleases = parsedReleases
     .slice(0, LATEST_RELEASE_COUNT)
-    .map(summarizeRelease);
+    .map((release) =>
+      summarizeRelease(release, hasReleaseNotes(release.version)),
+    );
 
-  const olderReleases: OlderRelease[] = parsedReleases
+  const olderReleases = parsedReleases
     .slice(LATEST_RELEASE_COUNT)
-    .map((release) => ({
-      version: release.version,
-      isoDate: release.isoDate,
-      anchor: releaseAnchor(release.version),
-      commitCount: release.commits.length,
-    }));
+    .map((release) =>
+      summarizeRelease(release, hasReleaseNotes(release.version)),
+    );
 
   return (
     <main className="min-w-0">
@@ -118,7 +127,14 @@ export default function ChangelogPage() {
         <div className="mx-auto w-full max-w-[980px]">
           <ChangelogTimeline releases={latestReleases} />
 
-          <OlderReleases releases={olderReleases} />
+          <OlderReleases
+            anchors={olderReleases.map((release) => release.anchor)}
+            firstVersion={olderReleases[0]?.version}
+          >
+            {olderReleases.map((release) => (
+              <OlderReleaseEntry key={release.version} release={release} />
+            ))}
+          </OlderReleases>
 
           <div className="mx-auto mt-16 max-w-[980px] rounded-[22px] border-[1.25px] border-marketing-hair bg-marketing-surface px-5 py-[22px] min-[900px]:flex min-[900px]:items-center min-[900px]:justify-between min-[900px]:gap-5 min-[900px]:px-7 min-[900px]:py-[26px]">
             <div>

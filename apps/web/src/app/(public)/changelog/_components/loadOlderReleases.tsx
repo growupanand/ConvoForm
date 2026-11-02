@@ -1,22 +1,22 @@
 "use client";
 
 import { formatDate } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 
 import styles from "./changelogTimeline.module.css";
-import { releaseGithubUrl } from "./releaseSummary";
 
 const firstCommitUrl =
   "https://github.com/growupanand/ConvoForm/commit/386b516dc3f86c32113c114592cc22dca7f549c8";
 
-export type OlderRelease = {
-  version: string;
-  isoDate: string;
-  anchor: string;
-  commitCount: number;
-};
-
-export function OlderReleases({ releases }: { releases: OlderRelease[] }) {
+export function OlderReleases({
+  anchors,
+  firstVersion,
+  children,
+}: {
+  anchors: string[];
+  firstVersion?: string;
+  children: ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   const detailsRequested = useRef(false);
 
@@ -24,7 +24,7 @@ export function OlderReleases({ releases }: { releases: OlderRelease[] }) {
     if (detailsRequested.current) return;
 
     const hash = decodeURIComponent(window.location.hash.replace(/^#/, ""));
-    if (!hash || !releases.some((release) => release.anchor === hash)) return;
+    if (!hash || !anchors.includes(hash)) return;
 
     detailsRequested.current = true;
     setOpen(true);
@@ -32,11 +32,9 @@ export function OlderReleases({ releases }: { releases: OlderRelease[] }) {
     window.requestAnimationFrame(() => {
       document.getElementById(hash)?.scrollIntoView();
     });
-  }, [releases]);
+  }, [anchors]);
 
-  if (releases.length === 0) return null;
-
-  const firstVersion = releases[0]?.version;
+  if (anchors.length === 0) return null;
 
   return (
     <div className={styles.older}>
@@ -52,25 +50,7 @@ export function OlderReleases({ releases }: { releases: OlderRelease[] }) {
       </button>
 
       <ol id="older-releases" className={styles.olderList} hidden={!open}>
-        {releases.map((release) => (
-          <li key={release.version} id={release.anchor}>
-            <a
-              href={releaseGithubUrl(release.version)}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              className={styles.olderRow}
-            >
-              <span className={styles.olderVersion}>v{release.version}</span>
-              <time dateTime={release.isoDate} className={styles.olderDate}>
-                {formatDate(release.isoDate)}
-              </time>
-              <span className={styles.olderMeta}>
-                {release.commitCount}{" "}
-                {release.commitCount === 1 ? "commit" : "commits"}
-              </span>
-            </a>
-          </li>
-        ))}
+        {children}
 
         <li className={styles.firstCommit}>
           <a
