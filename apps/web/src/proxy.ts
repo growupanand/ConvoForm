@@ -1,38 +1,30 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/view/(.*)",
-  "/api/form/(.*)",
-  "/api/ai/generateForm",
-  "/api/google/forms",
-  "/api/webhook(.*)",
-  "/auth/(.*)",
-  "/api/trpc/(.*)",
-  "/changelog",
-  "/use-cases/(.*)",
-  "/articles/(.*)",
-  "/privacy",
-  "/terms",
-  "/api/og",
-  "/playground(.*)",
-  "/api/playground(.*)",
-  "/(public)/(.*)",
-  "/api/test/(.*)",
-  "/api/conversation",
-  "/api/ingest/traces",
-  "/robots.txt",
-  "/sitemap.xml",
+const isAppRoute = createRouteMatcher([
+  "/dashboard(.*)",
+  "/forms(.*)",
+  "/channels(.*)",
+  "/settings(.*)",
+  "/organizations(.*)",
+]);
+
+const isProtectedRoute = createRouteMatcher([
+  "/dashboard(.*)",
+  "/forms(.*)",
+  "/channels(.*)",
+  "/settings(.*)",
+  "/organizations(.*)",
+  "/api/auth/(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
-  if (!isPublicRoute(request)) {
+  if (isProtectedRoute(request)) {
     await auth.protect();
   }
 
   const { userId, orgId } = await auth();
-  if (!userId || orgId || isPublicRoute(request)) {
+  if (!userId || orgId || !isAppRoute(request)) {
     return;
   }
 

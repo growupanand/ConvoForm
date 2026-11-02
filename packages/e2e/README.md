@@ -26,3 +26,16 @@ pnpm --filter @convoform/e2e e2e:smoke  # landing smoke test only
 - The live demo renders and accepts one message (mocked LLM).
 
 The database must contain a **published form with id `demo`** (the landing demo form). Each run adds one demo conversation, so point it at a development database or branch, never production. Run it locally with root `.env` (Clerk test keys and `DATABASE_URL`).
+
+## Public pages smoke test
+
+`src/tests/publicPages.smoke.spec.ts` covers the signed-out marketing pages:
+
+- `/use-cases`, `/use-cases/study-abroad`, `/changelog`, `/privacy` and `/terms` load and show their `h1`.
+- **Use cases** is linked from the header and footer, and the study-abroad CTA points at register.
+- Changelog release anchors deep-link, expand older releases, and the page HTML stays under 100 KB.
+- Privacy's table of contents tracks the scroll position.
+- A public 404 URL renders the marketing shell.
+- None of the pages scroll horizontally at 360px.
+
+Both smoke specs run in the `landing-smoke` project (signed out, no `setup` dependency).

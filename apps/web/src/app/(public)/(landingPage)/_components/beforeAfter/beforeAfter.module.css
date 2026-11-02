@@ -1,0 +1,35 @@
+.stage .animated {
+  visibility: hidden;
+}
+
+.stage .staticFinal {
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stage .animated {
+    visibility: visible;
+  }
+
+  .stage .staticFinal {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage .animated {
+    visibility: hidden;
+  }
+
+  .stage .staticFinal {
+    visibility: visible;
+  }
+}
+
+:global(html:not([data-js])) .stage .animated {
+  visibility: hidden;
+}
+
+:global(html:not([data-js])) .stage .staticFinal {
+  visibility: visible;
+}

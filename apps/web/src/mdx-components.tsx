@@ -1,10 +1,7 @@
 import type { MDXComponents } from "mdx/types";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
-  return {
-    ...components,
-    wrapper: ({ children }) => {
-      return <div className="prose">{children}</div>;
-    },
-  };
+  // Public MDX pages (privacy, terms) provide their own layout and typography
+  // through the shared legal page components, so do not wrap them in `prose`.
+  return components;
 }

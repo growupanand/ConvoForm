@@ -1,6 +1,7 @@
 import { GithubStars } from "@/app/(public)/(landingPage)/_components/githubStar";
 import { UserSignInButton } from "@/app/(public)/(landingPage)/_components/userButton";
 import { SignInButton } from "@/components/common/publicLayout/signInButton";
+import { useCasesPath } from "@/lib/marketingPaths";
 import { cn } from "@/lib/utils";
 import { Github } from "lucide-react";
 import Link from "next/link";
@@ -27,7 +28,7 @@ export function PublicLayoutHeader({
             className="flex items-center gap-1.5 min-[900px]:gap-1.5"
           >
             <Link
-              href="/#use-cases"
+              href={useCasesPath}
               className="hidden rounded-full px-3 py-2.5 text-sm font-medium text-marketing-muted transition-colors duration-200 hover:text-marketing-ink min-[900px]:inline-flex"
             >
               Use cases
