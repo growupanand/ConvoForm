@@ -123,7 +123,7 @@ export function LegalPage({
       </section>
 
       <section className="min-w-0 px-4 pb-24 pt-4">
-        <div className="mx-auto grid w-full max-w-[1120px] grid-cols-1 justify-center min-[900px]:grid-cols-[240px_minmax(0,68ch)] min-[900px]:gap-[72px]">
+        <div className="mx-auto grid w-full max-w-[1120px] grid-cols-1 justify-center min-[900px]:grid-cols-[240px_minmax(0,62ch)] min-[900px]:gap-[72px]">
           <LegalToc sections={sections} variant="desktop" />
 
           <div className="min-w-0">

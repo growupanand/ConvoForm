@@ -134,3 +134,13 @@
   height: min-content;
   width: max-content;
 }
+
+/* Public marketing surfaces: avoid one-word last lines in body copy and
+   balance the wrapping of headings. Scoped so dashboard copy is unchanged. */
+.public-site :is(p, li) {
+  text-wrap: pretty;
+}
+
+.public-site :is(h1, h2, h3, h4) {
+  text-wrap: balance;
+}

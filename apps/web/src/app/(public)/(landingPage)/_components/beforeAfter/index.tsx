@@ -71,7 +71,7 @@ function Message({
         style={final ? undefined : { opacity: 0, transform: "translateY(8px)" }}
         className="w-fit max-w-[85%] self-start rounded-2xl rounded-bl-[5px] border-[1.25px] border-marketing-blue-300 bg-marketing-blue-50 px-3.5 py-2.5 font-body text-[14.5px] leading-[1.35] text-marketing-blue-700"
       >
-        <span className="mb-1.5 block font-mono text-[9.5px] uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
+        <span className="mb-1.5 block font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
           ↳ Follow-up
         </span>
         <span data-ba="message-text">{message.text}</span>
@@ -186,7 +186,7 @@ function SceneMarkup({
             style={final ? undefined : { opacity: 0 }}
             className="mt-5 flex flex-wrap items-center gap-3 border-t border-dashed border-marketing-hair pt-4"
           >
-            <span className="font-mono text-[10.5px] uppercase leading-none tracking-[0.08em] text-marketing-label">
+            <span className="font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-label">
               Saved
             </span>
             <b className="font-display text-[20px] font-semibold leading-[1.1] text-marketing-label">
@@ -223,7 +223,7 @@ function SceneMarkup({
             }
             className="mt-4 flex flex-wrap items-center gap-3 border-t border-dashed border-marketing-hair pt-4"
           >
-            <span className="font-mono text-[10.5px] uppercase leading-none tracking-[0.08em] text-marketing-label">
+            <span className="font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-label">
               Saved
             </span>
             <b className="font-display text-[20px] font-semibold leading-[1.1] text-marketing-blue-600">
@@ -237,7 +237,7 @@ function SceneMarkup({
       <div className="mt-6 overflow-hidden rounded-[18px] border-[1.25px] border-marketing-hair bg-marketing-surface/70">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-marketing-hair-soft px-[18px] py-[13px] font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-text">
           <span>{valuesLabel}</span>
-          <span className="rounded-full border border-dashed border-marketing-hair px-2 py-1 text-[10px] text-marketing-label">
+          <span className="rounded-full border border-dashed border-marketing-hair px-2 py-1 text-[11px] text-marketing-label">
             Illustrative data
           </span>
         </div>
@@ -284,7 +284,7 @@ function SceneMarkup({
                 <div className="relative">
                   <div
                     className={cn(
-                      "font-mono text-[10px] uppercase leading-none tracking-[0.08em]",
+                      "font-mono text-[11px] uppercase leading-none tracking-[0.08em]",
                       item.highlighted
                         ? "text-marketing-blue-600"
                         : "text-marketing-label",

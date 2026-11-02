@@ -11,10 +11,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/use-cases",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Use cases",
+    description: useCasesDescription,
+  },
   openGraph: {
     title: "Use cases",
     description: useCasesDescription,
-    images: ["/api/og"],
   },
 };
 

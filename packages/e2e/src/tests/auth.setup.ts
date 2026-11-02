@@ -25,8 +25,10 @@ setup("authenticate and save state to storage", async ({ page }) => {
 
   console.log(`Authenticating test user: ${email}`);
 
-  // Navigate to an unprotected page that loads Clerk first
-  await page.goto("/");
+  // Navigate to a page that loads Clerk. The public marketing header now
+  // defers Clerk until the first interaction, so "/" no longer exposes
+  // `window.Clerk` for the testing helper.
+  await page.goto("/auth/sign-in");
 
   try {
     // Use Clerk's signIn helper (internally uses setupClerkTestingToken)

@@ -97,7 +97,7 @@ export function Hero() {
           Try it on your phone <span aria-hidden="true">→</span>
         </Link>
 
-        <ul className="mx-auto mt-[22px] grid max-w-[343px] grid-cols-2 gap-x-3.5 gap-y-2.5 text-left font-mono text-[11px] leading-[1.4] tracking-[0.01em] text-marketing-text min-[900px]:flex min-[900px]:max-w-none min-[900px]:flex-wrap min-[900px]:justify-center min-[900px]:gap-x-[22px] min-[900px]:text-xs">
+        <ul className="mx-auto mt-[22px] grid max-w-[343px] grid-cols-2 gap-x-3.5 gap-y-2.5 text-left font-mono text-xs leading-[1.4] tracking-[0.01em] text-marketing-text min-[900px]:flex min-[900px]:max-w-none min-[900px]:flex-wrap min-[900px]:justify-center min-[900px]:gap-x-[22px]">
           {proofPoints.map((point) => (
             <li key={point} className="flex items-start gap-[7px]">
               <ProofCheck />
@@ -108,7 +108,7 @@ export function Hero() {
 
         <HeroStage />
 
-        <p className="mt-3 text-center font-mono text-[11px] leading-[1.4] tracking-[0.04em] text-marketing-slate">
+        <p className="mt-3 text-center font-mono text-xs leading-[1.4] tracking-[0.04em] text-marketing-label">
           Illustrative example
         </p>
       </div>

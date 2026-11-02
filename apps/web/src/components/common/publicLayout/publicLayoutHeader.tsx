@@ -1,6 +1,5 @@
 import { GithubStars } from "@/app/(public)/(landingPage)/_components/githubStar";
-import { UserSignInButton } from "@/app/(public)/(landingPage)/_components/userButton";
-import { SignInButton } from "@/components/common/publicLayout/signInButton";
+import { HeaderAuth } from "@/components/common/publicLayout/headerAuth";
 import { useCasesPath } from "@/lib/marketingPaths";
 import { cn } from "@/lib/utils";
 import { Github } from "lucide-react";
@@ -54,9 +53,7 @@ export function PublicLayoutHeader({
               </Suspense>
             </Link>
 
-            <Suspense fallback={<SignInButton />}>
-              <UserSignInButton />
-            </Suspense>
+            <HeaderAuth />
 
             <Link
               href="/auth/register"

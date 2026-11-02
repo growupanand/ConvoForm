@@ -16,14 +16,25 @@ export const metadata: Metadata = {
   title: {
     absolute: "ConvoForm | Create Conversational Forms",
   },
+  description:
+    "ConvoForm turns a static form into a short conversation. AI drafts the form, respondents answer in chat, and vague answers get a follow-up before they are saved.",
   alternates: {
     canonical: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: {
+      absolute: "ConvoForm | Create Conversational Forms",
+    },
+    description:
+      "ConvoForm turns a static form into a short conversation. AI drafts the form, respondents answer in chat, and vague answers get a follow-up before they are saved.",
   },
   openGraph: {
     title: {
       absolute: "ConvoForm | Create Conversational Forms",
     },
-    images: ["/api/og"],
+    description:
+      "ConvoForm turns a static form into a short conversation. AI drafts the form, respondents answer in chat, and vague answers get a follow-up before they are saved.",
   },
 };
 

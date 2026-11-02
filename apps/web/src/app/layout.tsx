@@ -1,4 +1,3 @@
-import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster, TooltipProvider } from "@convoform/ui";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
@@ -35,13 +34,12 @@ export const metadata: Metadata = {
   ],
   keywords: [
     "ConvoForm",
-    "AI Powered Conversational Forms",
+    "AI conversational forms",
+    "Conversational forms",
     "Interactive Forms",
     "Form Builder",
     "Responsive Form Design",
     "Secure Data Collection",
-    "OpenAI",
-    "GPT3",
     "Alternative to Google Forms",
     "Easy Form Creation",
     "Free Form Builder",
@@ -51,6 +49,15 @@ export const metadata: Metadata = {
     "Convo Form",
   ],
   creator: "Utkarsh Anand",
+  twitter: {
+    card: "summary_large_image",
+    title: {
+      default: "ConvoForm | AI Powered Conversational Forms",
+      template: "%s | ConvoForm",
+    },
+    description:
+      "Transform your standard forms into engaging conversations with ConvoForm. Our easy-to-use, secure, and responsive form builder makes data collection more interactive.",
+  },
   openGraph: {
     title: {
       default: "ConvoForm | AI Powered Conversational Forms",
@@ -87,9 +94,7 @@ export default function RootLayout({
       <body className="antialiased font-sans bg-background">
         <CSPostHogProvider>
           <TooltipProvider delayDuration={200}>
-            <GoogleAuthProvider>
-              <TRPCReactProvider>{children}</TRPCReactProvider>
-            </GoogleAuthProvider>
+            <GoogleAuthProvider>{children}</GoogleAuthProvider>
           </TooltipProvider>
 
           <Toaster />

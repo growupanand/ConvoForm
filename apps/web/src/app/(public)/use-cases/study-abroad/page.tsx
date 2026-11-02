@@ -31,11 +31,16 @@ export const metadata: Metadata = {
   alternates: {
     canonical: studyAbroadUseCasePath,
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Student Intake Forms for Study Abroad Consultants",
+    description:
+      "Collect destination, course, intake, marks, budget and test details through an AI conversation. Give your study-abroad counsellors context before the first call.",
+  },
   openGraph: {
     title: "Student Intake Forms for Study Abroad Consultants",
     description:
       "Collect destination, course, intake, marks, budget and test details through an AI conversation. Give your study-abroad counsellors context before the first call.",
-    images: ["/api/og"],
   },
 };
 
@@ -253,9 +258,9 @@ function Hero() {
             className="pointer-events-none absolute inset-0 -z-10 bg-marketing-dot-grid bg-[length:22px_22px] [mask-image:radial-gradient(ellipse_at_center,#000_30%,transparent_75%)]"
           />
 
-          <div className="flex items-center justify-between gap-2.5 border-b-[1.25px] border-marketing-hair-soft px-3.5 py-[13px] font-mono text-[10px] uppercase leading-none tracking-[0.08em] text-marketing-text min-[900px]:px-5 min-[900px]:py-4 min-[900px]:text-[11px]">
+          <div className="flex items-center justify-between gap-2.5 border-b-[1.25px] border-marketing-hair-soft px-3.5 py-[13px] font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-text min-[900px]:px-5 min-[900px]:py-4">
             <span>Student profile</span>
-            <span className="shrink-0 rounded-full border border-dashed border-marketing-hair px-2 py-1 text-[10px] text-marketing-label">
+            <span className="shrink-0 rounded-full border border-dashed border-marketing-hair px-2 py-1 text-[11px] text-marketing-label">
               Illustrative data
             </span>
           </div>
@@ -271,7 +276,7 @@ function Hero() {
               >
                 <div
                   className={cn(
-                    "font-mono text-[10px] uppercase leading-none tracking-[0.08em] text-marketing-label",
+                    "font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-label",
                     field.highlighted && "text-marketing-blue-600",
                   )}
                 >
@@ -444,14 +449,14 @@ function Fields() {
                 {field.detail}
               </span>
 
-              <div className="mt-[18px] font-mono text-[10px] uppercase leading-none tracking-[0.08em] text-marketing-label">
+              <div className="mt-[18px] font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-label">
                 What to ask for
               </div>
               <div className="mt-[7px] font-display text-[17px] font-semibold leading-[1.35] tracking-[-0.005em] text-marketing-ink">
                 {field.ask}
               </div>
 
-              <div className="mt-3 font-mono text-[10px] uppercase leading-none tracking-[0.08em] text-marketing-label">
+              <div className="mt-3 font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-label">
                 Why it helps the counsellor
               </div>
               <p className="mt-[7px] font-body text-[14.5px] leading-[1.55] text-marketing-muted">
@@ -468,7 +473,7 @@ function Fields() {
           ))}
         </div>
 
-        <p className="mt-[18px] flex max-w-[820px] items-start gap-3 font-body text-[15px] leading-[1.6] text-marketing-muted">
+        <p className="mt-[18px] flex max-w-[600px] items-start gap-3 font-body text-[15px] leading-[1.6] text-marketing-muted">
           <InfoIcon className="mt-0.5 text-marketing-blue-600" />A student who
           hasn&apos;t chosen a country or taken IELTS may still be worth
           speaking to. Configure the intake to capture &quot;not decided&quot;

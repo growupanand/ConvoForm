@@ -18,7 +18,19 @@ const isProtectedRoute = createRouteMatcher([
   "/api/auth/(.*)",
 ]);
 
-export default clerkMiddleware(async (auth, request) => {
+// Static marketing pages never call Clerk on the server. Skipping the
+// middleware here keeps its request-time handshake (and the dev-browser
+// redirect) off the critical path for visitors arriving from Instagram or
+// WhatsApp. The header loads Clerk only after the first interaction.
+const isMarketingRoute = createRouteMatcher([
+  "/",
+  "/use-cases(.*)",
+  "/changelog(.*)",
+  "/privacy(.*)",
+  "/terms(.*)",
+]);
+
+const clerkProxy = clerkMiddleware(async (auth, request) => {
   if (isProtectedRoute(request)) {
     await auth.protect();
   }
@@ -37,6 +49,17 @@ export default clerkMiddleware(async (auth, request) => {
   // navigation and crashes the App Router for users who have no active org.
   return NextResponse.redirect(new URL("/organizations", request.url));
 });
+
+export default function proxy(
+  request: Parameters<typeof clerkProxy>[0],
+  event: Parameters<typeof clerkProxy>[1],
+) {
+  if (isMarketingRoute(request)) {
+    return NextResponse.next();
+  }
+
+  return clerkProxy(request, event);
+}
 
 export const config = {
   matcher: [
