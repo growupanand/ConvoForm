@@ -92,6 +92,9 @@
     --marketing-blue-700: #1d4ed8;
     --marketing-error: #dc2626;
     --marketing-error-ring: rgba(220, 38, 38, 0.15);
+    /* Messenger stand-in on the How it works phone only (DESIGN.md) */
+    --marketing-messenger-wallpaper: #efeae2;
+    --marketing-messenger-out: #d9fdd3;
   }
 
   .dark {

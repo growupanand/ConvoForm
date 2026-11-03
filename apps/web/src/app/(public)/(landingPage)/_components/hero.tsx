@@ -1,7 +1,9 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-import { HeroStage } from "./heroStage";
+import { HeroFrames } from "./heroStage/heroFrames";
+import { HERO_LABEL } from "./heroStage/heroScene";
+import { HeroStage } from "./heroStage/heroStage";
 
 const proofPoints = [
   "No credit card",
@@ -107,7 +109,9 @@ export function Hero() {
           ))}
         </ul>
 
-        <HeroStage />
+        <HeroStage label={HERO_LABEL}>
+          <HeroFrames />
+        </HeroStage>
 
         <p className="mt-3 text-center font-mono text-xs leading-[1.4] tracking-[0.04em] text-marketing-label">
           Illustrative example

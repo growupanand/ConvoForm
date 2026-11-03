@@ -1,0 +1,960 @@
+/* The "How it works" scene (howItWorksScene.tsx). Each column sits under its
+   rail step; the compact layout stacks rail, builder and a cropped phone. */
+.scene {
+  --travel: cubic-bezier(0.45, 0, 0.1, 1);
+  --arrive: cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  color: var(--marketing-ink);
+}
+
+.scene > * {
+  position: absolute;
+  box-sizing: border-box;
+  translate: 0 0;
+  transition:
+    opacity 0.45s ease,
+    translate 0.5s var(--arrive);
+}
+
+.scene:not([data-shown]) > :not(.flyer) {
+  opacity: 0;
+  translate: 0 10px;
+}
+
+.mono {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--marketing-label);
+}
+
+.tick {
+  flex: none;
+  color: var(--marketing-blue-600);
+}
+
+.caret {
+  display: inline-block;
+  width: 1.25px;
+  height: 16px;
+  margin-left: 1px;
+  vertical-align: -3px;
+  background: var(--marketing-blue-600);
+}
+
+/* ---------- rail: 01, 02, 03 ---------- */
+.rail {
+  left: 0;
+  right: 0;
+  top: 2px;
+  height: 22px;
+}
+
+.railItem {
+  position: absolute;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 22px;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--marketing-label);
+}
+
+.railNumber {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 22px;
+  border: 1.25px solid var(--marketing-hair);
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+  transition:
+    color 0.35s ease,
+    border-color 0.35s ease,
+    background-color 0.35s ease;
+}
+
+.railTitle {
+  transition: color 0.35s ease;
+}
+
+.railItem[data-on] .railNumber {
+  border-color: var(--marketing-blue-600);
+  background: var(--marketing-blue-600);
+  color: var(--marketing-surface);
+}
+
+.railItem[data-on] .railTitle {
+  color: var(--marketing-ink);
+}
+
+.railItem[data-done] .railNumber {
+  border-color: var(--marketing-blue-300);
+  color: var(--marketing-blue-700);
+}
+
+.railLine {
+  position: relative;
+  flex: 1 1 auto;
+  height: 1.25px;
+  margin-right: 12px;
+  overflow: hidden;
+  background: var(--marketing-hair);
+}
+
+.railLine i {
+  position: absolute;
+  inset: 0;
+  background: var(--marketing-blue-600);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.75s var(--travel);
+}
+
+.railLine i[data-on] {
+  transform: scaleX(1);
+}
+
+[data-layout="wide"] .railItem:nth-child(1) {
+  left: 16px;
+  width: 344px;
+}
+
+[data-layout="wide"] .railItem:nth-child(2) {
+  left: 360px;
+  width: 360px;
+}
+
+[data-layout="wide"] .railItem:nth-child(3) {
+  left: 720px;
+}
+
+[data-layout="compact"] .railItem {
+  gap: 6px;
+}
+
+[data-layout="compact"] .railItem:nth-child(1) {
+  left: 16px;
+  width: 120px;
+}
+
+[data-layout="compact"] .railItem:nth-child(2) {
+  left: 136px;
+  width: 112px;
+}
+
+[data-layout="compact"] .railItem:nth-child(3) {
+  left: 248px;
+}
+
+[data-layout="compact"] .railLine {
+  margin-right: 8px;
+}
+
+/* ---------- 01 · builder ---------- */
+.builder {
+  z-index: 2;
+  left: 16px;
+  top: 40px;
+  width: 324px;
+  padding: 18px 18px 20px;
+  border: 1.25px solid var(--marketing-hair);
+  border-radius: 20px;
+  background: var(--marketing-surface);
+}
+
+[data-layout="compact"] .builder {
+  top: 34px;
+  width: 326px;
+  padding: 16px;
+}
+
+.builderHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 22px;
+}
+
+.formTitle {
+  display: grid;
+  font-family: var(--font-bricolage), var(--font-inter), sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.swap {
+  grid-area: 1 / 1;
+  opacity: 0;
+  translate: 0 4px;
+  transition:
+    opacity 0.3s ease,
+    translate 0.4s var(--arrive);
+}
+
+.swap:first-child {
+  color: var(--marketing-label);
+}
+
+.swap[data-on] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.builderLabel {
+  margin-top: 14px;
+}
+
+[data-layout="compact"] .builderLabel {
+  margin-top: 12px;
+}
+
+.prompt {
+  position: relative;
+  height: 70px;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1.25px solid var(--marketing-hair);
+  border-radius: 14px;
+  background: var(--marketing-paper);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+[data-layout="compact"] .prompt {
+  height: 64px;
+}
+
+.promptText {
+  display: block;
+  padding-right: 66px;
+}
+
+.promptPlaceholder {
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  color: var(--marketing-label);
+  transition: opacity 0.15s ease;
+}
+
+.promptPlaceholder[data-hide] {
+  opacity: 0;
+}
+
+.draft {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 28px;
+  box-sizing: border-box;
+  border: 1.25px solid var(--marketing-hair);
+  border-radius: 999px;
+  background: var(--marketing-surface);
+  color: var(--marketing-label);
+  font-size: 12px;
+  font-weight: 600;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease,
+    scale 0.15s ease;
+}
+
+.draft[data-on] {
+  border-color: var(--marketing-blue-600);
+  background: var(--marketing-blue-600);
+  color: var(--marketing-surface);
+}
+
+.draft[data-pressed] {
+  scale: 0.96;
+}
+
+.draftLabel,
+.draftSpin {
+  grid-area: 1 / 1;
+  display: grid;
+  transition: opacity 0.2s ease;
+}
+
+.draftSpin {
+  opacity: 0;
+}
+
+.draft[data-busy] .draftLabel {
+  opacity: 0;
+}
+
+.draft[data-busy] .draftSpin {
+  opacity: 1;
+}
+
+.fields {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+[data-layout="compact"] .fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+/* An empty slot holds each field's place, so the card never resizes */
+.slot {
+  border: 1.25px dashed var(--marketing-hair-soft);
+  border-radius: 14px;
+}
+
+.field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  margin: -1.25px;
+  padding: 0 12px;
+  border: 1.25px solid var(--marketing-hair);
+  border-radius: 14px;
+  background: var(--marketing-surface);
+  font-size: 14px;
+  opacity: 0;
+  translate: 0 -6px;
+  transition:
+    opacity 0.3s ease,
+    translate 0.4s var(--arrive),
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.field[data-on] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.fieldNumber {
+  flex: none;
+}
+
+.fieldLabel {
+  white-space: nowrap;
+}
+
+.fieldKind {
+  width: 34px;
+  height: 6px;
+  margin-left: auto;
+  border-radius: 999px;
+  background: var(--marketing-hair-soft);
+}
+
+/* The field the chat is asking right now */
+.field[data-asking] {
+  border-color: var(--marketing-blue-600);
+  background: var(--marketing-blue-50);
+}
+
+.field[data-asking] .fieldNumber {
+  color: var(--marketing-blue-700);
+}
+
+/* Compact: the four fields are chips that also take the saved answers */
+[data-layout="compact"] .field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 16px 20px;
+  align-content: center;
+  gap: 2px;
+  height: 56px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+[data-layout="compact"] .fieldNumber {
+  display: none;
+}
+
+[data-layout="compact"] .fieldLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 16px;
+  color: var(--marketing-label);
+}
+
+[data-layout="compact"] .field[data-filled] {
+  border-color: var(--marketing-blue-300);
+}
+
+[data-layout="compact"] .field[data-asking] {
+  border-color: var(--marketing-blue-600);
+}
+
+.fieldValue {
+  position: relative;
+  grid-column: 1 / -1;
+  height: 20px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.value {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+  opacity: 0;
+  translate: 0 4px;
+  transition:
+    opacity 0.3s ease,
+    translate 0.45s var(--arrive);
+}
+
+.value[data-on] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.empty {
+  color: var(--marketing-label);
+}
+
+.saved {
+  font-weight: 500;
+}
+
+.share {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  opacity: 0;
+  translate: 0 4px;
+  transition:
+    opacity 0.3s ease,
+    translate 0.4s var(--arrive);
+}
+
+[data-layout="compact"] .share {
+  margin-top: 12px;
+}
+
+.share[data-on] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* The same 222 × 30 pill in the builder, in flight and in the message, so
+   the flyer lands without changing shape */
+.link,
+.flyLink,
+.phoneLink {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  width: 222px;
+  height: 30px;
+  padding: 0 10px;
+  overflow: hidden;
+  border: 1.25px solid var(--marketing-hair);
+  border-radius: 999px;
+  background: var(--marketing-paper);
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  color: var(--marketing-muted);
+}
+
+.link svg,
+.flyLink svg,
+.phoneLink svg {
+  flex: none;
+}
+
+.link {
+  transition:
+    color 0.3s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+/* Once the link has left, the builder keeps only a dimmed copy */
+.link[data-sent] {
+  border-style: dashed;
+  background: var(--marketing-surface);
+  color: var(--marketing-label);
+}
+
+.shareButton {
+  display: grid;
+  flex: 1 1 auto;
+  place-items: center;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--marketing-blue-600);
+  color: var(--marketing-surface);
+  font-size: 12px;
+  font-weight: 600;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    scale 0.15s ease;
+}
+
+.shareButton[data-pressed] {
+  scale: 0.96;
+}
+
+.shareLabel,
+.sentLabel {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: opacity 0.25s ease;
+}
+
+.sentLabel {
+  opacity: 0;
+}
+
+.shareButton[data-sent] {
+  background: var(--marketing-blue-50);
+  color: var(--marketing-blue-700);
+}
+
+.shareButton[data-sent] .shareLabel {
+  opacity: 0;
+}
+
+.shareButton[data-sent] .sentLabel {
+  opacity: 1;
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  color: var(--marketing-label);
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    color 0.3s ease;
+}
+
+.count[data-on] {
+  opacity: 1;
+}
+
+.countFigure {
+  display: inline-flex;
+}
+
+.count[data-full] {
+  color: var(--marketing-blue-700);
+}
+
+/* ---------- 02 · the student's phone ---------- */
+.phone {
+  z-index: 1;
+  left: 360px;
+  top: 40px;
+  /* Fades out just above the stage's bottom edge, where the phone is cut */
+  mask-image: linear-gradient(
+    to bottom,
+    var(--marketing-ink) calc(var(--cut) - 28px),
+    transparent var(--cut)
+  );
+  --cut: 460px;
+}
+
+[data-layout="compact"] .phone {
+  left: 24px;
+  top: 374px;
+  --cut: 334px;
+}
+
+/* A messenger stand-in: the one place off the One Accent palette (DESIGN.md) */
+.messenger,
+.chat {
+  position: absolute;
+  inset: 0;
+}
+
+.messenger {
+  background: var(--marketing-messenger-wallpaper);
+}
+
+.messengerHead,
+.chatHead {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  box-sizing: border-box;
+  border-bottom: 1.25px solid var(--marketing-hair-soft);
+  background: var(--marketing-surface);
+}
+
+.messengerHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100px;
+  padding: 40px 16px 0;
+}
+
+.back {
+  display: grid;
+  color: var(--marketing-muted);
+}
+
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--marketing-hair-soft);
+  color: var(--marketing-muted);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.contact {
+  display: grid;
+}
+
+.contactName {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.contactStatus {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--marketing-label);
+}
+
+.messengerBody {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100px;
+  bottom: 0;
+  padding: 14px 10px;
+}
+
+.messengerThread {
+  --ss-me: var(--marketing-messenger-out);
+  --ss-me-text: var(--marketing-ink);
+  --ss-them: var(--marketing-surface);
+  --ss-them-text: var(--marketing-ink);
+  justify-content: flex-start;
+}
+
+.linkBubble > div {
+  max-width: 92%;
+}
+
+.linkMessage {
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* An empty slot until the flyer lands in it */
+.phoneLink {
+  border-style: dashed;
+  border-color: var(--marketing-hair);
+  background: var(--marketing-surface);
+  transition:
+    scale 0.18s ease,
+    box-shadow 0.25s ease;
+}
+
+.phoneLink > * {
+  visibility: hidden;
+}
+
+.phoneLink[data-on] {
+  border-style: solid;
+  border-color: var(--marketing-blue-300);
+  background: var(--marketing-blue-50);
+  color: var(--marketing-blue-700);
+}
+
+.phoneLink[data-on] > * {
+  visibility: visible;
+}
+
+/* The student's tap */
+.phoneLink[data-tap] {
+  scale: 0.97;
+  box-shadow: 0 0 0 4px var(--marketing-blue-100);
+}
+
+/* The ConvoForm chat opens over the messages, from the bottom */
+.chat {
+  z-index: 2;
+  background: var(--marketing-surface);
+  translate: 0 100%;
+  transition: translate 0.6s var(--travel);
+}
+
+.chat[data-open] {
+  translate: 0 0;
+}
+
+.chatHead {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100px;
+  padding: 40px 18px 0;
+}
+
+.chatTitle {
+  font-family: var(--font-bricolage), var(--font-inter), sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+}
+
+.chatSub {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--marketing-label);
+}
+
+.chatBody {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 108px;
+  height: 254px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  /* older messages slide up under the header and fade out */
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    var(--marketing-ink) 28px
+  );
+}
+
+[data-layout="compact"] .chatBody {
+  height: 140px;
+}
+
+.chatThread {
+  --ss-me: var(--marketing-blue-600);
+  --ss-me-text: var(--marketing-surface);
+  --ss-them: var(--marketing-paper);
+  --ss-them-text: var(--marketing-ink);
+  --ss-them-ring: var(--marketing-hair-soft);
+}
+
+/* The clarifying follow-up carries the accent, as in the hero */
+.followUp {
+  --ss-them: var(--marketing-blue-50);
+  --ss-them-text: var(--marketing-blue-700);
+  --ss-them-ring: var(--marketing-blue-300);
+}
+
+.followUpTag {
+  display: block;
+  margin-bottom: 2px;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.composer {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 372px;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  box-sizing: border-box;
+  padding: 0 52px 0 16px;
+  border: 1.25px solid var(--marketing-hair);
+  border-radius: 999px;
+  background: var(--marketing-surface);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+[data-layout="compact"] .composer {
+  top: 258px;
+}
+
+.composerText {
+  position: relative;
+  white-space: nowrap;
+}
+
+.composerPlaceholder {
+  position: absolute;
+  left: 16px;
+  color: var(--marketing-label);
+  transition: opacity 0.15s ease;
+}
+
+.composerPlaceholder[data-hide] {
+  opacity: 0;
+}
+
+.send {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--marketing-blue-600);
+  color: var(--marketing-surface);
+}
+
+/* ---------- 03 · the response ---------- */
+.record {
+  z-index: 2;
+  left: 720px;
+  top: 40px;
+  width: 300px;
+  padding: 18px 20px;
+  border: 1.25px solid var(--marketing-hair);
+  border-radius: 20px;
+  background: var(--marketing-surface);
+}
+
+.recordHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 22px;
+  padding-bottom: 12px;
+  border-bottom: 1.25px solid var(--marketing-hair);
+  box-sizing: content-box;
+}
+
+.recordRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18px;
+  grid-template-rows: 16px 20px;
+  align-items: center;
+  row-gap: 4px;
+  padding: 12px 0;
+  border-bottom: 1.25px solid var(--marketing-hair-soft);
+}
+
+.recordKey {
+  grid-column: 1;
+}
+
+.recordValue {
+  position: relative;
+  grid-column: 1;
+  grid-row: 2;
+  height: 20px;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.recordOk {
+  display: grid;
+  grid-column: 2;
+  grid-row: 1 / 3;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1.25px solid var(--marketing-hair);
+  border-radius: 999px;
+  color: transparent;
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.recordOk[data-on] {
+  border-color: var(--marketing-blue-600);
+  color: var(--marketing-blue-600);
+}
+
+.recordOk .tick {
+  color: inherit;
+}
+
+.recordFoot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  border: 1.25px solid var(--marketing-hair);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--marketing-muted);
+}
+
+/* ---------- the link in flight ---------- */
+.scene > .flyer {
+  position: absolute;
+  z-index: 30;
+}
+
+/* Lifts off as the builder's pill and lands as the message's */
+.flyLink {
+  transition:
+    color 0.7s ease,
+    border-color 0.7s ease,
+    background-color 0.7s ease;
+}
+
+.flyLink[data-phase="go"] {
+  border-color: var(--marketing-blue-300);
+  background: var(--marketing-blue-50);
+  color: var(--marketing-blue-700);
+}

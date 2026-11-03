@@ -1,5 +1,6 @@
+import { HowItWorksFrames } from "./howItWorksFrames";
+import { HOW_LABEL } from "./howItWorksScene";
 import { HowItWorksStage } from "./howItWorksStage";
-import { HowItWorksStatic } from "./howItWorksStatic";
 
 const steps = [
   {
@@ -51,10 +52,9 @@ export function HowItWorksSection() {
           </p>
         </div>
 
-        <HowItWorksStage
-          staticStartFrame={<HowItWorksStatic variant="start" />}
-          staticFinalFrame={<HowItWorksStatic />}
-        />
+        <HowItWorksStage label={HOW_LABEL}>
+          <HowItWorksFrames />
+        </HowItWorksStage>
 
         <div className="mx-auto mt-12 grid max-w-[1080px] grid-cols-1 gap-7 min-[900px]:grid-cols-3">
           {steps.map((step) => (

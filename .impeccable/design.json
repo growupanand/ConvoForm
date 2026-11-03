@@ -120,13 +120,18 @@
       },
       {
         "name": "loop-hero",
-        "value": "8s",
+        "value": "~16s",
         "purpose": "Hero form-to-conversation loop."
+      },
+      {
+        "name": "loop-walkthrough",
+        "value": "~18s",
+        "purpose": "How it works: design, share and review as one story."
       },
       {
         "name": "loop-scene",
         "value": "6s-10.8s",
-        "purpose": "Section loops."
+        "purpose": "Other section loops."
       },
       {
         "name": "ambient",
@@ -147,7 +152,8 @@
     "breakpoints": [
       { "name": "mobile", "value": "900px" },
       { "name": "tablet", "value": "1100px" },
-      { "name": "demo-desktop", "value": "1024px" }
+      { "name": "demo-desktop", "value": "1024px" },
+      { "name": "stage-compact", "value": "700px (stage container width)" }
     ]
   },
   "components": [
@@ -236,8 +242,18 @@
         "section": "motion"
       },
       {
+        "name": "The Stage Layout Rule",
+        "body": "Scripted stages pick their layout from their own width: below 700px a compact layout redesigned for the narrow box. Scenes scale down, never up. The first frame is the start state, every loop ends where it began, and with JS off the server-drawn final frame shows.",
+        "section": "motion"
+      },
+      {
         "name": "The One Accent Rule",
         "body": "`blue-600` is the only accent and covers well under 10% of any screen. No second hue, no purple, no amber outside mockup-only badges.",
+        "section": "colors"
+      },
+      {
+        "name": "The Messenger Exception",
+        "body": "The only exception to the One Accent Rule: the How it works phone shows a WhatsApp-like messenger with `messenger-wallpaper` (#efeae2) and `messenger-out` (#d9fdd3), a neutral \"Admissions team\" header and no WhatsApp logo or name. Those two tokens are used nowhere else.",
         "section": "colors"
       },
       {
@@ -272,7 +288,7 @@
       },
       {
         "name": "The Quiet Stage Rule",
-        "body": "No gradient glows behind illustrations; stages use hairline frame + masked dot grid. Blue appears only in the drawing itself (active field, follow-up bubble, tick, data chips), never in the stage background.",
+        "body": "No gradient glows behind illustrations; stages have no outer frame, only a masked dot grid. Blue appears only in the drawing itself (active field, follow-up bubble, tick, data chips), never in the stage background.",
         "section": "elevation"
       }
     ],

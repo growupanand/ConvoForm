@@ -1,0 +1,366 @@
+/* The hero scene (heroScene.tsx). Every placed thing is positioned by
+   transform from the stage's top left; `translate` (separate from
+   `transform`) carries the exit drop and the rise in. */
+.scene {
+  --travel: cubic-bezier(0.45, 0, 0.1, 1);
+  --arrive: cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  color: var(--marketing-ink);
+}
+
+.scene > * {
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  translate: 0 0;
+  transition:
+    opacity 0.45s ease,
+    translate 0.5s var(--arrive);
+}
+
+.scene[data-exit] > *,
+.scene:not([data-in]) > * {
+  translate: 0 10px;
+}
+
+/* ---------- the card: form sheet, then chat panel ---------- */
+.card {
+  z-index: 1;
+  background: var(--marketing-surface);
+  border: 1.25px solid var(--marketing-hair);
+  transition:
+    transform 0.9s var(--travel),
+    width 0.9s var(--travel),
+    height 0.9s var(--travel),
+    border-radius 0.9s var(--travel),
+    border-color 0.4s ease,
+    opacity 0.45s ease,
+    translate 0.5s var(--arrive);
+}
+
+/* While the form breaks, the emptied sheet steps back */
+.scene[data-phase="shatter"] .card {
+  border-color: var(--marketing-slate);
+}
+
+.cardChat {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.scene[data-phase="chat"] .cardChat {
+  opacity: 1;
+  transition-delay: 0.55s;
+}
+
+.chatSub {
+  position: absolute;
+  left: 23px;
+  top: 40px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--marketing-label);
+}
+
+.chatRule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 66px;
+  border-top: 1px solid var(--marketing-hair-soft);
+}
+
+/* ---------- the record ---------- */
+.record {
+  z-index: 2;
+  background: var(--marketing-surface);
+  border: 1.25px solid var(--marketing-hair);
+  border-radius: 20px;
+  scale: 0.97;
+  opacity: 0 !important;
+  transition:
+    opacity 0.4s ease,
+    scale 0.6s var(--arrive),
+    translate 0.5s var(--arrive) !important;
+}
+
+.scene[data-phase="chat"]:not([data-exit]) .record {
+  opacity: 1 !important;
+  scale: 1;
+  transition-delay: 0.45s;
+}
+
+.recordTitle {
+  position: absolute;
+  left: 23px;
+  top: 20px;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--marketing-label);
+}
+
+/* ---------- thread and composer ---------- */
+.threadBox,
+.composer {
+  z-index: 2;
+  opacity: 0 !important;
+}
+
+.scene[data-phase="chat"]:not([data-exit]) .threadBox,
+.scene[data-phase="chat"]:not([data-exit]) .composer {
+  opacity: 1 !important;
+  transition-delay: 0.55s;
+}
+
+.threadBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  /* older messages slide up under the header and fade out */
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    var(--marketing-ink) 28px
+  );
+}
+
+.thread {
+  --ss-thread-size: 14px;
+  --ss-me: var(--marketing-blue-600);
+  --ss-me-text: var(--marketing-surface);
+  --ss-them: var(--marketing-paper);
+  --ss-them-text: var(--marketing-ink);
+  --ss-them-ring: var(--marketing-hair-soft);
+}
+
+/* The clarifying follow-up: the one moment ConvoForm does something a form
+   can't, so it carries the accent */
+.followUp {
+  --ss-them: var(--marketing-blue-50);
+  --ss-them-text: var(--marketing-blue-700);
+  --ss-them-ring: var(--marketing-blue-300);
+}
+
+.followUpTag {
+  display: block;
+  margin-bottom: 2px;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.composer {
+  display: flex;
+  align-items: center;
+  padding: 0 52px 0 16px;
+  border: 1.25px solid var(--marketing-hair);
+  border-radius: 999px;
+  background: var(--marketing-surface);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.composerText {
+  position: relative;
+  white-space: nowrap;
+  color: var(--marketing-ink);
+}
+
+.composerPlaceholder {
+  position: absolute;
+  left: 16px;
+  color: var(--marketing-label);
+  transition: opacity 0.15s ease;
+}
+
+.composerPlaceholder[data-hide] {
+  opacity: 0;
+}
+
+.caret {
+  display: inline-block;
+  width: 1.25px;
+  height: 16px;
+  margin-left: 1px;
+  vertical-align: -3px;
+  background: var(--marketing-blue-600);
+}
+
+/* ---------- the pieces ---------- */
+.scene > .piece {
+  z-index: 3;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  transition:
+    transform 0.85s var(--travel),
+    width 0.85s var(--travel),
+    height 0.85s var(--travel),
+    border-radius 0.85s var(--travel),
+    background-color 0.5s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    color 0.4s ease,
+    opacity 0.45s ease,
+    translate 0.5s var(--arrive);
+}
+
+.title {
+  font-family: var(--font-bricolage), var(--font-inter), sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--marketing-label);
+  white-space: nowrap;
+}
+
+.required {
+  font-weight: 500;
+  color: var(--marketing-error);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.required[data-on] {
+  opacity: 1;
+}
+
+.input {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 0 10px;
+  background: var(--marketing-surface);
+  border: 1.25px solid var(--marketing-hair);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.input[data-error] {
+  border-color: var(--marketing-error);
+  box-shadow: 0 0 0 3px var(--marketing-error-ring);
+}
+
+.scene[data-phase="chat"] .input {
+  background: var(--marketing-paper);
+  border-color: var(--marketing-hair-soft);
+}
+
+.scene[data-phase="chat"] .input[data-filled] {
+  background: var(--marketing-blue-50);
+  border-color: var(--marketing-blue-300);
+}
+
+.value {
+  position: absolute;
+  left: 11px;
+  right: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  height: 20px;
+  white-space: nowrap;
+  opacity: 0;
+  translate: 0 4px;
+  transition:
+    opacity 0.3s ease,
+    translate 0.45s var(--arrive);
+}
+
+.value[data-on] {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: 0.1s;
+}
+
+/* The empty dashes wait until their cells have landed */
+.empty[data-on] {
+  transition-delay: 1.1s;
+}
+
+.empty {
+  color: var(--marketing-label);
+}
+
+.saved {
+  font-weight: 500;
+  color: var(--marketing-ink);
+}
+
+.tick {
+  flex: none;
+  color: var(--marketing-blue-600);
+}
+
+.chevron {
+  position: absolute;
+  right: 10px;
+  color: var(--marketing-label);
+  transition: opacity 0.3s ease;
+}
+
+.scene:not([data-phase="form"]) .chevron {
+  opacity: 0;
+}
+
+.submit {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--marketing-muted);
+  color: var(--marketing-surface);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.submit[data-pressed] {
+  background: var(--marketing-ink);
+}
+
+.submitLabel,
+.submitIcon {
+  grid-area: 1 / 1;
+  display: grid;
+  place-items: center;
+  transition: opacity 0.3s ease;
+}
+
+.submitIcon {
+  opacity: 0;
+}
+
+.scene[data-phase="chat"] .submit {
+  background: var(--marketing-blue-600);
+}
+
+.scene:not([data-phase="form"]) .submitLabel {
+  opacity: 0;
+}
+
+.scene[data-phase="chat"] .submitIcon {
+  opacity: 1;
+  transition-delay: 0.4s;
+}

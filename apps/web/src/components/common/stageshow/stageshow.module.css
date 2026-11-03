@@ -1,0 +1,465 @@
+/* Stageshow port (MIT, see LICENSE in this folder), restyled with the
+   marketing tokens. Layout, gating and the parts every scene shares. */
+
+/* ---------- shell, boxes and canvas ---------- */
+
+/* The stage picks its layout from its own width, so the reserved height and
+   the static frames are right before any script runs. 700px matches
+   COMPACT_BELOW in stageFrame.tsx. */
+.shell {
+  position: relative;
+  width: 100%;
+  container-type: inline-size;
+}
+
+.box {
+  position: relative;
+  width: 100%;
+  margin-inline: auto;
+  overflow: hidden;
+}
+
+.box[data-layout="compact"] {
+  display: none;
+}
+
+@container (max-width: 699.98px) {
+  .box[data-layout="wide"] {
+    display: none;
+  }
+
+  .box[data-layout="compact"] {
+    display: block;
+  }
+}
+
+/* The scene is drawn at its design size and scaled down to the box; the
+   scale is the box width over the design width, never above 1. */
+.canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  scale: min(1, tan(atan2(100cqw, var(--ss-w))));
+  text-align: start;
+}
+
+/* The masked dot grid: no frame, no glow, gone before the stage's edges. */
+.grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in srgb, var(--marketing-ink) 7%, transparent) 1px,
+    transparent 0
+  );
+  background-size: 22px 22px;
+  mask-image: radial-gradient(
+    ellipse 62% 70% at 50% 48%,
+    var(--marketing-ink) 30%,
+    transparent 78%
+  );
+}
+
+/* ---------- static frames and the live layer ---------- */
+
+/* Without JS the poster (the final, fully informative frame) shows. With JS
+   the start frame shows until the live scene has painted over it. Reduced
+   motion and ?static=1 keep the poster. */
+.layer {
+  position: absolute;
+  inset: 0;
+}
+
+.start {
+  display: none;
+  transition: opacity 150ms ease;
+}
+
+:global(html[data-js]) .start {
+  display: block;
+}
+
+:global(html[data-js]) .poster {
+  display: none;
+}
+
+.shell[data-ready] .start {
+  opacity: 0;
+}
+
+.live {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.shell[data-ready] .live {
+  opacity: 1;
+}
+
+:global(html[data-static]) .start,
+:global(html[data-static]) .live {
+  display: none;
+}
+
+:global(html[data-static]) .poster {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(html[data-js]) .start,
+  .live {
+    display: none;
+  }
+
+  :global(html[data-js]) .poster {
+    display: block;
+  }
+
+  .canvas *,
+  .canvas *::before,
+  .canvas *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* A reset nothing on screen explains: no transitions inside it. */
+.canvas[data-instant] *,
+.canvas[data-instant] *::before,
+.canvas[data-instant] *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* ---------- cursor ---------- */
+
+.cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 40;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.cursor svg {
+  display: block;
+  transform-origin: 2px 2px;
+  transition: scale 90ms ease;
+}
+
+.cursor[data-pressed] svg {
+  scale: 0.86;
+}
+
+/* ---------- thread and bubbles ---------- */
+
+.thread {
+  --ss-thread-size: 14px;
+  --ss-me: var(--marketing-blue-600);
+  --ss-me-text: var(--marketing-surface);
+  --ss-them: var(--marketing-hair-soft);
+  --ss-them-text: var(--marketing-ink);
+  --ss-scroll: 0.55s cubic-bezier(0.25, 1, 0.5, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  min-height: 0;
+  max-height: 100%;
+  clip-path: inset(0 -100vw -100vh -100vw);
+  font-size: var(--ss-thread-size);
+  line-height: 1.35;
+}
+
+/* Rows glide on top, each on its own layer, so a bubble and its words move
+   as one picture. */
+.row {
+  position: relative;
+  top: 0;
+  display: flex;
+  flex: none;
+  will-change: transform;
+  transition: top var(--ss-scroll);
+}
+
+.row[data-from="me"] {
+  justify-content: flex-end;
+}
+
+.row[data-from="me"] + .row[data-from="them"],
+.row[data-from="them"] + .row[data-from="me"] {
+  margin-top: 8px;
+}
+
+.bubble {
+  position: relative;
+  top: 0;
+  left: 0;
+  max-width: 80%;
+  padding: 0.5em 0.8em;
+  border-radius: 14px;
+  isolation: isolate;
+  overflow-wrap: break-word;
+  color: var(--t);
+  transition:
+    width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The fill is its own layer, so it can grow from the speaker's corner while
+   the words only rise and fade. */
+.bubble::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--b);
+  box-shadow: inset 0 0 0 1.25px var(--ring, transparent);
+  transform-origin: inherit;
+  transition: opacity 0.3s ease 0.06s;
+}
+
+[data-from="me"] > .bubble {
+  --b: var(--ss-me);
+  --t: var(--ss-me-text);
+  --ring: var(--ss-me-ring, transparent);
+  border-bottom-right-radius: 4px;
+  transform-origin: 100% 100%;
+}
+
+[data-from="them"] > .bubble {
+  --b: var(--ss-them);
+  --t: var(--ss-them-text);
+  --ring: var(--ss-them-ring, transparent);
+  border-bottom-left-radius: 4px;
+  transform-origin: 0 100%;
+}
+
+/* Only arrivals rise in from their speaker's corner. */
+.bubble[data-arrived] {
+  animation: ss-bubble-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.bubble[data-arrived]::before {
+  animation: ss-bubble-fill 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* A bubble with a source forms out of the composer instead (thread.tsx). */
+.bubble[data-arrived][data-source],
+.bubble[data-arrived][data-source]::before {
+  animation: none;
+}
+
+.bubble[data-flying]::before {
+  opacity: 0;
+  transition: none;
+}
+
+@keyframes ss-bubble-in {
+  from {
+    opacity: 0;
+    top: 6px;
+  }
+}
+
+@keyframes ss-bubble-fill {
+  from {
+    transform: scale(0.8);
+  }
+}
+
+/* The morph clips its own words while the box grows, on the growing sides. */
+[data-from="them"] > .bubble[style*="width"] {
+  clip-path: inset(0 0 -1em -1em);
+}
+
+[data-from="me"] > .bubble[style*="width"] {
+  clip-path: inset(0 -1em -1em 0);
+}
+
+.text {
+  display: block;
+}
+
+.bubble[data-grew] > .text {
+  animation: ss-fade-in 0.28s ease both;
+}
+
+@keyframes ss-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Exactly one line tall, so a one-line reply grows only sideways. */
+.bubble[data-typing] {
+  padding: 0.84em 0.8em;
+}
+
+.dots {
+  display: flex;
+  gap: 0.24em;
+}
+
+.dots i {
+  width: 0.46em;
+  height: 0.46em;
+  border-radius: 999px;
+  background: var(--marketing-slate);
+  animation: ss-typing 1.2s ease-in-out infinite;
+}
+
+.dots i:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.dots i:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+@keyframes ss-typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.45;
+    transform: none;
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-0.12em);
+  }
+}
+
+/* ---------- small parts ---------- */
+
+.spinner {
+  flex: none;
+  animation: ss-spin 0.8s linear infinite;
+}
+
+@keyframes ss-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+.count {
+  display: inline-flex;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A new figure rises into place; the reset snaps without it. */
+.countDigit {
+  display: inline-block;
+  animation: ss-count-in 0.4s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+@keyframes ss-count-in {
+  from {
+    opacity: 0;
+    translate: 0 0.6em;
+  }
+}
+
+.fly {
+  position: absolute;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.fly > div,
+.flyBody {
+  width: 100%;
+  height: 100%;
+}
+
+.flyBody {
+  display: flex;
+}
+
+.flyBody > * {
+  flex: 1 1 auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* A small lift mid-flight that is gone before it lands. */
+.fly[data-phase="go"] .flyBody {
+  animation: ss-fly-lift var(--ss-fly-ms) cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+@keyframes ss-fly-lift {
+  30% {
+    transform: scale(1.08);
+  }
+
+  85%,
+  100% {
+    transform: none;
+  }
+}
+
+/* ---------- phone ---------- */
+
+/* A line-drawn phone at true size: text inside it is real px, never scaled. */
+.phone {
+  position: relative;
+  box-sizing: border-box;
+  padding: 8px;
+  border: 1.25px solid var(--marketing-hair);
+  border-radius: 32px;
+  background: var(--marketing-surface);
+}
+
+.phoneScreen {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 26px;
+  background: var(--marketing-surface);
+}
+
+.phoneStatus {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 22px 0 26px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--marketing-ink);
+}
+
+.phoneIsland {
+  position: absolute;
+  left: 50%;
+  top: 9px;
+  width: 92px;
+  height: 26px;
+  translate: -50% 0;
+  border-radius: 999px;
+  background: var(--marketing-ink);
+}
+
+.phoneGlyphs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.phoneContent {
+  position: absolute;
+  inset: 0;
+}

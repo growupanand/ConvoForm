@@ -7,7 +7,13 @@
     "defaultBranch": "main"
   },
   "files": {
-    "ignore": ["**/*.yml", "**/*.yaml", "**/*.md", "**/.wrangler/**"]
+    "ignore": [
+      "**/*.yml",
+      "**/*.yaml",
+      "**/*.md",
+      "**/.wrangler/**",
+      "**/.agents/skills/stageshow/**"
+    ]
   },
   "formatter": {
     "enabled": true,

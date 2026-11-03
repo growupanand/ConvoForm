@@ -201,8 +201,9 @@ Motion tokens (machine-readable copies live in `.impeccable/design.json`):
 | `duration-pop` | `280ms` | Bubble/chip pop-in |
 | `duration-draw` | `500ms` | One-shot hairline stroke draws |
 | `stagger` | `120ms` | Delay between sibling items in a reveal |
-| `loop-hero` | `8s` | Hero "form shatters into conversation" loop |
-| `loop-scene` | `6s` to `10.8s` | Section loops (before/after, trust icons, how it works) |
+| `loop-hero` | `~16s` | Hero "form shatters into conversation" loop (one study-abroad enquiry) |
+| `loop-walkthrough` | `~18s` | How it works: design, share and review as one linked story |
+| `loop-scene` | `6s` to `10.8s` | Other section loops (before/after, trust icons) |
 | `ambient` | `9s` to `11s`, `ease-in-out` | Reserved for non-illustration motion; never behind stages |
 | `hover-lift` | `translateY(-1px)` | Buttons on hover |
 
@@ -211,6 +212,8 @@ Motion tokens (machine-readable copies live in `.impeccable/design.json`):
 **The Pause-Offscreen Rule.** Each animation keeps its own clock and advances it only while visible. Scrolling away freezes it; scrolling back resumes where it stopped. Clamp the per-frame delta (max 0.1s) so a backgrounded tab never jumps.
 
 **The Static-Final-State Rule.** Under `prefers-reduced-motion: reduce` (and `?static=1` for review), render every animation at its final, fully informative frame, drop transitions, and use `scroll-behavior: auto`. The static frame must tell the whole story on its own.
+
+**The Stage Layout Rule.** Scripted stages (`components/common/stageshow/`) pick their layout from their own width, not the viewport: below `700px` they switch to a compact layout that is redesigned for the narrow box, not squeezed. The scene is drawn at its design size and scaled down to fit, never up. The first frame is the start state, every loop ends where it began, and with JS off the server-drawn final frame shows.
 
 ## Colors
 
@@ -236,6 +239,8 @@ Cool, near-white paper and slate inks, with a single confident blue.
 ### Named Rules
 
 **The One Accent Rule.** `blue-600` is the only accent and covers well under 10% of any screen. No second hue, no purple, no amber outside mockup-only badges.
+
+**The Messenger Exception.** The one exception to the One Accent Rule: the student's phone in How it works shows a WhatsApp-like messenger so the share step reads at a glance. It uses `messenger-wallpaper` (`#efeae2`) behind the thread and `messenger-out` (`#d9fdd3`) for the outgoing bubble, a neutral "Admissions team" header, and no WhatsApp logo or name. These two tokens are used nowhere else; the ConvoForm chat that opens over it is back on the One Accent palette.
 
 **The Solid Emphasis Rule.** Emphasised words in `h1`/`h2` are solid `blue-600`. No gradient text, anywhere (owner decision on #513; the mockups' gradient `em` is superseded).
 
