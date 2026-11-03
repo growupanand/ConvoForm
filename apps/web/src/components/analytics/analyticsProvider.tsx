@@ -1,7 +1,9 @@
 // app/providers.js
 "use client";
+import { usePathname } from "next/navigation";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
+import { useEffect, useRef } from "react";
 import { SuspendedPostHogPageView } from "./PostHogPageView";
 
 const MARKETING_ROUTES = [
@@ -12,9 +14,8 @@ const MARKETING_ROUTES = [
   "/terms",
 ] as const;
 
-const isMarketingRoute = () => {
-  if (typeof window === "undefined") return false;
-  const { pathname } = window.location;
+const isMarketingPath = (pathname: string | null) => {
+  if (!pathname) return false;
   return MARKETING_ROUTES.some((route) =>
     route === "/"
       ? pathname === "/"
@@ -23,7 +24,7 @@ const isMarketingRoute = () => {
 };
 
 if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-  const marketingRoute = isMarketingRoute();
+  const marketingRoute = isMarketingPath(window.location.pathname);
 
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
     api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
@@ -38,6 +39,22 @@ if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
   });
 }
 export function CSPostHogProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const previousPathname = useRef<string | null>(null);
+
+  useEffect(() => {
+    const previous = previousPathname.current;
+    previousPathname.current = pathname;
+
+    // A visitor who lands on a marketing page and then signs up should still be
+    // recorded from the moment they leave the marketing route.
+    if (!previous || !pathname) return;
+    if (!isMarketingPath(previous) || isMarketingPath(pathname)) return;
+
+    posthog.startSessionRecording();
+    posthog.set_config({ disable_surveys: false });
+  }, [pathname]);
+
   return (
     <PostHogProvider client={posthog}>
       <SuspendedPostHogPageView />

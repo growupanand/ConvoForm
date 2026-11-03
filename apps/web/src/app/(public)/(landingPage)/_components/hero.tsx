@@ -67,6 +67,7 @@ export function Hero() {
         <div className="mx-auto mt-[26px] flex max-w-[340px] flex-col items-stretch gap-3 min-[900px]:max-w-none min-[900px]:flex-row min-[900px]:justify-center">
           <Link
             href="/auth/register"
+            prefetch={false}
             rel="noopener noreferrer nofollow"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-marketing-blue-600 px-6 py-[15px] font-body text-[15px] font-semibold leading-none text-white shadow-[0_10px_26px_-14px_rgba(37,99,235,0.7)] transition duration-150 hover:-translate-y-px hover:bg-marketing-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600"
           >

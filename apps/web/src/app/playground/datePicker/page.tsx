@@ -1,5 +1,5 @@
 "use client";
-import { DatePicker } from "@convoform/ui";
+import { DatePicker } from "@convoform/ui/src/components/datePicker";
 
 import { useState } from "react";
 

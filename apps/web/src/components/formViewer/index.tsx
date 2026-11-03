@@ -83,7 +83,6 @@ export function FormViewer() {
                 message={form.welcomeScreenMessage}
                 CTALabel={form.welcomeScreenCTALabel}
                 fontColor={currentFormDesign.fontColor}
-                backgroundColor={currentFormDesign.backgroundColor}
               />
             )}
 

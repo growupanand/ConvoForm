@@ -14,71 +14,6 @@ type Props = {
   message: string;
   CTALabel: string;
   fontColor?: string;
-  backgroundColor?: string;
-};
-
-const parseHexColor = (value?: string) => {
-  if (!value) return null;
-  const hex = value.replace("#", "");
-  if (hex.length !== 3 && hex.length !== 6) return null;
-  const full =
-    hex.length === 3
-      ? hex
-          .split("")
-          .map((char) => char + char)
-          .join("")
-      : hex;
-  const parsed = Number.parseInt(full, 16);
-  if (Number.isNaN(parsed)) return null;
-  return {
-    r: (parsed >> 16) & 255,
-    g: (parsed >> 8) & 255,
-    b: parsed & 255,
-  };
-};
-
-const relativeLuminance = ({
-  r,
-  g,
-  b,
-}: { r: number; g: number; b: number }) => {
-  const channel = (value: number) => {
-    const normalized = value / 255;
-    return normalized <= 0.03928
-      ? normalized / 12.92
-      : ((normalized + 0.055) / 1.055) ** 2.4;
-  };
-  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
-};
-
-const contrastRatio = (
-  foreground: { r: number; g: number; b: number },
-  background: { r: number; g: number; b: number },
-) => {
-  const foregroundLuminance = relativeLuminance(foreground);
-  const backgroundLuminance = relativeLuminance(background);
-  const lighter = Math.max(foregroundLuminance, backgroundLuminance);
-  const darker = Math.min(foregroundLuminance, backgroundLuminance);
-  return (lighter + 0.05) / (darker + 0.05);
-};
-
-// A form creator can pick any font/background pair. Keep their choice when it
-// already meets WCAG AA, and fall back to the form's readable ink (or white)
-// when it does not, so the welcome screen never ships 2:1 text.
-const readableFontColor = (fontColor?: string, backgroundColor?: string) => {
-  if (!fontColor || !backgroundColor) return fontColor;
-  const foreground = parseHexColor(fontColor);
-  const background = parseHexColor(backgroundColor);
-  if (!foreground || !background) return fontColor;
-  if (contrastRatio(foreground, background) >= 4.5) return fontColor;
-
-  const darkInk = parseHexColor("#0f172a");
-  const lightInk = parseHexColor("#f8fafc");
-  if (!darkInk || !lightInk) return fontColor;
-  return contrastRatio(darkInk, background) >=
-    contrastRatio(lightInk, background)
-    ? "#0f172a"
-    : "#f8fafc";
 };
 
 export const WelcomeScreen = ({
@@ -88,9 +23,7 @@ export const WelcomeScreen = ({
   message,
   CTALabel,
   fontColor,
-  backgroundColor,
 }: Props) => {
-  const resolvedFontColor = readableFontColor(fontColor, backgroundColor);
   const [isStartingConversation, setIsStartingConversation] = useState(false);
   const [scope, animate] = useAnimate();
 
@@ -130,7 +63,7 @@ export const WelcomeScreen = ({
           initial={{ opacity: 0, y: 10 }}
         >
           <h2
-            style={{ color: resolvedFontColor }}
+            style={{ color: fontColor }}
             className=" whitespace-break-spaces break-words  font-extrabold text-4xl lg:text-5xl transition-colors duration-500"
           >
             {title}
@@ -141,7 +74,7 @@ export const WelcomeScreen = ({
           initial={{ opacity: 0, y: 10 }}
         >
           <p
-            style={{ color: resolvedFontColor }}
+            style={{ color: fontColor }}
             className="welcome-screen-text mb-20 whitespace-break-spaces break-words tracking-tight font-medium text-xl lg:text-2xl transition-colors duration-500"
           >
             {message}

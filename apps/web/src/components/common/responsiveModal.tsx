@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@convoform/ui";
-import { Drawer, DrawerContent } from "@convoform/ui";
+import { Drawer, DrawerContent } from "@convoform/ui/src/components/ui/drawer";
 
 import { useMediaQuery } from "@/hooks/use-media-query";
 

@@ -63,7 +63,11 @@ export function FinalCtaSection() {
             </p>
 
             <div className="mt-7 flex max-w-[340px] flex-col items-stretch gap-3 min-[900px]:max-w-none min-[900px]:flex-row min-[900px]:flex-wrap">
-              <Link href="/auth/register" className={primaryCtaClass}>
+              <Link
+                href="/auth/register"
+                prefetch={false}
+                className={primaryCtaClass}
+              >
                 Start free <span aria-hidden="true">→</span>
               </Link>
               <Link

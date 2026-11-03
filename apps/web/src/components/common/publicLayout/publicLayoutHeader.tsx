@@ -57,6 +57,7 @@ export function PublicLayoutHeader({
 
             <Link
               href="/auth/register"
+              prefetch={false}
               rel="noopener noreferrer nofollow"
               className="inline-flex items-center justify-center rounded-full bg-marketing-blue-600 px-4 py-2.5 text-sm font-semibold leading-none text-white shadow-[0_10px_26px_-14px_rgba(37,99,235,0.7)] transition duration-150 hover:-translate-y-px hover:bg-marketing-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600"
             >

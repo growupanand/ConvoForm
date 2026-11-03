@@ -47,7 +47,7 @@ export default function Home() {
       <section
         id="demo"
         aria-labelledby="demo-heading"
-        className="mx-auto w-full max-w-[1160px] scroll-mt-20 px-4 pt-2 font-sans min-[900px]:pt-4"
+        className="demo-form mx-auto w-full max-w-[1160px] scroll-mt-20 px-4 pt-2 font-sans min-[900px]:pt-4"
       >
         <h2 id="demo-heading" className="sr-only">
           Live demo

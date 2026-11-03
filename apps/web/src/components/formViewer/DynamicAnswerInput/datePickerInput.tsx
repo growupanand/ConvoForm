@@ -3,8 +3,8 @@ import {
   type DatePickerInputConfigSchema,
   restoreDateFields,
 } from "@convoform/db/src/schema";
-import { DatePicker } from "@convoform/ui";
-import type { Matcher } from "@convoform/ui";
+import { DatePicker } from "@convoform/ui/src/components/datePicker";
+import type { Matcher } from "@convoform/ui/src/components/ui/calendar";
 import { useState } from "react";
 import type { InputProps } from ".";
 

@@ -28,17 +28,13 @@ export * from "./components/ui/carousel";
 export * from "./components/ui/form";
 export * from "./components/ui/collapsible";
 export * from "./components/ui/select";
-export * from "./components/ui/calendar";
 export * from "./components/ui/popover";
 export * from "./components/ui/alert";
 export * from "./components/ui/alert-dialog";
-export * from "./components/ui/drawer";
 export * from "./components/ui/sidebar";
 
 // Custome components
 export * from "./components/headingInput";
-export * from "./components/datePicker";
-export * from "./components/timePicker/timePicker";
 export * from "./components/timeline";
 export * from "./components/sectionHeading";
 export * from "./components/mutedText";

@@ -2,7 +2,7 @@
 
 import { getTRPCUrl } from "@/lib/url";
 import type { AppRouter } from "@convoform/api";
-import { toast } from "@convoform/ui";
+import { toast } from "@convoform/ui/src/components/ui/toast";
 import {
   MutationCache,
   QueryCache,

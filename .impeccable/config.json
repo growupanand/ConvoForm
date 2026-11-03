@@ -8,7 +8,10 @@
     }
   },
   "detector": {
-    "ignoreRules": [],
+    "ignoreRules": [
+      "kicker-above-heading",
+      "hero-eyebrow-chip"
+    ],
     "ignoreFiles": [],
     "ignoreValues": [
       {
@@ -16,6 +19,10 @@
         "value": "inter",
         "reason": "Owner-approved brand type: DESIGN.md pins Inter for body text on the marketing site"
       }
-    ]
+    ],
+    "ignoreRuleReasons": {
+      "kicker-above-heading": "DESIGN.md section kicker pattern",
+      "hero-eyebrow-chip": "DESIGN.md section kicker pattern"
+    }
   }
 }

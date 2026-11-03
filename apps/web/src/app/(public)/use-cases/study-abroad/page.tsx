@@ -81,6 +81,7 @@ function CreateIntakeLink() {
   return (
     <Link
       href="/auth/register"
+      prefetch={false}
       rel="noreferrer nofollow noopener"
       className={primaryCtaClass}
     >
