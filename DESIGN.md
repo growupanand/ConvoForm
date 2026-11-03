@@ -284,24 +284,23 @@ Load all three from Google Fonts through `next/font/google` (`Bricolage_Grotesqu
 
 ## Elevation & Depth
 
-Flat by default. Depth comes from hairlines, white panels on paper and a faint dotted grid inside framed illustration stages. Shadows are rare and always blue-tinted; illustration stages have none.
+Flat by default. Depth comes from hairlines, white panels on paper and a faint dotted grid inside illustration stages. Shadows are rare and always blue-tinted; illustration stages have none.
 
 ### Shadow Vocabulary
 
 - **Primary button glow** (`box-shadow: 0 10px 26px -14px rgba(37,99,235,.7)`): primary buttons only.
-- **Floating chat** (`box-shadow: 0 22px 50px -30px rgba(37,99,235,.4)`): the hero chat window.
 - **Focus halo** (`box-shadow: 0 0 0 2px #bfdbfe`): a highlighted overlay card.
-- **Illustration stage:** a `paper` fill, 1px `hair` border, `xl`/28px radius on desktop (22px on mobile), and no shadow. The dot grid lives inside this frame only.
-- **Dot grid:** `radial-gradient(circle at 1px 1px, rgba(15,23,42,.07) 1px, transparent 0)` at `22px 22px`, masked with a radial gradient to fade toward the edges.
+- **Illustration stage:** no outer frame, no rounded border, no shadow and no gradient glow. The stage sits directly on `paper`, and its dot grid is the only background treatment.
+- **Dot grid:** `radial-gradient(circle at 1px 1px, rgba(15,23,42,.07) 1px, transparent 0)` at `22px 22px`, masked with a radial gradient to fade toward the edges. The grid lives inside the stage area only and dissolves into the page with no visible edge.
 
 **The Hairline-Not-Shadow Rule.** A card is separated from the page by a 1.25px `hair` border, not by a drop shadow.
 
-**The Quiet Stage Rule.** No gradient glows behind illustrations; stages use hairline frame + masked dot grid. Blue appears only in the drawing itself (active field, follow-up bubble, tick, data chips), never in the stage background.
+**The Quiet Stage Rule.** Illustration stages have no outer frame and no gradient glows; use a masked dot grid that fades at the edges. Blue appears only in the drawing itself (active field, follow-up bubble, tick, data chips), never in the stage background or as a blurred halo.
 
 ## Shapes
 
 - **Hairline:** `1.25px solid hair` is the default border (`--hw` in the mockup). Inner dividers are `1px solid hair-soft`. Dashed hairlines mark a "before", static or placeholder state.
-- **Radius:** `xs` for drawings of old-style form inputs; `sm` for chat bubbles, field chips and small tiles; `md` for cards and trust tiles (18 to 22px panels round to this family); `lg` for large feature cards and the founder card; `xl` for the final CTA panel and hero stage (28px); `pill` for buttons, tabs, chips and badges. Large panels step down one radius size on mobile.
+- **Radius:** `xs` for drawings of old-style form inputs; `sm` for chat bubbles, field chips and small tiles; `md` for cards and trust tiles (18 to 22px panels round to this family); `lg` for large feature cards and the founder card; `xl` for the final CTA panel (28px); `pill` for buttons, tabs, chips and badges. Illustration stages have no outer frame, so no outer radius. Large panels step down one radius size on mobile.
 - **Chat bubbles:** `sm` radius with the corner nearest the speaker cut to 4 to 5px.
 - **Line art:** SVG strokes use `vector-effect: non-scaling-stroke`, round caps and joins, `hair`/`slate` for structure and `blue-600` for the moving or "fixed" part.
 

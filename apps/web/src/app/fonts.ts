@@ -5,6 +5,8 @@ export const bricolageGrotesque = Bricolage_Grotesque({
   variable: "--font-bricolage",
   subsets: ["latin"],
   weight: ["600", "700"],
+  adjustFontFallback: false,
+  fallback: ["Bricolage Grotesque Fallback"],
 });
 
 export const inter = Inter({
@@ -12,6 +14,8 @@ export const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  adjustFontFallback: false,
+  fallback: ["Inter Fallback"],
 });
 
 export const jetBrainsMono = JetBrains_Mono({

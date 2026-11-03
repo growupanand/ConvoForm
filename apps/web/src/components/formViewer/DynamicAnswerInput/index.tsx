@@ -3,12 +3,25 @@ import type {
   FieldConfiguration,
 } from "@convoform/db/src/schema";
 import type { UseConvoFormReturnType } from "@convoform/react";
+import dynamic from "next/dynamic";
 
-import { DatePickerInput } from "./datePickerInput";
 import { FileUploadInput } from "./fileUploadInput";
 import { MultiChoiceInput } from "./multiChoiceInput";
 import { RatingInput } from "./ratingInput";
 import { TextInput } from "./textInput";
+
+// The date picker pulls chrono-node and react-day-picker. Keep that chunk out
+// of the first form load (including the landing demo) until a date field is
+// actually active.
+const DatePickerInput = dynamic(
+  () => import("./datePickerInput").then((module) => module.DatePickerInput),
+  {
+    ssr: false,
+    loading: () => (
+      <div aria-hidden="true" className="h-10 w-full rounded-md bg-muted" />
+    ),
+  },
+);
 
 export type InputProps = {
   currentField: ExtraStreamData["currentField"];

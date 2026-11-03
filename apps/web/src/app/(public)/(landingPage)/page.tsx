@@ -16,14 +16,25 @@ export const metadata: Metadata = {
   title: {
     absolute: "ConvoForm | Create Conversational Forms",
   },
+  description:
+    "ConvoForm turns a static form into a short conversation. AI drafts the form, respondents answer in chat, and vague answers get a follow-up before they are saved.",
   alternates: {
     canonical: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: {
+      absolute: "ConvoForm | Create Conversational Forms",
+    },
+    description:
+      "ConvoForm turns a static form into a short conversation. AI drafts the form, respondents answer in chat, and vague answers get a follow-up before they are saved.",
   },
   openGraph: {
     title: {
       absolute: "ConvoForm | Create Conversational Forms",
     },
-    images: ["/api/og"],
+    description:
+      "ConvoForm turns a static form into a short conversation. AI drafts the form, respondents answer in chat, and vague answers get a follow-up before they are saved.",
   },
 };
 
@@ -36,7 +47,7 @@ export default function Home() {
       <section
         id="demo"
         aria-labelledby="demo-heading"
-        className="mx-auto w-full max-w-[1160px] scroll-mt-20 px-4 pt-2 font-sans min-[900px]:pt-4"
+        className="demo-form mx-auto w-full max-w-[1160px] scroll-mt-20 px-4 pt-2 font-sans min-[900px]:pt-4"
       >
         <h2 id="demo-heading" className="sr-only">
           Live demo
@@ -45,7 +56,7 @@ export default function Home() {
       </section>
 
       {/* Live Responses Section */}
-      <div className="mx-auto my-12 flex max-w-[1160px] justify-center px-4 max-lg:hidden">
+      <div className="demo-responses mx-auto my-12 flex max-w-[1160px] justify-center px-4 max-lg:hidden">
         <DemoResponsesShell>
           <LazyLiveDemoResponses />
         </DemoResponsesShell>

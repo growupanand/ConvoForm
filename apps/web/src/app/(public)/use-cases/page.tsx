@@ -11,10 +11,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/use-cases",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Use cases",
+    description: useCasesDescription,
+  },
   openGraph: {
     title: "Use cases",
     description: useCasesDescription,
-    images: ["/api/og"],
   },
 };
 
@@ -40,15 +44,14 @@ export default function UseCasesPage() {
         />
 
         <div className="mx-auto w-full max-w-[1160px]">
-          <span className="inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
+          <h1 className="max-w-[760px] font-display text-[clamp(36px,5vw,62px)] font-bold leading-[1.04] tracking-[-0.035em] text-marketing-ink">
             <span
               aria-hidden="true"
-              className="size-1.5 rounded-full bg-marketing-blue-600"
-            />
-            Use cases
-          </span>
-
-          <h1 className="mt-4 max-w-[760px] font-display text-[clamp(36px,5vw,62px)] font-bold leading-[1.04] tracking-[-0.035em] text-marketing-ink">
+              className="mb-4 flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600"
+            >
+              <span className="size-1.5 rounded-full bg-marketing-blue-600" />
+              Use cases
+            </span>
             Start with the work{" "}
             <span className="text-marketing-blue-600">you already do</span>
           </h1>

@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Metric-matched fallbacks for the marketing faces. next/font generates the
+   fallback names into --font-bricolage / --font-inter; these faces size Arial
+   to the same average character width so the hero and section headings keep
+   their line breaks while the webfonts swap in. */
+@font-face {
+  font-family: "Bricolage Grotesque Fallback";
+  src: local("Arial");
+  ascent-override: 88.21%;
+  descent-override: 25.61%;
+  line-gap-override: 0%;
+  size-adjust: 109.27%;
+}
+
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial");
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+  size-adjust: 106.84%;
+}
+
 @layer base {
   :root {
     --background: 0 0% 95.9%;
@@ -133,4 +155,31 @@
   view-transition-name: all-conversation-heading;
   height: min-content;
   width: max-content;
+}
+
+/* Public marketing surfaces: avoid one-word last lines in body copy and
+   balance the wrapping of headings. Scoped so dashboard copy is unchanged. */
+.public-site :is(p, li) {
+  text-wrap: pretty;
+}
+
+.public-site :is(h1, h2, h3, h4) {
+  text-wrap: balance;
+}
+
+/* The live responses preview is a shared dashboard component that uses the
+   dashboard's muted foreground (#9ea3ae, 2.5:1 on white). The demo slot may
+   change only through its wrapper, so give that one label a readable colour
+   without touching the component tree. */
+.demo-responses .text-muted-foreground {
+  color: var(--marketing-text);
+}
+
+/* The live demo keeps its published design, but its white-on-blue welcome
+   copy is only 2.2:1 on the marketing page. Keep the demo components untouched
+   and correct the contrast in the demo slot only. */
+.demo-form .welcome-screen-text,
+.demo-form .welcome-screen-text h2,
+.demo-form .welcome-screen-text p {
+  color: var(--marketing-ink) !important;
 }

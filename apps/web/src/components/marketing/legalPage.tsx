@@ -99,15 +99,14 @@ export function LegalPage({
         />
 
         <div className="mx-auto w-full max-w-[1120px]">
-          <span className="inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
+          <h1 className="font-display text-[clamp(36px,5vw,62px)] font-bold leading-[1.04] tracking-[-0.035em] text-marketing-ink">
             <span
               aria-hidden="true"
-              className="size-1.5 rounded-full bg-marketing-blue-600"
-            />
-            Legal
-          </span>
-
-          <h1 className="mt-1 font-display text-[clamp(36px,5vw,62px)] font-bold leading-[1.04] tracking-[-0.035em] text-marketing-ink">
+              className="mb-1 flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600"
+            >
+              <span className="size-1.5 rounded-full bg-marketing-blue-600" />
+              Legal
+            </span>
             {title}
           </h1>
 
@@ -123,7 +122,7 @@ export function LegalPage({
       </section>
 
       <section className="min-w-0 px-4 pb-24 pt-4">
-        <div className="mx-auto grid w-full max-w-[1120px] grid-cols-1 justify-center min-[900px]:grid-cols-[240px_minmax(0,68ch)] min-[900px]:gap-[72px]">
+        <div className="mx-auto grid w-full max-w-[1120px] grid-cols-1 justify-center min-[900px]:grid-cols-[240px_minmax(0,62ch)] min-[900px]:gap-[72px]">
           <LegalToc sections={sections} variant="desktop" />
 
           <div className="min-w-0">

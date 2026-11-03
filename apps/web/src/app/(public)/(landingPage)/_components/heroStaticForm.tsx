@@ -30,7 +30,7 @@ export function HeroStaticForm() {
             </div>
             <div
               className={cn(
-                "absolute left-[19px] right-[19px] rounded-[2px] border border-marketing-hair bg-white",
+                "absolute left-[19px] right-[19px] rounded-[2px] border border-marketing-hair bg-marketing-surface",
                 index === 3 ? "h-[44px]" : "h-[30px]",
               )}
               style={{ top: 68 + index * 58 }}

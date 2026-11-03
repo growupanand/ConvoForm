@@ -82,7 +82,7 @@ export function HowItWorksStage({
             <span
               key={item.name}
               className={cn(
-                "block h-0 border-t transition-all duration-300",
+                "block h-0 border-t transition-[width,border-color] [transition-duration:250ms] [transition-timing-function:cubic-bezier(0.65,0,0.35,1)] motion-reduce:transition-none",
                 index === scenarioIndex
                   ? "w-[22px] border-marketing-blue-600"
                   : "w-2.5 border-marketing-hair",
@@ -96,7 +96,7 @@ export function HowItWorksStage({
         ref={stageRef}
         role="img"
         aria-label="Line drawing: a static form's fields peel off into a conversation that asks a follow-up, and the answers flow into a clean data table"
-        className="relative isolate mx-auto mt-2.5 aspect-[345/664] w-full max-w-[420px] overflow-hidden rounded-[22px] border border-marketing-hair bg-marketing-paper min-[900px]:aspect-[1080/336] min-[900px]:max-w-[1080px] min-[900px]:rounded-[28px]"
+        className="relative isolate mx-auto mt-2.5 aspect-[345/664] w-full max-w-[420px] overflow-hidden bg-marketing-paper min-[900px]:aspect-[1080/336] min-[900px]:max-w-[1080px]"
       >
         <div
           aria-hidden="true"

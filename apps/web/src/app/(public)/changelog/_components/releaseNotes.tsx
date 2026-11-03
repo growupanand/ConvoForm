@@ -7,10 +7,11 @@ import {
 } from "@convoform/release";
 
 import styles from "./changelogTimeline.module.css";
+import { ReleaseImage } from "./releaseImage";
 
 const components = releaseMDXComponents as Record<
   string,
-  ComponentType | undefined
+  ComponentType<{ components?: { img?: typeof ReleaseImage } }> | undefined
 >;
 
 function releaseNotesKey(version: string) {
@@ -28,7 +29,7 @@ export function ReleaseNotes({ version }: { version: string }) {
 
   return (
     <div className={styles.notesBody}>
-      <Notes />
+      <Notes components={{ img: ReleaseImage }} />
     </div>
   );
 }

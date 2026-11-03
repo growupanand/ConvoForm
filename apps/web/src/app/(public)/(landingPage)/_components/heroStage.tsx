@@ -44,7 +44,7 @@ export function HeroStage() {
     <div
       role="img"
       aria-label={STAGE_LABEL}
-      className="relative mx-auto mt-6 h-[420px] w-full max-w-[1040px] overflow-hidden rounded-[22px] border border-marketing-hair bg-marketing-paper min-[900px]:h-[400px] min-[900px]:rounded-[28px]"
+      className="relative mx-auto mt-6 h-[420px] w-full max-w-[1040px] overflow-hidden bg-marketing-paper min-[900px]:h-[400px]"
     >
       <div
         aria-hidden="true"

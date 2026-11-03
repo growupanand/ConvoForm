@@ -19,10 +19,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/changelog",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Changelog",
+    description: changelogDescription,
+  },
   openGraph: {
     title: "Changelog",
     description: changelogDescription,
-    images: ["/api/og"],
   },
 };
 

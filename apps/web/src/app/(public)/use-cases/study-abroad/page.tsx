@@ -31,11 +31,16 @@ export const metadata: Metadata = {
   alternates: {
     canonical: studyAbroadUseCasePath,
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Student Intake Forms for Study Abroad Consultants",
+    description:
+      "Collect destination, course, intake, marks, budget and test details through an AI conversation. Give your study-abroad counsellors context before the first call.",
+  },
   openGraph: {
     title: "Student Intake Forms for Study Abroad Consultants",
     description:
       "Collect destination, course, intake, marks, budget and test details through an AI conversation. Give your study-abroad counsellors context before the first call.",
-    images: ["/api/og"],
   },
 };
 
@@ -46,21 +51,27 @@ const sectionClass =
   "relative min-w-0 overflow-x-clip px-4 py-10 min-[900px]:py-14";
 
 const eyebrowClass =
-  "inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600";
+  "mb-4 flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600";
 
 const headingClass =
-  "mt-4 max-w-[760px] font-display text-[clamp(32px,4.2vw,50px)] font-bold leading-[1.06] tracking-[-0.03em] text-marketing-ink";
+  "max-w-[760px] font-display text-[clamp(32px,4.2vw,50px)] font-bold leading-[1.06] tracking-[-0.03em] text-marketing-ink";
 
 const leadClass =
   "mt-4 max-w-[620px] font-body text-[16px] leading-[1.6] text-marketing-muted min-[900px]:text-[17px]";
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
+function Eyebrow({
+  children,
+  centered = false,
+}: {
+  children: React.ReactNode;
+  centered?: boolean;
+}) {
   return (
-    <span className={eyebrowClass}>
-      <span
-        aria-hidden="true"
-        className="size-1.5 rounded-full bg-marketing-blue-600"
-      />
+    <span
+      aria-hidden="true"
+      className={cn(eyebrowClass, centered && "justify-center")}
+    >
+      <span className="size-1.5 rounded-full bg-marketing-blue-600" />
       {children}
     </span>
   );
@@ -70,6 +81,7 @@ function CreateIntakeLink() {
   return (
     <Link
       href="/auth/register"
+      prefetch={false}
       rel="noreferrer nofollow noopener"
       className={primaryCtaClass}
     >
@@ -253,9 +265,9 @@ function Hero() {
             className="pointer-events-none absolute inset-0 -z-10 bg-marketing-dot-grid bg-[length:22px_22px] [mask-image:radial-gradient(ellipse_at_center,#000_30%,transparent_75%)]"
           />
 
-          <div className="flex items-center justify-between gap-2.5 border-b-[1.25px] border-marketing-hair-soft px-3.5 py-[13px] font-mono text-[10px] uppercase leading-none tracking-[0.08em] text-marketing-text min-[900px]:px-5 min-[900px]:py-4 min-[900px]:text-[11px]">
+          <div className="flex items-center justify-between gap-2.5 border-b-[1.25px] border-marketing-hair-soft px-3.5 py-[13px] font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-text min-[900px]:px-5 min-[900px]:py-4">
             <span>Student profile</span>
-            <span className="shrink-0 rounded-full border border-dashed border-marketing-hair px-2 py-1 text-[10px] text-marketing-label">
+            <span className="shrink-0 rounded-full border border-dashed border-marketing-hair px-2 py-1 text-[11px] text-marketing-label">
               Illustrative data
             </span>
           </div>
@@ -271,7 +283,7 @@ function Hero() {
               >
                 <div
                   className={cn(
-                    "font-mono text-[10px] uppercase leading-none tracking-[0.08em] text-marketing-label",
+                    "font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-label",
                     field.highlighted && "text-marketing-blue-600",
                   )}
                 >
@@ -308,9 +320,8 @@ function PainAndBeforeAfter() {
       <div className="mx-auto w-full max-w-[1160px]">
         <div className="grid grid-cols-1 items-end gap-4 min-[900px]:grid-cols-2 min-[900px]:gap-14">
           <div>
-            <Eyebrow>The problem</Eyebrow>
             <h2 id="why-heading" className={headingClass}>
-              A name and phone number{" "}
+              <Eyebrow>The problem</Eyebrow>A name and phone number{" "}
               <span className="text-marketing-blue-600">
                 aren&apos;t enough
               </span>{" "}
@@ -360,11 +371,11 @@ function Steps() {
     >
       <div className="mx-auto w-full max-w-[1160px]">
         <div className="text-center">
-          <Eyebrow>How it works</Eyebrow>
           <h2
             id="steps-heading"
             className={cn(headingClass, "mx-auto text-center")}
           >
+            <Eyebrow centered>How it works</Eyebrow>
             Keep the fields.{" "}
             <span className="text-marketing-blue-600">Change how you ask</span>{" "}
             for them.
@@ -423,8 +434,8 @@ function Fields() {
       className={cn(sectionClass, "pt-8 min-[900px]:pt-12")}
     >
       <div className="mx-auto w-full max-w-[1160px]">
-        <Eyebrow>The six fields</Eyebrow>
         <h2 id="fields-heading" className={headingClass}>
+          <Eyebrow>The six fields</Eyebrow>
           Collect the six details{" "}
           <span className="text-marketing-blue-600">your first call needs</span>
         </h2>
@@ -444,14 +455,14 @@ function Fields() {
                 {field.detail}
               </span>
 
-              <div className="mt-[18px] font-mono text-[10px] uppercase leading-none tracking-[0.08em] text-marketing-label">
+              <div className="mt-[18px] font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-label">
                 What to ask for
               </div>
               <div className="mt-[7px] font-display text-[17px] font-semibold leading-[1.35] tracking-[-0.005em] text-marketing-ink">
                 {field.ask}
               </div>
 
-              <div className="mt-3 font-mono text-[10px] uppercase leading-none tracking-[0.08em] text-marketing-label">
+              <div className="mt-3 font-mono text-[11px] uppercase leading-none tracking-[0.08em] text-marketing-label">
                 Why it helps the counsellor
               </div>
               <p className="mt-[7px] font-body text-[14.5px] leading-[1.55] text-marketing-muted">
@@ -468,7 +479,7 @@ function Fields() {
           ))}
         </div>
 
-        <p className="mt-[18px] flex max-w-[820px] items-start gap-3 font-body text-[15px] leading-[1.6] text-marketing-muted">
+        <p className="mt-[18px] flex max-w-[600px] items-start gap-3 font-body text-[15px] leading-[1.6] text-marketing-muted">
           <InfoIcon className="mt-0.5 text-marketing-blue-600" />A student who
           hasn&apos;t chosen a country or taken IELTS may still be worth
           speaking to. Configure the intake to capture &quot;not decided&quot;
@@ -487,8 +498,8 @@ function Scope() {
       className={cn(sectionClass, "pt-8 min-[900px]:pt-12")}
     >
       <div className="mx-auto w-full max-w-[1160px]">
-        <Eyebrow>Scope</Eyebrow>
         <h2 id="scope-heading" className={headingClass}>
+          <Eyebrow>Scope</Eyebrow>
           What you can use today,{" "}
           <span className="text-marketing-blue-600">
             and what isn&apos;t included
@@ -543,11 +554,11 @@ function Faq() {
     >
       <div className="mx-auto w-full max-w-[1160px]">
         <div className="text-center">
-          <Eyebrow>FAQ</Eyebrow>
           <h2
             id="faq-heading"
             className={cn(headingClass, "mx-auto text-center")}
           >
+            <Eyebrow centered>FAQ</Eyebrow>
             Questions from{" "}
             <span className="text-marketing-blue-600">consultancy owners</span>
           </h2>
@@ -605,11 +616,11 @@ function FinalCta() {
           />
 
           <div className="min-w-0">
-            <Eyebrow>Get started</Eyebrow>
             <h2
               id="close-heading"
-              className="mt-[18px] max-w-[560px] font-display text-[clamp(34px,4.6vw,56px)] font-bold leading-[1.04] tracking-[-0.03em] text-marketing-ink"
+              className="max-w-[560px] font-display text-[clamp(34px,4.6vw,56px)] font-bold leading-[1.04] tracking-[-0.03em] text-marketing-ink"
             >
+              <Eyebrow>Get started</Eyebrow>
               Give your next counselling call{" "}
               <span className="text-marketing-blue-600">
                 a better starting point

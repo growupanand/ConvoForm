@@ -843,7 +843,7 @@ export default function HeroAnimation({
             }}
             aria-hidden="true"
             className={cn(
-              "absolute left-0 top-0 rounded-[2px] border border-marketing-hair bg-white",
+              "absolute left-0 top-0 rounded-[2px] border border-marketing-hair bg-marketing-surface",
               index === 3 ? "h-[44px]" : "h-[30px]",
             )}
           />
@@ -863,10 +863,10 @@ export default function HeroAnimation({
       <div
         ref={chatRef}
         aria-hidden="true"
-        className="absolute left-1/2 top-1/2 w-[min(440px,calc(100%-28px))] -translate-x-1/2 -translate-y-1/2 rounded-[22px] border-[1.25px] border-marketing-blue-200 bg-white/86 p-3 text-left opacity-0 shadow-[0_22px_50px_-30px_rgba(37,99,235,0.4)] backdrop-blur-[14px]"
+        className="absolute left-1/2 top-1/2 w-[min(440px,calc(100%-28px))] -translate-x-1/2 -translate-y-1/2 rounded-[22px] border-[1.25px] border-marketing-blue-200 bg-marketing-surface/86 p-3 text-left opacity-0 backdrop-blur-[14px]"
       >
         <div className="flex items-center gap-2 border-b border-slate-100 px-0.5 pb-2.5 pt-0.5">
-          <span className="grid size-6 place-items-center rounded-full bg-gradient-to-br from-marketing-blue-500 to-marketing-blue-700 font-body text-[10px] font-bold leading-none text-white">
+          <span className="grid size-6 place-items-center rounded-full bg-marketing-blue-600 font-body text-[10px] font-bold leading-none text-white">
             CF
           </span>
           <span className="font-body text-[13px] font-semibold leading-none text-marketing-ink">
@@ -897,9 +897,9 @@ export default function HeroAnimation({
               <span className="message-text">{message.text}</span>
               {message.kind !== "user" && (
                 <span className="message-dots hidden items-center gap-1">
-                  <i className="size-1.5 animate-pulse rounded-full bg-marketing-slate" />
-                  <i className="size-1.5 animate-pulse rounded-full bg-marketing-slate [animation-delay:120ms]" />
-                  <i className="size-1.5 animate-pulse rounded-full bg-marketing-slate [animation-delay:240ms]" />
+                  <i className="size-1.5 rounded-full bg-marketing-slate" />
+                  <i className="size-1.5 rounded-full bg-marketing-slate" />
+                  <i className="size-1.5 rounded-full bg-marketing-slate" />
                 </span>
               )}
             </div>

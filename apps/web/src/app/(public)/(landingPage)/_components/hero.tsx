@@ -11,7 +11,7 @@ const proofPoints = [
 ] as const;
 
 const secondaryCtaClass =
-  "inline-flex items-center justify-center gap-2 rounded-full border-[1.25px] border-marketing-hair bg-white/70 px-6 py-[15px] font-body text-[15px] font-semibold leading-none text-marketing-ink transition duration-150 hover:-translate-y-px hover:border-marketing-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600";
+  "inline-flex items-center justify-center gap-2 rounded-full border-[1.25px] border-marketing-hair bg-marketing-surface/70 px-6 py-[15px] font-body text-[15px] font-semibold leading-none text-marketing-ink transition duration-150 hover:-translate-y-px hover:border-marketing-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600";
 
 function DemoPlayIcon() {
   return (
@@ -67,6 +67,7 @@ export function Hero() {
         <div className="mx-auto mt-[26px] flex max-w-[340px] flex-col items-stretch gap-3 min-[900px]:max-w-none min-[900px]:flex-row min-[900px]:justify-center">
           <Link
             href="/auth/register"
+            prefetch={false}
             rel="noopener noreferrer nofollow"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-marketing-blue-600 px-6 py-[15px] font-body text-[15px] font-semibold leading-none text-white shadow-[0_10px_26px_-14px_rgba(37,99,235,0.7)] transition duration-150 hover:-translate-y-px hover:bg-marketing-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600"
           >
@@ -97,7 +98,7 @@ export function Hero() {
           Try it on your phone <span aria-hidden="true">→</span>
         </Link>
 
-        <ul className="mx-auto mt-[22px] grid max-w-[343px] grid-cols-2 gap-x-3.5 gap-y-2.5 text-left font-mono text-[11px] leading-[1.4] tracking-[0.01em] text-marketing-text min-[900px]:flex min-[900px]:max-w-none min-[900px]:flex-wrap min-[900px]:justify-center min-[900px]:gap-x-[22px] min-[900px]:text-xs">
+        <ul className="mx-auto mt-[22px] grid max-w-[343px] grid-cols-2 gap-x-3.5 gap-y-2.5 text-left font-mono text-xs leading-[1.4] tracking-[0.01em] text-marketing-text min-[900px]:flex min-[900px]:max-w-none min-[900px]:flex-wrap min-[900px]:justify-center min-[900px]:gap-x-[22px]">
           {proofPoints.map((point) => (
             <li key={point} className="flex items-start gap-[7px]">
               <ProofCheck />
@@ -108,7 +109,7 @@ export function Hero() {
 
         <HeroStage />
 
-        <p className="mt-3 text-center font-mono text-[11px] leading-[1.4] tracking-[0.04em] text-marketing-slate">
+        <p className="mt-3 text-center font-mono text-xs leading-[1.4] tracking-[0.04em] text-marketing-label">
           Illustrative example
         </p>
       </div>

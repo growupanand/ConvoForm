@@ -6,5 +6,47 @@
       "maxFindings": 5,
       "maxChars": 8000
     }
+  },
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "reason": "Owner-approved brand type: DESIGN.md pins Inter for body text on the marketing site"
+      },
+      {
+        "rule": "kicker-above-heading",
+        "value": "*",
+        "files": [
+          "beforeAfter/index.tsx",
+          "changelog/page.tsx",
+          "faqSection.tsx",
+          "hero.tsx",
+          "howItWorksSection.tsx",
+          "trustSection.tsx",
+          "**/",
+          "**/changelog"
+        ],
+        "createdAt": "2026-11-03T16:45:47.345Z",
+        "reason": "DESIGN.md section kicker pattern"
+      },
+      {
+        "rule": "hero-eyebrow-chip",
+        "value": "*",
+        "files": [
+          "beforeAfter/index.tsx",
+          "changelog/page.tsx",
+          "faqSection.tsx",
+          "hero.tsx",
+          "howItWorksSection.tsx",
+          "trustSection.tsx",
+          "**/changelog"
+        ],
+        "createdAt": "2026-11-03T16:45:47.361Z",
+        "reason": "DESIGN.md section kicker pattern"
+      }
+    ]
   }
 }

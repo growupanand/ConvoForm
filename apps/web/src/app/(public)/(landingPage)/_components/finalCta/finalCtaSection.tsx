@@ -42,18 +42,17 @@ export function FinalCtaSection() {
           />
 
           <div className="min-w-0">
-            <span className="inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
-              <span
-                aria-hidden="true"
-                className="size-1.5 rounded-full bg-marketing-blue-600"
-              />
-              Get started
-            </span>
-
             <h2
               id="final-cta-heading"
-              className="mt-[18px] max-w-[560px] font-display text-[clamp(34px,4.6vw,56px)] font-bold leading-[1.04] tracking-[-0.03em] text-marketing-ink"
+              className="max-w-[560px] font-display text-[clamp(34px,4.6vw,56px)] font-bold leading-[1.04] tracking-[-0.03em] text-marketing-ink"
             >
+              <span
+                aria-hidden="true"
+                className="mb-[18px] flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600"
+              >
+                <span className="size-1.5 rounded-full bg-marketing-blue-600" />
+                Get started
+              </span>
               Ready to let your form{" "}
               <span className="text-marketing-blue-600">talk back?</span>
             </h2>
@@ -64,7 +63,11 @@ export function FinalCtaSection() {
             </p>
 
             <div className="mt-7 flex max-w-[340px] flex-col items-stretch gap-3 min-[900px]:max-w-none min-[900px]:flex-row min-[900px]:flex-wrap">
-              <Link href="/auth/register" className={primaryCtaClass}>
+              <Link
+                href="/auth/register"
+                prefetch={false}
+                className={primaryCtaClass}
+              >
                 Start free <span aria-hidden="true">→</span>
               </Link>
               <Link
