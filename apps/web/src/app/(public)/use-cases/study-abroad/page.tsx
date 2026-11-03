@@ -67,11 +67,11 @@ function Eyebrow({
   centered?: boolean;
 }) {
   return (
-    <span className={cn(eyebrowClass, centered && "justify-center")}>
-      <span
-        aria-hidden="true"
-        className="size-1.5 rounded-full bg-marketing-blue-600"
-      />
+    <span
+      aria-hidden="true"
+      className={cn(eyebrowClass, centered && "justify-center")}
+    >
+      <span className="size-1.5 rounded-full bg-marketing-blue-600" />
       {children}
     </span>
   );

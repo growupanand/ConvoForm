@@ -27,7 +27,6 @@
           "howItWorksSection.tsx",
           "trustSection.tsx",
           "**/",
-          "**/use-cases/study-abroad",
           "**/changelog"
         ],
         "createdAt": "2026-11-03T16:45:47.345Z",
@@ -43,10 +42,7 @@
           "hero.tsx",
           "howItWorksSection.tsx",
           "trustSection.tsx",
-          "**/changelog",
-          "**/use-cases",
-          "**/privacy",
-          "**/terms"
+          "**/changelog"
         ],
         "createdAt": "2026-11-03T16:45:47.361Z",
         "reason": "DESIGN.md section kicker pattern"
