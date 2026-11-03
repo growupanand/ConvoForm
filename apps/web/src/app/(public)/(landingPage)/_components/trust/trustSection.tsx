@@ -52,17 +52,17 @@ export function TrustSection() {
       className="relative isolate min-w-0 overflow-x-clip px-4 pb-[76px] pt-10 min-[900px]:pb-[112px]"
     >
       <div className="mx-auto min-w-0 max-w-[1160px]">
-        <span className="inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
-          <span
-            aria-hidden="true"
-            className="size-1.5 rounded-full bg-marketing-blue-600"
-          />
-          Trust &amp; privacy
-        </span>
         <h2
           id="trust-heading"
-          className="mt-3 max-w-[900px] font-display text-[clamp(32px,4.2vw,50px)] font-bold leading-[1.06] tracking-[-0.03em] text-marketing-ink"
+          className="max-w-[900px] font-display text-[clamp(32px,4.2vw,50px)] font-bold leading-[1.06] tracking-[-0.03em] text-marketing-ink"
         >
+          <span
+            aria-hidden="true"
+            className="mb-3 flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600"
+          >
+            <span className="size-1.5 rounded-full bg-marketing-blue-600" />
+            Trust &amp; privacy
+          </span>
           Your respondents&apos; data,{" "}
           <span className="text-marketing-blue-600">handled plainly</span>
         </h2>

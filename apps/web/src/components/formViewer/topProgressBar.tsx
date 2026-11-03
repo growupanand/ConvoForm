@@ -20,7 +20,11 @@ export function TopProgressBar({
           confirmText="Reset form"
         >
           <motion.span layoutId="start-conversation">
-            <Button variant="ghost" size="sm">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-foreground hover:text-foreground"
+            >
               <RotateCcw className="size-4 me-2" />
               Start over
             </Button>

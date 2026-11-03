@@ -144,3 +144,11 @@
 .public-site :is(h1, h2, h3, h4) {
   text-wrap: balance;
 }
+
+/* The live responses preview is a shared dashboard component that uses the
+   dashboard's muted foreground (#9ea3ae, 2.5:1 on white). The demo slot may
+   change only through its wrapper, so give that one label a readable colour
+   without touching the component tree. */
+.demo-responses .text-muted-foreground {
+  color: var(--marketing-text);
+}

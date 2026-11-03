@@ -14,6 +14,6 @@ export default function Image() {
     eyebrow: "Changelog",
     title: "Product updates, release by release",
     description:
-      "New features, improvements and fixes in ConvoForm, with notes and screenshots for every release.",
+      "New features, improvements and fixes in every ConvoForm release.",
   });
 }

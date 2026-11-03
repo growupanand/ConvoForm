@@ -843,7 +843,7 @@ export default function HeroAnimation({
             }}
             aria-hidden="true"
             className={cn(
-              "absolute left-0 top-0 rounded-[2px] border border-marketing-hair bg-white",
+              "absolute left-0 top-0 rounded-[2px] border border-marketing-hair bg-marketing-surface",
               index === 3 ? "h-[44px]" : "h-[30px]",
             )}
           />
@@ -863,7 +863,7 @@ export default function HeroAnimation({
       <div
         ref={chatRef}
         aria-hidden="true"
-        className="absolute left-1/2 top-1/2 w-[min(440px,calc(100%-28px))] -translate-x-1/2 -translate-y-1/2 rounded-[22px] border-[1.25px] border-marketing-blue-200 bg-white/86 p-3 text-left opacity-0 backdrop-blur-[14px]"
+        className="absolute left-1/2 top-1/2 w-[min(440px,calc(100%-28px))] -translate-x-1/2 -translate-y-1/2 rounded-[22px] border-[1.25px] border-marketing-blue-200 bg-marketing-surface/86 p-3 text-left opacity-0 backdrop-blur-[14px]"
       >
         <div className="flex items-center gap-2 border-b border-slate-100 px-0.5 pb-2.5 pt-0.5">
           <span className="grid size-6 place-items-center rounded-full bg-marketing-blue-600 font-body text-[10px] font-bold leading-none text-white">

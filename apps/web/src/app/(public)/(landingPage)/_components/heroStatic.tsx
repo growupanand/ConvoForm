@@ -11,7 +11,7 @@ export function HeroStatic() {
       aria-hidden="true"
       className="absolute inset-0 flex items-center justify-center px-3.5"
     >
-      <div className="w-full max-w-[440px] rounded-[22px] border-[1.25px] border-marketing-blue-200 bg-white/86 p-3 text-left backdrop-blur-[14px]">
+      <div className="w-full max-w-[440px] rounded-[22px] border-[1.25px] border-marketing-blue-200 bg-marketing-surface/86 p-3 text-left backdrop-blur-[14px]">
         <div className="flex items-center gap-2 border-b border-slate-100 px-0.5 pb-2.5 pt-0.5">
           <span className="grid size-6 place-items-center rounded-full bg-marketing-blue-600 font-body text-[10px] font-bold leading-none text-white">
             CF

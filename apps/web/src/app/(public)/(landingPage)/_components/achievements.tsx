@@ -10,7 +10,7 @@ export function Achievements() {
         rel="noopener noreferrer nofollow"
         aria-label="Visit project page on Peerlist"
       >
-        <div className="overflow-hidden rounded-full bg-white p-4 shadow-md outline outline-gray-100">
+        <div className="overflow-hidden rounded-full bg-marketing-surface p-4 shadow-md outline outline-gray-100">
           <Image
             src="/images/winnerPeerlist.svg"
             alt="winner project of the month"

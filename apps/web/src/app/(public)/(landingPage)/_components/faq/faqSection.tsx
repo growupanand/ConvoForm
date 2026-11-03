@@ -9,17 +9,17 @@ export function FaqSection() {
     >
       <div className="mx-auto min-w-0 max-w-[1160px]">
         <div className="text-center">
-          <span className="inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
-            <span
-              aria-hidden="true"
-              className="size-1.5 rounded-full bg-marketing-blue-600"
-            />
-            FAQ
-          </span>
           <h2
             id="faq-heading"
-            className="mx-auto mt-3 max-w-[760px] font-display text-[clamp(32px,4.2vw,50px)] font-bold leading-[1.06] tracking-[-0.03em] text-marketing-ink"
+            className="mx-auto max-w-[760px] font-display text-[clamp(32px,4.2vw,50px)] font-bold leading-[1.06] tracking-[-0.03em] text-marketing-ink"
           >
+            <span
+              aria-hidden="true"
+              className="mb-3 flex items-center justify-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600"
+            >
+              <span className="size-1.5 rounded-full bg-marketing-blue-600" />
+              FAQ
+            </span>
             Questions, answered
           </h2>
         </div>

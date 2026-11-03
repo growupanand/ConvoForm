@@ -1,7 +1,3 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
-
 type ReleaseImageProps = {
   src?: string;
   alt?: string;
@@ -32,87 +28,38 @@ const DIMENSIONS: Record<string, Dimensions> = {
   "f5afde25-a2b1-4c54-ad7a-6777e023da8b": { width: 2856, height: 1580 },
 };
 
-// The first screenshot inside the first visible release is served from this
-// site (rather than GitHub's attachment CDN) so it makes one short, cacheable
-// request instead of following a cross-origin redirect chain when it loads.
+// The first screenshot in the first visible release is the page's LCP element.
+// Serve it from this site as a small WebP so it is one short, cacheable,
+// high-priority request.
 const LOCAL_IMAGES: Record<string, string> = {
   "66d90c32-2d6a-4fcb-9bdd-88e58f3300a0":
-    "/images/changelog/response-insights.png",
+    "/images/changelog/response-insights.webp",
 };
 
 const attachmentId = (src: string) => src.split("/").filter(Boolean).at(-1);
 
-// Chrome can still fetch `loading="lazy"` images well outside the viewport,
-// especially in headless runs, and a single 3 MB GIF then delays the page's LCP.
-// Observing the real viewport keeps every offscreen screenshot off the network
-// (and out of the page's LCP candidates) until it is about to be seen.
+// Release-note screenshots arrive from GitHub's user-attachment CDN. Render
+// them directly from the server so the alt text and the JS-off view are
+// complete without a client boundary. The first screenshot is eager and
+// high-priority; the rest keep native lazy loading so the 3 MB GIF and the
+// other offscreen files stay out of the first paint.
 export function ReleaseImage({ src, alt = "" }: ReleaseImageProps) {
-  const id = src ? attachmentId(src) : undefined;
+  if (!src) return null;
+
+  const id = attachmentId(src);
   const dimensions = id ? DIMENSIONS[id] : undefined;
   const resolvedSrc = id ? LOCAL_IMAGES[id] ?? src : src;
-
-  const elementRef = useRef<HTMLElement | null>(null);
-  const setElement = (element: HTMLElement | null) => {
-    elementRef.current = element;
-  };
-
-  const [visible, setVisible] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    if (!src) return;
-    const element = elementRef.current;
-    if (!element) return;
-
-    if (typeof IntersectionObserver === "undefined") {
-      setVisible(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      // Load a screenshot once it is mostly on screen. A screenshot that only
-      // peeks into the first viewport therefore stays off the network and never
-      // becomes the page's LCP candidate.
-      { threshold: 0.6 },
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [src]);
-
-  if (!src || !resolvedSrc) return null;
-
-  if (!visible) {
-    return (
-      <span
-        ref={setElement}
-        aria-hidden="true"
-        className="my-4 block w-full"
-        style={
-          dimensions
-            ? { aspectRatio: `${dimensions.width} / ${dimensions.height}` }
-            : undefined
-        }
-      />
-    );
-  }
+  const eager = id ? id in LOCAL_IMAGES : false;
 
   return (
     <img
-      ref={setElement}
       src={resolvedSrc}
       width={dimensions?.width}
       height={dimensions?.height}
       alt={alt}
-      loading="lazy"
-      onLoad={() => setLoaded(true)}
-      className={loaded ? undefined : "invisible"}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+      fetchPriority={eager ? "high" : "low"}
     />
   );
 }

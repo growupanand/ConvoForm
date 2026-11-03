@@ -51,17 +51,23 @@ const sectionClass =
   "relative min-w-0 overflow-x-clip px-4 py-10 min-[900px]:py-14";
 
 const eyebrowClass =
-  "inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600";
+  "mb-4 flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600";
 
 const headingClass =
-  "mt-4 max-w-[760px] font-display text-[clamp(32px,4.2vw,50px)] font-bold leading-[1.06] tracking-[-0.03em] text-marketing-ink";
+  "max-w-[760px] font-display text-[clamp(32px,4.2vw,50px)] font-bold leading-[1.06] tracking-[-0.03em] text-marketing-ink";
 
 const leadClass =
   "mt-4 max-w-[620px] font-body text-[16px] leading-[1.6] text-marketing-muted min-[900px]:text-[17px]";
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
+function Eyebrow({
+  children,
+  centered = false,
+}: {
+  children: React.ReactNode;
+  centered?: boolean;
+}) {
   return (
-    <span className={eyebrowClass}>
+    <span className={cn(eyebrowClass, centered && "justify-center")}>
       <span
         aria-hidden="true"
         className="size-1.5 rounded-full bg-marketing-blue-600"
@@ -313,9 +319,8 @@ function PainAndBeforeAfter() {
       <div className="mx-auto w-full max-w-[1160px]">
         <div className="grid grid-cols-1 items-end gap-4 min-[900px]:grid-cols-2 min-[900px]:gap-14">
           <div>
-            <Eyebrow>The problem</Eyebrow>
             <h2 id="why-heading" className={headingClass}>
-              A name and phone number{" "}
+              <Eyebrow>The problem</Eyebrow>A name and phone number{" "}
               <span className="text-marketing-blue-600">
                 aren&apos;t enough
               </span>{" "}
@@ -365,11 +370,11 @@ function Steps() {
     >
       <div className="mx-auto w-full max-w-[1160px]">
         <div className="text-center">
-          <Eyebrow>How it works</Eyebrow>
           <h2
             id="steps-heading"
             className={cn(headingClass, "mx-auto text-center")}
           >
+            <Eyebrow centered>How it works</Eyebrow>
             Keep the fields.{" "}
             <span className="text-marketing-blue-600">Change how you ask</span>{" "}
             for them.
@@ -428,8 +433,8 @@ function Fields() {
       className={cn(sectionClass, "pt-8 min-[900px]:pt-12")}
     >
       <div className="mx-auto w-full max-w-[1160px]">
-        <Eyebrow>The six fields</Eyebrow>
         <h2 id="fields-heading" className={headingClass}>
+          <Eyebrow>The six fields</Eyebrow>
           Collect the six details{" "}
           <span className="text-marketing-blue-600">your first call needs</span>
         </h2>
@@ -492,8 +497,8 @@ function Scope() {
       className={cn(sectionClass, "pt-8 min-[900px]:pt-12")}
     >
       <div className="mx-auto w-full max-w-[1160px]">
-        <Eyebrow>Scope</Eyebrow>
         <h2 id="scope-heading" className={headingClass}>
+          <Eyebrow>Scope</Eyebrow>
           What you can use today,{" "}
           <span className="text-marketing-blue-600">
             and what isn&apos;t included
@@ -548,11 +553,11 @@ function Faq() {
     >
       <div className="mx-auto w-full max-w-[1160px]">
         <div className="text-center">
-          <Eyebrow>FAQ</Eyebrow>
           <h2
             id="faq-heading"
             className={cn(headingClass, "mx-auto text-center")}
           >
+            <Eyebrow centered>FAQ</Eyebrow>
             Questions from{" "}
             <span className="text-marketing-blue-600">consultancy owners</span>
           </h2>
@@ -610,11 +615,11 @@ function FinalCta() {
           />
 
           <div className="min-w-0">
-            <Eyebrow>Get started</Eyebrow>
             <h2
               id="close-heading"
-              className="mt-[18px] max-w-[560px] font-display text-[clamp(34px,4.6vw,56px)] font-bold leading-[1.04] tracking-[-0.03em] text-marketing-ink"
+              className="max-w-[560px] font-display text-[clamp(34px,4.6vw,56px)] font-bold leading-[1.04] tracking-[-0.03em] text-marketing-ink"
             >
+              <Eyebrow>Get started</Eyebrow>
               Give your next counselling call{" "}
               <span className="text-marketing-blue-600">
                 a better starting point

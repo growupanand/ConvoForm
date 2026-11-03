@@ -86,15 +86,14 @@ export default function ChangelogPage() {
 
         <div className="mx-auto flex w-full max-w-[980px] flex-wrap items-end justify-between gap-6">
           <div className="min-w-0">
-            <span className="inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
+            <h1 className="font-display text-[clamp(36px,5vw,62px)] font-bold leading-[1.04] tracking-[-0.035em] text-marketing-ink">
               <span
                 aria-hidden="true"
-                className="size-1.5 rounded-full bg-marketing-blue-600"
-              />
-              Product updates
-            </span>
-
-            <h1 className="mt-3 font-display text-[clamp(36px,5vw,62px)] font-bold leading-[1.04] tracking-[-0.035em] text-marketing-ink">
+                className="mb-3 flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600"
+              >
+                <span className="size-1.5 rounded-full bg-marketing-blue-600" />
+                Product updates
+              </span>
               Changelog
             </h1>
 

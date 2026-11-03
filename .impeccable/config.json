@@ -8,17 +8,12 @@
     }
   },
   "detector": {
-    "ignoreRules": [
-      "kicker-above-heading",
-      "hero-eyebrow-chip",
-      "low-contrast"
-    ],
+    "ignoreRules": [],
     "ignoreFiles": [],
     "ignoreValues": [
       {
         "rule": "overused-font",
         "value": "inter",
-        "createdAt": "2026-11-02T03:43:59.765Z",
         "reason": "Owner-approved brand type: DESIGN.md pins Inter for body text on the marketing site"
       }
     ]

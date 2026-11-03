@@ -56,7 +56,7 @@ export default function Home() {
       </section>
 
       {/* Live Responses Section */}
-      <div className="mx-auto my-12 flex max-w-[1160px] justify-center px-4 max-lg:hidden">
+      <div className="demo-responses mx-auto my-12 flex max-w-[1160px] justify-center px-4 max-lg:hidden">
         <DemoResponsesShell>
           <LazyLiveDemoResponses />
         </DemoResponsesShell>

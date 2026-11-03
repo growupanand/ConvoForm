@@ -1,4 +1,5 @@
-import { Toaster, TooltipProvider } from "@convoform/ui";
+import { Toaster } from "@convoform/ui/src/components/ui/toast";
+import { TooltipProvider } from "@convoform/ui/src/components/ui/tooltip";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import type { Viewport } from "next";
