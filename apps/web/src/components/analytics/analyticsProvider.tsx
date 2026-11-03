@@ -52,7 +52,10 @@ export function CSPostHogProvider({ children }: { children: React.ReactNode }) {
     if (!isMarketingPath(previous) || isMarketingPath(pathname)) return;
 
     posthog.startSessionRecording();
-    posthog.set_config({ disable_surveys: false });
+    posthog.set_config({
+      disable_surveys: false,
+      advanced_enable_surveys: true,
+    });
   }, [pathname]);
 
   return (
