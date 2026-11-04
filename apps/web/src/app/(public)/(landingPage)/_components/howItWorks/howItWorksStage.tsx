@@ -1,135 +1,66 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { HOW_IT_WORKS_SCENARIOS } from "./scenarios";
+import { HowItWorksFinalFrame, HowItWorksStartFrame } from "./howItWorksFrames";
+import "../stageLayers.css";
 
-const HowItWorksAnimation = dynamic(() => import("./howItWorksAnimation"), {
-  ssr: false,
-});
+const HowItWorksScene = dynamic(
+  () => import("./howItWorksScene").then((module) => module.HowItWorksScene),
+  { ssr: false },
+);
 
-type HowItWorksStageProps = {
-  /** Matches the first frame of the animation, shown before it loads. */
-  staticStartFrame: React.ReactNode;
-  /** The fully informative frame, kept for reduced motion. */
-  staticFinalFrame: React.ReactNode;
-};
+const STAGE_LABEL =
+  "Illustrative example: a form is described and drafted, its link is shared into a phone message, the student answers the chat including one follow-up, and the answers fill a clean 4/4 response with transcript, CSV and Google Sheets actions.";
 
-export function HowItWorksStage({
-  staticStartFrame,
-  staticFinalFrame,
-}: HowItWorksStageProps) {
-  const stageRef = useRef<HTMLDivElement>(null);
+export function HowItWorksStage() {
+  // The head script sets `data-js` before paint, so the start frame is already
+  // showing. This only decides whether to load the live Stage: never for
+  // reduced motion or `?static=1`, which keep the CSS final frame.
   const [animate, setAnimate] = useState(false);
-  const [shouldLoad, setShouldLoad] = useState(false);
   const [ready, setReady] = useState(false);
-  const [scenarioIndex, setScenarioIndex] = useState(0);
-
-  const scenario =
-    HOW_IT_WORKS_SCENARIOS[scenarioIndex] ?? HOW_IT_WORKS_SCENARIOS[0];
 
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-    const updatePreference = () => {
-      const shouldAnimate = !motionQuery.matches;
+    const update = () => {
+      const isStatic =
+        new URLSearchParams(window.location.search).get("static") === "1";
+      const shouldAnimate = !motionQuery.matches && !isStatic;
       setAnimate(shouldAnimate);
-      if (!shouldAnimate) {
-        setReady(false);
-        setShouldLoad(false);
-      }
+      if (!shouldAnimate) setReady(false);
     };
 
-    updatePreference();
-    motionQuery.addEventListener("change", updatePreference);
-
-    return () => motionQuery.removeEventListener("change", updatePreference);
+    update();
+    motionQuery.addEventListener("change", update);
+    return () => motionQuery.removeEventListener("change", update);
   }, []);
 
-  useEffect(() => {
-    if (!animate) return;
-    const stage = stageRef.current;
-    if (!stage) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setShouldLoad(true);
-            observer.disconnect();
-          }
-        }
-      },
-      { threshold: 0.2 },
-    );
-
-    observer.observe(stage);
-    return () => observer.disconnect();
-  }, [animate]);
-
   return (
-    <div>
-      <div
-        aria-hidden="true"
-        className="mt-11 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 font-mono text-[11px] uppercase leading-none tracking-[0.04em] text-marketing-label"
-      >
-        <span>Example</span>
-        <span className="text-marketing-ink">{scenario?.name}</span>
-        <span className="flex items-center gap-1.5">
-          {HOW_IT_WORKS_SCENARIOS.map((item, index) => (
-            <span
-              key={item.name}
-              className={cn(
-                "block h-0 border-t transition-[width,border-color] [transition-duration:250ms] [transition-timing-function:cubic-bezier(0.65,0,0.35,1)] motion-reduce:transition-none",
-                index === scenarioIndex
-                  ? "w-[22px] border-marketing-blue-600"
-                  : "w-2.5 border-marketing-hair",
-              )}
-            />
-          ))}
-        </span>
-      </div>
-
-      <div
-        ref={stageRef}
-        role="img"
-        aria-label="Line drawing: a static form's fields peel off into a conversation that asks a follow-up, and the answers flow into a clean data table"
-        className="relative isolate mx-auto mt-2.5 aspect-[345/664] w-full max-w-[420px] overflow-hidden bg-marketing-paper min-[900px]:aspect-[1080/336] min-[900px]:max-w-[1080px]"
-      >
+    <div className="stage-container">
+      <div className="-mx-4 mt-10 min-[900px]:mx-0">
         <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(15,23,42,0.07)_1px,transparent_0)] bg-[length:22px_22px] [mask-image:radial-gradient(ellipse_at_center,#000_30%,transparent_75%)]"
-        />
-
-        <div
-          className={cn(
-            "absolute inset-0 transition-opacity duration-150 motion-reduce:hidden",
-            ready ? "opacity-0" : "opacity-100",
-          )}
+          role="img"
+          aria-label={STAGE_LABEL}
+          data-ready={ready || undefined}
+          className="stage-shell stage-shell--how mx-auto bg-marketing-paper"
         >
-          {staticStartFrame}
-        </div>
-
-        <div className="absolute inset-0 hidden motion-reduce:block">
-          {staticFinalFrame}
-        </div>
-
-        {animate && shouldLoad ? (
-          <div
-            className={cn(
-              "absolute inset-0 transition-opacity duration-150",
-              ready ? "opacity-100" : "opacity-0",
-            )}
-          >
-            <HowItWorksAnimation
-              onReady={() => setReady(true)}
-              onScenarioChange={setScenarioIndex}
-            />
+          <div aria-hidden="true" className="stage-layer stage-layer--final">
+            <HowItWorksFinalFrame />
           </div>
-        ) : null}
+          <div aria-hidden="true" className="stage-layer stage-layer--start">
+            <HowItWorksStartFrame />
+          </div>
+          {animate ? (
+            <div aria-hidden="true" className="stage-layer stage-layer--live">
+              <HowItWorksScene onReady={() => setReady(true)} />
+            </div>
+          ) : null}
+        </div>
       </div>
+      <p className="mt-3 text-center font-mono text-xs leading-[1.4] tracking-[0.04em] text-marketing-label">
+        Illustrative example
+      </p>
     </div>
   );
 }

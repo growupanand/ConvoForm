@@ -1,0 +1,33 @@
+/* The How it works still frames. The scene body is shared with the live Stage;
+   this file only provides the container and the design-pixel scale. */
+
+.hw-frame {
+  position: absolute;
+  inset: 0;
+  container-type: inline-size;
+}
+
+.hw-variant {
+  position: absolute;
+  inset: 0;
+}
+
+.hw-variant--compact {
+  --u: calc(100cqw / 360);
+  display: block;
+}
+
+.hw-variant--wide {
+  --u: calc(100cqw / 1040);
+  display: none;
+}
+
+@container stage (min-width: 868px) {
+  .hw-variant--compact {
+    display: none;
+  }
+
+  .hw-variant--wide {
+    display: block;
+  }
+}

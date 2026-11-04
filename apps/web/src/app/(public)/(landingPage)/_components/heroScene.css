@@ -1,0 +1,419 @@
+/* ConvoForm look for the hero scene, scoped under .cf so nothing leaks into
+   the host page. Kit CSS sits in @layer stageshow; these plain rules win. */
+
+.cf {
+  --ss-canvas: transparent;
+  --ss-surface: var(--marketing-surface);
+  --ss-line: var(--marketing-hair);
+  --ss-line-faint: var(--marketing-hair-soft);
+  --ss-text-strong: var(--marketing-ink);
+  --ss-text: var(--marketing-muted);
+  --ss-text-faint: var(--marketing-label);
+  --ss-accent: var(--marketing-blue-600);
+  --ss-font: var(--font-inter), system-ui, sans-serif;
+  --ss-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --cf-blue: var(--marketing-blue-600);
+  --cf-blue-50: var(--marketing-blue-50);
+  --cf-blue-300: var(--marketing-blue-300);
+  --cf-hair: var(--marketing-hair);
+  --cf-hair-soft: var(--marketing-hair-soft);
+  --cf-label: var(--marketing-label);
+  --cf-ink: var(--marketing-ink);
+  --cf-paper: var(--marketing-paper);
+  --cf-travel: cubic-bezier(0.45, 0, 0.1, 1);
+  --cf-arrive: cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* One design pixel. The live Stage scales the whole scene with a transform;
+     a static frame sets this to a container-relative unit instead. */
+  --u: 1px;
+  --cf-sw: calc(1.25 * var(--u));
+}
+
+.cf,
+.cf *,
+.cf *::before,
+.cf *::after {
+  box-sizing: border-box;
+}
+
+.cf .ss-stage {
+  background: transparent;
+  overflow: hidden;
+}
+
+.cf-scene {
+  position: absolute;
+  inset: 0;
+  font-family: var(--ss-font);
+  color: var(--cf-ink);
+  /* The hero section centers its copy; the scene keeps app-like alignment. */
+  text-align: left;
+}
+
+/* Every placed thing: positioned by transform from the stage's top left.
+   translate (separate from transform) carries the exit drop and the rise in. */
+.cf-scene > :not(.cf-grid) {
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  translate: 0 0;
+  transition:
+    opacity 0.45s ease,
+    translate 0.5s var(--cf-arrive);
+}
+.cf-scene[data-exit] > :not(.cf-grid),
+.cf-scene:not([data-in]) > :not(.cf-grid) {
+  translate: 0 calc(10 * var(--u));
+}
+
+/* The faint dot grid, masked so it fades out before the stage's edges. */
+.cf-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle at calc(1 * var(--u)) calc(1 * var(--u)),
+    color-mix(in srgb, var(--marketing-ink) 8%, transparent) calc(1 * var(--u)),
+    transparent 0
+  );
+  background-size: calc(22 * var(--u)) calc(22 * var(--u));
+  -webkit-mask-image: radial-gradient(
+    ellipse 62% 70% at 50% 46%,
+    #000 30%,
+    transparent 78%
+  );
+  mask-image: radial-gradient(
+    ellipse 62% 70% at 50% 46%,
+    #000 30%,
+    transparent 78%
+  );
+  pointer-events: none;
+}
+
+/* ---------- the card: form sheet, then chat panel ---------- */
+.cf-card {
+  z-index: 1;
+  background: var(--ss-surface);
+  border: var(--cf-sw) solid var(--cf-hair);
+  transition:
+    transform 0.9s var(--cf-travel),
+    width 0.9s var(--cf-travel),
+    height 0.9s var(--cf-travel),
+    border-radius 0.9s var(--cf-travel),
+    opacity 0.45s ease,
+    translate 0.5s var(--cf-arrive) !important;
+}
+/* While the form breaks, the emptied sheet steps back a touch. */
+.cf-scene[data-phase="shatter"] .cf-card {
+  border-color: var(--marketing-slate);
+}
+.cf-card__chat {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.cf-scene[data-phase="chat"] .cf-card__chat {
+  opacity: 1;
+  transition-delay: 0.55s;
+}
+.cf-chat-sub {
+  position: absolute;
+  left: calc(23 * var(--u));
+  top: calc(40 * var(--u));
+  font-size: calc(13.5 * var(--u));
+  line-height: 1.3;
+  color: var(--cf-label);
+}
+.cf-chat-rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(66 * var(--u));
+  border-top: var(--cf-sw) solid var(--cf-hair-soft);
+}
+
+/* ---------- the record ---------- */
+.cf-record {
+  z-index: 2;
+  background: var(--ss-surface);
+  border: var(--cf-sw) solid var(--cf-hair);
+  border-radius: calc(14 * var(--u));
+  scale: 0.97;
+  opacity: 0 !important;
+  transition:
+    opacity 0.4s ease,
+    scale 0.6s var(--cf-arrive),
+    translate 0.5s var(--cf-arrive) !important;
+}
+.cf-scene[data-phase="chat"]:not([data-exit]) .cf-record {
+  opacity: 1 !important;
+  scale: 1;
+  transition-delay: 0.45s;
+}
+.cf-mono {
+  font-family: var(--ss-mono);
+  font-size: calc(13.5 * var(--u));
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cf-label);
+}
+.cf-record__title {
+  position: absolute;
+  left: calc(23 * var(--u));
+  top: calc(20 * var(--u));
+}
+
+/* ---------- thread and composer ---------- */
+.cf-thread-box,
+.cf-composer {
+  z-index: 2;
+  opacity: 0 !important;
+}
+.cf-scene[data-phase="chat"]:not([data-exit]) .cf-thread-box,
+.cf-scene[data-phase="chat"]:not([data-exit]) .cf-composer {
+  opacity: 1 !important;
+  transition-delay: 0.55s;
+}
+.cf-thread-box {
+  overflow: hidden;
+  /* Older messages slide up under the header and fade out. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 calc(28 * var(--u))
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 calc(28 * var(--u))
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.cf .cf-thread {
+  --ss-thread-size: calc(14 * var(--u));
+  --ss-me: var(--cf-blue);
+  --ss-me-text: var(--marketing-surface);
+  --ss-them: var(--marketing-hair-soft);
+  --ss-them-text: var(--cf-ink);
+  max-height: 100%;
+  gap: calc(3 * var(--u));
+}
+/* The compact thread is narrower, so two messages wrap. Tighten it just
+   enough that the whole six-message story fits above the composer. */
+.cf-scene[data-layout="compact"] .cf-thread {
+  --ss-thread-size: calc(13 * var(--u));
+  gap: calc(2 * var(--u));
+}
+.cf-scene[data-layout="compact"] .ss-bubble-row + .ss-bubble-row {
+  margin-top: calc(2 * var(--u));
+}
+.cf .cf-thread .ss-bubble__tail {
+  display: none;
+}
+.cf .cf-thread [data-from="them"] > .ss-bubble {
+  border-bottom-left-radius: calc(5 * var(--u));
+}
+.cf .cf-thread [data-from="me"] > .ss-bubble {
+  border-bottom-right-radius: calc(5 * var(--u));
+}
+/* The clarifying follow-up: the one moment ConvoForm does something a form
+   can't, so it carries the accent. */
+.cf .cf-thread .cf-followup > .ss-bubble {
+  --ss-them: var(--marketing-blue-50);
+  --ss-them-text: var(--marketing-blue-700);
+  box-shadow: inset 0 0 0 var(--cf-sw) var(--marketing-blue-300);
+}
+.cf .cf-thread .ss-bubble__dots i {
+  background: var(--marketing-slate);
+}
+
+.cf-composer {
+  display: flex;
+  align-items: center;
+  padding: 0 calc(52 * var(--u)) 0 calc(14 * var(--u));
+  border: var(--cf-sw) solid var(--cf-hair);
+  border-radius: 999px;
+  background: var(--ss-surface);
+  font-size: calc(14 * var(--u));
+  line-height: 1.3;
+}
+.cf-composer__text {
+  position: relative;
+  white-space: nowrap;
+  color: var(--cf-ink);
+}
+.cf-composer__ph {
+  position: absolute;
+  left: calc(14 * var(--u));
+  color: var(--cf-label);
+  transition: opacity 0.15s ease;
+}
+.cf-composer__ph[data-hide] {
+  opacity: 0;
+}
+.cf-caret {
+  display: inline-block;
+  width: var(--cf-sw);
+  height: calc(15 * var(--u));
+  margin-left: calc(1 * var(--u));
+  vertical-align: calc(-3 * var(--u));
+  background: var(--cf-blue);
+}
+
+/* ---------- the pieces ---------- */
+.cf-scene > .cf-p {
+  will-change: transform;
+  z-index: 3;
+  transform-origin: 50% 50%;
+  transition:
+    transform 0.85s var(--cf-travel),
+    width 0.85s var(--cf-travel),
+    height 0.85s var(--cf-travel),
+    border-radius 0.85s var(--cf-travel),
+    background-color 0.5s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    color 0.4s ease,
+    opacity 0.45s ease,
+    translate 0.5s var(--cf-arrive);
+}
+.cf-p--title {
+  font-family: var(--font-bricolage), var(--font-inter), sans-serif;
+  font-size: calc(16.5 * var(--u));
+  line-height: calc(20 * var(--u));
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.cf-p--label {
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+  font-size: calc(13.5 * var(--u));
+  line-height: calc(16 * var(--u));
+  color: var(--cf-label);
+  white-space: nowrap;
+}
+.cf-req {
+  font-size: calc(13.5 * var(--u));
+  color: var(--marketing-error);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.cf-req[data-on] {
+  opacity: 1;
+}
+.cf-p--input {
+  display: flex;
+  align-items: center;
+  padding: 0 calc(10 * var(--u));
+  background: var(--marketing-surface);
+  border: var(--cf-sw) solid var(--cf-hair);
+  overflow: hidden;
+  font-size: calc(14 * var(--u));
+  line-height: 1.3;
+}
+.cf-p--input[data-error] {
+  border-color: var(--marketing-error);
+  box-shadow: 0 0 0 calc(3 * var(--u)) var(--marketing-error-ring);
+}
+.cf-scene[data-phase="chat"] .cf-p--input {
+  background: var(--cf-paper);
+  border-color: var(--cf-hair-soft);
+}
+.cf-scene[data-phase="chat"] .cf-p--input[data-filled] {
+  background: var(--marketing-blue-50);
+  border-color: var(--marketing-blue-300);
+}
+.cf-val {
+  position: absolute;
+  left: calc(10 * var(--u));
+  right: calc(8 * var(--u));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(6 * var(--u));
+  height: calc(18 * var(--u));
+  white-space: nowrap;
+  opacity: 0;
+  translate: 0 calc(4 * var(--u));
+  transition:
+    opacity 0.3s ease,
+    translate 0.45s var(--cf-arrive);
+}
+.cf-val[data-on] {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: 0.1s;
+}
+/* The empty dashes wait until their cells have landed. */
+.cf-val--empty[data-on] {
+  transition-delay: 1.1s;
+}
+.cf-val--empty {
+  color: var(--cf-label);
+}
+.cf-val--set {
+  color: var(--cf-ink);
+  font-weight: 500;
+}
+.cf-tick {
+  width: calc(12 * var(--u));
+  height: calc(12 * var(--u));
+  color: var(--cf-blue);
+  flex: none;
+}
+
+.cf-p--submit {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--marketing-slate);
+  color: var(--marketing-surface);
+  font-size: calc(14 * var(--u));
+  font-weight: 600;
+}
+.cf-p--submit[data-pressed] {
+  background: var(--marketing-muted);
+}
+.cf-submit__label,
+.cf-submit__icon {
+  grid-area: 1 / 1;
+  display: grid;
+  place-items: center;
+  transition: opacity 0.3s ease;
+}
+.cf-submit__icon {
+  opacity: 0;
+}
+.cf-submit__icon svg {
+  width: calc(14 * var(--u));
+  height: calc(14 * var(--u));
+}
+.cf-scene[data-phase="chat"] .cf-p--submit {
+  background: var(--cf-blue);
+}
+.cf-scene[data-phase="chat"] .cf-submit__label {
+  opacity: 0;
+}
+.cf-scene[data-phase="chat"] .cf-submit__icon {
+  opacity: 1;
+  transition-delay: 0.4s;
+}
+.cf-scene[data-phase="shatter"] .cf-submit__label,
+.cf-scene[data-phase="chat"] .cf-submit__label {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cf .ss-stage *,
+  .cf .ss-stage *::before,
+  .cf .ss-stage *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

@@ -1,0 +1,109 @@
+/* The three layers every marketing stage shares: the static final frame (no
+   JS, `?static=1`, reduced motion), the static start frame (first paint), and
+   the live Stage. The head script sets `data-js` before paint, so the server
+   render and the first client render agree; no layer is chosen by a
+   flash-prone matchMedia check in React. */
+
+/* The content-width box decides wide/compact; the shell is the actual scene
+   container, so its container-relative design pixel matches the Stage fit. */
+.stage-container {
+  container-name: stage;
+  container-type: inline-size;
+}
+
+.stage-shell {
+  position: relative;
+  overflow: hidden;
+  container-name: frame;
+  container-type: inline-size;
+  width: 100%;
+}
+
+.stage-shell--hero {
+  aspect-ratio: 358 / 560;
+  max-width: 358px;
+}
+
+.stage-shell--how {
+  aspect-ratio: 360 / 840;
+  max-width: 360px;
+}
+
+@container stage (min-width: 868px) {
+  .stage-shell--hero {
+    aspect-ratio: 1040 / 440;
+    max-width: 1040px;
+  }
+
+  .stage-shell--how {
+    aspect-ratio: 1040 / 500;
+    max-width: 1040px;
+  }
+}
+
+.stage-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 150ms ease;
+}
+
+/* No JavaScript: the final, fully informative frame. */
+.stage-layer--final {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* JavaScript, first paint: the start frame, until the Stage is ready. */
+html[data-js] .stage-layer--final {
+  opacity: 0;
+  visibility: hidden;
+}
+html[data-js] .stage-layer--start {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* The Stage has measured and is ready: the live scene takes over. */
+html[data-js] .stage-shell[data-ready] .stage-layer--start {
+  opacity: 0;
+  visibility: hidden;
+}
+html[data-js] .stage-shell[data-ready] .stage-layer--live {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* `?static=1`: the final frame, even with JavaScript and motion. */
+html[data-js][data-static] .stage-layer--final,
+html[data-js][data-static] .stage-shell[data-ready] .stage-layer--final {
+  opacity: 1;
+  visibility: visible;
+}
+html[data-js][data-static] .stage-layer--start,
+html[data-js][data-static] .stage-shell[data-ready] .stage-layer--start,
+html[data-js][data-static] .stage-layer--live,
+html[data-js][data-static] .stage-shell[data-ready] .stage-layer--live {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Reduced motion: the final frame wins over the ready state. */
+@media (prefers-reduced-motion: reduce) {
+  .stage-layer {
+    transition: none;
+  }
+  html[data-js] .stage-layer--final,
+  html[data-js] .stage-shell[data-ready] .stage-layer--final {
+    opacity: 1;
+    visibility: visible;
+  }
+  html[data-js] .stage-layer--start,
+  html[data-js] .stage-shell[data-ready] .stage-layer--start,
+  html[data-js] .stage-layer--live,
+  html[data-js] .stage-shell[data-ready] .stage-layer--live {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
