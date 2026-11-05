@@ -378,6 +378,7 @@
 }
 
 .cf-p--submit {
+  position: relative;
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -389,9 +390,11 @@
 .cf-p--submit[data-pressed] {
   background: var(--marketing-muted);
 }
+/* Both faces fill the button, so the hidden label cannot shift the icon. */
 .cf-submit__label,
 .cf-submit__icon {
-  grid-area: 1 / 1;
+  position: absolute;
+  inset: 0;
   display: grid;
   place-items: center;
   transition: opacity 0.3s ease;

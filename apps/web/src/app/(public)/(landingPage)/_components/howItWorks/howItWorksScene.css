@@ -691,7 +691,8 @@
 /* The chat's last six messages fit above the composer; older ones scroll up
    under the header, exactly as they would in the app. */
 .hw-chat__body {
-  bottom: calc(300 * var(--u));
+  /* A little breathing room between the last bubble and the composer. */
+  bottom: calc(310 * var(--u));
   justify-content: flex-end;
 }
 .hw .hw-thread {
