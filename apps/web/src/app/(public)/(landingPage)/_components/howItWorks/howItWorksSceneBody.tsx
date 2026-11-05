@@ -77,7 +77,7 @@ export const HOW_POSTER: HowItWorksState = {
   landed: true,
   open: true,
   msgs: HOW_CHAT.length,
-  saved: [3, 1, 2, 0],
+  saved: [1, 2, 3, 0],
 };
 
 // One design pixel. The live Stage is already design-sized, so this stays 1px;

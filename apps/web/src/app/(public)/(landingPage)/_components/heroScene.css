@@ -109,11 +109,11 @@
 .cf-card__chat {
   position: absolute;
   inset: 0;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  visibility: hidden;
+  transition: visibility 0s linear 0.4s;
 }
 .cf-scene[data-phase="chat"] .cf-card__chat {
-  opacity: 1;
+  visibility: visible;
   transition-delay: 0.55s;
 }
 .cf-chat-sub {
@@ -166,15 +166,25 @@
 }
 
 /* ---------- thread and composer ---------- */
-.cf-thread-box,
-.cf-composer {
+.cf-thread-box {
   z-index: 2;
   opacity: 0 !important;
 }
-.cf-scene[data-phase="chat"]:not([data-exit]) .cf-thread-box,
-.cf-scene[data-phase="chat"]:not([data-exit]) .cf-composer {
+.cf-composer {
+  z-index: 2;
+  visibility: hidden;
+  transition:
+    visibility 0s linear 0.4s,
+    opacity 0.45s ease,
+    translate 0.5s var(--cf-arrive) !important;
+}
+.cf-scene[data-phase="chat"]:not([data-exit]) .cf-thread-box {
   opacity: 1 !important;
   transition-delay: 0.55s;
+}
+.cf-scene[data-phase="chat"]:not([data-exit]) .cf-composer {
+  visibility: visible;
+  transition-delay: 0.55s !important;
 }
 .cf-thread-box {
   overflow: hidden;
@@ -250,10 +260,9 @@
   position: absolute;
   left: calc(14 * var(--u));
   color: var(--cf-label);
-  transition: opacity 0.15s ease;
 }
 .cf-composer__ph[data-hide] {
-  opacity: 0;
+  visibility: hidden;
 }
 .cf-caret {
   display: inline-block;

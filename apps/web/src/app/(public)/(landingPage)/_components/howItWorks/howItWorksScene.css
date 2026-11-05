@@ -101,7 +101,7 @@
 
 .hw-mono {
   font-family: var(--ss-mono);
-  font-size: calc(11 * var(--u));
+  font-size: calc(12 * var(--u));
   line-height: 1.3;
   font-weight: 500;
   letter-spacing: 0.08em;
@@ -138,7 +138,7 @@
   height: calc(18 * var(--u));
   border-radius: calc(9 * var(--u));
   border: var(--hw-sw) solid var(--hw-hair);
-  font-size: calc(10.5 * var(--u));
+  font-size: calc(12 * var(--u));
   letter-spacing: 0.04em;
   transition:
     color 0.35s ease,
@@ -375,7 +375,7 @@
   scale: 1;
 }
 .hw-field__n {
-  font-size: calc(10.5 * var(--u));
+  font-size: calc(12 * var(--u));
 }
 .hw-field__label {
   white-space: nowrap;
@@ -403,7 +403,7 @@
   row-gap: calc(2 * var(--u));
   align-content: center;
   height: calc(52 * var(--u));
-  padding: 0 calc(10 * var(--u));
+  padding: 0 calc(8 * var(--u));
   font-size: calc(12 * var(--u));
 }
 [data-layout="compact"] .hw-field__label {
@@ -483,7 +483,7 @@
   border: var(--hw-sw) solid var(--hw-hair);
   background: var(--hw-paper);
   font-family: var(--ss-mono);
-  font-size: calc(10.5 * var(--u));
+  font-size: calc(12 * var(--u));
   letter-spacing: 0.01em;
   color: var(--hw-muted);
   white-space: nowrap;
@@ -573,7 +573,7 @@
   padding: 0 calc(9 * var(--u));
   border-radius: calc(13 * var(--u));
   border: var(--hw-sw) solid var(--hw-hair);
-  font-size: calc(11.5 * var(--u));
+  font-size: calc(12 * var(--u));
   color: var(--hw-muted);
 }
 
@@ -903,7 +903,7 @@
 .hw-r__row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) calc(18 * var(--u));
-  grid-template-rows: calc(14 * var(--u)) calc(20 * var(--u));
+  grid-template-rows: calc(16 * var(--u)) calc(20 * var(--u));
   row-gap: calc(6 * var(--u));
   align-items: center;
   padding: calc(14 * var(--u)) 0;
@@ -911,7 +911,7 @@
 }
 .hw-r__k {
   grid-column: 1;
-  font-size: calc(10.5 * var(--u));
+  font-size: calc(12 * var(--u));
 }
 .hw-r__v {
   position: relative;
@@ -958,11 +958,12 @@
 .hw-r__foot {
   display: flex;
   flex-wrap: wrap;
-  gap: calc(6 * var(--u));
+  gap: calc(4 * var(--u));
   margin-top: calc(16 * var(--u));
 }
 .hw-r__foot .hw-chip {
-  font-size: calc(11.5 * var(--u));
+  padding: 0 calc(6 * var(--u));
+  font-size: calc(12 * var(--u));
 }
 
 .hw-fly {

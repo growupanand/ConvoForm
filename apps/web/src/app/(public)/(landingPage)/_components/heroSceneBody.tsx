@@ -347,7 +347,7 @@ export function HeroSceneBody({
           {f}
           <span
             className="cf-req"
-            data-on={(s.error && i === HERO_BUDGET) || undefined}
+            data-on={(s.error && (i === HERO_BUDGET || i === 1)) || undefined}
           >
             Required
           </span>

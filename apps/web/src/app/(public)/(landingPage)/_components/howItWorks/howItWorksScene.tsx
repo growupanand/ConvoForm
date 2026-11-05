@@ -92,13 +92,13 @@ async function script(a: Act<HowItWorksState>) {
   await a.wait(320);
   await reply(a, 1, 60);
   await a.wait(220);
-  a.mark("followup");
-  await ask(a, 2, 460);
-  await a.wait(520);
+  await ask(a, 2, 420);
+  await a.wait(220);
   await reply(a, 3, 45);
   await a.wait(240);
-  await ask(a, 4, 300);
-  await a.wait(220);
+  a.mark("followup");
+  await ask(a, 4, 460);
+  await a.wait(520);
   await reply(a, 5, 30);
   await a.wait(140);
   await ask(a, 6, 280);
