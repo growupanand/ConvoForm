@@ -7,6 +7,10 @@ import { type Page, expect, test } from "@playwright/test";
 const PUBLIC_PAGES = [
   { path: "/use-cases", heading: /start with the work/i },
   { path: "/use-cases/study-abroad", heading: /start counselling/i },
+  {
+    path: "/use-cases/job-application",
+    heading: /start the screening call/i,
+  },
   { path: "/changelog", heading: /changelog/i },
   { path: "/privacy", heading: /privacy policy/i },
   { path: "/terms", heading: /terms and conditions/i },
@@ -41,12 +45,65 @@ test.describe("Public pages", () => {
     ).toHaveAttribute("href", "/use-cases");
   });
 
+  test("use cases lists both use-case cards", async ({ page }) => {
+    await page.goto("/use-cases");
+
+    await expect(
+      page.getByRole("link", { name: /see the study-abroad use case/i }),
+    ).toHaveAttribute("href", "/use-cases/study-abroad");
+    await expect(
+      page.getByRole("link", { name: /see the job application use case/i }),
+    ).toHaveAttribute("href", "/use-cases/job-application");
+  });
+
   test("study-abroad CTA registers a new user", async ({ page }) => {
     await page.goto("/use-cases/study-abroad");
 
     await expect(
       page.getByRole("link", { name: /create a student intake form/i }).first(),
     ).toHaveAttribute("href", "/auth/register");
+  });
+
+  test("job-application CTA registers a new user", async ({ page }) => {
+    await page.goto("/use-cases/job-application");
+
+    await expect(
+      page
+        .getByRole("link", { name: /create a job application form/i })
+        .first(),
+    ).toHaveAttribute("href", "/auth/register");
+  });
+
+  test("the landing use-case section links to job applications", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    await expect(
+      page
+        .locator("#use-cases")
+        .getByRole("link", { name: /job applications/i }),
+    ).toHaveAttribute("href", "/use-cases/job-application");
+  });
+
+  test("the landing Job application tab links to the use case", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    await page.getByRole("tab", { name: "Job application" }).click();
+    const link = page.getByRole("link", {
+      name: /see the job application use case/i,
+    });
+    await expect(link).toHaveAttribute("href", "/use-cases/job-application");
+
+    await link.click();
+    await expect(
+      page.getByRole("heading", {
+        level: 1,
+        name: /start the screening call/i,
+      }),
+    ).toBeVisible();
   });
 
   test("changelog release anchors deep-link to a release", async ({ page }) => {

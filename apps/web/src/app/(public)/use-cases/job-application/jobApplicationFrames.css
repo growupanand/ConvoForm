@@ -1,0 +1,14 @@
+/* The hero's still frames. The scene body is shared with the live Stage; this
+   file only provides the container and the design-pixel scale. */
+
+.job-frame {
+  position: absolute;
+  inset: 0;
+  container-type: inline-size;
+}
+
+.job-frame__inner {
+  position: absolute;
+  inset: 0;
+  --u: calc(100cqw / 358);
+}

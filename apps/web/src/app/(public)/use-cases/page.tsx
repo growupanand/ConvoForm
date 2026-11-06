@@ -1,9 +1,12 @@
-import { studyAbroadUseCasePath } from "@/lib/marketingPaths";
+import {
+  jobApplicationUseCasePath,
+  studyAbroadUseCasePath,
+} from "@/lib/marketingPaths";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 const useCasesDescription =
-  "See how teams use ConvoForm to collect the details they need before the first call, starting with study-abroad student intake.";
+  "See how teams use ConvoForm to collect the details they need before the first call, from study-abroad student intake to job applications.";
 
 export const metadata: Metadata = {
   title: "Use cases",
@@ -22,13 +25,25 @@ export const metadata: Metadata = {
   },
 };
 
-const fieldChips = [
-  "Destination",
-  "Course",
-  "Intake",
-  "Marks",
-  "Budget",
-  "Tests",
+const useCaseCards = [
+  {
+    kicker: "Education",
+    title: "Study abroad",
+    description:
+      "Collect a full student profile — destination, course, intake, marks, budget and test status — before the first counselling call.",
+    chips: ["Destination", "Course", "Intake", "Marks", "Budget", "Tests"],
+    href: studyAbroadUseCasePath,
+    linkLabel: "See the study-abroad use case",
+  },
+  {
+    kicker: "Hiring",
+    title: "Job applications",
+    description:
+      "Collect experience, CTC, notice period and location before the first call.",
+    chips: ["Role", "Experience", "CTC", "Notice period", "Location", "Links"],
+    href: jobApplicationUseCasePath,
+    linkLabel: "See the job application use case",
+  },
 ] as const;
 
 const cardClass =
@@ -73,45 +88,47 @@ export default function UseCasesPage() {
             Use cases
           </h2>
 
-          <ul className="grid list-none grid-cols-1 gap-5 p-0">
-            <li className="min-w-0 max-w-[760px]">
-              <Link href={studyAbroadUseCasePath} className={cardClass}>
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 -z-10 bg-marketing-dot-grid bg-[length:22px_22px] [mask-image:radial-gradient(ellipse_90%_60%_at_50%_80%,#000_25%,transparent_80%)] min-[900px]:[mask-image:radial-gradient(ellipse_70%_90%_at_72%_50%,#000_25%,transparent_80%)]"
-                />
+          <ul className="grid list-none grid-cols-1 gap-5 p-0 min-[900px]:grid-cols-2">
+            {useCaseCards.map((useCase) => (
+              <li
+                key={useCase.href}
+                className="min-w-0 max-w-[760px] min-[900px]:max-w-none"
+              >
+                <Link href={useCase.href} className={cardClass}>
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 -z-10 bg-marketing-dot-grid bg-[length:22px_22px] [mask-image:radial-gradient(ellipse_90%_60%_at_50%_80%,#000_25%,transparent_80%)] min-[900px]:[mask-image:radial-gradient(ellipse_70%_90%_at_72%_50%,#000_25%,transparent_80%)]"
+                  />
 
-                <span className="font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
-                  Education
-                </span>
+                  <span className="font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
+                    {useCase.kicker}
+                  </span>
 
-                <h3 className="mt-4 font-display text-[clamp(24px,2.6vw,32px)] font-semibold leading-[1.12] tracking-[-0.02em] text-marketing-ink">
-                  Study abroad
-                </h3>
+                  <h3 className="mt-4 font-display text-[clamp(24px,2.6vw,32px)] font-semibold leading-[1.12] tracking-[-0.02em] text-marketing-ink">
+                    {useCase.title}
+                  </h3>
 
-                <p className="mt-3 max-w-[520px] font-body text-[15px] leading-[1.6] text-marketing-muted">
-                  Collect a full student profile — destination, course, intake,
-                  marks, budget and test status — before the first counselling
-                  call.
-                </p>
+                  <p className="mt-3 max-w-[520px] font-body text-[15px] leading-[1.6] text-marketing-muted">
+                    {useCase.description}
+                  </p>
 
-                <ul className="mt-6 flex list-none flex-wrap gap-1.5 p-0">
-                  {fieldChips.map((chip) => (
-                    <li
-                      key={chip}
-                      className="rounded-full border border-marketing-hair-soft bg-marketing-surface px-2.5 py-1.5 font-body text-[11.5px] font-medium leading-none text-marketing-muted"
-                    >
-                      {chip}
-                    </li>
-                  ))}
-                </ul>
+                  <ul className="mt-6 flex list-none flex-wrap gap-1.5 p-0">
+                    {useCase.chips.map((chip) => (
+                      <li
+                        key={chip}
+                        className="rounded-full border border-marketing-hair-soft bg-marketing-surface px-2.5 py-1.5 font-body text-[11.5px] font-medium leading-none text-marketing-muted"
+                      >
+                        {chip}
+                      </li>
+                    ))}
+                  </ul>
 
-                <span className="mt-7 inline-flex items-center gap-2 self-start border-b border-marketing-blue-200 pb-0.5 font-body text-sm font-semibold leading-[1.4] text-marketing-blue-600 transition-colors duration-150 group-hover:text-marketing-blue-700">
-                  See the study-abroad use case{" "}
-                  <span aria-hidden="true">→</span>
-                </span>
-              </Link>
-            </li>
+                  <span className="mt-auto inline-flex items-center gap-2 self-start border-b border-marketing-blue-200 pb-0.5 pt-7 font-body text-sm font-semibold leading-[1.4] text-marketing-blue-600 transition-colors duration-150 group-hover:text-marketing-blue-700">
+                    {useCase.linkLabel} <span aria-hidden="true">→</span>
+                  </span>
+                </Link>
+              </li>
+            ))}
           </ul>
 
           <p className="mt-8 max-w-[620px] font-body text-[15px] leading-[1.6] text-marketing-muted">

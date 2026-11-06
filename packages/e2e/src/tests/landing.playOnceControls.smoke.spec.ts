@@ -15,6 +15,11 @@ const SECTIONS = [
     selector: "#why",
     name: "study abroad",
   },
+  {
+    path: "/use-cases/job-application",
+    selector: "#job-hero",
+    name: "job application hero",
+  },
 ] as const;
 
 const horizontalScroll = (page: Page) =>
@@ -38,8 +43,16 @@ async function openSection(
 
 async function expectStaticFrame(section: Locator) {
   const stage = section.locator('[role="img"]').first();
-  const layers = stage.locator(":scope > div");
+  const finalLayer = stage.locator(".stage-layer--final");
 
+  // The landing stages stack final/start/live layers; before/after overlays
+  // its animated and static frames instead.
+  if ((await finalLayer.count()) > 0) {
+    await expect(finalLayer).toBeVisible();
+    return;
+  }
+
+  const layers = stage.locator(":scope > div");
   if ((await layers.count()) > 1) {
     await expect(layers.nth(0)).toHaveCSS("visibility", "hidden");
     await expect(layers.nth(1)).toHaveCSS("visibility", "visible");

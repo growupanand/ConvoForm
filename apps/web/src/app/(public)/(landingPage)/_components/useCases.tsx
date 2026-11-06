@@ -1,5 +1,8 @@
 import { SectionCard } from "@/components/sectionCard";
-import { studyAbroadUseCasePath } from "@/lib/marketingPaths";
+import {
+  jobApplicationUseCasePath,
+  studyAbroadUseCasePath,
+} from "@/lib/marketingPaths";
 import Link from "next/link";
 
 type UseCase = {
@@ -29,6 +32,25 @@ const graduationCapIcon = (
   </svg>
 );
 
+const briefcaseIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    className="shrink-0 text-foreground"
+  >
+    <rect x="3" y="7" width="18" height="13" rx="2" />
+    <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18" />
+  </svg>
+);
+
 const useCases: UseCase[] = [
   {
     title: "Study-Abroad Consultancies",
@@ -36,6 +58,13 @@ const useCases: UseCase[] = [
       "Collect a full student profile - destination, course, intake, marks, budget, test status - before the first counselling call.",
     href: studyAbroadUseCasePath,
     icon: graduationCapIcon,
+  },
+  {
+    title: "Job Applications",
+    description:
+      "Collect experience, CTC, notice period and location before the first call.",
+    href: jobApplicationUseCasePath,
+    icon: briefcaseIcon,
   },
 ];
 

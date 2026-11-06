@@ -1,7 +1,12 @@
 "use client";
 
 import type { StageStatus } from "@/components/common/stageshow";
+import {
+  jobApplicationUseCasePath,
+  studyAbroadUseCasePath,
+} from "@/lib/marketingPaths";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { type PlayOnceStageHandle, StageControl } from "../stageControl";
@@ -19,6 +24,17 @@ const tabClass =
 
 const PLAY_SECONDS = 6;
 const MESSAGE_TIMES = [0.35, 1, 1.85, 2.6] as const;
+
+const SCENARIO_LINKS: Record<BeforeAfterId, { href: string; label: string }> = {
+  study: {
+    href: studyAbroadUseCasePath,
+    label: "See the study-abroad use case",
+  },
+  job: {
+    href: jobApplicationUseCasePath,
+    label: "See the job application use case",
+  },
+};
 
 const clamp = (value: number, min = 0, max = 1) =>
   Math.min(max, Math.max(min, value));
@@ -747,6 +763,16 @@ export function BeforeAfterSection() {
             </div>
           );
         })}
+
+        {/* The slot is always present, so switching tabs never moves the page. */}
+        <div className="mt-2 flex min-h-11 items-center justify-center">
+          <Link
+            href={SCENARIO_LINKS[activeId].href}
+            className="inline-flex items-center gap-1.5 border-b border-marketing-blue-200 font-body text-sm font-semibold leading-[1.4] text-marketing-blue-600 transition-colors duration-150 hover:text-marketing-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600"
+          >
+            {SCENARIO_LINKS[activeId].label} <span aria-hidden="true">→</span>
+          </Link>
+        </div>
       </div>
     </section>
   );
