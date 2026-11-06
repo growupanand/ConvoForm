@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ConvoForm mark">
+  <title>ConvoForm mark · V5 paper tile</title>
+  <!-- paper tile, no border -->
+  <rect width="512" height="512" fill="#fafbfc"/>
+  <!-- ask: slate -->
+  <rect x="80" y="144" width="272" height="88" rx="44" fill="#94a3b8"/>
+  <!-- answer: blue-600 -->
+  <rect x="160" y="280" width="272" height="88" rx="44" fill="#2563eb"/>
+</svg>

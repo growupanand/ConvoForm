@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ConvoForm maskable icon">
+  <title>ConvoForm maskable 512</title>
+  <rect width="512" height="512" fill="#fafbfc"/>
+  <g transform="translate(256,256) scale(0.90) translate(-256,-256)">
+    <rect x="80" y="144" width="272" height="88" rx="44" fill="#94a3b8"/>
+    <rect x="160" y="280" width="272" height="88" rx="44" fill="#2563eb"/>
+  </g>
+</svg>
