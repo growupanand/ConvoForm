@@ -1,0 +1,19 @@
+/* The poster reserves the scene's height. With JavaScript it stays hidden
+   until the live scene is ready; `?static=1` and reduced motion keep it. */
+.poster {
+  opacity: 1;
+}
+
+:global(html[data-js]) .poster {
+  opacity: 0;
+}
+
+:global(html[data-js][data-static]) .poster {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(html[data-js]) .poster {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,33 @@
+/* The hero's still frames. The scene body is shared with the live Stage; this
+   file only provides the container and the design-pixel scale. */
+
+.hero-frame {
+  position: absolute;
+  inset: 0;
+  container-type: inline-size;
+}
+
+.hero-variant {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-variant--compact {
+  --u: calc(100cqw / 358);
+  display: block;
+}
+
+.hero-variant--wide {
+  --u: calc(100cqw / 1040);
+  display: none;
+}
+
+@container stage (min-width: 868px) {
+  .hero-variant--compact {
+    display: none;
+  }
+
+  .hero-variant--wide {
+    display: block;
+  }
+}

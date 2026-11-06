@@ -119,14 +119,29 @@
         "purpose": "Delay between sibling items in a reveal."
       },
       {
-        "name": "loop-hero",
-        "value": "8s",
-        "purpose": "Hero form-to-conversation loop."
+        "name": "run-hero",
+        "value": "16s",
+        "purpose": "Hero form → error → shatter → chat → record; plays once."
+      },
+      {
+        "name": "run-before-after",
+        "value": "6s",
+        "purpose": "Before/after comparison; plays once."
+      },
+      {
+        "name": "run-final-cta",
+        "value": "5.35s",
+        "purpose": "Final CTA form → chat bubble; plays once."
       },
       {
         "name": "loop-scene",
-        "value": "6s-10.8s",
-        "purpose": "Section loops."
+        "value": "10.8s",
+        "purpose": "Trust icon loop."
+      },
+      {
+        "name": "run-how",
+        "value": "18s",
+        "purpose": "How it works design → share → review; plays once."
       },
       {
         "name": "ambient",
@@ -135,7 +150,7 @@
       },
       {
         "name": "in-view-threshold",
-        "value": "0.2 (loops) / 0.3 (one-shot)",
+        "value": "0.2 (stages) / 0.3 (one-shot)",
         "purpose": "IntersectionObserver thresholds that start animations."
       },
       {
@@ -237,7 +252,12 @@
       },
       {
         "name": "The One Accent Rule",
-        "body": "`blue-600` is the only accent and covers well under 10% of any screen. No second hue, no purple, no amber outside mockup-only badges.",
+        "body": "`blue-600` is the only accent and covers well under 10% of any screen. No second hue, no purple, no amber outside mockup-only badges. The scoped WhatsApp-like green inside the How it works phone is the single documented exception (see The Stage Exception).",
+        "section": "colors"
+      },
+      {
+        "name": "The Stage Exception",
+        "body": "The hero and How it works stages are miniature product scenes, not line drawings. They keep the same tokens, 1.25px hairlines and type voices. The one second hue is the WhatsApp-like green inside the How it works phone only: #d9fdd3 for the student's outgoing bubble, #25d366 and #128c7e for its accents. It is scoped to .hw, carries no WhatsApp name or logo, and never leaks into product UI. At a 360px viewport the phone stays 340px wide and its text never renders below 12px.",
         "section": "colors"
       },
       {
@@ -281,13 +301,13 @@
       "Do use 1.25px hairlines for every card, button outline, tab track and divider rule.",
       "Do set headings in Bricolage Grotesque, body in Inter and labels in JetBrains Mono, all via `next/font`.",
       "Do start animations in view, pause them off-screen and give them a complete static final frame for reduced motion.",
-      "Do design at 360px first and check there is no horizontal scroll.",
+      "Do design at 360px first and check there is no horizontal scroll; keep the How it works phone 340px wide with text at least 12px.",
       "Do write prices and example values in INR and label sample data \"Illustrative\".",
       "Do follow the mockups in `docs/design/marketing/` for layout and motion intent."
     ],
     "donts": [
       "Don't use gradient text; emphasis is solid `blue-600`.",
-      "Don't add a second accent colour or reuse the mockups' amber \"MOCKUP\" badges on the real site.",
+      "Don't add a second accent colour (the scoped phone green in The Stage Exception is the only exception) or reuse the mockups' amber \"MOCKUP\" badges on the real site.",
       "Don't use Nohemi, Montserrat or Geist on public pages.",
       "Don't use drop shadows to separate cards; only the documented blue-tinted shadows exist.",
       "Don't use `slate` for text people need to read.",

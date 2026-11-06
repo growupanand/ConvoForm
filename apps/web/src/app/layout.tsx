@@ -90,7 +90,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <script>{'document.documentElement.dataset.js = "1";'}</script>
+        <script>{`document.documentElement.dataset.js = "1";
+try {
+  if (new URLSearchParams(window.location.search).get("static") === "1") {
+    document.documentElement.dataset.static = "1";
+  }
+} catch {}`}</script>
       </head>
       <body className="antialiased font-sans bg-background">
         <CSPostHogProvider>

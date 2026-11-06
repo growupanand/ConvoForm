@@ -2,10 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Metric-matched fallbacks for the marketing faces. next/font generates the
-   fallback names into --font-bricolage / --font-inter; these faces size Arial
-   to the same average character width so the hero and section headings keep
-   their line breaks while the webfonts swap in. */
+/* Metric-matched fallbacks for the marketing faces. next/font includes these
+   names in --font-bricolage / --font-inter / --font-jetbrains-mono; the faces
+   size Arial to the same average character width so the hero and section
+   headings keep their line breaks while the webfonts swap in. */
 @font-face {
   font-family: "Bricolage Grotesque Fallback";
   src: local("Arial");
@@ -22,6 +22,15 @@
   descent-override: 22.52%;
   line-gap-override: 0%;
   size-adjust: 106.84%;
+}
+
+@font-face {
+  font-family: "JetBrains Mono Fallback";
+  src: local("Arial");
+  ascent-override: 75.79%;
+  descent-override: 22.29%;
+  line-gap-override: 0%;
+  size-adjust: 134.59%;
 }
 
 @layer base {

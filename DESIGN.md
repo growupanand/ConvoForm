@@ -201,14 +201,19 @@ Motion tokens (machine-readable copies live in `.impeccable/design.json`):
 | `duration-pop` | `280ms` | Bubble/chip pop-in |
 | `duration-draw` | `500ms` | One-shot hairline stroke draws |
 | `stagger` | `120ms` | Delay between sibling items in a reveal |
-| `loop-hero` | `8s` | Hero "form shatters into conversation" loop |
-| `loop-scene` | `6s` to `10.8s` | Section loops (before/after, trust icons, how it works) |
+| `run-hero` | `~16s` | Hero form → error → shatter → chat → record, plays once |
+| `run-before-after` | `~6s` | Before/after comparison, plays once |
+| `run-final-cta` | `~5.35s` | Final CTA form → chat bubble, plays once |
+| `loop-scene` | `10.8s` | Trust icon loop |
+| `run-how` | `~18s` | How it works: design → share → review, plays once |
 | `ambient` | `9s` to `11s`, `ease-in-out` | Reserved for non-illustration motion; never behind stages |
 | `hover-lift` | `translateY(-1px)` | Buttons on hover |
 
-**The In-View Rule.** Animations start only when their element is on screen: an IntersectionObserver at `threshold: 0.2` for looping scenes, `0.3` for one-shot reveals (which disconnect after firing). Wait for `document.fonts.ready` before measuring or starting.
+**The In-View Rule.** Animations start only when their element is on screen: an IntersectionObserver at `threshold: 0.2` for stages (once or looping), `0.3` for one-shot reveals (which disconnect after firing). Wait for `document.fonts.ready` before measuring or starting.
 
-**The Pause-Offscreen Rule.** Each animation keeps its own clock and advances it only while visible. Scrolling away freezes it; scrolling back resumes where it stopped. Clamp the per-frame delta (max 0.1s) so a backgrounded tab never jumps.
+**The Pause-Offscreen Rule.** Each animation keeps its own clock and advances it only while visible. Scrolling away pauses it; scrolling back resumes, or restarts from the initial frame when the clock cannot resume mid-beat. A finished run never resets. Clamp the per-frame delta (max 0.1s) so a backgrounded tab never jumps.
+
+**The Play-Once Rule.** The hero, How it works, before/after comparison and final CTA stages play their script once per page view and settle on the same fully informative frame as the static poster. They do not loop. A visible, keyboard-reachable control sits beside the stage (never inside its `role="img"` shell): Pause/Play while running, Replay when done. Replay resets to the initial frame and runs once more; it never restarts on its own. Under reduced motion, `?static=1` or without JavaScript the control is not rendered and the final frame stands alone.
 
 **The Static-Final-State Rule.** Under `prefers-reduced-motion: reduce` (and `?static=1` for review), render every animation at its final, fully informative frame, drop transitions, and use `scroll-behavior: auto`. The static frame must tell the whole story on its own.
 
@@ -235,7 +240,7 @@ Cool, near-white paper and slate inks, with a single confident blue.
 
 ### Named Rules
 
-**The One Accent Rule.** `blue-600` is the only accent and covers well under 10% of any screen. No second hue, no purple, no amber outside mockup-only badges.
+**The One Accent Rule.** `blue-600` is the only accent and covers well under 10% of any screen. No second hue, no purple, no amber outside mockup-only badges. The scoped WhatsApp-like green inside the How it works phone is the single documented exception (see **The Stage Exception**).
 
 **The Solid Emphasis Rule.** Emphasised words in `h1`/`h2` are solid `blue-600`. No gradient text, anywhere (owner decision on #513; the mockups' gradient `em` is superseded).
 
@@ -343,9 +348,11 @@ Native `<details>`/`<summary>` rows divided by 1.25px `hair` rules. A mono index
 
 The product's core image: a short chat with an assistant bubble, a user bubble, and a **follow-up** bubble (`blue-50` fill, `blue-700` text, `blue-300`/`blue-400` hairline, tagged with a mono "FOLLOW-UP" label) that asks the question a human would. Captured answers appear as chips or table cells, with the fixed value in `blue-600`. Example data is realistic, Indian and in INR (for example "₹20 lakh / year"), and labelled "Illustrative".
 
+**The Stage Exception.** The hero and How it works stages are miniature product scenes, not line drawings. They keep the same tokens, 1.25px hairlines and type voices. The one second hue is the WhatsApp-like green inside the How it works phone only: `#d9fdd3` for the student's outgoing bubble, `#25d366` and `#128c7e` for its accents. It is scoped to `.hw`, carries no WhatsApp name or logo, and never leaks into product UI. At a 360px viewport the phone stays 340px wide and its text never renders below 12px.
+
 ### Hairline Illustration (signature)
 
-Explanatory line drawings (how it works, trust icons, export to CSV / Sheets) drawn with 1.25px non-scaling strokes on the paper, animated with `ease-in-out` and following the three motion rules above.
+Explanatory line drawings (trust icons, before/after labels, export to CSV / Sheets) drawn with 1.25px non-scaling strokes on the paper, animated with `ease-in-out` and following the three motion rules above. The hero and How it works stages are product scenes instead; see **The Stage Exception**.
 
 ## Do's and Don'ts
 

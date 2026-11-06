@@ -1,8 +1,10 @@
 "use client";
 
+import type { StageStatus } from "@/components/common/stageshow";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 
+import { type PlayOnceStageHandle, StageControl } from "../stageControl";
 import styles from "./beforeAfter.module.css";
 import {
   BEFORE_AFTER_SCENARIOS,
@@ -15,7 +17,7 @@ import {
 const tabClass =
   "flex-1 rounded-full border-[1.25px] px-4 py-[9px] font-mono text-[11px] uppercase leading-none tracking-[0.04em] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600 min-[900px]:flex-none";
 
-const LOOP_SECONDS = 6;
+const PLAY_SECONDS = 6;
 const MESSAGE_TIMES = [0.35, 1, 1.85, 2.6] as const;
 
 const clamp = (value: number, min = 0, max = 1) =>
@@ -336,9 +338,27 @@ export function BeforeAfterScene({
   ariaLabel?: string;
 }) {
   const animatedRef = useRef<HTMLDivElement>(null);
+  const handleRef = useRef<PlayOnceStageHandle | null>(null);
+  const [animate, setAnimate] = useState(false);
+  const [status, setStatus] = useState<StageStatus>("paused");
 
   useEffect(() => {
-    if (!active) return;
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => {
+      const isStatic =
+        new URLSearchParams(window.location.search).get("static") === "1";
+      const shouldAnimate = !motionQuery.matches && !isStatic;
+      setAnimate(shouldAnimate);
+      if (!shouldAnimate) setStatus("paused");
+    };
+
+    update();
+    motionQuery.addEventListener("change", update);
+    return () => motionQuery.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (!active || !animate) return;
 
     const root = animatedRef.current;
     if (!root) return;
@@ -392,7 +412,7 @@ export function BeforeAfterScene({
         const text = scenario.messages[index];
         if (!text) continue;
 
-        const at = MESSAGE_TIMES[index] ?? LOOP_SECONDS;
+        const at = MESSAGE_TIMES[index] ?? PLAY_SECONDS;
         const shown = easeOut(progress(at, at + 0.3, time));
         message.element.style.opacity = String(shown);
         message.element.style.transform = `translateY(${((1 - shown) * 8).toFixed(1)}px)`;
@@ -447,29 +467,77 @@ export function BeforeAfterScene({
     let last = 0;
     let clock = 0;
     let visible = false;
+    let userPaused = false;
+    let finished = false;
 
-    const stop = () => {
+    setStatus("paused");
+
+    const stop = (markPaused = true) => {
       if (frame !== 0) {
         cancelAnimationFrame(frame);
         frame = 0;
       }
+      if (markPaused && !finished) setStatus("paused");
+    };
+
+    const finish = () => {
+      finished = true;
+      if (frame !== 0) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
+      clock = PLAY_SECONDS;
+      render(PLAY_SECONDS);
+      setStatus("done");
     };
 
     const loop = (now: number) => {
       frame = requestAnimationFrame(loop);
       const delta = Math.min(0.1, (now - last) / 1000);
       last = now;
-      clock = (clock + delta) % LOOP_SECONDS;
+      clock = Math.min(PLAY_SECONDS, clock + delta);
       render(clock);
+      if (clock >= PLAY_SECONDS) finish();
     };
 
     const start = () => {
-      if (frame !== 0 || !visible || document.hidden || motionQuery.matches) {
+      if (
+        frame !== 0 ||
+        finished ||
+        !visible ||
+        document.hidden ||
+        userPaused ||
+        motionQuery.matches
+      ) {
         return;
       }
       last = performance.now();
       frame = requestAnimationFrame(loop);
+      setStatus("playing");
     };
+
+    const pause = () => {
+      userPaused = true;
+      stop();
+    };
+
+    const play = () => {
+      userPaused = false;
+      start();
+    };
+
+    const replay = () => {
+      userPaused = false;
+      finished = false;
+      stop(false);
+      clock = 0;
+      render(0);
+      setStatus("paused");
+      start();
+    };
+
+    const handle: PlayOnceStageHandle = { pause, play, replay };
+    handleRef.current = handle;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -496,41 +564,62 @@ export function BeforeAfterScene({
     motionQuery.addEventListener("change", handleMotion);
 
     return () => {
-      stop();
+      stop(false);
       observer.disconnect();
       document.removeEventListener("visibilitychange", handleVisibility);
       motionQuery.removeEventListener("change", handleMotion);
+      if (handleRef.current === handle) handleRef.current = null;
     };
-  }, [active, scenario]);
+  }, [active, animate, scenario]);
 
   return (
-    <div
-      role="img"
-      aria-label={ariaLabel ?? sceneAriaLabel(scenario)}
-      className={cn("grid", styles.stage)}
-    >
+    <div>
       <div
-        ref={animatedRef}
-        aria-hidden="true"
-        className={cn("col-start-1 row-start-1", styles.animated)}
+        role="img"
+        aria-label={ariaLabel ?? sceneAriaLabel(scenario)}
+        className={cn("grid", styles.stage)}
       >
-        <SceneMarkup
-          scenario={scenario}
-          final={false}
-          columns={columns}
-          valuesLabel={valuesLabel}
-        />
+        <div
+          ref={animatedRef}
+          aria-hidden="true"
+          className={cn("col-start-1 row-start-1", styles.animated)}
+        >
+          <SceneMarkup
+            scenario={scenario}
+            final={false}
+            columns={columns}
+            valuesLabel={valuesLabel}
+          />
+        </div>
+        <div
+          aria-hidden="true"
+          className={cn(
+            "col-start-1 row-start-1 invisible",
+            styles.staticFinal,
+          )}
+        >
+          <SceneMarkup
+            scenario={scenario}
+            final
+            columns={columns}
+            valuesLabel={valuesLabel}
+          />
+        </div>
       </div>
-      <div
-        aria-hidden="true"
-        className={cn("col-start-1 row-start-1 invisible", styles.staticFinal)}
-      >
-        <SceneMarkup
-          scenario={scenario}
-          final
-          columns={columns}
-          valuesLabel={valuesLabel}
-        />
+      <div className="mt-3 flex min-h-11 items-center justify-between gap-3">
+        <p className="font-mono text-[11px] leading-[1.4] tracking-[0.04em] text-marketing-label min-[900px]:text-xs">
+          Illustrative example
+        </p>
+        <div className="flex size-8 items-center justify-center">
+          {animate && active ? (
+            <StageControl
+              status={status}
+              onPause={() => handleRef.current?.pause()}
+              onPlay={() => handleRef.current?.play()}
+              onReplay={() => handleRef.current?.replay()}
+            />
+          ) : null}
+        </div>
       </div>
     </div>
   );
