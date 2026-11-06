@@ -1,3 +1,4 @@
+import { loadFonts } from "@/components/marketing/ogImage";
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
@@ -7,6 +8,8 @@ export const runtime = "edge";
  * artwork first, then keep this route in sync.
  */
 export async function GET() {
+  const fonts = await loadFonts();
+
   return new ImageResponse(
     <div
       style={{
@@ -62,6 +65,7 @@ export async function GET() {
         <div
           style={{
             display: "flex",
+            fontFamily: "Bricolage Grotesque",
             fontSize: 76,
             fontWeight: 700,
             letterSpacing: "-0.03em",
@@ -84,6 +88,7 @@ export async function GET() {
           style={{
             display: "flex",
             marginTop: 24,
+            fontFamily: "Inter",
             fontSize: 32,
             color: "#475569",
           }}
@@ -95,6 +100,7 @@ export async function GET() {
     {
       width: 1200,
       height: 630,
+      fonts: fonts.length > 0 ? fonts : undefined,
     },
   );
 }

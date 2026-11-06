@@ -108,6 +108,9 @@ Do not use the mark below **16px**. Prefer **32px or larger** in UI. At 16px use
 | OG / WhatsApp / X / LinkedIn link preview | `social/og-1200x630.png`; the live `/api/og` route draws the same mark |
 | Light background | `icon/master.svg`, `icon/app-icon.svg` or `icon/mono-black.svg` |
 | Dark background | dark favicon colours or `icon/mono-white.svg` |
+| X / LinkedIn / WhatsApp upload (light) | `export/mono-black-512.png` |
+| X / LinkedIn / WhatsApp upload (dark) | `export/mono-white-512.png` |
+| X / LinkedIn / WhatsApp upload (filled) | `export/filled-sibling-512.png` |
 | Clerk / generic `/logo.png` consumer | generated `apps/web/public/logo.png` (master @ 512) |
 
 ## Regenerating assets
@@ -120,8 +123,14 @@ pnpm brand:export
 
 This uses `sharp` (a root dev dependency) to render every raster file from the
 SVGs, builds a 16+32 PNG-in-ICO favicon, and copies the generated files into the
-Next.js locations below. Re-running it with the same `sharp` version produces
-review-stable output; there is no other post-processing step.
+Next.js locations below. The icon PNGs are font-independent, so re-running them
+with the same `sharp` version produces review-stable output.
+
+`brand/social/og-1200x630.png` is the exception: sharp renders its `<text>`
+elements with whatever fonts are installed on the machine, so that PNG can
+differ between machines. Keep the SVG as the source of truth and regenerate the
+PNG on a machine with Bricolage Grotesque and Inter installed when the text
+changes.
 
 Never edit the generated copies by hand — change the SVG master and re-run the
 script.

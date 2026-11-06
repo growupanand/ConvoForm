@@ -109,6 +109,9 @@ await writePng("app-icon.svg", "app-icon-192.png", 192);
 await writePng("app-icon.svg", "app-icon-512.png", 512);
 await writePng("maskable-512.svg", "maskable-512.png", 512);
 await writePng("master.svg", "logo-512.png", 512);
+await writePng("mono-black.svg", "mono-black-512.png", 512);
+await writePng("mono-white.svg", "mono-white-512.png", 512);
+await writePng("filled-sibling.svg", "filled-sibling-512.png", 512);
 
 const avatar = await renderFile(join(socialDir, "avatar-400.svg"), 400, 400);
 writeFileSync(join(exportDir, "avatar-400.png"), avatar);

@@ -13,6 +13,7 @@ const SURFACE = "#ffffff";
 const INK = "#0f172a";
 const MUTED = "#475569";
 const LABEL = "#64748b";
+const SLATE = "#94a3b8";
 const HAIR = "#cbd5e1";
 const BLUE = "#2563eb";
 
@@ -76,7 +77,7 @@ async function loadGoogleFont(
   return fontCache.get(cacheKey) ?? null;
 }
 
-async function loadFonts() {
+export async function loadFonts() {
   const fonts = await Promise.all([
     loadGoogleFont("Bricolage Grotesque", 700),
     loadGoogleFont("Inter", 400),
@@ -146,13 +147,36 @@ export async function renderOgImage({
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <div
               style={{
+                position: "relative",
                 display: "flex",
-                width: 14,
-                height: 14,
-                borderRadius: 999,
-                backgroundColor: BLUE,
+                width: 32,
+                height: 32,
+                flexShrink: 0,
               }}
-            />
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  left: 5,
+                  top: 9,
+                  width: 17,
+                  height: 5.5,
+                  borderRadius: 2.75,
+                  backgroundColor: SLATE,
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  left: 10,
+                  top: 17.5,
+                  width: 17,
+                  height: 5.5,
+                  borderRadius: 2.75,
+                  backgroundColor: BLUE,
+                }}
+              />
+            </div>
             <div
               style={{
                 display: "flex",
