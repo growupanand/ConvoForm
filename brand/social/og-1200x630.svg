@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="ConvoForm Open Graph">
+  <title>ConvoForm OG</title>
+  <rect width="1200" height="630" fill="#fafbfc"/>
+  <!-- mark -->
+  <svg x="80" y="205" width="220" height="220" viewBox="0 0 512 512">
+    <rect width="512" height="512" fill="#fafbfc"/>
+    <rect x="80" y="144" width="272" height="88" rx="44" fill="#94a3b8"/>
+    <rect x="160" y="280" width="272" height="88" rx="44" fill="#2563eb"/>
+  </svg>
+  <text x="340" y="290" font-family="Bricolage Grotesque, Inter, sans-serif" font-size="64" font-weight="700" fill="#2563eb">Convo</text>
+  <text x="560" y="290" font-family="Bricolage Grotesque, Inter, sans-serif" font-size="64" font-weight="700" fill="#0f172a">Form</text>
+  <line x1="340" y1="310" x2="760" y2="310" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="340" y="360" font-family="Bricolage Grotesque, Inter, sans-serif" font-size="28" font-weight="500" fill="#475569">Forms that talk back.</text>
+</svg>

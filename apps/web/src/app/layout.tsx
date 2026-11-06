@@ -16,6 +16,7 @@ import { bricolageGrotesque, inter, jetBrainsMono } from "./fonts";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#fafbfc",
 };
 
 export const metadata: Metadata = {

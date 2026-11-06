@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="ConvoForm favicon">
+  <title>ConvoForm favicon</title>
+  <style>
+    .tile { fill: #f1f5f9; }
+    .ask { fill: #94a3b8; }
+    .ans { fill: #2563eb; }
+    @media (prefers-color-scheme: dark) {
+      .tile { fill: #0f172a; }
+      .ask { fill: #cbd5e1; }
+      .ans { fill: #60a5fa; }
+    }
+  </style>
+  <rect class="tile" width="32" height="32"/>
+  <rect class="ask" x="4" y="7" width="18" height="7" rx="3.5"/>
+  <rect class="ans" x="10" y="18" width="18" height="7" rx="3.5"/>
+</svg>

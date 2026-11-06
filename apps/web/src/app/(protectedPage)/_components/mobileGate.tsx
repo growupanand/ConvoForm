@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { usePostHog } from "posthog-js/react";
 import { useEffect } from "react";
 
+import { BrandLogo } from "@/components/common/brandLogo";
 import Spinner from "@/components/common/spinner";
 import { ContinueOnDesktop } from "./continueOnDesktop";
 import { DesktopOnlyAlert } from "./desktopOnlyAlert";
@@ -27,7 +28,8 @@ export function MobileGate() {
 
   if (!isLoaded) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center">
+      <div className="flex h-screen w-screen flex-col items-center justify-center gap-6">
+        <BrandLogo variant="mark" size={32} />
         <Spinner size="lg" label="Loading..." />
       </div>
     );

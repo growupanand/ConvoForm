@@ -169,6 +169,10 @@ components:
 
 Scope: the public marketing site, `apps/web/src/app/(public)/**` and `apps/web/src/components/common/publicLayout/**`. The signed-in dashboard is not covered here. Product context lives in `PRODUCT.md`; the approved mockups (source of every token below) are in `docs/design/marketing/`, with `convoform-landing-v2.html` as the reference.
 
+> Before changing the logo, favicon, app icons, OG mark or social avatar, read `brand/README.md`.
+>
+> Product logo variants, sizes and usage: `brand/README.md#using-the-logo-in-the-product`.
+
 ## Overview
 
 **Creative North Star: "The Drafting Table"**

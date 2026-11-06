@@ -2,6 +2,8 @@
 
 Guidance for AI coding agents (opencode, Codex, Copilot, Claude, …) working in this repository.
 
+> Before changing the logo, favicon, app icons, OG mark or social avatar, read `brand/README.md`.
+
 ## Git commits
 
 The rules below are derived from this repo's own history (`git log -100`) plus `.commitlintrc.cjs`. Follow them exactly, and re-check `git log --oneline -100` before writing a message if you are unsure.

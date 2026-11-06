@@ -22,6 +22,17 @@ test.describe("Landing page smoke", () => {
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   });
 
+  test("header shows the ConvoForm logo linking home", async ({ page }) => {
+    await page.goto("/");
+
+    const logo = page
+      .locator("header")
+      .getByRole("link", { name: "ConvoForm home" });
+
+    await expect(logo).toHaveAttribute("href", "/");
+    await expect(logo.locator("svg")).toBeVisible();
+  });
+
   test("Sign in goes to the Clerk sign-in page", async ({ page }) => {
     await page.goto("/");
 

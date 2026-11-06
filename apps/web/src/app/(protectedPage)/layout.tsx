@@ -1,6 +1,7 @@
 "use client";
 
 import { AuthProvider } from "@/components/authProvider";
+import { BrandLogo } from "@/components/common/brandLogo";
 import Spinner from "@/components/common/spinner";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { isMobileAllowedPath } from "@/lib/isMobileAllowedPath";
@@ -24,7 +25,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   if (!allowOnMobile) {
     if (isLoading) {
       content = (
-        <div className="flex h-screen w-screen items-center justify-center">
+        <div className="flex h-screen w-screen flex-col items-center justify-center gap-6">
+          <BrandLogo variant="mark" size={32} />
           <Spinner size="lg" label="Loading..." />
         </div>
       );

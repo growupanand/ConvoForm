@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { usePostHog } from "posthog-js/react";
 import { useEffect, useState } from "react";
 
-import BrandNameLink from "@/components/common/brandName";
+import { BrandLogo } from "@/components/common/brandLogo";
 import { api } from "@/trpc/react";
 
 const RESEND_COOLDOWN_MS = 60_000;
@@ -113,7 +113,11 @@ export function ContinueOnDesktop() {
             Sign out
           </Button>
           <div className="mt-6 flex justify-center">
-            <BrandNameLink />
+            <BrandLogo
+              variant="mark"
+              href="/dashboard"
+              ariaLabel="ConvoForm dashboard"
+            />
           </div>
         </div>
       </div>
