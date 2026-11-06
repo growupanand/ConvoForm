@@ -27,12 +27,13 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
-import BrandNameLink from "./common/brandName";
+import { BrandLogo } from "./common/brandLogo";
 
 export function AppSidebar({ orgId }: { orgId: string }) {
   const pathname = usePathname();
-  const { state } = useSidebar();
+  const { state, isMobile } = useSidebar();
   const isCollapsed = state === "collapsed";
+  const showMarkOnly = isCollapsed || isMobile;
 
   const navigationLinks = useMemo(
     () => [
@@ -69,9 +70,14 @@ export function AppSidebar({ orgId }: { orgId: string }) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem className="py-4">
-            <SidebarMenuButton asChild>
-              <BrandNameLink className="text-xl lg:text-2xl" />
-            </SidebarMenuButton>
+            <BrandLogo
+              variant={showMarkOnly ? "mark" : "lockup"}
+              size={24}
+              href="/dashboard"
+              className={cn(
+                showMarkOnly ? "mx-auto size-10 justify-center" : "w-full px-2",
+              )}
+            />
           </SidebarMenuItem>
           <SidebarMenuItem
             className={cn(

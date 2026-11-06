@@ -1,4 +1,4 @@
-import BrandNameLink from "./brandName";
+import { BrandLogo } from "./brandLogo";
 
 type Props = {
   title?: string;
@@ -24,7 +24,7 @@ function NotFoundPage({ title, description, code, action }: Readonly<Props>) {
         <div className="flex justify-center items-center gap-2">{action}</div>
       )}
       <div className="mt-10">
-        <BrandNameLink />
+        <BrandLogo variant="lockup" href="/" />
       </div>
     </div>
   );

@@ -192,6 +192,28 @@ test.describe("Public pages", () => {
   });
 });
 
+test.describe("Public header at common widths", () => {
+  for (const width of [360, 390, 1440]) {
+    test(`shows the logo and Sign in without horizontal overflow at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto("/");
+
+      const header = page.locator("header");
+      await expect(
+        header.getByRole("link", { name: "ConvoForm home" }),
+      ).toBeVisible();
+      await expect(
+        header.getByRole("link", { name: /sign in/i }),
+      ).toBeVisible();
+
+      const { scrollWidth, clientWidth } = await horizontalScroll(page);
+      expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1);
+    });
+  }
+});
+
 test.describe("Public pages at 360px", () => {
   test.use({ viewport: { width: 360, height: 800 } });
 

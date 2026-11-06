@@ -1,4 +1,4 @@
-import BrandNameLink from "@/components/common/brandName";
+import { BrandLogo } from "@/components/common/brandLogo";
 import { Button } from "@convoform/ui";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
@@ -26,7 +26,7 @@ export function DesktopOnlyAlert() {
             <Link href="/auth/register">Sign up free</Link>
           </Button>
           <div className="flex justify-center">
-            <BrandNameLink />
+            <BrandLogo variant="mark" href="/" />
           </div>
         </div>
       </div>

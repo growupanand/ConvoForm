@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Button } from "@convoform/ui";
 import { motion } from "motion/react";
 import Link from "next/link";
-import BrandNameLink from "../common/brandName";
+import { BrandLogo } from "../common/brandLogo";
 
 type Props = {
   endScreenMessage: string;
@@ -77,8 +77,8 @@ export const EndScreen = (props: Props) => {
         />
       </div>
       <div className="mt-2 flex items-center">
-        <p className="text-muted-foreground mr-2 text-lg">Created using</p>
-        <BrandNameLink className="text-lg font-bold" />
+        <p className="text-muted-foreground mr-2 text-sm">Powered by</p>
+        <BrandLogo variant="lockup" size={16} href="/" />
       </div>
     </div>
   );

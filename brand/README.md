@@ -113,6 +113,29 @@ Do not use the mark below **16px**. Prefer **32px or larger** in UI. At 16px use
 | X / LinkedIn / WhatsApp upload (filled) | `export/filled-sibling-512.png` |
 | Clerk / generic `/logo.png` consumer | generated `apps/web/public/logo.png` (master @ 512) |
 
+## Using the logo in the product
+
+Import `BrandLogo` from `apps/web/src/components/common/brandLogo.tsx`. Never
+redraw the mark or use the PNG exports in UI — the component draws the locked V5
+geometry inline with no tile background.
+
+| Place | Variant |
+| --- | --- |
+| Marketing header and footer | `lockup` |
+| App sidebar (expanded) | `lockup` |
+| Collapsed sidebar or narrow mobile | `mark` |
+| Published-form "Powered by" badge | `lockup` at 16px |
+| Full-page loading screen | `mark` |
+| Wordmark-only text | `wordmark` |
+
+- `size` is the square mark box height. Headers use 24px; the published-form
+  badge uses 16px. Never go below 16px.
+- Whenever the logo is a link, keep a tap area of at least 32px.
+- Dark mode: ask bar `#cbd5e1`, answer bar `#60a5fa`. The wordmark keeps its
+  current blue-600 / foreground treatment.
+- No tile background in UI — the page supplies the paper or surface colour.
+- No gradients, borders, shadows or animation on the logo.
+
 ## Regenerating assets
 
 From the repo root:
