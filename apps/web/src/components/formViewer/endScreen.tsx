@@ -76,9 +76,9 @@ export const EndScreen = (props: Props) => {
           fill
         />
       </div>
-      <div className="mt-2 flex items-center">
-        <p className="text-muted-foreground mr-2 text-sm">Powered by</p>
-        <BrandLogo variant="lockup" size={16} href="/" />
+      <div className="mt-2 flex items-center rounded-full bg-white/90 px-2.5 py-1">
+        <p className="mr-2 text-sm text-marketing-muted">Powered by</p>
+        <BrandLogo variant="lockup" size={16} href="/" className="min-h-0" />
       </div>
     </div>
   );

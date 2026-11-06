@@ -8,15 +8,23 @@ type Props = {
   variant: BrandLogoVariant;
   size?: number;
   href?: string;
+  ariaLabel?: string;
   className?: string;
 } & Omit<HTMLAttributes<HTMLElement>, "children" | "className">;
+
+const MARK_VIEWBOX = "80 144 352 224";
+const MARK_HEIGHT_RATIO = 224 / 352;
+
+function getMarkHeight(size: number) {
+  return Math.round(size * MARK_HEIGHT_RATIO);
+}
 
 function BrandMark({ size }: { size: number }) {
   return (
     <svg
-      viewBox="0 0 512 512"
+      viewBox={MARK_VIEWBOX}
       width={size}
-      height={size}
+      height={getMarkHeight(size)}
       aria-hidden="true"
       className="shrink-0"
     >
@@ -56,6 +64,7 @@ export function BrandLogo({
   variant,
   size = 24,
   href,
+  ariaLabel = "ConvoForm home",
   className,
   ...rest
 }: Props) {
@@ -66,7 +75,9 @@ export function BrandLogo({
     </>
   );
 
-  const gapClass = size <= 18 ? "gap-1.5" : size <= 22 ? "gap-2" : "gap-2.5";
+  const markHeight = getMarkHeight(size);
+  const gapClass =
+    markHeight <= 12 ? "gap-1" : markHeight <= 15 ? "gap-1.5" : "gap-2";
   const classes = cn(
     "inline-flex items-center",
     gapClass,
@@ -77,12 +88,7 @@ export function BrandLogo({
 
   if (href) {
     return (
-      <Link
-        href={href}
-        className={classes}
-        {...rest}
-        aria-label="ConvoForm home"
-      >
+      <Link href={href} className={classes} {...rest} aria-label={ariaLabel}>
         {content}
       </Link>
     );

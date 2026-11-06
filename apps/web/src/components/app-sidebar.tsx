@@ -74,8 +74,9 @@ export function AppSidebar({ orgId }: { orgId: string }) {
               variant={showMarkOnly ? "mark" : "lockup"}
               size={24}
               href="/dashboard"
+              ariaLabel="ConvoForm dashboard"
               className={cn(
-                showMarkOnly ? "mx-auto size-10 justify-center" : "w-full px-2",
+                showMarkOnly ? "mx-auto size-8 justify-center" : "w-full px-2",
               )}
             />
           </SidebarMenuItem>

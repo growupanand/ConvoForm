@@ -128,8 +128,11 @@ geometry inline with no tile background.
 | Full-page loading screen | `mark` |
 | Wordmark-only text | `wordmark` |
 
-- `size` is the square mark box height. Headers use 24px; the published-form
-  badge uses 16px. Never go below 16px.
+- `size` is the visible mark width. Its height is derived as
+  `Math.round(size * 224 / 352)`: the marketing header uses 22px wide (about
+  14px tall), the footer and app sidebar use 24px, and the published-form badge
+  uses 16px wide. Never go below 16px wide. The gap between mark and wordmark is
+  about 0.4x the visible mark height.
 - Whenever the logo is a link, keep a tap area of at least 32px.
 - Dark mode: ask bar `#cbd5e1`, answer bar `#60a5fa`. The wordmark keeps its
   current blue-600 / foreground treatment.

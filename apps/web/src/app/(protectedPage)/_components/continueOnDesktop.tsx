@@ -113,7 +113,11 @@ export function ContinueOnDesktop() {
             Sign out
           </Button>
           <div className="mt-6 flex justify-center">
-            <BrandLogo variant="mark" href="/dashboard" />
+            <BrandLogo
+              variant="mark"
+              href="/dashboard"
+              ariaLabel="ConvoForm dashboard"
+            />
           </div>
         </div>
       </div>
