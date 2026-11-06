@@ -23,4 +23,26 @@ export const hash = (i: number) => {
   return x - Math.floor(x);
 };
 
+/** Structural equality for scene state (plain objects, arrays, primitives). */
+export function deepEqual(a: unknown, b: unknown): boolean {
+  if (Object.is(a, b)) return true;
+  if (
+    typeof a !== "object" ||
+    typeof b !== "object" ||
+    a === null ||
+    b === null ||
+    Array.isArray(a) !== Array.isArray(b)
+  )
+    return false;
+  const left = a as Record<string, unknown>;
+  const right = b as Record<string, unknown>;
+  const keys = Object.keys(left);
+  if (keys.length !== Object.keys(right).length) return false;
+  return keys.every(
+    (key) =>
+      Object.prototype.hasOwnProperty.call(right, key) &&
+      deepEqual(left[key], right[key]),
+  );
+}
+
 declare const process: { env: { NODE_ENV?: string } };

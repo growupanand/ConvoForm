@@ -108,10 +108,6 @@ export function Hero() {
         </ul>
 
         <HeroStage />
-
-        <p className="mt-3 text-center font-mono text-xs leading-[1.4] tracking-[0.04em] text-marketing-label">
-          Illustrative example
-        </p>
       </div>
     </section>
   );

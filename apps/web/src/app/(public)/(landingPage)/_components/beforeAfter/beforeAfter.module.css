@@ -33,3 +33,11 @@
 :global(html:not([data-js])) .stage .staticFinal {
   visibility: visible;
 }
+
+:global(html[data-js][data-static]) .stage .animated {
+  visibility: hidden;
+}
+
+:global(html[data-js][data-static]) .stage .staticFinal {
+  visibility: visible;
+}

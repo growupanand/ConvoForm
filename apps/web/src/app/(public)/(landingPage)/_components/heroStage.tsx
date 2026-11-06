@@ -1,9 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import type { StageHandle, StageStatus } from "@/components/common/stageshow";
 
 import { HeroFinalFrame, HeroStartFrame } from "./heroFrames";
+import { StageControl } from "./stageControl";
 import "./stageLayers.css";
 
 const HeroScene = dynamic(
@@ -20,6 +23,8 @@ export function HeroStage() {
   // reduced motion or `?static=1`, which keep the CSS final frame.
   const [animate, setAnimate] = useState(false);
   const [ready, setReady] = useState(false);
+  const [status, setStatus] = useState<StageStatus>("paused");
+  const handleRef = useRef<StageHandle | null>(null);
 
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -53,9 +58,31 @@ export function HeroStage() {
           </div>
           {animate ? (
             <div aria-hidden="true" className="stage-layer stage-layer--live">
-              <HeroScene onReady={() => setReady(true)} />
+              <HeroScene
+                onReady={() => setReady(true)}
+                onStatusChange={setStatus}
+                handleRef={handleRef}
+              />
             </div>
           ) : null}
+        </div>
+        {/* The control's slot is reserved even before it mounts, so the
+            caption never shifts and the stage keeps CLS at 0. */}
+        <div className="mx-auto mt-3 grid min-h-11 max-w-[358px] grid-cols-[2rem_auto_2rem] items-center justify-center gap-2">
+          <span aria-hidden="true" />
+          <p className="font-mono text-xs leading-[1.4] tracking-[0.04em] text-marketing-label">
+            Illustrative example
+          </p>
+          <div className="flex justify-end">
+            {animate && ready ? (
+              <StageControl
+                status={status}
+                onPause={() => handleRef.current?.pause()}
+                onPlay={() => handleRef.current?.play()}
+                onReplay={() => handleRef.current?.replay()}
+              />
+            ) : null}
+          </div>
         </div>
       </div>
     </div>

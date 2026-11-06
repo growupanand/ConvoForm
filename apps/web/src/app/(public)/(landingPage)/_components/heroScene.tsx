@@ -1,6 +1,13 @@
 "use client";
 
-import { type Act, Stage } from "@/components/common/stageshow";
+import type { RefObject } from "react";
+
+import {
+  type Act,
+  Stage,
+  type StageHandle,
+  type StageStatus,
+} from "@/components/common/stageshow";
 
 import {
   HERO_COMPACT,
@@ -19,7 +26,16 @@ import { HERO_MESSAGES } from "./heroStory";
 // a conversation, the fields become the record a counsellor sees, Submit
 // becomes Send. (4) The chat asks country and budget, a vague budget gets one
 // clarifying follow-up, and each answer lands in its row. Payoff: the clean
-// record. Reset: the finished enquiry leaves as one thing, a fresh form rises.
+// record. The script ends on HERO_POSTER and plays once; the Stage's replay
+// control starts it again from HERO_INITIAL.
+
+const HERO_CURSOR = {
+  at: {
+    wide: { x: 820, y: 430 },
+    compact: { x: 300, y: 548 },
+  },
+  idle: 900,
+};
 
 async function say(a: Act<HeroSceneState>, i: number, typingMs: number) {
   a.put({ typing: true, msgs: i });
@@ -72,15 +88,17 @@ async function script(a: Act<HeroSceneState>) {
   a.mark("payoff");
   a.put({ budget: true });
   await a.wait(2300);
-  // Reset: the finished enquiry leaves as one, then a fresh form rises in.
-  a.put({ exit: true });
-  await a.wait(520);
-  await a.snap({ ...HERO_INITIAL, formIn: false });
-  a.put({ formIn: true });
-  await a.wait(650);
 }
 
-export function HeroScene({ onReady }: { onReady?: () => void }) {
+export function HeroScene({
+  onReady,
+  onStatusChange,
+  handleRef,
+}: {
+  onReady?: () => void;
+  onStatusChange?: (status: StageStatus) => void;
+  handleRef?: RefObject<StageHandle | null>;
+}) {
   return (
     <Stage
       width={HERO_WIDE.W}
@@ -93,16 +111,12 @@ export function HeroScene({ onReady }: { onReady?: () => void }) {
       initial={HERO_INITIAL}
       poster={HERO_POSTER}
       script={script}
-      play="loop"
-      cursor={{
-        at: {
-          wide: { x: 820, y: 430 },
-          compact: { x: 300, y: 548 },
-        },
-        idle: 900,
-      }}
+      play="once"
+      cursor={HERO_CURSOR}
       className="cf cf-hero"
       onReady={onReady}
+      onStatusChange={onStatusChange}
+      handleRef={handleRef}
     >
       {(s, _rect, layout) => <HeroSceneBody state={s} layout={layout} />}
     </Stage>

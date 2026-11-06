@@ -1,6 +1,13 @@
 "use client";
 
-import { type Act, Stage } from "@/components/common/stageshow";
+import type { RefObject } from "react";
+
+import {
+  type Act,
+  Stage,
+  type StageHandle,
+  type StageStatus,
+} from "@/components/common/stageshow";
 
 import {
   HOW_INITIAL,
@@ -22,8 +29,16 @@ import { HOW_CHAT, HOW_FIELDS, HOW_PROMPT } from "./howItWorksStory";
 //  03 Review: every answer lands in its row of the new response. The rail
 //     advances only when these things happen: 02 lights as the link goes out,
 //     03 as the first answer lands.
-// Payoff: the clean response, 4/4. Reset: the scene leaves as one and a fresh,
-// empty builder rises in.
+// Payoff: the clean response, 4/4. The script ends on HOW_POSTER and plays
+// once; the Stage's replay control starts it again from HOW_INITIAL.
+
+const HOW_CURSOR = {
+  at: {
+    wide: { x: 330, y: 470 },
+    compact: { x: 330, y: 380 },
+  },
+  idle: 900,
+};
 
 async function ask(a: Act<HowItWorksState>, i: number, dots: number) {
   a.put({ typing: true, msgs: i, asking: HOW_CHAT[i]?.ask ?? -1 });
@@ -111,14 +126,17 @@ async function script(a: Act<HowItWorksState>) {
   await a.wait(140);
   a.mark("payoff");
   await a.wait(1800);
-  a.put({ exit: true });
-  await a.wait(520);
-  await a.snap({ ...HOW_INITIAL, in: false });
-  a.put({ in: true });
-  await a.wait(650);
 }
 
-export function HowItWorksScene({ onReady }: { onReady?: () => void }) {
+export function HowItWorksScene({
+  onReady,
+  onStatusChange,
+  handleRef,
+}: {
+  onReady?: () => void;
+  onStatusChange?: (status: StageStatus) => void;
+  handleRef?: RefObject<StageHandle | null>;
+}) {
   return (
     <Stage
       width={1040}
@@ -127,16 +145,12 @@ export function HowItWorksScene({ onReady }: { onReady?: () => void }) {
       initial={HOW_INITIAL}
       poster={HOW_POSTER}
       script={script}
-      play="loop"
-      cursor={{
-        at: {
-          wide: { x: 330, y: 470 },
-          compact: { x: 330, y: 380 },
-        },
-        idle: 900,
-      }}
+      play="once"
+      cursor={HOW_CURSOR}
       className="hw"
       onReady={onReady}
+      onStatusChange={onStatusChange}
+      handleRef={handleRef}
     >
       {(s, rect, layout) => (
         <HowItWorksSceneBody state={s} layout={layout} rect={rect} />

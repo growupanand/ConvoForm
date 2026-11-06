@@ -44,6 +44,7 @@
   position: absolute;
   inset: 0;
   font-family: var(--ss-font);
+  line-height: normal;
   color: var(--cf-ink);
   /* The hero section centers its copy; the scene keeps app-like alignment. */
   text-align: left;

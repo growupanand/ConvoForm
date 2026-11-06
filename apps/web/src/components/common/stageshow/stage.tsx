@@ -1,5 +1,6 @@
 import {
   type ReactNode,
+  type RefObject,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -20,13 +21,28 @@ import {
   targetRectOf,
 } from "./measure";
 import { StillContext, useReducedMotion } from "./reduced-motion";
-import { warn } from "./util";
+import { deepEqual, isDev, warn } from "./util";
 
 // A trimmed Stage from the Stageshow kit (see LICENSE). It fits a design-size
 // scene into its container, runs the script while it is on screen, and draws
 // the cursor over the scene.
 
 export type Play = "loop" | "once";
+
+/** Where the live stage is in its run. */
+export type StageStatus = "playing" | "paused" | "done";
+
+/** The imperative side of a stage, for a control rendered outside it. */
+export interface StageHandle {
+  /** Current status. Read it from a status callback, not during render. */
+  readonly status: StageStatus;
+  /** Reset to the initial frame and run the script once more. */
+  replay(): void;
+  /** Pause the current run, keeping the frame it reached. */
+  pause(): void;
+  /** Resume a paused run. A mid-play resume may restart from the initial frame. */
+  play(): void;
+}
 
 export interface StageProps<S> {
   /** Design size. The stage scales down to fit its container. */
@@ -49,11 +65,35 @@ export interface StageProps<S> {
   className?: string;
   /** Called once the first measured frame is settled. */
   onReady?: () => void;
+  /** Called whenever the run moves between playing, paused and done. */
+  onStatusChange?: (status: StageStatus) => void;
+  /** Set by a control outside the stage to pause, play and replay it. */
+  handleRef?: RefObject<StageHandle | null>;
   /** `layout` is 'wide' or 'compact'. */
   children: (s: S, rect: (name: string) => Rect, layout: Layout) => ReactNode;
 }
 
 const NONE = {};
+
+// A once run must end on the still frame. In development, say which keys drifted
+// so a script that forgets a beat is caught without shipping the check.
+function checkPoster<S extends object>(state: S, poster: S | undefined) {
+  if (!poster || !isDev()) return;
+  const now = state as unknown as Record<string, unknown>;
+  const want = poster as unknown as Record<string, unknown>;
+  const keys = new Set([...Object.keys(now), ...Object.keys(want)]);
+  const changed = [...keys].filter((key) => !deepEqual(now[key], want[key]));
+  if (changed.length)
+    warn(
+      `poster drift: state still differs from the poster at the end of the script (${changed.join(", ")})`,
+    );
+}
+
+function checkRest(at: Point, rest: Point) {
+  if (!isDev()) return;
+  if (Math.hypot(at.x - rest.x, at.y - rest.y) > 1)
+    warn("poster drift: cursor does not end at rest");
+}
 
 export function Stage<S extends object>({
   width,
@@ -66,6 +106,8 @@ export function Stage<S extends object>({
   compact,
   className,
   onReady,
+  onStatusChange,
+  handleRef,
   children,
 }: StageProps<S>) {
   const [layout, setLayout] = useState<Layout>("wide");
@@ -80,6 +122,48 @@ export function Stage<S extends object>({
   const cursorRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const still = !script || reduced;
+
+  const statusRef = useRef<StageStatus>(still ? "done" : "paused");
+  const completedRef = useRef(false);
+  const userPausedRef = useRef(false);
+  const runtimeRef = useRef<{
+    pause: () => void;
+    play: () => void;
+    replay: () => void;
+  } | null>(null);
+  const onStatusChangeRef = useRef(onStatusChange);
+  onStatusChangeRef.current = onStatusChange;
+
+  const updateStatus = useCallback((next: StageStatus) => {
+    if (statusRef.current === next) return;
+    statusRef.current = next;
+    onStatusChangeRef.current?.(next);
+  }, []);
+
+  const handle = useMemo<StageHandle>(
+    () => ({
+      get status() {
+        return statusRef.current;
+      },
+      replay: () => runtimeRef.current?.replay(),
+      pause: () => runtimeRef.current?.pause(),
+      play: () => runtimeRef.current?.play(),
+    }),
+    [],
+  );
+
+  useLayoutEffect(() => {
+    if (!handleRef) return;
+    handleRef.current = handle;
+    return () => {
+      if (handleRef.current === handle) handleRef.current = null;
+    };
+  }, [handleRef, handle]);
+
+  // Tell a control mounted after the stage what the run is doing right now.
+  useEffect(() => {
+    onStatusChangeRef.current?.(statusRef.current);
+  }, []);
 
   const [state, setState] = useState<S>(() =>
     still && poster ? poster : initial,
@@ -265,7 +349,9 @@ export function Stage<S extends object>({
     [layout, place, remeasure, resolve],
   );
 
-  // Run the loop only while the stage is on screen and the tab is visible.
+  // Run the script only while the stage is on screen and the tab is visible.
+  // A once run is never reset after it finishes; a mid-play interruption
+  // restarts from the initial frame when the stage comes back.
   useEffect(() => {
     const stage = rootRef.current;
     const fit = fitRef.current;
@@ -275,13 +361,16 @@ export function Stage<S extends object>({
       reset();
       setState(poster ?? initial);
       stage.removeAttribute("data-offscreen");
+      updateStatus("done");
       return;
     }
 
-    reset();
+    if (completedRef.current) updateStatus("done");
+    else updateStatus("paused");
+
     let ctrl: AbortController | null = null;
     let onScreen = false;
-    let done = false;
+    let disposed = false;
 
     const idle = cursor?.idle ?? 4000;
     const LEAD = 1200;
@@ -317,50 +406,108 @@ export function Stage<S extends object>({
         wait - 400,
       );
     };
-    const unwatchIdle = () => {
+    const unwatchIdle = (keepIdle = false) => {
       window.clearInterval(idleTimer);
       window.clearTimeout(revealTimer);
       loopAt.current = 0;
-      cursorRef.current?.removeAttribute("data-idle");
+      if (!keepIdle) cursorRef.current?.removeAttribute("data-idle");
+    };
+    const settleIdle = () => {
+      window.clearInterval(idleTimer);
+      window.clearTimeout(revealTimer);
+      if (cursor) cursorRef.current?.setAttribute("data-idle", "");
     };
 
+    const canRun = () => onScreen && !document.hidden && !userPausedRef.current;
+
     const start = () => {
-      if (ctrl || done || !onScreen || document.hidden) return;
+      if (ctrl || completedRef.current || !canRun()) return;
+      // The clock cannot resume mid-beat after an abort, so a resume replays
+      // from the start. A finished run never reaches this point.
+      reset();
+      updateStatus("playing");
       if (cursor) place(resolve(restAt()));
-      ctrl = new AbortController();
-      const signal = ctrl.signal;
+      const run = new AbortController();
+      ctrl = run;
+      const signal = run.signal;
       watchIdle();
       const act = makeAct(signal);
       (async () => {
-        do {
-          beginLoop();
-          try {
+        try {
+          if (play === "loop") {
+            do {
+              beginLoop();
+              await script(act);
+              if (signal.aborted) return;
+              checkSeam(
+                stateRef.current,
+                initial,
+                pos.current,
+                cursor ? resolve(restAt()) : null,
+              );
+            } while (!signal.aborted);
+          } else {
+            beginLoop();
             await script(act);
-          } catch (e) {
-            if (e instanceof Stopped) return;
-            console.error("[stageshow] script error", e);
+          }
+        } catch (e) {
+          if (e instanceof Stopped) return;
+          console.error("[stageshow] script error", e);
+          if (ctrl === run) {
             ctrl = null;
             unwatchIdle();
-            return;
+            updateStatus("paused");
           }
-          if (play === "loop")
-            checkSeam(
-              stateRef.current,
-              initial,
-              pos.current,
-              cursor ? resolve(restAt()) : null,
-            );
-        } while (play === "loop" && !signal.aborted);
-        if (play === "once" && !signal.aborted) done = true;
+          return;
+        }
+        if (signal.aborted || ctrl !== run) return;
+        ctrl = null;
+        if (play === "loop") return;
+        completedRef.current = true;
+        updateStatus("done");
+        settleIdle();
+        // Let the final state commit before comparing it with the poster.
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            if (disposed) return;
+            checkPoster(stateRef.current, poster);
+            if (cursor) checkRest(pos.current, resolve(restAt()));
+          });
+        });
       })();
     };
-    const stop = () => {
+
+    const stopClock = () => {
+      // A finished once run keeps its poster and its idle cursor; nothing to stop.
+      if (completedRef.current) return;
       unwatchIdle();
-      if (!ctrl) return;
-      ctrl.abort();
+      const run = ctrl;
       ctrl = null;
-      reset();
+      run?.abort();
+      updateStatus("paused");
     };
+
+    const pause = () => {
+      userPausedRef.current = true;
+      stopClock();
+    };
+
+    const playNow = () => {
+      userPausedRef.current = false;
+      if (completedRef.current) return;
+      start();
+    };
+
+    const replay = () => {
+      if (still || !script) return;
+      stopClock();
+      completedRef.current = false;
+      userPausedRef.current = false;
+      reset();
+      start();
+    };
+
+    runtimeRef.current = { pause, play: playNow, replay };
 
     const markOffscreen = () => {
       stage.toggleAttribute("data-offscreen", !onScreen || document.hidden);
@@ -372,23 +519,26 @@ export function Stage<S extends object>({
         onScreen = entry.isIntersecting;
         markOffscreen();
         if (onScreen) start();
-        else stop();
+        else stopClock();
       },
       { threshold: 0.2 },
     );
     io.observe(fit);
     const onVisibility = () => {
       markOffscreen();
-      if (document.hidden) stop();
+      if (document.hidden) stopClock();
       else start();
     };
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
+      disposed = true;
       io.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
-      unwatchIdle();
-      ctrl?.abort();
+      unwatchIdle(completedRef.current);
+      const run = ctrl;
       ctrl = null;
+      run?.abort();
+      runtimeRef.current = null;
     };
   }, [
     still,
@@ -403,6 +553,7 @@ export function Stage<S extends object>({
     resolve,
     restAt,
     reset,
+    updateStatus,
   ]);
 
   const look = useMemo(() => ({ layout }), [layout]);

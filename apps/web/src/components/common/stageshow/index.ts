@@ -1,6 +1,12 @@
 import "./stageshow.css";
 
-export { Stage, type Play, type StageProps } from "./stage";
+export {
+  Stage,
+  type Play,
+  type StageHandle,
+  type StageProps,
+  type StageStatus,
+} from "./stage";
 export type { Act, Script } from "./act";
 export { Thread, Bubble, type ThreadProps, type BubbleProps } from "./messages";
 export { Phone, type PhoneProps } from "./phone";

@@ -10,7 +10,6 @@ const C = {
 } as const;
 
 const MESSAGE = "Hi! What should I call you?";
-const LOOP_SECONDS = 6;
 const IN0 = 0;
 const IN1 = 1.3;
 const M0 = 1.3;
@@ -20,6 +19,9 @@ const TY1 = 3.6;
 const R0 = 4;
 const F0 = 5.35;
 const F1 = 5.95;
+
+// Hold on the fully informative frame, before the loop-out fade would blank it.
+const PLAY_SECONDS = F0;
 
 const clamp = (value: number, min = 0, max = 1) =>
   Math.min(max, Math.max(min, value));
@@ -431,4 +433,4 @@ export function buildFinalCtaScene(svg: SVGSVGElement): FinalCtaScene {
   return { render };
 }
 
-export { LOOP_SECONDS };
+export { PLAY_SECONDS };

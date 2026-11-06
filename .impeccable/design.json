@@ -119,19 +119,29 @@
         "purpose": "Delay between sibling items in a reveal."
       },
       {
-        "name": "loop-hero",
+        "name": "run-hero",
         "value": "16s",
-        "purpose": "Hero form → error → shatter → chat → record loop."
+        "purpose": "Hero form → error → shatter → chat → record; plays once."
+      },
+      {
+        "name": "run-before-after",
+        "value": "6s",
+        "purpose": "Before/after comparison; plays once."
+      },
+      {
+        "name": "run-final-cta",
+        "value": "5.35s",
+        "purpose": "Final CTA form → chat bubble; plays once."
       },
       {
         "name": "loop-scene",
-        "value": "6s-10.8s",
-        "purpose": "Section loops (before/after, trust icons)."
+        "value": "10.8s",
+        "purpose": "Trust icon loop."
       },
       {
-        "name": "loop-how",
+        "name": "run-how",
         "value": "18s",
-        "purpose": "How it works design → share → review loop."
+        "purpose": "How it works design → share → review; plays once."
       },
       {
         "name": "ambient",
@@ -140,7 +150,7 @@
       },
       {
         "name": "in-view-threshold",
-        "value": "0.2 (loops) / 0.3 (one-shot)",
+        "value": "0.2 (stages) / 0.3 (one-shot)",
         "purpose": "IntersectionObserver thresholds that start animations."
       },
       {
