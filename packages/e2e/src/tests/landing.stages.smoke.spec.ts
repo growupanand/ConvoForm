@@ -8,14 +8,15 @@ const VIEWPORT = { width: 360, height: 1000 };
 
 const STAGES = [
   // Design durations from DESIGN.md (`run-hero` / `run-how`).
-  { name: "hero", duration: 16_000 },
-  { name: "how", duration: 18_000 },
+  { name: "hero", duration: 16_000, path: "/" },
+  { name: "how", duration: 18_000, path: "/" },
+  { name: "job", duration: 9_000, path: "/use-cases/job-application" },
 ] as const;
 
 type StageName = (typeof STAGES)[number]["name"];
 
 // Both screenshots use the same viewport offset so text antialiasing lines up.
-const STAGE_TOP: Record<StageName, number> = { hero: 100, how: 20 };
+const STAGE_TOP: Record<StageName, number> = { hero: 100, how: 20, job: 100 };
 
 const stageShell = (page: Page, name: StageName) =>
   page.locator(`.stage-shell--${name}`);
@@ -69,7 +70,8 @@ function collectConsoleErrors(page: Page) {
 }
 
 async function openLiveStage(page: Page, name: StageName) {
-  await page.goto("/");
+  const stage = STAGES.find((item) => item.name === name);
+  await page.goto(stage?.path ?? "/");
   const shell = stageShell(page, name);
   await expect(shell.locator(".ss-stage")).toBeAttached({ timeout: 30_000 });
   await shell.scrollIntoViewIfNeeded();
@@ -81,10 +83,11 @@ async function openLiveStage(page: Page, name: StageName) {
 }
 
 async function staticPoster(page: Page, name: StageName) {
+  const stage = STAGES.find((item) => item.name === name);
   const posterPage = await page.context().newPage();
   try {
     await posterPage.setViewportSize(VIEWPORT);
-    await posterPage.goto("/?static=1");
+    await posterPage.goto(`${stage?.path ?? "/"}?static=1`);
     const shell = stageShell(posterPage, name);
     await expect(shell).toBeVisible();
     await expect(shell.locator(".stage-layer--final")).toBeVisible();
@@ -264,9 +267,7 @@ test.describe("Landing stages at 360px", () => {
       const { scrollWidth, clientWidth } = await horizontalScroll(page);
       expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1);
 
-      for (const stage of STAGES) {
-        await expectNoFocusableDescendants(page, stage.name);
-      }
+      await expectNoFocusableDescendants(page, name);
 
       // The final live frame must match the CSS poster shown by `?static=1`.
       const poster = await staticPoster(page, name);
@@ -336,19 +337,23 @@ test.describe("Landing stage fallbacks", () => {
   test.use({ viewport: VIEWPORT });
 
   test("?static=1 shows the final frame and no control", async ({ page }) => {
-    await page.goto("/?static=1");
-    await expect(page.locator("html")).toHaveAttribute("data-static", "1");
-    for (const { name } of STAGES) await expectFinalFallback(page, name);
+    for (const { name, path } of STAGES) {
+      await page.goto(`${path}?static=1`);
+      await expect(page.locator("html")).toHaveAttribute("data-static", "1");
+      await expectFinalFallback(page, name);
+    }
   });
 
   test("reduced motion shows the final frame and no control", async ({
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/");
-    await expect(page.locator("html")).toHaveAttribute("data-js", "1");
-    await page.waitForTimeout(1000);
-    for (const { name } of STAGES) await expectFinalFallback(page, name);
+    for (const { name, path } of STAGES) {
+      await page.goto(path);
+      await expect(page.locator("html")).toHaveAttribute("data-js", "1");
+      await page.waitForTimeout(1000);
+      await expectFinalFallback(page, name);
+    }
   });
 });
 
@@ -356,8 +361,10 @@ test.describe("Landing stages without JavaScript", () => {
   test.use({ viewport: VIEWPORT, javaScriptEnabled: false });
 
   test("show the final frame and no control", async ({ page }) => {
-    await page.goto("/");
-    await expect(page.locator("html")).not.toHaveAttribute("data-js", "1");
-    for (const { name } of STAGES) await expectFinalFallback(page, name);
+    for (const { name, path } of STAGES) {
+      await page.goto(path);
+      await expect(page.locator("html")).not.toHaveAttribute("data-js", "1");
+      await expectFinalFallback(page, name);
+    }
   });
 });

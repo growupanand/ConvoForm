@@ -29,6 +29,11 @@
   max-width: 360px;
 }
 
+.stage-shell--job {
+  aspect-ratio: 358 / 560;
+  max-width: 358px;
+}
+
 @container stage (min-width: 868px) {
   .stage-shell--hero {
     aspect-ratio: 1040 / 440;

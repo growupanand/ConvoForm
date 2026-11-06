@@ -1,0 +1,347 @@
+/* ConvoForm look for the job-application hero scene, scoped under .job so
+   nothing leaks into the host page. Kit CSS sits in @layer stageshow; these
+   plain rules win. Every length is a design pixel multiplied by `--u`. */
+
+.job {
+  --ss-canvas: transparent;
+  --ss-surface: var(--marketing-surface);
+  --ss-line: var(--marketing-hair);
+  --ss-line-faint: var(--marketing-hair-soft);
+  --ss-text-strong: var(--marketing-ink);
+  --ss-text: var(--marketing-muted);
+  --ss-text-faint: var(--marketing-label);
+  --ss-accent: var(--marketing-blue-600);
+  --ss-font: var(--font-inter), system-ui, sans-serif;
+  --ss-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --job-blue: var(--marketing-blue-600);
+  --job-blue-50: var(--marketing-blue-50);
+  --job-blue-300: var(--marketing-blue-300);
+  --job-blue-700: var(--marketing-blue-700);
+  --job-hair: var(--marketing-hair);
+  --job-hair-soft: var(--marketing-hair-soft);
+  --job-label: var(--marketing-label);
+  --job-ink: var(--marketing-ink);
+  --job-arrive: cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* The live Stage is design-sized; a still frame overrides this with a
+     container-relative unit in jobApplicationFrames.css. */
+  --u: 1px;
+  --job-sw: calc(1.25 * var(--u));
+}
+
+.job,
+.job *,
+.job *::before,
+.job *::after {
+  box-sizing: border-box;
+}
+
+.job .ss-stage {
+  background: transparent;
+  overflow: hidden;
+}
+
+.job-scene {
+  position: absolute;
+  inset: 0;
+  font-family: var(--ss-font);
+  line-height: normal;
+  text-align: left;
+  color: var(--job-ink);
+}
+
+/* The faint dot grid, masked so it fades out before the stage's edges. */
+.job-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle at calc(1 * var(--u)) calc(1 * var(--u)),
+    color-mix(in srgb, var(--marketing-ink) 8%, transparent) calc(1 * var(--u)),
+    transparent 0
+  );
+  background-size: calc(22 * var(--u)) calc(22 * var(--u));
+  -webkit-mask-image: radial-gradient(
+    ellipse 68% 74% at 50% 48%,
+    #000 30%,
+    transparent 80%
+  );
+  mask-image: radial-gradient(
+    ellipse 68% 74% at 50% 48%,
+    #000 30%,
+    transparent 80%
+  );
+  pointer-events: none;
+}
+
+/* ---------- the card: conversation, then candidate profile ---------- */
+.job-card {
+  position: absolute;
+  left: calc(16 * var(--u));
+  top: calc(40 * var(--u));
+  width: calc(326 * var(--u));
+  height: calc(480 * var(--u));
+  overflow: hidden;
+  border: var(--job-sw) solid var(--job-hair);
+  border-radius: calc(18 * var(--u));
+  background: var(--ss-surface);
+}
+
+.job-head {
+  position: absolute;
+  left: calc(22 * var(--u));
+  right: calc(18 * var(--u));
+  top: calc(18 * var(--u));
+  height: calc(24 * var(--u));
+}
+.job-title {
+  display: grid;
+  font-family: var(--font-bricolage), var(--font-inter), sans-serif;
+  font-size: calc(16.5 * var(--u));
+  line-height: calc(24 * var(--u));
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--job-ink);
+}
+.job-title > span {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+.job-title__profile {
+  opacity: 0;
+}
+.job-card[data-phase="profile"] .job-title__chat {
+  opacity: 0;
+}
+.job-card[data-phase="profile"] .job-title__profile {
+  opacity: 1;
+}
+
+.job-head__who {
+  position: absolute;
+  right: 0;
+  top: calc(2 * var(--u));
+  font-family: var(--ss-mono);
+  font-size: calc(12.5 * var(--u));
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+  color: var(--job-label);
+  transition: opacity 0.3s ease;
+}
+.job-chip {
+  position: absolute;
+  right: 0;
+  top: calc(1 * var(--u));
+  padding: calc(3 * var(--u)) calc(6 * var(--u));
+  border: var(--job-sw) dashed var(--job-hair);
+  border-radius: 999px;
+  font-family: var(--ss-mono);
+  font-size: calc(12 * var(--u));
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--job-label);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.job-card[data-phase="profile"] .job-head__who {
+  opacity: 0;
+}
+.job-card[data-phase="profile"] .job-chip {
+  opacity: 1;
+}
+.job-rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(52 * var(--u));
+  border-top: var(--job-sw) solid var(--job-hair-soft);
+}
+
+/* ---------- conversation ---------- */
+.job-chat {
+  position: absolute;
+  inset: 0;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.25s ease,
+    visibility 0s linear 0s;
+}
+.job-card[data-phase="profile"] .job-chat {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.25s ease,
+    visibility 0s linear 0.25s;
+}
+.job-thread-box {
+  position: absolute;
+  left: calc(18 * var(--u));
+  right: calc(18 * var(--u));
+  top: calc(68 * var(--u));
+  bottom: calc(76 * var(--u));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 calc(22 * var(--u))
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 calc(22 * var(--u))
+  );
+}
+.job .job-thread {
+  --ss-thread-size: calc(14 * var(--u));
+  --ss-me: var(--job-blue);
+  --ss-me-text: var(--marketing-surface);
+  --ss-them: var(--marketing-hair-soft);
+  --ss-them-text: var(--job-ink);
+  gap: calc(2 * var(--u));
+  max-height: 100%;
+}
+.job .job-thread .ss-bubble__tail {
+  display: none;
+}
+.job .job-thread [data-from="them"] > .ss-bubble {
+  border-bottom-left-radius: calc(5 * var(--u));
+}
+.job .job-thread [data-from="me"] > .ss-bubble {
+  border-bottom-right-radius: calc(5 * var(--u));
+}
+/* The clarifying follow-up is the one moment a standard form cannot do. */
+.job .job-thread .job-followup > .ss-bubble {
+  --ss-them: var(--job-blue-50);
+  --ss-them-text: var(--job-blue-700);
+  box-shadow: inset 0 0 0 var(--job-sw) var(--job-blue-300);
+}
+.job .job-thread .ss-bubble__dots i {
+  background: var(--marketing-slate);
+}
+
+.job-composer {
+  position: absolute;
+  left: calc(18 * var(--u));
+  right: calc(18 * var(--u));
+  bottom: calc(16 * var(--u));
+  height: calc(38 * var(--u));
+  display: flex;
+  align-items: center;
+  padding: 0 calc(14 * var(--u));
+  border: var(--job-sw) solid var(--job-hair);
+  border-radius: 999px;
+  background: var(--ss-surface);
+  font-size: calc(14 * var(--u));
+  line-height: 1.3;
+}
+.job-composer__text {
+  position: relative;
+  white-space: nowrap;
+  color: var(--job-ink);
+}
+.job-composer__ph {
+  position: absolute;
+  left: calc(14 * var(--u));
+  color: var(--job-label);
+}
+.job-composer__ph[data-hide] {
+  visibility: hidden;
+}
+.job-caret {
+  display: inline-block;
+  width: var(--job-sw);
+  height: calc(15 * var(--u));
+  margin-left: calc(1 * var(--u));
+  vertical-align: calc(-3 * var(--u));
+  background: var(--job-blue);
+}
+
+/* ---------- candidate profile ---------- */
+.job-profile {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.25s ease,
+    visibility 0s linear 0.25s;
+}
+.job-card[data-phase="profile"] .job-profile {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.4s ease 0.1s,
+    visibility 0s linear 0s;
+}
+.job-profile__grid {
+  position: absolute;
+  left: calc(12 * var(--u));
+  right: calc(12 * var(--u));
+  top: calc(64 * var(--u));
+  bottom: calc(12 * var(--u));
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: calc(8 * var(--u));
+}
+.job-cell {
+  position: relative;
+  min-width: 0;
+  padding: calc(10 * var(--u));
+  border: var(--job-sw) solid var(--job-hair);
+  border-radius: calc(12 * var(--u));
+  background: var(--ss-surface);
+  opacity: 0;
+  translate: 0 calc(4 * var(--u));
+  transition:
+    opacity 0.3s ease,
+    translate 0.4s var(--job-arrive),
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+.job-cell[data-on] {
+  opacity: 1;
+  translate: 0 0;
+}
+.job-cell[data-highlighted] {
+  border-color: var(--job-blue-300);
+  background: var(--job-blue-50);
+}
+.job-cell__key {
+  font-family: var(--ss-mono);
+  font-size: calc(12 * var(--u));
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--job-label);
+}
+.job-cell[data-highlighted] .job-cell__key {
+  color: var(--job-blue);
+}
+.job-cell__value {
+  margin-top: calc(7 * var(--u));
+  font-size: calc(14 * var(--u));
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--job-ink);
+  overflow-wrap: break-word;
+}
+.job-cell[data-highlighted] .job-cell__value {
+  color: var(--job-blue-700);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .job .ss-stage *,
+  .job .ss-stage *::before,
+  .job .ss-stage *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

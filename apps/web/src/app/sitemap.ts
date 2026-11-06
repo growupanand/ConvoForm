@@ -1,3 +1,8 @@
+import {
+  jobApplicationUseCasePath,
+  studyAbroadUseCasePath,
+  useCasesPath,
+} from "@/lib/marketingPaths";
 import type { MetadataRoute } from "next";
 
 const baseUrl = "https://www.convoform.com";
@@ -19,13 +24,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/use-cases`,
+      url: `${baseUrl}${useCasesPath}`,
       lastModified,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/use-cases/study-abroad`,
+      url: `${baseUrl}${studyAbroadUseCasePath}`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}${jobApplicationUseCasePath}`,
       lastModified,
       changeFrequency: "monthly",
       priority: 0.7,
