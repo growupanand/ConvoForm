@@ -7,6 +7,7 @@ import { api } from "@/trpc/react";
 import type { Conversation } from "@convoform/db/src/schema";
 import {
   ScrollArea,
+  ScrollBar,
   Table,
   TableBody,
   TableCell,
@@ -134,9 +135,9 @@ function ResponsesTable({ responses }: { responses: Conversation[] }) {
   const displayResponses = responses.length === 0 ? [] : sortedResponses;
 
   return (
-    <ScrollArea className="h-[300px] rounded-md">
+    <ScrollArea className="h-full min-h-[300px] rounded-none">
       <Table>
-        <TableHeader className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm">
+        <TableHeader className="sticky top-0 z-30 bg-marketing-surface/95 backdrop-blur-sm">
           <TableRow>
             <TableHead className="w-[200px]">Submission</TableHead>
             <TableHead className="text-center">Status</TableHead>
@@ -189,6 +190,7 @@ function ResponsesTable({ responses }: { responses: Conversation[] }) {
           </AnimatePresence>
         </TableBody>
       </Table>
+      <ScrollBar orientation="horizontal" />
     </ScrollArea>
   );
 }

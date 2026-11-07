@@ -8,7 +8,6 @@ const VIEWPORT = { width: 360, height: 1000 };
 const SETTLE_TIMEOUT = 15_000;
 
 const SECTIONS = [
-  { path: "/", selector: "#why-a-conversation", name: "why a conversation" },
   { path: "/", selector: "#get-started", name: "get started" },
   {
     path: "/use-cases/study-abroad",

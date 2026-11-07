@@ -19,7 +19,7 @@ Add `?static=1` to the URL (or turn on "reduce motion" in your OS) to see the st
 | `final-cta.html` | Standalone demo of the final CTA section ("Ready to let your form talk back?"). |
 
 ## Notes
-- **The "Existing live demo" block in the landing mockup is a placeholder.** In the real site the existing demo section (`demoSection/`, `DEMO_FORM_ID="demo"`) stays exactly as it is, just positioned under the hero.
+- **The "Existing live demo" block in the landing mockup is a placeholder.** In the real site the demo section (`demoSection/`, `DEMO_FORM_ID="demo"`) sits after the "Who is ConvoForm for?" section: form and live responses side by side on desktop, replaced by a CTA below `1024px`.
 - The amber "MOCKUP" badge/strip is only for the mockups.
 - Links between pages are relative and won't resolve inside a gist. Download all files into one folder to click through.
 - No stats, testimonials or logos are invented. Example data is labelled "Illustrative".

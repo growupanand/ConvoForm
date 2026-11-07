@@ -285,11 +285,11 @@ Load all three from Google Fonts through `next/font/google` (`Bricolage_Grotesqu
 - **Sections:** `section` vertical padding (`section-mobile` at 900px and below). Section intros are an eyebrow, an `h2`, then a lead; centred only for the hero, FAQ and similar single-column moments.
 - **Header:** sticky, 64px tall (58px on mobile).
 - **Grids:** three columns for steps, four for trust cards (two at 1100px and below, one at 900px and below), two-column split panels that stack on mobile.
-- **Breakpoints:** `900px` is the main mobile switch; `1100px` drops dense grids to two columns. The existing live demo has its own `1024px` desktop check and is left alone.
+- **Breakpoints:** `900px` is the main mobile switch; `1100px` drops dense grids to two columns. The live demo uses its own client-side `1024px` check: below it the demo and responses card are not mounted, and a CTA links to the public demo form.
 - **Rhythm:** spacing comes from the `spacing` scale (4, 8, 12, 16, 24, 32, 44, 56, 64). Card padding is 20 to 40px; section blocks sit 28 to 48px below their intro.
 - **Mobile:** CTAs stack full width (max 340px); tabs stretch to fill the row; tables reflow to two columns. Nothing may scroll horizontally at 360px (`overflow-x: clip` on `html, body`).
 
-**The Demo Slot Rule.** The live demo sits directly under the hero. Its component tree (`demoSection/`) is never restyled or rewritten; only the wrapper around it may change.
+**The Demo Slot Rule.** The live demo follows the "Who is ConvoForm for?" section. On desktop it is a two-column layout: the demo form on the left and the live responses card on the right, both 600px tall. Below `1024px` neither is mounted; a CTA opens `/view/demo` in a new tab.
 
 ## Elevation & Depth
 

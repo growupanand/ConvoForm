@@ -86,26 +86,6 @@ test.describe("Public pages", () => {
     ).toHaveAttribute("href", "/use-cases/job-application");
   });
 
-  test("the landing Job application tab links to the use case", async ({
-    page,
-  }) => {
-    await page.goto("/");
-
-    await page.getByRole("tab", { name: "Job application" }).click();
-    const link = page.getByRole("link", {
-      name: /see the job application use case/i,
-    });
-    await expect(link).toHaveAttribute("href", "/use-cases/job-application");
-
-    await link.click();
-    await expect(
-      page.getByRole("heading", {
-        level: 1,
-        name: /start the screening call/i,
-      }),
-    ).toBeVisible();
-  });
-
   test("changelog release anchors deep-link to a release", async ({ page }) => {
     await page.goto("/changelog#v0-18-0");
 

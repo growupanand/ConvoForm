@@ -1,5 +1,6 @@
 import {
   ScrollArea,
+  ScrollBar,
   Table,
   TableBody,
   TableCell,
@@ -10,9 +11,9 @@ import {
 
 export function ResponsesTableSkeleton() {
   return (
-    <ScrollArea className="h-[300px] rounded-md">
+    <ScrollArea className="h-full min-h-[300px] rounded-none">
       <Table>
-        <TableHeader className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm">
+        <TableHeader className="sticky top-0 z-30 bg-marketing-surface/95 backdrop-blur-sm">
           <TableRow>
             <TableHead className="w-[200px]">Submission</TableHead>
             <TableHead className="text-center">Status</TableHead>
@@ -49,6 +50,7 @@ export function ResponsesTableSkeleton() {
           ))}
         </TableBody>
       </Table>
+      <ScrollBar orientation="horizontal" />
     </ScrollArea>
   );
 }

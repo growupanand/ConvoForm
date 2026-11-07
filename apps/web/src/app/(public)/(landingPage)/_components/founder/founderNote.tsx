@@ -1,3 +1,4 @@
+import { Achievements } from "../achievements";
 import {
   FOUNDER_GITHUB_URL,
   FOUNDER_NAME,
@@ -40,6 +41,10 @@ export function FounderNote() {
           </a>
         </figcaption>
       </figure>
+
+      <div className="mt-8">
+        <Achievements />
+      </div>
     </section>
   );
 }

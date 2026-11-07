@@ -1,11 +1,13 @@
 "use client";
 
 import Spinner from "@/components/common/spinner";
-import { useMediaQuery } from "@/hooks/use-media-query";
 import { api } from "@/trpc/react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { DEMO_FORM_ID } from "../constants";
+import { LazyLiveDemoResponses } from "./LazyLiveDemoResponses";
+import { DemoResponsesShell } from "./demoResponsesShell";
 
 const LazyDemoSectionCard = dynamic(
   () => import("./demoSectionCard").then((mod) => mod.DemoSectionCard),
@@ -14,33 +16,33 @@ const LazyDemoSectionCard = dynamic(
   },
 );
 
-function DemoSectionInner() {
-  const [isDesktop] = useMediaQuery("(min-width: 1024px)");
-  // Track if responses demo is visible
-  const [showResponses, setShowResponses] = useState(false);
+function useDesktopViewport() {
+  // Start from the desktop layout, but render nothing until matchMedia has run
+  // so phones never mount the demo or open a websocket.
+  const [isDesktop, setIsDesktop] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
-  const { data: formData, isLoading } = api.form.getOneWithFields.useQuery(
-    {
-      id: DEMO_FORM_ID,
-    },
-    {
-      enabled: isDesktop,
-    },
-  );
-
-  // Show responses after form is visible for a few seconds
   useEffect(() => {
-    if (formData && !isLoading) {
-      const timer = setTimeout(() => {
-        setShowResponses(true);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [formData, isLoading]);
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
 
-  if (!isDesktop) {
-    return null;
-  }
+    const sync = () => {
+      setIsDesktop(mediaQuery.matches);
+    };
+
+    sync();
+    setMounted(true);
+    mediaQuery.addEventListener("change", sync);
+
+    return () => mediaQuery.removeEventListener("change", sync);
+  }, []);
+
+  return { isDesktop, mounted };
+}
+
+function DemoFormColumn() {
+  const { data: formData, isLoading } = api.form.getOneWithFields.useQuery({
+    id: DEMO_FORM_ID,
+  });
 
   if (isLoading) {
     return <DemoSectionSkeleton />;
@@ -50,29 +52,56 @@ function DemoSectionInner() {
     return null;
   }
 
-  return <LazyDemoSectionCard form={formData} showResponses={showResponses} />;
+  return <LazyDemoSectionCard form={formData} />;
 }
 
 export const DemoSectionSkeleton = () => {
   return (
-    <div className="flex items-center justify-center h-full">
+    <div className="flex h-full min-h-[600px] items-center justify-center">
       <Spinner size="lg" label="Initializing Demo" labelClassName="text-xl" />
     </div>
   );
 };
 
-const DemoSectionContainer = ({ children }: { children: React.ReactNode }) => {
+function MobileDemoCta() {
   return (
-    <div className="min-h-[500px] flex items-center justify-center max-lg:hidden">
-      {children}
+    <div className="text-center">
+      <p className="mx-auto max-w-[340px] font-body text-[17px] leading-[1.6] text-marketing-muted">
+        See how a ConvoForm conversation feels.
+      </p>
+      <Link
+        href={`/view/${DEMO_FORM_ID}`}
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        className="mt-6 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-marketing-blue-600 px-6 py-[15px] font-body text-[15px] font-semibold leading-none text-white shadow-marketing-primary transition duration-150 hover:-translate-y-px hover:bg-marketing-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600"
+      >
+        Try a live form
+      </Link>
     </div>
   );
-};
+}
 
 export function DemoSection() {
+  const { isDesktop, mounted } = useDesktopViewport();
+
+  if (!mounted) {
+    return null;
+  }
+
+  if (!isDesktop) {
+    return <MobileDemoCta />;
+  }
+
   return (
-    <DemoSectionContainer>
-      <DemoSectionInner />
-    </DemoSectionContainer>
+    <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[minmax(0,600px)_minmax(0,1fr)] lg:gap-10">
+      <div className="min-h-[600px] min-w-0">
+        <DemoFormColumn />
+      </div>
+      <div className="h-[600px] min-w-0">
+        <DemoResponsesShell>
+          <LazyLiveDemoResponses />
+        </DemoResponsesShell>
+      </div>
+    </div>
   );
 }

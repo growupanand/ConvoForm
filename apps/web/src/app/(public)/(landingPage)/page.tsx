@@ -1,10 +1,6 @@
 import { Hero } from "@/app/(public)/(landingPage)/_components/hero";
 import type { Metadata } from "next";
-import { Achievements } from "./_components/achievements";
-import { BeforeAfterSection } from "./_components/beforeAfter";
 import { DemoSection } from "./_components/demoSection";
-import { LazyLiveDemoResponses } from "./_components/demoSection/LazyLiveDemoResponses";
-import { DemoResponsesShell } from "./_components/demoSection/demoResponsesShell";
 import { FaqSection } from "./_components/faq/faqSection";
 import { FinalCtaSection } from "./_components/finalCta/finalCtaSection";
 import { FounderNote } from "./_components/founder/founderNote";
@@ -43,28 +39,7 @@ export default function Home() {
     <main className="min-w-0">
       <Hero />
 
-      {/* The real demo form stays exactly as it is, directly under the hero. */}
-      <section
-        id="demo"
-        aria-labelledby="demo-heading"
-        className="demo-form mx-auto w-full max-w-[1160px] scroll-mt-20 px-4 pt-2 font-sans min-[900px]:pt-4"
-      >
-        <h2 id="demo-heading" className="sr-only">
-          Live demo
-        </h2>
-        <DemoSection />
-      </section>
-
-      {/* Live Responses Section */}
-      <div className="demo-responses mx-auto my-12 flex max-w-[1160px] justify-center px-4 max-lg:hidden">
-        <DemoResponsesShell>
-          <LazyLiveDemoResponses />
-        </DemoResponsesShell>
-      </div>
-
       <HowItWorksSection />
-
-      <BeforeAfterSection />
 
       <div
         id="use-cases"
@@ -73,9 +48,25 @@ export default function Home() {
         <UseCases />
       </div>
 
-      <div className="my-10">
-        <Achievements />
-      </div>
+      <section
+        id="demo"
+        aria-labelledby="demo-heading"
+        className="min-w-0 scroll-mt-20 overflow-x-clip px-4 pb-[76px] pt-10 font-sans min-[900px]:pb-[112px]"
+      >
+        <div className="mx-auto w-full max-w-[1160px]">
+          <div className="text-center">
+            <h2
+              id="demo-heading"
+              className="mx-auto max-w-[760px] font-display text-[clamp(32px,4.2vw,50px)] font-bold leading-[1.06] tracking-[-0.03em] text-marketing-ink"
+            >
+              Live demo
+            </h2>
+          </div>
+          <div className="mt-8 min-[900px]:mt-10">
+            <DemoSection />
+          </div>
+        </div>
+      </section>
 
       <TrustSection />
 

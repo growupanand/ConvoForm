@@ -1,7 +1,7 @@
 import { type Page, expect, test } from "@playwright/test";
 
-// Runs in the `landing-smoke` project: signed out, desktop viewport (the live
-// demo only renders at >= 1024px), and no dependency on the auth `setup` project.
+// Runs in the `landing-smoke` project: signed out, no dependency on the auth
+// `setup` project. The live demo only mounts at >= 1024px.
 
 const MOCK_QUESTION = "What is your name?";
 const MOCK_ANSWER = "Ada Lovelace";
@@ -47,45 +47,63 @@ test.describe("Landing page smoke", () => {
     });
   });
 
-  test("demo form renders and accepts one message", async ({ page }) => {
-    // Two streamed conversation turns against a remote database.
-    test.slow();
+  test.describe("live demo on desktop", () => {
+    test.use({ viewport: { width: 1440, height: 900 } });
 
+    test("demo form renders and accepts one message", async ({ page }) => {
+      // Two streamed conversation turns against a remote database.
+      test.slow();
+
+      await page.goto("/");
+
+      const demo = page.locator(".form-card");
+      await expect(
+        demo,
+        "the live demo did not render; the database needs a published form with id `demo`",
+      ).toBeAttached({ timeout: 30000 });
+      await demo.scrollIntoViewIfNeeded();
+
+      const conversationStart = waitForConversationPost(page);
+      await demo.locator("#welcome-screen").getByRole("button").click();
+      const startResponse = await conversationStart;
+      expect(
+        startResponse.ok(),
+        `conversation start failed (${startResponse.status()})`,
+      ).toBeTruthy();
+
+      await expect(demo.getByText(MOCK_QUESTION)).toBeVisible({
+        timeout: 30000,
+      });
+      const answerInput = demo.getByPlaceholder("Type here...");
+      await expect(answerInput).toBeVisible({ timeout: 30000 });
+
+      const answerResponse = waitForConversationPost(page);
+      await answerInput.fill(MOCK_ANSWER);
+      await answerInput.press("Enter");
+      const submitted = await answerResponse;
+      expect(
+        submitted.ok(),
+        `answer submission failed (${submitted.status()})`,
+      ).toBeTruthy();
+      await submitted.finished();
+
+      await expect(
+        demo.getByRole("heading", { name: "Something went wrong" }),
+      ).toHaveCount(0);
+    });
+  });
+
+  test("mobile replaces the demo with a link to the live form", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
 
-    const demo = page.locator(".form-card");
-    await expect(
-      demo,
-      "the live demo did not render; the database needs a published form with id `demo`",
-    ).toBeAttached({ timeout: 30000 });
-    await demo.scrollIntoViewIfNeeded();
+    await expect(page.locator(".form-card")).toHaveCount(0);
+    await expect(page.getByText("Live Form Responses")).toHaveCount(0);
 
-    const conversationStart = waitForConversationPost(page);
-    await demo.locator("#welcome-screen").getByRole("button").click();
-    const startResponse = await conversationStart;
-    expect(
-      startResponse.ok(),
-      `conversation start failed (${startResponse.status()})`,
-    ).toBeTruthy();
-
-    await expect(demo.getByText(MOCK_QUESTION)).toBeVisible({
-      timeout: 30000,
-    });
-    const answerInput = demo.getByPlaceholder("Type here...");
-    await expect(answerInput).toBeVisible({ timeout: 30000 });
-
-    const answerResponse = waitForConversationPost(page);
-    await answerInput.fill(MOCK_ANSWER);
-    await answerInput.press("Enter");
-    const submitted = await answerResponse;
-    expect(
-      submitted.ok(),
-      `answer submission failed (${submitted.status()})`,
-    ).toBeTruthy();
-    await submitted.finished();
-
-    await expect(
-      demo.getByRole("heading", { name: "Something went wrong" }),
-    ).toHaveCount(0);
+    const cta = page.getByRole("link", { name: "Try a live form" });
+    await expect(cta).toBeVisible();
+    await expect(cta).toHaveAttribute("href", "/view/demo");
   });
 });

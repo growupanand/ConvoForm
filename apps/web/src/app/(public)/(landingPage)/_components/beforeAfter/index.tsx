@@ -1,40 +1,15 @@
 "use client";
 
 import type { StageStatus } from "@/components/common/stageshow";
-import {
-  jobApplicationUseCasePath,
-  studyAbroadUseCasePath,
-} from "@/lib/marketingPaths";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { type PlayOnceStageHandle, StageControl } from "../stageControl";
 import styles from "./beforeAfter.module.css";
-import {
-  BEFORE_AFTER_SCENARIOS,
-  BEFORE_AFTER_TABS,
-  type BeforeAfterId,
-  type BeforeAfterMessage,
-  type BeforeAfterScenario,
-} from "./scenarios";
-
-const tabClass =
-  "flex-1 rounded-full border-[1.25px] px-4 py-[9px] font-mono text-[11px] uppercase leading-none tracking-[0.04em] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600 min-[900px]:flex-none";
+import type { BeforeAfterMessage, BeforeAfterScenario } from "./scenarios";
 
 const PLAY_SECONDS = 6;
 const MESSAGE_TIMES = [0.35, 1, 1.85, 2.6] as const;
-
-const SCENARIO_LINKS: Record<BeforeAfterId, { href: string; label: string }> = {
-  study: {
-    href: studyAbroadUseCasePath,
-    label: "See the study-abroad use case",
-  },
-  job: {
-    href: jobApplicationUseCasePath,
-    label: "See the job application use case",
-  },
-};
 
 const clamp = (value: number, min = 0, max = 1) =>
   Math.min(max, Math.max(min, value));
@@ -638,142 +613,5 @@ export function BeforeAfterScene({
         </div>
       </div>
     </div>
-  );
-}
-
-export function BeforeAfterSection() {
-  const [activeId, setActiveId] = useState<BeforeAfterId>("study");
-  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
-
-  const activate = (index: number) => {
-    const tab = BEFORE_AFTER_TABS[index];
-    if (!tab) return;
-    setActiveId(tab.id);
-    tabRefs.current[index]?.focus();
-  };
-
-  const handleKeyDown = (
-    event: React.KeyboardEvent<HTMLButtonElement>,
-    index: number,
-  ) => {
-    let next = index;
-
-    switch (event.key) {
-      case "ArrowRight":
-      case "ArrowDown":
-        next = (index + 1) % BEFORE_AFTER_TABS.length;
-        break;
-      case "ArrowLeft":
-      case "ArrowUp":
-        next =
-          (index - 1 + BEFORE_AFTER_TABS.length) % BEFORE_AFTER_TABS.length;
-        break;
-      case "Home":
-        next = 0;
-        break;
-      case "End":
-        next = BEFORE_AFTER_TABS.length - 1;
-        break;
-      default:
-        return;
-    }
-
-    event.preventDefault();
-    activate(next);
-  };
-
-  return (
-    <section
-      id="why-a-conversation"
-      aria-labelledby="why-a-conversation-heading"
-      className="relative isolate min-w-0 overflow-x-clip px-4 pb-[76px] pt-10 min-[900px]:pb-[112px]"
-    >
-      <div className="mx-auto min-w-0 max-w-[1160px]">
-        <div className="text-center">
-          <span className="inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
-            <span
-              aria-hidden="true"
-              className="size-1.5 rounded-full bg-marketing-blue-600"
-            />
-            Why a conversation
-          </span>
-          <h2
-            id="why-a-conversation-heading"
-            className="mx-auto mt-3 max-w-[760px] font-display text-[clamp(32px,4.2vw,50px)] font-bold leading-[1.06] tracking-[-0.03em] text-marketing-ink"
-          >
-            A vague answer{" "}
-            <span className="text-marketing-blue-600">isn't an answer</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-[620px] font-body text-[17px] leading-[1.6] text-marketing-muted">
-            A static form saves whatever was typed. ConvoForm notices when a
-            reply is unclear and asks a follow-up.
-          </p>
-
-          <div
-            role="tablist"
-            aria-label="Before and after examples"
-            className="mt-8 inline-flex w-full max-w-[340px] gap-1 rounded-full border-[1.25px] border-marketing-hair bg-marketing-surface/60 p-1 min-[900px]:w-auto min-[900px]:max-w-none"
-          >
-            {BEFORE_AFTER_TABS.map((tab, index) => {
-              const selected = tab.id === activeId;
-              return (
-                <button
-                  key={tab.id}
-                  ref={(element) => {
-                    tabRefs.current[index] = element;
-                  }}
-                  type="button"
-                  role="tab"
-                  id={`before-after-tab-${tab.id}`}
-                  aria-selected={selected}
-                  aria-controls={`before-after-panel-${tab.id}`}
-                  tabIndex={selected ? 0 : -1}
-                  onClick={() => activate(index)}
-                  onKeyDown={(event) => handleKeyDown(event, index)}
-                  className={cn(
-                    tabClass,
-                    selected
-                      ? "border-marketing-blue-300 bg-marketing-surface text-marketing-blue-600"
-                      : "border-transparent text-marketing-text hover:text-marketing-ink",
-                  )}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {BEFORE_AFTER_TABS.map((tab) => {
-          const selected = tab.id === activeId;
-          return (
-            <div
-              key={tab.id}
-              role="tabpanel"
-              id={`before-after-panel-${tab.id}`}
-              aria-labelledby={`before-after-tab-${tab.id}`}
-              // biome-ignore lint/a11y/noNoninteractiveTabindex: tab panels are focus targets in the WAI-ARIA tab pattern
-              tabIndex={0}
-              hidden={!selected}
-            >
-              <BeforeAfterScene
-                scenario={BEFORE_AFTER_SCENARIOS[tab.id]}
-                active={selected}
-              />
-            </div>
-          );
-        })}
-
-        {/* The slot is always present, so switching tabs never moves the page. */}
-        <div className="mt-2 flex min-h-11 items-center justify-center">
-          <Link
-            href={SCENARIO_LINKS[activeId].href}
-            className="inline-flex items-center gap-1.5 border-b border-marketing-blue-200 font-body text-sm font-semibold leading-[1.4] text-marketing-blue-600 transition-colors duration-150 hover:text-marketing-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600"
-          >
-            {SCENARIO_LINKS[activeId].label} <span aria-hidden="true">→</span>
-          </Link>
-        </div>
-      </div>
-    </section>
   );
 }

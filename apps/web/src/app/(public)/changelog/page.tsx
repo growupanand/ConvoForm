@@ -32,28 +32,8 @@ export const metadata: Metadata = {
 
 const LATEST_RELEASE_COUNT = 8;
 
-const secondaryCtaClass =
-  "inline-flex items-center justify-center gap-2 rounded-full border-[1.25px] border-marketing-hair bg-marketing-surface/70 px-4 py-[10px] font-body text-sm font-semibold leading-none text-marketing-ink transition duration-150 hover:-translate-y-px hover:border-marketing-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600";
-
 const primaryCtaClass =
   "inline-flex items-center justify-center gap-2 rounded-full bg-marketing-blue-600 px-4 py-[10px] font-body text-sm font-semibold leading-none text-white shadow-marketing-primary transition duration-150 hover:-translate-y-px hover:bg-marketing-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600";
-
-function ExternalIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className="size-3.5"
-    >
-      <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
-    </svg>
-  );
-}
 
 function getReleases() {
   const parsed = releaseSchema.array().safeParse(releases);
@@ -84,7 +64,7 @@ export default function ChangelogPage() {
           className="pointer-events-none absolute inset-0 -z-10 bg-marketing-dot-grid bg-[length:22px_22px] [mask-image:linear-gradient(to_bottom,#000_20%,transparent_90%)]"
         />
 
-        <div className="mx-auto flex w-full max-w-[980px] flex-wrap items-end justify-between gap-6">
+        <div className="mx-auto w-full max-w-[980px]">
           <div className="min-w-0">
             <span className="inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.08em] text-marketing-blue-600">
               <span
@@ -102,25 +82,6 @@ export default function ChangelogPage() {
               Product updates and new features
             </p>
           </div>
-
-          <div className="flex w-full flex-wrap gap-2.5 min-[900px]:w-auto">
-            <Link
-              href="https://github.com/growupanand/ConvoForm/releases"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              className={secondaryCtaClass}
-            >
-              GitHub releases <ExternalIcon />
-            </Link>
-            <Link
-              href="https://convoform.canny.io/feature-requests"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              className={secondaryCtaClass}
-            >
-              Suggest a feature <ExternalIcon />
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -129,18 +90,7 @@ export default function ChangelogPage() {
         className="min-w-0 px-4 pb-20 pt-2 min-[900px]:pb-24"
       >
         <div className="mx-auto w-full max-w-[980px]">
-          <ChangelogTimeline releases={latestReleases} />
-
-          <OlderReleases
-            anchors={olderReleases.map((release) => release.anchor)}
-            firstVersion={olderReleases[0]?.version}
-          >
-            {olderReleases.map((release) => (
-              <OlderReleaseEntry key={release.version} release={release} />
-            ))}
-          </OlderReleases>
-
-          <div className="mx-auto mt-16 max-w-[980px] rounded-[22px] border-[1.25px] border-marketing-hair bg-marketing-surface px-5 py-[22px] min-[900px]:flex min-[900px]:items-center min-[900px]:justify-between min-[900px]:gap-5 min-[900px]:px-7 min-[900px]:py-[26px]">
+          <div className="mb-8 rounded-[22px] border-[1.25px] border-marketing-hair bg-marketing-surface px-5 py-[22px] min-[900px]:flex min-[900px]:items-center min-[900px]:justify-between min-[900px]:gap-5 min-[900px]:px-7 min-[900px]:py-[26px]">
             <div>
               <h2 className="font-display text-[20px] font-semibold leading-[1.2] text-marketing-ink">
                 Your voice matters
@@ -151,7 +101,7 @@ export default function ChangelogPage() {
               </p>
             </div>
             <Link
-              href="https://convoform.canny.io/feature-requests"
+              href="https://github.com/growupanand/ConvoForm/issues/new?template=feature_request.yml"
               target="_blank"
               rel="noopener noreferrer nofollow"
               className={`${primaryCtaClass} mt-5 w-full min-[900px]:mt-0 min-[900px]:w-auto`}
@@ -159,6 +109,17 @@ export default function ChangelogPage() {
               Suggest a feature
             </Link>
           </div>
+
+          <ChangelogTimeline releases={latestReleases} />
+
+          <OlderReleases
+            anchors={olderReleases.map((release) => release.anchor)}
+            firstVersion={olderReleases[0]?.version}
+          >
+            {olderReleases.map((release) => (
+              <OlderReleaseEntry key={release.version} release={release} />
+            ))}
+          </OlderReleases>
         </div>
       </section>
     </main>
