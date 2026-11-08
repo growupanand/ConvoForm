@@ -27,7 +27,7 @@ export async function generateMetadata(
   const { formId } = await props.params;
   const formData = await getFormById(formId);
 
-  if (!formData) {
+  if (!formData || !formData.isPublished) {
     return { title: "Submit Form" };
   }
 

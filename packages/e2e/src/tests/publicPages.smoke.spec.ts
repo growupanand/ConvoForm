@@ -1,8 +1,22 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { type Page, expect, test } from "@playwright/test";
 
 // Runs in the `landing-smoke` project: signed out, no auth `setup` dependency.
+// The unpublished-form metadata test opts into the auth state written by the
+// `setup` project and skips when it is absent (e.g. `e2e:smoke` alone).
 // The public pages below are allowed through `proxy.ts`; a not-found URL must
 // live under a public prefix, otherwise Clerk redirects before Next renders 404.
+
+const AUTH_STATE_PATH = path.resolve(
+  __dirname,
+  "../../playwright/.auth/user.json",
+);
+const HAS_AUTH_STATE = existsSync(AUTH_STATE_PATH);
+
+const PRIVATE_FORM_NAME = "E2E Private Form";
+const PRIVATE_FORM_OVERVIEW =
+  "E2E private overview that must not leak into metadata.";
 
 const PUBLIC_PAGES = [
   { path: "/use-cases", heading: /start with the work/i },
@@ -258,6 +272,122 @@ test.describe("Public pages", () => {
     expect(response?.status()).toBe(200);
     await expect(page).toHaveTitle(/ \| ConvoForm$/);
     await expect(page).not.toHaveTitle("Submit Form | ConvoForm");
+  });
+
+  test.describe("unpublished form metadata", () => {
+    test.use({
+      storageState: HAS_AUTH_STATE ? AUTH_STATE_PATH : undefined,
+    });
+    test.skip(
+      !HAS_AUTH_STATE,
+      "requires the auth state written by the e2e `setup` project",
+    );
+
+    test("hides the form name and overview from the head", async ({
+      browser,
+      page,
+    }) => {
+      await page.goto("/forms");
+      await expect(page.getByRole("heading", { name: "Forms" })).toBeVisible({
+        timeout: 30000,
+      });
+      await page.waitForFunction(
+        () =>
+          (window as unknown as { Clerk?: { loaded?: boolean } }).Clerk
+            ?.loaded === true,
+        undefined,
+        { timeout: 30000 },
+      );
+
+      const formId = await page.evaluate(
+        async ({ name, overview }) => {
+          const clerk = (
+            window as unknown as {
+              Clerk?: {
+                organization?: { id?: string };
+                user?: {
+                  organizationMemberships?: Array<{
+                    organization: { id: string };
+                  }>;
+                };
+              };
+            }
+          ).Clerk;
+          const organizationId =
+            clerk?.organization?.id ??
+            clerk?.user?.organizationMemberships?.[0]?.organization.id;
+
+          if (!organizationId) {
+            throw new Error("Authenticated test user has no organization");
+          }
+
+          const response = await fetch("/api/trpc/form.create?batch=1", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              "0": {
+                json: {
+                  name,
+                  overview,
+                  welcomeScreenTitle: "Welcome",
+                  welcomeScreenMessage: "Message",
+                  welcomeScreenCTALabel: "Start",
+                  isPublished: false,
+                  formFieldsOrders: [],
+                  formFields: [
+                    {
+                      fieldName: "Name",
+                      fieldDescription: "Your name",
+                      fieldConfiguration: {
+                        inputType: "text",
+                        inputConfiguration: {},
+                      },
+                    },
+                  ],
+                  organizationId,
+                },
+              },
+            }),
+          });
+
+          const payload = (await response.json()) as Array<{
+            result?: { data?: { json?: { id?: string } } };
+          }>;
+          const id = payload[0]?.result?.data?.json?.id;
+
+          if (!response.ok || !id) {
+            throw new Error(
+              `Failed to create the unpublished test form (${response.status})`,
+            );
+          }
+
+          return id;
+        },
+        { name: PRIVATE_FORM_NAME, overview: PRIVATE_FORM_OVERVIEW },
+      );
+
+      const publicPage = await browser.newPage();
+
+      try {
+        const response = await publicPage.goto(`/view/${formId}`);
+
+        expect(response?.status()).toBe(200);
+        await expect(publicPage).toHaveTitle("Submit Form | ConvoForm");
+
+        const html = await publicPage.content();
+        expect(html).not.toContain(PRIVATE_FORM_NAME);
+        expect(html).not.toContain(PRIVATE_FORM_OVERVIEW);
+      } finally {
+        await publicPage.close();
+        await page.evaluate(async (id) => {
+          await fetch("/api/trpc/form.delete?batch=1", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ "0": { json: { id } } }),
+          });
+        }, formId);
+      }
+    });
   });
 
   test("the landing use-case section links to job applications", async ({

@@ -35,6 +35,7 @@ The database must contain a **published form with id `demo`** (the landing demo 
 - `/llms.txt` returns the public page and documentation links.
 - Homepage ships `SoftwareApplication` and `FAQPage` JSON-LD; both use-case pages ship `FAQPage` JSON-LD that matches their rendered FAQs.
 - `/view/demo` uses the published demo form name in its title instead of the generic "Submit Form".
+- An unpublished form's `/view/[formId]` page serves the generic "Submit Form" title and keeps the form name and overview out of the head. This test creates a temporary unpublished form through the authenticated API, so it runs when the `setup` project has written `playwright/.auth/user.json` and skips otherwise.
 - **Use cases** is linked from the header and footer, and the study-abroad CTA points at register.
 - Changelog release anchors deep-link, expand older releases, and the page HTML stays under 100 KB.
 - Privacy's table of contents tracks the scroll position.
