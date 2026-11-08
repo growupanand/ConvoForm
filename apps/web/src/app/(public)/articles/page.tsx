@@ -11,7 +11,7 @@ import { article as jobApplicationArticle } from "./job-application-conversation
 import { article as studyAbroadArticle } from "./study-abroad-conversational-intake/content";
 
 const articlesDescription =
-  "Two demonstration-led articles on AI follow-ups and scripted branching, using real ConvoForm use-case examples: study-abroad student intake and job-application screening.";
+  "Demonstration-led articles on conversational forms, AI follow-ups, and real intake workflows.";
 
 export const metadata: Metadata = {
   title: "Articles",
