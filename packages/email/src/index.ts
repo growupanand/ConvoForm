@@ -6,28 +6,35 @@ import {
   FormResponseEmail,
   type FormResponseEmailProps,
 } from "./templates/form-response-email";
-import type { SendEmailOptions } from "./types";
+import type { EmailProvider, SendEmailOptions } from "./types";
 
 export * from "./types";
 export * from "./providers/resend";
+export * from "./webhook";
 export * from "./env";
 
 const emailProvider = new ResendProvider();
 
-export async function sendEmail(options: SendEmailOptions) {
-  return emailProvider.sendEmail(options);
+export async function sendEmail(
+  options: SendEmailOptions,
+  provider: EmailProvider = emailProvider,
+) {
+  return provider.sendEmail(options);
 }
 
-export async function sendFormResponseEmail({
-  to,
-  formName,
-  responseId,
-  respondentEmail,
-  currentFieldResponses,
-  transcript,
-  metadata,
-  responseLink,
-}: FormResponseEmailProps & { to: string }) {
+export async function sendFormResponseEmail(
+  {
+    to,
+    formName,
+    responseId,
+    respondentEmail,
+    currentFieldResponses,
+    transcript,
+    metadata,
+    responseLink,
+  }: FormResponseEmailProps & { to: string },
+  provider: EmailProvider = emailProvider,
+) {
   const subject = `New response for ${formName}`;
 
   const html = await render(
@@ -42,19 +49,28 @@ export async function sendFormResponseEmail({
     }),
   );
 
-  await sendEmail({
-    to,
-    subject,
-    html,
-  });
+  await sendEmail(
+    {
+      to,
+      subject,
+      html,
+    },
+    provider,
+  );
 }
 
-export async function sendContinueOnDesktopEmail({ to }: { to: string }) {
+export async function sendContinueOnDesktopEmail(
+  { to }: { to: string },
+  provider: EmailProvider = emailProvider,
+) {
   const html = await render(ContinueOnDesktopEmail());
 
-  await sendEmail({
-    to,
-    subject: CONTINUE_ON_DESKTOP_SUBJECT,
-    html,
-  });
+  await sendEmail(
+    {
+      to,
+      subject: CONTINUE_ON_DESKTOP_SUBJECT,
+      html,
+    },
+    provider,
+  );
 }
