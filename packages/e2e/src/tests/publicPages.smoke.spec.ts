@@ -29,6 +29,11 @@ const PUBLIC_PAGES = [
     path: "/articles/study-abroad-conversational-intake",
     heading: /branching picks a path/i,
   },
+  { path: "/articles", heading: /notes on forms that talk back/i },
+  {
+    path: "/articles/job-application-conversational-screening",
+    heading: /a branch routes the answer/i,
+  },
   { path: "/changelog", heading: /changelog/i },
   { path: "/privacy", heading: /privacy policy/i },
   { path: "/terms", heading: /terms and conditions/i },
@@ -124,6 +129,28 @@ test.describe("Public pages", () => {
     ).toHaveAttribute("href", "/use-cases");
   });
 
+  test("articles is linked from the footer", async ({ page }) => {
+    await page.goto("/");
+
+    await expect(
+      page.locator("footer").getByRole("link", { name: "Articles" }),
+    ).toHaveAttribute("href", "/articles");
+  });
+
+  test("articles lists both articles", async ({ page }) => {
+    await page.goto("/articles");
+
+    await expect(
+      page.getByRole("link", { name: /read the study-abroad article/i }),
+    ).toHaveAttribute("href", "/articles/study-abroad-conversational-intake");
+    await expect(
+      page.getByRole("link", { name: /read the job-application article/i }),
+    ).toHaveAttribute(
+      "href",
+      "/articles/job-application-conversational-screening",
+    );
+  });
+
   test("use cases lists both use-case cards", async ({ page }) => {
     await page.goto("/use-cases");
 
@@ -163,6 +190,21 @@ test.describe("Public pages", () => {
     ).toHaveAttribute("href", "/articles/study-abroad-conversational-intake");
   });
 
+  test("job-application page links to the screening article", async ({
+    page,
+  }) => {
+    await page.goto("/use-cases/job-application");
+
+    await expect(
+      page.getByRole("link", {
+        name: /what a follow-up asks that a branch cannot/i,
+      }),
+    ).toHaveAttribute(
+      "href",
+      "/articles/job-application-conversational-screening",
+    );
+  });
+
   test("the article links back to the use case, demo and docs", async ({
     page,
   }) => {
@@ -196,12 +238,56 @@ test.describe("Public pages", () => {
     expect(data.author.name).toBe("Utkarsh Anand");
   });
 
-  test("the sitemap includes the article", async ({ request }) => {
-    const response = await request.get("/sitemap.xml");
+  test("the screening article links back to the use case, demo, docs and related article", async ({
+    page,
+  }) => {
+    await page.goto("/articles/job-application-conversational-screening");
 
-    expect(await response.text()).toContain(
-      "/articles/study-abroad-conversational-intake",
+    await expect(
+      page.getByRole("link", { name: /see the job-application use case/i }),
+    ).toHaveAttribute("href", "/use-cases/job-application");
+    await expect(
+      page.getByRole("link", { name: /try the demo form/i }),
+    ).toHaveAttribute("href", "/view/demo");
+    await expect(page.getByRole("link", { name: /^docs$/i })).toHaveAttribute(
+      "href",
+      "https://docs.convoform.com",
     );
+    await expect(
+      page.getByRole("link", { name: /read the study-abroad article/i }),
+    ).toHaveAttribute("href", "/articles/study-abroad-conversational-intake");
+  });
+
+  test("the screening article ships Article JSON-LD", async ({ page }) => {
+    await page.goto("/articles/job-application-conversational-screening");
+
+    const jsonLd = await page
+      .locator('script[type="application/ld+json"]')
+      .first()
+      .textContent();
+    const data = JSON.parse(jsonLd ?? "{}");
+
+    expect(data["@type"]).toBe("Article");
+    expect(data.headline).toMatch(/a branch routes the answer/i);
+    expect(data.description).toMatch(/candidate types/i);
+    expect(data.datePublished).toBe("2026-11-08");
+    expect(data.author.name).toBe("Utkarsh Anand");
+  });
+
+  test("the sitemap includes the articles index and both articles", async ({
+    request,
+  }) => {
+    const response = await request.get("/sitemap.xml");
+    const body = await response.text();
+
+    expect(body).toContain("https://www.convoform.com/articles</loc>");
+
+    for (const url of [
+      "https://www.convoform.com/articles/study-abroad-conversational-intake",
+      "https://www.convoform.com/articles/job-application-conversational-screening",
+    ]) {
+      expect(body).toContain(url);
+    }
   });
 
   test("/llms.txt lists the public pages and documentation", async ({
@@ -218,7 +304,9 @@ test.describe("Public pages", () => {
       "https://www.convoform.com/use-cases",
       "https://www.convoform.com/use-cases/study-abroad",
       "https://www.convoform.com/use-cases/job-application",
+      "https://www.convoform.com/articles",
       "https://www.convoform.com/articles/study-abroad-conversational-intake",
+      "https://www.convoform.com/articles/job-application-conversational-screening",
       "https://www.convoform.com/changelog",
       "https://docs.convoform.com",
     ]) {

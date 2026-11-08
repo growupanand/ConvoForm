@@ -1,11 +1,12 @@
 import Link from "next/link";
 
 import { BrandLogo } from "@/components/common/brandLogo";
-import { useCasesPath } from "@/lib/marketingPaths";
+import { articlesPath, useCasesPath } from "@/lib/marketingPaths";
 import { cn } from "@/lib/utils";
 
 const footerLinks = [
   { label: "Use cases", href: useCasesPath, external: false },
+  { label: "Articles", href: articlesPath, external: false },
   {
     label: "Documentation",
     href: "https://docs.convoform.com",

@@ -1,4 +1,6 @@
 import {
+  articlesPath,
+  jobApplicationArticlePath,
   jobApplicationUseCasePath,
   studyAbroadArticlePath,
   studyAbroadUseCasePath,
@@ -43,7 +45,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: `${baseUrl}${articlesPath}`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
       url: `${baseUrl}${studyAbroadArticlePath}`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}${jobApplicationArticlePath}`,
       lastModified,
       changeFrequency: "monthly",
       priority: 0.7,

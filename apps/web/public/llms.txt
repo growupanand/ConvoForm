@@ -8,7 +8,9 @@ ConvoForm turns a static form into a short conversation. AI drafts the form from
 - [Use cases](https://www.convoform.com/use-cases)
 - [Student intake forms for study abroad consultants](https://www.convoform.com/use-cases/study-abroad)
 - [Job application forms with AI follow-ups](https://www.convoform.com/use-cases/job-application)
+- [Articles](https://www.convoform.com/articles)
 - [Article: AI follow-ups vs. Typeform-style branching](https://www.convoform.com/articles/study-abroad-conversational-intake)
+- [Article: AI follow-ups vs. branching in job application screening](https://www.convoform.com/articles/job-application-conversational-screening)
 - [Changelog](https://www.convoform.com/changelog)
 
 ## Documentation
