@@ -6,7 +6,8 @@ import { Schema } from "@convoform/db";
 import { GoogleSheetsProvider } from "@convoform/integration";
 import { and, eq } from "drizzle-orm";
 import { env } from "../env";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { internalProcedure } from "../procedures/internalProcedure";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 const getGoogleCredentials = () => {
   const clientId = process.env.GOOGLE_CLIENT_ID;
@@ -201,21 +202,36 @@ export const integrationRouter = createTRPCRouter({
     }),
 
   // 7. Sync (Internal use)
-  sync: publicProcedure
+  sync: internalProcedure
     .input(
       z.object({
-        formId: z.string(),
-        responseId: z.string(),
-        data: z.record(z.string(), z.any()),
-        metaData: z.record(z.string(), z.any()).optional(),
+        responseId: z.string().min(1),
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const response = await ctx.db.query.conversation.findFirst({
+        where: eq(Schema.conversation.id, input.responseId),
+      });
+
+      if (!response) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Conversation not found",
+        });
+      }
+
+      if (!response.finishedAt) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Conversation is not finished",
+        });
+      }
+
       // Fetch enabled integrations for this form
       // We need to join with integration table to get tokens
       const formIntegrations = await ctx.db.query.formIntegration.findMany({
         where: and(
-          eq(Schema.formIntegration.formId, input.formId),
+          eq(Schema.formIntegration.formId, response.formId),
           eq(Schema.formIntegration.enabled, true),
         ),
         with: {
@@ -227,21 +243,23 @@ export const integrationRouter = createTRPCRouter({
 
       const encryptionKey = env.ENCRYPTION_KEY;
 
-      // Prepare response data
-      const responseData = { ...input.data };
-      if (input.metaData) {
-        Object.entries(input.metaData).forEach(([key, value]) => {
-          responseData[`meta_${key}`] = value;
-        });
+      // Build the row from the conversation stored on our side, never from
+      // data supplied by the caller.
+      const responseData: Record<string, unknown> = {};
+      for (const field of response.formFieldResponses) {
+        responseData[field.fieldName] = field.fieldValue;
       }
-      responseData.id = input.responseId;
-      responseData.createdAt = new Date().toISOString();
+      for (const [key, value] of Object.entries(response.metaData ?? {})) {
+        responseData[`meta_${key}`] = value;
+      }
+      responseData.id = response.id;
+      responseData.createdAt = response.createdAt.toISOString();
 
       let processed = 0;
 
       // Fetch form details for context
       const form = await ctx.db.query.form.findFirst({
-        where: eq(Schema.form.id, input.formId),
+        where: eq(Schema.form.id, response.formId),
         columns: {
           id: true,
           name: true,

@@ -52,14 +52,24 @@ const horizontalScroll = (page: Page) =>
     clientWidth: document.documentElement.clientWidth,
   }));
 
-const IGNORED_CONSOLE = [/ws:\/\/localhost:8787/, /clerk/i];
+const IGNORED_CONSOLE = [
+  /ws:\/\/localhost:8787/,
+  /clerk/i,
+  // Third-party embed; DNS failures here are environmental, not app errors.
+  /sponsoranysite\.com/,
+];
 
 function collectConsoleErrors(page: Page) {
   const errors: string[] = [];
   page.on("console", (message) => {
     if (message.type() !== "error") return;
     const text = message.text();
-    if (IGNORED_CONSOLE.some((pattern) => pattern.test(text))) return;
+    const url = message.location().url;
+    if (
+      IGNORED_CONSOLE.some((pattern) => pattern.test(text) || pattern.test(url))
+    ) {
+      return;
+    }
     errors.push(text);
   });
   page.on("pageerror", (error) => {

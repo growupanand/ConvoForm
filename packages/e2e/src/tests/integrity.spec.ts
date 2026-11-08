@@ -16,7 +16,10 @@ test.describe("Data Integrity", () => {
     });
 
     // Attempt to create a form
-    await page.getByRole("button", { name: "New Form" }).click();
+    await page
+      .getByRole("button", { name: "New Form", exact: true })
+      .first()
+      .click();
     await page.getByRole("menuitem", { name: "Blank form" }).click();
 
     // Expect an error toast or UI indication (depending on implementation)
@@ -42,14 +45,22 @@ test.describe("Data Integrity", () => {
   }) => {
     // 1. Create a form
     await page.goto("/forms");
-    await page.getByRole("button", { name: "New Form" }).click();
+    await page
+      .getByRole("button", { name: "New Form", exact: true })
+      .first()
+      .click();
     await page.getByRole("menuitem", { name: "Blank form" }).click();
     await page.waitForURL("**/forms/**");
     const _formId = page.url().split("/forms/")[1];
 
     // 2. Go back to forms list
     await page.goto("/forms");
-    await expect(page.getByText("New form").first()).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Forms" })).toBeVisible({
+      timeout: 30_000,
+    });
+    await expect(page.getByText("New form").first()).toBeVisible({
+      timeout: 30_000,
+    });
 
     // 3. Delete the form
     // Assuming there's a delete action in the UI.

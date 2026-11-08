@@ -55,7 +55,9 @@ async function authenticate(page: Page, baseURL: string) {
 
   console.log(`Authenticating test user: ${email}`);
 
-  await page.goto(`${baseURL}/`);
+  // The landing page defers loading Clerk until first interaction, so start
+  // from a page that mounts Clerk before using the testing helper.
+  await page.goto(`${baseURL}/auth/sign-in`);
 
   try {
     await clerk.signIn({

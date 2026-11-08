@@ -1,6 +1,7 @@
 /// <reference types="node" />
 
 const INTERNAL_EMAIL_API_SECRET = process.env.INTERNAL_EMAIL_API_SECRET;
+const RESPONSE_ID = process.env.TEST_RESPONSE_ID;
 
 if (!INTERNAL_EMAIL_API_SECRET) {
   console.error(
@@ -13,30 +14,19 @@ if (!INTERNAL_EMAIL_API_SECRET) {
   process.exit(1);
 }
 
-const payload = {
-  to: "growupanand@gmail.com", // Replace if needed
-  formName: "Test Form Trigger",
-  responseId: `test-response-${Date.now()}`,
-  respondentEmail: "growupanand@gmail.com",
-  responseLink: "https://example.com/response",
-  secret: "sec_cb9a74b0b2e39067687a24a957383605",
-  currentFieldResponses: [
-    { fieldName: "Name", fieldValue: "Test User" },
-    { fieldName: "Feedback", fieldValue: "This is a test from the script." },
-  ],
-  transcript: [
-    { role: "assistant", content: "How can I help you?" },
-    { role: "user", content: "I am testing the email trigger." },
-  ],
-  metadata: {
-    source: "script",
-    timestamp: new Date().toISOString(),
-  },
-};
+if (!RESPONSE_ID) {
+  console.error("Error: TEST_RESPONSE_ID is not set in environment variables.");
+  console.error(
+    "Set it to the id of a completed conversation to resend its owner email.",
+  );
+  process.exit(1);
+}
 
-// Simulate signing
-// We need to implement signPayload here or import it if possible.
-// Since this is a script, importing from local package might work if compiled, or we just copy the simple logic.
+// The endpoint only accepts a response id. Form name, recipient, field
+// responses and transcript are all loaded from the database server-side.
+const payload = {
+  responseId: RESPONSE_ID,
+};
 
 async function signPayload(payload: string, secret: string) {
   const encoder = new TextEncoder();
@@ -61,7 +51,7 @@ async function triggerEmail() {
   const url = "http://localhost:3000/api/trpc/email.sendFormResponse";
 
   console.log(`Sending POST request to ${url}`);
-  console.log("Payload (redacted secret):", { ...payload, secret: "***" });
+  console.log("Payload:", payload);
 
   try {
     // Construct body for tRPC with superjson
@@ -71,7 +61,7 @@ async function triggerEmail() {
     };
     const bodyStr = JSON.stringify(bodyObj);
 
-    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    // biome-ignore lint/style/noNonNullAssertion: checked above
     const signature = await signPayload(bodyStr, INTERNAL_EMAIL_API_SECRET!);
 
     const response = await fetch(url, {
