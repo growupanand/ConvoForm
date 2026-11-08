@@ -11,6 +11,10 @@ const PUBLIC_PAGES = [
     path: "/use-cases/job-application",
     heading: /start the screening call/i,
   },
+  {
+    path: "/articles/study-abroad-conversational-intake",
+    heading: /branching picks a path/i,
+  },
   { path: "/changelog", heading: /changelog/i },
   { path: "/privacy", heading: /privacy policy/i },
   { path: "/terms", heading: /terms and conditions/i },
@@ -72,6 +76,57 @@ test.describe("Public pages", () => {
         .getByRole("link", { name: /create a job application form/i })
         .first(),
     ).toHaveAttribute("href", "/auth/register");
+  });
+
+  test("study-abroad page links to the follow-up article", async ({ page }) => {
+    await page.goto("/use-cases/study-abroad");
+
+    await expect(
+      page.getByRole("link", {
+        name: /why a follow-up is not a conditional branch/i,
+      }),
+    ).toHaveAttribute("href", "/articles/study-abroad-conversational-intake");
+  });
+
+  test("the article links back to the use case, demo and docs", async ({
+    page,
+  }) => {
+    await page.goto("/articles/study-abroad-conversational-intake");
+
+    await expect(
+      page.getByRole("link", { name: /see the study-abroad use case/i }),
+    ).toHaveAttribute("href", "/use-cases/study-abroad");
+    await expect(
+      page.getByRole("link", { name: /try the demo form/i }),
+    ).toHaveAttribute("href", "/view/demo");
+    await expect(page.getByRole("link", { name: /^docs$/i })).toHaveAttribute(
+      "href",
+      "https://docs.convoform.com",
+    );
+  });
+
+  test("the article ships Article JSON-LD", async ({ page }) => {
+    await page.goto("/articles/study-abroad-conversational-intake");
+
+    const jsonLd = await page
+      .locator('script[type="application/ld+json"]')
+      .first()
+      .textContent();
+    const data = JSON.parse(jsonLd ?? "{}");
+
+    expect(data["@type"]).toBe("Article");
+    expect(data.headline).toMatch(/branching picks a path/i);
+    expect(data.description).toMatch(/scripted branching/i);
+    expect(data.datePublished).toBe("2026-11-08");
+    expect(data.author.name).toBe("Utkarsh Anand");
+  });
+
+  test("the sitemap includes the article", async ({ request }) => {
+    const response = await request.get("/sitemap.xml");
+
+    expect(await response.text()).toContain(
+      "/articles/study-abroad-conversational-intake",
+    );
   });
 
   test("the landing use-case section links to job applications", async ({

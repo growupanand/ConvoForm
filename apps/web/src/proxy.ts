@@ -25,6 +25,7 @@ const isProtectedRoute = createRouteMatcher([
 const isMarketingRoute = createRouteMatcher([
   "/",
   "/use-cases(.*)",
+  "/articles(.*)",
   "/changelog(.*)",
   "/privacy(.*)",
   "/terms(.*)",
