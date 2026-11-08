@@ -32,6 +32,9 @@ The database must contain a **published form with id `demo`** (the landing demo 
 `src/tests/publicPages.smoke.spec.ts` covers the signed-out marketing pages:
 
 - `/use-cases`, `/use-cases/study-abroad`, `/changelog`, `/privacy` and `/terms` load and show their `h1`.
+- `/llms.txt` returns the public page and documentation links.
+- Homepage ships `SoftwareApplication` and `FAQPage` JSON-LD; both use-case pages ship `FAQPage` JSON-LD that matches their rendered FAQs.
+- `/view/demo` uses the published demo form name in its title instead of the generic "Submit Form".
 - **Use cases** is linked from the header and footer, and the study-abroad CTA points at register.
 - Changelog release anchors deep-link, expand older releases, and the page HTML stays under 100 KB.
 - Privacy's table of contents tracks the scroll position.

@@ -26,6 +26,67 @@ const horizontalScroll = (page: Page) =>
     clientWidth: document.documentElement.clientWidth,
   }));
 
+type JsonLdNode = {
+  "@type"?: string;
+  description?: string;
+  mainEntity?: unknown;
+  [key: string]: unknown;
+};
+
+async function readJsonLd(page: Page): Promise<JsonLdNode[]> {
+  const blocks = await page
+    .locator('script[type="application/ld+json"]')
+    .allTextContents();
+
+  return blocks.map((block) => JSON.parse(block) as JsonLdNode);
+}
+
+const normalizeText = (value: string) => value.replace(/\s+/g, " ").trim();
+
+async function expectFaqJsonLdMatchesRenderedFaq(page: Page) {
+  const faqSection = page.locator('section[aria-labelledby="faq-heading"]');
+  const faqJsonLd = (await readJsonLd(page)).find(
+    (block) => block["@type"] === "FAQPage",
+  );
+
+  expect(faqJsonLd, "FAQPage JSON-LD is missing").toBeDefined();
+  if (!faqJsonLd) {
+    return;
+  }
+
+  const questions = faqJsonLd.mainEntity as Array<{
+    name: string;
+    acceptedAnswer: { text: string };
+  }>;
+
+  const renderedFaqs = await faqSection
+    .locator("details")
+    .evaluateAll((nodes) =>
+      nodes.map((node) => ({
+        question: node.querySelector("summary")?.textContent ?? "",
+        answer: node.querySelector("summary + div")?.textContent ?? "",
+      })),
+    );
+
+  expect(questions).toHaveLength(renderedFaqs.length);
+
+  for (const [index, question] of questions.entries()) {
+    const rendered = renderedFaqs[index];
+
+    expect(rendered, "rendered FAQ is missing").toBeDefined();
+    if (!rendered) {
+      continue;
+    }
+
+    expect(normalizeText(rendered.question)).toContain(
+      normalizeText(question.name),
+    );
+    expect(normalizeText(rendered.answer)).toBe(
+      normalizeText(question.acceptedAnswer.text),
+    );
+  }
+}
+
 test.describe("Public pages", () => {
   for (const item of PUBLIC_PAGES) {
     test(`${item.path} loads with its heading`, async ({ page }) => {
@@ -127,6 +188,76 @@ test.describe("Public pages", () => {
     expect(await response.text()).toContain(
       "/articles/study-abroad-conversational-intake",
     );
+  });
+
+  test("/llms.txt lists the public pages and documentation", async ({
+    request,
+  }) => {
+    const response = await request.get("/llms.txt");
+
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toContain("text/plain");
+
+    const body = await response.text();
+    for (const url of [
+      "https://www.convoform.com/",
+      "https://www.convoform.com/use-cases",
+      "https://www.convoform.com/use-cases/study-abroad",
+      "https://www.convoform.com/use-cases/job-application",
+      "https://www.convoform.com/articles/study-abroad-conversational-intake",
+      "https://www.convoform.com/changelog",
+      "https://docs.convoform.com",
+    ]) {
+      expect(body).toContain(url);
+    }
+  });
+
+  test("the homepage ships SoftwareApplication and FAQPage JSON-LD", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    const blocks = await readJsonLd(page);
+    const softwareApplication = blocks.find(
+      (block) => block["@type"] === "SoftwareApplication",
+    );
+
+    expect(softwareApplication).toMatchObject({
+      "@context": "https://schema.org",
+      name: "ConvoForm",
+      url: "https://www.convoform.com/",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+    });
+    expect(softwareApplication?.description).toMatch(
+      /static form into a short conversation/i,
+    );
+    expect(softwareApplication).not.toHaveProperty("aggregateRating");
+    expect(softwareApplication).not.toHaveProperty("review");
+    expect(softwareApplication).not.toHaveProperty("offers");
+
+    await expectFaqJsonLdMatchesRenderedFaq(page);
+  });
+
+  for (const path of [
+    "/use-cases/study-abroad",
+    "/use-cases/job-application",
+  ]) {
+    test(`${path} ships FAQPage JSON-LD matching the rendered FAQs`, async ({
+      page,
+    }) => {
+      await page.goto(path);
+
+      await expectFaqJsonLdMatchesRenderedFaq(page);
+    });
+  }
+
+  test("/view/demo uses the form name as its title", async ({ page }) => {
+    const response = await page.goto("/view/demo");
+
+    expect(response?.status()).toBe(200);
+    await expect(page).toHaveTitle(/ \| ConvoForm$/);
+    await expect(page).not.toHaveTitle("Submit Form | ConvoForm");
   });
 
   test("the landing use-case section links to job applications", async ({
