@@ -28,12 +28,26 @@ export async function verifySignature(
   secret: string,
 ): Promise<boolean> {
   const expectedSignature = await signPayload(payload, secret);
-  // Constant-time comparison is not strictly necessary for this use case if we rely on the crypto implementation,
-  // but a simple string comparison is fine for now given the complexity trade-off.
-  // For higher security, we could use crypto.timingSafeEqual if running in a Node environment,
-  // but this code might run in Edge/Browser where Buffer/crypto might vary.
-  // Since we are generating the signature ourselves to compare, we just check equality.
-  return signature === expectedSignature;
+  return constantTimeEqual(signature, expectedSignature);
+}
+
+/**
+ * Compare two strings without leaking where they differ through timing.
+ * Runs over the longer of the two inputs so a length mismatch is also folded
+ * into the final result instead of returning early.
+ *
+ * Web Crypto does not expose a portable constant-time comparison, so we do it
+ * manually to keep this working on Node, Edge and browser runtimes.
+ */
+function constantTimeEqual(a: string, b: string): boolean {
+  const length = Math.max(a.length, b.length);
+  let mismatch = a.length ^ b.length;
+
+  for (let index = 0; index < length; index++) {
+    mismatch |= (a.charCodeAt(index) || 0) ^ (b.charCodeAt(index) || 0);
+  }
+
+  return mismatch === 0;
 }
 
 export async function encrypt(text: string, key: string): Promise<string> {

@@ -11,7 +11,10 @@ test.describe("Form Creation", () => {
     });
 
     // Click "New Form" dropdown trigger
-    await page.getByRole("button", { name: "New Form" }).click();
+    await page
+      .getByRole("button", { name: "New Form", exact: true })
+      .first()
+      .click();
 
     // Select "Blank form" from the dropdown
     await page.getByRole("menuitem", { name: "Blank form" }).click();
@@ -32,7 +35,10 @@ test.describe("Form Creation", () => {
     });
 
     // Click "New Form" dropdown trigger
-    await page.getByRole("button", { name: "New Form" }).click();
+    await page
+      .getByRole("button", { name: "New Form", exact: true })
+      .first()
+      .click();
 
     // Select "Generate by AI" from the dropdown
     await page.getByRole("menuitem", { name: "Generate by AI" }).click();

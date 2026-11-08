@@ -1,83 +1,67 @@
-import { verifySignature } from "@convoform/common";
+import { eq } from "@convoform/db";
+import { conversation, form, user } from "@convoform/db/src/schema";
 import { sendFormResponseEmail } from "@convoform/email";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { sendContinueOnDesktopLink } from "../actions/email/sendContinueOnDesktopLink";
-import { env } from "../env";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { internalProcedure } from "../procedures/internalProcedure";
+import { createTRPCRouter } from "../trpc";
+import { getBaseUrl } from "../utils/url";
 
 export const emailRouter = createTRPCRouter({
-  sendFormResponse: publicProcedure
+  sendFormResponse: internalProcedure
     .input(
       z.object({
-        to: z.string().email(),
-        formName: z.string(),
-        responseId: z.string(),
-        respondentEmail: z.string().optional(),
-        responseLink: z.string(),
-        secret: z.string(),
-        currentFieldResponses: z
-          .array(
-            z.object({
-              fieldName: z.string(),
-              fieldValue: z.string().nullable(),
-            }),
-          )
-          .optional(),
-        transcript: z
-          .array(
-            z.object({
-              role: z.enum(["user", "assistant"]),
-              content: z.string(),
-            }),
-          )
-          .optional(),
-        metadata: z.record(z.string(), z.any()).optional(),
+        responseId: z.string().min(1),
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const signature = ctx.headers?.get("X-ConvoForm-Signature");
-      if (signature) {
-        if (ctx.rawBody) {
-          try {
-            const isValid = await verifySignature(
-              ctx.rawBody,
-              signature,
-              env.INTERNAL_EMAIL_API_SECRET,
-            );
+      const [result] = await ctx.db
+        .select({
+          id: conversation.id,
+          formId: conversation.formId,
+          transcript: conversation.transcript,
+          formFieldResponses: conversation.formFieldResponses,
+          metaData: conversation.metaData,
+          finishedAt: conversation.finishedAt,
+          formName: form.name,
+          ownerEmail: user.email,
+        })
+        .from(conversation)
+        .innerJoin(form, eq(conversation.formId, form.id))
+        .innerJoin(user, eq(form.userId, user.userId))
+        .where(eq(conversation.id, input.responseId))
+        .limit(1);
 
-            if (!isValid) {
-              console.error("Invalid signature for email request");
-              throw new TRPCError({
-                code: "UNAUTHORIZED",
-                message: "Invalid signature",
-              });
-            }
-            // If signature is valid, we proceed.
-            // We can optionally skip the secret check below, or keep it as double safety.
-            // For now, let's keep the secret check as well or just return to avoid it?
-            // The plan said "Remove or relax the old input.secret check".
-            // If signature matches, it implies they have the secret.
-          } catch (error) {
-            console.error("Error verifying signature:", error);
-            throw new TRPCError({ code: "UNAUTHORIZED" });
-          }
-        } else {
-          console.warn(
-            "Signature provided but rawBody not available in context",
-          );
-        }
+      if (!result) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Conversation not found",
+        });
       }
+
+      if (!result.finishedAt) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Conversation is not finished",
+        });
+      }
+
       await sendFormResponseEmail({
-        to: input.to,
-        formName: input.formName,
-        responseId: input.responseId,
-        respondentEmail: input.respondentEmail,
-        currentFieldResponses: input.currentFieldResponses,
-        transcript: input.transcript,
-        metadata: input.metadata as any,
-        responseLink: input.responseLink,
+        to: result.ownerEmail,
+        formName: result.formName,
+        responseId: result.id,
+        currentFieldResponses: result.formFieldResponses.map((field) => ({
+          fieldName: field.fieldName,
+          fieldValue: field.fieldValue,
+        })),
+        transcript: result.transcript.map((message) => ({
+          role: message.role,
+          content: message.content,
+        })),
+        metadata: result.metaData,
+        responseLink: `${getBaseUrl()}/forms/${result.formId}/conversations/${result.id}`,
       });
     }),
 

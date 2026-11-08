@@ -14,7 +14,10 @@ test.describe("Form submission", () => {
       timeout: 15000,
     });
 
-    await page.getByRole("button", { name: "New Form" }).click();
+    await page
+      .getByRole("button", { name: "New Form", exact: true })
+      .first()
+      .click();
     await page.getByRole("menuitem", { name: "Blank form" }).click();
 
     await page.waitForURL(/\/forms\/[^/?#]+/, { timeout: 30000 });

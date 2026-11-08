@@ -6,10 +6,8 @@ import {
   form,
   user,
 } from "@convoform/db/src/schema";
-import { env } from "../../env";
 import { trpcFetchClient } from "../../lib/trpc-client";
 import type { ActionContext } from "../../types/actionContextType";
-import { getBaseUrl } from "../../utils/url";
 import { buildConversationAnalyticsTrackPayload } from "./conversationAnalytics";
 import { generateAndSaveInsights } from "./generateAndSaveInsights";
 import { mergeConversationMetaDataForPatch } from "./mergeConversationMetaDataForPatch";
@@ -82,7 +80,6 @@ export async function patchConversation(
       const result = await tx
         .select({
           userEmail: user.email,
-          formName: form.name,
         })
         .from(form)
         .innerJoin(user, eq(form.userId, user.userId))
@@ -109,22 +106,7 @@ export async function patchConversation(
         return {
           emailPayload: {
             shouldSendEmail: true as const,
-            email: data.userEmail,
-            formName: data.formName,
             responseId: updatedConversation.id,
-            formId: updatedConversation.formId,
-            transcript: updatedConversation.transcript.map((t) => ({
-              role: t.role,
-              content: t.content,
-            })),
-            formFieldResponses: updatedConversation.formFieldResponses.map(
-              (field) => ({
-                fieldName: field.fieldName,
-                fieldValue: field.fieldValue,
-              }),
-            ),
-            metadata: updatedConversation.metaData,
-            responseLink: `${getBaseUrl()}/forms/${updatedConversation.formId}/conversations/${updatedConversation.id}`,
           },
           isNewlyCompleted,
           updatedConversation,
@@ -167,20 +149,9 @@ export async function patchConversation(
   if (emailPayload?.shouldSendEmail) {
     // Process integrations asynchronously
     (async () => {
-      const responseData = emailPayload.formFieldResponses.reduce(
-        (acc, field) => {
-          acc[field.fieldName] = field.fieldValue;
-          return acc;
-        },
-        {} as Record<string, any>,
-      );
-
       try {
         await trpcFetchClient.integration.sync.mutate({
-          formId: emailPayload.formId,
           responseId: emailPayload.responseId,
-          data: responseData,
-          metaData: emailPayload.metadata as Record<string, any>,
         });
       } catch (error) {
         console.error("Failed to sync integrations", error);
@@ -189,14 +160,7 @@ export async function patchConversation(
 
     try {
       await trpcFetchClient.email.sendFormResponse.mutate({
-        to: emailPayload.email,
-        formName: emailPayload.formName,
         responseId: emailPayload.responseId,
-        secret: env.INTERNAL_EMAIL_API_SECRET || "",
-        currentFieldResponses: emailPayload.formFieldResponses,
-        transcript: emailPayload.transcript,
-        metadata: emailPayload.metadata as Record<string, any>,
-        responseLink: emailPayload.responseLink,
       });
     } catch (error) {
       console.error("Failed to send form response email", error);

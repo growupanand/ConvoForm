@@ -29,18 +29,25 @@ test("sign-in is available on a phone", async ({ page }) => {
 test("a new user on a phone signs in and lands on the desktop handoff", async ({
   page,
 }) => {
-  test.setTimeout(90_000);
+  test.setTimeout(180_000);
 
   const { user, email, password } = await createOnboardingTestUser();
 
   try {
     await page.goto("/auth/register");
-    await expect(page.locator(".cl-rootBox").first()).toBeVisible();
+    await expect(page.locator(".cl-rootBox").first()).toBeVisible({
+      timeout: 30_000,
+    });
     await expect(
       page.getByRole("heading", { name: "Desktop Only Content" }),
     ).toHaveCount(0);
 
-    await page.goto("/");
+    // The landing page defers loading Clerk until first interaction, so
+    // return to a page that mounts Clerk before using the testing helper.
+    await page.goto("/auth/sign-in");
+    await expect(page.locator(".cl-rootBox").first()).toBeVisible({
+      timeout: 30_000,
+    });
     await clerk.signIn({
       page,
       signInParams: {
@@ -53,7 +60,7 @@ test("a new user on a phone signs in and lands on the desktop handoff", async ({
     await page.goto("/dashboard");
 
     await expect(page.getByRole("heading", { name: /You're in!/ })).toBeVisible(
-      { timeout: 45_000 },
+      { timeout: 90_000 },
     );
     await expect(page).toHaveURL(/\/forms/);
     await expect(page).not.toHaveURL(/\/organizations/);

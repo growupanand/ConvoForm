@@ -6,37 +6,36 @@ test.describe("Performance & Optimistic UI", () => {
   }) => {
     // 1. Create a form
     await page.goto("/forms");
-    await page.getByRole("button", { name: "New Form" }).click();
+
+    // Wait for the protected shell to finish loading before interacting.
+    // The dev server can be slow to serve its first chunk after a restart.
+    await expect(page.getByRole("heading", { name: "Forms" })).toBeVisible({
+      timeout: 30000,
+    });
+
+    await page
+      .getByRole("button", { name: "New Form", exact: true })
+      .first()
+      .click();
     await page.getByRole("menuitem", { name: "Blank form" }).click();
     await page.waitForURL("**/forms/**");
 
     // 2. Intercept the update request and delay it
-    await page.route("**/api/trpc/form.update*", async (route) => {
+    await page.route("**/api/trpc/form.patch*", async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       await route.continue();
     });
 
-    // 3. Change title
+    // 3. Change title. The form header loads its data client-side, so wait
+    // for the title input before interacting with it.
     const newTitle = "Optimistic Title Check";
-    // Assuming the title is editable by clicking on it or an input
-    // Inspecting apps/web/src/app/(protectedPage)/forms/[formId]/_components/changeNameInput.tsx would verify this.
-    // Let's assume it's an input or contenteditable.
-    // Based on file names, it's likely `ChangeNameInput`.
-
-    // Locate the input. It might have a specific ID or role.
-    // If it's the header input:
-    // const titleInput = page.getByPlaceholder("Form Name"); // Guessing placeholder
-    // Or try to find by current value "New form"
     const input = page.locator('input[value="New form"]');
+    await expect(input).toBeVisible({ timeout: 30000 });
 
-    if ((await input.count()) > 0) {
-      await input.fill(newTitle);
+    await input.fill(newTitle);
 
-      // 4. Verify title changed immediately in UI (before 2s delay)
-      await expect(input).toHaveValue(newTitle);
-    } else {
-      console.log("Could not find title input, skipping optimistic check");
-    }
+    // 4. Verify title changed immediately in UI (before 2s delay)
+    await expect(input).toHaveValue(newTitle);
 
     // Wait for the request to complete
     await page.waitForTimeout(3000);
