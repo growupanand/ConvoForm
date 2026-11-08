@@ -6,6 +6,6 @@ export const studyAbroadUseCasePath = "/use-cases/study-abroad";
 
 export const jobApplicationUseCasePath = "/use-cases/job-application";
 
-/** Target for issue #495; article page may ship separately. */
+/** Study-abroad article linked from the use-case page and sitemap. */
 export const studyAbroadArticlePath =
   "/articles/study-abroad-conversational-intake";

@@ -1,5 +1,6 @@
 import {
   jobApplicationUseCasePath,
+  studyAbroadArticlePath,
   studyAbroadUseCasePath,
   useCasesPath,
 } from "@/lib/marketingPaths";
@@ -37,6 +38,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}${jobApplicationUseCasePath}`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}${studyAbroadArticlePath}`,
       lastModified,
       changeFrequency: "monthly",
       priority: 0.7,

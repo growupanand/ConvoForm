@@ -10,7 +10,11 @@ import {
   leadClass,
   sectionClass,
 } from "@/app/(public)/use-cases/_components/pagePrimitives";
-import { studyAbroadUseCasePath, useCasesPath } from "@/lib/marketingPaths";
+import {
+  studyAbroadArticlePath,
+  studyAbroadUseCasePath,
+  useCasesPath,
+} from "@/lib/marketingPaths";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -448,6 +452,57 @@ function Scope() {
   );
 }
 
+function ArticleLink() {
+  return (
+    <section
+      aria-labelledby="article-heading"
+      className={cn(sectionClass, "pt-8 min-[900px]:pt-12")}
+    >
+      <div className="mx-auto w-full max-w-[1160px]">
+        <Link
+          href={studyAbroadArticlePath}
+          className="group relative isolate grid overflow-hidden rounded-[22px] border-[1.25px] border-marketing-hair bg-marketing-surface p-6 transition-colors duration-200 hover:border-marketing-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600 min-[900px]:grid-cols-[1.15fr_0.85fr] min-[900px]:items-center min-[900px]:gap-10 min-[900px]:p-10"
+        >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 -z-10 bg-marketing-dot-grid bg-[length:22px_22px] [mask-image:radial-gradient(ellipse_90%_60%_at_50%_80%,#000_25%,transparent_80%)] min-[900px]:[mask-image:radial-gradient(ellipse_70%_90%_at_72%_50%,#000_25%,transparent_80%)]"
+          />
+
+          <div className="min-w-0">
+            <Eyebrow>Further reading</Eyebrow>
+
+            <h2
+              id="article-heading"
+              className="max-w-[600px] font-display text-[clamp(26px,3.2vw,38px)] font-bold leading-[1.08] tracking-[-0.025em] text-marketing-ink"
+            >
+              Why a follow-up is not a{" "}
+              <span className="text-marketing-blue-600">
+                conditional branch
+              </span>
+            </h2>
+
+            <p className="mt-3 max-w-[560px] font-body text-[15px] leading-[1.6] text-marketing-muted min-[900px]:text-[16px]">
+              A scripted branch chooses from questions you wrote. A ConvoForm
+              follow-up is generated for the answer it just received. The
+              article walks through the budget example above and is honest about
+              what the AI cannot do.
+            </p>
+
+            <span className="mt-5 inline-flex items-center gap-2 border-b border-marketing-blue-200 pb-0.5 font-body text-sm font-semibold leading-[1.4] text-marketing-blue-600 transition-colors duration-150 group-hover:text-marketing-blue-700">
+              Read the article <span aria-hidden="true">→</span>
+            </span>
+          </div>
+
+          <blockquote className="mt-6 border-l-2 border-marketing-blue-600 pl-5 font-display text-[clamp(20px,2.4vw,27px)] font-semibold leading-[1.25] tracking-[-0.02em] text-marketing-ink min-[900px]:mt-0">
+            “Branching picks a path. A follow-up writes the question you
+            didn’t.”
+          </blockquote>
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 function Faq() {
   return (
     <section
@@ -562,6 +617,7 @@ export default function StudyAbroadUseCasePage() {
       <Steps />
       <Fields />
       <Scope />
+      <ArticleLink />
       <Faq />
       <FinalCta />
     </main>

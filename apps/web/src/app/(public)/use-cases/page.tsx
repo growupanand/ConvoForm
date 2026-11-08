@@ -134,7 +134,7 @@ export default function UseCasesPage() {
           <p className="mt-8 max-w-[620px] font-body text-[15px] leading-[1.6] text-marketing-muted">
             Have a workflow that would fit?{" "}
             <a
-              href="https://convoform.canny.io/feature-requests"
+              href="https://github.com/growupanand/ConvoForm/issues/new?template=feature_request.yml"
               target="_blank"
               rel="noopener noreferrer nofollow"
               className="font-semibold text-marketing-blue-600 underline decoration-marketing-blue-200 underline-offset-4 transition-colors duration-150 hover:text-marketing-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marketing-blue-600"
