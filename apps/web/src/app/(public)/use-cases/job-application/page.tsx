@@ -10,7 +10,9 @@ import {
   leadClass,
   sectionClass,
 } from "@/app/(public)/use-cases/_components/pagePrimitives";
+import { JsonLd } from "@/components/common/jsonLd";
 import { jobApplicationUseCasePath, useCasesPath } from "@/lib/marketingPaths";
+import { createFaqPageJsonLd } from "@/lib/structuredData";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -525,6 +527,8 @@ function FinalCta() {
 export default function JobApplicationUseCasePage() {
   return (
     <main className="min-w-0">
+      <JsonLd data={createFaqPageJsonLd(faqs)} />
+
       <Hero />
       <PainAndBeforeAfter />
       <Steps />

@@ -1,6 +1,12 @@
 import { Hero } from "@/app/(public)/(landingPage)/_components/hero";
+import { JsonLd } from "@/components/common/jsonLd";
+import {
+  createFaqPageJsonLd,
+  softwareApplicationJsonLd,
+} from "@/lib/structuredData";
 import type { Metadata } from "next";
 import { DemoSection } from "./_components/demoSection";
+import { FAQ_ITEMS } from "./_components/faq/content";
 import { FaqSection } from "./_components/faq/faqSection";
 import { FinalCtaSection } from "./_components/finalCta/finalCtaSection";
 import { FounderNote } from "./_components/founder/founderNote";
@@ -37,6 +43,9 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <main className="min-w-0">
+      <JsonLd data={softwareApplicationJsonLd} />
+      <JsonLd data={createFaqPageJsonLd(FAQ_ITEMS)} />
+
       <Hero />
 
       <HowItWorksSection />

@@ -29,6 +29,7 @@ const isMarketingRoute = createRouteMatcher([
   "/changelog(.*)",
   "/privacy(.*)",
   "/terms(.*)",
+  "/llms.txt",
 ]);
 
 const clerkProxy = clerkMiddleware(async (auth, request) => {

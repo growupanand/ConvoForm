@@ -1,6 +1,7 @@
 import { formSubmissionSchema } from "@convoform/db/src/schema";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 
 import { FormViewer } from "@/components/formViewer";
 import { FormContextProvider } from "@/components/formViewer/formContext";
@@ -16,16 +17,44 @@ interface FormViewerPageProps {
   params: Promise<{ formId: string }>;
 }
 
-export const metadata: Metadata = {
-  title: "Submit Form",
-};
+const getFormById = cache((formId: string) =>
+  api.form.getOneWithFields({ id: formId }),
+);
+
+export async function generateMetadata(
+  props: Readonly<FormViewerPageProps>,
+): Promise<Metadata> {
+  const { formId } = await props.params;
+  const formData = await getFormById(formId);
+
+  if (!formData || !formData.isPublished) {
+    return { title: "Submit Form" };
+  }
+
+  return {
+    title: formData.name,
+    description: formData.overview,
+    openGraph: {
+      title: formData.name,
+      description: formData.overview,
+      type: "website",
+      images: ["/api/og"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: formData.name,
+      description: formData.overview,
+      images: ["/api/og"],
+    },
+  };
+}
 
 export default async function FormViewPage(
   props: Readonly<FormViewerPageProps>,
 ) {
   const params = await props.params;
   const { formId } = params;
-  const formData = await api.form.getOneWithFields({ id: formId });
+  const formData = await getFormById(formId);
 
   const isValidForm = formSubmissionSchema.safeParse(formData).success;
 
