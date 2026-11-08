@@ -163,7 +163,33 @@ export async function patchConversation(
         responseId: emailPayload.responseId,
       });
     } catch (error) {
-      console.error("Failed to send form response email", error);
+      const emailError =
+        error instanceof Error ? error : new Error(String(error));
+      console.error("Failed to send form response email", emailError);
+
+      try {
+        await analytics.captureException(emailError, emailPayload.responseId);
+        await analytics.track("email:sendFailed", {
+          distinctId: emailPayload.responseId,
+          ...(updatedConversation?.organizationId
+            ? {
+                groups: {
+                  organization: updatedConversation.organizationId,
+                },
+              }
+            : {}),
+          properties: {
+            conversationId: emailPayload.responseId,
+            formId: updatedConversation?.formId,
+            organizationId: updatedConversation?.organizationId,
+          },
+        });
+      } catch (analyticsError) {
+        console.error(
+          "Failed to report form response email failure",
+          analyticsError,
+        );
+      }
     }
   }
 }

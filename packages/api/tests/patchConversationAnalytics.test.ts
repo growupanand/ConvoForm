@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
 
 const trackMock = mock(() => Promise.resolve());
+const captureExceptionMock = mock(() => Promise.resolve());
+const sendFormResponseMock = mock(() => Promise.resolve());
 
 mock.module("@convoform/db/src/env", () => ({
   env: { DATABASE_URL: "postgresql://localhost/test" },
@@ -10,13 +12,14 @@ mock.module("@convoform/db/src/env", () => ({
 mock.module("@convoform/analytics", () => ({
   analytics: {
     track: trackMock,
+    captureException: captureExceptionMock,
   },
 }));
 
 mock.module("../src/lib/trpc-client", () => ({
   trpcFetchClient: {
     integration: { sync: { mutate: mock() } },
-    email: { sendFormResponse: { mutate: mock() } },
+    email: { sendFormResponse: { mutate: sendFormResponseMock } },
   },
 }));
 
@@ -35,6 +38,8 @@ mock.module("../src/actions/conversation/generateAndSaveInsights", () => ({
 describe("patchConversation analytics", () => {
   beforeEach(() => {
     trackMock.mockClear();
+    captureExceptionMock.mockClear();
+    sendFormResponseMock.mockClear();
   });
 
   it("emits conversation:complete once for the form owner on first finish", async () => {
@@ -177,5 +182,100 @@ describe("patchConversation analytics", () => {
     );
 
     expect(trackMock).not.toHaveBeenCalled();
+  });
+
+  it("reports email send failures with safe context and no recipient PII", async () => {
+    const { patchConversation } = await import(
+      "../src/actions/conversation/patchConversation"
+    );
+
+    const emailError = new Error(
+      "Resend rejected the email request (validation_error, status 422)",
+    );
+    sendFormResponseMock.mockImplementationOnce(() =>
+      Promise.reject(emailError),
+    );
+
+    const finishedAt = new Date();
+    const existingRow = {
+      finishedAt: null as Date | null,
+      metaData: {},
+    };
+
+    const updatedRow = {
+      id: "conv_1",
+      formId: "form_1",
+      organizationId: "org_1",
+      finishedAt,
+      metaData: {},
+      transcript: [],
+      formFieldResponses: [],
+    };
+
+    const mockTx = {
+      execute: mock(() => Promise.resolve()),
+      query: {
+        conversation: {
+          findFirst: mock(() => Promise.resolve(existingRow)),
+        },
+      },
+      update: mock().mockReturnValue({
+        set: mock().mockReturnValue({
+          where: mock().mockReturnValue({
+            returning: mock(() => Promise.resolve([updatedRow])),
+          }),
+        }),
+      }),
+      select: mock().mockReturnValue({
+        from: mock().mockReturnValue({
+          innerJoin: mock().mockReturnValue({
+            where: mock().mockReturnValue({
+              limit: mock(() =>
+                Promise.resolve([
+                  {
+                    userEmail: "owner@example.com",
+                    formName: "Contact form",
+                  },
+                ]),
+              ),
+            }),
+          }),
+        }),
+      }),
+    };
+
+    const mockDb = {
+      transaction: mock((cb: (tx: typeof mockTx) => Promise<unknown>) =>
+        cb(mockTx),
+      ),
+    };
+
+    await patchConversation(
+      {
+        id: "conv_1",
+        finishedAt,
+      } as any,
+      { db: mockDb as any },
+    );
+
+    expect(captureExceptionMock).toHaveBeenCalledWith(emailError, "conv_1");
+    expect(trackMock).toHaveBeenCalledWith("email:sendFailed", {
+      distinctId: "conv_1",
+      groups: { organization: "org_1" },
+      properties: {
+        conversationId: "conv_1",
+        formId: "form_1",
+        organizationId: "org_1",
+      },
+    });
+
+    const analyticsPayload = JSON.stringify([
+      trackMock.mock.calls,
+      captureExceptionMock.mock.calls.map(([error]) => ({
+        message: error instanceof Error ? error.message : String(error),
+      })),
+    ]);
+    expect(analyticsPayload).not.toContain("owner@example.com");
+    expect(analyticsPayload).not.toContain("Contact form");
   });
 });
