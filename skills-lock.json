@@ -317,6 +317,12 @@
       "sourceType": "github",
       "computedHash": "867399b167a78da8635649c58b47fc49babaac26d5c423371f26531a8e481912"
     },
+    "stageshow": {
+      "source": "benjitaylor/skills",
+      "sourceType": "github",
+      "skillPath": "stageshow/SKILL.md",
+      "computedHash": "92725a1d58ce8fbc9b80bd117b4a78feefa230e0feb24865b70c9ed1cfdb581b"
+    },
     "tdd": {
       "source": "mattpocock/skills",
       "sourceType": "github",

@@ -7,7 +7,13 @@
     "defaultBranch": "main"
   },
   "files": {
-    "ignore": ["**/*.yml", "**/*.yaml", "**/*.md", "**/.wrangler/**"]
+    "ignore": [
+      "**/*.yml",
+      "**/*.yaml",
+      "**/*.md",
+      "**/.wrangler/**",
+      "./.agents/skills/**"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -151,7 +157,9 @@
     "globals": ["React", "JSX"]
   },
   "overrides": [
-    { "include": ["*.js?(x)", "*.ts?(x)"] },
+    {
+      "include": ["*.js?(x)", "*.ts?(x)"]
+    },
     {
       "include": ["apps/websocket-server/**"],
       "javascript": {
