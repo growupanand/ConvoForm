@@ -20,6 +20,7 @@ import {
   coreConversationSchema,
   respondentMetadataSchema,
 } from "@convoform/db/src/schema";
+import { createConversationLogger } from "@convoform/logger";
 import { type EdgeTracer, createEdgeTracer } from "@convoform/tracing";
 import { geolocation } from "@vercel/functions";
 import type { UIMessageStreamWriter } from "ai";
@@ -204,17 +205,57 @@ function getOnUpdateConversationHandler(
     tracer?: EdgeTracer;
   },
 ) {
+  // The ConversationManager mutates one live object throughout the request.
+  // Keep only the latest snapshot and persist it once after the response, so
+  // after() never reads a reference that changes underneath it.
+  let pendingConversation: CoreConversation | null = null;
+  let isPatchScheduled = false;
+
   return async (updatedConversation: CoreConversation) => {
     try {
-      after(async () => {
-        await patchConversation(updatedConversation, ctx);
-        await ctx.tracer?.flush();
-      });
+      const conversationSnapshot = structuredClone(updatedConversation);
+      pendingConversation = conversationSnapshot;
+
+      if (!isPatchScheduled) {
+        isPatchScheduled = true;
+
+        after(async () => {
+          const snapshotToPatch = pendingConversation;
+          pendingConversation = null;
+          isPatchScheduled = false;
+
+          if (!snapshotToPatch) {
+            return;
+          }
+
+          try {
+            await patchConversation(snapshotToPatch, ctx);
+          } catch (error) {
+            const logger = createConversationLogger({
+              conversationId: snapshotToPatch.id,
+              formId: snapshotToPatch.formId,
+              organizationId: snapshotToPatch.organizationId,
+            });
+
+            logger.error("conversation:patch:failed", {
+              error: error instanceof Error ? error.message : String(error),
+            });
+
+            try {
+              await logger.flush();
+            } catch {
+              // Logging must never fail the response path.
+            }
+          } finally {
+            await ctx.tracer?.flush();
+          }
+        });
+      }
 
       writer.write({
         type: "data-conversation",
-        data: updatedConversation,
-        id: updatedConversation.id,
+        data: conversationSnapshot,
+        id: conversationSnapshot.id,
       });
     } catch (error) {
       console.error("Error updating conversation:", error);

@@ -6,6 +6,7 @@ import {
   form,
   user,
 } from "@convoform/db/src/schema";
+import { createConversationLogger } from "@convoform/logger";
 import { trpcFetchClient } from "../../lib/trpc-client";
 import type { ActionContext } from "../../types/actionContextType";
 import { createWebhookDeliveriesForCompletedConversation } from "../webhook/createWebhookDeliveries";
@@ -132,7 +133,43 @@ export async function patchConversation(
     isOwnerPreview,
   } = patchResult;
 
+  const logger = createConversationLogger({
+    conversationId: updatedConversation?.id ?? id,
+    ...(updatedConversation?.formId
+      ? { formId: updatedConversation.formId }
+      : {}),
+    ...(updatedConversation?.organizationId
+      ? { organizationId: updatedConversation.organizationId }
+      : {}),
+  });
+
   if (isNewlyCompleted && updatedConversation) {
+    // Create delivery rows before the LLM insights call so a slow or failing
+    // insights request can never prevent webhooks from being queued.
+    if (!isOwnerPreview) {
+      try {
+        await createWebhookDeliveriesForCompletedConversation(
+          {
+            ...updatedConversation,
+            isOwnerPreview,
+          },
+          ctx,
+        );
+      } catch (error) {
+        const webhookError =
+          error instanceof Error ? error : new Error(String(error));
+
+        try {
+          await analytics.captureException(
+            webhookError,
+            updatedConversation.id,
+          );
+        } catch {
+          // Webhook failures must never block insights or the owner email.
+        }
+      }
+    }
+
     try {
       await generateAndSaveInsights(
         {
@@ -152,29 +189,10 @@ export async function patchConversation(
         },
       );
     } catch (error) {
-      console.error("Failed to generate insights on completion", error);
-    }
-  }
-
-  if (isNewlyCompleted && updatedConversation && !isOwnerPreview) {
-    try {
-      await createWebhookDeliveriesForCompletedConversation(
-        updatedConversation,
-        ctx,
-      );
-    } catch (error) {
-      const webhookError =
-        error instanceof Error ? error : new Error(String(error));
-      console.error("Failed to create webhook deliveries", webhookError);
-
-      try {
-        await analytics.captureException(webhookError, updatedConversation.id);
-      } catch (analyticsError) {
-        console.error(
-          "Failed to report webhook delivery failure",
-          analyticsError,
-        );
-      }
+      logger.error("insights:failed", {
+        trigger: "completed",
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }
 
@@ -186,7 +204,10 @@ export async function patchConversation(
           responseId: emailPayload.responseId,
         });
       } catch (error) {
-        console.error("Failed to sync integrations", error);
+        logger.error("integration:sync:failed", {
+          responseId: emailPayload.responseId,
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     })();
 
@@ -197,7 +218,10 @@ export async function patchConversation(
     } catch (error) {
       const emailError =
         error instanceof Error ? error : new Error(String(error));
-      console.error("Failed to send form response email", emailError);
+      logger.error("email:sendFailed", {
+        responseId: emailPayload.responseId,
+        error: emailError.message,
+      });
 
       try {
         await analytics.captureException(emailError, emailPayload.responseId);
@@ -217,11 +241,20 @@ export async function patchConversation(
           },
         });
       } catch (analyticsError) {
-        console.error(
-          "Failed to report form response email failure",
-          analyticsError,
-        );
+        logger.error("email:sendFailed:analytics:failed", {
+          responseId: emailPayload.responseId,
+          error:
+            analyticsError instanceof Error
+              ? analyticsError.message
+              : String(analyticsError),
+        });
       }
     }
+  }
+
+  try {
+    await logger.flush();
+  } catch {
+    // Logging must never fail the conversation patch path.
   }
 }

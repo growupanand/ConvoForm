@@ -3,6 +3,17 @@ import { beforeEach, describe, expect, it, mock } from "bun:test";
 const trackMock = mock(() => Promise.resolve());
 const captureExceptionMock = mock(() => Promise.resolve());
 const sendFormResponseMock = mock(() => Promise.resolve());
+const loggerInfoMock = mock(() => undefined);
+const loggerErrorMock = mock(() => undefined);
+const loggerFlushMock = mock(() => Promise.resolve());
+
+mock.module("@convoform/logger", () => ({
+  createConversationLogger: mock(() => ({
+    info: loggerInfoMock,
+    error: loggerErrorMock,
+    flush: loggerFlushMock,
+  })),
+}));
 
 mock.module("@convoform/db/src/env", () => ({
   env: { DATABASE_URL: "postgresql://localhost/test" },
@@ -47,6 +58,10 @@ describe("patchConversation analytics", () => {
     captureExceptionMock.mockClear();
     sendFormResponseMock.mockClear();
     createWebhookDeliveriesMock.mockClear();
+    generateAndSaveInsightsMock.mockClear();
+    loggerInfoMock.mockClear();
+    loggerErrorMock.mockClear();
+    loggerFlushMock.mockClear();
   });
 
   it("emits conversation:complete once for the form owner on first finish", async () => {
@@ -133,6 +148,103 @@ describe("patchConversation analytics", () => {
     expect(trackMock.mock.calls.length).toBe(2);
     expect(generateAndSaveInsightsMock).toHaveBeenCalledTimes(1);
     expect(createWebhookDeliveriesMock).not.toHaveBeenCalled();
+  });
+
+  it("creates webhook deliveries before insights even when insights throws", async () => {
+    const order: string[] = [];
+    createWebhookDeliveriesMock.mockImplementationOnce(async () => {
+      order.push("webhook");
+      return [];
+    });
+    generateAndSaveInsightsMock.mockImplementationOnce(async () => {
+      order.push("insights");
+      throw new Error("LLM unavailable");
+    });
+    sendFormResponseMock.mockImplementationOnce(async () => {
+      order.push("email");
+    });
+
+    const { patchConversation } = await import(
+      "../src/actions/conversation/patchConversation"
+    );
+
+    const finishedAt = new Date();
+    const existingRow = {
+      finishedAt: null as Date | null,
+      metaData: {},
+    };
+
+    const updatedRow = {
+      id: "conv_1",
+      formId: "form_1",
+      organizationId: "org_1",
+      finishedAt,
+      metaData: {},
+      transcript: [],
+      formFieldResponses: [],
+    };
+
+    const mockTx = {
+      execute: mock(() => Promise.resolve()),
+      query: {
+        conversation: {
+          findFirst: mock(() => Promise.resolve(existingRow)),
+        },
+      },
+      update: mock().mockReturnValue({
+        set: mock().mockReturnValue({
+          where: mock().mockReturnValue({
+            returning: mock(() => Promise.resolve([updatedRow])),
+          }),
+        }),
+      }),
+      select: mock().mockReturnValue({
+        from: mock().mockReturnValue({
+          innerJoin: mock().mockReturnValue({
+            where: mock().mockReturnValue({
+              limit: mock(() =>
+                Promise.resolve([
+                  {
+                    userEmail: "owner@example.com",
+                  },
+                ]),
+              ),
+            }),
+          }),
+        }),
+      }),
+    };
+
+    const mockDb = {
+      transaction: mock((cb: (tx: typeof mockTx) => Promise<unknown>) =>
+        cb(mockTx),
+      ),
+    };
+
+    await patchConversation(
+      {
+        id: "conv_1",
+        finishedAt,
+      } as any,
+      { db: mockDb as any },
+    );
+
+    expect(createWebhookDeliveriesMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: "conv_1",
+        formId: "form_1",
+        organizationId: "org_1",
+        isOwnerPreview: false,
+      }),
+      expect.objectContaining({ db: mockDb }),
+    );
+    expect(generateAndSaveInsightsMock).toHaveBeenCalledTimes(1);
+    expect(sendFormResponseMock).toHaveBeenCalledTimes(1);
+    expect(order).toEqual(["webhook", "insights", "email"]);
+    expect(loggerErrorMock).toHaveBeenCalledWith("insights:failed", {
+      trigger: "completed",
+      error: "LLM unavailable",
+    });
   });
 
   it("does not emit conversation:update after the conversation is already finished", async () => {

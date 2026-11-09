@@ -167,6 +167,9 @@ Start performance timer.
 ### `ILogger.withContext(context): ILogger`
 Create child logger with persistent context.
 
+### `ILogger.flush(): Promise<void>`
+Flush buffered log entries to the configured transports. Call this before an Edge/serverless function returns when you need delivery guarantees.
+
 ### `ITimer.checkpoint(name, context?): number`
 Log checkpoint, returns incremental time.
 

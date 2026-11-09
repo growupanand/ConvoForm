@@ -78,6 +78,11 @@ export interface ILogger {
    * Create a child logger with persistent context
    */
   withContext(context: LogContext): ILogger;
+
+  /**
+   * Flush buffered log entries to the configured transports
+   */
+  flush(): Promise<void>;
 }
 
 /**

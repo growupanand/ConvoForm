@@ -163,4 +163,11 @@ export class Logger implements ILogger {
       ...context,
     });
   }
+
+  /**
+   * Flush buffered log entries to the configured transports
+   */
+  async flush(): Promise<void> {
+    await this.axiomLogger.flush();
+  }
 }
