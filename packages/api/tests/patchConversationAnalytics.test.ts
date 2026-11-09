@@ -407,4 +407,132 @@ describe("patchConversation analytics", () => {
       expect.objectContaining({ db: mockDb }),
     );
   });
+
+  it("does not overwrite isInProgress from an in-progress stream snapshot", async () => {
+    const { patchConversation } = await import(
+      "../src/actions/conversation/patchConversation"
+    );
+
+    const setCalls: Record<string, unknown>[] = [];
+    const existingRow = {
+      finishedAt: null as Date | null,
+      metaData: {},
+    };
+    const updatedRow = {
+      id: "conv_1",
+      formId: "form_1",
+      organizationId: "org_1",
+      finishedAt: null,
+      metaData: {},
+      transcript: [],
+      formFieldResponses: [],
+    };
+
+    const mockTx = {
+      execute: mock(() => Promise.resolve()),
+      query: {
+        conversation: {
+          findFirst: mock(() => Promise.resolve(existingRow)),
+        },
+      },
+      update: mock(() => ({
+        set: mock((values: Record<string, unknown>) => {
+          setCalls.push(values);
+          return {
+            where: mock(() => ({
+              returning: mock(() => Promise.resolve([updatedRow])),
+            })),
+          };
+        }),
+      })),
+      select: mock(() => ({
+        from: mock(() => ({
+          innerJoin: mock(() => ({
+            where: mock(() => ({
+              limit: mock(() => Promise.resolve([])),
+            })),
+          })),
+        })),
+      })),
+    };
+
+    const mockDb = {
+      transaction: mock((cb: (tx: typeof mockTx) => Promise<unknown>) =>
+        cb(mockTx),
+      ),
+    };
+
+    await patchConversation(
+      {
+        id: "conv_1",
+        isInProgress: false,
+        formFieldResponses: [],
+      } as any,
+      { db: mockDb as any },
+    );
+
+    expect(setCalls[0]).not.toHaveProperty("isInProgress");
+  });
+
+  it("marks the conversation not in progress when it finishes", async () => {
+    const { patchConversation } = await import(
+      "../src/actions/conversation/patchConversation"
+    );
+
+    const setCalls: Record<string, unknown>[] = [];
+    const finishedAt = new Date();
+    const existingRow = {
+      finishedAt: null as Date | null,
+      metaData: {},
+    };
+    const updatedRow = {
+      id: "conv_1",
+      formId: "form_1",
+      organizationId: "org_1",
+      finishedAt,
+      metaData: {},
+      transcript: [],
+      formFieldResponses: [],
+    };
+
+    const mockTx = {
+      execute: mock(() => Promise.resolve()),
+      query: {
+        conversation: {
+          findFirst: mock(() => Promise.resolve(existingRow)),
+        },
+      },
+      update: mock(() => ({
+        set: mock((values: Record<string, unknown>) => {
+          setCalls.push(values);
+          return {
+            where: mock(() => ({
+              returning: mock(() => Promise.resolve([updatedRow])),
+            })),
+          };
+        }),
+      })),
+      select: mock(() => ({
+        from: mock(() => ({
+          innerJoin: mock(() => ({
+            where: mock(() => ({
+              limit: mock(() => Promise.resolve([])),
+            })),
+          })),
+        })),
+      })),
+    };
+
+    const mockDb = {
+      transaction: mock((cb: (tx: typeof mockTx) => Promise<unknown>) =>
+        cb(mockTx),
+      ),
+    };
+
+    await patchConversation({ id: "conv_1", finishedAt } as any, {
+      db: mockDb as any,
+    });
+
+    expect(setCalls[0]).toHaveProperty("isInProgress", false);
+  });
 });

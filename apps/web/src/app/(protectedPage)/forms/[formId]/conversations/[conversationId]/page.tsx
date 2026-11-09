@@ -69,11 +69,13 @@ export default function ConversationDetailPage(props: Readonly<Props>) {
     };
 
     // Register the event handler
+    registerEventHandler("conversation:started", handleConversationUpdate);
     registerEventHandler("conversation:updated", handleConversationUpdate);
     registerEventHandler("conversation:stopped", handleConversationUpdate);
 
     return () => {
       // Clean up by removing the event handler
+      removeEventHandler("conversation:started", handleConversationUpdate);
       removeEventHandler("conversation:updated", handleConversationUpdate);
       removeEventHandler("conversation:stopped", handleConversationUpdate);
     };

@@ -292,8 +292,13 @@ export function ConversationJourney({ conversation, journeyData }: Props) {
   const settingsHref = `/forms/${conversation.formId}/settings/webhooks`;
 
   return (
-    <section aria-label="Conversation journey" className="px-2 pb-4">
-      <SectionHeading className="py-2 mb-2">Journey</SectionHeading>
+    <section aria-label="Conversation journey" className="px-2 pb-6">
+      <SectionHeading
+        className="mb-2"
+        titleClassName="text-xs font-medium uppercase tracking-wider text-subtle-foreground"
+      >
+        Journey
+      </SectionHeading>
       <ol className="flex flex-col lg:flex-row lg:items-start">
         {journey.nodes.map((node, index) => (
           <JourneyNodeItem
@@ -311,8 +316,8 @@ export function ConversationJourney({ conversation, journeyData }: Props) {
 
 export function ConversationJourneySkeleton() {
   return (
-    <div className="px-2 pb-4">
-      <Skeleton className="mb-4 h-5 w-20" />
+    <div className="px-2 pb-6">
+      <Skeleton className="mb-2 h-3 w-16" />
       <div className="flex flex-col lg:flex-row lg:items-start">
         {["started", "fields", "outcome", "insights", "webhook"].map((key) => (
           <div

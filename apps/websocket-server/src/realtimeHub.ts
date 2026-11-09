@@ -164,6 +164,9 @@ export class RealtimeHub extends DurableObject<Env> {
     this.broadcastToRoom(getFormRoom(formId), {
       type: "conversation:started",
     });
+    this.broadcastToRoom(getConversationRoom(conversationId), {
+      type: "conversation:started",
+    });
   }
 
   private handleUpdated(ws: WebSocket, data: Record<string, unknown>) {

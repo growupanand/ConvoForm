@@ -214,6 +214,28 @@ function getOnUpdateConversationHandler(
   return async (updatedConversation: CoreConversation) => {
     try {
       const conversationSnapshot = structuredClone(updatedConversation);
+
+      // Persist in-progress snapshots before streaming them so dashboard
+      // refetches see the answer and next field instead of the stale row.
+      // The completion snapshot stays in after() because it triggers email,
+      // webhook fan-out and insights.
+      if (!conversationSnapshot.finishedAt) {
+        try {
+          await patchConversation(conversationSnapshot, ctx, {
+            deferAnalytics: true,
+          });
+        } catch (error) {
+          await logConversationPatchFailure(conversationSnapshot, error);
+        }
+
+        writer.write({
+          type: "data-conversation",
+          data: conversationSnapshot,
+          id: conversationSnapshot.id,
+        });
+        return;
+      }
+
       pendingConversation = conversationSnapshot;
 
       if (!isPatchScheduled) {
@@ -231,21 +253,7 @@ function getOnUpdateConversationHandler(
           try {
             await patchConversation(snapshotToPatch, ctx);
           } catch (error) {
-            const logger = createConversationLogger({
-              conversationId: snapshotToPatch.id,
-              formId: snapshotToPatch.formId,
-              organizationId: snapshotToPatch.organizationId,
-            });
-
-            logger.error("conversation:patch:failed", {
-              error: error instanceof Error ? error.message : String(error),
-            });
-
-            try {
-              await logger.flush();
-            } catch {
-              // Logging must never fail the response path.
-            }
+            await logConversationPatchFailure(snapshotToPatch, error);
           } finally {
             await ctx.tracer?.flush();
           }
@@ -261,4 +269,25 @@ function getOnUpdateConversationHandler(
       console.error("Error updating conversation:", error);
     }
   };
+}
+
+async function logConversationPatchFailure(
+  conversation: CoreConversation,
+  error: unknown,
+) {
+  const logger = createConversationLogger({
+    conversationId: conversation.id,
+    formId: conversation.formId,
+    organizationId: conversation.organizationId,
+  });
+
+  logger.error("conversation:patch:failed", {
+    error: error instanceof Error ? error.message : String(error),
+  });
+
+  try {
+    await logger.flush();
+  } catch {
+    // Logging must never fail the response path.
+  }
 }

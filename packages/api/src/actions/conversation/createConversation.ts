@@ -19,6 +19,10 @@ export async function createConversation(
     .insert(conversation)
     .values({
       ...newConversation,
+      // A new conversation is active until it is completed or abandoned.
+      // The websocket started/stopped events own this flag after creation,
+      // so the stream snapshots must not start from a stale `false`.
+      isInProgress: !newConversation.finishedAt,
       transcript,
       formOverview,
       formFieldResponses,

@@ -17,11 +17,13 @@ import { mergeConversationMetaDataForPatch } from "./mergeConversationMetaDataFo
 export async function patchConversation(
   input: PatchConversation,
   ctx: ActionContext,
+  options: { deferAnalytics?: boolean } = {},
 ) {
   const {
     id,
     createdAt: _createdAt,
     updatedAt: _updatedAt,
+    isInProgress: _isInProgress,
     ...updatedData
   } = input;
 
@@ -47,6 +49,10 @@ export async function patchConversation(
 
     const patchSet = {
       ...restUpdatedData,
+      // `isInProgress` is owned by the conversation started/stopped events.
+      // A stream snapshot can still carry the value from before the started
+      // event, so only completion is allowed to write it here.
+      ...(updatedData.finishedAt ? { isInProgress: false } : {}),
       ...(incomingMetaData !== undefined
         ? {
             metaData: mergeConversationMetaDataForPatch(
@@ -65,13 +71,6 @@ export async function patchConversation(
 
     if (!updatedConversation) {
       throw new Error("Failed to update conversation");
-    }
-
-    if (!existingConversation?.finishedAt) {
-      await analytics.track(
-        "conversation:update",
-        buildConversationAnalyticsTrackPayload(updatedConversation),
-      );
     }
 
     const isNewlyCompleted =
@@ -115,6 +114,7 @@ export async function patchConversation(
           isNewlyCompleted,
           isOwnerPreview,
           updatedConversation,
+          analyticsConversation: updatedConversation,
         };
       }
     }
@@ -123,6 +123,9 @@ export async function patchConversation(
       isNewlyCompleted,
       isOwnerPreview,
       updatedConversation: isNewlyCompleted ? updatedConversation : null,
+      analyticsConversation: existingConversation?.finishedAt
+        ? null
+        : updatedConversation,
     };
   });
 
@@ -131,7 +134,25 @@ export async function patchConversation(
     isNewlyCompleted,
     updatedConversation,
     isOwnerPreview,
+    analyticsConversation,
   } = patchResult;
+
+  if (analyticsConversation) {
+    const trackUpdate = analytics.track(
+      "conversation:update",
+      buildConversationAnalyticsTrackPayload(analyticsConversation),
+    );
+
+    if (options.deferAnalytics) {
+      void trackUpdate.catch(() => undefined);
+    } else {
+      try {
+        await trackUpdate;
+      } catch {
+        // Analytics must never fail the conversation patch.
+      }
+    }
+  }
 
   const logger = createConversationLogger({
     conversationId: updatedConversation?.id ?? id,
