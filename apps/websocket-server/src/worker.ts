@@ -1,3 +1,4 @@
+import { constantTimeEqual } from "@convoform/common";
 import { RealtimeHub } from "./realtimeHub";
 import { WebhookDeliveryWorkflow } from "./webhookDeliveryWorkflow/workflow";
 
@@ -12,6 +13,21 @@ export default {
         status: "ok",
         timestamp: new Date().toISOString(),
       });
+    }
+
+    if (url.pathname === "/broadcast" && request.method === "POST") {
+      const expectedSecret = env.INTERNAL_EMAIL_API_SECRET;
+      const authorization = request.headers.get("authorization") ?? "";
+
+      if (
+        !expectedSecret ||
+        !constantTimeEqual(authorization, `Bearer ${expectedSecret}`)
+      ) {
+        return new Response("Unauthorized", { status: 401 });
+      }
+
+      const id = env.REALTIME.idFromName("global");
+      return env.REALTIME.get(id).fetch(request);
     }
 
     const upgrade = request.headers.get("Upgrade");

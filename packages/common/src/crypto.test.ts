@@ -1,5 +1,11 @@
 import { describe, expect, it } from "bun:test";
-import { decrypt, encrypt, signPayload, verifySignature } from "./crypto";
+import {
+  constantTimeEqual,
+  decrypt,
+  encrypt,
+  signPayload,
+  verifySignature,
+} from "./crypto";
 
 describe("Crypto Utils", () => {
   const secretKey = "super-secret-key-123";
@@ -54,6 +60,17 @@ describe("Crypto Utils", () => {
         secretKey,
       );
       expect(isValid).toBe(false);
+    });
+  });
+
+  describe("constantTimeEqual", () => {
+    it("matches equal strings", () => {
+      expect(constantTimeEqual(message, message)).toBe(true);
+    });
+
+    it("rejects different values and lengths", () => {
+      expect(constantTimeEqual(message, `${message}!`)).toBe(false);
+      expect(constantTimeEqual(message, "Hello, World?")).toBe(false);
     });
   });
 });

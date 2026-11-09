@@ -13,9 +13,11 @@ import {
 } from "@convoform/api/src/actions/conversation";
 import { isFormOrganizationMember } from "@convoform/api/src/actions/conversation/isFormOrganizationMember";
 import { getOneFormWithFields } from "@convoform/api/src/actions/form";
+import { env } from "@convoform/api/src/env";
 import type { ActionContext } from "@convoform/api/src/types/actionContextType";
 import { db } from "@convoform/db";
 import {
+  type Conversation,
   type CoreConversation,
   coreConversationSchema,
   respondentMetadataSchema,
@@ -229,23 +231,11 @@ function getOnUpdateConversationHandler(
           }
 
           try {
-            await patchConversation(snapshotToPatch, ctx);
+            await patchConversation(snapshotToPatch, ctx, {
+              onConversationUpdated: broadcastConversationUpdated,
+            });
           } catch (error) {
-            const logger = createConversationLogger({
-              conversationId: snapshotToPatch.id,
-              formId: snapshotToPatch.formId,
-              organizationId: snapshotToPatch.organizationId,
-            });
-
-            logger.error("conversation:patch:failed", {
-              error: error instanceof Error ? error.message : String(error),
-            });
-
-            try {
-              await logger.flush();
-            } catch {
-              // Logging must never fail the response path.
-            }
+            await logConversationPatchFailure(snapshotToPatch, error);
           } finally {
             await ctx.tracer?.flush();
           }
@@ -261,4 +251,58 @@ function getOnUpdateConversationHandler(
       console.error("Error updating conversation:", error);
     }
   };
+}
+
+async function broadcastConversationUpdated(
+  conversation: Pick<Conversation, "id" | "formId">,
+) {
+  const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
+  const secret = env.INTERNAL_EMAIL_API_SECRET;
+
+  if (!websocketUrl || !secret) {
+    return;
+  }
+
+  const httpUrl = websocketUrl.replace(/^ws/, "http").replace(/\/$/, "");
+
+  try {
+    await fetch(`${httpUrl}/broadcast`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${secret}`,
+      },
+      body: JSON.stringify({
+        rooms: [
+          `conversation:${conversation.id}`,
+          `form:${conversation.formId}`,
+        ],
+        message: { type: "conversation:updated" },
+      }),
+      signal: AbortSignal.timeout(3000),
+    });
+  } catch {
+    // The dashboard will refresh on the next lifecycle event if this fails.
+  }
+}
+
+async function logConversationPatchFailure(
+  conversation: CoreConversation,
+  error: unknown,
+) {
+  const logger = createConversationLogger({
+    conversationId: conversation.id,
+    formId: conversation.formId,
+    organizationId: conversation.organizationId,
+  });
+
+  logger.error("conversation:patch:failed", {
+    error: error instanceof Error ? error.message : String(error),
+  });
+
+  try {
+    await logger.flush();
+  } catch {
+    // Logging must never fail the response path.
+  }
 }

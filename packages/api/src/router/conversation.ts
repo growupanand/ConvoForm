@@ -1,3 +1,4 @@
+import { ACTIVE_CONVERSATION_WINDOW_MS } from "@convoform/common";
 import { and, count, eq, inArray, sql } from "@convoform/db";
 import {
   conversation,
@@ -270,16 +271,32 @@ export const conversationRouter = createTRPCRouter({
         filters.push(eq(conversation.formId, formId));
       }
 
+      const activeChannelWindowStart = new Date(
+        Date.now() - ACTIVE_CONVERSATION_WINDOW_MS,
+      );
+      const isLiveConversation = sql`(
+        ${conversation.finishedAt} is null
+        and (
+          ${conversation.isInProgress} = true
+          or (
+            ${conversation.channelType} is not null
+            and ${conversation.channelType} <> ''
+            and ${conversation.channelType} <> 'web'
+            and ${conversation.updatedAt} > ${activeChannelWindowStart}
+          )
+        )
+      )`;
+
       const [statsResult] = await ctx.db
         .select({
           totalCount: count(),
           finishedTotalCount: count(conversation.finishedAt),
           liveTotalCount:
-            sql<number>`count(*) filter (where ${conversation.finishedAt} is null and ${conversation.isInProgress} = true)`.mapWith(
+            sql<number>`count(*) filter (where ${isLiveConversation})`.mapWith(
               Number,
             ),
           partialTotalCount:
-            sql<number>`count(*) filter (where ${conversation.finishedAt} is null and ${conversation.isInProgress} = false)`.mapWith(
+            sql<number>`count(*) filter (where ${conversation.finishedAt} is null and not ${isLiveConversation})`.mapWith(
               Number,
             ),
           totalFinishTime:
