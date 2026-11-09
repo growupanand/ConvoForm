@@ -162,8 +162,7 @@ async function createWorkflowInstance(
     body: JSON.stringify({
       // Cloudflare deduplicates retried instance creation on this id.
       instance_id: deliveryId,
-      // The REST API expects `params` to be a JSON-encoded string.
-      params: JSON.stringify({ deliveryId }),
+      params: { deliveryId },
     }),
     signal: AbortSignal.timeout(CLOUDFLARE_API_TIMEOUT_MS),
   });

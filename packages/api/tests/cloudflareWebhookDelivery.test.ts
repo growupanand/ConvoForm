@@ -142,7 +142,7 @@ describe("cloudflare webhook delivery adapter", () => {
     });
     expect(JSON.parse(String(init.body))).toEqual({
       instance_id: "delivery_1",
-      params: JSON.stringify({ deliveryId: "delivery_1" }),
+      params: { deliveryId: "delivery_1" },
     });
 
     expect(dbMock.update).toHaveBeenCalledTimes(2);

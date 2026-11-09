@@ -43,9 +43,15 @@ export class WebhookDeliveryWorkflow extends WorkflowEntrypoint<
     const secret = this.env.INTERNAL_EMAIL_API_SECRET;
 
     if (!deliveryId || !baseUrl || !secret) {
-      throw new Error(
-        "WebhookDeliveryWorkflow is missing NEXT_PUBLIC_APP_URL, INTERNAL_EMAIL_API_SECRET or the deliveryId payload",
-      );
+      const missing = [
+        !deliveryId && "deliveryId payload",
+        !baseUrl && "NEXT_PUBLIC_APP_URL",
+        !secret && "INTERNAL_EMAIL_API_SECRET",
+      ]
+        .filter(Boolean)
+        .join(", ");
+
+      throw new Error(`WebhookDeliveryWorkflow is missing ${missing}`);
     }
 
     let initialRequest: SignedWebhookRequest;
