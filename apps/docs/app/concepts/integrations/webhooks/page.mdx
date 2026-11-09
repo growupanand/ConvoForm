@@ -1,0 +1,228 @@
+# Webhooks
+
+ConvoForm can send a signed `response.completed` event to your own URL whenever a
+respondent finishes a form. Use it to connect ConvoForm to Zapier, Make, n8n or
+your own service without polling.
+
+Webhooks are form-scoped, retried automatically and delivered durably on
+ConvoForm Cloud. Self-hosted instances use a best-effort direct sender.
+
+## Setting up a webhook
+
+1. Open your form and go to **Settings** → **Webhooks**.
+2. Click **Add endpoint**.
+3. Enter a public HTTPS URL. Private, loopback, link-local and cloud-metadata
+   addresses are rejected, including addresses a hostname resolves to.
+4. Copy the signing secret from the dialog. It is shown **once** and is stored
+   encrypted. If you lose it, rotate the secret from the endpoint menu.
+5. Send a test delivery to check the endpoint from the delivery log.
+
+A form can have up to 10 enabled endpoints during the beta.
+
+## Event payload
+
+Only one event type is sent: `response.completed`.
+
+```json
+{
+  "type": "response.completed",
+  "version": "1",
+  "timestamp": "2026-11-09T10:00:00.000Z",
+  "data": {
+    "responseId": "conversation_id",
+    "formId": "form_id",
+    "formName": "Contact form",
+    "submittedAt": "2026-11-09T09:59:58.000Z",
+    "fields": [
+      { "fieldName": "Full name", "fieldValue": "Ada Lovelace" },
+      { "fieldName": "Email", "fieldValue": "ada@example.com" }
+    ],
+    "metadata": {
+      "source": "web"
+    }
+  }
+}
+```
+
+| Field | Description |
+| ----- | ----------- |
+| `type` | Always `response.completed`. |
+| `version` | Payload version. Currently `1`. |
+| `timestamp` | When the event was generated, as ISO 8601. |
+| `data.responseId` | The completed conversation id. |
+| `data.formId` / `data.formName` | The form that produced the response. |
+| `data.submittedAt` | When the respondent submitted the form. |
+| `data.fields` | One entry per answered field. |
+| `data.metadata.source` | The channel the response came from, such as `web` or `telegram`. |
+
+If the serialized payload would exceed 64 KB, field values are truncated and
+the payload includes `"truncated": true` in `data`. The delivery is still sent.
+
+## Request headers
+
+Every delivery is a `POST` with a JSON body and Svix-compatible headers:
+
+| Header | Example | Description |
+| ------ | ------- | ----------- |
+| `webhook-id` | `msg_abc123` | Unique delivery id. Use it for idempotency. |
+| `webhook-timestamp` | `1762682400` | Unix timestamp in seconds. |
+| `webhook-signature` | `v1,<base64 hmac>` | HMAC-SHA256 of the signed content. |
+| `content-type` | `application/json` | Always JSON. |
+| `user-agent` | `ConvoForm-Webhooks/1.0` | Identifies ConvoForm deliveries. |
+
+The signing secret looks like `whsec_<base64>`. The HMAC key is the decoded
+bytes after `whsec_`, not the literal string.
+
+The signed content is the concatenation of the id, timestamp and raw body:
+
+```text
+{webhook-id}.{webhook-timestamp}.{raw-body}
+```
+
+Reject requests whose timestamp is more than **5 minutes** away from your clock
+to prevent replay attacks. Compare signatures in constant time.
+
+## Verify in Node.js / Next.js
+
+```js
+import crypto from "node:crypto";
+
+export async function POST(request) {
+  const secret = process.env.CONVOFORM_WEBHOOK_SECRET ?? "";
+  const rawBody = await request.text();
+  const webhookId = request.headers.get("webhook-id") ?? "";
+  const timestamp = request.headers.get("webhook-timestamp") ?? "";
+  const signature = request.headers.get("webhook-signature") ?? "";
+
+  const now = Math.floor(Date.now() / 1000);
+  if (Math.abs(now - Number(timestamp)) > 5 * 60) {
+    return new Response("Timestamp outside tolerance", { status: 401 });
+  }
+
+  const key = Buffer.from(secret.replace(/^whsec_/, ""), "base64");
+  const expected = `v1,${crypto
+    .createHmac("sha256", key)
+    .update(`${webhookId}.${timestamp}.${rawBody}`)
+    .digest("base64")}`;
+
+  const expectedBuffer = Buffer.from(expected);
+  const valid = signature.split(" ").some((part) => {
+    const actualBuffer = Buffer.from(part);
+    return (
+      actualBuffer.length === expectedBuffer.length &&
+      crypto.timingSafeEqual(actualBuffer, expectedBuffer)
+    );
+  });
+
+  if (!valid) {
+    return new Response("Invalid signature", { status: 401 });
+  }
+
+  const event = JSON.parse(rawBody);
+  console.log("Received", event.type, event.data.responseId);
+
+  return new Response(null, { status: 200 });
+}
+```
+
+Always verify against the **raw request body**. Parsing and re-stringifying JSON
+can change whitespace and invalidate the signature.
+
+## Verify in Python / Flask
+
+```python
+import base64
+import hashlib
+import hmac
+import os
+import time
+
+from flask import Flask, abort, request
+
+app = Flask(__name__)
+
+@app.post("/webhooks/convoform")
+def convoform_webhook():
+    raw_body = request.get_data()
+    webhook_id = request.headers.get("webhook-id", "")
+    timestamp = request.headers.get("webhook-timestamp", "")
+    signature = request.headers.get("webhook-signature", "")
+
+    if abs(time.time() - int(timestamp)) > 5 * 60:
+        abort(401)
+
+    secret = os.environ["CONVOFORM_WEBHOOK_SECRET"].encode()
+    key = base64.b64decode(secret.removeprefix(b"whsec_"))
+    signed_content = f"{webhook_id}.{timestamp}.".encode() + raw_body
+    digest = base64.b64encode(
+        hmac.new(key, signed_content, hashlib.sha256).digest()
+    ).decode()
+    expected = f"v1,{digest}"
+
+    if not hmac.compare_digest(signature, expected):
+        abort(401)
+
+    return "", 200
+```
+
+## Retries and failure handling
+
+On ConvoForm Cloud, deliveries run through a durable Cloudflare Workflow:
+
+| Attempt | Approximate delay |
+| ------- | ----------------- |
+| 1 | immediately |
+| 2 | 1 minute |
+| 3 | 2 minutes |
+| 4 | 4 minutes |
+| 5 | 8 minutes |
+| 6 | 16 minutes |
+| 7 | 32 minutes |
+| 8 | 64 minutes |
+
+Each attempt has a 30-second timeout. A `2xx` response is a success. Any other
+status, a timeout or a network error is retried. Redirects are **not** followed;
+a `3xx` response counts as a failed attempt.
+
+Self-hosted instances do not have the durable workflow by default. They send
+one initial attempt plus two in-process retries after about 1 second and 5
+seconds, then record the final result. Treat self-hosted delivery as
+best-effort.
+
+A delivery that exhausts all retries is recorded as `failed`. `consecutiveFailures`
+counts failed deliveries, not individual attempts. After **10 consecutive
+failed deliveries** the endpoint is disabled automatically, the owner receives
+an email, and no new deliveries are created until the endpoint is re-enabled.
+Re-enabling clears the failure counter.
+
+Test deliveries use a sample payload, appear in the delivery log and never
+affect the failure counter.
+
+## Delivery log
+
+The endpoint's delivery log shows the final status, HTTP status code, latency,
+attempt count, number of attempts, timestamp and a short error class. ConvoForm
+never stores or displays request or response bodies, so respondent data is not
+duplicated in the log.
+
+## Use with Zapier
+
+1. In Zapier, create a Zap with the **Webhooks by Zapier** trigger and choose
+   **Catch Hook**.
+2. Copy the catch-hook URL.
+3. Add it as a webhook endpoint in ConvoForm.
+4. Click **Send test** and confirm Zapier receives the sample payload.
+
+Make and n8n work the same way: use their webhook/catch-hook trigger and paste
+the generated URL into ConvoForm.
+
+## Troubleshooting
+
+- **401 from your endpoint** — make sure you verify the raw body and decode the
+  `whsec_` prefix as base64.
+- **Endpoint auto-disabled** — check the delivery log for the failing status
+  code, fix the destination and re-enable the endpoint.
+- **No deliveries** — confirm the endpoint is enabled and the response was not
+  an owner preview. Owner preview conversations never send webhooks.
+- **Private URL rejected** — webhook URLs must resolve to a public address and
+  use HTTPS on port 443. `http://localhost` is accepted only in development.
