@@ -1,5 +1,51 @@
 
 
+## [0.20.0](https://github.com/growupanand/ConvoForm/compare/0.19.0...0.20.0) (2026-11-09)
+
+
+### Features
+
+* 🚀 add cloudflare workflow webhook delivery engine ([#544](https://github.com/growupanand/ConvoForm/issues/544)) ([b233830](https://github.com/growupanand/ConvoForm/commit/b233830967b7d0de96cb5c3af535ec2ef746ae9f))
+* 🚀 add geo structured data and llms.txt ([#538](https://github.com/growupanand/ConvoForm/issues/538)) ([019bf18](https://github.com/growupanand/ConvoForm/commit/019bf18532d1a7e19b047b88cf3fdc2102b77c6a)), closes [#537](https://github.com/growupanand/ConvoForm/issues/537) [#537](https://github.com/growupanand/ConvoForm/issues/537)
+* 🚀 add google sheet integration for sync form responses ([2dce7f3](https://github.com/growupanand/ConvoForm/commit/2dce7f3d8fe8ba59caa77ddf192bb77e02dcae75)), closes [#482](https://github.com/growupanand/ConvoForm/issues/482)
+* 🚀 add how-it-works and before-after landing sections ([#521](https://github.com/growupanand/ConvoForm/issues/521)) ([80e3f91](https://github.com/growupanand/ConvoForm/commit/80e3f91fc6247af1871ebf30a49afb434d38ad5a)), closes [#515](https://github.com/growupanand/ConvoForm/issues/515)
+* 🚀 add job application use case page ([#529](https://github.com/growupanand/ConvoForm/issues/529)) ([14e507f](https://github.com/growupanand/ConvoForm/commit/14e507fb3d24129f97e45e95aafe2b7cb6cf7a7c)), closes [#527](https://github.com/growupanand/ConvoForm/issues/527)
+* 🚀 add outgoing webhook delivery for completed responses ([#543](https://github.com/growupanand/ConvoForm/issues/543)) ([81385a7](https://github.com/growupanand/ConvoForm/commit/81385a7b618f2d68ec06218b5f43701b898467b3))
+* 🚀 add share previews and marketing perf polish ([#524](https://github.com/growupanand/ConvoForm/issues/524)) ([1f14ce6](https://github.com/growupanand/ConvoForm/commit/1f14ce645bfb17cb468f558796f78cd3aec123f1)), closes [#518](https://github.com/growupanand/ConvoForm/issues/518)
+* 🚀 add telegram channel ([#485](https://github.com/growupanand/ConvoForm/issues/485)) ([409c68f](https://github.com/growupanand/ConvoForm/commit/409c68f639135ac5d7a51875b039b277396a10eb)), closes [#484](https://github.com/growupanand/ConvoForm/issues/484)
+* 🚀 add trust, founder note, faq, and final cta ([#522](https://github.com/growupanand/ConvoForm/issues/522)) ([d9142cc](https://github.com/growupanand/ConvoForm/commit/d9142ccb6396fef888a88283f0ee17da2c130bd4)), closes [#516](https://github.com/growupanand/ConvoForm/issues/516)
+* 🚀 add webhook settings ui delivery log and docs ([#545](https://github.com/growupanand/ConvoForm/issues/545)) ([0ff7647](https://github.com/growupanand/ConvoForm/commit/0ff76479e71a8b3abf16387852c2a39bd7771bd2)), closes [#542](https://github.com/growupanand/ConvoForm/issues/542)
+* 🚀 allow mobile sign-in and hand off to desktop ([367e932](https://github.com/growupanand/ConvoForm/commit/367e9329b1c3ddd01ec249324ea3cee41b31bc8b)), closes [#504](https://github.com/growupanand/ConvoForm/issues/504)
+* 🚀 auto-create personal workspace on first sign-in ([b7d5b3a](https://github.com/growupanand/ConvoForm/commit/b7d5b3a4cf4cbed82f69fce7e72c651e6e50f44f)), closes [#497](https://github.com/growupanand/ConvoForm/issues/497)
+* 🚀 migrate realtime server to cloudflare workers ([21f39a9](https://github.com/growupanand/ConvoForm/commit/21f39a930d86935c1a244c2b90a5b38524c48625)), closes [#506](https://github.com/growupanand/ConvoForm/issues/506)
+* 🚀 publish job-application article and articles index ([#540](https://github.com/growupanand/ConvoForm/issues/540)) ([c5993d9](https://github.com/growupanand/ConvoForm/commit/c5993d93e8aafb92dbd8ef632608cd19c9530f01)), closes [#539](https://github.com/growupanand/ConvoForm/issues/539)
+* 🚀 publish study-abroad follow-ups article ([#536](https://github.com/growupanand/ConvoForm/issues/536)) ([28db0a8](https://github.com/growupanand/ConvoForm/commit/28db0a854d451d220635aa8513a6bd20b8b2a848)), closes [#495](https://github.com/growupanand/ConvoForm/issues/495)
+* 🚀 publish study-abroad use-case page ([4163e70](https://github.com/growupanand/ConvoForm/commit/4163e70905575bdea366e037663c079ab236f350)), closes [#495](https://github.com/growupanand/ConvoForm/issues/495) [#494](https://github.com/growupanand/ConvoForm/issues/494)
+* 🚀 rebuild hero and how it works with stageshow ([#528](https://github.com/growupanand/ConvoForm/issues/528)) ([5467b90](https://github.com/growupanand/ConvoForm/commit/5467b90361406365dcdfe29cbd9e162c20d09668)), closes [#525](https://github.com/growupanand/ConvoForm/issues/525) [#525](https://github.com/growupanand/ConvoForm/issues/525)
+* 🚀 redesign public marketing and legal pages ([#523](https://github.com/growupanand/ConvoForm/issues/523)) ([9364c9c](https://github.com/growupanand/ConvoForm/commit/9364c9cfe7e16727e413552d4df92546154565a3)), closes [#517](https://github.com/growupanand/ConvoForm/issues/517)
+* 🚀 replace old cf icon with v5 conversation mark ([#531](https://github.com/growupanand/ConvoForm/issues/531)) ([4c2a09b](https://github.com/growupanand/ConvoForm/commit/4c2a09b65a6810e0d163a5d3ba14616d5cf5abc8)), closes [#530](https://github.com/growupanand/ConvoForm/issues/530) [#530](https://github.com/growupanand/ConvoForm/issues/530) [#530](https://github.com/growupanand/ConvoForm/issues/530) [#530](https://github.com/growupanand/ConvoForm/issues/530)
+* 🚀 restyle live demo and simplify landing sections ([07284a3](https://github.com/growupanand/ConvoForm/commit/07284a399888e85363b8f91cd5f5a693778dc6a9))
+* 🚀 wire marketing shell, hero, and drop public user list ([#520](https://github.com/growupanand/ConvoForm/issues/520)) ([6514d51](https://github.com/growupanand/ConvoForm/commit/6514d51ff99d347b204a8392d8a95aae385a03b4)), closes [#514](https://github.com/growupanand/ConvoForm/issues/514)
+
+
+### Bug Fixes
+
+* 🐛 attribute respondent posthog events and trim payloads ([3ec895f](https://github.com/growupanand/ConvoForm/commit/3ec895f8b0d4660045dec45015db80ce21a9bf02)), closes [#501](https://github.com/growupanand/ConvoForm/issues/501)
+* 🐛 generate insights server-side on completion ([a727b76](https://github.com/growupanand/ConvoForm/commit/a727b7670bfcb54a18d9e50a264c89bac05cf034)), closes [#508](https://github.com/growupanand/ConvoForm/issues/508)
+* 🐛 generate insights with the conversation model ([585c41b](https://github.com/growupanand/ConvoForm/commit/585c41b987067bd5b9343ba8dc7baf2badb9dc76))
+* 🐛 make resend email failures observable ([#535](https://github.com/growupanand/ConvoForm/issues/535)) ([0c6f97b](https://github.com/growupanand/ConvoForm/commit/0c6f97b8a6ae5f26366ae827cd3b02e6126d7e78)), closes [#534](https://github.com/growupanand/ConvoForm/issues/534)
+* 🐛 make webhook fan-out reliable on completion ([11c0372](https://github.com/growupanand/ConvoForm/commit/11c0372426ad5d54d0d010165cfac576dae6ea48))
+* 🐛 persist conversation snapshots reliably on node runtime ([6465672](https://github.com/growupanand/ConvoForm/commit/6465672f356fd08e103b1b745b7db4e3d8e2fa24))
+* 🐛 reject rating answers outside allowed range ([532d7f7](https://github.com/growupanand/ConvoForm/commit/532d7f7a77403c7ffc8c99dfba9c0455f75a0887)), closes [#509](https://github.com/growupanand/ConvoForm/issues/509)
+* 🐛 require internal auth on email and integration sync ([#533](https://github.com/growupanand/ConvoForm/issues/533)) ([94469a3](https://github.com/growupanand/ConvoForm/commit/94469a39c89f328a439a14264ac4a581c8eceacb)), closes [#532](https://github.com/growupanand/ConvoForm/issues/532)
+* 🐛 send workflow instance params as json object ([555b829](https://github.com/growupanand/ConvoForm/commit/555b8294c64f3699435304047573b5c702a45be6))
+* 🐛 serve robots.txt and sitemap.xml and add canonical urls ([5ab23ba](https://github.com/growupanand/ConvoForm/commit/5ab23bad35a3741a5cfc7b336a84dbea7148ad76)), closes [#488](https://github.com/growupanand/ConvoForm/issues/488)
+
+
+### Improvements
+
+* ⚡️ upgrade nextjs to latest 16.2.1 ([695ddb4](https://github.com/growupanand/ConvoForm/commit/695ddb4239e595bd1be562de4a336fb14b0eb9e4))
+
 ## [0.19.0](https://github.com/growupanand/ConvoForm/compare/0.18.0...0.19.0) (2026-02-14)
 
 
