@@ -66,6 +66,31 @@ function parseClientMessage(raw: string): ClientMessage | null {
 
 export class RealtimeHub extends DurableObject<Env> {
   async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+
+    if (request.method === "POST" && url.pathname === "/broadcast") {
+      const body = (await request.json()) as {
+        rooms?: unknown;
+        message?: unknown;
+      };
+
+      if (
+        !Array.isArray(body.rooms) ||
+        !body.message ||
+        typeof body.message !== "object"
+      ) {
+        return new Response("Bad request", { status: 400 });
+      }
+
+      for (const room of body.rooms) {
+        if (typeof room === "string") {
+          this.broadcastToRoom(room, body.message as Record<string, unknown>);
+        }
+      }
+
+      return Response.json({ success: true });
+    }
+
     const upgrade = request.headers.get("Upgrade");
     if (upgrade?.toLowerCase() !== "websocket") {
       return new Response("Expected WebSocket", { status: 426 });

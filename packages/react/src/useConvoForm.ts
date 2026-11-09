@@ -61,11 +61,6 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
           if (streamSpanRef.current) {
             streamSpanRef.current.addEvent("conversation_updated");
           }
-
-          sendWebsocketMessage("conversation:updated", {
-            conversationId: updatedConversation.id,
-            formId: props.formId,
-          });
         }
       },
       onFinish: () => {

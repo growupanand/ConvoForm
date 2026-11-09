@@ -1,3 +1,4 @@
+import { isConversationInProgress } from "@/lib/conversationStatus";
 import type { Conversation } from "@convoform/db/src/schema";
 
 /** One initial Cloudflare Workflow attempt plus seven retries. */
@@ -45,11 +46,13 @@ export type JourneyWebhookEndpoint = {
   url: string;
   enabled: boolean;
   disabledAt: Date | string | null;
+  createdAt: Date | string;
 };
 
 export type JourneyWebhookSummary =
   | "delivered"
   | "retrying"
+  | "sending"
   | "pending"
   | "failed"
   | "notQueued";
@@ -73,6 +76,7 @@ export type ConversationJourneyInput = {
   conversation: Pick<
     Conversation,
     | "createdAt"
+    | "updatedAt"
     | "finishedAt"
     | "isInProgress"
     | "currentFieldId"
@@ -112,11 +116,7 @@ function getConversationStatus(
     return "finished";
   }
 
-  if (conversation.isInProgress) {
-    return "inProgress";
-  }
-
-  return "abandoned";
+  return isConversationInProgress(conversation) ? "inProgress" : "abandoned";
 }
 
 /**
@@ -155,22 +155,33 @@ function getStartedSubtitle(
   return browser ? `${channelLabel} · ${browser}` : channelLabel;
 }
 
-function getWebhookAttemptNumber(attempts: number) {
-  return Math.max(1, Math.min(attempts, MAX_WEBHOOK_ATTEMPTS));
+export function getWebhookAttemptNumber(
+  status: JourneyWebhookDeliveryStatus,
+  attempts: number,
+) {
+  const attempt = status === "delivering" ? attempts + 1 : attempts;
+
+  return Math.max(1, Math.min(attempt, MAX_WEBHOOK_ATTEMPTS));
 }
 
-export function formatWebhookAttempt(attempts: number) {
-  return `Attempt ${getWebhookAttemptNumber(attempts)} of ${MAX_WEBHOOK_ATTEMPTS}`;
+export function formatWebhookAttempt(
+  status: JourneyWebhookDeliveryStatus,
+  attempts: number,
+) {
+  return `Attempt ${getWebhookAttemptNumber(status, attempts)} of ${MAX_WEBHOOK_ATTEMPTS}`;
 }
 
-export function getWebhookDeliveryLabel(status: JourneyWebhookDeliveryStatus) {
+export function getWebhookDeliveryLabel(
+  status: JourneyWebhookDeliveryStatus,
+  attempts = 0,
+) {
   switch (status) {
     case "success":
       return "Delivered";
     case "failed":
       return "Failed";
     case "delivering":
-      return "Retrying";
+      return attempts === 0 ? "Sending" : "Retrying";
     case "pending":
       return "Pending";
   }
@@ -231,6 +242,24 @@ function buildWebhookNode({
   }
 
   if (deliveries.length === 0) {
+    const finishedAt = toDate(conversation.finishedAt);
+    const applicableEndpoints = finishedAt
+      ? endpoints.filter((endpoint) => {
+          const createdAt = toDate(endpoint.createdAt);
+
+          return (
+            endpoint.enabled && createdAt != null && createdAt <= finishedAt
+          );
+        })
+      : [];
+
+    // No endpoint existed (and was enabled) when the response completed, so
+    // there was nothing to deliver. Avoid a false "Not queued" warning for
+    // endpoints added after the fact or disabled endpoints.
+    if (applicableEndpoints.length === 0) {
+      return null;
+    }
+
     return {
       ...baseNode,
       subtitle: "Not queued",
@@ -238,7 +267,7 @@ function buildWebhookNode({
       webhook: {
         summary: "notQueued",
         deliveries,
-        endpoints,
+        endpoints: applicableEndpoints,
       },
     };
   }
@@ -274,12 +303,14 @@ function buildWebhookNode({
         .sort((a, b) => b.getTime() - a.getTime())[0],
     );
   } else if (retrying.length > 0) {
-    const nextAttempt = getWebhookAttemptNumber(
-      Math.max(...retrying.map((delivery) => delivery.attempts)) + 1,
+    const maxAttempts = Math.max(
+      ...retrying.map((delivery) => delivery.attempts),
     );
+    const nextAttempt = getWebhookAttemptNumber("delivering", maxAttempts);
+    const isSending = maxAttempts === 0;
 
-    summary = "retrying";
-    label = `Retrying · attempt ${nextAttempt} of ${MAX_WEBHOOK_ATTEMPTS}`;
+    summary = isSending ? "sending" : "retrying";
+    label = `${isSending ? "Sending" : "Retrying"} · attempt ${nextAttempt} of ${MAX_WEBHOOK_ATTEMPTS}`;
     state = "current";
   } else if (pending.length > 0) {
     summary = "pending";

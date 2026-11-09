@@ -34,6 +34,7 @@ const sampleResponses = [
     status: "active",
     time: "5 minutes ago",
     createdAt: new Date().toISOString(),
+    updatedAt: new Date(),
     isInProgress: true,
     finishedAt: null,
     formFieldResponses: [
@@ -49,6 +50,7 @@ const sampleResponses = [
     status: "active",
     time: "12 minutes ago",
     createdAt: new Date().toISOString(),
+    updatedAt: new Date(),
     finishedAt: new Date(),
     isInProgress: false,
 

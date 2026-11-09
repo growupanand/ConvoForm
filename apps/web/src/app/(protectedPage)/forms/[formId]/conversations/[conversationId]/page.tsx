@@ -7,10 +7,13 @@ import {
   sendMessage,
 } from "@convoform/websocket-client";
 import { notFound } from "next/navigation";
-import { use, useEffect } from "react";
+import { use, useEffect, useRef } from "react";
 
 import ConversationDetail from "@/app/(protectedPage)/forms/[formId]/conversations/_components/conversationDetail";
 import { api } from "@/trpc/react";
+
+const JOURNEY_POLL_INTERVAL_MS = 15_000;
+const JOURNEY_POLL_TIMEOUT_MS = 10 * 60 * 1_000;
 
 type Props = {
   params: Promise<{ conversationId: string }>;
@@ -20,6 +23,7 @@ export default function ConversationDetailPage(props: Readonly<Props>) {
   const params = use(props.params);
   const { conversationId } = params;
   const { organization, isLoaded: isOrganizationLoaded } = useOrganization();
+  const pendingJourneySinceRef = useRef<number | null>(null);
 
   const {
     data,
@@ -41,13 +45,28 @@ export default function ConversationDetailPage(props: Readonly<Props>) {
       refetchOnWindowFocus: false,
       refetchInterval: (query) => {
         const deliveries = query.state.data?.deliveries;
-
-        return deliveries?.some(
+        const hasPendingDelivery = deliveries?.some(
           (delivery) =>
             delivery.status === "pending" || delivery.status === "delivering",
-        )
-          ? 4_000
-          : false;
+        );
+
+        if (!hasPendingDelivery) {
+          pendingJourneySinceRef.current = null;
+          return false;
+        }
+
+        if (pendingJourneySinceRef.current == null) {
+          pendingJourneySinceRef.current = Date.now();
+        }
+
+        if (
+          Date.now() - pendingJourneySinceRef.current >=
+          JOURNEY_POLL_TIMEOUT_MS
+        ) {
+          return false;
+        }
+
+        return JOURNEY_POLL_INTERVAL_MS;
       },
     },
   );

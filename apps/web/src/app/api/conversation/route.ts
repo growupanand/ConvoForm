@@ -13,6 +13,7 @@ import {
 } from "@convoform/api/src/actions/conversation";
 import { isFormOrganizationMember } from "@convoform/api/src/actions/conversation/isFormOrganizationMember";
 import { getOneFormWithFields } from "@convoform/api/src/actions/form";
+import { env } from "@convoform/api/src/env";
 import type { ActionContext } from "@convoform/api/src/types/actionContextType";
 import { db } from "@convoform/db";
 import {
@@ -214,28 +215,6 @@ function getOnUpdateConversationHandler(
   return async (updatedConversation: CoreConversation) => {
     try {
       const conversationSnapshot = structuredClone(updatedConversation);
-
-      // Persist in-progress snapshots before streaming them so dashboard
-      // refetches see the answer and next field instead of the stale row.
-      // The completion snapshot stays in after() because it triggers email,
-      // webhook fan-out and insights.
-      if (!conversationSnapshot.finishedAt) {
-        try {
-          await patchConversation(conversationSnapshot, ctx, {
-            deferAnalytics: true,
-          });
-        } catch (error) {
-          await logConversationPatchFailure(conversationSnapshot, error);
-        }
-
-        writer.write({
-          type: "data-conversation",
-          data: conversationSnapshot,
-          id: conversationSnapshot.id,
-        });
-        return;
-      }
-
       pendingConversation = conversationSnapshot;
 
       if (!isPatchScheduled) {
@@ -252,6 +231,7 @@ function getOnUpdateConversationHandler(
 
           try {
             await patchConversation(snapshotToPatch, ctx);
+            await broadcastConversationUpdated(snapshotToPatch);
           } catch (error) {
             await logConversationPatchFailure(snapshotToPatch, error);
           } finally {
@@ -269,6 +249,36 @@ function getOnUpdateConversationHandler(
       console.error("Error updating conversation:", error);
     }
   };
+}
+
+async function broadcastConversationUpdated(conversation: CoreConversation) {
+  const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
+  const secret = env.INTERNAL_EMAIL_API_SECRET;
+
+  if (!websocketUrl || !secret) {
+    return;
+  }
+
+  const httpUrl = websocketUrl.replace(/^ws/, "http").replace(/\/$/, "");
+
+  try {
+    await fetch(`${httpUrl}/broadcast`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${secret}`,
+      },
+      body: JSON.stringify({
+        rooms: [
+          `conversation:${conversation.id}`,
+          `form:${conversation.formId}`,
+        ],
+        message: { type: "conversation:updated" },
+      }),
+    });
+  } catch {
+    // The dashboard will refresh on the next lifecycle event if this fails.
+  }
 }
 
 async function logConversationPatchFailure(

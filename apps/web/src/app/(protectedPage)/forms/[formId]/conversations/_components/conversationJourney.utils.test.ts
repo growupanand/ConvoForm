@@ -6,6 +6,7 @@ import {
   MAX_WEBHOOK_ATTEMPTS,
   buildConversationJourney,
   formatWebhookAttempt,
+  getWebhookDeliveryLabel,
   resolveAbandonedField,
   truncateWebhookUrl,
 } from "./conversationJourney.utils";
@@ -17,7 +18,7 @@ function createConversation(
 ): JourneyConversation {
   const base = {
     createdAt: new Date("2026-11-09T09:00:00.000Z"),
-    updatedAt: new Date("2026-11-09T09:05:00.000Z"),
+    updatedAt: new Date("2020-01-01T00:00:00.000Z"),
     finishedAt: new Date("2026-11-09T09:05:00.000Z"),
     isInProgress: false,
     currentFieldId: null,
@@ -64,6 +65,7 @@ const endpoint: JourneyWebhookEndpoint = {
   url: "https://hooks.example.com/convoform/responses",
   enabled: true,
   disabledAt: null,
+  createdAt: new Date("2026-11-09T08:00:00.000Z"),
 };
 
 function createDelivery(
@@ -199,6 +201,38 @@ describe("buildConversationJourney", () => {
     expect(journey.nodes[4]?.state).toBe("pending");
   });
 
+  it("treats a recently updated channel conversation as in progress", () => {
+    const journey = buildConversationJourney({
+      conversation: createConversation({
+        finishedAt: null,
+        isInProgress: false,
+        updatedAt: new Date(),
+        currentFieldId: "field_2",
+        metaData: {},
+      }),
+    });
+
+    expect(journey.status).toBe("inProgress");
+    expect(journey.nodes[2]?.title).toBe("In progress");
+    expect(journey.nodes[2]?.subtitle).toBe("Waiting on Budget");
+  });
+
+  it("treats a stale web conversation as abandoned", () => {
+    const journey = buildConversationJourney({
+      conversation: createConversation({
+        finishedAt: null,
+        isInProgress: false,
+        updatedAt: new Date("2020-01-01T00:00:00.000Z"),
+        currentFieldId: "field_2",
+        metaData: {},
+      }),
+    });
+
+    expect(journey.status).toBe("abandoned");
+    expect(journey.nodes[2]?.title).toBe("Abandoned at Budget");
+    expect(journey.nodes[2]?.state).toBe("warning");
+  });
+
   it("shows owner previews as skipped instead of a failed delivery", () => {
     const journey = buildConversationJourney({
       conversation: createConversation({
@@ -242,6 +276,38 @@ describe("buildConversationJourney", () => {
     );
     expect(journey.nodes[4]?.state).toBe("current");
     expect(journey.nodes[4]?.webhook?.summary).toBe("retrying");
+    expect(
+      formatWebhookAttempt(
+        journey.nodes[4]?.webhook?.deliveries[0]?.status ?? "delivering",
+        journey.nodes[4]?.webhook?.deliveries[0]?.attempts ?? 0,
+      ),
+    ).toBe(`Attempt 3 of ${MAX_WEBHOOK_ATTEMPTS}`);
+  });
+
+  it("labels a delivering webhook with no attempts as sending", () => {
+    const journey = buildConversationJourney({
+      conversation: createConversation(),
+      webhookEndpoints: [endpoint],
+      webhookDeliveries: [
+        createDelivery({
+          status: "delivering",
+          attempts: 0,
+          deliveredAt: null,
+          lastStatusCode: null,
+          lastLatencyMs: null,
+        }),
+      ],
+    });
+
+    expect(journey.nodes[4]?.subtitle).toBe(
+      `Sending · attempt 1 of ${MAX_WEBHOOK_ATTEMPTS}`,
+    );
+    expect(journey.nodes[4]?.state).toBe("current");
+    expect(journey.nodes[4]?.webhook?.summary).toBe("sending");
+    expect(getWebhookDeliveryLabel("delivering", 0)).toBe("Sending");
+    expect(formatWebhookAttempt("delivering", 0)).toBe(
+      `Attempt 1 of ${MAX_WEBHOOK_ATTEMPTS}`,
+    );
   });
 
   it("labels a pending webhook as pending", () => {
@@ -328,6 +394,47 @@ describe("buildConversationJourney", () => {
     ]);
   });
 
+  it("omits the webhook node when the only endpoint was created after completion", () => {
+    const journey = buildConversationJourney({
+      conversation: createConversation(),
+      webhookEndpoints: [
+        {
+          ...endpoint,
+          createdAt: new Date("2026-11-09T10:00:00.000Z"),
+        },
+      ],
+      webhookDeliveries: [],
+    });
+
+    expect(journey.nodes.map((node) => node.id)).toEqual([
+      "started",
+      "fields",
+      "outcome",
+      "insights",
+    ]);
+  });
+
+  it("omits the webhook node when every endpoint is disabled", () => {
+    const journey = buildConversationJourney({
+      conversation: createConversation(),
+      webhookEndpoints: [
+        {
+          ...endpoint,
+          enabled: false,
+          disabledAt: new Date("2026-11-09T08:30:00.000Z"),
+        },
+      ],
+      webhookDeliveries: [],
+    });
+
+    expect(journey.nodes.map((node) => node.id)).toEqual([
+      "started",
+      "fields",
+      "outcome",
+      "insights",
+    ]);
+  });
+
   it("mutes the insights node when no insights were generated", () => {
     const journey = buildConversationJourney({
       conversation: createConversation({ metaData: {} }),
@@ -354,15 +461,29 @@ describe("buildConversationJourney", () => {
 
 describe("webhook formatting helpers", () => {
   it("clamps attempts into the 1 of 8 to 8 of 8 range", () => {
-    expect(formatWebhookAttempt(0)).toBe(
+    expect(formatWebhookAttempt("pending", 0)).toBe(
       `Attempt 1 of ${MAX_WEBHOOK_ATTEMPTS}`,
     );
-    expect(formatWebhookAttempt(3)).toBe(
-      `Attempt 3 of ${MAX_WEBHOOK_ATTEMPTS}`,
+    expect(formatWebhookAttempt("delivering", 0)).toBe(
+      `Attempt 1 of ${MAX_WEBHOOK_ATTEMPTS}`,
     );
-    expect(formatWebhookAttempt(12)).toBe(
+    expect(formatWebhookAttempt("delivering", 3)).toBe(
+      `Attempt 4 of ${MAX_WEBHOOK_ATTEMPTS}`,
+    );
+    expect(formatWebhookAttempt("success", 1)).toBe(
+      `Attempt 1 of ${MAX_WEBHOOK_ATTEMPTS}`,
+    );
+    expect(formatWebhookAttempt("failed", 12)).toBe(
       `Attempt ${MAX_WEBHOOK_ATTEMPTS} of ${MAX_WEBHOOK_ATTEMPTS}`,
     );
+  });
+
+  it("labels a first delivery attempt as sending", () => {
+    expect(getWebhookDeliveryLabel("delivering", 0)).toBe("Sending");
+    expect(getWebhookDeliveryLabel("delivering", 2)).toBe("Retrying");
+    expect(getWebhookDeliveryLabel("pending", 0)).toBe("Pending");
+    expect(getWebhookDeliveryLabel("success", 1)).toBe("Delivered");
+    expect(getWebhookDeliveryLabel("failed", 8)).toBe("Failed");
   });
 
   it("drops the protocol and truncates long webhook urls", () => {

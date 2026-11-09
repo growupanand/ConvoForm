@@ -314,6 +314,7 @@ export const webhookEndpointRouter = createTRPCRouter({
             url: true,
             enabled: true,
             disabledAt: true,
+            createdAt: true,
           },
           orderBy: (table, { desc }) => [desc(table.createdAt)],
         }),

@@ -257,12 +257,12 @@ function WebhookDeliveryRow({
           variant={DELIVERY_BADGE_VARIANTS[delivery.status]}
           className="shrink-0"
         >
-          {getWebhookDeliveryLabel(delivery.status)}
+          {getWebhookDeliveryLabel(delivery.status, delivery.attempts)}
         </Badge>
       </div>
       <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] leading-4 tabular-nums text-subtle-foreground">
         <span>HTTP {delivery.lastStatusCode ?? "—"}</span>
-        <span>{formatWebhookAttempt(delivery.attempts)}</span>
+        <span>{formatWebhookAttempt(delivery.status, delivery.attempts)}</span>
         <span>
           {delivery.lastLatencyMs != null
             ? `${delivery.lastLatencyMs} ms`

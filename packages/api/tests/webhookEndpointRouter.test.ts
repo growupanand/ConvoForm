@@ -417,7 +417,7 @@ describe("webhookEndpointRouter", () => {
       );
       expect(dbMock.endpointFindMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          columns: expect.objectContaining({ url: true }),
+          columns: expect.objectContaining({ url: true, createdAt: true }),
         }),
       );
     });

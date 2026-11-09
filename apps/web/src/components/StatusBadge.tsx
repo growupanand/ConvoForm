@@ -1,9 +1,10 @@
 import Spinner from "@/components/common/spinner";
+import { isConversationInProgress } from "@/lib/conversationStatus";
 import type { Conversation } from "@convoform/db/src/schema";
 import { Badge } from "@convoform/ui";
 
 type StatusBadgeProps = {
-  conversation: Pick<Conversation, "finishedAt" | "isInProgress">;
+  conversation: Pick<Conversation, "finishedAt" | "isInProgress" | "updatedAt">;
 };
 
 export function ConversationStatusBadge({
@@ -13,7 +14,7 @@ export function ConversationStatusBadge({
     return <Badge variant="default">Finished</Badge>;
   }
 
-  if (conversation.isInProgress) {
+  if (isConversationInProgress(conversation)) {
     return (
       <Badge variant="outline">
         <Spinner size="sm" className="me-2" />
@@ -22,5 +23,5 @@ export function ConversationStatusBadge({
     );
   }
 
-  return <Badge variant="secondary">Incomplete</Badge>;
+  return <Badge variant="secondary">Abandoned</Badge>;
 }

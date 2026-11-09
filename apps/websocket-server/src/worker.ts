@@ -14,6 +14,18 @@ export default {
       });
     }
 
+    if (url.pathname === "/broadcast" && request.method === "POST") {
+      const expectedSecret = env.INTERNAL_EMAIL_API_SECRET;
+      const authorization = request.headers.get("authorization");
+
+      if (!expectedSecret || authorization !== `Bearer ${expectedSecret}`) {
+        return new Response("Unauthorized", { status: 401 });
+      }
+
+      const id = env.REALTIME.idFromName("global");
+      return env.REALTIME.get(id).fetch(request);
+    }
+
     const upgrade = request.headers.get("Upgrade");
     if (upgrade?.toLowerCase() === "websocket") {
       const id = env.REALTIME.idFromName("global");

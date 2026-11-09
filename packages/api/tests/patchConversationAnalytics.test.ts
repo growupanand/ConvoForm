@@ -472,6 +472,7 @@ describe("patchConversation analytics", () => {
     );
 
     expect(setCalls[0]).not.toHaveProperty("isInProgress");
+    expect(setCalls[0]?.updatedAt).toBeInstanceOf(Date);
   });
 
   it("marks the conversation not in progress when it finishes", async () => {

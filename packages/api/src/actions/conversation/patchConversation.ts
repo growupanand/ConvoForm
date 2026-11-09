@@ -17,7 +17,6 @@ import { mergeConversationMetaDataForPatch } from "./mergeConversationMetaDataFo
 export async function patchConversation(
   input: PatchConversation,
   ctx: ActionContext,
-  options: { deferAnalytics?: boolean } = {},
 ) {
   const {
     id,
@@ -49,6 +48,7 @@ export async function patchConversation(
 
     const patchSet = {
       ...restUpdatedData,
+      updatedAt: new Date(),
       // `isInProgress` is owned by the conversation started/stopped events.
       // A stream snapshot can still carry the value from before the started
       // event, so only completion is allowed to write it here.
@@ -138,19 +138,13 @@ export async function patchConversation(
   } = patchResult;
 
   if (analyticsConversation) {
-    const trackUpdate = analytics.track(
-      "conversation:update",
-      buildConversationAnalyticsTrackPayload(analyticsConversation),
-    );
-
-    if (options.deferAnalytics) {
-      void trackUpdate.catch(() => undefined);
-    } else {
-      try {
-        await trackUpdate;
-      } catch {
-        // Analytics must never fail the conversation patch.
-      }
+    try {
+      await analytics.track(
+        "conversation:update",
+        buildConversationAnalyticsTrackPayload(analyticsConversation),
+      );
+    } catch {
+      // Analytics must never fail the conversation patch.
     }
   }
 
