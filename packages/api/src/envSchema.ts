@@ -16,4 +16,9 @@ export const apiEnvSchema = {
   CLERK_SECRET_KEY: z.string().min(1),
   ENCRYPTION_KEY: z.string().min(1),
   CHANNELS_SERVER_URL: z.string().url().optional(),
+  // Optional Cloudflare Workflows delivery engine. All three must be set to
+  // enable it; otherwise webhook deliveries use the direct adapter.
+  CF_ACCOUNT_ID: z.string().optional(),
+  CF_API_TOKEN: z.string().optional(),
+  CF_WEBHOOK_WORKFLOW_NAME: z.string().optional(),
 };

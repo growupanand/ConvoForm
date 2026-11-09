@@ -11,6 +11,13 @@ bindings = [
 tag = "v1"
 new_sqlite_classes = ["RealtimeHub"]
 
+# Durable delivery for outgoing webhooks. The web app starts instances over the
+# Cloudflare REST API using CF_WEBHOOK_WORKFLOW_NAME=convoform-webhook-delivery.
+[[workflows]]
+name = "convoform-webhook-delivery"
+binding = "WEBHOOK_DELIVERY"
+class_name = "WebhookDeliveryWorkflow"
+
 # Used by `wrangler deploy`. `pnpm dev` overrides this with the local app URL.
 [vars]
 NEXT_PUBLIC_APP_URL = "https://www.convoform.com"
