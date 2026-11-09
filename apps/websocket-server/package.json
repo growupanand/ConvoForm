@@ -1,18 +1,23 @@
 {
   "name": "websocket-server",
   "version": "1.0.0",
-  "description": "Realtime server for ConvoForm, running on Cloudflare Workers.",
+  "description": "Realtime server and webhook workflow for ConvoForm, running on Cloudflare Workers.",
   "scripts": {
-    "dev": "wrangler dev --port 8787 --var NEXT_PUBLIC_APP_URL:${NEXT_PUBLIC_APP_URL:-http://localhost:3000}",
-    "dev:turbo": "wrangler dev --port 8787 --var NEXT_PUBLIC_APP_URL:${NEXT_PUBLIC_APP_URL:-http://localhost:3000}",
+    "dev": "wrangler dev --port 8787 --var NEXT_PUBLIC_APP_URL:${NEXT_PUBLIC_APP_URL:-http://localhost:3000} --var INTERNAL_EMAIL_API_SECRET:${INTERNAL_EMAIL_API_SECRET:-}",
+    "dev:turbo": "wrangler dev --port 8787 --var NEXT_PUBLIC_APP_URL:${NEXT_PUBLIC_APP_URL:-http://localhost:3000} --var INTERNAL_EMAIL_API_SECRET:${INTERNAL_EMAIL_API_SECRET:-}",
     "deploy": "wrangler deploy",
+    "test": "bun test",
     "type-check": "tsc --noEmit"
   },
   "keywords": [],
   "author": "Utkarsh Anand",
   "license": "ISC",
+  "dependencies": {
+    "@convoform/common": "workspace:*"
+  },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20261030.1",
+    "@types/bun": "catalog:",
     "@types/node": "catalog:",
     "typescript": "catalog:",
     "wrangler": "4.156.0"

@@ -1,6 +1,7 @@
 import { RealtimeHub } from "./realtimeHub";
+import { WebhookDeliveryWorkflow } from "./webhookDeliveryWorkflow/workflow";
 
-export { RealtimeHub };
+export { RealtimeHub, WebhookDeliveryWorkflow };
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {

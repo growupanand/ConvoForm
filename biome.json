@@ -167,7 +167,8 @@
           "DurableObjectNamespace",
           "Env",
           "ExportedHandler",
-          "WebSocketPair"
+          "WebSocketPair",
+          "Workflow"
         ]
       }
     }

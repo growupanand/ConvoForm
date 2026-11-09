@@ -43,7 +43,10 @@
     "RESEND_WEBHOOK_SECRET",
     "INTERNAL_EMAIL_API_SECRET",
     "ENCRYPTION_KEY",
-    "CHANNELS_SERVER_URL"
+    "CHANNELS_SERVER_URL",
+    "CF_ACCOUNT_ID",
+    "CF_API_TOKEN",
+    "CF_WEBHOOK_WORKFLOW_NAME"
   ],
   "globalDependencies": [
     ".env"

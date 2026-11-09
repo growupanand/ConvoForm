@@ -2,7 +2,7 @@ import { describe, expect, it, mock } from "bun:test";
 import {
   sendWebhookAttempt,
   sendWebhookWithRetries,
-} from "../src/actions/webhook/deliverWebhook";
+} from "../src/actions/webhook/directWebhookDelivery";
 
 const request = {
   deliveryId: "delivery_1",
