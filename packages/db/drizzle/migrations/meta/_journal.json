@@ -239,6 +239,13 @@
       "when": 1771775125777,
       "tag": "0033_red_killmonger",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1794200259752,
+      "tag": "0034_acoustic_odin",
+      "breakpoints": true
     }
   ]
 }

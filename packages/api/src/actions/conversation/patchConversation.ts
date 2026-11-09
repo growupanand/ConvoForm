@@ -8,6 +8,7 @@ import {
 } from "@convoform/db/src/schema";
 import { trpcFetchClient } from "../../lib/trpc-client";
 import type { ActionContext } from "../../types/actionContextType";
+import { createWebhookDeliveriesForCompletedConversation } from "../webhook/createWebhookDeliveries";
 import { buildConversationAnalyticsTrackPayload } from "./conversationAnalytics";
 import { generateAndSaveInsights } from "./generateAndSaveInsights";
 import { mergeConversationMetaDataForPatch } from "./mergeConversationMetaDataForPatch";
@@ -75,6 +76,8 @@ export async function patchConversation(
     const isNewlyCompleted =
       updatedData.finishedAt && !existingConversation?.finishedAt;
 
+    let isOwnerPreview = false;
+
     // Only send email if the conversation was NOT finished before, and is now finished
     if (isNewlyCompleted) {
       const result = await tx
@@ -88,7 +91,7 @@ export async function patchConversation(
 
       const [data] = result;
 
-      const isOwnerPreview =
+      isOwnerPreview =
         updatedConversation.metaData?.isOwnerPreview === true ||
         existingConversation?.metaData?.isOwnerPreview === true;
 
@@ -109,6 +112,7 @@ export async function patchConversation(
             responseId: updatedConversation.id,
           },
           isNewlyCompleted,
+          isOwnerPreview,
           updatedConversation,
         };
       }
@@ -116,11 +120,17 @@ export async function patchConversation(
     return {
       emailPayload: null,
       isNewlyCompleted,
+      isOwnerPreview,
       updatedConversation: isNewlyCompleted ? updatedConversation : null,
     };
   });
 
-  const { emailPayload, isNewlyCompleted, updatedConversation } = patchResult;
+  const {
+    emailPayload,
+    isNewlyCompleted,
+    updatedConversation,
+    isOwnerPreview,
+  } = patchResult;
 
   if (isNewlyCompleted && updatedConversation) {
     try {
@@ -143,6 +153,28 @@ export async function patchConversation(
       );
     } catch (error) {
       console.error("Failed to generate insights on completion", error);
+    }
+  }
+
+  if (isNewlyCompleted && updatedConversation && !isOwnerPreview) {
+    try {
+      await createWebhookDeliveriesForCompletedConversation(
+        updatedConversation,
+        ctx,
+      );
+    } catch (error) {
+      const webhookError =
+        error instanceof Error ? error : new Error(String(error));
+      console.error("Failed to create webhook deliveries", webhookError);
+
+      try {
+        await analytics.captureException(webhookError, updatedConversation.id);
+      } catch (analyticsError) {
+        console.error(
+          "Failed to report webhook delivery failure",
+          analyticsError,
+        );
+      }
     }
   }
 

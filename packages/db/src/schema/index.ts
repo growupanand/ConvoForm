@@ -9,4 +9,5 @@ export * from "./organizations";
 export * from "./users";
 export * from "./integrations";
 export * from "./channelConnections";
+export * from "./webhooks";
 export * from "./relations";
