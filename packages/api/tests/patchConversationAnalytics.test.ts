@@ -541,4 +541,96 @@ describe("patchConversation analytics", () => {
 
     expect(setCalls[0]).toHaveProperty("isInProgress", false);
   });
+
+  it("persists the full completion snapshot and creates webhook deliveries", async () => {
+    const { patchConversation } = await import(
+      "../src/actions/conversation/patchConversation"
+    );
+
+    const finishedAt = new Date();
+    const transcript = [
+      { role: "assistant", content: "What is your name?" },
+      { role: "user", content: "Ada" },
+    ];
+    const formFieldResponses = [
+      { id: "field_1", fieldName: "Name", fieldValue: "Ada" },
+    ];
+    const existingRow = {
+      finishedAt: null as Date | null,
+      metaData: {},
+    };
+    const updatedRow = {
+      id: "conv_1",
+      formId: "form_1",
+      organizationId: "org_1",
+      finishedAt,
+      metaData: {},
+      transcript,
+      formFieldResponses,
+    };
+
+    const setCalls: Record<string, unknown>[] = [];
+    const mockTx = {
+      execute: mock(() => Promise.resolve()),
+      query: {
+        conversation: {
+          findFirst: mock(() => Promise.resolve(existingRow)),
+        },
+      },
+      update: mock(() => ({
+        set: mock((values: Record<string, unknown>) => {
+          setCalls.push(values);
+          return {
+            where: mock(() => ({
+              returning: mock(() => Promise.resolve([updatedRow])),
+            })),
+          };
+        }),
+      })),
+      select: mock(() => ({
+        from: mock(() => ({
+          innerJoin: mock(() => ({
+            where: mock(() => ({
+              limit: mock(() => Promise.resolve([])),
+            })),
+          })),
+        })),
+      })),
+    };
+
+    const mockDb = {
+      transaction: mock((cb: (tx: typeof mockTx) => Promise<unknown>) =>
+        cb(mockTx),
+      ),
+    };
+
+    await patchConversation(
+      {
+        id: "conv_1",
+        finishedAt,
+        transcript,
+        formFieldResponses,
+      } as any,
+      { db: mockDb as any },
+    );
+
+    expect(setCalls[0]).toEqual(
+      expect.objectContaining({
+        finishedAt,
+        transcript,
+        formFieldResponses,
+        isInProgress: false,
+      }),
+    );
+    expect(createWebhookDeliveriesMock).toHaveBeenCalledTimes(1);
+    expect(createWebhookDeliveriesMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: "conv_1",
+        finishedAt,
+        transcript,
+        formFieldResponses,
+      }),
+      expect.objectContaining({ db: mockDb }),
+    );
+  });
 });

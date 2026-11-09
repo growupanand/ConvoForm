@@ -48,12 +48,6 @@ export function createNextjsLogger(): ILogger {
   const axiomToken = process.env.NEXT_PUBLIC_AXIOM_TOKEN;
   const axiomDataset = process.env.NEXT_PUBLIC_AXIOM_DATASET;
 
-  console.log("creating client logger", {
-    axiomToken,
-    axiomDataset,
-    enabled: process.env.NODE_ENV !== "production",
-  });
-
   return new Logger({
     level: "debug",
     console: {

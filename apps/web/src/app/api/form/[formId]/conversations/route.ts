@@ -9,7 +9,7 @@ import {
 import type { NextRequest } from "next/server";
 import { z } from "zod/v4";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 const routeParamsSchema = z.object({
   formId: z.string().min(1),

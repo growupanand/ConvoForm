@@ -7,30 +7,22 @@ import {
   createErrorStreamResponse,
   createStreamResponseWithWriter,
 } from "@convoform/ai";
-import {
-  createConversation,
-  patchConversation,
-} from "@convoform/api/src/actions/conversation";
+import { createConversation } from "@convoform/api/src/actions/conversation";
 import { isFormOrganizationMember } from "@convoform/api/src/actions/conversation/isFormOrganizationMember";
 import { getOneFormWithFields } from "@convoform/api/src/actions/form";
-import { env } from "@convoform/api/src/env";
-import type { ActionContext } from "@convoform/api/src/types/actionContextType";
 import { db } from "@convoform/db";
 import {
-  type Conversation,
-  type CoreConversation,
   coreConversationSchema,
   respondentMetadataSchema,
 } from "@convoform/db/src/schema";
-import { createConversationLogger } from "@convoform/logger";
-import { type EdgeTracer, createEdgeTracer } from "@convoform/tracing";
+import { createEdgeTracer } from "@convoform/tracing";
 import { geolocation } from "@vercel/functions";
-import type { UIMessageStreamWriter } from "ai";
 import { headers } from "next/headers";
 import { type NextRequest, after, userAgent } from "next/server";
 import { z } from "zod/v4";
+import { getOnUpdateConversationHandler } from "./onUpdateConversation";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const maxDuration = 60;
 
 const newConversationRequestSchema = z.object({
@@ -194,115 +186,5 @@ export async function POST(request: NextRequest) {
     });
 
     return createErrorStreamResponse(error as Error);
-  }
-}
-
-// ================================================================
-// ----------------------- HELPERS -----------------------
-// ================================================================
-
-function getOnUpdateConversationHandler(
-  writer: UIMessageStreamWriter<CoreServiceUIMessage>,
-  ctx: ActionContext & {
-    tracer?: EdgeTracer;
-  },
-) {
-  // The ConversationManager mutates one live object throughout the request.
-  // Keep only the latest snapshot and persist it once after the response, so
-  // after() never reads a reference that changes underneath it.
-  let pendingConversation: CoreConversation | null = null;
-  let isPatchScheduled = false;
-
-  return async (updatedConversation: CoreConversation) => {
-    try {
-      const conversationSnapshot = structuredClone(updatedConversation);
-      pendingConversation = conversationSnapshot;
-
-      if (!isPatchScheduled) {
-        isPatchScheduled = true;
-
-        after(async () => {
-          const snapshotToPatch = pendingConversation;
-          pendingConversation = null;
-          isPatchScheduled = false;
-
-          if (!snapshotToPatch) {
-            return;
-          }
-
-          try {
-            await patchConversation(snapshotToPatch, ctx, {
-              onConversationUpdated: broadcastConversationUpdated,
-            });
-          } catch (error) {
-            await logConversationPatchFailure(snapshotToPatch, error);
-          } finally {
-            await ctx.tracer?.flush();
-          }
-        });
-      }
-
-      writer.write({
-        type: "data-conversation",
-        data: conversationSnapshot,
-        id: conversationSnapshot.id,
-      });
-    } catch (error) {
-      console.error("Error updating conversation:", error);
-    }
-  };
-}
-
-async function broadcastConversationUpdated(
-  conversation: Pick<Conversation, "id" | "formId">,
-) {
-  const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
-  const secret = env.INTERNAL_EMAIL_API_SECRET;
-
-  if (!websocketUrl || !secret) {
-    return;
-  }
-
-  const httpUrl = websocketUrl.replace(/^ws/, "http").replace(/\/$/, "");
-
-  try {
-    await fetch(`${httpUrl}/broadcast`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${secret}`,
-      },
-      body: JSON.stringify({
-        rooms: [
-          `conversation:${conversation.id}`,
-          `form:${conversation.formId}`,
-        ],
-        message: { type: "conversation:updated" },
-      }),
-      signal: AbortSignal.timeout(3000),
-    });
-  } catch {
-    // The dashboard will refresh on the next lifecycle event if this fails.
-  }
-}
-
-async function logConversationPatchFailure(
-  conversation: CoreConversation,
-  error: unknown,
-) {
-  const logger = createConversationLogger({
-    conversationId: conversation.id,
-    formId: conversation.formId,
-    organizationId: conversation.organizationId,
-  });
-
-  logger.error("conversation:patch:failed", {
-    error: error instanceof Error ? error.message : String(error),
-  });
-
-  try {
-    await logger.flush();
-  } catch {
-    // Logging must never fail the response path.
   }
 }
