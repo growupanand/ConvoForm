@@ -4,7 +4,7 @@ import {
   SecondaryNavigation,
   type SecondaryNavigationItem,
 } from "@/components/common/secondaryNavigation";
-import { MessageSquare, Zap } from "lucide-react";
+import { MessageSquare, Webhook, Zap } from "lucide-react";
 import MainNavTab from "../../_components/mainNavTab";
 
 type Props = {
@@ -12,7 +12,8 @@ type Props = {
 };
 
 /**
- * Sidebar for the Settings tab, combining Integrations and Channels navigation.
+ * Sidebar for the Settings tab, combining Integrations, Channels and Webhooks
+ * navigation.
  *
  * @example
  * ```tsx
@@ -30,6 +31,11 @@ export function SettingsSidebar({ formId }: Props) {
       title: "Channels",
       href: `/forms/${formId}/settings/channels`,
       icon: <MessageSquare className="size-4" />,
+    },
+    {
+      title: "Webhooks",
+      href: `/forms/${formId}/settings/webhooks`,
+      icon: <Webhook className="size-4" />,
     },
   ];
 

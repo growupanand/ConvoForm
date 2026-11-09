@@ -13,6 +13,7 @@ import { metricsRouter } from "./metrics";
 import { organizationRouter } from "./organization";
 import { usageRouter } from "./usage";
 import { webhookRouter } from "./webhook";
+import { webhookEndpointRouter } from "./webhookEndpoint";
 
 /**
  * This is the primary router for your server.
@@ -26,6 +27,7 @@ export const appRouter = createTRPCRouter({
   fileUpload: fileUploadRouter,
   metrics: metricsRouter,
   webhook: webhookRouter,
+  webhookEndpoint: webhookEndpointRouter,
   organization: organizationRouter,
   formField: formFieldRouter,
   formDesign: formDesignRouter,
