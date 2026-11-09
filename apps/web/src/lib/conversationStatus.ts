@@ -1,19 +1,19 @@
+import { ACTIVE_CONVERSATION_WINDOW_MS } from "@convoform/common";
 import type { Conversation } from "@convoform/db/src/schema";
 
-/**
- * A conversation without a finishedAt is considered active while it was
- * updated recently. This keeps web conversations that are mid-stream (before
- * conversation:started lands) and channel conversations (which have no
- * websocket lifecycle) out of the abandoned bucket without relying on
- * isInProgress alone.
- */
-export const ACTIVE_CONVERSATION_WINDOW_MS = 30 * 60 * 1000;
+export { ACTIVE_CONVERSATION_WINDOW_MS };
 
 type ConversationStatusInput = Pick<
   Conversation,
-  "finishedAt" | "isInProgress" | "updatedAt"
+  "finishedAt" | "isInProgress" | "updatedAt" | "channelType"
 >;
 
+/**
+ * Web conversations have a websocket lifecycle, so isInProgress is
+ * authoritative: closing the tab flips them to abandoned immediately. Channel
+ * conversations (WhatsApp, Telegram, ...) have no websocket lifecycle, so a
+ * recently updated row stays active while the next inbound message is handled.
+ */
 export function isConversationInProgress(
   conversation: ConversationStatusInput,
   now: number = Date.now(),
@@ -24,6 +24,13 @@ export function isConversationInProgress(
 
   if (conversation.isInProgress) {
     return true;
+  }
+
+  const hasWebsocketLifecycle =
+    !conversation.channelType || conversation.channelType === "web";
+
+  if (hasWebsocketLifecycle) {
+    return false;
   }
 
   const updatedAt = new Date(conversation.updatedAt).getTime();

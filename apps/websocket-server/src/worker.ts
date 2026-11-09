@@ -1,3 +1,4 @@
+import { constantTimeEqual } from "@convoform/common";
 import { RealtimeHub } from "./realtimeHub";
 import { WebhookDeliveryWorkflow } from "./webhookDeliveryWorkflow/workflow";
 
@@ -16,9 +17,12 @@ export default {
 
     if (url.pathname === "/broadcast" && request.method === "POST") {
       const expectedSecret = env.INTERNAL_EMAIL_API_SECRET;
-      const authorization = request.headers.get("authorization");
+      const authorization = request.headers.get("authorization") ?? "";
 
-      if (!expectedSecret || authorization !== `Bearer ${expectedSecret}`) {
+      if (
+        !expectedSecret ||
+        !constantTimeEqual(authorization, `Bearer ${expectedSecret}`)
+      ) {
         return new Response("Unauthorized", { status: 401 });
       }
 

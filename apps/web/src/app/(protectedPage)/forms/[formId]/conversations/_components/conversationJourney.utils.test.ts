@@ -207,6 +207,7 @@ describe("buildConversationJourney", () => {
         finishedAt: null,
         isInProgress: false,
         updatedAt: new Date(),
+        channelType: "whatsapp",
         currentFieldId: "field_2",
         metaData: {},
       }),
@@ -215,6 +216,22 @@ describe("buildConversationJourney", () => {
     expect(journey.status).toBe("inProgress");
     expect(journey.nodes[2]?.title).toBe("In progress");
     expect(journey.nodes[2]?.subtitle).toBe("Waiting on Budget");
+  });
+
+  it("treats a recently updated web conversation as abandoned", () => {
+    const journey = buildConversationJourney({
+      conversation: createConversation({
+        finishedAt: null,
+        isInProgress: false,
+        updatedAt: new Date(),
+        channelType: "web",
+        currentFieldId: "field_2",
+        metaData: {},
+      }),
+    });
+
+    expect(journey.status).toBe("abandoned");
+    expect(journey.nodes[2]?.title).toBe("Abandoned at Budget");
   });
 
   it("treats a stale web conversation as abandoned", () => {

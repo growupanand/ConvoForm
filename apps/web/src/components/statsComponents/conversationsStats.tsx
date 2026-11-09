@@ -54,9 +54,9 @@ export const ConversationsStats = ({
               description="Respondents answered all questions"
             />
             <ConversationsStatsCard
-              title="Incomplete"
+              title="Abandoned"
               primaryValue={data.partialTotalCount.toString()}
-              description="Respondents skipped some questions"
+              description="Respondents who left before finishing"
             />
 
             {showExtendedStats && (

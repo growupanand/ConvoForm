@@ -11,25 +11,40 @@ function createConversation(
     finishedAt: Date | null;
     isInProgress: boolean;
     updatedAt: Date;
+    channelType: string | null;
   }> = {},
 ) {
   return {
     finishedAt: null,
     isInProgress: false,
     updatedAt: new Date(now - 60_000),
+    channelType: null,
     ...overrides,
   };
 }
 
 describe("isConversationInProgress", () => {
   it("treats a recently updated channel conversation as in progress", () => {
-    expect(isConversationInProgress(createConversation(), now)).toBe(true);
+    expect(
+      isConversationInProgress(
+        createConversation({ channelType: "whatsapp" }),
+        now,
+      ),
+    ).toBe(true);
   });
 
-  it("treats a stale web conversation as abandoned", () => {
+  it("treats a web conversation without isInProgress as abandoned even when recently updated", () => {
+    expect(
+      isConversationInProgress(createConversation({ channelType: "web" }), now),
+    ).toBe(false);
+    expect(isConversationInProgress(createConversation(), now)).toBe(false);
+  });
+
+  it("treats a stale channel conversation as abandoned", () => {
     expect(
       isConversationInProgress(
         createConversation({
+          channelType: "whatsapp",
           updatedAt: new Date(now - ACTIVE_CONVERSATION_WINDOW_MS - 1),
         }),
         now,
@@ -42,6 +57,7 @@ describe("isConversationInProgress", () => {
       isConversationInProgress(
         createConversation({
           isInProgress: true,
+          channelType: "whatsapp",
           updatedAt: new Date(now - ACTIVE_CONVERSATION_WINDOW_MS - 1),
         }),
         now,
@@ -55,6 +71,7 @@ describe("isConversationInProgress", () => {
         createConversation({
           finishedAt: new Date(now),
           isInProgress: true,
+          channelType: "whatsapp",
         }),
         now,
       ),

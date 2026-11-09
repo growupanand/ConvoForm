@@ -37,6 +37,7 @@ const sampleResponses = [
     updatedAt: new Date(),
     isInProgress: true,
     finishedAt: null,
+    channelType: null,
     formFieldResponses: [
       { fieldValue: "Feedback on new product features" },
       { fieldValue: null },
@@ -53,7 +54,7 @@ const sampleResponses = [
     updatedAt: new Date(),
     finishedAt: new Date(),
     isInProgress: false,
-
+    channelType: null,
     formFieldResponses: [
       { fieldValue: "Support ticket submission" },
       { fieldValue: null },

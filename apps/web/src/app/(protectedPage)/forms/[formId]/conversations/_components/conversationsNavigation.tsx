@@ -3,6 +3,7 @@ import { Skeleton } from "@convoform/ui";
 
 import { SecondaryNavigation } from "@/components/common/secondaryNavigation";
 import Spinner from "@/components/common/spinner";
+import { isConversationInProgress } from "@/lib/conversationStatus";
 import { cn, timeAgo } from "@/lib/utils";
 
 type DateGroup = {
@@ -84,33 +85,37 @@ export function ConversationsNavigation({
   const dateGroups = groupConversationsByDate(conversations);
 
   const createNavigationItems = (groupConversations: Conversation[]) =>
-    groupConversations.map((conversation) => ({
-      href: `/forms/${formId}/conversations/${conversation.id}`,
-      title: (
-        <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-3">
-            {conversation.isInProgress ? (
-              <Spinner size="sm" />
-            ) : (
-              <span
-                className={cn(
-                  "flex size-2 rounded-full",
-                  conversation.finishedAt
-                    ? "bg-primary"
-                    : "border border-gray-500 ",
-                )}
-              />
-            )}
-            <span className="capitalize">
-              {conversation.isInProgress ? "In progress..." : conversation.name}
+    groupConversations.map((conversation) => {
+      const inProgress = isConversationInProgress(conversation);
+
+      return {
+        href: `/forms/${formId}/conversations/${conversation.id}`,
+        title: (
+          <div className="flex w-full items-center justify-between">
+            <div className="flex items-center gap-3">
+              {inProgress ? (
+                <Spinner size="sm" />
+              ) : (
+                <span
+                  className={cn(
+                    "flex size-2 rounded-full",
+                    conversation.finishedAt
+                      ? "bg-primary"
+                      : "border border-gray-500 ",
+                  )}
+                />
+              )}
+              <span className="capitalize">
+                {inProgress ? "In progress..." : conversation.name}
+              </span>
+            </div>
+            <span className="subtle-foreground font-light">
+              {timeAgo(conversation.createdAt)}
             </span>
           </div>
-          <span className="subtle-foreground font-light">
-            {timeAgo(conversation.createdAt)}
-          </span>
-        </div>
-      ),
-    }));
+        ),
+      };
+    });
 
   return (
     <div className="space-y-4">

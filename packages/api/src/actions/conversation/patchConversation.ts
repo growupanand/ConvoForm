@@ -1,6 +1,7 @@
 import { analytics } from "@convoform/analytics";
 import { eq, sql } from "@convoform/db";
 import {
+  type Conversation,
   type PatchConversation,
   conversation,
   form,
@@ -14,9 +15,21 @@ import { buildConversationAnalyticsTrackPayload } from "./conversationAnalytics"
 import { generateAndSaveInsights } from "./generateAndSaveInsights";
 import { mergeConversationMetaDataForPatch } from "./mergeConversationMetaDataForPatch";
 
+export type PatchConversationOptions = {
+  /**
+   * Runs as soon as the row is updated, before webhooks, insights or email.
+   * Realtime broadcasts can use this so the dashboard reflects completion
+   * immediately instead of waiting for slow side effects.
+   */
+  onConversationUpdated?: (
+    conversation: Pick<Conversation, "id" | "formId">,
+  ) => void | Promise<void>;
+};
+
 export async function patchConversation(
   input: PatchConversation,
   ctx: ActionContext,
+  options: PatchConversationOptions = {},
 ) {
   const {
     id,
@@ -122,7 +135,7 @@ export async function patchConversation(
       emailPayload: null,
       isNewlyCompleted,
       isOwnerPreview,
-      updatedConversation: isNewlyCompleted ? updatedConversation : null,
+      updatedConversation,
       analyticsConversation: existingConversation?.finishedAt
         ? null
         : updatedConversation,
@@ -136,6 +149,16 @@ export async function patchConversation(
     isOwnerPreview,
     analyticsConversation,
   } = patchResult;
+
+  // Broadcast before analytics/webhooks/insights/email so the dashboard can
+  // show the new status as soon as the row is committed.
+  if (updatedConversation && options.onConversationUpdated) {
+    try {
+      await options.onConversationUpdated(updatedConversation);
+    } catch {
+      // Realtime updates must never fail the conversation patch.
+    }
+  }
 
   if (analyticsConversation) {
     try {

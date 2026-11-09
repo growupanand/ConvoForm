@@ -2,6 +2,7 @@ import {
   getConversationTableData,
   getFlatConversationTableData,
 } from "@/components/queryComponents/table/utils";
+import { isConversationInProgress } from "@/lib/conversationStatus";
 import type { Conversation } from "@convoform/db/src/schema";
 import { useEffect, useMemo, useState } from "react";
 
@@ -26,7 +27,6 @@ export function useTableActions(data: Conversation[]) {
           name,
           createdAt,
           finishedAt,
-          isInProgress,
           channelType,
         } = conversation;
         const sanitizedFormFieldResponses =
@@ -36,6 +36,11 @@ export function useTableActions(data: Conversation[]) {
         formFieldResponsesColumns = formFieldResponsesColumns.concat(
           Object.keys(sanitizedFormFieldResponses),
         );
+        const status = finishedAt
+          ? "Finished"
+          : isConversationInProgress(conversation)
+            ? "In Progress"
+            : "Abandoned";
 
         // Data for table display (with nested objects for proper rendering)
         tableData.push({
@@ -43,11 +48,7 @@ export function useTableActions(data: Conversation[]) {
           name,
           createdAt,
           channelType: channelType ?? "web",
-          status: finishedAt
-            ? "Finished"
-            : isInProgress
-              ? "In Progress"
-              : "Not Started",
+          status,
           ...sanitizedFormFieldResponses,
         });
 
@@ -57,11 +58,7 @@ export function useTableActions(data: Conversation[]) {
           name,
           createdAt: createdAt.toLocaleString(),
           channelType: channelType ?? "web",
-          status: finishedAt
-            ? "Finished"
-            : isInProgress
-              ? "In Progress"
-              : "Not Started",
+          status,
           ...flattenedFormFieldResponses,
         });
       }

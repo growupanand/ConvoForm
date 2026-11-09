@@ -227,6 +227,11 @@ describe("patchConversation analytics", () => {
         finishedAt,
       } as any,
       { db: mockDb as any },
+      {
+        onConversationUpdated: async () => {
+          order.push("broadcast");
+        },
+      },
     );
 
     expect(createWebhookDeliveriesMock).toHaveBeenCalledWith(
@@ -240,7 +245,7 @@ describe("patchConversation analytics", () => {
     );
     expect(generateAndSaveInsightsMock).toHaveBeenCalledTimes(1);
     expect(sendFormResponseMock).toHaveBeenCalledTimes(1);
-    expect(order).toEqual(["webhook", "insights", "email"]);
+    expect(order).toEqual(["broadcast", "webhook", "insights", "email"]);
     expect(loggerErrorMock).toHaveBeenCalledWith("insights:failed", {
       trigger: "completed",
       error: "LLM unavailable",

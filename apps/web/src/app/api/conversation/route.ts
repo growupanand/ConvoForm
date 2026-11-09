@@ -17,6 +17,7 @@ import { env } from "@convoform/api/src/env";
 import type { ActionContext } from "@convoform/api/src/types/actionContextType";
 import { db } from "@convoform/db";
 import {
+  type Conversation,
   type CoreConversation,
   coreConversationSchema,
   respondentMetadataSchema,
@@ -230,8 +231,9 @@ function getOnUpdateConversationHandler(
           }
 
           try {
-            await patchConversation(snapshotToPatch, ctx);
-            await broadcastConversationUpdated(snapshotToPatch);
+            await patchConversation(snapshotToPatch, ctx, {
+              onConversationUpdated: broadcastConversationUpdated,
+            });
           } catch (error) {
             await logConversationPatchFailure(snapshotToPatch, error);
           } finally {
@@ -251,7 +253,9 @@ function getOnUpdateConversationHandler(
   };
 }
 
-async function broadcastConversationUpdated(conversation: CoreConversation) {
+async function broadcastConversationUpdated(
+  conversation: Pick<Conversation, "id" | "formId">,
+) {
   const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
   const secret = env.INTERNAL_EMAIL_API_SECRET;
 
@@ -275,6 +279,7 @@ async function broadcastConversationUpdated(conversation: CoreConversation) {
         ],
         message: { type: "conversation:updated" },
       }),
+      signal: AbortSignal.timeout(3000),
     });
   } catch {
     // The dashboard will refresh on the next lifecycle event if this fails.

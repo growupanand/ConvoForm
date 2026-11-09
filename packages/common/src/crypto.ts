@@ -50,6 +50,8 @@ function constantTimeEqual(a: string, b: string): boolean {
   return mismatch === 0;
 }
 
+export { constantTimeEqual };
+
 export async function encrypt(text: string, key: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(text);

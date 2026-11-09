@@ -4,7 +4,10 @@ import type { Conversation } from "@convoform/db/src/schema";
 import { Badge } from "@convoform/ui";
 
 type StatusBadgeProps = {
-  conversation: Pick<Conversation, "finishedAt" | "isInProgress" | "updatedAt">;
+  conversation: Pick<
+    Conversation,
+    "finishedAt" | "isInProgress" | "updatedAt" | "channelType"
+  >;
 };
 
 export function ConversationStatusBadge({
