@@ -1,5 +1,193 @@
 export const releases = [
   {
+    version: "0.20.0",
+    isoDate: "2026-11-09",
+    commits: [
+      {
+        type: "features",
+        message:
+          "feat: 🚀 add google sheet integration for sync form responses\n\n✅ Closes: #482",
+        href: "https://github.com/growupanand/ConvoForm/commit/2dce7f3d8fe8ba59caa77ddf192bb77e02dcae75",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 migrate realtime server to cloudflare workers\n\nRender websocket host was gone, so stop events and live updates\nfailed. Run the same protocol on a Worker plus Durable Object.\n\n- add RealtimeHub with WebSocket hibernation and wrangler config\n- remove Bun serve entry; update docker, docs, and client URL fallbacks\n\n✅ Closes: #506",
+        href: "https://github.com/growupanand/ConvoForm/commit/21f39a930d86935c1a244c2b90a5b38524c48625",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 allow mobile sign-in and hand off to desktop\n\nPeople arriving from WhatsApp and Instagram were blocked before they\ncould create an account. Sign-up and sign-in now work on a phone, and\na signed-in visitor is sent a link to continue on a laptop.\n\n- keep auth and workspace setup available below 1024px\n- replace the editor gate with a continue-on-desktop handoff\n- email the signed-in user a desktop link, rate-limited to 3 a day\n\n✅ Closes: #504",
+        href: "https://github.com/growupanand/ConvoForm/commit/367e9329b1c3ddd01ec249324ea3cee41b31bc8b",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 restyle live demo and simplify landing sections\n\nThe demo now needs its own full section, and the landing before/after block is redundant because both use-case pages carry the same animation.\n\n- restyle the demo form and live responses as matching 600px cards\n- add a mobile CTA linking to /view/demo\n- move the demo below Who is ConvoForm for?\n- remove the Why a conversation section and its tab data\n- move the Peerlist achievement into the founder note\n- update docs and smoke tests",
+        href: "https://github.com/growupanand/ConvoForm/commit/07284a399888e85363b8f91cd5f5a693778dc6a9",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 auto-create personal workspace on first sign-in\n\nNew users with no organization stopped on Clerk's org screen and\nnever reached form creation.\n\n- create a personal workspace and continue to /forms\n- keep the org picker for people who already have an organization\n- write the OrganizationMember row once if the webhook is retried\n\n✅ Closes: #497",
+        href: "https://github.com/growupanand/ConvoForm/commit/b7d5b3a4cf4cbed82f69fce7e72c651e6e50f44f",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 publish study-abroad use-case page\n\nConsultancies get a dedicated page with intake pain, example fields,\nlive product screenshots, and honest ships-today vs planned labels.\n\n- add /use-cases/study-abroad with single Start building CTA\n- link from homepage only; sitemap and public routes updated\n- share article path constant for #495 cross-linking\n\n✅ Closes: #494",
+        href: "https://github.com/growupanand/ConvoForm/commit/4163e70905575bdea366e037663c079ab236f350",
+      },
+      {
+        type: "features",
+        message:
+          "546 conversation journey timeline on the conversation detail page",
+        href: "https://github.com/growupanand/ConvoForm/pull/547",
+      },
+      {
+        type: "features",
+        message: "feat: 🚀 add webhook settings ui delivery log and docs",
+        href: "https://github.com/growupanand/ConvoForm/pull/545",
+      },
+      {
+        type: "features",
+        message: "feat: 🚀 add cloudflare workflow webhook delivery engine",
+        href: "https://github.com/growupanand/ConvoForm/pull/544",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 add outgoing webhook delivery for completed responses",
+        href: "https://github.com/growupanand/ConvoForm/pull/543",
+      },
+      {
+        type: "features",
+        message: "feat: 🚀 publish job-application article and articles index",
+        href: "https://github.com/growupanand/ConvoForm/pull/540",
+      },
+      {
+        type: "features",
+        message: "feat: 🚀 add geo structured data and llms.txt",
+        href: "https://github.com/growupanand/ConvoForm/pull/538",
+      },
+      {
+        type: "features",
+        message: "feat: 🚀 publish study-abroad follow-ups article",
+        href: "https://github.com/growupanand/ConvoForm/pull/536",
+      },
+      {
+        type: "features",
+        message: "feat: 🚀 replace old cf icon with v5 conversation mark",
+        href: "https://github.com/growupanand/ConvoForm/pull/531",
+      },
+      {
+        type: "features",
+        message: "feat: 🚀 add job application use case page",
+        href: "https://github.com/growupanand/ConvoForm/pull/529",
+      },
+      {
+        type: "features",
+        message: "feat: 🚀 rebuild hero and how it works with stageshow",
+        href: "https://github.com/growupanand/ConvoForm/pull/528",
+      },
+      {
+        type: "features",
+        message: "feat: 🚀 add share previews and marketing perf polish",
+        href: "https://github.com/growupanand/ConvoForm/pull/524",
+      },
+      {
+        type: "features",
+        message: "feat: 🚀 redesign public marketing and legal pages",
+        href: "https://github.com/growupanand/ConvoForm/pull/523",
+      },
+      {
+        type: "features",
+        message: "feat: 🚀 add trust, founder note, faq, and final cta",
+        href: "https://github.com/growupanand/ConvoForm/pull/522",
+      },
+      {
+        type: "features",
+        message: "feat: 🚀 add how-it-works and before-after landing sections",
+        href: "https://github.com/growupanand/ConvoForm/pull/521",
+      },
+      {
+        type: "features",
+        message:
+          "feat: 🚀 wire marketing shell, hero, and drop public user list",
+        href: "https://github.com/growupanand/ConvoForm/pull/520",
+      },
+      {
+        type: "features",
+        message: "feat: 🚀 add telegram channel",
+        href: "https://github.com/growupanand/ConvoForm/pull/485",
+      },
+      {
+        type: "improvements",
+        message: "perf: ⚡️ upgrade nextjs to latest 16.2.1",
+        href: "https://github.com/growupanand/ConvoForm/commit/695ddb4239e595bd1be562de4a336fb14b0eb9e4",
+      },
+      {
+        type: "fixes",
+        message:
+          "fix: 🐛 persist conversation snapshots reliably on node runtime\n\nThe conversation route ran on Edge and reused a module-level neon-serverless\nWebSocket pool, which could hang silently and drop after() saves.\n\n- run the conversation save routes on Node\n- timeout saves at 15s and retry once with a fresh pool\n- log patch timeout and success through the conversation logger\n- stop logging Axiom tokens and Clerk key prefixes\n- resolve the broadcast URL via getAPIDomainUrl and warn on non-ok responses",
+        href: "https://github.com/growupanand/ConvoForm/commit/6465672f356fd08e103b1b745b7db4e3d8e2fa24",
+      },
+      {
+        type: "fixes",
+        message:
+          "fix: 🐛 generate insights server-side on completion\n\nInsights were racing the websocket stop handler against patchConversation\nrunning in after(), so TLDRs often reflected a stale transcript.\n\n- generate and save insights from patchConversation when newly completed\n- limit websocket path to abandoned sessions and a 30s fallback\n- add insights observability logs and trim conversation analytics PII\n\n✅ Closes: #508",
+        href: "https://github.com/growupanand/ConvoForm/commit/a727b7670bfcb54a18d9e50a264c89bac05cf034",
+      },
+      {
+        type: "fixes",
+        message:
+          "fix: 🐛 make webhook fan-out reliable on completion\n\nWebhook rows were created after the LLM insights call inside Edge after(), so production completions could be terminated before fan-out ran.\n\n- create webhook deliveries before insights and isolate side-effect failures\n- add flushed structured fan-out logs and snapshot/coalesce conversation patches\n- cover insights failure and owner-preview webhook skipping in tests",
+        href: "https://github.com/growupanand/ConvoForm/commit/11c0372426ad5d54d0d010165cfac576dae6ea48",
+      },
+      {
+        type: "fixes",
+        message:
+          "fix: 🐛 reject rating answers outside allowed range\n\nLLM-only validation let out-of-range ratings complete the form. Enforce\n1..maxRating after extraction and add unit tests.\n\n✅ Closes: #509",
+        href: "https://github.com/growupanand/ConvoForm/commit/532d7f7a77403c7ffc8c99dfba9c0455f75a0887",
+      },
+      {
+        type: "fixes",
+        message:
+          "fix: 🐛 attribute respondent posthog events and trim payloads\n\nRespondent conversation analytics no longer fall back to unknown distinct_id\nor send transcript and field answers to PostHog.\n\n- use conversation id, org group, and count-only properties on create/update/complete\n- require explicit distinctId in the analytics provider and LLM tracing\n- mark owner /view submissions via org membership on page and API route\n\n✅ Closes: #501",
+        href: "https://github.com/growupanand/ConvoForm/commit/3ec895f8b0d4660045dec45015db80ce21a9bf02",
+      },
+      {
+        type: "fixes",
+        message:
+          "fix: 🐛 serve robots.txt and sitemap.xml and add canonical urls\n\nClerk middleware answered 404 for /robots.txt and /sitemap.xml on\nwww.convoform.com because they were not in isPublicRoute, and the docs\nsite had no robots or sitemap routes at all.\n\n- allow robots.txt and sitemap.xml through the Clerk proxy\n- rewrite www robots rules to block authenticated and app routes\n- list all public www routes in the sitemap (incl. /view/demo)\n- add absolute canonical urls on /, /changelog, /privacy and /terms\n- add robots.txt, sitemap.xml and metadataBase to the docs site\n\n✅ Closes: #488",
+        href: "https://github.com/growupanand/ConvoForm/commit/5ab23bad35a3741a5cfc7b336a84dbea7148ad76",
+      },
+      {
+        type: "fixes",
+        message:
+          "fix: 🐛 generate insights with the conversation model\n\nInsights called OpenAI directly and failed when only AI_API_KEY was set.\n\n- route insights through getModelConfig\n- record generateConversationInsights in llm analytics",
+        href: "https://github.com/growupanand/ConvoForm/commit/585c41b987067bd5b9343ba8dc7baf2badb9dc76",
+      },
+      {
+        type: "fixes",
+        message:
+          "fix: 🐛 send workflow instance params as json object\n\nCloudflare received params as a JSON string, so the Workflow payload had no\ndeliveryId. The Workflow also now identifies which config value is missing.\n\n- send params as an object while keeping instance_id for idempotency\n- assert the exact request body in the adapter test\n- name missing workflow config without printing secrets",
+        href: "https://github.com/growupanand/ConvoForm/commit/555b8294c64f3699435304047573b5c702a45be6",
+      },
+      {
+        type: "fixes",
+        message: "fix: 🐛 make resend email failures observable",
+        href: "https://github.com/growupanand/ConvoForm/pull/535",
+      },
+      {
+        type: "fixes",
+        message: "fix: 🐛 require internal auth on email and integration sync",
+        href: "https://github.com/growupanand/ConvoForm/pull/533",
+      },
+    ],
+  },
+  {
     version: "0.19.0",
     isoDate: "2026-02-14",
     commits: [
