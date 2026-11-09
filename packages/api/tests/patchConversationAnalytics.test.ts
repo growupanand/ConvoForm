@@ -31,8 +31,14 @@ const generateAndSaveInsightsMock = mock(() =>
   Promise.resolve({ success: true, skipped: false }),
 );
 
+const createWebhookDeliveriesMock = mock(() => Promise.resolve([]));
+
 mock.module("../src/actions/conversation/generateAndSaveInsights", () => ({
   generateAndSaveInsights: generateAndSaveInsightsMock,
+}));
+
+mock.module("../src/actions/webhook/createWebhookDeliveries", () => ({
+  createWebhookDeliveriesForCompletedConversation: createWebhookDeliveriesMock,
 }));
 
 describe("patchConversation analytics", () => {
@@ -40,6 +46,7 @@ describe("patchConversation analytics", () => {
     trackMock.mockClear();
     captureExceptionMock.mockClear();
     sendFormResponseMock.mockClear();
+    createWebhookDeliveriesMock.mockClear();
   });
 
   it("emits conversation:complete once for the form owner on first finish", async () => {
@@ -125,6 +132,7 @@ describe("patchConversation analytics", () => {
     });
     expect(trackMock.mock.calls.length).toBe(2);
     expect(generateAndSaveInsightsMock).toHaveBeenCalledTimes(1);
+    expect(createWebhookDeliveriesMock).not.toHaveBeenCalled();
   });
 
   it("does not emit conversation:update after the conversation is already finished", async () => {
@@ -277,5 +285,14 @@ describe("patchConversation analytics", () => {
     ]);
     expect(analyticsPayload).not.toContain("owner@example.com");
     expect(analyticsPayload).not.toContain("Contact form");
+
+    expect(createWebhookDeliveriesMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: "conv_1",
+        formId: "form_1",
+        organizationId: "org_1",
+      }),
+      expect.objectContaining({ db: mockDb }),
+    );
   });
 });

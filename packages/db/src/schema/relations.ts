@@ -9,6 +9,8 @@ import { form } from "./forms/form";
 import { formIntegration } from "./integrations/formIntegration";
 import { integration } from "./integrations/integration";
 import { organization } from "./organizations/organization";
+import { webhookDelivery } from "./webhooks/webhookDelivery";
+import { webhookEndpoint } from "./webhooks/webhookEndpoint";
 
 export const formFieldRelations = relations(formField, ({ one }) => ({
   form: one(form, {
@@ -21,6 +23,7 @@ export const formRelations = relations(form, ({ many }) => ({
   formFields: many(formField),
   conversations: many(conversation),
   formIntegrations: many(formIntegration),
+  webhookEndpoints: many(webhookEndpoint),
 }));
 
 export const conversationRelations = relations(conversation, ({ one }) => ({
@@ -79,3 +82,24 @@ export const formDesignsRelations = relations(formDesign, ({ one }) => ({
     references: [form.id],
   }),
 }));
+
+export const webhookEndpointRelations = relations(
+  webhookEndpoint,
+  ({ one, many }) => ({
+    form: one(form, {
+      fields: [webhookEndpoint.formId],
+      references: [form.id],
+    }),
+    deliveries: many(webhookDelivery),
+  }),
+);
+
+export const webhookDeliveryRelations = relations(
+  webhookDelivery,
+  ({ one }) => ({
+    endpoint: one(webhookEndpoint, {
+      fields: [webhookDelivery.endpointId],
+      references: [webhookEndpoint.id],
+    }),
+  }),
+);
