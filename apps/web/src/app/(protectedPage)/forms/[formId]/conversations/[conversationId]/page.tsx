@@ -28,8 +28,33 @@ export default function ConversationDetailPage(props: Readonly<Props>) {
   } = api.conversation.getOne.useQuery({
     id: conversationId,
   });
+
+  // Fetch the journey data before rendering the detail so the strip never
+  // shows a temporary webhook node for forms without webhooks.
+  const {
+    data: journeyData,
+    isLoading: isLoadingJourney,
+    refetch: refetchJourney,
+  } = api.webhookEndpoint.deliveriesForConversation.useQuery(
+    { conversationId },
+    {
+      refetchOnWindowFocus: false,
+      refetchInterval: (query) => {
+        const deliveries = query.state.data?.deliveries;
+
+        return deliveries?.some(
+          (delivery) =>
+            delivery.status === "pending" || delivery.status === "delivering",
+        )
+          ? 4_000
+          : false;
+      },
+    },
+  );
+
   const conversation = data;
-  const isLoading = isLoadingConversations || !isOrganizationLoaded;
+  const isLoading =
+    isLoadingConversations || isLoadingJourney || !isOrganizationLoaded;
   const canAccessConversation =
     organization && organization.id === conversation?.organizationId;
 
@@ -40,6 +65,7 @@ export default function ConversationDetailPage(props: Readonly<Props>) {
     // Handle conversation updates
     const handleConversationUpdate = () => {
       refetchConversationDetails();
+      refetchJourney();
     };
 
     // Register the event handler
@@ -67,6 +93,7 @@ export default function ConversationDetailPage(props: Readonly<Props>) {
         ...conversation,
         transcript: conversation.transcript ?? [],
       }}
+      journeyData={journeyData}
     />
   );
 }

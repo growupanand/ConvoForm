@@ -8,6 +8,11 @@ import { ConversationStatusBadge } from "@/components/StatusBadge";
 import { FormFieldResponsesTable } from "@/components/formFieldResponsesTable";
 import { formatDuration } from "@/lib/utils";
 import { FileText, Globe, Info, Send, Timer } from "lucide-react";
+import {
+  ConversationJourney,
+  ConversationJourneySkeleton,
+} from "./conversationJourney";
+import type { ConversationJourneyData } from "./conversationJourney.utils";
 import InsightsCard from "./insightsCard";
 import MetadataCard from "./metadataCard";
 import TranscriptCard from "./transcriptCard";
@@ -15,9 +20,13 @@ import { getSentimentVariant, getToneVariant } from "./utils";
 
 type Props = {
   conversation: Conversation;
+  journeyData?: ConversationJourneyData;
 };
 
-export default function ConversationDetail({ conversation }: Readonly<Props>) {
+export default function ConversationDetail({
+  conversation,
+  journeyData,
+}: Readonly<Props>) {
   const transcript: Transcript[] = conversation.transcript ?? [];
   const timeTaken = conversation.finishedAt
     ? formatDuration(
@@ -96,6 +105,10 @@ export default function ConversationDetail({ conversation }: Readonly<Props>) {
         {/* {getStatusBadge()} */}
       </CardHeader>
       <CardContent>
+        <ConversationJourney
+          conversation={conversation}
+          journeyData={journeyData}
+        />
         <div className="grid gap-10 grid-cols-5 px-2">
           <div className="col-span-2 space-y-6">
             {conversation.metaData?.insights && (
@@ -169,6 +182,7 @@ const ConversationDetailSkeleton = () => {
         <MetadataCard.Skeleton />
       </CardHeader>
       <CardContent>
+        <ConversationJourneySkeleton />
         <div className="grid gap-10 grid-cols-5 px-2">
           <div className="col-span-2 space-y-6">
             <InsightsCard.Skeleton />

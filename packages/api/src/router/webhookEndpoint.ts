@@ -6,6 +6,7 @@ import {
 } from "@convoform/common";
 import { and, count, desc, eq, isNull } from "@convoform/db";
 import {
+  conversation,
   form,
   webhookDelivery,
   webhookEndpoint,
@@ -271,6 +272,81 @@ export const webhookEndpointRouter = createTRPCRouter({
       );
 
       return { deliveryId: delivery.id };
+    }),
+
+  /**
+   * Webhook deliveries for one conversation, with the endpoint each delivery
+   * belongs to. Powers the journey strip on the conversation detail page.
+   *
+   * The conversation is the ownership boundary: a conversation belongs to one
+   * organization, so checking it once scopes both the endpoints and deliveries.
+   */
+  deliveriesForConversation: orgProtectedProcedure
+    .input(
+      z.object({
+        conversationId: z.string().min(1),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const ownedConversation = await ctx.db.query.conversation.findFirst({
+        where: and(
+          eq(conversation.id, input.conversationId),
+          eq(conversation.organizationId, ctx.orgId),
+        ),
+        columns: {
+          id: true,
+          formId: true,
+        },
+      });
+
+      if (!ownedConversation) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Conversation not found",
+        });
+      }
+
+      const [endpoints, deliveries] = await Promise.all([
+        ctx.db.query.webhookEndpoint.findMany({
+          where: eq(webhookEndpoint.formId, ownedConversation.formId),
+          columns: {
+            id: true,
+            url: true,
+            enabled: true,
+            disabledAt: true,
+          },
+          orderBy: (table, { desc }) => [desc(table.createdAt)],
+        }),
+        ctx.db
+          .select({
+            id: webhookDelivery.id,
+            endpointId: webhookDelivery.endpointId,
+            endpointUrl: webhookEndpoint.url,
+            status: webhookDelivery.status,
+            attempts: webhookDelivery.attempts,
+            lastStatusCode: webhookDelivery.lastStatusCode,
+            lastLatencyMs: webhookDelivery.lastLatencyMs,
+            lastError: webhookDelivery.lastError,
+            deliveredAt: webhookDelivery.deliveredAt,
+            createdAt: webhookDelivery.createdAt,
+            updatedAt: webhookDelivery.updatedAt,
+          })
+          .from(webhookDelivery)
+          .innerJoin(
+            webhookEndpoint,
+            eq(webhookDelivery.endpointId, webhookEndpoint.id),
+          )
+          .where(
+            and(
+              eq(webhookDelivery.conversationId, input.conversationId),
+              eq(webhookDelivery.organizationId, ctx.orgId),
+              eq(webhookDelivery.isTest, false),
+            ),
+          )
+          .orderBy(desc(webhookDelivery.createdAt), desc(webhookDelivery.id)),
+      ]);
+
+      return { endpoints, deliveries };
     }),
 
   /**

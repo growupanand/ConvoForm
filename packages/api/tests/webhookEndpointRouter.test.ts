@@ -52,6 +52,7 @@ function createDbMock() {
     enabledCount: 0,
     deliveryItems: [] as unknown[],
     deliveryTotal: 0,
+    conversationDeliveries: [] as unknown[],
   };
 
   const limit = mock(() => ({ offset: mock(async () => state.deliveryItems) }));
@@ -59,9 +60,26 @@ function createDbMock() {
   const itemsWhere = mock(() => ({ orderBy }));
   const itemsFrom = mock(() => ({ where: itemsWhere }));
 
+  const conversationDeliveryOrderBy = mock(
+    async () => state.conversationDeliveries,
+  );
+  const conversationDeliveryWhere = mock(() => ({
+    orderBy: conversationDeliveryOrderBy,
+  }));
+  const conversationDeliveryInnerJoin = mock(() => ({
+    where: conversationDeliveryWhere,
+  }));
+  const conversationDeliveryFrom = mock(() => ({
+    innerJoin: conversationDeliveryInnerJoin,
+  }));
+
   let selectCallCount = 0;
   const select = mock((fields: Record<string, unknown>) => {
     selectCallCount++;
+
+    if (fields && "endpointUrl" in fields) {
+      return { from: conversationDeliveryFrom };
+    }
 
     if (fields && "value" in fields) {
       // create() runs a single count query. deliveries() runs the item query
@@ -91,12 +109,17 @@ function createDbMock() {
   const deleteMock = mock(() => ({ where: deleteWhere }));
 
   const formFindFirst = mock(async () => ({ id: mockFormId }));
+  const conversationFindFirst = mock(async () => ({
+    id: "conversation_1",
+    formId: mockFormId,
+  }));
   const endpointFindFirst = mock(async () => null as unknown);
   const endpointFindMany = mock(async () => [] as unknown[]);
 
   const db = {
     query: {
       form: { findFirst: formFindFirst },
+      conversation: { findFirst: conversationFindFirst },
       webhookEndpoint: {
         findFirst: endpointFindFirst,
         findMany: endpointFindMany,
@@ -112,6 +135,7 @@ function createDbMock() {
     db,
     state,
     formFindFirst,
+    conversationFindFirst,
     endpointFindFirst,
     endpointFindMany,
     select,
@@ -359,6 +383,54 @@ describe("webhookEndpointRouter", () => {
         "Enable the endpoint before sending a test delivery",
       );
       expect(dbMock.insert).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("deliveriesForConversation", () => {
+    it("returns the form endpoints and the conversation deliveries", async () => {
+      dbMock.state.conversationDeliveries = [
+        {
+          id: "delivery_1",
+          endpointId: "endpoint_1",
+          endpointUrl: "https://example.com/webhooks/convoform",
+          status: "success",
+          attempts: 1,
+          lastStatusCode: 200,
+          lastLatencyMs: 120,
+          lastError: null,
+          deliveredAt: now,
+          createdAt: now,
+          updatedAt: now,
+        },
+      ];
+
+      const caller = webhookEndpointRouter.createCaller(createCtx(dbMock.db));
+
+      const result = await caller.deliveriesForConversation({
+        conversationId: "conversation_1",
+      });
+
+      expect(result.endpoints).toHaveLength(1);
+      expect(result.deliveries).toHaveLength(1);
+      expect(result.deliveries[0]?.endpointUrl).toBe(
+        "https://example.com/webhooks/convoform",
+      );
+      expect(dbMock.endpointFindMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          columns: expect.objectContaining({ url: true }),
+        }),
+      );
+    });
+
+    it("rejects conversations from another organization", async () => {
+      dbMock.conversationFindFirst.mockResolvedValue(null);
+
+      const caller = webhookEndpointRouter.createCaller(createCtx(dbMock.db));
+
+      await expect(
+        caller.deliveriesForConversation({ conversationId: "conversation_1" }),
+      ).rejects.toThrow("Conversation not found");
+      expect(dbMock.endpointFindMany).not.toHaveBeenCalled();
     });
   });
 
