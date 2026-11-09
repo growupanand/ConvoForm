@@ -22,5 +22,31 @@ class_name = "WebhookDeliveryWorkflow"
 [vars]
 NEXT_PUBLIC_APP_URL = "https://www.convoform.com"
 
+# Staging is deployed with `wrangler deploy --env staging`. Durable Objects,
+# migrations and workflows are not inherited from the top-level config.
+[env.staging]
+name = "convoform-realtime-staging"
+
+[env.staging.vars]
+NEXT_PUBLIC_APP_URL = "https://staging.convoform.com"
+
+[env.staging.durable_objects]
+bindings = [
+  { name = "REALTIME", class_name = "RealtimeHub" }
+]
+
+[[env.staging.migrations]]
+tag = "v1"
+new_sqlite_classes = ["RealtimeHub"]
+
+[[env.staging.workflows]]
+name = "convoform-webhook-delivery-staging"
+binding = "WEBHOOK_DELIVERY"
+class_name = "WebhookDeliveryWorkflow"
+
 [dev]
 port = 8787
+
+[observability.logs]
+enabled = true
+invocation_logs = true

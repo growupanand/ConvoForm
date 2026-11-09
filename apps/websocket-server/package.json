@@ -6,6 +6,7 @@
     "dev": "wrangler dev --port 8787 --var NEXT_PUBLIC_APP_URL:${NEXT_PUBLIC_APP_URL:-http://localhost:3000} --var INTERNAL_EMAIL_API_SECRET:${INTERNAL_EMAIL_API_SECRET:-}",
     "dev:turbo": "wrangler dev --port 8787 --var NEXT_PUBLIC_APP_URL:${NEXT_PUBLIC_APP_URL:-http://localhost:3000} --var INTERNAL_EMAIL_API_SECRET:${INTERNAL_EMAIL_API_SECRET:-}",
     "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
     "test": "bun test",
     "type-check": "tsc --noEmit"
   },
