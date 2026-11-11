@@ -35,6 +35,7 @@ const sampleForm: Form = {
   endScreenCTAUrl: "https://example.com/submit",
   endScreenCTALabel: "Submit",
   googleFormId: "google-form-id-1",
+  answerCheckProvider: "cloudflare-clef",
 };
 
 // Sample form fields

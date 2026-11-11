@@ -12,6 +12,11 @@ import {
 import { extractFieldAnswer } from "../ai-actions/extractFieldAnswer";
 import { generateConversationName } from "../ai-actions/generateConversationName";
 import { streamFieldQuestion } from "../ai-actions/streamFieldQuestion";
+import {
+  type AnswerSufficiencyResult,
+  DEFAULT_ANSWER_CHECK_PROVIDER,
+  checkAnswerSufficiency,
+} from "../decision";
 import type { ConversationManager } from "../managers/conversationManager";
 import { extractFieldInputType } from "../utils";
 import type { ConversationAIMetadata } from "../utils/llmAnalyticsUtils";
@@ -33,6 +38,10 @@ export type ConversationServiceUIMessage = UIMessage<
  *
  * orchestrateConversation() handles below flows when user submits answer:
  *
+ * 0. Answer sufficiency check (unless the form opts out):
+ *    - If the reply is not good enough, skip extraction and stream a follow-up
+ *    - On timeout/error, continue with the normal flow below
+ *
  * 1. Invalid answer:
  *    - Generate and stream followup question
  *
@@ -47,21 +56,29 @@ export type ConversationServiceUIMessage = UIMessage<
  *
  */
 
+export type ConversationServiceDeps = {
+  checkAnswerSufficiency?: typeof checkAnswerSufficiency;
+};
+
 export class ConversationService {
   private conversationManager: ConversationManager;
   private streamId: string;
   private endMessage = "Form completed successfully!";
   private logger: ILogger;
   private tracer?: EdgeTracer;
+  private checkAnswerSufficiency: typeof checkAnswerSufficiency;
 
   constructor(
     conversationManager: ConversationManager,
     streamId: string,
     tracer?: EdgeTracer,
+    deps: ConversationServiceDeps = {},
   ) {
     this.conversationManager = conversationManager;
     this.streamId = streamId;
     this.tracer = tracer;
+    this.checkAnswerSufficiency =
+      deps.checkAnswerSufficiency ?? checkAnswerSufficiency;
 
     const conversation = conversationManager.getConversation();
 
@@ -148,6 +165,22 @@ export class ConversationService {
 
     await this.conversationManager.addUserMessage(sanitizedAnswerText);
 
+    const sufficiency = await this.checkAnswerSufficiencyForField(
+      currentField,
+      sanitizedAnswerText,
+    );
+    if (sufficiency && !sufficiency.fallbackReason && !sufficiency.sufficient) {
+      this.logger.info("Answer marked insufficient, asking follow-up", {
+        fieldId: currentField.id,
+        fieldType: currentField.fieldConfiguration.inputType,
+        provider: sufficiency.provider,
+        model: sufficiency.model,
+        confidence: sufficiency.confidence,
+        latencyMs: sufficiency.latencyMs,
+      });
+      return await this.generateFollowupQuestionStream(currentField);
+    }
+
     // Check if we should skip validation for this field type
     const skipValidation = shouldSkipValidation(
       currentField.fieldConfiguration.inputType,
@@ -214,6 +247,61 @@ export class ConversationService {
     await this.generateAndUpdateConversationName();
 
     return await this.generateEndConversationStream();
+  }
+
+  /**
+   * Runs the form's answer sufficiency check, unless the form opted out.
+   * Returns null when no check should run.
+   *
+   * Only fields that go through AI extraction are checked. Structural fields
+   * (rating, date, choice, file upload) save exact values and must keep the
+   * current behaviour; a file id, for example, is not something a decision
+   * model can judge.
+   */
+  private async checkAnswerSufficiencyForField(
+    currentField: CoreConversation["formFieldResponses"][number],
+    answerText: string,
+  ): Promise<AnswerSufficiencyResult | null> {
+    if (shouldSkipValidation(currentField.fieldConfiguration.inputType)) {
+      return null;
+    }
+
+    const conversation = this.conversationManager.getConversation();
+    const provider =
+      conversation.form.answerCheckProvider ?? DEFAULT_ANSWER_CHECK_PROVIDER;
+
+    if (provider === "none") {
+      return null;
+    }
+
+    return await this.checkAnswerSufficiency({
+      fieldQuestion: this.getCurrentFieldQuestion(currentField),
+      fieldType: currentField.fieldConfiguration.inputType,
+      answer: answerText,
+      // The latest entry is the answer we just added; don't send it twice.
+      recentTurns: conversation.transcript.slice(0, -1).slice(-6),
+      provider,
+      fieldId: currentField.id,
+      metadata: this.getAnalyticsMetadata(),
+    });
+  }
+
+  /**
+   * Prefer the actual question that was asked, falling back to the field
+   * definition when the transcript has no assistant message.
+   */
+  private getCurrentFieldQuestion(
+    currentField: CoreConversation["formFieldResponses"][number],
+  ): string {
+    const transcript = this.conversationManager.getConversation().transcript;
+    const lastAssistantMessage = [...transcript]
+      .reverse()
+      .find((message) => message.role === "assistant");
+
+    return (
+      lastAssistantMessage?.content ||
+      `${currentField.fieldName}: ${currentField.fieldDescription}`
+    );
   }
 
   /**

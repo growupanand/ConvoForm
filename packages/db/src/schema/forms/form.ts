@@ -1,7 +1,30 @@
 import { sql } from "drizzle-orm";
-import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  index,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
+
+export const ANSWER_CHECK_PROVIDERS = [
+  "none",
+  "cloudflare-clef",
+  "llm",
+] as const;
+
+export type AnswerCheckProvider = (typeof ANSWER_CHECK_PROVIDERS)[number];
+
+export const DEFAULT_ANSWER_CHECK_PROVIDER: AnswerCheckProvider =
+  "cloudflare-clef";
+
+export const answerCheckProviderEnum = pgEnum(
+  "answerCheckProvider",
+  ANSWER_CHECK_PROVIDERS,
+);
 
 export const form = pgTable(
   "Form",
@@ -37,6 +60,9 @@ export const form = pgTable(
     endScreenCTAUrl: text("endScreenCTAUrl"),
     endScreenCTALabel: text("endScreenCTALabel"),
     googleFormId: text("googleFormId"),
+    answerCheckProvider: answerCheckProviderEnum("answerCheckProvider")
+      .default(DEFAULT_ANSWER_CHECK_PROVIDER)
+      .notNull(),
   },
   (form) => [
     index("idx_form_org").on(form.organizationId),
