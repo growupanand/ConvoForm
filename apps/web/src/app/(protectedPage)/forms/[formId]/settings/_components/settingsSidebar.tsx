@@ -4,7 +4,7 @@ import {
   SecondaryNavigation,
   type SecondaryNavigationItem,
 } from "@/components/common/secondaryNavigation";
-import { MessageSquare, Webhook, Zap } from "lucide-react";
+import { MessageSquare, SlidersHorizontal, Webhook, Zap } from "lucide-react";
 import MainNavTab from "../../_components/mainNavTab";
 
 type Props = {
@@ -12,8 +12,8 @@ type Props = {
 };
 
 /**
- * Sidebar for the Settings tab, combining Integrations, Channels and Webhooks
- * navigation.
+ * Sidebar for the Settings tab, combining General, Integrations, Channels and
+ * Webhooks navigation.
  *
  * @example
  * ```tsx
@@ -23,8 +23,13 @@ type Props = {
 export function SettingsSidebar({ formId }: Props) {
   const secondaryNavigationItems: SecondaryNavigationItem[] = [
     {
-      title: "Integrations",
+      title: "General",
       href: `/forms/${formId}/settings`,
+      icon: <SlidersHorizontal className="size-4" />,
+    },
+    {
+      title: "Integrations",
+      href: `/forms/${formId}/settings/integrations`,
       icon: <Zap className="size-4" />,
     },
     {
