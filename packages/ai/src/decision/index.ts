@@ -29,7 +29,7 @@ export type DecisionLogMetadata = {
 };
 
 export type AnswerSufficiencyCheckParams = AnswerSufficiencyInput & {
-  /** Form-level provider choice. Defaults to Cloudflare Clef. */
+  /** Form-level provider choice. Defaults to "none" (check disabled). */
   provider?: AnswerCheckProvider;
   fieldId?: string;
   metadata?: DecisionLogMetadata;

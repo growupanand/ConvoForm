@@ -1,7 +1,13 @@
 import { and, eq } from "@convoform/db";
-import { form, newFormSchema, patchFormSchema } from "@convoform/db/src/schema";
+import {
+  ANSWER_CHECK_PROVIDERS,
+  form,
+  newFormSchema,
+  patchFormSchema,
+} from "@convoform/db/src/schema";
 import { fileUpload } from "@convoform/db/src/schema/fileUploads/fileUpload";
 import { enforceRateLimit } from "@convoform/rate-limiter";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod/v4";
 import {
   type CreateFormInput,
@@ -11,6 +17,7 @@ import {
 } from "../actions/form";
 import { updateFormInputSchema } from "../actions/form/updateForm";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
+import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
 import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
 
@@ -260,6 +267,43 @@ export const formRouter = createTRPCRouter({
         .update(form)
         .set({ showCustomEndScreenMessage, customEndScreenMessage })
         .where(eq(form.id, input.formId));
+    }),
+
+  updateAnswerCheckProvider: orgProtectedProcedure
+    .input(
+      z.object({
+        formId: z.string().min(1),
+        answerCheckProvider: z.enum(ANSWER_CHECK_PROVIDERS),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const [updatedForm] = await ctx.db
+        .update(form)
+        .set({ answerCheckProvider: input.answerCheckProvider })
+        .where(
+          and(eq(form.id, input.formId), eq(form.organizationId, ctx.orgId)),
+        )
+        .returning();
+
+      if (!updatedForm) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Form not found",
+        });
+      }
+
+      await ctx.analytics.track("form:update_answer_check", {
+        distinctId: ctx.userId,
+        properties: {
+          formId: input.formId,
+          answerCheckProvider: input.answerCheckProvider,
+        },
+        groups: {
+          organization: updatedForm.organizationId,
+        },
+      });
+
+      return updatedForm;
     }),
 
   updateIsPublished: authProtectedProcedure

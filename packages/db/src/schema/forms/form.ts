@@ -18,8 +18,7 @@ export const ANSWER_CHECK_PROVIDERS = [
 
 export type AnswerCheckProvider = (typeof ANSWER_CHECK_PROVIDERS)[number];
 
-export const DEFAULT_ANSWER_CHECK_PROVIDER: AnswerCheckProvider =
-  "cloudflare-clef";
+export const DEFAULT_ANSWER_CHECK_PROVIDER: AnswerCheckProvider = "none";
 
 export const answerCheckProviderEnum = pgEnum(
   "answerCheckProvider",

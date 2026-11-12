@@ -13,6 +13,8 @@ const input: AnswerSufficiencyInput = {
   answer: "ok",
 };
 
+const clefInput = { ...input, provider: "cloudflare-clef" } as const;
+
 const config: DecisionConfig = {
   threshold: 0.7,
   timeoutMs: 50,
@@ -50,8 +52,25 @@ describe("checkAnswerSufficiency", () => {
     });
   });
 
-  it("accepts a decision at or above the threshold", async () => {
+  it("defaults to no check when the provider is not set", async () => {
+    let calls = 0;
     const result = await checkAnswerSufficiency(input, {
+      config,
+      adapters: {
+        "cloudflare-clef": createAdapter(async () => {
+          calls += 1;
+          return { sufficient: false, confidence: 0 };
+        }),
+      },
+    });
+
+    expect(calls).toBe(0);
+    expect(result.provider).toBe("none");
+    expect(result.sufficient).toBe(true);
+  });
+
+  it("accepts a decision at or above the threshold", async () => {
+    const result = await checkAnswerSufficiency(clefInput, {
       config,
       adapters: {
         "cloudflare-clef": createAdapter(async () => ({
@@ -67,7 +86,7 @@ describe("checkAnswerSufficiency", () => {
   });
 
   it("rejects a decision below the threshold", async () => {
-    const result = await checkAnswerSufficiency(input, {
+    const result = await checkAnswerSufficiency(clefInput, {
       config,
       adapters: {
         "cloudflare-clef": createAdapter(async () => ({
@@ -81,7 +100,7 @@ describe("checkAnswerSufficiency", () => {
   });
 
   it("rejects when the provider verdict is negative", async () => {
-    const result = await checkAnswerSufficiency(input, {
+    const result = await checkAnswerSufficiency(clefInput, {
       config,
       adapters: {
         "cloudflare-clef": createAdapter(async () => ({
@@ -100,11 +119,11 @@ describe("checkAnswerSufficiency", () => {
       confidence: 0.3,
     }));
 
-    const rejected = await checkAnswerSufficiency(input, {
+    const rejected = await checkAnswerSufficiency(clefInput, {
       config: { ...config, threshold: 0.4 },
       adapters: { "cloudflare-clef": adapter },
     });
-    const accepted = await checkAnswerSufficiency(input, {
+    const accepted = await checkAnswerSufficiency(clefInput, {
       config: { ...config, threshold: 0.2 },
       adapters: { "cloudflare-clef": adapter },
     });
@@ -114,7 +133,7 @@ describe("checkAnswerSufficiency", () => {
   });
 
   it("falls back when the check times out", async () => {
-    const result = await checkAnswerSufficiency(input, {
+    const result = await checkAnswerSufficiency(clefInput, {
       config: { ...config, timeoutMs: 20 },
       adapters: {
         "cloudflare-clef": createAdapter(
@@ -130,7 +149,7 @@ describe("checkAnswerSufficiency", () => {
   it("aborts the adapter signal when the check times out", async () => {
     let capturedSignal: AbortSignal | undefined;
 
-    const result = await checkAnswerSufficiency(input, {
+    const result = await checkAnswerSufficiency(clefInput, {
       config: { ...config, timeoutMs: 20 },
       adapters: {
         "cloudflare-clef": createAdapter((_input, { signal }) => {
@@ -145,7 +164,7 @@ describe("checkAnswerSufficiency", () => {
   });
 
   it("falls back when credentials are missing", async () => {
-    const result = await checkAnswerSufficiency(input, {
+    const result = await checkAnswerSufficiency(clefInput, {
       config,
       adapters: {
         "cloudflare-clef": createAdapter(async () => {
@@ -159,7 +178,7 @@ describe("checkAnswerSufficiency", () => {
   });
 
   it("falls back on provider errors", async () => {
-    const result = await checkAnswerSufficiency(input, {
+    const result = await checkAnswerSufficiency(clefInput, {
       config,
       adapters: {
         "cloudflare-clef": createAdapter(async () => {
@@ -197,7 +216,7 @@ describe("checkAnswerSufficiency", () => {
     let calls = 0;
 
     try {
-      const result = await checkAnswerSufficiency(input, {
+      const result = await checkAnswerSufficiency(clefInput, {
         config,
         adapters: {
           "cloudflare-clef": createAdapter(async () => {

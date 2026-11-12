@@ -254,7 +254,7 @@ export class ConversationService {
   }
 
   /**
-   * Runs the form's answer sufficiency check, unless the form opted out.
+   * Runs the form's answer sufficiency check when it is enabled for the form.
    * Returns null when no check should run.
    *
    * Only fields that go through AI extraction are checked. Structural fields

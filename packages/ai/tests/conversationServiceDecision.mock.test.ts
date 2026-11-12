@@ -326,7 +326,7 @@ describe("ConversationService answer sufficiency check", () => {
     );
   });
 
-  it("defaults to Cloudflare Clef when the form has no provider stored", async () => {
+  it("skips the check when the form has no provider stored", async () => {
     const conversation = createTextConversation();
     conversation.form = createMockForm({ answerCheckProvider: undefined });
     const manager = new ConversationManager({ conversation });
@@ -341,9 +341,9 @@ describe("ConversationService answer sufficiency check", () => {
           return {
             sufficient: true,
             confidence: 0.9,
-            provider: "cloudflare-clef",
-            model: "@cf/cloudflare/clef-flash",
-            latencyMs: 10,
+            provider: "none",
+            model: "none",
+            latencyMs: 0,
           };
         },
       },
@@ -352,6 +352,9 @@ describe("ConversationService answer sufficiency check", () => {
     const stream = await service.process("Ada Lovelace", TEXT_FIELD_ID);
     await consumeTextDeltas(stream);
 
-    expect(calls[0]?.provider).toBe("cloudflare-clef");
+    expect(calls).toHaveLength(0);
+    expect(manager.getConversation().formFieldResponses[0]?.fieldValue).toBe(
+      "Ada Lovelace",
+    );
   });
 });
