@@ -2,7 +2,11 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
 import { insertFormFieldSchema } from "../formFields";
-import { form } from "./form";
+import {
+  ANSWER_CHECK_PROVIDERS,
+  DEFAULT_ANSWER_CHECK_PROVIDER,
+  form,
+} from "./form";
 
 export const insertFormSchema = createInsertSchema(form, {
   welcomeScreenTitle: z.string().min(1),
@@ -20,6 +24,11 @@ export const selectFormSchema = createSelectSchema(form, {
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   publishedAt: z.coerce.date().nullable(),
+}).extend({
+  // Old clients may not send this field yet; default to the DB default.
+  answerCheckProvider: z
+    .enum(ANSWER_CHECK_PROVIDERS)
+    .default(DEFAULT_ANSWER_CHECK_PROVIDER),
 });
 
 export const newFormSchema = insertFormSchema

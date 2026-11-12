@@ -246,6 +246,20 @@
       "when": 1794200259752,
       "tag": "0034_acoustic_odin",
       "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1794418007348,
+      "tag": "0035_silly_richard_fisk",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1794505366523,
+      "tag": "0036_outgoing_alex_power",
+      "breakpoints": true
     }
   ]
 }

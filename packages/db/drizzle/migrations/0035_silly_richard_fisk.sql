@@ -1,0 +1,2 @@
+CREATE TYPE "public"."answerCheckProvider" AS ENUM('none', 'cloudflare-clef', 'llm');--> statement-breakpoint
+ALTER TABLE "Form" ADD COLUMN "answerCheckProvider" "answerCheckProvider" DEFAULT 'cloudflare-clef' NOT NULL;

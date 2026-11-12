@@ -27,6 +27,7 @@ function createMockForm(overrides: Partial<CoreConversation["form"]> = {}) {
     formFieldsOrders: [RATING_FIELD_ID],
     endScreenCTAUrl: null,
     endScreenCTALabel: null,
+    answerCheckProvider: "none",
     ...overrides,
   };
 }

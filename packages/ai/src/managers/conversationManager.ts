@@ -173,6 +173,25 @@ export class ConversationManager {
   }
 
   /**
+   * Marks the most recent user message as insufficient, so the conversation
+   * service can cap repeated follow-ups for the same field.
+   * @returns {Promise<void>} A promise that resolves when the conversation is updated.
+   */
+  public async markLastUserMessageInsufficient() {
+    const lastUserMessage = [...this.conversation.transcript]
+      .reverse()
+      .find((message) => message.role === "user");
+
+    if (!lastUserMessage) {
+      this.logger.warn("No user message to mark as insufficient");
+      return;
+    }
+
+    lastUserMessage.answerCheck = "insufficient";
+    await this.updateConversation();
+  }
+
+  /**
    * Gets the next empty field in the conversation object.
    * @returns {CoreConversation["formFieldResponses"][number] | undefined} The next empty field or undefined if there is no empty field.
    */
