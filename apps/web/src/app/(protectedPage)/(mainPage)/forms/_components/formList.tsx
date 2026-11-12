@@ -16,9 +16,7 @@ type Props = {
 };
 
 export function FormList({ organizationId }: Readonly<Props>) {
-  const [data] = api.form.getAll.useSuspenseQuery({
-    organizationId,
-  });
+  const [data] = api.form.getAll.useSuspenseQuery();
 
   const forms = data ?? [];
   const emptyForms = forms.length === 0;

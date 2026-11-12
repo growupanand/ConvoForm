@@ -7,7 +7,6 @@ import {
 import { and, count, desc, eq, isNull } from "@convoform/db";
 import {
   conversation,
-  form,
   webhookDelivery,
   webhookEndpoint,
 } from "@convoform/db/src/schema";
@@ -15,6 +14,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod/v4";
 import { deliverWebhook } from "../actions/webhook/deliverWebhook";
 import { env } from "../env";
+import { assertFormInOrg } from "../lib/formAccess";
 import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
 import { createTRPCRouter } from "../trpc";
 import type { ActionContext } from "../types/actionContextType";
@@ -27,24 +27,6 @@ const MAX_DELIVERY_PAGE_SIZE = 50;
 
 const formIdInput = z.object({ formId: z.string().min(1) });
 const endpointIdInput = z.object({ id: z.string().min(1) });
-
-/**
- * A form-scoped webhook endpoint belongs to the organization that owns the
- * form. Every endpoint procedure goes through this check before touching data.
- */
-async function assertFormBelongsToOrg(ctx: OrgActionContext, formId: string) {
-  const ownedForm = await ctx.db.query.form.findFirst({
-    where: and(eq(form.id, formId), eq(form.organizationId, ctx.orgId)),
-    columns: { id: true },
-  });
-
-  if (!ownedForm) {
-    throw new TRPCError({
-      code: "NOT_FOUND",
-      message: "Form not found",
-    });
-  }
-}
 
 async function getEndpointForOrg(ctx: OrgActionContext, endpointId: string) {
   const endpoint = await ctx.db.query.webhookEndpoint.findFirst({
@@ -82,7 +64,7 @@ export const webhookEndpointRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      await assertFormBelongsToOrg(ctx, input.formId);
+      await assertFormInOrg(ctx, input.formId);
 
       const countRows = await ctx.db
         .select({ value: count() })
@@ -144,7 +126,7 @@ export const webhookEndpointRouter = createTRPCRouter({
   list: orgProtectedProcedure
     .input(formIdInput)
     .query(async ({ ctx, input }) => {
-      await assertFormBelongsToOrg(ctx, input.formId);
+      await assertFormInOrg(ctx, input.formId);
 
       const endpoints = await ctx.db.query.webhookEndpoint.findMany({
         where: eq(webhookEndpoint.formId, input.formId),

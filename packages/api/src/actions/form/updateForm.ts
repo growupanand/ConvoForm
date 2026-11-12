@@ -1,8 +1,8 @@
 import type { analytics } from "@convoform/analytics";
-import { eq } from "@convoform/db";
 import { form, updateFormSchema } from "@convoform/db/src/schema";
 import { enforceRateLimit } from "@convoform/rate-limiter";
 import type { z } from "zod/v4";
+import { formNotFoundError, formOrgWhere } from "../../lib/formAccess";
 import type { TRPCContext } from "../../trpc";
 
 type Analytics = typeof analytics;
@@ -15,6 +15,7 @@ type UpdateFormInput = z.infer<typeof updateFormInputSchema>;
 
 type Context = Pick<TRPCContext, "db"> & {
   userId: string;
+  orgId: string;
   analytics?: Analytics;
 };
 
@@ -36,11 +37,11 @@ export async function updateForm(ctx: Context, input: UpdateFormInput) {
       updatedAt: new Date(),
       formFieldsOrders: input.formFieldsOrders,
     })
-    .where(eq(form.id, input.id))
+    .where(formOrgWhere(ctx, input.id))
     .returning();
 
   if (!updatedForm) {
-    throw new Error("Failed to update form");
+    throw formNotFoundError();
   }
 
   await ctx.analytics?.track("form:update", {

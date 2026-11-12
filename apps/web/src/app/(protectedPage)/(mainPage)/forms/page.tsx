@@ -25,7 +25,7 @@ export default async function FormsPage() {
       actionButtonBottom={
         <div className="flex items-center gap-2">
           <CreateFormButton organizationId={organizationId} />
-          <ImportGoogleFormButton organizationId={organizationId} />
+          <ImportGoogleFormButton />
         </div>
       }
     >
