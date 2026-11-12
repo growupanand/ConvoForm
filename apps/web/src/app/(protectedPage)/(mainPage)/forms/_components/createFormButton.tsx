@@ -66,10 +66,7 @@ export default function CreateFormButton({ organizationId }: Readonly<Props>) {
   const { isPending: isCreatingForm } = createForm;
 
   const handleCreateBlankForm: HandleCreateForm = async (formData) => {
-    const createFormPromise = createForm.mutateAsync({
-      ...formData,
-      organizationId,
-    });
+    const createFormPromise = createForm.mutateAsync(formData);
 
     toast.promise(createFormPromise, {
       loading: "Creating form...",

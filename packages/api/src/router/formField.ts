@@ -1,4 +1,4 @@
-import { eq } from "@convoform/db";
+import { and, eq, exists } from "@convoform/db";
 import {
   form,
   formField,
@@ -8,18 +8,49 @@ import {
 } from "@convoform/db/src/schema";
 
 import { enforceRateLimit } from "@convoform/rate-limiter";
-import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
-import { createTRPCRouter } from "../trpc";
+import { TRPCError } from "@trpc/server";
+import { formNotFoundError, formOrgWhere } from "../lib/formAccess";
+import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
+import { type TRPCContext, createTRPCRouter } from "../trpc";
+
+type FormFieldAccessContext = {
+  db: TRPCContext["db"];
+  orgId: string;
+};
+
+function formFieldOrgWhere(ctx: FormFieldAccessContext, formFieldId: string) {
+  return and(
+    eq(formField.id, formFieldId),
+    exists(
+      ctx.db
+        .select({ id: form.id })
+        .from(form)
+        .where(
+          and(
+            eq(form.id, formField.formId),
+            eq(form.organizationId, ctx.orgId),
+          ),
+        ),
+    ),
+  );
+}
+
+function formFieldNotFoundError() {
+  return new TRPCError({
+    code: "NOT_FOUND",
+    message: "Form field not found",
+  });
+}
 
 export const formFieldRouter = createTRPCRouter({
   // Create form field
-  createFormField: authProtectedProcedure
+  createFormField: orgProtectedProcedure
     .input(insertFormFieldSchema)
     .mutation(async ({ input, ctx }) => {
       await enforceRateLimit.CORE_CREATE(ctx.userId);
 
       const existForm = await ctx.db.query.form.findFirst({
-        where: (form, { eq }) => eq(form.id, input.formId),
+        where: formOrgWhere(ctx, input.formId),
         columns: { formFieldsOrders: true },
         with: {
           formFields: {
@@ -28,7 +59,7 @@ export const formFieldRouter = createTRPCRouter({
         },
       });
       if (!existForm) {
-        throw new Error("Form not found or invalid form id");
+        throw formNotFoundError();
       }
 
       // Save new form field in database
@@ -67,12 +98,12 @@ export const formFieldRouter = createTRPCRouter({
       await ctx.db
         .update(form)
         .set({ formFieldsOrders: updatedFormFieldsOrders })
-        .where(eq(form.id, input.formId))
+        .where(formOrgWhere(ctx, input.formId))
         .returning();
     }),
 
   // Patch partial form field
-  patchFormField: authProtectedProcedure
+  patchFormField: orgProtectedProcedure
     .input(patchFormFieldSchema)
     .mutation(async ({ input, ctx }) => {
       await enforceRateLimit.CORE_EDIT(ctx.userId);
@@ -84,11 +115,11 @@ export const formFieldRouter = createTRPCRouter({
         .set({
           ...updatedData,
         })
-        .where(eq(formField.id, id))
+        .where(formFieldOrgWhere(ctx, id))
         .returning();
 
       if (!updatedFormField) {
-        throw new Error("Failed to update form field");
+        throw formFieldNotFoundError();
       }
 
       await ctx.analytics.track("formField:update", {
@@ -98,7 +129,7 @@ export const formFieldRouter = createTRPCRouter({
     }),
 
   // Update the whole form field
-  updateFormField: authProtectedProcedure
+  updateFormField: orgProtectedProcedure
     .input(updateFormFieldSchema)
     .mutation(async ({ input, ctx }) => {
       await enforceRateLimit.CORE_EDIT(ctx.userId);
@@ -110,10 +141,10 @@ export const formFieldRouter = createTRPCRouter({
         .set({
           ...updatedData,
         })
-        .where(eq(formField.id, id))
+        .where(formFieldOrgWhere(ctx, id))
         .returning();
       if (!updatedFormField) {
-        throw new Error("Failed to update form field");
+        throw formFieldNotFoundError();
       }
 
       await ctx.analytics.track("formField:update", {
@@ -123,16 +154,16 @@ export const formFieldRouter = createTRPCRouter({
     }),
 
   // Delete form field
-  deleteFormField: authProtectedProcedure
+  deleteFormField: orgProtectedProcedure
     .input(updateFormFieldSchema.pick({ id: true }))
     .mutation(async ({ input, ctx }) => {
       const { id } = input;
       const [deletedFormField] = await ctx.db
         .delete(formField)
-        .where(eq(formField.id, id))
+        .where(formFieldOrgWhere(ctx, id))
         .returning();
       if (!deletedFormField) {
-        throw new Error("Failed to delete form field");
+        throw formFieldNotFoundError();
       }
 
       await ctx.analytics.track("formField:delete", {
@@ -142,7 +173,7 @@ export const formFieldRouter = createTRPCRouter({
 
       // Update form fields orders
       const existForm = await ctx.db.query.form.findFirst({
-        where: (form, { eq }) => eq(form.id, deletedFormField.formId),
+        where: formOrgWhere(ctx, deletedFormField.formId),
         columns: { formFieldsOrders: true },
         with: {
           formFields: {
@@ -152,7 +183,7 @@ export const formFieldRouter = createTRPCRouter({
       });
 
       if (!existForm) {
-        throw new Error("Form not found or invalid form id");
+        throw formNotFoundError();
       }
 
       const existFormFieldsOrders = existForm.formFieldsOrders || [];
@@ -162,7 +193,7 @@ export const formFieldRouter = createTRPCRouter({
       const [updatedForm] = await ctx.db
         .update(form)
         .set({ formFieldsOrders: updatedFormFieldsOrders })
-        .where(eq(form.id, deletedFormField.formId))
+        .where(formOrgWhere(ctx, deletedFormField.formId))
         .returning();
 
       if (!updatedForm) {

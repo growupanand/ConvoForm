@@ -13,11 +13,7 @@ import {
 } from "@convoform/db/src/schema";
 import { useRouter } from "next/navigation";
 
-type Props = {
-  organizationId: string;
-};
-
-export default function ImportGoogleFormButton({ organizationId }: Props) {
+export default function ImportGoogleFormButton() {
   const router = useRouter();
 
   const { getAccessToken, isAuthenticating } = useGoogleAuth();
@@ -115,10 +111,7 @@ export default function ImportGoogleFormButton({ organizationId }: Props) {
       accessToken,
       formId: formMeta.id,
     });
-    const newForm = {
-      ...convertGoogleFormToNewForm(googleFormDetails),
-      organizationId,
-    };
+    const newForm = convertGoogleFormToNewForm(googleFormDetails);
     await createFormMutation.mutateAsync({
       ...newForm,
       googleFormId: googleFormDetails.formId,

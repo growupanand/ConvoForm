@@ -28,6 +28,7 @@ describe("updateForm Action", () => {
   const mockCtx = {
     db: mockDb,
     userId: mockUserId,
+    orgId: "org_123",
     analytics: mockAnalytics,
   } as any;
 
@@ -61,10 +62,10 @@ describe("updateForm Action", () => {
     expect(result).toEqual(mockUpdatedForm);
   });
 
-  it("should throw error if update failed", async () => {
+  it("should throw not found if no form was updated", async () => {
     mockDb.returning.mockResolvedValueOnce([]); // No form updated
     await expect(updateForm(mockCtx, validUpdateInput)).rejects.toThrow(
-      "Failed to update form",
+      "Form not found",
     );
   });
 

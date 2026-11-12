@@ -7,7 +7,6 @@ import {
 } from "@convoform/db/src/schema";
 import { fileUpload } from "@convoform/db/src/schema/fileUploads/fileUpload";
 import { enforceRateLimit } from "@convoform/rate-limiter";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod/v4";
 import {
   type CreateFormInput,
@@ -16,40 +15,34 @@ import {
   updateForm,
 } from "../actions/form";
 import { updateFormInputSchema } from "../actions/form/updateForm";
-import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
+import { formNotFoundError, formOrgWhere } from "../lib/formAccess";
 import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
 import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
 
 export const formRouter = createTRPCRouter({
   // Create form
-  create: authProtectedProcedure
-    .input(
-      newFormSchema.extend({
-        organizationId: z.string().min(1),
-      }),
-    )
+  create: orgProtectedProcedure
+    .input(newFormSchema)
     .mutation(async ({ input, ctx }) => {
+      // The organization always comes from the session, never from the client.
       // Cast input to CreateFormInput due to type inference mismatch with formFields
-      return await createForm(ctx, input as unknown as CreateFormInput);
+      return await createForm(ctx, {
+        ...input,
+        organizationId: ctx.orgId,
+      } as unknown as CreateFormInput);
     }),
 
-  // Get all forms list
-  getAll: authProtectedProcedure
-    .input(
-      z.object({
-        organizationId: z.string().min(1),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      const forms = await ctx.db.query.form.findMany({
-        where: (form, { eq }) => {
-          return eq(form.organizationId, input.organizationId);
-        },
-        orderBy: (form, { asc }) => asc(form.createdAt),
-      });
-      return forms;
-    }),
+  // Get all forms list for the caller's organization
+  getAll: orgProtectedProcedure.query(async ({ ctx }) => {
+    const forms = await ctx.db.query.form.findMany({
+      where: (form, { eq }) => {
+        return eq(form.organizationId, ctx.orgId);
+      },
+      orderBy: (form, { asc }) => asc(form.createdAt),
+    });
+    return forms;
+  }),
 
   getOne: publicProcedure
     .input(
@@ -74,7 +67,7 @@ export const formRouter = createTRPCRouter({
     }),
 
   // Patch partial form
-  patch: authProtectedProcedure
+  patch: orgProtectedProcedure
     .input(patchFormSchema)
     .mutation(async ({ input, ctx }) => {
       await enforceRateLimit.CORE_EDIT(ctx.userId);
@@ -85,11 +78,11 @@ export const formRouter = createTRPCRouter({
         .set({
           ...updatedData,
         })
-        .where(eq(form.id, id))
+        .where(formOrgWhere(ctx, id))
         .returning();
 
       if (!updatedForm) {
-        throw new Error("Failed to update form");
+        throw formNotFoundError();
       }
 
       await ctx.analytics.track("form:update", {
@@ -104,13 +97,13 @@ export const formRouter = createTRPCRouter({
     }),
 
   // Update the whole form
-  updateForm: authProtectedProcedure
+  updateForm: orgProtectedProcedure
     .input(updateFormInputSchema)
     .mutation(async ({ input, ctx }) => {
       return await updateForm(ctx, input);
     }),
 
-  delete: authProtectedProcedure
+  delete: orgProtectedProcedure
     .input(
       z.object({
         id: z.string().min(1),
@@ -120,10 +113,21 @@ export const formRouter = createTRPCRouter({
       // Execute database operations in a transaction
       const { deletedForm, filesToDelete } = await ctx.db.transaction(
         async (tx) => {
-          // First, find and delete all files associated with this form
+          // Delete the form first so a form from another organization can't
+          // touch its files and we can return NOT_FOUND consistently.
+          const [deletedForm] = await tx
+            .delete(form)
+            .where(formOrgWhere(ctx, input.id))
+            .returning();
+
+          if (!deletedForm) {
+            throw formNotFoundError();
+          }
+
+          // Find all files associated with this form
           const filesToDelete = await tx.query.fileUpload.findMany({
             where: and(
-              eq(fileUpload.formId, input.id),
+              eq(fileUpload.formId, deletedForm.id),
               eq(fileUpload.isDeleted, false),
             ),
             columns: {
@@ -141,14 +145,13 @@ export const formRouter = createTRPCRouter({
                 isDeleted: true,
                 updatedAt: new Date(),
               })
-              .where(eq(fileUpload.id, file.id));
+              .where(
+                and(
+                  eq(fileUpload.id, file.id),
+                  eq(fileUpload.formId, deletedForm.id),
+                ),
+              );
           }
-
-          // Now delete the form
-          const [deletedForm] = await tx
-            .delete(form)
-            .where(eq(form.id, input.id))
-            .returning();
 
           return { deletedForm, filesToDelete };
         },
@@ -182,25 +185,23 @@ export const formRouter = createTRPCRouter({
         );
       }
 
-      if (deletedForm) {
-        await ctx.analytics.track("form:delete", {
-          distinctId: ctx.userId,
-          properties: {
-            ...deletedForm,
-            filesDeleted: filesToDelete.length,
-            fileCleanupErrors: fileCleanupErrors.length,
-          },
-        });
+      await ctx.analytics.track("form:delete", {
+        distinctId: ctx.userId,
+        properties: {
+          ...deletedForm,
+          filesDeleted: filesToDelete.length,
+          fileCleanupErrors: fileCleanupErrors.length,
+        },
+      });
 
-        console.log(
-          `Successfully deleted form ${input.id} with ${filesToDelete.length} associated files`,
-        );
-      }
+      console.log(
+        `Successfully deleted form ${input.id} with ${filesToDelete.length} associated files`,
+      );
 
       return deletedForm;
     }),
 
-  updateShowOrganizationName: authProtectedProcedure
+  updateShowOrganizationName: orgProtectedProcedure
     .input(
       z.object({
         formId: z.string().min(1),
@@ -218,13 +219,20 @@ export const formRouter = createTRPCRouter({
         throw new Error("Organization name is required");
       }
 
-      return await ctx.db
+      const [updatedForm] = await ctx.db
         .update(form)
         .set({ showOrganizationName, organizationName })
-        .where(eq(form.id, input.formId));
+        .where(formOrgWhere(ctx, input.formId))
+        .returning();
+
+      if (!updatedForm) {
+        throw formNotFoundError();
+      }
+
+      return updatedForm;
     }),
 
-  updateShowOrganizationLogo: authProtectedProcedure
+  updateShowOrganizationLogo: orgProtectedProcedure
     .input(
       z.object({
         formId: z.string().min(1),
@@ -242,13 +250,20 @@ export const formRouter = createTRPCRouter({
         throw new Error("Organization logo url is required");
       }
 
-      return await ctx.db
+      const [updatedForm] = await ctx.db
         .update(form)
         .set({ showOrganizationLogo, organizationLogoUrl })
-        .where(eq(form.id, input.formId));
+        .where(formOrgWhere(ctx, input.formId))
+        .returning();
+
+      if (!updatedForm) {
+        throw formNotFoundError();
+      }
+
+      return updatedForm;
     }),
 
-  updateShowCustomEndScreenMessage: authProtectedProcedure
+  updateShowCustomEndScreenMessage: orgProtectedProcedure
     .input(
       z.object({
         formId: z.string().min(1),
@@ -263,10 +278,17 @@ export const formRouter = createTRPCRouter({
           ? input.customEndScreenMessage.trim()
           : "";
 
-      return await ctx.db
+      const [updatedForm] = await ctx.db
         .update(form)
         .set({ showCustomEndScreenMessage, customEndScreenMessage })
-        .where(eq(form.id, input.formId));
+        .where(formOrgWhere(ctx, input.formId))
+        .returning();
+
+      if (!updatedForm) {
+        throw formNotFoundError();
+      }
+
+      return updatedForm;
     }),
 
   updateAnswerCheckProvider: orgProtectedProcedure
@@ -280,16 +302,11 @@ export const formRouter = createTRPCRouter({
       const [updatedForm] = await ctx.db
         .update(form)
         .set({ answerCheckProvider: input.answerCheckProvider })
-        .where(
-          and(eq(form.id, input.formId), eq(form.organizationId, ctx.orgId)),
-        )
+        .where(formOrgWhere(ctx, input.formId))
         .returning();
 
       if (!updatedForm) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Form not found",
-        });
+        throw formNotFoundError();
       }
 
       await ctx.analytics.track("form:update_answer_check", {
@@ -306,7 +323,7 @@ export const formRouter = createTRPCRouter({
       return updatedForm;
     }),
 
-  updateIsPublished: authProtectedProcedure
+  updateIsPublished: orgProtectedProcedure
     .input(
       z.object({
         formId: z.string().min(1),
@@ -316,9 +333,16 @@ export const formRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { isPublished } = input;
 
-      return await ctx.db
+      const [updatedForm] = await ctx.db
         .update(form)
         .set({ isPublished })
-        .where(eq(form.id, input.formId));
+        .where(formOrgWhere(ctx, input.formId))
+        .returning();
+
+      if (!updatedForm) {
+        throw formNotFoundError();
+      }
+
+      return updatedForm;
     }),
 });
