@@ -5,12 +5,25 @@ import {
   DEFAULT_DECISION_LLM_PROVIDER,
   DEFAULT_DECISION_THRESHOLD,
   DEFAULT_DECISION_TIMEOUT_MS,
+  firstNonEmpty,
   getDecisionConfig,
   parseDecisionLlmModel,
   parseDecisionModel,
   parseDecisionThreshold,
   parseDecisionTimeoutMs,
 } from "../src/decision";
+
+describe("firstNonEmpty", () => {
+  it("returns the first trimmed non-empty value", () => {
+    expect(firstNonEmpty(undefined, "", "  ", " first ", "second")).toBe(
+      "first",
+    );
+  });
+
+  it("returns undefined when every value is empty", () => {
+    expect(firstNonEmpty(undefined, "", "  ")).toBeUndefined();
+  });
+});
 
 describe("parseDecisionThreshold", () => {
   it("returns the default when unset", () => {

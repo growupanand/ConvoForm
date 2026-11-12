@@ -40,6 +40,36 @@ function createFetchMock(
 
 const signal = () => new AbortController().signal;
 
+const CLOUDFLARE_ENV_KEYS = [
+  "CLOUDFLARE_AI_ACCOUNT_ID",
+  "CLOUDFLARE_AI_API_TOKEN",
+  "CF_ACCOUNT_ID",
+  "CF_API_TOKEN",
+] as const;
+
+type CloudflareEnv = Record<
+  (typeof CLOUDFLARE_ENV_KEYS)[number],
+  string | undefined
+>;
+
+function saveCloudflareEnv(): CloudflareEnv {
+  return Object.fromEntries(
+    CLOUDFLARE_ENV_KEYS.map((key) => [key, process.env[key]]),
+  ) as CloudflareEnv;
+}
+
+function clearCloudflareEnv() {
+  for (const key of CLOUDFLARE_ENV_KEYS) {
+    process.env[key] = "";
+  }
+}
+
+function restoreCloudflareEnv(env: CloudflareEnv) {
+  for (const key of CLOUDFLARE_ENV_KEYS) {
+    process.env[key] = env[key] ?? "";
+  }
+}
+
 describe("cloudflareClef adapter", () => {
   it("sends a Clef noul question and parses the wrapped REST response", async () => {
     const captured: CapturedRequest[] = [];
@@ -95,21 +125,88 @@ describe("cloudflareClef adapter", () => {
 
     const result = await adapter.check(input, { signal: signal() });
 
-    expect(result).toEqual({ sufficient: false, confidence: 0.3 });
+    expect(result).toEqual({ sufficient: true, confidence: 0.3 });
   });
 
   it("throws when credentials are missing", async () => {
-    const adapter = createCloudflareClefAdapter({
-      accountId: "",
-      apiToken: "",
-      fetch: createFetchMock({ json: {} }),
-    });
+    const env = saveCloudflareEnv();
+    clearCloudflareEnv();
 
-    const error = await adapter
-      .check(input, { signal: signal() })
-      .catch((caught) => caught);
+    try {
+      const adapter = createCloudflareClefAdapter({
+        accountId: "",
+        apiToken: "",
+        fetch: createFetchMock({ json: {} }),
+      });
 
-    expect(error).toBeInstanceOf(MissingDecisionCredentialsError);
+      const error = await adapter
+        .check(input, { signal: signal() })
+        .catch((caught) => caught);
+
+      expect(error).toBeInstanceOf(MissingDecisionCredentialsError);
+    } finally {
+      restoreCloudflareEnv(env);
+    }
+  });
+
+  it("falls back to CF_* when CLOUDFLARE_AI_* are empty", async () => {
+    const env = saveCloudflareEnv();
+    process.env.CLOUDFLARE_AI_ACCOUNT_ID = "";
+    process.env.CLOUDFLARE_AI_API_TOKEN = "";
+    process.env.CF_ACCOUNT_ID = "cf-account";
+    process.env.CF_API_TOKEN = "cf-token";
+
+    try {
+      const captured: CapturedRequest[] = [];
+      const adapter = createCloudflareClefAdapter({
+        fetch: createFetchMock(
+          {
+            json: { answers: { sufficient: { type: "noul", noul: 0.8 } } },
+          },
+          captured,
+        ),
+      });
+
+      await adapter.check(input, { signal: signal() });
+
+      expect(captured[0]?.url).toContain("/accounts/cf-account/");
+      expect(
+        (captured[0]?.init.headers as Record<string, string>).Authorization,
+      ).toBe("Bearer cf-token");
+    } finally {
+      restoreCloudflareEnv(env);
+    }
+  });
+
+  it("lets explicit credentials win over env", async () => {
+    const env = saveCloudflareEnv();
+    process.env.CLOUDFLARE_AI_ACCOUNT_ID = "cloudflare-account";
+    process.env.CLOUDFLARE_AI_API_TOKEN = "cloudflare-token";
+    process.env.CF_ACCOUNT_ID = "cf-account";
+    process.env.CF_API_TOKEN = "cf-token";
+
+    try {
+      const captured: CapturedRequest[] = [];
+      const adapter = createCloudflareClefAdapter({
+        accountId: "explicit-account",
+        apiToken: "explicit-token",
+        fetch: createFetchMock(
+          {
+            json: { answers: { sufficient: { type: "noul", noul: 0.8 } } },
+          },
+          captured,
+        ),
+      });
+
+      await adapter.check(input, { signal: signal() });
+
+      expect(captured[0]?.url).toContain("/accounts/explicit-account/");
+      expect(
+        (captured[0]?.init.headers as Record<string, string>).Authorization,
+      ).toBe("Bearer explicit-token");
+    } finally {
+      restoreCloudflareEnv(env);
+    }
   });
 
   it("throws a provider error for non-2xx responses", async () => {

@@ -6,7 +6,7 @@ import {
   type DecisionConfig,
   getDecisionConfig,
 } from "./config";
-import { DecisionCheckError } from "./errors";
+import { DecisionCheckError, DecisionProviderError } from "./errors";
 import { createLlmDecisionAdapter } from "./llm";
 import { withTimeout } from "./timeout";
 import type {
@@ -135,6 +135,8 @@ export async function checkAnswerSufficiency(
       decision: "fallback",
       fallbackReason,
       errorName: error instanceof Error ? error.name : "UnknownError",
+      httpStatus:
+        error instanceof DecisionProviderError ? error.httpStatus : undefined,
     });
 
     return {
@@ -196,6 +198,7 @@ function logSufficiencyDecision(args: {
   decision: "sufficient" | "insufficient" | "fallback";
   fallbackReason?: DecisionFallbackReason;
   errorName?: string;
+  httpStatus?: number;
 }) {
   const { params } = args;
   const logger = params.metadata
@@ -213,5 +216,6 @@ function logSufficiencyDecision(args: {
     decision: args.decision,
     ...(args.fallbackReason ? { fallbackReason: args.fallbackReason } : {}),
     ...(args.errorName ? { errorName: args.errorName } : {}),
+    ...(args.httpStatus !== undefined ? { httpStatus: args.httpStatus } : {}),
   });
 }

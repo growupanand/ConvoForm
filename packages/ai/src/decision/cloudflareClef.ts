@@ -1,5 +1,5 @@
 import { z } from "zod/v4";
-import { DEFAULT_CLOUDFLARE_CLEF_MODEL } from "./config";
+import { DEFAULT_CLOUDFLARE_CLEF_MODEL, firstNonEmpty } from "./config";
 import {
   DecisionProviderError,
   InvalidDecisionResponseError,
@@ -46,12 +46,13 @@ export function createCloudflareClefAdapter(
   return {
     provider: "cloudflare-clef",
     async check(input, { signal }) {
-      const accountId = getAccountId(options);
-      const apiToken = getApiToken(options);
+      const credentials = resolveCloudflareClefCredentials(options);
 
-      if (!accountId || !apiToken) {
+      if (!credentials) {
         throw new MissingDecisionCredentialsError();
       }
+
+      const { accountId, apiToken } = credentials;
 
       const response = await fetchImpl(
         `${CLOUDFLARE_API_BASE}/${accountId}/ai/run/${model}`,
@@ -93,28 +94,48 @@ export function createCloudflareClefAdapter(
       }
 
       const probability = answer.data.noul;
+      // The caller applies DECISION_THRESHOLD, including thresholds below 0.5.
       return {
-        sufficient: probability >= 0.5,
+        sufficient: true,
         confidence: probability,
       };
     },
   };
 }
 
-function getAccountId(options: CloudflareClefAdapterOptions) {
-  return (
-    options.accountId ??
-    process.env.CLOUDFLARE_AI_ACCOUNT_ID ??
-    process.env.CF_ACCOUNT_ID
-  )?.trim();
+export type CloudflareClefCredentials = {
+  accountId: string;
+  apiToken: string;
+};
+
+/**
+ * Resolves Workers AI credentials. Explicit options win over environment
+ * variables, and empty env values (e.g. copied from `.env.example`) fall
+ * through to the generic CF_* variables.
+ */
+export function resolveCloudflareClefCredentials(
+  options: CloudflareClefAdapterOptions = {},
+): CloudflareClefCredentials | null {
+  const accountId = firstNonEmpty(
+    options.accountId,
+    process.env.CLOUDFLARE_AI_ACCOUNT_ID,
+    process.env.CF_ACCOUNT_ID,
+  );
+  const apiToken = firstNonEmpty(
+    options.apiToken,
+    process.env.CLOUDFLARE_AI_API_TOKEN,
+    process.env.CF_API_TOKEN,
+  );
+
+  if (!accountId || !apiToken) {
+    return null;
+  }
+
+  return { accountId, apiToken };
 }
 
-function getApiToken(options: CloudflareClefAdapterOptions) {
-  return (
-    options.apiToken ??
-    process.env.CLOUDFLARE_AI_API_TOKEN ??
-    process.env.CF_API_TOKEN
-  )?.trim();
+export function hasCloudflareClefCredentials(): boolean {
+  return resolveCloudflareClefCredentials() !== null;
 }
 
 export function buildCloudflareClefRequest(

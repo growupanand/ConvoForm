@@ -148,6 +148,11 @@ export const transcriptSchema = z.object({
   role: z.enum(["user", "assistant"]),
   content: z.string(),
   fieldName: z.string().optional(),
+  /**
+   * Set when the answer sufficiency check asked for a follow-up instead of
+   * extracting this reply. Used to cap repeated follow-ups per field.
+   */
+  answerCheck: z.enum(["insufficient"]).optional(),
 });
 
 export type Transcript = z.infer<typeof transcriptSchema>;

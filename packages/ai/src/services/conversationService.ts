@@ -29,6 +29,9 @@ export type ConversationServiceUIMessage = UIMessage<
   }
 >;
 
+/** Stop asking the decision model after this many follow-ups per field. */
+export const MAX_INSUFFICIENT_FOLLOWUPS = 2;
+
 /**
  * ============================================
  * ----------- CONVERSATION SERVICE -----------
@@ -170,6 +173,7 @@ export class ConversationService {
       sanitizedAnswerText,
     );
     if (sufficiency && !sufficiency.fallbackReason && !sufficiency.sufficient) {
+      await this.conversationManager.markLastUserMessageInsufficient();
       this.logger.info("Answer marked insufficient, asking follow-up", {
         fieldId: currentField.id,
         fieldType: currentField.fieldConfiguration.inputType,
@@ -274,6 +278,16 @@ export class ConversationService {
       return null;
     }
 
+    const insufficientCount = this.countConsecutiveInsufficientAnswers();
+    if (insufficientCount >= MAX_INSUFFICIENT_FOLLOWUPS) {
+      this.logger.info("decision:sufficiency:cap_reached", {
+        fieldId: currentField.id,
+        provider,
+        count: insufficientCount,
+      });
+      return null;
+    }
+
     return await this.checkAnswerSufficiency({
       fieldQuestion: this.getCurrentFieldQuestion(currentField),
       fieldType: currentField.fieldConfiguration.inputType,
@@ -284,6 +298,40 @@ export class ConversationService {
       fieldId: currentField.id,
       metadata: this.getAnalyticsMetadata(),
     });
+  }
+
+  /**
+   * Counts the trailing user replies that the decision model already marked
+   * insufficient. The current reply is excluded because it is the last
+   * transcript entry and has not been checked yet.
+   */
+  private countConsecutiveInsufficientAnswers(): number {
+    const transcript = this.conversationManager.getConversation().transcript;
+    const lastUserMessageIndex = transcript.findLastIndex(
+      (message) => message.role === "user",
+    );
+
+    if (lastUserMessageIndex < 0) {
+      return 0;
+    }
+
+    let count = 0;
+
+    for (let index = lastUserMessageIndex - 1; index >= 0; index -= 1) {
+      const message = transcript[index];
+
+      if (!message || message.role !== "user") {
+        continue;
+      }
+
+      if (message.answerCheck !== "insufficient") {
+        break;
+      }
+
+      count += 1;
+    }
+
+    return count;
   }
 
   /**

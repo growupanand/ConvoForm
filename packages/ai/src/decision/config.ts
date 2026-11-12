@@ -36,6 +36,20 @@ export type DecisionConfig = {
   llm: LlmDecisionModelConfig;
 };
 
+/** Returns the first trimmed, non-empty value from the list. */
+export function firstNonEmpty(
+  ...values: (string | undefined)[]
+): string | undefined {
+  for (const value of values) {
+    const trimmed = value?.trim();
+    if (trimmed) {
+      return trimmed;
+    }
+  }
+
+  return undefined;
+}
+
 export function parseDecisionThreshold(raw: string | undefined): number {
   if (!raw?.trim()) {
     return DEFAULT_DECISION_THRESHOLD;

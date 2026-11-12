@@ -253,6 +253,48 @@ describe("ConversationService answer sufficiency check", () => {
     );
   });
 
+  it("caps insufficient follow-ups and falls back to extraction", async () => {
+    const conversation = createTextConversation();
+    const manager = new ConversationManager({ conversation });
+    let decisionCalls = 0;
+
+    const createService = () =>
+      new ConversationService(manager, "stream_test_cap", undefined, {
+        checkAnswerSufficiency: async () => {
+          decisionCalls += 1;
+          return {
+            sufficient: false,
+            confidence: 0.1,
+            provider: "cloudflare-clef",
+            model: "@cf/cloudflare/clef-flash",
+            latencyMs: 5,
+          };
+        },
+      });
+
+    await consumeTextDeltas(await createService().process("ok", TEXT_FIELD_ID));
+    await consumeTextDeltas(
+      await createService().process("still vague", TEXT_FIELD_ID),
+    );
+
+    const afterTwoFollowUps = manager.getConversation();
+    expect(afterTwoFollowUps.formFieldResponses[0]?.fieldValue).toBeNull();
+    expect(
+      afterTwoFollowUps.transcript.filter(
+        (entry) => entry.answerCheck === "insufficient",
+      ),
+    ).toHaveLength(2);
+
+    await consumeTextDeltas(
+      await createService().process("Ada Lovelace", TEXT_FIELD_ID),
+    );
+
+    expect(decisionCalls).toBe(2);
+    expect(manager.getConversation().formFieldResponses[0]?.fieldValue).toBe(
+      "Ada Lovelace",
+    );
+  });
+
   it("skips the check entirely when the form opted out", async () => {
     const conversation = createTextConversation("none");
     const manager = new ConversationManager({ conversation });

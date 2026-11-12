@@ -94,6 +94,25 @@ describe("checkAnswerSufficiency", () => {
     expect(result.sufficient).toBe(false);
   });
 
+  it("applies a threshold below 0.5", async () => {
+    const adapter = createAdapter(async () => ({
+      sufficient: true,
+      confidence: 0.3,
+    }));
+
+    const rejected = await checkAnswerSufficiency(input, {
+      config: { ...config, threshold: 0.4 },
+      adapters: { "cloudflare-clef": adapter },
+    });
+    const accepted = await checkAnswerSufficiency(input, {
+      config: { ...config, threshold: 0.2 },
+      adapters: { "cloudflare-clef": adapter },
+    });
+
+    expect(rejected.sufficient).toBe(false);
+    expect(accepted.sufficient).toBe(true);
+  });
+
   it("falls back when the check times out", async () => {
     const result = await checkAnswerSufficiency(input, {
       config: { ...config, timeoutMs: 20 },
@@ -106,6 +125,23 @@ describe("checkAnswerSufficiency", () => {
 
     expect(result.fallbackReason).toBe("timeout");
     expect(result.sufficient).toBe(true);
+  });
+
+  it("aborts the adapter signal when the check times out", async () => {
+    let capturedSignal: AbortSignal | undefined;
+
+    const result = await checkAnswerSufficiency(input, {
+      config: { ...config, timeoutMs: 20 },
+      adapters: {
+        "cloudflare-clef": createAdapter((_input, { signal }) => {
+          capturedSignal = signal;
+          return new Promise<never>(() => undefined);
+        }),
+      },
+    });
+
+    expect(result.fallbackReason).toBe("timeout");
+    expect(capturedSignal?.aborted).toBe(true);
   });
 
   it("falls back when credentials are missing", async () => {

@@ -1,4 +1,5 @@
 import { checkAnswerSufficiency, getDecisionConfig } from "..";
+import { hasCloudflareClefCredentials } from "../cloudflareClef";
 import type { DecisionProvider } from "../types";
 import { decisionEvalSamples } from "./samples";
 
@@ -100,14 +101,13 @@ function printReport(outcomes: RunOutcome[]) {
     decided.length > 0
       ? `${(accuracy * 100).toFixed(1)}% (${correct.length}/${decided.length} decided runs)`
       : "n/a (no decided runs)";
-  const latencies = outcomes
+  const decidedLatencies = decided
     .map((outcome) => outcome.latencyMs)
     .sort((a, b) => a - b);
-  const averageLatency =
-    latencies.length > 0
-      ? latencies.reduce((total, value) => total + value, 0) / latencies.length
-      : 0;
-  const percentile95 = percentile(latencies, 0.95);
+  const fallbackLatencies = outcomes
+    .filter((outcome) => outcome.predicted === null)
+    .map((outcome) => outcome.latencyMs)
+    .sort((a, b) => a - b);
 
   const consistency = getConsistency(outcomes);
 
@@ -117,9 +117,8 @@ function printReport(outcomes: RunOutcome[]) {
     `False accepts: ${falseAccepts.length}   False rejects: ${falseRejects.length}`,
   );
   console.log(`Fallbacks: ${fallbacks}/${outcomes.length}`);
-  console.log(
-    `Latency: avg ${Math.round(averageLatency)}ms   p95 ${Math.round(percentile95)}ms`,
-  );
+  console.log(`Latency (decided): ${formatLatencyStats(decidedLatencies)}`);
+  console.log(`Latency (fallbacks): ${formatLatencyStats(fallbackLatencies)}`);
   console.log(
     `Run-to-run consistency: ${consistency.stable}/${consistency.total} samples identical across decided runs`,
   );
@@ -201,6 +200,18 @@ function percentile(sortedValues: number[], fraction: number) {
   );
 }
 
+function formatLatencyStats(sortedValues: number[]) {
+  if (sortedValues.length === 0) {
+    return "n/a";
+  }
+
+  const average =
+    sortedValues.reduce((total, value) => total + value, 0) /
+    sortedValues.length;
+
+  return `avg ${Math.round(average)}ms   p95 ${Math.round(percentile(sortedValues, 0.95))}ms`;
+}
+
 function countBy(values: string[]) {
   const counts = new Map<string, number>();
   for (const value of values) {
@@ -231,11 +242,7 @@ function hasProviderCredentials(
   config: ReturnType<typeof getDecisionConfig>,
 ) {
   if (provider === "cloudflare-clef") {
-    const accountId =
-      process.env.CLOUDFLARE_AI_ACCOUNT_ID ?? process.env.CF_ACCOUNT_ID;
-    const apiToken =
-      process.env.CLOUDFLARE_AI_API_TOKEN ?? process.env.CF_API_TOKEN;
-    return Boolean(accountId?.trim() && apiToken?.trim());
+    return hasCloudflareClefCredentials();
   }
 
   switch (config.llm.provider) {
