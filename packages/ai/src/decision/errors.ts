@@ -38,8 +38,8 @@ export class DecisionProviderError extends DecisionCheckError {
 }
 
 export class InvalidDecisionResponseError extends DecisionCheckError {
-  constructor() {
-    super("invalid_response", "Decision provider returned an invalid response");
+  constructor(message = "Decision provider returned an invalid response") {
+    super("invalid_response", message);
     this.name = "InvalidDecisionResponseError";
   }
 }

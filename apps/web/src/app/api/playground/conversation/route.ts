@@ -36,6 +36,7 @@ const sampleForm: Form = {
   endScreenCTALabel: "Submit",
   googleFormId: "google-form-id-1",
   answerCheckProvider: "none",
+  labelSettings: { categoriesEnabled: false, categories: [] },
 };
 
 // Sample form fields

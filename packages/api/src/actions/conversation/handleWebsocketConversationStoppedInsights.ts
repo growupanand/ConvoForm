@@ -5,6 +5,7 @@ import {
   generateAndSaveInsights,
   resolveWebsocketInsightsDecision,
 } from "./generateAndSaveInsights";
+import { generateAndSaveLabels } from "./generateAndSaveLabels";
 
 export async function handleWebsocketConversationStoppedInsights(
   conversationId: string,
@@ -34,6 +35,20 @@ export async function handleWebsocketConversationStoppedInsights(
       trigger: "websocket",
     });
     return { success: true, skipped: true, reason: decision.reason };
+  }
+
+  if (decision.completionStatus === "completed") {
+    await generateAndSaveLabels(
+      {
+        id: conversationData.id,
+        formId: conversationData.formId,
+        organizationId: conversationData.organizationId,
+        transcript: conversationData.transcript,
+        formFieldResponses: conversationData.formFieldResponses,
+        isOwnerPreview: conversationData.metaData?.isOwnerPreview === true,
+      },
+      ctx,
+    );
   }
 
   return await generateAndSaveInsights(

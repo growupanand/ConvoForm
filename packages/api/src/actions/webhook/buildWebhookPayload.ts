@@ -1,4 +1,7 @@
-import type { RespondentMetadata } from "@convoform/db/src/schema";
+import {
+  type RespondentMetadata,
+  getVisibleConversationLabels,
+} from "@convoform/db/src/schema";
 
 export const WEBHOOK_EVENT_TYPE = "response.completed" as const;
 export const WEBHOOK_PAYLOAD_VERSION = "1" as const;
@@ -7,6 +10,17 @@ export const MAX_WEBHOOK_PAYLOAD_BYTES = 64 * 1024;
 export interface WebhookPayloadField {
   fieldName: string;
   fieldValue: string;
+}
+
+export interface ResponseCompletedWebhookLabels {
+  /** Overall tone (formal, casual, frustrated, enthusiastic, neutral). */
+  tone?: string;
+  /** Overall sentiment (positive, negative, neutral, mixed). */
+  sentiment?: string;
+  /** Hot, Warm or Cold. */
+  leadTemperature?: string;
+  /** Category name to chosen option. */
+  categories?: Record<string, string>;
 }
 
 export interface ResponseCompletedWebhookPayload {
@@ -22,6 +36,8 @@ export interface ResponseCompletedWebhookPayload {
     metadata: {
       source: string;
     };
+    /** Only present when at least one label is available. */
+    labels?: ResponseCompletedWebhookLabels;
     /** Set when field values were truncated to fit the 64 KB limit. */
     truncated?: boolean;
   };
@@ -52,6 +68,7 @@ export function buildResponseCompletedPayload({
   timestamp = new Date(),
 }: BuildResponseCompletedPayloadOptions): ResponseCompletedWebhookPayload {
   const submittedAt = resolveSubmittedAt(conversation);
+  const labels = buildWebhookLabels(conversation.metaData);
 
   const payload: ResponseCompletedWebhookPayload = {
     type: WEBHOOK_EVENT_TYPE,
@@ -69,10 +86,30 @@ export function buildResponseCompletedPayload({
       metadata: {
         source: conversation.channelType ?? "web",
       },
+      ...(labels ? { labels } : {}),
     },
   };
 
   return enforceWebhookPayloadSize(payload);
+}
+
+function buildWebhookLabels(
+  metaData: RespondentMetadata | null,
+): ResponseCompletedWebhookLabels | undefined {
+  const visible = getVisibleConversationLabels(metaData);
+  const categories = Object.fromEntries(
+    visible.categories.map((label) => [label.categoryName, label.value]),
+  );
+  const labels: ResponseCompletedWebhookLabels = {
+    ...(visible.tone ? { tone: visible.tone.value } : {}),
+    ...(visible.sentiment ? { sentiment: visible.sentiment.value } : {}),
+    ...(visible.temperature
+      ? { leadTemperature: visible.temperature.value }
+      : {}),
+    ...(Object.keys(categories).length ? { categories } : {}),
+  };
+
+  return Object.keys(labels).length ? labels : undefined;
 }
 
 export function buildTestWebhookPayload({
@@ -104,6 +141,12 @@ export function buildTestWebhookPayload({
       ],
       metadata: {
         source: "test",
+      },
+      labels: {
+        tone: "casual",
+        sentiment: "positive",
+        leadTemperature: "Hot",
+        categories: { Country: "UK" },
       },
     },
   };

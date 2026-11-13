@@ -1,6 +1,10 @@
+import { ConversationLabelChips } from "@/components/conversationLabelChips";
 import { SafeCellRenderer } from "@/components/queryComponents/table/SafeCellRenderer";
 import { timeAgo } from "@/lib/utils";
-import type { Conversation } from "@convoform/db/src/schema";
+import type {
+  Conversation,
+  VisibleConversationLabels,
+} from "@convoform/db/src/schema";
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from "@convoform/ui";
 import type { ColumnDef } from "@tanstack/react-table";
 import { FileText, Globe, Send } from "lucide-react";
@@ -18,6 +22,7 @@ export type ConversationTableData = Omit<
 > & {
   status: string;
   channelType: string;
+  labels: VisibleConversationLabels;
 };
 
 export function useConversationColumns(
@@ -80,6 +85,17 @@ export function useConversationColumns(
             </div>
           );
         },
+      },
+      {
+        id: "labels",
+        header: "Labels",
+        cell: (info) => (
+          <ConversationLabelChips
+            labels={info.row.original.labels}
+            compact
+            className="max-w-[260px]"
+          />
+        ),
       },
     ];
   }, [formId]);

@@ -8,7 +8,8 @@
     "type-check": "tsc --noEmit",
     "test": "bun test ./**/*.mock.test.ts",
     "test:ai": "bun test ./**/*.ai.test.ts",
-    "decision:eval": "bun run src/decision/eval/run.ts"
+    "decision:eval": "bun run src/decision/eval/run.ts",
+    "labels:eval": "bun run src/labels/eval/run.ts"
   },
   "dependencies": {
     "@ai-sdk/groq": "catalog:",

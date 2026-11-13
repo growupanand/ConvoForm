@@ -13,6 +13,7 @@ import type { ActionContext } from "../../types/actionContextType";
 import { createWebhookDeliveriesForCompletedConversation } from "../webhook/createWebhookDeliveries";
 import { buildConversationAnalyticsTrackPayload } from "./conversationAnalytics";
 import { generateAndSaveInsights } from "./generateAndSaveInsights";
+import { generateAndSaveLabels } from "./generateAndSaveLabels";
 import { mergeConversationMetaDataForPatch } from "./mergeConversationMetaDataForPatch";
 
 export type PatchConversationOptions = {
@@ -182,6 +183,19 @@ export async function patchConversation(
   });
 
   if (isNewlyCompleted && updatedConversation) {
+    // Labels are written before webhook fan-out so the payload includes them.
+    // They have a hard per-label timeout, so this stays within the completion
+    // budget even when the provider is slow.
+    if (!isOwnerPreview) {
+      await generateAndSaveLabels(
+        {
+          ...updatedConversation,
+          isOwnerPreview,
+        },
+        ctx,
+      );
+    }
+
     // Create delivery rows before the LLM insights call so a slow or failing
     // insights request can never prevent webhooks from being queued.
     if (!isOwnerPreview) {

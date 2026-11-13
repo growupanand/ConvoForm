@@ -1,0 +1,1 @@
+ALTER TABLE "Form" ADD COLUMN "labelSettings" jsonb DEFAULT '{"categoriesEnabled":false,"categories":[]}'::jsonb NOT NULL;

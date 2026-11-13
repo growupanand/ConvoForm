@@ -3,10 +3,14 @@ import {
   getFlatConversationTableData,
 } from "@/components/queryComponents/table/utils";
 import { isConversationInProgress } from "@/lib/conversationStatus";
-import type { Conversation } from "@convoform/db/src/schema";
+import type { Conversation, FormLabelCategory } from "@convoform/db/src/schema";
+import { getVisibleConversationLabels } from "@convoform/db/src/schema/conversations/conversationLabels";
 import { useEffect, useMemo, useState } from "react";
 
-export function useTableActions(data: Conversation[]) {
+export function useTableActions(
+  data: Conversation[],
+  categories: FormLabelCategory[] = [],
+) {
   const [perPage, setPerPage] = useState("10");
   const [pageIndex, setPageIndex] = useState(0);
 
@@ -28,6 +32,7 @@ export function useTableActions(data: Conversation[]) {
           createdAt,
           finishedAt,
           channelType,
+          metaData,
         } = conversation;
         const sanitizedFormFieldResponses =
           getConversationTableData(formFieldResponses);
@@ -41,6 +46,7 @@ export function useTableActions(data: Conversation[]) {
           : isConversationInProgress(conversation)
             ? "In Progress"
             : "Abandoned";
+        const labels = getVisibleConversationLabels(metaData);
 
         // Data for table display (with nested objects for proper rendering)
         tableData.push({
@@ -49,6 +55,7 @@ export function useTableActions(data: Conversation[]) {
           createdAt,
           channelType: channelType ?? "web",
           status,
+          labels,
           ...sanitizedFormFieldResponses,
         });
 
@@ -59,6 +66,17 @@ export function useTableActions(data: Conversation[]) {
           createdAt: createdAt.toLocaleString(),
           channelType: channelType ?? "web",
           status,
+          Tone: labels.tone?.value ?? "",
+          Sentiment: labels.sentiment?.value ?? "",
+          "Lead Temperature": labels.temperature?.value ?? "",
+          ...Object.fromEntries(
+            categories.map((category) => [
+              category.name,
+              labels.categories.find(
+                (label) => label.categoryId === category.id,
+              )?.value ?? "",
+            ]),
+          ),
           ...flattenedFormFieldResponses,
         });
       }
@@ -72,7 +90,7 @@ export function useTableActions(data: Conversation[]) {
         uniqueFormFieldResponsesColumns,
         csvData,
       };
-    }, [data]);
+    }, [data, categories]);
 
   return {
     tableData,

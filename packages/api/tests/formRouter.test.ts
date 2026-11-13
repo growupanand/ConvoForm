@@ -32,6 +32,9 @@ function createCtx(db: unknown) {
       orgId: mockOrgId,
     },
     user: {},
+    analytics: {
+      track: mock(async () => undefined),
+    },
   } as any;
 }
 
@@ -246,6 +249,58 @@ describe("formRouter", () => {
       await expectNotFound(
         caller.updateIsPublished({ formId: mockFormId, isPublished: false }),
       );
+    });
+  });
+
+  describe("updateLabelSettings", () => {
+    const labelSettings = {
+      categoriesEnabled: true,
+      categories: [
+        { id: "country", name: "Country", options: ["UK", "Canada"] },
+      ],
+    };
+
+    it("saves custom categories for a form in the caller's organization", async () => {
+      const { db, set } = createUpdateDbMock([{ ...mockForm, labelSettings }]);
+
+      const caller = formRouter.createCaller(createCtx(db));
+      const result = await caller.updateLabelSettings({
+        formId: mockFormId,
+        labelSettings,
+      });
+
+      expect(result.labelSettings).toEqual(labelSettings);
+      expect(set).toHaveBeenCalledWith({ labelSettings });
+    });
+
+    it("returns NOT_FOUND for a form from another organization", async () => {
+      const { db } = createUpdateDbMock([]);
+
+      const caller = formRouter.createCaller(createCtx(db));
+
+      await expectNotFound(
+        caller.updateLabelSettings({ formId: mockFormId, labelSettings }),
+      );
+    });
+
+    it("rejects more than three categories", async () => {
+      const { db } = createUpdateDbMock([]);
+      const caller = formRouter.createCaller(createCtx(db));
+
+      await expect(
+        caller.updateLabelSettings({
+          formId: mockFormId,
+          labelSettings: {
+            categoriesEnabled: true,
+            categories: [
+              { id: "a", name: "A", options: ["1", "2"] },
+              { id: "b", name: "B", options: ["1", "2"] },
+              { id: "c", name: "C", options: ["1", "2"] },
+              { id: "d", name: "D", options: ["1", "2"] },
+            ],
+          },
+        }),
+      ).rejects.toMatchObject({ code: "BAD_REQUEST" });
     });
   });
 });

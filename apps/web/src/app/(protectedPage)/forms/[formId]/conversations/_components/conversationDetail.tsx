@@ -1,10 +1,11 @@
 import type { Conversation, Transcript } from "@convoform/db/src/schema";
-import { Badge, SectionHeading } from "@convoform/ui";
+import { SectionHeading } from "@convoform/ui";
 import { CardContent, CardHeader, CardTitle } from "@convoform/ui";
 import { Skeleton } from "@convoform/ui";
 import { Popover, PopoverContent, PopoverTrigger } from "@convoform/ui";
 
 import { ConversationStatusBadge } from "@/components/StatusBadge";
+import { ConversationLabelChips } from "@/components/conversationLabelChips";
 import { FormFieldResponsesTable } from "@/components/formFieldResponsesTable";
 import { formatDuration } from "@/lib/utils";
 import { FileText, Globe, Info, Send, Timer } from "lucide-react";
@@ -16,7 +17,6 @@ import type { ConversationJourneyData } from "./conversationJourney.utils";
 import InsightsCard from "./insightsCard";
 import MetadataCard from "./metadataCard";
 import TranscriptCard from "./transcriptCard";
-import { getSentimentVariant, getToneVariant } from "./utils";
 
 type Props = {
   conversation: Conversation;
@@ -131,26 +131,7 @@ export default function ConversationDetail({
                 <ConversationDetailSectionHeading>
                   Chat History
                 </ConversationDetailSectionHeading>
-                {conversation.metaData?.insights && (
-                  <div className="flex gap-2">
-                    <Badge
-                      variant={getToneVariant(
-                        conversation.metaData.insights.userTone,
-                      )}
-                      className=" capitalize"
-                    >
-                      {conversation.metaData.insights.userTone}
-                    </Badge>
-                    <Badge
-                      variant={getSentimentVariant(
-                        conversation.metaData.insights.userSentiment,
-                      )}
-                      className=" capitalize"
-                    >
-                      {conversation.metaData.insights.userSentiment}
-                    </Badge>
-                  </div>
-                )}
+                <ConversationLabelChips metaData={conversation.metaData} />
               </div>
               <TranscriptCard
                 isBusy={conversation.isInProgress}
