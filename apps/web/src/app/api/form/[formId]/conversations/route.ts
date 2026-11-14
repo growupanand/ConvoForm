@@ -1,15 +1,6 @@
 import { createConversationWithMetadata } from "@/actions/conversationActions";
-import {
-  assertRequestConversationToken,
-  attachConversationToken,
-} from "@/lib/conversationToken";
-import { sendErrorMessage, sendErrorResponse } from "@/lib/errorHandlers";
-import { patchConversation } from "@convoform/api/src/actions/conversation";
-import { db } from "@convoform/db";
-import {
-  type FormFieldResponses,
-  restoreDateFields,
-} from "@convoform/db/src/schema";
+import { attachConversationToken } from "@/lib/conversationToken";
+import { sendErrorResponse } from "@/lib/errorHandlers";
 import type { NextRequest } from "next/server";
 import { z } from "zod/v4";
 
@@ -37,43 +28,6 @@ export async function POST(
     });
   } catch (error) {
     console.log("\n\n ------> error in form conversations route", error);
-    return sendErrorResponse(error);
-  }
-}
-
-export async function PATCH(request: NextRequest) {
-  try {
-    const requestJson = await request.json();
-    if (requestJson.id === undefined) {
-      return sendErrorMessage("Missing conversation id", 400);
-    }
-
-    await assertRequestConversationToken(request, requestJson.id);
-
-    const parsedFormFieldResponses = [] as FormFieldResponses[];
-
-    for (const field of requestJson.formFieldResponses) {
-      const parsedFieldConfiguration = restoreDateFields(
-        field.fieldConfiguration,
-      );
-      parsedFormFieldResponses.push({
-        ...field,
-        fieldConfiguration: parsedFieldConfiguration,
-      });
-    }
-    requestJson.formFieldResponses = parsedFormFieldResponses;
-
-    await patchConversation(
-      {
-        id: requestJson.id,
-        ...requestJson,
-      },
-      {
-        db,
-      },
-    );
-    return Response.json({ success: true });
-  } catch (error) {
     return sendErrorResponse(error);
   }
 }

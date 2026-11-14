@@ -287,18 +287,48 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
     await submitAnswer("answer text in body");
   };
 
+  const clearConversationTokenCookie = useCallback(
+    async (finishedConversationId: string) => {
+      try {
+        await fetch(
+          `${props.apiDomain ?? API_DOMAIN}/api/conversation/finish`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              conversationId: finishedConversationId,
+            }),
+            credentials: "include",
+          },
+        );
+      } catch {
+        // Cookie cleanup is best effort and must not break the form flow.
+      }
+    },
+    [props.apiDomain],
+  );
+
   const resetConversation = useCallback(async () => {
     if (conversation) {
       sendWebsocketMessage("conversation:stopped", {
         conversationId: conversation.id,
         formId: props.formId,
       });
+      void clearConversationTokenCookie(conversation.id);
     }
     setConversation(null);
     setMessages([]);
     clearError();
     // Clear tracer state on reset? Maybe keep it for continuity unless strict reset needed
-  }, [setMessages, clearError, conversation, props.formId]);
+  }, [
+    setMessages,
+    clearError,
+    conversation,
+    props.formId,
+    clearConversationTokenCookie,
+  ]);
 
   // =========================================================
   // ----------------- Websocket Events ----------------------
@@ -324,7 +354,13 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
     };
 
     sendWebsocketMessage("conversation:stopped", conversationData);
-  }, [conversation?.finishedAt, conversation?.id, props.formId]);
+    void clearConversationTokenCookie(conversation.id);
+  }, [
+    conversation?.finishedAt,
+    conversation?.id,
+    props.formId,
+    clearConversationTokenCookie,
+  ]);
 
   return {
     // Methods

@@ -137,20 +137,29 @@ export async function POST(request: NextRequest) {
         form: formWithFormFields,
       });
 
+      let onUpdateConversation:
+        | ReturnType<typeof getOnUpdateConversationHandler>
+        | undefined;
+
       const response =
         await createStreamResponseWithWriter<CoreServiceUIMessage>(
           async (writer) => {
+            onUpdateConversation = getOnUpdateConversationHandler(writer, {
+              db,
+              tracer,
+            });
+
             const coreService = new CoreService({
               conversation: newConversation,
-              onUpdateConversation: getOnUpdateConversationHandler(writer, {
-                db,
-                tracer,
-              }),
+              onUpdateConversation,
               tracer,
             });
 
             const initialConversationStream = await coreService.initialize();
             writer.merge(initialConversationStream);
+          },
+          async () => {
+            await onUpdateConversation?.flush();
           },
         );
 
@@ -186,14 +195,20 @@ export async function POST(request: NextRequest) {
     // Set trace ID to conversationId so all spans for this conversation share one trace
     tracer.setTraceId(conversationId);
 
+    let onUpdateConversation:
+      | ReturnType<typeof getOnUpdateConversationHandler>
+      | undefined;
+
     const response = await createStreamResponseWithWriter<CoreServiceUIMessage>(
       async (writer) => {
+        onUpdateConversation = getOnUpdateConversationHandler(writer, {
+          db,
+          tracer,
+        });
+
         const coreService = new CoreService({
           conversation: trustedConversation,
-          onUpdateConversation: getOnUpdateConversationHandler(writer, {
-            db,
-            tracer,
-          }),
+          onUpdateConversation,
           tracer,
         });
         logger.info("Server: CoreService initialized");
@@ -203,6 +218,9 @@ export async function POST(request: NextRequest) {
           currentFieldId,
         );
         writer.merge(conversationStream);
+      },
+      async () => {
+        await onUpdateConversation?.flush();
       },
     );
 

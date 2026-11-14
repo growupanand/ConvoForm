@@ -58,14 +58,40 @@ export async function assertRequestConversationToken(
   }
 }
 
-function serializeConversationCookie(conversationId: string, token: string) {
+/**
+ * Expire the conversation cookie as soon as the form is completed.
+ */
+export function clearConversationToken(
+  response: Response,
+  conversationId: string,
+) {
+  response.headers.append(
+    "Set-Cookie",
+    serializeConversationCookie(conversationId, "", {
+      maxAge: 0,
+      expires: "Thu, 01 Jan 1970 00:00:00 GMT",
+    }),
+  );
+
+  return response;
+}
+
+function serializeConversationCookie(
+  conversationId: string,
+  token: string,
+  options: { maxAge?: number; expires?: string } = {},
+) {
   const parts = [
     `${getConversationTokenCookieName(conversationId)}=${token}`,
-    "Path=/",
+    "Path=/api",
     "HttpOnly",
     "SameSite=Lax",
-    `Max-Age=${CONVERSATION_TOKEN_TTL_SECONDS}`,
+    `Max-Age=${options.maxAge ?? CONVERSATION_TOKEN_TTL_SECONDS}`,
   ];
+
+  if (options.expires) {
+    parts.push(`Expires=${options.expires}`);
+  }
 
   if (process.env.NODE_ENV === "production") {
     parts.push("Secure");

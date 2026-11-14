@@ -2,7 +2,7 @@ import { signPayload, verifySignature } from "./crypto";
 
 const TOKEN_VERSION = "v1";
 
-export const CONVERSATION_TOKEN_TTL_SECONDS = 60 * 60 * 24 * 7;
+export const CONVERSATION_TOKEN_TTL_SECONDS = 60 * 60 * 24;
 
 export type ConversationTokenPayload = {
   conversationId: string;

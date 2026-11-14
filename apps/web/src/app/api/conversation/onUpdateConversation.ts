@@ -4,12 +4,20 @@ import type { CoreConversation } from "@convoform/db/src/schema";
 import { createConversationLogger } from "@convoform/logger";
 import type { EdgeTracer } from "@convoform/tracing";
 import type { UIMessageStreamWriter } from "ai";
-import { after } from "next/server";
 import { saveConversationWithRetry } from "./saveConversation";
 
 type OnUpdateConversationOptions = {
-  scheduleAfter?: (task: () => Promise<void>) => void;
   save?: typeof saveConversationWithRetry;
+};
+
+export type OnUpdateConversationHandler = ((
+  conversation: CoreConversation,
+) => Promise<void>) & {
+  /**
+   * Persist the latest snapshot. Call this from the stream's `onFinish` hook so
+   * the answer is saved before the response closes.
+   */
+  flush: () => Promise<void>;
 };
 
 export function getOnUpdateConversationHandler(
@@ -18,42 +26,17 @@ export function getOnUpdateConversationHandler(
     tracer?: EdgeTracer;
   },
   options: OnUpdateConversationOptions = {},
-) {
-  const scheduleAfter = options.scheduleAfter ?? after;
+): OnUpdateConversationHandler {
   const save = options.save ?? saveConversationWithRetry;
 
   // The ConversationManager mutates one live object throughout the request.
-  // Keep only the latest snapshot and persist it once after the response, so
-  // after() never reads a reference that changes underneath it.
+  // Keep only the latest snapshot and persist it once, before the stream closes.
   let pendingConversation: CoreConversation | null = null;
-  let isPatchScheduled = false;
 
-  return async (updatedConversation: CoreConversation) => {
+  const handler = async (updatedConversation: CoreConversation) => {
     try {
       const conversationSnapshot = structuredClone(updatedConversation);
       pendingConversation = conversationSnapshot;
-
-      if (!isPatchScheduled) {
-        isPatchScheduled = true;
-
-        scheduleAfter(async () => {
-          const snapshotToPatch = pendingConversation;
-          pendingConversation = null;
-          isPatchScheduled = false;
-
-          if (!snapshotToPatch) {
-            return;
-          }
-
-          try {
-            await save(snapshotToPatch, ctx);
-          } catch (error) {
-            await logConversationPatchFailure(snapshotToPatch, error);
-          } finally {
-            await ctx.tracer?.flush();
-          }
-        });
-      }
 
       writer.write({
         type: "data-conversation",
@@ -64,6 +47,31 @@ export function getOnUpdateConversationHandler(
       await logConversationPatchFailure(updatedConversation, error);
     }
   };
+
+  handler.flush = async () => {
+    const snapshotToPatch = pendingConversation;
+    pendingConversation = null;
+
+    if (!snapshotToPatch) {
+      await ctx.tracer?.flush();
+      return;
+    }
+
+    try {
+      const saved = await save(snapshotToPatch, ctx);
+
+      if (!saved) {
+        throw new Error("Failed to persist conversation");
+      }
+    } catch (error) {
+      await logConversationPatchFailure(snapshotToPatch, error);
+      throw error;
+    } finally {
+      await ctx.tracer?.flush();
+    }
+  };
+
+  return handler;
 }
 
 async function logConversationPatchFailure(

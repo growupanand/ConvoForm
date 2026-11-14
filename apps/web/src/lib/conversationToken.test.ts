@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test";
+import { CONVERSATION_TOKEN_TTL_SECONDS } from "@convoform/common";
 
 const secret = "web-conversation-token-test-secret";
 process.env.DATABASE_URL = "postgresql://localhost/test";
@@ -7,9 +8,11 @@ process.env.INTERNAL_EMAIL_API_SECRET = secret;
 const { getConversationTokenCookieName } = await import(
   "@convoform/api/src/lib/conversationToken"
 );
-const { attachConversationToken, hasValidConversationToken } = await import(
-  "./conversationToken"
-);
+const {
+  attachConversationToken,
+  clearConversationToken,
+  hasValidConversationToken,
+} = await import("./conversationToken");
 
 const conversation = {
   conversationId: "conv_1",
@@ -39,6 +42,8 @@ describe("web conversation token cookie", () => {
     );
     expect(setCookie).toContain("HttpOnly");
     expect(setCookie).toContain("SameSite=Lax");
+    expect(setCookie).toContain("Path=/api");
+    expect(setCookie).toContain(`Max-Age=${CONVERSATION_TOKEN_TTL_SECONDS}`);
 
     const request = new Request("http://localhost/api/conversation", {
       headers: {
@@ -60,5 +65,20 @@ describe("web conversation token cookie", () => {
     await expect(
       hasValidConversationToken(request, conversation.conversationId),
     ).resolves.toBe(false);
+  });
+
+  it("expires the cookie when the conversation finishes", async () => {
+    const response = clearConversationToken(
+      new Response("ok"),
+      conversation.conversationId,
+    );
+    const setCookie = response.headers.get("set-cookie");
+
+    expect(setCookie).toContain(
+      `${getConversationTokenCookieName(conversation.conversationId)}=;`,
+    );
+    expect(setCookie).toContain("Path=/api");
+    expect(setCookie).toContain("Max-Age=0");
+    expect(setCookie).toContain("Expires=Thu, 01 Jan 1970 00:00:00 GMT");
   });
 });

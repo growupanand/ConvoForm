@@ -116,16 +116,6 @@ const conversationRow = {
   finishedAt: null,
 };
 
-const formFieldResponses = [
-  {
-    id: "field_1",
-    fieldName: "Name",
-    fieldDescription: "Your name",
-    fieldConfiguration: { inputType: "text", inputConfiguration: {} },
-    fieldValue: null,
-  },
-];
-
 describe("conversation router authorization", () => {
   let token: string;
 
@@ -138,28 +128,10 @@ describe("conversation router authorization", () => {
     const caller = conversationRouter.createCaller(createContext());
 
     await expect(
-      caller.updateFormFieldResponses({
-        id: conversationId,
-        formFieldResponses,
-      } as any),
-    ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
-
-    await expect(
-      caller.updateTranscript({
-        id: conversationId,
-        transcript: [{ role: "user", content: "hello" }],
-      }),
-    ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
-
-    await expect(
       caller.updateInProgressStatus({
         id: conversationId,
         isInProgress: false,
       }),
-    ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
-
-    await expect(
-      caller.patch({ id: conversationId, name: "Changed" }),
     ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
 
     await expect(
@@ -173,10 +145,10 @@ describe("conversation router authorization", () => {
       createContext({ token, db }),
     );
 
-    await caller.updateFormFieldResponses({
+    await caller.updateInProgressStatus({
       id: conversationId,
-      formFieldResponses,
-    } as any);
+      isInProgress: false,
+    });
 
     expect(update).toHaveBeenCalledTimes(1);
   });
@@ -189,9 +161,9 @@ describe("conversation router authorization", () => {
     );
 
     await expect(
-      caller.updateTranscript({
+      caller.updateInProgressStatus({
         id: conversationId,
-        transcript: [{ role: "user", content: "hello" }],
+        isInProgress: false,
       }),
     ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
 
@@ -236,20 +208,27 @@ describe("conversation router authorization", () => {
     });
   });
 
-  it("scopes getCountByOrganizationId to the caller's organization", async () => {
+  it("allows getCountByOrganizationId only for organization members", async () => {
     const { db, select } = createCountDb(12);
-    const caller = conversationRouter.createCaller(
+    const memberCaller = conversationRouter.createCaller(
       createContext({ db, userId: "user_1", orgId: organizationId }),
     );
 
     await expect(
-      caller.getCountByOrganizationId({ organizationId }),
+      memberCaller.getCountByOrganizationId({ organizationId }),
     ).resolves.toBe(12);
     expect(select).toHaveBeenCalledTimes(1);
 
     await expect(
-      caller.getCountByOrganizationId({ organizationId: "org_2" }),
+      memberCaller.getCountByOrganizationId({ organizationId: "org_2" }),
     ).rejects.toMatchObject({ code: "FORBIDDEN" });
+
+    const tokenOnlyCaller = conversationRouter.createCaller(
+      createContext({ token, db }),
+    );
+    await expect(
+      tokenOnlyCaller.getCountByOrganizationId({ organizationId }),
+    ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
   });
 
   it("rejects file uploads without the conversation token", async () => {
@@ -268,5 +247,35 @@ describe("conversation router authorization", () => {
     ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
 
     expect(findFirst).not.toHaveBeenCalled();
+  });
+
+  it("throws instead of signing with an empty secret", async () => {
+    const previousTokenSecret = process.env.CONVERSATION_TOKEN_SECRET;
+    const previousInternalSecret = process.env.INTERNAL_EMAIL_API_SECRET;
+
+    try {
+      Reflect.deleteProperty(process.env, "CONVERSATION_TOKEN_SECRET");
+      Reflect.deleteProperty(process.env, "INTERNAL_EMAIL_API_SECRET");
+
+      const { getConversationTokenSigningSecret } = await import(
+        "../src/lib/conversationToken"
+      );
+
+      expect(() => getConversationTokenSigningSecret()).toThrow(
+        "CONVERSATION_TOKEN_SECRET or INTERNAL_EMAIL_API_SECRET must be set",
+      );
+    } finally {
+      if (previousTokenSecret === undefined) {
+        Reflect.deleteProperty(process.env, "CONVERSATION_TOKEN_SECRET");
+      } else {
+        process.env.CONVERSATION_TOKEN_SECRET = previousTokenSecret;
+      }
+
+      if (previousInternalSecret === undefined) {
+        Reflect.deleteProperty(process.env, "INTERNAL_EMAIL_API_SECRET");
+      } else {
+        process.env.INTERNAL_EMAIL_API_SECRET = previousInternalSecret;
+      }
+    }
   });
 });

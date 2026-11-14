@@ -12,11 +12,17 @@ export function getConversationTokenCookieName(conversationId: string) {
 }
 
 export function getConversationTokenSigningSecret() {
-  return (
+  const secret =
     process.env.CONVERSATION_TOKEN_SECRET ||
-    process.env.INTERNAL_EMAIL_API_SECRET ||
-    ""
-  );
+    process.env.INTERNAL_EMAIL_API_SECRET;
+
+  if (!secret) {
+    throw new Error(
+      "CONVERSATION_TOKEN_SECRET or INTERNAL_EMAIL_API_SECRET must be set to sign conversation tokens",
+    );
+  }
+
+  return secret;
 }
 
 /**

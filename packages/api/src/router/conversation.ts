@@ -4,7 +4,6 @@ import {
   conversation,
   form,
   insertConversationSchema,
-  patchConversationSchema,
   restoreDateFields,
   updateConversationSchema,
 } from "@convoform/db/src/schema";
@@ -14,13 +13,11 @@ import { z } from "zod/v4";
 import {
   createConversation,
   getOneConversation,
-  patchConversation,
 } from "../actions/conversation";
 import { getOrganizationFormsCountByFormId } from "../actions/conversation/getOrganizationFormsCountByFormId";
 import { handleWebsocketConversationStoppedInsights } from "../actions/conversation/handleWebsocketConversationStoppedInsights";
 import {
   assertConversationToken,
-  findVerifiedConversationToken,
   getVerifiedConversationToken,
 } from "../lib/conversationToken";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
@@ -124,22 +121,21 @@ export const conversationRouter = createTRPCRouter({
       return await createConversation(input, ctx);
     }),
 
-  getCountByOrganizationId: publicProcedure
+  getCountByOrganizationId: orgProtectedProcedure
     .input(
       z.object({
         organizationId: z.string().min(1),
       }),
     )
     .query(async ({ input, ctx }) => {
-      const organizationId = await resolveOrganizationScope(
-        ctx,
-        input.organizationId,
-      );
+      if (input.organizationId !== ctx.orgId) {
+        throw forbiddenOrganization();
+      }
 
       const [result] = await ctx.db
         .select({ value: count() })
         .from(conversation)
-        .where(eq(conversation.organizationId, organizationId));
+        .where(eq(conversation.organizationId, ctx.orgId));
 
       return result?.value;
     }),
@@ -204,46 +200,6 @@ export const conversationRouter = createTRPCRouter({
       });
     }),
 
-  updateFormFieldResponses: publicProcedure
-    .input(
-      updateConversationSchema.pick({ id: true, formFieldResponses: true }),
-    )
-    .mutation(async ({ input, ctx }) => {
-      await assertConversationToken(ctx.headers, input.id);
-
-      const [result] = await ctx.db
-        .update(conversation)
-        .set({
-          formFieldResponses: input.formFieldResponses,
-          updatedAt: new Date(),
-        })
-        .where(eq(conversation.id, input.id))
-        .returning();
-      if (!result) {
-        throw new Error("Failed to update conversation");
-      }
-
-      return result;
-    }),
-  updateTranscript: publicProcedure
-    .input(updateConversationSchema.pick({ id: true, transcript: true }))
-    .mutation(async ({ input, ctx }) => {
-      await assertConversationToken(ctx.headers, input.id);
-
-      const [result] = await ctx.db
-        .update(conversation)
-        .set({
-          transcript: input.transcript,
-          updatedAt: new Date(),
-        })
-        .where(eq(conversation.id, input.id))
-        .returning();
-      if (!result) {
-        throw new Error("Failed to update conversation");
-      }
-
-      return result;
-    }),
   updateInProgressStatus: publicProcedure
     .input(
       updateConversationSchema.pick({
@@ -298,15 +254,6 @@ export const conversationRouter = createTRPCRouter({
         conversationCount: Number(row.conversationCount),
       }));
     }),
-  // Patch partial form
-  patch: publicProcedure
-    .input(patchConversationSchema)
-    .mutation(async ({ input, ctx }) => {
-      await assertConversationToken(ctx.headers, input.id);
-
-      return await patchConversation(input, ctx);
-    }),
-
   stats: orgProtectedProcedure
     .input(
       z.object({
@@ -624,40 +571,6 @@ export const conversationRouter = createTRPCRouter({
       );
     }),
 });
-
-async function resolveOrganizationScope(
-  ctx: {
-    auth: { userId?: string | null; orgId?: string | null };
-    headers?: Headers;
-  },
-  requestedOrganizationId?: string,
-) {
-  if (ctx.auth.userId && typeof ctx.auth.orgId === "string") {
-    if (requestedOrganizationId && requestedOrganizationId !== ctx.auth.orgId) {
-      throw forbiddenOrganization();
-    }
-
-    return ctx.auth.orgId;
-  }
-
-  const conversationToken = await findVerifiedConversationToken(ctx.headers);
-
-  if (conversationToken) {
-    if (
-      requestedOrganizationId &&
-      requestedOrganizationId !== conversationToken.organizationId
-    ) {
-      throw forbiddenOrganization();
-    }
-
-    return conversationToken.organizationId;
-  }
-
-  throw new TRPCError({
-    code: "UNAUTHORIZED",
-    message: "A valid conversation token or organization session is required",
-  });
-}
 
 function forbiddenOrganization() {
   return new TRPCError({
