@@ -1,1 +1,1 @@
-export const DEMO_FORM_ID = "demo";
+export { DEMO_FORM_ID } from "@convoform/common";

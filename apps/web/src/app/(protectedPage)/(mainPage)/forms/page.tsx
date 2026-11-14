@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default async function FormsPage() {
-  const organizationId = await getOrgIdOrRedirect();
+  await getOrgIdOrRedirect();
 
   return (
     <PageShell
@@ -30,7 +30,7 @@ export default async function FormsPage() {
       }
     >
       <Suspense fallback={<FormListLoading />}>
-        <FormList organizationId={organizationId} />
+        <FormList />
       </Suspense>
     </PageShell>
   );

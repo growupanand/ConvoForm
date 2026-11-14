@@ -11,11 +11,7 @@ import { api } from "@/trpc/react";
 import CreateFormButton from "./createFormButton";
 import { FormListItem } from "./formListItem";
 
-type Props = {
-  organizationId: string;
-};
-
-export function FormList({ organizationId }: Readonly<Props>) {
+export function FormList() {
   const [data] = api.form.getAll.useSuspenseQuery();
 
   const forms = data ?? [];
@@ -23,7 +19,6 @@ export function FormList({ organizationId }: Readonly<Props>) {
 
   const [formWithConversationsCount] =
     api.conversation.getCountByFormIds.useSuspenseQuery({
-      organizationId,
       formIds: forms.map((form) => form.id),
     });
 

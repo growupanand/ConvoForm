@@ -1,19 +1,15 @@
-import { ACTIVE_CONVERSATION_WINDOW_MS } from "@convoform/common";
+import { ACTIVE_CONVERSATION_WINDOW_MS, DEMO_FORM_ID } from "@convoform/common";
 import { and, count, eq, inArray, sql } from "@convoform/db";
 import {
   conversation,
   form,
-  insertConversationSchema,
   restoreDateFields,
   updateConversationSchema,
 } from "@convoform/db/src/schema";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod/v4";
 
-import {
-  createConversation,
-  getOneConversation,
-} from "../actions/conversation";
+import { getOneConversation } from "../actions/conversation";
 import { getOrganizationFormsCountByFormId } from "../actions/conversation/getOrganizationFormsCountByFormId";
 import { handleWebsocketConversationStoppedInsights } from "../actions/conversation/handleWebsocketConversationStoppedInsights";
 import {
@@ -113,12 +109,6 @@ export const conversationRouter = createTRPCRouter({
       }
 
       return result;
-    }),
-
-  create: publicProcedure
-    .input(insertConversationSchema)
-    .mutation(async ({ input, ctx }) => {
-      return await createConversation(input, ctx);
     }),
 
   getCountByOrganizationId: orgProtectedProcedure
@@ -225,10 +215,9 @@ export const conversationRouter = createTRPCRouter({
       return result;
     }),
 
-  getCountByFormIds: authProtectedProcedure
+  getCountByFormIds: orgProtectedProcedure
     .input(
       z.object({
-        organizationId: z.string().min(1),
         formIds: z.array(z.string().min(1)),
       }),
     )
@@ -242,7 +231,7 @@ export const conversationRouter = createTRPCRouter({
         .leftJoin(conversation, eq(form.id, conversation.formId))
         .where(
           and(
-            eq(form.organizationId, input.organizationId),
+            eq(form.organizationId, ctx.orgId),
             inArray(form.id, input.formIds),
           ),
         )
@@ -524,37 +513,42 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
+      if (input.formId !== DEMO_FORM_ID) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Demo responses are only available for the demo form",
+        });
+      }
+
       const existConversations = await ctx.db.query.conversation.findMany({
-        where: (conversation, { eq }) => eq(conversation.formId, input.formId),
+        where: (conversation, { eq }) => eq(conversation.formId, DEMO_FORM_ID),
         orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
         limit: 20, // Limit to 20 most recent
+        columns: {
+          id: true,
+          name: true,
+          createdAt: true,
+          updatedAt: true,
+          finishedAt: true,
+          isInProgress: true,
+          channelType: true,
+          formFieldResponses: true,
+        },
       });
 
-      const existConversationsFormatted = existConversations.map(
-        (conversation) => {
-          const formFieldResponses = conversation.formFieldResponses.map(
-            (collection) => {
-              if (collection.fieldConfiguration === undefined) {
-                return collection;
-              }
-
-              return {
-                ...collection,
-                fieldConfiguration: restoreDateFields(
-                  collection.fieldConfiguration,
-                ),
-              };
-            },
-          );
-          return {
-            ...conversation,
-            formFieldResponses,
-            transcript: conversation.transcript ?? [],
-          };
-        },
-      );
-
-      return existConversationsFormatted;
+      return existConversations.map((row) => ({
+        id: row.id,
+        name: row.name,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+        finishedAt: row.finishedAt,
+        isInProgress: row.isInProgress,
+        channelType: row.channelType,
+        // The landing page only renders the answer values.
+        formFieldResponses: row.formFieldResponses.map(({ fieldValue }) => ({
+          fieldValue,
+        })),
+      }));
     }),
   generateInsights: publicProcedure
     .input(
