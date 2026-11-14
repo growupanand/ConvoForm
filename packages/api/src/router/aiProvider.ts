@@ -1,5 +1,4 @@
 import {
-  assertSafeAiBaseUrl,
   decryptAiCredentialSecret,
   encryptAiCredentialSecret,
   getAiCredentialLast4,
@@ -25,6 +24,7 @@ import {
   getCurrentAiCredentialKeyVersion,
   getCurrentAiCredentialMasterKey,
 } from "../lib/aiCredentials/masterKeys";
+import { assertSafeAiBaseUrl } from "../lib/aiCredentials/ssrf";
 import {
   type AiProviderConnectionTestResult,
   testAiProviderConnection,

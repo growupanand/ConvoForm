@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import type { AiProviderConnectionTestResult } from "@convoform/ai";
 import * as actualAnalytics from "@convoform/analytics";
-import * as actualCommon from "@convoform/common";
 import {
   aiProviderAudit,
   aiProviderCredential,
@@ -18,10 +17,8 @@ const testAiProviderConnectionMock = mock(
 );
 const captureExceptionMock = mock(async () => undefined);
 
-// Keep the real crypto helpers; only DNS/network checks are replaced so the
-// router tests stay offline.
-mock.module("@convoform/common", () => ({
-  ...actualCommon,
+// Only the DNS/network check is replaced so the router tests stay offline.
+mock.module("../src/lib/aiCredentials/ssrf", () => ({
   assertSafeAiBaseUrl: assertSafeAiBaseUrlMock,
 }));
 
