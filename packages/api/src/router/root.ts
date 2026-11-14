@@ -12,7 +12,6 @@ import { integrationRouter } from "./integration";
 import { metricsRouter } from "./metrics";
 import { organizationRouter } from "./organization";
 import { usageRouter } from "./usage";
-import { webhookRouter } from "./webhook";
 import { webhookEndpointRouter } from "./webhookEndpoint";
 
 /**
@@ -26,7 +25,6 @@ export const appRouter = createTRPCRouter({
   channelConnection: channelConnectionRouter,
   fileUpload: fileUploadRouter,
   metrics: metricsRouter,
-  webhook: webhookRouter,
   webhookEndpoint: webhookEndpointRouter,
   organization: organizationRouter,
   formField: formFieldRouter,

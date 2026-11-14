@@ -1,6 +1,10 @@
 import { clerkClient } from "@clerk/nextjs/server";
+import {
+  handleOrganizationCreated,
+  handleOrganizationMembershipCreated,
+} from "@convoform/api/src/actions/webhook";
+import { db } from "@convoform/db";
 
-import { api } from "@/trpc/server";
 import {
   personalWorkspaceName,
   personalWorkspaceSlug,
@@ -74,20 +78,26 @@ export async function resolvePersonalWorkspace(
       (item) => item.organization.id === organization.id,
     );
 
-    await api.webhook.organizationCreated({
-      name: organization.name,
-      organizationId: organization.id,
-      slug: organization.slug,
-      createdByClerkUserId: userId,
-    });
+    await handleOrganizationCreated(
+      {
+        name: organization.name,
+        organizationId: organization.id,
+        slug: organization.slug,
+        createdByClerkUserId: userId,
+      },
+      { db },
+    );
 
     if (membership) {
-      await api.webhook.organizationMembershipCreated({
-        memberId: membership.id,
-        organizationId: organization.id,
-        userId,
-        role: membership.role,
-      });
+      await handleOrganizationMembershipCreated(
+        {
+          memberId: membership.id,
+          organizationId: organization.id,
+          userId,
+          role: membership.role,
+        },
+        { db },
+      );
     }
   } catch (error) {
     console.error("Failed to record personal workspace", error);
