@@ -17,8 +17,11 @@ The API is structured into several routers, combined in the root `appRouter`.
 | `metricsRouter` | Dashboard metrics and analytics |
 | `organizationRouter` | Organization-level data |
 | `usageRouter` | Usage tracking and limits |
-| `webhookRouter` | Webhook handlers for external events (Clerk, etc.) |
 | `googleRouter` | Google Drive/Forms integration |
+
+Clerk webhooks are handled by server-only functions in
+`src/actions/webhook/clerkWebhook.ts`, called from the verified `/api/webhook`
+route. They are intentionally not exposed through tRPC.
 
 ---
 
@@ -179,18 +182,6 @@ Dashboard metrics.
 
 - **`getUsgae`** (`query`, `orgProtectedProcedure`)
     - **Output**: Array of usage stats (Responses count, Storage used) compared to plan limits.
-
----
-
-## `webhookRouter`
-
-Handles incoming webhooks from external services (e.g., Clerk).
-
-### Procedures
-
-- **`userCreated`**, **`userDeleted`**
-- **`organizationCreated`**, **`organizationDeleted`**
-- **`organizationMembershipCreated`**, **`organizationMembershipDeleted`**
 
 ---
 
