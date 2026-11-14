@@ -49,16 +49,10 @@ describe("webhook organizationMembershipCreated", () => {
   });
 
   it("creates one OrganizationMember row when the webhook is delivered twice", async () => {
-    const { webhookRouter } = await import("../src/router/webhook");
+    const { handleOrganizationMembershipCreated } = await import(
+      "../src/actions/webhook/clerkWebhook"
+    );
     const rows: MembershipRow[] = [];
-    const caller = webhookRouter.createCaller({
-      db: createDb(rows) as any,
-      auth: {},
-      user: null,
-      headers: undefined,
-      req: undefined,
-      rawBody: undefined,
-    });
     const input = {
       memberId: "orgmem_1",
       organizationId: "org_1",
@@ -66,8 +60,12 @@ describe("webhook organizationMembershipCreated", () => {
       role: "org:admin",
     };
 
-    await caller.organizationMembershipCreated(input);
-    await caller.organizationMembershipCreated(input);
+    await handleOrganizationMembershipCreated(input, {
+      db: createDb(rows) as any,
+    });
+    await handleOrganizationMembershipCreated(input, {
+      db: createDb(rows) as any,
+    });
 
     expect(rows).toHaveLength(1);
     expect(rows[0]).toMatchObject(input);
