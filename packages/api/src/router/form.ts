@@ -2,6 +2,7 @@ import { and, eq } from "@convoform/db";
 import {
   ANSWER_CHECK_PROVIDERS,
   form,
+  formLabelSettingsSchema,
   newFormSchema,
   patchFormSchema,
 } from "@convoform/db/src/schema";
@@ -314,6 +315,39 @@ export const formRouter = createTRPCRouter({
         properties: {
           formId: input.formId,
           answerCheckProvider: input.answerCheckProvider,
+        },
+        groups: {
+          organization: updatedForm.organizationId,
+        },
+      });
+
+      return updatedForm;
+    }),
+
+  updateLabelSettings: orgProtectedProcedure
+    .input(
+      z.object({
+        formId: z.string().min(1),
+        labelSettings: formLabelSettingsSchema,
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const [updatedForm] = await ctx.db
+        .update(form)
+        .set({ labelSettings: input.labelSettings })
+        .where(formOrgWhere(ctx, input.formId))
+        .returning();
+
+      if (!updatedForm) {
+        throw formNotFoundError();
+      }
+
+      await ctx.analytics.track("form:update_label_settings", {
+        distinctId: ctx.userId,
+        properties: {
+          formId: input.formId,
+          categoriesEnabled: input.labelSettings.categoriesEnabled,
+          categoryCount: input.labelSettings.categories.length,
         },
         groups: {
           organization: updatedForm.organizationId,

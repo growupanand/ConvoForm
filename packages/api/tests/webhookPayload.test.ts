@@ -56,6 +56,76 @@ describe("webhook payload", () => {
     expect(payload.data.metadata.source).toBe("telegram");
   });
 
+  it("includes visible response labels and drops low-confidence ones", () => {
+    const timestamp = new Date("2026-01-01T10:00:00.000Z");
+    const payload = buildResponseCompletedPayload({
+      conversation: {
+        ...conversation,
+        metaData: {
+          submittedAt: new Date("2026-01-01T10:00:00.000Z"),
+          labels: {
+            tone: { value: "casual", score: 0.9, provider: "clef", timestamp },
+            sentiment: {
+              value: "positive",
+              score: 0.5,
+              provider: "clef",
+              timestamp,
+            },
+            temperature: {
+              value: "Hot",
+              score: 0.8,
+              provider: "clef",
+              timestamp,
+            },
+            categories: [
+              {
+                categoryId: "country",
+                categoryName: "Country",
+                value: "UK",
+                score: 0.7,
+                provider: "clef",
+                timestamp,
+              },
+            ],
+          },
+        },
+      },
+      formName: "Contact form",
+    });
+
+    expect(payload.data.labels).toEqual({
+      tone: "casual",
+      leadTemperature: "Hot",
+      categories: {
+        country: { name: "Country", value: "UK" },
+      },
+    });
+  });
+
+  it("falls back to legacy tone and sentiment labels", () => {
+    const payload = buildResponseCompletedPayload({
+      conversation: {
+        ...conversation,
+        metaData: {
+          submittedAt: new Date("2026-01-01T10:00:00.000Z"),
+          insights: {
+            tldr: "Old conversation",
+            externalQueries: [],
+            userTone: "formal",
+            userSentiment: "mixed",
+            generatedAt: new Date("2025-12-01T10:00:00.000Z"),
+          },
+        },
+      },
+      formName: "Contact form",
+    });
+
+    expect(payload.data.labels).toEqual({
+      tone: "formal",
+      sentiment: "mixed",
+    });
+  });
+
   it("builds a sample payload for test deliveries", () => {
     const payload = buildTestWebhookPayload({
       deliveryId: "delivery_1",

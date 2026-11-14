@@ -7,6 +7,10 @@ import {
   DEFAULT_ANSWER_CHECK_PROVIDER,
   form,
 } from "./form";
+import {
+  DEFAULT_FORM_LABEL_SETTINGS,
+  formLabelSettingsSchema,
+} from "./labelSettings";
 
 export const insertFormSchema = createInsertSchema(form, {
   welcomeScreenTitle: z.string().min(1),
@@ -18,6 +22,7 @@ export const insertFormSchema = createInsertSchema(form, {
   endScreenCTAUrl: z.string().url().nullable().optional(),
   createdAt: z.coerce.date().nullable().optional(),
   updatedAt: z.coerce.date().nullable().optional(),
+  labelSettings: formLabelSettingsSchema.default(DEFAULT_FORM_LABEL_SETTINGS),
 });
 export const selectFormSchema = createSelectSchema(form, {
   formFieldsOrders: z.string().array(),
@@ -29,12 +34,14 @@ export const selectFormSchema = createSelectSchema(form, {
   answerCheckProvider: z
     .enum(ANSWER_CHECK_PROVIDERS)
     .default(DEFAULT_ANSWER_CHECK_PROVIDER),
+  labelSettings: formLabelSettingsSchema.default(DEFAULT_FORM_LABEL_SETTINGS),
 });
 
 export const newFormSchema = insertFormSchema
   .omit({ userId: true, organizationId: true })
   .extend({
     formFields: insertFormFieldSchema.omit({ formId: true }).array().min(1),
+    labelSettings: formLabelSettingsSchema.optional(),
   });
 
 export const updateFormSchema = newFormSchema.extend({

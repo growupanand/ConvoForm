@@ -34,4 +34,23 @@ describe("mergeConversationMetaDataForPatch", () => {
 
     expect(merged.insights?.tldr).toBe("from client");
   });
+
+  it("keeps server-written labels when the client patch omits them", () => {
+    const labels = {
+      tone: {
+        value: "casual",
+        score: 0.9,
+        provider: "cloudflare-clef",
+        timestamp: new Date("2026-10-30T17:19:22.000Z"),
+      },
+    };
+
+    const merged = mergeConversationMetaDataForPatch(
+      { isOwnerPreview: false },
+      { insights: existingInsights, labels },
+    );
+
+    expect(merged.labels).toEqual(labels);
+    expect(merged.insights).toEqual(existingInsights);
+  });
 });

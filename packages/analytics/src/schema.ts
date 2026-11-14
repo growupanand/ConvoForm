@@ -22,6 +22,7 @@ export const eventAction = z.enum([
   "bounced",
   "failed",
   "update_answer_check",
+  "update_label_settings",
 ]);
 export type EventAction = z.infer<typeof eventAction>;
 

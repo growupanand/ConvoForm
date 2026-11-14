@@ -4,6 +4,11 @@ import { z } from "zod/v4";
 import { selectFormFieldSchema } from "../formFields";
 import { selectFormSchema } from "../forms";
 import { conversation } from "./conversation";
+import {
+  conversationLabelsSchema,
+  userSentimentEnum,
+  userToneEnum,
+} from "./conversationLabels";
 
 // =============================================================
 // ============== Conversation METADATA ========================
@@ -61,23 +66,8 @@ export const geoDetailsSchema = z
   })
   .partial();
 
-// Define enums for tone and sentiment
-export const userToneEnum = z.enum([
-  "formal",
-  "casual",
-  "frustrated",
-  "enthusiastic",
-  "neutral",
-]);
-
-export const userSentimentEnum = z.enum([
-  "positive",
-  "negative",
-  "neutral",
-  "mixed",
-]);
-
-// Define the insights schema
+// Define the insights schema. Tone and sentiment are no longer generated here;
+// they come from the labelling step (see `conversationLabelsSchema`).
 export const conversationInsightsSchema = z.object({
   tldr: z
     .string()
@@ -88,12 +78,6 @@ export const conversationInsightsSchema = z.object({
     .describe(
       "Questions the user asked not directly related to form questions",
     ),
-  userTone: userToneEnum.describe(
-    "The overall tone of the user's messages (formal, casual, frustrated, enthusiastic, neutral)",
-  ),
-  userSentiment: userSentimentEnum.describe(
-    "The overall sentiment of the user's messages (positive, negative, neutral, mixed)",
-  ),
 });
 
 export const storedConversationInsightsSchema =
@@ -101,6 +85,10 @@ export const storedConversationInsightsSchema =
     generatedAt: z.coerce.date(),
     isPartial: z.boolean().optional(),
     completionStatus: z.enum(["completed", "abandoned"]).optional(),
+    // Legacy fields written by the old LLM insights call. Kept optional so
+    // existing conversations still parse and keep showing their tone/sentiment.
+    userTone: userToneEnum.optional(),
+    userSentiment: userSentimentEnum.optional(),
   });
 
 export type StoredConversationInsights = z.infer<
@@ -114,6 +102,7 @@ export const respondentMetadataSchema = z
     submittedAt: z.coerce.date().optional(),
     ipAddress: z.string().optional(),
     insights: storedConversationInsightsSchema.optional(),
+    labels: conversationLabelsSchema.optional(),
     channel: z.record(z.string(), z.unknown()).optional(),
     isOwnerPreview: z.boolean().optional(),
   })

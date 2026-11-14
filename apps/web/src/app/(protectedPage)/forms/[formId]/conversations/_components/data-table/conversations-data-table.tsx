@@ -1,6 +1,8 @@
 "use client";
 
+import { api } from "@/trpc/react";
 import type { Conversation } from "@convoform/db/src/schema";
+import { getVisibleConversationLabels } from "@convoform/db/src/schema/conversations/conversationLabels";
 import {
   Table,
   TableBody,
@@ -15,8 +17,10 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useEffect, useMemo, useState } from "react";
 import { TableToolbar } from "./TableToolbar";
 import { useConversationColumns } from "./columns";
+import { ALL_FILTER_VALUE, ConversationLabelFilters } from "./labelFilters";
 import { useTableActions } from "./useTableActions";
 
 export function ConversationsDataTable(props: {
@@ -24,16 +28,59 @@ export function ConversationsDataTable(props: {
   formId: string;
 }) {
   const { formId, data } = props;
+  const [temperatureFilter, setTemperatureFilter] = useState(ALL_FILTER_VALUE);
+  const [categoryFilters, setCategoryFilters] = useState<
+    Record<string, string>
+  >({});
+
+  const { data: form } = api.form.getOne.useQuery({ id: formId });
+  const categories = useMemo(
+    () =>
+      form?.labelSettings?.categoriesEnabled
+        ? form.labelSettings.categories
+        : [],
+    [form?.labelSettings],
+  );
+
+  const filteredData = useMemo(() => {
+    return data.filter((conversation) => {
+      const labels = getVisibleConversationLabels(conversation.metaData);
+
+      if (
+        temperatureFilter !== ALL_FILTER_VALUE &&
+        labels.temperature?.value !== temperatureFilter
+      ) {
+        return false;
+      }
+
+      return categories.every((category) => {
+        const selected = categoryFilters[category.id] ?? ALL_FILTER_VALUE;
+        if (selected === ALL_FILTER_VALUE) {
+          return true;
+        }
+
+        return labels.categories.some(
+          (label) =>
+            label.categoryId === category.id && label.value === selected,
+        );
+      });
+    });
+  }, [data, temperatureFilter, categoryFilters, categories]);
 
   const {
     tableData,
     uniqueFormFieldResponsesColumns,
     csvData,
+    csvHeaders,
     perPage,
     setPerPage,
     pageIndex,
     setPageIndex,
-  } = useTableActions(data);
+  } = useTableActions(filteredData, categories);
+
+  useEffect(() => {
+    setPageIndex(0);
+  }, [temperatureFilter, categoryFilters, setPageIndex]);
 
   const columnDefs = useConversationColumns(
     formId,
@@ -57,12 +104,29 @@ export function ConversationsDataTable(props: {
 
   return (
     <>
+      <ConversationLabelFilters
+        categories={categories}
+        temperature={temperatureFilter}
+        onTemperatureChange={setTemperatureFilter}
+        categoryValues={categoryFilters}
+        onCategoryChange={(categoryId, value) =>
+          setCategoryFilters((current) => ({
+            ...current,
+            [categoryId]: value,
+          }))
+        }
+        onClear={() => {
+          setTemperatureFilter(ALL_FILTER_VALUE);
+          setCategoryFilters({});
+        }}
+      />
       <TableToolbar
         table={table}
         perPage={perPage}
         setPerPage={setPerPage}
         setPageIndex={setPageIndex}
         csvData={csvData}
+        csvHeaders={csvHeaders}
         exportFileName={exportFileName}
       />
       <div className="rounded-lg border grow overflow-y-auto">
@@ -84,6 +148,16 @@ export function ConversationsDataTable(props: {
             ))}
           </TableHeader>
           <TableBody className=" bg-white">
+            {table.getRowModel().rows.length === 0 && (
+              <TableRow>
+                <TableCell
+                  colSpan={table.getVisibleLeafColumns().length}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  No responses match these filters.
+                </TableCell>
+              </TableRow>
+            )}
             {table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}

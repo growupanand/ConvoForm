@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
+  jsonb,
   pgEnum,
   pgTable,
   text,
@@ -9,6 +10,10 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { getBaseSchema } from "../base";
+import {
+  DEFAULT_FORM_LABEL_SETTINGS,
+  type FormLabelSettings,
+} from "./labelSettings";
 
 export const ANSWER_CHECK_PROVIDERS = [
   "none",
@@ -61,6 +66,10 @@ export const form = pgTable(
     googleFormId: text("googleFormId"),
     answerCheckProvider: answerCheckProviderEnum("answerCheckProvider")
       .default(DEFAULT_ANSWER_CHECK_PROVIDER)
+      .notNull(),
+    labelSettings: jsonb("labelSettings")
+      .$type<FormLabelSettings>()
+      .default(DEFAULT_FORM_LABEL_SETTINGS)
       .notNull(),
   },
   (form) => [

@@ -1,4 +1,5 @@
 import { SlidersHorizontal } from "lucide-react";
+import { ResponseLabelsSettings } from "./_components/responseLabelsSettings";
 import { SmartFollowUpsSettings } from "./_components/smartFollowUpsSettings";
 
 type Props = {
@@ -15,7 +16,10 @@ export default async function GeneralSettingsPage(props: Props) {
         <SlidersHorizontal className="mr-2 inline size-6 text-slate-600" />
         <span>General</span>
       </h2>
-      <SmartFollowUpsSettings formId={formId} />
+      <div className="space-y-4">
+        <SmartFollowUpsSettings formId={formId} />
+        <ResponseLabelsSettings formId={formId} />
+      </div>
     </div>
   );
 }

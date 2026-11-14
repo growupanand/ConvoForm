@@ -10,12 +10,18 @@ import type { Table } from "@tanstack/react-table";
 import { ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { CSVLink } from "react-csv";
 
+type CsvHeader = {
+  label: string;
+  key: string;
+};
+
 interface TableToolbarProps<TData> {
   table: Table<TData>;
   perPage: string;
   setPerPage: (value: string) => void;
   setPageIndex: (index: number) => void;
   csvData: any[];
+  csvHeaders: CsvHeader[];
   exportFileName: string;
 }
 
@@ -25,6 +31,7 @@ export function TableToolbar<TData>({
   setPerPage,
   setPageIndex,
   csvData,
+  csvHeaders,
   exportFileName,
 }: TableToolbarProps<TData>) {
   return (
@@ -75,7 +82,7 @@ export function TableToolbar<TData>({
           </Button>
         </div>
       </div>
-      <CSVLink data={csvData} filename={exportFileName}>
+      <CSVLink data={csvData} headers={csvHeaders} filename={exportFileName}>
         <Button size="sm" variant="ghost">
           <Download size={20} className="mr-2" /> <span>Export CSV</span>
         </Button>

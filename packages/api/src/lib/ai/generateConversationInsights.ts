@@ -47,7 +47,7 @@ ${
     : "The form was completed successfully. Summarize the full conversation including all answers collected."
 }
 
-Generate insights about the conversation including a brief summary (TLDR), any external queries outside the form questions, the user's tone, and overall sentiment.
+Generate insights about the conversation including a brief summary (TLDR) and any external queries outside the form questions.
 `,
     schema: conversationInsightsSchema,
   });
