@@ -83,9 +83,13 @@ const testInputSchema = z
     model: z.string().trim().min(1).max(200).optional(),
   })
   .refine(
-    (value) => Boolean(value.id) !== Boolean(value.provider && value.secret),
+    (value) =>
+      value.id
+        ? !value.provider && !value.secret && !value.accountId && !value.baseUrl
+        : Boolean(value.provider && value.secret),
     {
-      message: "Provide either a saved credential id or a provider and secret",
+      message:
+        "Provide either a saved credential id (with an optional model) or a provider and secret",
     },
   );
 

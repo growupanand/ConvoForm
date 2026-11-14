@@ -754,6 +754,16 @@ describe("aiProviderRouter", () => {
       expect(testAiProviderConnectionMock).not.toHaveBeenCalled();
     });
 
+    it("rejects mixing a saved credential id with a plaintext secret", async () => {
+      const dbMock = createDbMock();
+      const caller = aiProviderRouter.createCaller(createCtx(dbMock.db));
+
+      await expect(caller.test({ id: "credential_1", secret })).rejects.toThrow(
+        "Provide either a saved credential id",
+      );
+      expect(testAiProviderConnectionMock).not.toHaveBeenCalled();
+    });
+
     it("tests an unsaved secret without storing it", async () => {
       const dbMock = createDbMock();
       const caller = aiProviderRouter.createCaller(createCtx(dbMock.db));
