@@ -10,6 +10,7 @@ import {
   Logger as AxiomLogger,
   ConsoleTransport,
 } from "@axiomhq/logging";
+import { redactSensitiveData, redactText } from "./redaction";
 import { Timer } from "./timer";
 import type {
   ILogger,
@@ -80,14 +81,14 @@ export class Logger implements ILogger {
    * Merge persistent context with log-specific context
    */
   private mergeContext(context?: LogContext): LogContext {
-    return {
+    return redactSensitiveData({
       ...this.persistentContext,
       ...context,
       // Add timestamp
       timestamp: new Date().toISOString(),
       // Add environment
       env: this.config.env,
-    };
+    });
   }
 
   /**
@@ -107,7 +108,7 @@ export class Logger implements ILogger {
    */
   info(message: string, context?: LogContext): void {
     if (this.shouldLog("info")) {
-      this.axiomLogger.info(message, this.mergeContext(context));
+      this.axiomLogger.info(redactText(message), this.mergeContext(context));
     }
   }
 
@@ -116,7 +117,7 @@ export class Logger implements ILogger {
    */
   error(message: string, context?: LogContext): void {
     if (this.shouldLog("error")) {
-      this.axiomLogger.error(message, this.mergeContext(context));
+      this.axiomLogger.error(redactText(message), this.mergeContext(context));
     }
   }
 
@@ -125,7 +126,7 @@ export class Logger implements ILogger {
    */
   warn(message: string, context?: LogContext): void {
     if (this.shouldLog("warn")) {
-      this.axiomLogger.warn(message, this.mergeContext(context));
+      this.axiomLogger.warn(redactText(message), this.mergeContext(context));
     }
   }
 
@@ -134,7 +135,7 @@ export class Logger implements ILogger {
    */
   debug(message: string, context?: LogContext): void {
     if (this.shouldLog("debug")) {
-      this.axiomLogger.debug(message, this.mergeContext(context));
+      this.axiomLogger.debug(redactText(message), this.mergeContext(context));
     }
   }
 

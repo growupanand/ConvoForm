@@ -1,50 +1,66 @@
 /**
- * SSRF protection for user-supplied outgoing webhook URLs.
+ * SSRF protection for user-supplied outbound URLs (webhooks and AI providers).
  *
  * The URL is checked once at creation time and again before every send, after
- * DNS resolution. Redirects are never followed by the delivery adapter, and
- * only the default HTTPS port (443) is allowed outside development.
+ * DNS resolution. Redirects are never followed, and only the default HTTPS
+ * port (443) is allowed outside development.
  */
 
 const DEFAULT_HTTPS_PORT = "443";
 const DEFAULT_HTTP_PORT = "80";
 const DNS_LOOKUP_TIMEOUT_MS = 5_000;
 
-export class UnsafeWebhookUrlError extends Error {
+export class UnsafeOutboundUrlError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "UnsafeWebhookUrlError";
+    this.name = "UnsafeOutboundUrlError";
   }
 }
 
-export type WebhookHostResolver = (hostname: string) => Promise<string[]>;
+/**
+ * @deprecated Use `UnsafeOutboundUrlError`. Kept as an alias so existing
+ * webhook imports keep working.
+ */
+export { UnsafeOutboundUrlError as UnsafeWebhookUrlError };
 
-export interface AssertSafeWebhookUrlOptions {
+export type OutboundHostResolver = (hostname: string) => Promise<string[]>;
+
+/** @deprecated Use `OutboundHostResolver`. */
+export type WebhookHostResolver = OutboundHostResolver;
+
+export interface AssertSafeOutboundUrlOptions {
   /** Override DNS resolution. Mainly used by tests. */
-  resolver?: WebhookHostResolver;
+  resolver?: OutboundHostResolver;
   /** Defaults to `NODE_ENV === "development"`. */
   allowHttpLocalhost?: boolean;
+  /** Human-readable subject used in error messages. */
+  subject?: string;
 }
 
+/** @deprecated Use `AssertSafeOutboundUrlOptions`. */
+export type AssertSafeWebhookUrlOptions = AssertSafeOutboundUrlOptions;
+
 /**
- * Validate a webhook URL and every address its hostname resolves to.
+ * Validate an outbound URL and every address its hostname resolves to.
  *
- * Returns the parsed URL when safe and throws `UnsafeWebhookUrlError`
+ * Returns the parsed URL when safe and throws `UnsafeOutboundUrlError`
  * otherwise.
  */
-export async function assertSafeWebhookUrl(
+export async function assertSafeOutboundUrl(
   rawUrl: string,
-  options: AssertSafeWebhookUrlOptions = {},
+  options: AssertSafeOutboundUrlOptions = {},
 ): Promise<URL> {
+  const subject = options.subject ?? "URL";
+
   let url: URL;
   try {
     url = new URL(rawUrl);
   } catch {
-    throw new UnsafeWebhookUrlError("Webhook URL is not a valid URL");
+    throw new UnsafeOutboundUrlError(`${subject} is not a valid URL`);
   }
 
   if (url.username || url.password) {
-    throw new UnsafeWebhookUrlError("Webhook URL must not contain credentials");
+    throw new UnsafeOutboundUrlError(`${subject} must not contain credentials`);
   }
 
   const allowHttpLocalhost =
@@ -53,21 +69,21 @@ export async function assertSafeWebhookUrl(
   const isLoopbackHost = isLoopbackHostname(hostname);
 
   if (url.protocol !== "https:" && url.protocol !== "http:") {
-    throw new UnsafeWebhookUrlError(
-      "Webhook URL must use https (http is only allowed for localhost in development)",
+    throw new UnsafeOutboundUrlError(
+      `${subject} must use https (http is only allowed for localhost in development)`,
     );
   }
 
   if (url.protocol === "http:") {
     if (!allowHttpLocalhost || !isLoopbackHost) {
-      throw new UnsafeWebhookUrlError(
-        "Webhook URL must use https (http is only allowed for localhost in development)",
+      throw new UnsafeOutboundUrlError(
+        `${subject} must use https (http is only allowed for localhost in development)`,
       );
     }
 
     if (url.port && url.port !== DEFAULT_HTTP_PORT) {
-      throw new UnsafeWebhookUrlError(
-        "Webhook URL must use port 80 for http localhost",
+      throw new UnsafeOutboundUrlError(
+        `${subject} must use port 80 for http localhost`,
       );
     }
 
@@ -75,14 +91,14 @@ export async function assertSafeWebhookUrl(
   }
 
   if (url.port && url.port !== DEFAULT_HTTPS_PORT) {
-    throw new UnsafeWebhookUrlError("Webhook URL must use port 443");
+    throw new UnsafeOutboundUrlError(`${subject} must use port 443`);
   }
 
   // Localhost is only reachable in development.
   if (isLoopbackHost) {
     if (!allowHttpLocalhost) {
-      throw new UnsafeWebhookUrlError(
-        "Webhook URL must not point to localhost",
+      throw new UnsafeOutboundUrlError(
+        `${subject} must not point to localhost`,
       );
     }
 
@@ -94,20 +110,46 @@ export async function assertSafeWebhookUrl(
     : await (options.resolver ?? resolveWebhookHostname)(hostname);
 
   if (!addresses.length) {
-    throw new UnsafeWebhookUrlError(
-      "Webhook URL hostname did not resolve to an address",
+    throw new UnsafeOutboundUrlError(
+      `${subject} hostname did not resolve to an address`,
     );
   }
 
   for (const address of addresses) {
     if (isBlockedIpAddress(address)) {
-      throw new UnsafeWebhookUrlError(
-        "Webhook URL must not point to a private, loopback or metadata address",
+      throw new UnsafeOutboundUrlError(
+        `${subject} must not point to a private, loopback or metadata address`,
       );
     }
   }
 
   return url;
+}
+
+/**
+ * Webhook-specific wrapper around `assertSafeOutboundUrl`.
+ */
+export async function assertSafeWebhookUrl(
+  rawUrl: string,
+  options: AssertSafeWebhookUrlOptions = {},
+): Promise<URL> {
+  return assertSafeOutboundUrl(rawUrl, { ...options, subject: "Webhook URL" });
+}
+
+/**
+ * AI provider base URL wrapper around `assertSafeOutboundUrl`.
+ *
+ * Used for the Custom (OpenAI-compatible) provider: https on port 443 only,
+ * no credentials in the URL, and no private, loopback or metadata addresses.
+ */
+export async function assertSafeAiBaseUrl(
+  rawUrl: string,
+  options: AssertSafeOutboundUrlOptions = {},
+): Promise<URL> {
+  return assertSafeOutboundUrl(rawUrl, {
+    ...options,
+    subject: "AI provider base URL",
+  });
 }
 
 /**
@@ -331,9 +373,7 @@ async function resolveWithDoh(hostname: string): Promise<string[]> {
   );
 
   if (!addresses.length) {
-    throw new UnsafeWebhookUrlError(
-      "Unable to resolve webhook URL hostname safely",
-    );
+    throw new UnsafeOutboundUrlError("Unable to resolve hostname safely");
   }
 
   return addresses;
