@@ -7,6 +7,27 @@ import type { Conversation, FormLabelCategory } from "@convoform/db/src/schema";
 import { getVisibleConversationLabels } from "@convoform/db/src/schema/conversations/conversationLabels";
 import { useEffect, useMemo, useState } from "react";
 
+export type CsvHeader = {
+  label: string;
+  key: string;
+};
+
+const BASE_CSV_HEADERS: CsvHeader[] = [
+  { label: "id", key: "id" },
+  { label: "name", key: "name" },
+  { label: "createdAt", key: "createdAt" },
+  { label: "channelType", key: "channelType" },
+  { label: "status", key: "status" },
+  { label: "Tone", key: "Tone" },
+  { label: "Sentiment", key: "Sentiment" },
+  { label: "Lead Temperature", key: "Lead Temperature" },
+];
+
+/** Prefix tag columns so ids cannot collide with a form field name. */
+function getTagColumnKey(categoryId: string) {
+  return `tag:${categoryId}`;
+}
+
 export function useTableActions(
   data: Conversation[],
   categories: FormLabelCategory[] = [],
@@ -18,7 +39,7 @@ export function useTableActions(
     setPageIndex(0);
   }, [perPage]);
 
-  const { tableData, uniqueFormFieldResponsesColumns, csvData } =
+  const { tableData, uniqueFormFieldResponsesColumns, csvData, csvHeaders } =
     useMemo(() => {
       let formFieldResponsesColumns = [] as string[];
       const tableData = [];
@@ -59,7 +80,8 @@ export function useTableActions(
           ...sanitizedFormFieldResponses,
         });
 
-        // Data for CSV export (with flattened values)
+        // Data for CSV export (with flattened values). Tag columns are keyed by
+        // category id so renaming a tag only changes the display header.
         csvData.push({
           id,
           name,
@@ -71,7 +93,7 @@ export function useTableActions(
           "Lead Temperature": labels.temperature?.value ?? "",
           ...Object.fromEntries(
             categories.map((category) => [
-              category.name,
+              getTagColumnKey(category.id),
               labels.categories.find(
                 (label) => label.categoryId === category.id,
               )?.value ?? "",
@@ -85,10 +107,23 @@ export function useTableActions(
         new Set(formFieldResponsesColumns),
       );
 
+      const csvHeaders: CsvHeader[] = [
+        ...BASE_CSV_HEADERS,
+        ...uniqueFormFieldResponsesColumns.map((column) => ({
+          label: column,
+          key: column,
+        })),
+        ...categories.map((category) => ({
+          label: `Tag: ${category.name}`,
+          key: getTagColumnKey(category.id),
+        })),
+      ];
+
       return {
         tableData,
         uniqueFormFieldResponsesColumns,
         csvData,
+        csvHeaders,
       };
     }, [data, categories]);
 
@@ -96,6 +131,7 @@ export function useTableActions(
     tableData,
     uniqueFormFieldResponsesColumns,
     csvData,
+    csvHeaders,
     perPage,
     setPerPage,
     pageIndex,

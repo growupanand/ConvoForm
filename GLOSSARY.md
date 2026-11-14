@@ -16,6 +16,6 @@ _Avoid_: Tag, score
 How ready a respondent is to talk to a counselor: `Hot` (ready to proceed), `Warm` (exploring) or `Cold` (low intent). It is a response label, not a lead score from the CRM.
 _Avoid_: Lead score, priority
 
-**Custom category**:
-An owner-defined response label, such as Country or Budget. Each category has up to six options and is enabled per form under Settings → General.
-_Avoid_: Custom field, segment
+**Auto-tag**:
+An owner-defined response tag, such as Country or Budget. Each tag has up to six choices and is enabled per form under Settings → General.
+_Avoid_: Custom category, custom field, segment

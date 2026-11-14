@@ -88,7 +88,7 @@ export function useConversationColumns(
       },
       {
         id: "labels",
-        header: "Labels",
+        header: "Tags",
         cell: (info) => (
           <ConversationLabelChips
             labels={info.row.original.labels}

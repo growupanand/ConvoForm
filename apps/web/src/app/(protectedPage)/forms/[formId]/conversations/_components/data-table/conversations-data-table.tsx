@@ -71,6 +71,7 @@ export function ConversationsDataTable(props: {
     tableData,
     uniqueFormFieldResponsesColumns,
     csvData,
+    csvHeaders,
     perPage,
     setPerPage,
     pageIndex,
@@ -125,6 +126,7 @@ export function ConversationsDataTable(props: {
         setPerPage={setPerPage}
         setPageIndex={setPageIndex}
         csvData={csvData}
+        csvHeaders={csvHeaders}
         exportFileName={exportFileName}
       />
       <div className="rounded-lg border grow overflow-y-auto">

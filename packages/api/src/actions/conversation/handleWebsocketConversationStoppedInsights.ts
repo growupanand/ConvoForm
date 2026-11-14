@@ -45,6 +45,7 @@ export async function handleWebsocketConversationStoppedInsights(
         organizationId: conversationData.organizationId,
         transcript: conversationData.transcript,
         formFieldResponses: conversationData.formFieldResponses,
+        metaData: conversationData.metaData,
         isOwnerPreview: conversationData.metaData?.isOwnerPreview === true,
       },
       ctx,

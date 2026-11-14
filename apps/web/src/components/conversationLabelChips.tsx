@@ -40,7 +40,7 @@ export function ConversationLabelChips({
       {labels.tone && (
         <Badge
           variant={getToneVariant(labels.tone.value)}
-          title={formatConfidence(labels.tone.score)}
+          title={formatConfidence(labels.tone)}
           className={cn("capitalize", compact && "px-2 py-0")}
         >
           {labels.tone.value}
@@ -49,7 +49,7 @@ export function ConversationLabelChips({
       {labels.sentiment && (
         <Badge
           variant={getSentimentVariant(labels.sentiment.value)}
-          title={formatConfidence(labels.sentiment.score)}
+          title={formatConfidence(labels.sentiment)}
           className={cn("capitalize", compact && "px-2 py-0")}
         >
           {labels.sentiment.value}
@@ -58,7 +58,7 @@ export function ConversationLabelChips({
       {labels.temperature && (
         <Badge
           variant={getTemperatureVariant(labels.temperature.value)}
-          title={formatConfidence(labels.temperature.score)}
+          title={formatConfidence(labels.temperature)}
           className={cn(compact && "px-2 py-0")}
         >
           {labels.temperature.value} lead
@@ -68,7 +68,7 @@ export function ConversationLabelChips({
         <Badge
           key={category.categoryId}
           variant="secondary"
-          title={formatConfidence(category.score)}
+          title={formatConfidence(category)}
           className={cn(compact && "px-2 py-0")}
         >
           {category.categoryName}: {category.value}
@@ -78,6 +78,11 @@ export function ConversationLabelChips({
   );
 }
 
-function formatConfidence(score: number) {
-  return `${Math.round(score * 100)}% confidence`;
+function formatConfidence(label: { score: number; provider: string }) {
+  // Legacy LLM labels had no calibrated score; a 100% tooltip would mislead.
+  if (label.provider === "llm") {
+    return undefined;
+  }
+
+  return `${Math.round(label.score * 100)}% confidence`;
 }

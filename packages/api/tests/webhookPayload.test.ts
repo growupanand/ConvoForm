@@ -96,7 +96,9 @@ describe("webhook payload", () => {
     expect(payload.data.labels).toEqual({
       tone: "casual",
       leadTemperature: "Hot",
-      categories: { Country: "UK" },
+      categories: {
+        country: { name: "Country", value: "UK" },
+      },
     });
   });
 

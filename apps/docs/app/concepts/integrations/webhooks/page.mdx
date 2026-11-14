@@ -44,7 +44,9 @@ Only one event type is sent: `response.completed`.
       "tone": "casual",
       "sentiment": "positive",
       "leadTemperature": "Hot",
-      "categories": { "Country": "UK" }
+      "categories": {
+        "suggested-country": { "name": "Country", "value": "UK" }
+      }
     }
   }
 }
@@ -63,7 +65,7 @@ Only one event type is sent: `response.completed`.
 | `data.labels.tone` | Overall tone: `formal`, `casual`, `frustrated`, `enthusiastic` or `neutral`. |
 | `data.labels.sentiment` | Overall sentiment: `positive`, `negative`, `neutral` or `mixed`. |
 | `data.labels.leadTemperature` | Lead quality: `Hot`, `Warm` or `Cold`. |
-| `data.labels.categories` | Custom category name to chosen option, only when the form enables custom categories. |
+| `data.labels.categories` | Auto-tags keyed by category id, with `name` and chosen `value`. Only present when the form enables auto-tags. |
 
 `labels` is omitted when no label passed the confidence threshold, or when
 labelling failed or timed out. Labels never block or fail a delivery.

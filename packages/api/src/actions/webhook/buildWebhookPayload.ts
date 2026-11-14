@@ -12,6 +12,12 @@ export interface WebhookPayloadField {
   fieldValue: string;
 }
 
+export interface ResponseCompletedWebhookCategoryLabel {
+  /** Display name of the tag, kept so consumers do not need the form. */
+  name: string;
+  value: string;
+}
+
 export interface ResponseCompletedWebhookLabels {
   /** Overall tone (formal, casual, frustrated, enthusiastic, neutral). */
   tone?: string;
@@ -19,8 +25,8 @@ export interface ResponseCompletedWebhookLabels {
   sentiment?: string;
   /** Hot, Warm or Cold. */
   leadTemperature?: string;
-  /** Category name to chosen option. */
-  categories?: Record<string, string>;
+  /** Category id to the tag name and chosen option. */
+  categories?: Record<string, ResponseCompletedWebhookCategoryLabel>;
 }
 
 export interface ResponseCompletedWebhookPayload {
@@ -98,7 +104,10 @@ function buildWebhookLabels(
 ): ResponseCompletedWebhookLabels | undefined {
   const visible = getVisibleConversationLabels(metaData);
   const categories = Object.fromEntries(
-    visible.categories.map((label) => [label.categoryName, label.value]),
+    visible.categories.map((label) => [
+      label.categoryId,
+      { name: label.categoryName, value: label.value },
+    ]),
   );
   const labels: ResponseCompletedWebhookLabels = {
     ...(visible.tone ? { tone: visible.tone.value } : {}),
@@ -146,7 +155,9 @@ export function buildTestWebhookPayload({
         tone: "casual",
         sentiment: "positive",
         leadTemperature: "Hot",
-        categories: { Country: "UK" },
+        categories: {
+          "suggested-country": { name: "Country", value: "UK" },
+        },
       },
     },
   };
