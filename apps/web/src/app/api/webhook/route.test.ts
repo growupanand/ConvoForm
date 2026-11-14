@@ -146,4 +146,19 @@ describe("Clerk webhook route", () => {
       { db: expect.anything() },
     );
   });
+
+  it("returns 500 when a handler fails so Clerk retries", async () => {
+    handleUserDeletedMock.mockImplementationOnce(() =>
+      Promise.reject(new Error("database down")),
+    );
+
+    const response = await POST(
+      buildRequest({
+        payload: userDeletedPayload,
+        signature: sign(userDeletedPayload),
+      }),
+    );
+
+    expect(response.status).toBe(500);
+  });
 });

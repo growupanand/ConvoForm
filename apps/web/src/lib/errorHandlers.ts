@@ -30,7 +30,7 @@ export const sendErrorResponse = (error: any) => {
       nonFieldError: error.message || "something went wrong",
       ...(error.cause?.errorCode && { errorCode: error.cause?.errorCode }),
     },
-    { status: error.cause?.statusCode || 500 },
+    { status: error.cause?.statusCode || error.statusCode || 500 },
   );
 };
 

@@ -71,12 +71,17 @@ export async function handleUserCreated(
         method: signupMethod,
       },
     });
-  } catch (e: any) {
-    console.error({
-      message: "Webhook event error: Unable to save user data",
-      data: input,
-      errorMessage: e.message,
-    });
+  } catch (e) {
+    if (isDuplicateKeyError(e)) {
+      return;
+    }
+
+    logWebhookError(
+      "Webhook event error: Unable to save user data",
+      { userId: userInput.userId },
+      e,
+    );
+    throw e;
   }
 }
 
@@ -88,18 +93,23 @@ export async function handleUserDeleted(
   try {
     const [deletedUser] = await ctx.db
       .delete(user)
-      .where(eq(user.id, parsedInput.userId))
+      .where(eq(user.userId, parsedInput.userId))
       .returning();
     await analytics.track("user:delete", {
       distinctId: deletedUser?.userId,
       properties: deletedUser,
     });
-  } catch (e: any) {
-    console.error({
-      message: "Webhook event error: Unable to delete user data",
-      data: input,
-      errorMessage: e.message,
-    });
+  } catch (e) {
+    if (isDuplicateKeyError(e)) {
+      return;
+    }
+
+    logWebhookError(
+      "Webhook event error: Unable to delete user data",
+      { userId: parsedInput.userId },
+      e,
+    );
+    throw e;
   }
 }
 
@@ -128,12 +138,17 @@ export async function handleOrganizationCreated(
       distinctId: createdByClerkUserId,
       properties: data,
     });
-  } catch (e: any) {
-    console.error({
-      message: "Webhook event error: Unable to save organization data",
-      data: input,
-      errorMessage: e.message,
-    });
+  } catch (e) {
+    if (isDuplicateKeyError(e)) {
+      return;
+    }
+
+    logWebhookError(
+      "Webhook event error: Unable to save organization data",
+      { organizationId: organizationInput.organizationId },
+      e,
+    );
+    throw e;
   }
 }
 
@@ -159,12 +174,17 @@ export async function handleOrganizationDeleted(
     await analytics.track("organization:delete", {
       properties: data,
     });
-  } catch (e: any) {
-    console.error({
-      message: "Webhook event error: Unable to save organization data",
-      data: input,
-      errorMessage: e.message,
-    });
+  } catch (e) {
+    if (isDuplicateKeyError(e)) {
+      return;
+    }
+
+    logWebhookError(
+      "Webhook event error: Unable to save organization data",
+      { organizationId: parsedInput.organizationId },
+      e,
+    );
+    throw e;
   }
 }
 
@@ -192,12 +212,17 @@ export async function handleOrganizationMembershipCreated(
       distinctId: data?.userId,
       properties: data,
     });
-  } catch (e: any) {
-    console.error({
-      message: "Webhook event error: Unable to save organization data",
-      data: input,
-      errorMessage: e.message,
-    });
+  } catch (e) {
+    if (isDuplicateKeyError(e)) {
+      return;
+    }
+
+    logWebhookError(
+      "Webhook event error: Unable to save organization data",
+      { memberId: parsedInput.memberId },
+      e,
+    );
+    throw e;
   }
 }
 
@@ -216,11 +241,62 @@ export async function handleOrganizationMembershipDeleted(
       distinctId: data?.userId,
       properties: data,
     });
-  } catch (e: any) {
-    console.error({
-      message: "Webhook event error: Unable to delete organization data",
-      data: input,
-      errorMessage: e.message,
-    });
+  } catch (e) {
+    if (isDuplicateKeyError(e)) {
+      return;
+    }
+
+    logWebhookError(
+      "Webhook event error: Unable to delete organization data",
+      { membershipId: parsedInput.membershipId },
+      e,
+    );
+    throw e;
   }
+}
+
+function logWebhookError(
+  message: string,
+  ids: Record<string, string>,
+  error: unknown,
+) {
+  console.error({
+    message,
+    ...ids,
+    errorMessage: error instanceof Error ? error.message : String(error),
+  });
+}
+
+/**
+ * Clerk retries webhooks on non-2xx responses. Duplicate rows are expected when
+ * a retry races a previous delivery, so those are safe to acknowledge. Every
+ * other failure must bubble up so the route can return 500.
+ */
+function isDuplicateKeyError(error: unknown): boolean {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const candidate = error as {
+    code?: unknown;
+    message?: unknown;
+    cause?: unknown;
+  };
+
+  if (candidate.code === "23505") {
+    return true;
+  }
+
+  if (
+    typeof candidate.message === "string" &&
+    candidate.message.includes("duplicate key value")
+  ) {
+    return true;
+  }
+
+  if (candidate.cause && candidate.cause !== error) {
+    return isDuplicateKeyError(candidate.cause);
+  }
+
+  return false;
 }

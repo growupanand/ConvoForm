@@ -8,6 +8,7 @@ import {
   restoreDateFields,
   updateConversationSchema,
 } from "@convoform/db/src/schema";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod/v4";
 
 import {
@@ -17,6 +18,11 @@ import {
 } from "../actions/conversation";
 import { getOrganizationFormsCountByFormId } from "../actions/conversation/getOrganizationFormsCountByFormId";
 import { handleWebsocketConversationStoppedInsights } from "../actions/conversation/handleWebsocketConversationStoppedInsights";
+import {
+  assertConversationToken,
+  findVerifiedConversationToken,
+  getVerifiedConversationToken,
+} from "../lib/conversationToken";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
 import { publicProcedure } from "../procedures/publicProcedure";
@@ -77,7 +83,39 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await getOneConversation(input.id, ctx);
+      const conversationToken = await getVerifiedConversationToken(
+        ctx.headers,
+        input.id,
+      );
+      const organizationId = ctx.auth.orgId;
+
+      if (
+        !conversationToken &&
+        !(ctx.auth.userId && typeof organizationId === "string")
+      ) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "A valid conversation token is required",
+        });
+      }
+
+      const result = await getOneConversation(input.id, ctx);
+
+      if (!result) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Conversation not found",
+        });
+      }
+
+      if (!conversationToken && result.organizationId !== organizationId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Conversation not found",
+        });
+      }
+
+      return result;
     }),
 
   create: publicProcedure
@@ -93,10 +131,15 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
+      const organizationId = await resolveOrganizationScope(
+        ctx,
+        input.organizationId,
+      );
+
       const [result] = await ctx.db
         .select({ value: count() })
         .from(conversation)
-        .where(eq(conversation.organizationId, input.organizationId));
+        .where(eq(conversation.organizationId, organizationId));
 
       return result?.value;
     }),
@@ -166,6 +209,8 @@ export const conversationRouter = createTRPCRouter({
       updateConversationSchema.pick({ id: true, formFieldResponses: true }),
     )
     .mutation(async ({ input, ctx }) => {
+      await assertConversationToken(ctx.headers, input.id);
+
       const [result] = await ctx.db
         .update(conversation)
         .set({
@@ -183,6 +228,8 @@ export const conversationRouter = createTRPCRouter({
   updateTranscript: publicProcedure
     .input(updateConversationSchema.pick({ id: true, transcript: true }))
     .mutation(async ({ input, ctx }) => {
+      await assertConversationToken(ctx.headers, input.id);
+
       const [result] = await ctx.db
         .update(conversation)
         .set({
@@ -205,6 +252,8 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      await assertConversationToken(ctx.headers, input.id);
+
       const [result] = await ctx.db
         .update(conversation)
         .set({
@@ -253,6 +302,8 @@ export const conversationRouter = createTRPCRouter({
   patch: publicProcedure
     .input(patchConversationSchema)
     .mutation(async ({ input, ctx }) => {
+      await assertConversationToken(ctx.headers, input.id);
+
       return await patchConversation(input, ctx);
     }),
 
@@ -565,9 +616,52 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      await assertConversationToken(ctx.headers, input.conversationId);
+
       return await handleWebsocketConversationStoppedInsights(
         input.conversationId,
         ctx,
       );
     }),
 });
+
+async function resolveOrganizationScope(
+  ctx: {
+    auth: { userId?: string | null; orgId?: string | null };
+    headers?: Headers;
+  },
+  requestedOrganizationId?: string,
+) {
+  if (ctx.auth.userId && typeof ctx.auth.orgId === "string") {
+    if (requestedOrganizationId && requestedOrganizationId !== ctx.auth.orgId) {
+      throw forbiddenOrganization();
+    }
+
+    return ctx.auth.orgId;
+  }
+
+  const conversationToken = await findVerifiedConversationToken(ctx.headers);
+
+  if (conversationToken) {
+    if (
+      requestedOrganizationId &&
+      requestedOrganizationId !== conversationToken.organizationId
+    ) {
+      throw forbiddenOrganization();
+    }
+
+    return conversationToken.organizationId;
+  }
+
+  throw new TRPCError({
+    code: "UNAUTHORIZED",
+    message: "A valid conversation token or organization session is required",
+  });
+}
+
+function forbiddenOrganization() {
+  return new TRPCError({
+    code: "FORBIDDEN",
+    message: "Organization access denied",
+  });
+}

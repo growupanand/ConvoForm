@@ -207,18 +207,15 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
   const transportBody = useMemo(() => {
     return {
       formId: props.formId,
-      type: isConversationInitialized ? "existing" : "new",
-      coreConversation: conversation,
-      ...(isConversationInitialized || !props.isOwnerPreview
-        ? {}
-        : { isOwnerPreview: true }),
+      type: conversation ? "existing" : "new",
+      coreConversation: conversation
+        ? {
+            id: conversation.id,
+            currentFieldId: conversation.currentFieldId,
+          }
+        : null,
     };
-  }, [
-    conversation,
-    props.formId,
-    props.isOwnerPreview,
-    isConversationInitialized,
-  ]);
+  }, [conversation, props.formId]);
 
   const submitAnswer = useCallback(
     async (answerText: string) => {

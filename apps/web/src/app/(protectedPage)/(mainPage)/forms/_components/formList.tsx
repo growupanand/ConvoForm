@@ -41,7 +41,7 @@ export function FormList({ organizationId }: Readonly<Props>) {
           title="No Forms Yet"
           description="Get started by creating your first form. Click the button below to get started."
           illustration={IllustrationImageEnum.UnboxingDoodle}
-          actionButton={<CreateFormButton organizationId={organizationId} />}
+          actionButton={<CreateFormButton />}
         />
       )}
       {!emptyForms && (

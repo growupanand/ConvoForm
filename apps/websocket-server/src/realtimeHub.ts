@@ -182,7 +182,11 @@ export class RealtimeHub extends DurableObject<Env> {
     });
 
     await this.callApi(
-      conversationStarted(conversationId, this.env.NEXT_PUBLIC_APP_URL),
+      conversationStarted(
+        conversationId,
+        this.env.NEXT_PUBLIC_APP_URL,
+        this.env.INTERNAL_EMAIL_API_SECRET,
+      ),
       `conversationId:${conversationId}> Error sending conversation:started event`,
     );
 
@@ -214,7 +218,11 @@ export class RealtimeHub extends DurableObject<Env> {
     if (!isValidId(conversationId) || !isValidId(formId)) return;
 
     await this.callApi(
-      conversationStopped(conversationId, this.env.NEXT_PUBLIC_APP_URL),
+      conversationStopped(
+        conversationId,
+        this.env.NEXT_PUBLIC_APP_URL,
+        this.env.INTERNAL_EMAIL_API_SECRET,
+      ),
       `conversationId:${conversationId}> Error sending conversation:stopped event`,
     );
 
@@ -231,7 +239,11 @@ export class RealtimeHub extends DurableObject<Env> {
     if (!isValidId(activeConversationId) || !isValidId(activeFormId)) return;
 
     await this.callApi(
-      conversationStopped(activeConversationId, this.env.NEXT_PUBLIC_APP_URL),
+      conversationStopped(
+        activeConversationId,
+        this.env.NEXT_PUBLIC_APP_URL,
+        this.env.INTERNAL_EMAIL_API_SECRET,
+      ),
       `conversationId:${activeConversationId}> Error handling disconnect event`,
     );
 
