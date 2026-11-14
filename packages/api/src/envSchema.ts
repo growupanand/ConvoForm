@@ -15,6 +15,10 @@ export const apiEnvSchema = {
   VERCEL_URL: z.string().optional(),
   CLERK_SECRET_KEY: z.string().min(1),
   ENCRYPTION_KEY: z.string().min(1),
+  // BYOK master key. Required in production once the AI providers feature
+  // ships; older versions stay available as AI_CREDENTIALS_MASTER_KEY_V<n>.
+  AI_CREDENTIALS_MASTER_KEY: z.string().min(1).optional(),
+  AI_CREDENTIALS_MASTER_KEY_VERSION: z.string().optional(),
   CHANNELS_SERVER_URL: z.string().url().optional(),
   // Optional Cloudflare Workflows delivery engine. All three must be set to
   // enable it; otherwise webhook deliveries use the direct adapter.
