@@ -6,6 +6,7 @@ import { BETA_LIMITS, fileStorageService } from "@convoform/file-storage";
 import { z } from "zod/v4";
 
 import { enforceRateLimit } from "@convoform/rate-limiter";
+import { assertConversationToken } from "../lib/conversationToken";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
 import { publicProcedure } from "../procedures/publicProcedure";
@@ -40,12 +41,18 @@ export const fileUploadRouter = createTRPCRouter({
       const { fileName, fileType, fileSize, fileBuffer, conversationId } =
         input;
 
+      await assertConversationToken(ctx.headers, conversationId);
+
       const existConversation = await ctx.db.query.conversation.findFirst({
         where: (conv, { eq }) => eq(conv.id, conversationId),
       });
 
       if (!existConversation) {
         throw new Error("Conversation not found");
+      }
+
+      if (existConversation.finishedAt) {
+        throw new Error("Conversation is no longer in progress");
       }
 
       await enforceRateLimit.FILE_UPLOAD(conversationId);

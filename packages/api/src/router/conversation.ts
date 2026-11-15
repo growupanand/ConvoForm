@@ -1,22 +1,21 @@
-import { ACTIVE_CONVERSATION_WINDOW_MS } from "@convoform/common";
+import { ACTIVE_CONVERSATION_WINDOW_MS, DEMO_FORM_ID } from "@convoform/common";
 import { and, count, eq, inArray, sql } from "@convoform/db";
 import {
   conversation,
   form,
-  insertConversationSchema,
-  patchConversationSchema,
   restoreDateFields,
   updateConversationSchema,
 } from "@convoform/db/src/schema";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod/v4";
 
-import {
-  createConversation,
-  getOneConversation,
-  patchConversation,
-} from "../actions/conversation";
+import { getOneConversation } from "../actions/conversation";
 import { getOrganizationFormsCountByFormId } from "../actions/conversation/getOrganizationFormsCountByFormId";
 import { handleWebsocketConversationStoppedInsights } from "../actions/conversation/handleWebsocketConversationStoppedInsights";
+import {
+  assertConversationToken,
+  getVerifiedConversationToken,
+} from "../lib/conversationToken";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
 import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
 import { publicProcedure } from "../procedures/publicProcedure";
@@ -77,26 +76,56 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
-      return await getOneConversation(input.id, ctx);
+      const conversationToken = await getVerifiedConversationToken(
+        ctx.headers,
+        input.id,
+      );
+      const organizationId = ctx.auth.orgId;
+
+      if (
+        !conversationToken &&
+        !(ctx.auth.userId && typeof organizationId === "string")
+      ) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "A valid conversation token is required",
+        });
+      }
+
+      const result = await getOneConversation(input.id, ctx);
+
+      if (!result) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Conversation not found",
+        });
+      }
+
+      if (!conversationToken && result.organizationId !== organizationId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Conversation not found",
+        });
+      }
+
+      return result;
     }),
 
-  create: publicProcedure
-    .input(insertConversationSchema)
-    .mutation(async ({ input, ctx }) => {
-      return await createConversation(input, ctx);
-    }),
-
-  getCountByOrganizationId: publicProcedure
+  getCountByOrganizationId: orgProtectedProcedure
     .input(
       z.object({
         organizationId: z.string().min(1),
       }),
     )
     .query(async ({ input, ctx }) => {
+      if (input.organizationId !== ctx.orgId) {
+        throw forbiddenOrganization();
+      }
+
       const [result] = await ctx.db
         .select({ value: count() })
         .from(conversation)
-        .where(eq(conversation.organizationId, input.organizationId));
+        .where(eq(conversation.organizationId, ctx.orgId));
 
       return result?.value;
     }),
@@ -161,42 +190,6 @@ export const conversationRouter = createTRPCRouter({
       });
     }),
 
-  updateFormFieldResponses: publicProcedure
-    .input(
-      updateConversationSchema.pick({ id: true, formFieldResponses: true }),
-    )
-    .mutation(async ({ input, ctx }) => {
-      const [result] = await ctx.db
-        .update(conversation)
-        .set({
-          formFieldResponses: input.formFieldResponses,
-          updatedAt: new Date(),
-        })
-        .where(eq(conversation.id, input.id))
-        .returning();
-      if (!result) {
-        throw new Error("Failed to update conversation");
-      }
-
-      return result;
-    }),
-  updateTranscript: publicProcedure
-    .input(updateConversationSchema.pick({ id: true, transcript: true }))
-    .mutation(async ({ input, ctx }) => {
-      const [result] = await ctx.db
-        .update(conversation)
-        .set({
-          transcript: input.transcript,
-          updatedAt: new Date(),
-        })
-        .where(eq(conversation.id, input.id))
-        .returning();
-      if (!result) {
-        throw new Error("Failed to update conversation");
-      }
-
-      return result;
-    }),
   updateInProgressStatus: publicProcedure
     .input(
       updateConversationSchema.pick({
@@ -205,6 +198,8 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      await assertConversationToken(ctx.headers, input.id);
+
       const [result] = await ctx.db
         .update(conversation)
         .set({
@@ -220,10 +215,9 @@ export const conversationRouter = createTRPCRouter({
       return result;
     }),
 
-  getCountByFormIds: authProtectedProcedure
+  getCountByFormIds: orgProtectedProcedure
     .input(
       z.object({
-        organizationId: z.string().min(1),
         formIds: z.array(z.string().min(1)),
       }),
     )
@@ -237,7 +231,7 @@ export const conversationRouter = createTRPCRouter({
         .leftJoin(conversation, eq(form.id, conversation.formId))
         .where(
           and(
-            eq(form.organizationId, input.organizationId),
+            eq(form.organizationId, ctx.orgId),
             inArray(form.id, input.formIds),
           ),
         )
@@ -249,13 +243,6 @@ export const conversationRouter = createTRPCRouter({
         conversationCount: Number(row.conversationCount),
       }));
     }),
-  // Patch partial form
-  patch: publicProcedure
-    .input(patchConversationSchema)
-    .mutation(async ({ input, ctx }) => {
-      return await patchConversation(input, ctx);
-    }),
-
   stats: orgProtectedProcedure
     .input(
       z.object({
@@ -526,37 +513,42 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
+      if (input.formId !== DEMO_FORM_ID) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Demo responses are only available for the demo form",
+        });
+      }
+
       const existConversations = await ctx.db.query.conversation.findMany({
-        where: (conversation, { eq }) => eq(conversation.formId, input.formId),
+        where: (conversation, { eq }) => eq(conversation.formId, DEMO_FORM_ID),
         orderBy: (conversation, { desc }) => [desc(conversation.createdAt)],
         limit: 20, // Limit to 20 most recent
+        columns: {
+          id: true,
+          name: true,
+          createdAt: true,
+          updatedAt: true,
+          finishedAt: true,
+          isInProgress: true,
+          channelType: true,
+          formFieldResponses: true,
+        },
       });
 
-      const existConversationsFormatted = existConversations.map(
-        (conversation) => {
-          const formFieldResponses = conversation.formFieldResponses.map(
-            (collection) => {
-              if (collection.fieldConfiguration === undefined) {
-                return collection;
-              }
-
-              return {
-                ...collection,
-                fieldConfiguration: restoreDateFields(
-                  collection.fieldConfiguration,
-                ),
-              };
-            },
-          );
-          return {
-            ...conversation,
-            formFieldResponses,
-            transcript: conversation.transcript ?? [],
-          };
-        },
-      );
-
-      return existConversationsFormatted;
+      return existConversations.map((row) => ({
+        id: row.id,
+        name: row.name,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+        finishedAt: row.finishedAt,
+        isInProgress: row.isInProgress,
+        channelType: row.channelType,
+        // The landing page only renders the answer values.
+        formFieldResponses: row.formFieldResponses.map(({ fieldValue }) => ({
+          fieldValue,
+        })),
+      }));
     }),
   generateInsights: publicProcedure
     .input(
@@ -565,9 +557,18 @@ export const conversationRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      await assertConversationToken(ctx.headers, input.conversationId);
+
       return await handleWebsocketConversationStoppedInsights(
         input.conversationId,
         ctx,
       );
     }),
 });
+
+function forbiddenOrganization() {
+  return new TRPCError({
+    code: "FORBIDDEN",
+    message: "Organization access denied",
+  });
+}

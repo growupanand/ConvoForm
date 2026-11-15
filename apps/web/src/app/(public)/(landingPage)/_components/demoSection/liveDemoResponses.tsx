@@ -4,7 +4,6 @@ import { ConversationStatusBadge } from "@/components/StatusBadge";
 import { QueryComponent } from "@/components/queryComponents/queryComponent";
 import { timeAgo } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import type { Conversation } from "@convoform/db/src/schema";
 import {
   ScrollArea,
   ScrollBar,
@@ -24,6 +23,17 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 import { DEMO_FORM_ID } from "../constants";
 import { ResponsesTableSkeleton } from "./responsesTableSkeleton";
+
+type DemoFormResponse = {
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  finishedAt: Date | null;
+  isInProgress: boolean;
+  channelType: string | null;
+  formFieldResponses: Array<{ fieldValue: string | null }>;
+};
 
 // Sample data to replace "No data" entries
 const sampleResponses = [
@@ -90,7 +100,7 @@ function useFormWebsocket(formId: string, refetch: () => void) {
 // Component for a single response row
 function ResponseRow({
   conversation,
-}: { conversation: Conversation; existingResponses: Conversation[] }) {
+}: { conversation: DemoFormResponse; existingResponses: DemoFormResponse[] }) {
   const formFieldResponsesWithValues = conversation.formFieldResponses.filter(
     (i) => i.fieldValue,
   );
@@ -129,7 +139,7 @@ function ResponseRow({
 }
 
 // Component for the responses table
-function ResponsesTable({ responses }: { responses: Conversation[] }) {
+function ResponsesTable({ responses }: { responses: DemoFormResponse[] }) {
   const sortedResponses = [...responses].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );

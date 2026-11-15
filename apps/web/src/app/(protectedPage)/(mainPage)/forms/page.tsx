@@ -17,20 +17,20 @@ export const metadata: Metadata = {
 };
 
 export default async function FormsPage() {
-  const organizationId = await getOrgIdOrRedirect();
+  await getOrgIdOrRedirect();
 
   return (
     <PageShell
       title="Forms"
       actionButtonBottom={
         <div className="flex items-center gap-2">
-          <CreateFormButton organizationId={organizationId} />
+          <CreateFormButton />
           <ImportGoogleFormButton />
         </div>
       }
     >
       <Suspense fallback={<FormListLoading />}>
-        <FormList organizationId={organizationId} />
+        <FormList />
       </Suspense>
     </PageShell>
   );

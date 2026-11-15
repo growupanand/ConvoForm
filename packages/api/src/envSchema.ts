@@ -4,6 +4,7 @@ import { z } from "zod";
 export const apiEnvSchema = {
   ...emailEnvSchema,
   INTERNAL_EMAIL_API_SECRET: z.string().min(1),
+  CONVERSATION_TOKEN_SECRET: z.string().min(1).optional(),
   NEXT_PUBLIC_APP_URL: z
     .string()
     .url()

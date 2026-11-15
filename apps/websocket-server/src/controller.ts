@@ -3,6 +3,7 @@ import { apiClient } from "./apiClient";
 export const conversationStopped = (
   conversationId: string,
   apiDomainUrl: string,
+  internalSecret: string,
 ) =>
   apiClient(
     "POST",
@@ -13,11 +14,13 @@ export const conversationStopped = (
       },
     },
     apiDomainUrl,
+    internalSecret,
   );
 
 export const conversationStarted = (
   conversationId: string,
   apiDomainUrl: string,
+  internalSecret: string,
 ) =>
   apiClient(
     "POST",
@@ -28,4 +31,5 @@ export const conversationStarted = (
       },
     },
     apiDomainUrl,
+    internalSecret,
   );

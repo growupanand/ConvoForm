@@ -37,7 +37,6 @@ export type GenerateFormModalProps = {
   ) => Promise<void>;
   open: boolean;
   setOpen: (open: boolean) => void;
-  organizationId: string;
 };
 
 export type Template = {

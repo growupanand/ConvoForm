@@ -56,15 +56,13 @@ describe("getOnUpdateConversationHandler", () => {
     loggerFlushMock.mockClear();
   });
 
-  it("saves once per request with the latest conversation snapshot", async () => {
-    const scheduled: Array<() => Promise<void>> = [];
+  it("saves once with the latest conversation snapshot when flushed", async () => {
     const saveMock = mock(() => Promise.resolve(true));
     const writer = { write: mock(() => undefined) } as any;
     const handler = getOnUpdateConversationHandler(
       writer,
       { db: {} as any },
       {
-        scheduleAfter: (task) => scheduled.push(task),
         save: saveMock as any,
       },
     );
@@ -84,32 +82,50 @@ describe("getOnUpdateConversationHandler", () => {
     await handler(second);
     await handler(latest);
 
-    expect(scheduled).toHaveLength(1);
     expect(writer.write).toHaveBeenCalledTimes(3);
+    expect(saveMock).not.toHaveBeenCalled();
 
-    await scheduled[0]?.();
+    await handler.flush();
 
     expect(saveMock).toHaveBeenCalledTimes(1);
     expect(saveMock.mock.calls[0]?.[0]).toEqual(latest);
   });
 
-  it("schedules a new save after the previous after() task runs", async () => {
-    const scheduled: Array<() => Promise<void>> = [];
+  it("flushes a new snapshot after a previous flush", async () => {
+    const saveMock = mock(() => Promise.resolve(true));
     const writer = { write: mock(() => undefined) } as any;
     const handler = getOnUpdateConversationHandler(
       writer,
       { db: {} as any },
       {
-        scheduleAfter: (task) => scheduled.push(task),
-        save: mock(() => Promise.resolve(true)) as any,
+        save: saveMock as any,
       },
     );
 
     await handler(buildConversation([]));
-    await scheduled[0]?.();
+    await handler.flush();
     await handler(buildConversation([{ role: "user", content: "next" }]));
+    await handler.flush();
 
-    expect(scheduled).toHaveLength(2);
+    expect(saveMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("rejects when the final save fails", async () => {
+    const saveMock = mock(() => Promise.resolve(false));
+    const writer = { write: mock(() => undefined) } as any;
+    const handler = getOnUpdateConversationHandler(
+      writer,
+      { db: {} as any },
+      {
+        save: saveMock as any,
+      },
+    );
+
+    await handler(buildConversation([]));
+
+    await expect(handler.flush()).rejects.toThrow(
+      "Failed to persist conversation",
+    );
   });
 
   it("logs writer failures through the conversation logger", async () => {
@@ -122,7 +138,6 @@ describe("getOnUpdateConversationHandler", () => {
       writer,
       { db: {} as any },
       {
-        scheduleAfter: () => undefined,
         save: mock(() => Promise.resolve(true)) as any,
       },
     );
