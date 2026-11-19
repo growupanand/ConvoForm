@@ -20,7 +20,9 @@ import {
 } from "@convoform/db/src/schema/formDesigns/constants";
 import { enforceRateLimit } from "@convoform/rate-limiter";
 import { z } from "zod/v4";
+import { getClientIp } from "../lib/clientIp";
 import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
+import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
 import { publicProcedure } from "../procedures/publicProcedure";
 import { createTRPCRouter } from "../trpc";
 
@@ -58,7 +60,6 @@ const createFormFromFieldsInputSchema = z.object({
       fieldConfiguration: z.any(), // Use any for now to avoid complex discriminated union type issues
     }),
   ),
-  organizationId: z.string(),
 });
 
 // Form templates are now imported from @convoform/common
@@ -74,7 +75,11 @@ export const aiFormGenerationRouter = createTRPCRouter({
   generateFields: publicProcedure
     .input(generateFieldsInputSchema)
     .output(generateFormFieldsOutputSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      // Public demo endpoint: rate-limit by caller IP so it cannot be used to
+      // burn AI quota anonymously.
+      await enforceRateLimit.AI_PUBLIC_SESSION(getClientIp(ctx));
+
       // Apply default free tier limits for public usage
       const maxFields = Math.min(
         input.maxFields ?? 8,
@@ -175,17 +180,19 @@ export const aiFormGenerationRouter = createTRPCRouter({
   /**
    * Create a complete form from generated fields and metadata
    */
-  createFormFromFields: authProtectedProcedure
+  createFormFromFields: orgProtectedProcedure
     .input(createFormFromFieldsInputSchema)
     .mutation(async ({ input, ctx }) => {
       await enforceRateLimit.CORE_CREATE(ctx.userId);
+
+      const organizationId = ctx.orgId;
 
       // Create new form
       const [savedForm] = await ctx.db
         .insert(form)
         .values({
           userId: ctx.userId,
-          organizationId: input.organizationId,
+          organizationId,
           name: input.formName,
           overview: input.formDescription,
           welcomeScreenCTALabel: "Start Form",
@@ -254,7 +261,7 @@ export const aiFormGenerationRouter = createTRPCRouter({
       // Create form design configuration
       const savedFormDesigns = FORM_SECTIONS_ENUMS_VALUES.map((screenType) => ({
         formId: savedForm.id,
-        organizationId: input.organizationId,
+        organizationId,
         screenType,
         ...DEFAULT_FORM_DESIGN,
       }));

@@ -9,6 +9,7 @@ export const env = createEnv({
   extends: [databaseEnvSchema, aiEnvSchema, emailEnvSchema, apiEnvSchema],
   server: {
     CLERK_SECRET_KEY: z.string().min(1),
+    CLERK_WEBHOOK_SIGNING_SECRET: z.string().min(1).optional(),
     UPSTASH_REDIS_REST_URL: z.url().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
     GOOGLE_CLIENT_ID: z.string().min(1).optional(),

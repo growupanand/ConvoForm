@@ -18,10 +18,6 @@ import type { z } from "zod/v4";
 import { api } from "@/trpc/react";
 import { GenerateFormModal } from "./generateFormModal";
 
-type Props = {
-  organizationId: string;
-};
-
 export type HandleCreateForm = (
   formData: z.infer<typeof newFormSchema>,
 ) => Promise<void>;
@@ -48,7 +44,7 @@ const newFormData: z.infer<typeof newFormSchema> = newFormSchema.parse({
   formFieldsOrders: [],
 });
 
-export default function CreateFormButton({ organizationId }: Readonly<Props>) {
+export default function CreateFormButton() {
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
@@ -113,7 +109,6 @@ export default function CreateFormButton({ organizationId }: Readonly<Props>) {
       <GenerateFormModal
         open={open}
         setOpen={setOpen}
-        organizationId={organizationId}
         onFormGenerated={async ({ id }) => handleFormCreatedSuccess({ id })}
       />
     </div>

@@ -1,4 +1,9 @@
 import { checkNThrowErrorFormSubmissionLimit } from "@/actions";
+import {
+  assertRequestConversationToken,
+  attachConversationToken,
+} from "@/lib/conversationToken";
+import { sendErrorMessage } from "@/lib/errorHandlers";
 import { createNextjsLogger } from "@/lib/logger";
 import { auth } from "@clerk/nextjs/server";
 import {
@@ -7,7 +12,11 @@ import {
   createErrorStreamResponse,
   createStreamResponseWithWriter,
 } from "@convoform/ai";
-import { createConversation } from "@convoform/api/src/actions/conversation";
+import {
+  ConversationAccessError,
+  createConversation,
+  getTrustedConversationForRespondent,
+} from "@convoform/api/src/actions/conversation";
 import { isFormOrganizationMember } from "@convoform/api/src/actions/conversation/isFormOrganizationMember";
 import { getOneFormWithFields } from "@convoform/api/src/actions/form";
 import { db } from "@convoform/db";
@@ -29,16 +38,18 @@ const newConversationRequestSchema = z.object({
   type: z.literal("new"),
   formId: z.string().min(1),
   coreConversation: z.null(),
-  isOwnerPreview: z.boolean().optional(),
 });
 
 const existingConversationRequestSchema = z.object({
   type: z.literal("existing"),
   formId: z.string().min(1),
   answerText: z.string().min(1),
-  coreConversation: coreConversationSchema.extend({
-    currentFieldId: z.string().min(1),
-  }),
+  coreConversation: z
+    .object({
+      id: z.string().min(1),
+      currentFieldId: z.string().min(1).nullable().optional(),
+    })
+    .passthrough(),
 });
 
 const requestSchema = z.discriminatedUnion("type", [
@@ -85,9 +96,9 @@ export async function POST(request: NextRequest) {
       const metaData = await respondentMetadataSchema.parseAsync({
         userAgent: userAgentInformation,
         geoDetails: geoInformation,
-        isOwnerPreview:
-          parsedRequestBody.isOwnerPreview === true ||
-          isOwnerPreviewFromMembership,
+        // Owner preview is derived only from org membership. Never trust a
+        // browser-sent flag.
+        isOwnerPreview: isOwnerPreviewFromMembership,
       });
 
       // Check form submission limits
@@ -126,53 +137,90 @@ export async function POST(request: NextRequest) {
         form: formWithFormFields,
       });
 
+      let onUpdateConversation:
+        | ReturnType<typeof getOnUpdateConversationHandler>
+        | undefined;
+
       const response =
         await createStreamResponseWithWriter<CoreServiceUIMessage>(
           async (writer) => {
+            onUpdateConversation = getOnUpdateConversationHandler(writer, {
+              db,
+              tracer,
+            });
+
             const coreService = new CoreService({
               conversation: newConversation,
-              onUpdateConversation: getOnUpdateConversationHandler(writer, {
-                db,
-                tracer,
-              }),
+              onUpdateConversation,
               tracer,
             });
 
             const initialConversationStream = await coreService.initialize();
             writer.merge(initialConversationStream);
           },
+          async () => {
+            await onUpdateConversation?.flush();
+          },
         );
 
-      return response;
+      return await attachConversationToken(response, {
+        conversationId: conversationData.id,
+        formId: conversationData.formId,
+        organizationId: conversationData.organizationId,
+      });
     }
 
     // Existing conversation processing
+    const conversationId = parsedRequestBody.coreConversation.id;
+    await assertRequestConversationToken(request, conversationId);
+
+    const { userId } = await auth();
+    const { conversation: trustedConversation, currentFieldId } =
+      await getTrustedConversationForRespondent(
+        {
+          conversationId,
+          formId: parsedRequestBody.formId,
+          currentFieldId: parsedRequestBody.coreConversation.currentFieldId,
+        },
+        userId,
+        { db },
+      );
+
     const logger = createNextjsLogger().withContext({
-      conversationId: parsedRequestBody.coreConversation.id,
+      conversationId,
     });
 
     logger.info("Server: Request started");
 
     // Set trace ID to conversationId so all spans for this conversation share one trace
-    tracer.setTraceId(parsedRequestBody.coreConversation.id);
+    tracer.setTraceId(conversationId);
+
+    let onUpdateConversation:
+      | ReturnType<typeof getOnUpdateConversationHandler>
+      | undefined;
 
     const response = await createStreamResponseWithWriter<CoreServiceUIMessage>(
       async (writer) => {
+        onUpdateConversation = getOnUpdateConversationHandler(writer, {
+          db,
+          tracer,
+        });
+
         const coreService = new CoreService({
-          conversation: parsedRequestBody.coreConversation,
-          onUpdateConversation: getOnUpdateConversationHandler(writer, {
-            db,
-            tracer,
-          }),
+          conversation: trustedConversation,
+          onUpdateConversation,
           tracer,
         });
         logger.info("Server: CoreService initialized");
 
         const conversationStream = await coreService.process(
           parsedRequestBody.answerText,
-          parsedRequestBody.coreConversation.currentFieldId,
+          currentFieldId,
         );
         writer.merge(conversationStream);
+      },
+      async () => {
+        await onUpdateConversation?.flush();
       },
     );
 
@@ -184,6 +232,10 @@ export async function POST(request: NextRequest) {
     after(async () => {
       await tracer.flush();
     });
+
+    if (error instanceof ConversationAccessError) {
+      return sendErrorMessage(error.message, error.statusCode);
+    }
 
     return createErrorStreamResponse(error as Error);
   }

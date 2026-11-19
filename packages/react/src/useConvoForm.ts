@@ -39,6 +39,14 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
   const streamSpanRef = useRef<EdgeSpanHandle | null>(null);
   const loadingSpanRef = useRef<EdgeSpanHandle | null>(null);
 
+  // Snapshot the state before each request so a stream error can roll back.
+  const requestSnapshotRef = useRef<{
+    conversation: CoreConversation | null;
+    messages: CoreServiceUIMessage[];
+  } | null>(null);
+  // Hold the completed conversation until the stream closes cleanly.
+  const pendingFinalConversationRef = useRef<CoreConversation | null>(null);
+
   // TTFB tracking
   const requestStartTimeRef = useRef<number | null>(null);
   const firstByteReceivedRef = useRef<boolean>(false);
@@ -51,7 +59,18 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
       onData: async (dataPart) => {
         if (dataPart.type === "data-conversation") {
           const updatedConversation = dataPart.data as CoreConversation;
-          setConversation(updatedConversation);
+
+          if (updatedConversation.finishedAt) {
+            // The server persists the final snapshot in onFinish. Keep the end
+            // screen hidden until the stream closes cleanly.
+            pendingFinalConversationRef.current = updatedConversation;
+            setConversation({
+              ...updatedConversation,
+              finishedAt: null,
+            });
+          } else {
+            setConversation(updatedConversation);
+          }
 
           // Update trace ID to match conversation ID for unifying traces
           if (tracerRef.current) {
@@ -64,6 +83,14 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
         }
       },
       onFinish: () => {
+        const pendingFinalConversation = pendingFinalConversationRef.current;
+        if (pendingFinalConversation) {
+          pendingFinalConversationRef.current = null;
+          setConversation(pendingFinalConversation);
+        }
+
+        requestSnapshotRef.current = null;
+
         // End stream span when generation finishes
         if (streamSpanRef.current) {
           streamSpanRef.current.end();
@@ -76,6 +103,15 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
         }
       },
       onError: (error) => {
+        const requestSnapshot = requestSnapshotRef.current;
+        requestSnapshotRef.current = null;
+        pendingFinalConversationRef.current = null;
+
+        if (requestSnapshot) {
+          setConversation(requestSnapshot.conversation);
+          setMessages(requestSnapshot.messages);
+        }
+
         props.onError?.(error);
         if (loadingSpanRef.current) {
           loadingSpanRef.current.setStatus(
@@ -207,18 +243,15 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
   const transportBody = useMemo(() => {
     return {
       formId: props.formId,
-      type: isConversationInitialized ? "existing" : "new",
-      coreConversation: conversation,
-      ...(isConversationInitialized || !props.isOwnerPreview
-        ? {}
-        : { isOwnerPreview: true }),
+      type: conversation ? "existing" : "new",
+      coreConversation: conversation
+        ? {
+            id: conversation.id,
+            currentFieldId: conversation.currentFieldId,
+          }
+        : null,
     };
-  }, [
-    conversation,
-    props.formId,
-    props.isOwnerPreview,
-    isConversationInitialized,
-  ]);
+  }, [conversation, props.formId]);
 
   const submitAnswer = useCallback(
     async (answerText: string) => {
@@ -252,6 +285,12 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
         fieldName: currentFieldName,
       });
 
+      requestSnapshotRef.current = {
+        conversation,
+        messages: [...messages],
+      };
+      pendingFinalConversationRef.current = null;
+
       setMessages([]);
 
       // Get headers to propagate trace context
@@ -277,8 +316,8 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
       props.logger,
       isConversationInitialized,
       props.formId,
-      conversation?.id,
-      conversation?.organizationId,
+      conversation,
+      messages,
       currentFieldName,
     ],
   );
@@ -290,6 +329,29 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
     await submitAnswer("answer text in body");
   };
 
+  const clearConversationTokenCookie = useCallback(
+    async (finishedConversationId: string) => {
+      try {
+        await fetch(
+          `${props.apiDomain ?? API_DOMAIN}/api/conversation/finish`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              conversationId: finishedConversationId,
+            }),
+            credentials: "include",
+          },
+        );
+      } catch {
+        // Cookie cleanup is best effort and must not break the form flow.
+      }
+    },
+    [props.apiDomain],
+  );
+
   const resetConversation = useCallback(async () => {
     if (conversation) {
       sendWebsocketMessage("conversation:stopped", {
@@ -300,6 +362,8 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
     setConversation(null);
     setMessages([]);
     clearError();
+    requestSnapshotRef.current = null;
+    pendingFinalConversationRef.current = null;
     // Clear tracer state on reset? Maybe keep it for continuity unless strict reset needed
   }, [setMessages, clearError, conversation, props.formId]);
 
@@ -327,7 +391,13 @@ export function useConvoForm(props: UseConvoFormProps): UseConvoFormReturnType {
     };
 
     sendWebsocketMessage("conversation:stopped", conversationData);
-  }, [conversation?.finishedAt, conversation?.id, props.formId]);
+    void clearConversationTokenCookie(conversation.id);
+  }, [
+    conversation?.finishedAt,
+    conversation?.id,
+    props.formId,
+    clearConversationTokenCookie,
+  ]);
 
   return {
     // Methods

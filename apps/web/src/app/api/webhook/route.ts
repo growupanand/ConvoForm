@@ -1,90 +1,129 @@
-import type { WebhookEvent } from "@clerk/nextjs/server";
-import { insertUserSchema } from "@convoform/db/src/schema";
+import { type WebhookEvent, verifyWebhook } from "@clerk/nextjs/webhooks";
+import {
+  handleOrganizationCreated,
+  handleOrganizationDeleted,
+  handleOrganizationMembershipCreated,
+  handleOrganizationMembershipDeleted,
+  handleUserCreated,
+  handleUserDeleted,
+} from "@convoform/api/src/actions/webhook";
+import { db } from "@convoform/db";
 import { type NextRequest, NextResponse } from "next/server";
 
-import { api } from "@/trpc/server";
+export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
-  const event = (await req.json()) as WebhookEvent;
+  let event: WebhookEvent;
+  try {
+    event = await verifyWebhook(req);
+  } catch (error) {
+    // Never log the raw payload: it contains user and organization data.
+    console.error("Failed to verify Clerk webhook signature", error);
+    return NextResponse.json(
+      { error: "Invalid webhook signature" },
+      { status: 400 },
+    );
+  }
 
-  switch (event.type) {
-    case "user.created": {
-      const { data } = event;
-      const email =
-        data.email_addresses.length > 0
-          ? data.email_addresses[0]?.email_address
-          : "";
-      const signupMethod =
-        data.external_accounts.length > 0
-          ? data.external_accounts[0]?.provider ?? "oauth"
-          : "email";
-      const newUser = insertUserSchema.parse({
-        email: email,
-        firstName: data.first_name,
-        lastName: data.last_name,
-        userId: data.id,
-        imageUrl: data.image_url,
-      });
-      await api.webhook.userCreated({ ...newUser, signupMethod });
-      break;
-    }
-    case "user.deleted":
-      {
+  const ctx = { db };
+
+  try {
+    switch (event.type) {
+      case "user.created": {
+        const { data } = event;
+        const email =
+          data.email_addresses.length > 0
+            ? data.email_addresses[0]?.email_address
+            : "";
+        const signupMethod =
+          data.external_accounts.length > 0
+            ? data.external_accounts[0]?.provider ?? "oauth"
+            : "email";
+        await handleUserCreated(
+          {
+            email: email ?? "",
+            firstName: data.first_name,
+            lastName: data.last_name,
+            userId: data.id,
+            imageUrl: data.image_url,
+            signupMethod,
+          },
+          ctx,
+        );
+        break;
+      }
+      case "user.deleted": {
         const { data } = event;
         if (!data.id) {
           throw new Error("user.deleted - User id not found in event data");
         }
-        await api.webhook.userDeleted({ userId: data.id });
+        await handleUserDeleted({ userId: data.id }, ctx);
+        break;
       }
-      break;
 
-    case "organization.created": {
-      const { data } = event;
-      const org = {
-        name: data.name,
-        organizationId: data.id,
-        slug: data.slug ?? "",
-        createdByClerkUserId: data.created_by,
-      };
-      await api.webhook.organizationCreated(org);
-      break;
-    }
-    case "organizationMembership.created": {
-      const { data: orgMembershipData } = event;
-      const orgMembership = {
-        memberId: orgMembershipData.id,
-        organizationId: orgMembershipData.organization.id,
-        userId: orgMembershipData.public_user_data.user_id,
-        role: orgMembershipData.role,
-      };
-      await api.webhook.organizationMembershipCreated(orgMembership);
-      break;
-    }
-
-    case "organizationMembership.deleted": {
-      const { data: orgMembershipDeletedData } = event;
-      await api.webhook.organizationMembershipDeleted({
-        membershipId: orgMembershipDeletedData.id,
-      });
-      break;
-    }
-
-    case "organization.deleted": {
-      const { data } = event;
-      if (!data.id) {
-        throw new Error(
-          "organization.deleted - organization id not found in event data",
+      case "organization.created": {
+        const { data } = event;
+        await handleOrganizationCreated(
+          {
+            name: data.name,
+            organizationId: data.id,
+            slug: data.slug ?? "",
+            createdByClerkUserId: data.created_by,
+          },
+          ctx,
         );
+        break;
       }
-      await api.webhook.organizationDeleted({
-        organizationId: data.id,
-      });
-      break;
-    }
+      case "organizationMembership.created": {
+        const { data: orgMembershipData } = event;
+        await handleOrganizationMembershipCreated(
+          {
+            memberId: orgMembershipData.id,
+            organizationId: orgMembershipData.organization.id,
+            userId: orgMembershipData.public_user_data.user_id,
+            role: orgMembershipData.role,
+          },
+          ctx,
+        );
+        break;
+      }
 
-    default:
-      // Unhandled event type
-      break;
+      case "organizationMembership.deleted": {
+        const { data: orgMembershipDeletedData } = event;
+        await handleOrganizationMembershipDeleted(
+          { membershipId: orgMembershipDeletedData.id },
+          ctx,
+        );
+        break;
+      }
+
+      case "organization.deleted": {
+        const { data } = event;
+        if (!data.id) {
+          throw new Error(
+            "organization.deleted - organization id not found in event data",
+          );
+        }
+        await handleOrganizationDeleted({ organizationId: data.id }, ctx);
+        break;
+      }
+
+      default:
+        // Unhandled event type
+        break;
+    }
+  } catch (error) {
+    // Let Clerk retry non-duplicate failures. Log the event type and message
+    // only: the payload contains user and organization data.
+    console.error("Failed to process Clerk webhook", {
+      eventType: event.type,
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
+
+    return NextResponse.json(
+      { error: "Failed to process webhook" },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ success: true });

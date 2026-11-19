@@ -1,23 +1,33 @@
 import { and, count, eq, gte, sql } from "@convoform/db";
 import { form } from "@convoform/db/src/schema";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod/v4";
 
 import { getCurrentMonthDaysArray } from "../lib/utils";
-import { authProtectedProcedure } from "../procedures/authProtectedProcedure";
+import { orgProtectedProcedure } from "../procedures/orgProtectedProcedure";
 import { createTRPCRouter } from "../trpc";
 
 export const metricsRouter = createTRPCRouter({
-  getFormMetrics: authProtectedProcedure
+  getFormMetrics: orgProtectedProcedure
     .input(
       z.object({
         organizationId: z.string().min(1),
       }),
     )
     .query(async ({ input, ctx }) => {
+      if (input.organizationId !== ctx.orgId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Organization access denied",
+        });
+      }
+
+      const organizationId = ctx.orgId;
+
       const [result] = await ctx.db
         .select({ value: count() })
         .from(form)
-        .where(eq(form.organizationId, input.organizationId));
+        .where(eq(form.organizationId, organizationId));
 
       const totalCount = result?.value;
 
@@ -36,7 +46,7 @@ export const metricsRouter = createTRPCRouter({
         .from(form)
         .where(
           and(
-            eq(form.organizationId, input.organizationId),
+            eq(form.organizationId, organizationId),
             gte(form.createdAt, monthFirstDate),
           ),
         )
@@ -63,7 +73,7 @@ export const metricsRouter = createTRPCRouter({
       const [lastForm] = await ctx.db
         .select({ createdAt: form.createdAt })
         .from(form)
-        .where(eq(form.organizationId, input.organizationId))
+        .where(eq(form.organizationId, organizationId))
         .orderBy(sql`${form.createdAt} DESC`)
         .limit(1);
 

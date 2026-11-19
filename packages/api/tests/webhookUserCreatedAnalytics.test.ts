@@ -20,7 +20,9 @@ describe("webhook userCreated analytics", () => {
   });
 
   it("tracks user:create with Clerk distinct id and signup method without alias", async () => {
-    const { webhookRouter } = await import("../src/router/webhook");
+    const { handleUserCreated } = await import(
+      "../src/actions/webhook/clerkWebhook"
+    );
 
     const insertMock = mock().mockReturnValue({
       values: mock().mockReturnValue({
@@ -38,23 +40,17 @@ describe("webhook userCreated analytics", () => {
       }),
     });
 
-    const caller = webhookRouter.createCaller({
-      db: { insert: insertMock } as any,
-      auth: {},
-      user: null,
-      headers: undefined,
-      req: undefined,
-      rawBody: undefined,
-    });
-
-    await caller.userCreated({
-      email: "new@example.com",
-      firstName: "New",
-      lastName: "User",
-      userId: "user_clerk_1",
-      imageUrl: null,
-      signupMethod: "google",
-    });
+    await handleUserCreated(
+      {
+        email: "new@example.com",
+        firstName: "New",
+        lastName: "User",
+        userId: "user_clerk_1",
+        imageUrl: null,
+        signupMethod: "google",
+      },
+      { db: { insert: insertMock } as any },
+    );
 
     expect(trackMock).toHaveBeenCalledWith("user:create", {
       distinctId: "user_clerk_1",

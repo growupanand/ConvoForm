@@ -75,4 +75,14 @@ describe("metricsRouter.getFormMetrics", () => {
     expect(day15Entry?.count).toBe(1);
     expect(day2Entry?.count).toBe(0);
   });
+
+  it("rejects another organization's metrics", async () => {
+    const caller = metricsRouter.createCaller(mockCtx);
+
+    await expect(
+      caller.getFormMetrics({ organizationId: "org_other" }),
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+
+    expect(mockDb.select).not.toHaveBeenCalled();
+  });
 });

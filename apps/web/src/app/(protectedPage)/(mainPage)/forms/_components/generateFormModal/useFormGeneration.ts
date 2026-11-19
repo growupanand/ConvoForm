@@ -29,7 +29,6 @@ export function useFormGeneration({
   onFormGenerated,
   open,
   setOpen,
-  organizationId,
 }: GenerateFormModalProps) {
   const [state, setState] = useState<State>(initialState);
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
@@ -141,7 +140,6 @@ export function useFormGeneration({
         welcomeScreenMessage: metadataResult.welcomeScreenMessage,
         endingMessage: metadataResult.endingMessage,
         selectedFields: confirmedFields,
-        organizationId,
       });
 
       setState({
