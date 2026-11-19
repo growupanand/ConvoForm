@@ -6,8 +6,16 @@ import type {
 } from "@convoform/db/src/schema";
 import type { ActionContext } from "../../types/actionContextType";
 
+/**
+ * The audit writer must accept both the pooled client and the transaction
+ * handle so a mutation and its audit row commit (or roll back) together.
+ */
+export type AiProviderAuditDb = {
+  insert: ActionContext["db"]["insert"];
+};
+
 export type AiProviderAuditContext = {
-  db: ActionContext["db"];
+  db: AiProviderAuditDb;
   userId: string;
   orgId: string;
 };

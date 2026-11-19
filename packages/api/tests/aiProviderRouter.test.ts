@@ -16,10 +16,20 @@ const testAiProviderConnectionMock = mock(
   }),
 );
 const captureExceptionMock = mock(async () => undefined);
+const coreCreateRateLimitMock = mock(async () => undefined);
+const aiCredentialTestRateLimitMock = mock(async () => undefined);
 
 // Only the DNS/network check is replaced so the router tests stay offline.
 mock.module("../src/lib/aiCredentials/ssrf", () => ({
   assertSafeAiBaseUrl: assertSafeAiBaseUrlMock,
+}));
+
+mock.module("@convoform/rate-limiter", () => ({
+  enforceRateLimit: {
+    CORE_CREATE: coreCreateRateLimitMock,
+    AI_CREDENTIAL_TEST: aiCredentialTestRateLimitMock,
+  },
+  isRateLimitError: () => false,
 }));
 
 mock.module("@convoform/analytics", () => ({
@@ -99,6 +109,9 @@ function createDbMock() {
     returningRow: undefined as Record<string, unknown> | undefined,
     inserted: [] as Array<{ table: unknown; values: unknown }>,
     updated: [] as Array<{ table: unknown; values: unknown }>,
+    updateWheres: [] as Array<{ table: unknown; condition: unknown }>,
+    /** When set, each `.returning()` consumes the next entry. */
+    updateResults: null as unknown[][] | null,
     conflicts: [] as unknown[],
     deleted: [] as unknown[],
     auditRows: [] as Record<string, unknown>[],
@@ -136,10 +149,20 @@ function createDbMock() {
     set: (values: unknown) => {
       state.updated.push({ table, values });
       return {
-        where: () => ({
-          returning: async () =>
-            state.returningRow ? [state.returningRow] : [],
-        }),
+        where: (condition: unknown) => {
+          state.updateWheres.push({ table, condition });
+          return {
+            returning: async () => {
+              if (state.updateResults) {
+                return state.updateResults.shift() ?? [];
+              }
+              if (state.returningRow) {
+                return [state.returningRow];
+              }
+              return state.credential ? [state.credential] : [];
+            },
+          };
+        },
       };
     },
   }));
@@ -150,7 +173,7 @@ function createDbMock() {
     },
   }));
 
-  const db = {
+  const dbBase = {
     query: {
       aiProviderCredential: {
         findFirst: credentialFindFirst,
@@ -165,9 +188,16 @@ function createDbMock() {
     delete: deleteMock,
   };
 
+  const transaction = mock(async (callback: (tx: typeof dbBase) => unknown) =>
+    callback(dbBase),
+  );
+
+  const db = { ...dbBase, transaction };
+
   return {
     db,
     state,
+    transaction,
     credentialFindFirst,
     credentialFindMany,
     settingsFindFirst,
@@ -196,12 +226,68 @@ beforeEach(() => {
   assertSafeAiBaseUrlMock.mockClear();
   testAiProviderConnectionMock.mockClear();
   captureExceptionMock.mockClear();
+  coreCreateRateLimitMock.mockClear();
+  aiCredentialTestRateLimitMock.mockClear();
 });
 
 afterEach(() => {
   process.env.AI_CREDENTIALS_MASTER_KEY = undefined;
   process.env.AI_CREDENTIALS_MASTER_KEY_VERSION = undefined;
 });
+
+/** Extracts literal values and column names from a Drizzle condition. */
+function collectCondition(condition: unknown) {
+  const values: unknown[] = [];
+  const columns: string[] = [];
+
+  const walk = (chunk: unknown) => {
+    if (!chunk || typeof chunk !== "object") {
+      return;
+    }
+
+    const record = chunk as {
+      constructor?: { name?: string };
+      value?: unknown;
+      table?: unknown;
+      name?: unknown;
+      column?: unknown;
+      queryChunks?: unknown[];
+    };
+
+    if (record.constructor?.name === "Param") {
+      values.push(record.value);
+    }
+
+    if (record.table && typeof record.name === "string") {
+      columns.push(record.name);
+    }
+
+    // A mocked `eq` can hand back a plain `{ column, value }` object.
+    const column = record.column as
+      | { name?: unknown; table?: unknown }
+      | undefined;
+    if (column?.table && typeof column.name === "string") {
+      columns.push(column.name);
+      values.push(record.value);
+    }
+
+    if (Array.isArray(record.queryChunks)) {
+      for (const child of record.queryChunks) {
+        walk(child);
+      }
+    }
+  };
+
+  walk(condition);
+
+  return { values, columns };
+}
+
+function credentialUpdates(dbMock: ReturnType<typeof createDbMock>) {
+  return dbMock.state.updated.filter(
+    (entry) => entry.table === aiProviderCredential,
+  );
+}
 
 describe("aiProviderRouter", () => {
   describe("list", () => {
@@ -310,6 +396,10 @@ describe("aiProviderRouter", () => {
           provider: "openai",
         }),
       ]);
+      expect(dbMock.transaction).toHaveBeenCalledTimes(1);
+      expect(coreCreateRateLimitMock).toHaveBeenCalledWith(
+        `${organizationId}:${userId}`,
+      );
     });
 
     it("normalizes a safe custom base URL", async () => {
@@ -422,6 +512,57 @@ describe("aiProviderRouter", () => {
       expect(dbMock.state.auditRows).toEqual([
         expect.objectContaining({ action: "replace", userId }),
       ]);
+      expect(dbMock.transaction).toHaveBeenCalledTimes(1);
+      expect(coreCreateRateLimitMock).toHaveBeenCalledWith(
+        `${organizationId}:${userId}`,
+      );
+    });
+
+    it("resets a credential selected for a use case to untested", async () => {
+      const dbMock = createDbMock();
+      dbMock.state.credential = createCredential({
+        status: "active",
+        lastTestResult: "success",
+      });
+      dbMock.state.settings = {
+        id: "settings_1",
+        organizationId,
+        chatCredentialId: "credential_1",
+        chatModel: "gpt-4o-mini",
+        decisionsCredentialId: null,
+        decisionsModel: null,
+        backgroundCredentialId: null,
+        backgroundModel: null,
+        createdAt: now,
+        updatedAt: now,
+      };
+      dbMock.state.returningRow = createCredential({
+        status: "untested",
+        lastTestedAt: null,
+        lastTestResult: null,
+        last4: "cdef",
+      });
+
+      const caller = aiProviderRouter.createCaller(createCtx(dbMock.db));
+      const result = await caller.replace({
+        id: "credential_1",
+        secret: "sk-new-provider-key-abcdef",
+      });
+
+      // PR 2 may keep the chat selection pointing at this id, but must not
+      // treat it as active until it is tested again.
+      expect(result.status).toBe("untested");
+      const updated = credentialUpdates(dbMock)[0];
+      expect(updated?.values).toMatchObject({
+        status: "untested",
+        lastTestedAt: null,
+        lastTestResult: null,
+      });
+      expect(
+        dbMock.state.updated.some(
+          (entry) => entry.table === organizationAiSettings,
+        ),
+      ).toBe(false);
     });
 
     it("rejects a credential from another organization", async () => {
@@ -476,6 +617,7 @@ describe("aiProviderRouter", () => {
       expect(dbMock.state.auditRows).toEqual([
         expect.objectContaining({ action: "delete", userId }),
       ]);
+      expect(dbMock.transaction).toHaveBeenCalledTimes(1);
     });
 
     it("rejects a credential from another organization", async () => {
@@ -537,6 +679,7 @@ describe("aiProviderRouter", () => {
           userId,
         }),
       ]);
+      expect(dbMock.transaction).toHaveBeenCalledTimes(1);
     });
 
     it("rejects an untested credential", async () => {
@@ -602,6 +745,7 @@ describe("aiProviderRouter", () => {
       expect(dbMock.state.auditRows).toEqual([
         expect.objectContaining({ action: "deactivate", userId }),
       ]);
+      expect(dbMock.transaction).toHaveBeenCalledTimes(1);
     });
 
     it("reactivates only a previously tested credential", async () => {
@@ -673,6 +817,111 @@ describe("aiProviderRouter", () => {
           userId,
         }),
       ]);
+      expect(dbMock.transaction).toHaveBeenCalledTimes(1);
+      expect(aiCredentialTestRateLimitMock).toHaveBeenCalledWith(
+        `${organizationId}:${userId}`,
+      );
+    });
+
+    it("records the result but keeps a disabled credential disabled", async () => {
+      const dbMock = createDbMock();
+      const disabled = await createEncryptedCredential({ status: "disabled" });
+      dbMock.state.credential = disabled;
+      // The status update is guarded by `status <> 'disabled'`, so it matches
+      // no row; the fallback update only records the test outcome.
+      dbMock.state.updateResults = [[], [disabled]];
+
+      const caller = aiProviderRouter.createCaller(createCtx(dbMock.db));
+      const result = await caller.test({ id: "credential_1" });
+
+      expect(result).toMatchObject({ ok: true });
+
+      const updates = credentialUpdates(dbMock);
+      expect(updates).toHaveLength(2);
+      const [statusUpdate, testStateUpdate] = updates;
+      expect(statusUpdate?.values).toMatchObject({ status: "active" });
+      expect(testStateUpdate?.values).toMatchObject({
+        lastTestResult: "success",
+      });
+      expect(testStateUpdate?.values).toHaveProperty("lastTestedAt");
+      expect(testStateUpdate?.values).not.toHaveProperty("status");
+
+      const statusWhere = collectCondition(
+        dbMock.state.updateWheres[0]?.condition,
+      );
+      expect(statusWhere.columns).toContain("wrappedDataKey");
+      expect(statusWhere.values).toContain(disabled.wrappedDataKey);
+      expect(statusWhere.columns).toContain("status");
+      expect(statusWhere.values).toContain("disabled");
+
+      const fallbackWhere = collectCondition(
+        dbMock.state.updateWheres[1]?.condition,
+      );
+      expect(fallbackWhere.columns).toContain("wrappedDataKey");
+      expect(fallbackWhere.values).toContain(disabled.wrappedDataKey);
+
+      expect(dbMock.state.auditRows).toEqual([
+        expect.objectContaining({
+          action: "test",
+          result: "success",
+          credentialId: "credential_1",
+        }),
+      ]);
+    });
+
+    it("does not activate a credential replaced while the test was in flight", async () => {
+      const dbMock = createDbMock();
+      const tested = await createEncryptedCredential();
+      const replacement = await createEncryptedCredential({
+        status: "untested",
+        lastTestedAt: null,
+        lastTestResult: null,
+      });
+      dbMock.state.credential = tested;
+      // The replacement key no longer matches the guarded UPDATE.
+      dbMock.state.updateResults = [[]];
+
+      testAiProviderConnectionMock.mockImplementationOnce(async () => {
+        dbMock.state.credential = replacement;
+        return { ok: true, provider: "openai", model: "gpt-4o-mini" };
+      });
+
+      const caller = aiProviderRouter.createCaller(createCtx(dbMock.db));
+      const result = await caller.test({ id: "credential_1" });
+
+      expect(result).toMatchObject({ ok: true });
+      expect((dbMock.state.credential as Record<string, unknown>).status).toBe(
+        "untested",
+      );
+
+      const guard = collectCondition(dbMock.state.updateWheres[0]?.condition);
+      expect(guard.columns).toContain("wrappedDataKey");
+      expect(guard.values).toContain(tested.wrappedDataKey);
+      expect(guard.values).not.toContain(replacement.wrappedDataKey);
+    });
+
+    it("does not mark a replaced key as failing after a decryption failure", async () => {
+      const dbMock = createDbMock();
+      dbMock.state.credential = createCredential({
+        encryptedSecret: "not-valid-ciphertext",
+        iv: "not-valid-iv",
+        wrappedDataKey: "1.not.valid",
+      });
+      // A replace happened before the failure update: the guarded WHERE
+      // matches no row and the replacement key keeps its status.
+      dbMock.state.updateResults = [[]];
+
+      const caller = aiProviderRouter.createCaller(createCtx(dbMock.db));
+      const result = await caller.test({ id: "credential_1" });
+
+      expect(result).toMatchObject({
+        ok: false,
+        errorCode: "invalid_configuration",
+      });
+
+      const guard = collectCondition(dbMock.state.updateWheres[0]?.condition);
+      expect(guard.columns).toContain("wrappedDataKey");
+      expect(guard.values).toContain("1.not.valid");
     });
 
     it("marks a failing credential and records a safe error code", async () => {
@@ -738,6 +987,7 @@ describe("aiProviderRouter", () => {
           errorCode: "decryption_failed",
         }),
       ]);
+      expect(dbMock.transaction).toHaveBeenCalledTimes(1);
     });
 
     it("rejects a saved credential from another organization", async () => {
@@ -783,6 +1033,9 @@ describe("aiProviderRouter", () => {
       ]);
       const audit = dbMock.state.auditRows[0] as Record<string, unknown>;
       expect(JSON.stringify(audit)).not.toContain(secret);
+      expect(aiCredentialTestRateLimitMock).toHaveBeenCalledWith(
+        `${organizationId}:${userId}`,
+      );
     });
 
     it("rejects an unsaved custom test without a base URL", async () => {

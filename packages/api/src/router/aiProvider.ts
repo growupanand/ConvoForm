@@ -3,7 +3,7 @@ import {
   encryptAiCredentialSecret,
   getAiCredentialLast4,
 } from "@convoform/common";
-import { and, eq } from "@convoform/db";
+import { and, eq, ne } from "@convoform/db";
 import {
   type AiProviderCredential,
   type OrganizationAiSettings,
@@ -16,9 +16,13 @@ import {
   forgetSensitiveValue,
   registerSensitiveValue,
 } from "@convoform/logger";
+import { enforceRateLimit } from "@convoform/rate-limiter";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod/v4";
-import { recordAiProviderAudit } from "../lib/aiCredentials/audit";
+import {
+  type AiProviderAuditDb,
+  recordAiProviderAudit,
+} from "../lib/aiCredentials/audit";
 import {
   getAiCredentialMasterKey,
   getCurrentAiCredentialKeyVersion,
@@ -122,8 +126,19 @@ type PublicCredentialFields = Pick<
   | "updatedAt"
 >;
 
+type AiProviderDb = ActionContext["db"];
+type AiProviderTx = Parameters<Parameters<AiProviderDb["transaction"]>[0]>[0];
+
+type AiProviderDbLike = {
+  insert: AiProviderDb["insert"];
+  update: AiProviderDb["update"];
+  delete: AiProviderDb["delete"];
+  query: AiProviderDb["query"];
+  transaction: AiProviderDb["transaction"];
+};
+
 type AiProviderRouterContext = {
-  db: ActionContext["db"];
+  db: AiProviderDbLike;
   orgId: string;
 };
 
@@ -318,23 +333,69 @@ function useCasePatch(
   }
 }
 
-async function updateCredentialTestState(
-  ctx: { db: AiProviderRouterContext["db"]; orgId: string },
-  id: string,
-  result: AiProviderConnectionTestResult,
+function aiCredentialRateLimitIdentifier(ctx: {
+  orgId: string;
+  userId: string;
+}) {
+  return `${ctx.orgId}:${ctx.userId}`;
+}
+
+function auditContext(
+  ctx: { userId: string; orgId: string },
+  db: AiProviderAuditDb,
 ) {
-  await ctx.db
+  return { db, userId: ctx.userId, orgId: ctx.orgId };
+}
+
+async function updateCredentialTestState(
+  tx: AiProviderTx,
+  params: {
+    orgId: string;
+    id: string;
+    /** The wrapped key that was actually decrypted for this test. */
+    wrappedDataKey: string;
+    status: "active" | "failing";
+    lastTestResult: string;
+  },
+) {
+  const updatedAt = new Date();
+  const testFields = {
+    lastTestedAt: updatedAt,
+    lastTestResult: params.lastTestResult,
+    updatedAt,
+  };
+
+  // Only the exact key that was tested may change status. If the credential
+  // was replaced while the test was in flight, the WHERE matches nothing and
+  // the new key keeps its `untested` status.
+  const [updated] = await tx
     .update(aiProviderCredential)
-    .set({
-      status: result.ok ? "active" : "failing",
-      lastTestedAt: new Date(),
-      lastTestResult: result.ok ? "success" : result.errorCode,
-      updatedAt: new Date(),
-    })
+    .set({ status: params.status, ...testFields })
     .where(
       and(
-        eq(aiProviderCredential.id, id),
-        eq(aiProviderCredential.organizationId, ctx.orgId),
+        eq(aiProviderCredential.id, params.id),
+        eq(aiProviderCredential.organizationId, params.orgId),
+        eq(aiProviderCredential.wrappedDataKey, params.wrappedDataKey),
+        ne(aiProviderCredential.status, "disabled"),
+      ),
+    )
+    .returning({ id: aiProviderCredential.id });
+
+  if (updated) {
+    return;
+  }
+
+  // A disabled credential keeps its status no matter what the test says, but
+  // the test outcome is still recorded. The same stale-key guard applies.
+  await tx
+    .update(aiProviderCredential)
+    .set(testFields)
+    .where(
+      and(
+        eq(aiProviderCredential.id, params.id),
+        eq(aiProviderCredential.organizationId, params.orgId),
+        eq(aiProviderCredential.wrappedDataKey, params.wrappedDataKey),
+        eq(aiProviderCredential.status, "disabled"),
       ),
     );
 }
@@ -374,6 +435,8 @@ export const aiProviderRouter = createTRPCRouter({
   create: orgProtectedProcedure
     .input(createInputSchema)
     .mutation(async ({ ctx, input }) => {
+      await enforceRateLimit.CORE_CREATE(aiCredentialRateLimitIdentifier(ctx));
+
       const connection = await normalizeConnectionFields(input);
 
       return withRedactedSecret(input.secret, async () => {
@@ -385,47 +448,49 @@ export const aiProviderRouter = createTRPCRouter({
           keyVersion: getCurrentAiCredentialKeyVersion(),
         });
 
-        let row: AiProviderCredential | undefined;
-        try {
-          [row] = await ctx.db
-            .insert(aiProviderCredential)
-            .values({
-              organizationId: ctx.orgId,
-              provider: input.provider,
-              label: input.label,
-              baseUrl: connection.baseUrl,
-              accountId: connection.accountId,
-              encryptedSecret: ciphertext.encryptedSecret,
-              iv: ciphertext.iv,
-              wrappedDataKey: ciphertext.wrappedDataKey,
-              keyVersion: ciphertext.keyVersion,
-              last4: getAiCredentialLast4(input.secret),
-              status: "untested",
-              createdBy: ctx.userId,
-            })
-            .returning();
-        } catch {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Could not save the AI provider credential",
-          });
-        }
+        return ctx.db.transaction(async (tx) => {
+          let row: AiProviderCredential | undefined;
+          try {
+            [row] = await tx
+              .insert(aiProviderCredential)
+              .values({
+                organizationId: ctx.orgId,
+                provider: input.provider,
+                label: input.label,
+                baseUrl: connection.baseUrl,
+                accountId: connection.accountId,
+                encryptedSecret: ciphertext.encryptedSecret,
+                iv: ciphertext.iv,
+                wrappedDataKey: ciphertext.wrappedDataKey,
+                keyVersion: ciphertext.keyVersion,
+                last4: getAiCredentialLast4(input.secret),
+                status: "untested",
+                createdBy: ctx.userId,
+              })
+              .returning();
+          } catch {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Could not save the AI provider credential",
+            });
+          }
 
-        if (!row) {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Could not save the AI provider credential",
-          });
-        }
+          if (!row) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Could not save the AI provider credential",
+            });
+          }
 
-        await recordAiProviderAudit(ctx, {
-          action: "create",
-          result: "success",
-          provider: row.provider,
-          credentialId: row.id,
+          await recordAiProviderAudit(auditContext(ctx, tx), {
+            action: "create",
+            result: "success",
+            provider: row.provider,
+            credentialId: row.id,
+          });
+
+          return toPublicCredential(row);
         });
-
-        return toPublicCredential(row);
       });
     }),
 
@@ -436,6 +501,8 @@ export const aiProviderRouter = createTRPCRouter({
   replace: orgProtectedProcedure
     .input(replaceInputSchema)
     .mutation(async ({ ctx, input }) => {
+      await enforceRateLimit.CORE_CREATE(aiCredentialRateLimitIdentifier(ctx));
+
       const existing = await getCredentialForOrg(ctx, input.id);
 
       const connection = await normalizeConnectionFields({
@@ -453,50 +520,52 @@ export const aiProviderRouter = createTRPCRouter({
           keyVersion: getCurrentAiCredentialKeyVersion(),
         });
 
-        let row: AiProviderCredential | undefined;
-        try {
-          [row] = await ctx.db
-            .update(aiProviderCredential)
-            .set({
-              label: input.label ?? existing.label,
-              baseUrl: connection.baseUrl,
-              accountId: connection.accountId,
-              encryptedSecret: ciphertext.encryptedSecret,
-              iv: ciphertext.iv,
-              wrappedDataKey: ciphertext.wrappedDataKey,
-              keyVersion: ciphertext.keyVersion,
-              last4: getAiCredentialLast4(input.secret),
-              status: "untested",
-              lastTestedAt: null,
-              lastTestResult: null,
-              updatedAt: new Date(),
-            })
-            .where(
-              and(
-                eq(aiProviderCredential.id, existing.id),
-                eq(aiProviderCredential.organizationId, ctx.orgId),
-              ),
-            )
-            .returning();
-        } catch {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Could not replace the AI provider credential",
+        return ctx.db.transaction(async (tx) => {
+          let row: AiProviderCredential | undefined;
+          try {
+            [row] = await tx
+              .update(aiProviderCredential)
+              .set({
+                label: input.label ?? existing.label,
+                baseUrl: connection.baseUrl,
+                accountId: connection.accountId,
+                encryptedSecret: ciphertext.encryptedSecret,
+                iv: ciphertext.iv,
+                wrappedDataKey: ciphertext.wrappedDataKey,
+                keyVersion: ciphertext.keyVersion,
+                last4: getAiCredentialLast4(input.secret),
+                status: "untested",
+                lastTestedAt: null,
+                lastTestResult: null,
+                updatedAt: new Date(),
+              })
+              .where(
+                and(
+                  eq(aiProviderCredential.id, existing.id),
+                  eq(aiProviderCredential.organizationId, ctx.orgId),
+                ),
+              )
+              .returning();
+          } catch {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Could not replace the AI provider credential",
+            });
+          }
+
+          if (!row) {
+            throw notFoundError();
+          }
+
+          await recordAiProviderAudit(auditContext(ctx, tx), {
+            action: "replace",
+            result: "success",
+            provider: row.provider,
+            credentialId: row.id,
           });
-        }
 
-        if (!row) {
-          throw notFoundError();
-        }
-
-        await recordAiProviderAudit(ctx, {
-          action: "replace",
-          result: "success",
-          provider: row.provider,
-          credentialId: row.id,
+          return toPublicCredential(row);
         });
-
-        return toPublicCredential(row);
       });
     }),
 
@@ -507,52 +576,57 @@ export const aiProviderRouter = createTRPCRouter({
   delete: orgProtectedProcedure
     .input(credentialIdInput)
     .mutation(async ({ ctx, input }) => {
-      const existing = await getCredentialForOrg(ctx, input.id);
-
-      const settings = await ctx.db.query.organizationAiSettings.findFirst({
-        where: eq(organizationAiSettings.organizationId, ctx.orgId),
-      });
-
-      if (settings) {
-        const patch: Partial<OrganizationAiSettings> = {};
-        if (settings.chatCredentialId === existing.id) {
-          patch.chatCredentialId = null;
-          patch.chatModel = null;
-        }
-        if (settings.decisionsCredentialId === existing.id) {
-          patch.decisionsCredentialId = null;
-          patch.decisionsModel = null;
-        }
-        if (settings.backgroundCredentialId === existing.id) {
-          patch.backgroundCredentialId = null;
-          patch.backgroundModel = null;
-        }
-
-        if (Object.keys(patch).length > 0) {
-          await ctx.db
-            .update(organizationAiSettings)
-            .set({ ...patch, updatedAt: new Date() })
-            .where(eq(organizationAiSettings.organizationId, ctx.orgId));
-        }
-      }
-
-      await ctx.db
-        .delete(aiProviderCredential)
-        .where(
-          and(
-            eq(aiProviderCredential.id, existing.id),
-            eq(aiProviderCredential.organizationId, ctx.orgId),
-          ),
+      return ctx.db.transaction(async (tx) => {
+        const existing = await getCredentialForOrg(
+          { db: tx, orgId: ctx.orgId },
+          input.id,
         );
 
-      await recordAiProviderAudit(ctx, {
-        action: "delete",
-        result: "success",
-        provider: existing.provider,
-        credentialId: existing.id,
-      });
+        const settings = await tx.query.organizationAiSettings.findFirst({
+          where: eq(organizationAiSettings.organizationId, ctx.orgId),
+        });
 
-      return { success: true };
+        if (settings) {
+          const patch: Partial<OrganizationAiSettings> = {};
+          if (settings.chatCredentialId === existing.id) {
+            patch.chatCredentialId = null;
+            patch.chatModel = null;
+          }
+          if (settings.decisionsCredentialId === existing.id) {
+            patch.decisionsCredentialId = null;
+            patch.decisionsModel = null;
+          }
+          if (settings.backgroundCredentialId === existing.id) {
+            patch.backgroundCredentialId = null;
+            patch.backgroundModel = null;
+          }
+
+          if (Object.keys(patch).length > 0) {
+            await tx
+              .update(organizationAiSettings)
+              .set({ ...patch, updatedAt: new Date() })
+              .where(eq(organizationAiSettings.organizationId, ctx.orgId));
+          }
+        }
+
+        await tx
+          .delete(aiProviderCredential)
+          .where(
+            and(
+              eq(aiProviderCredential.id, existing.id),
+              eq(aiProviderCredential.organizationId, ctx.orgId),
+            ),
+          );
+
+        await recordAiProviderAudit(auditContext(ctx, tx), {
+          action: "delete",
+          result: "success",
+          provider: existing.provider,
+          credentialId: existing.id,
+        });
+
+        return { success: true };
+      });
     }),
 
   /**
@@ -562,50 +636,55 @@ export const aiProviderRouter = createTRPCRouter({
   setUseCaseModel: orgProtectedProcedure
     .input(setUseCaseModelInputSchema)
     .mutation(async ({ ctx, input }) => {
-      let credential: AiProviderCredential | undefined;
+      return ctx.db.transaction(async (tx) => {
+        let credential: AiProviderCredential | undefined;
 
-      if (input.credentialId) {
-        if (!input.model) {
-          throw badRequestError("A model is required for this credential");
-        }
+        if (input.credentialId) {
+          if (!input.model) {
+            throw badRequestError("A model is required for this credential");
+          }
 
-        credential = await getCredentialForOrg(ctx, input.credentialId);
-
-        if (credential.status !== "active") {
-          throw badRequestError(
-            "Test this credential successfully before using it",
+          credential = await getCredentialForOrg(
+            { db: tx, orgId: ctx.orgId },
+            input.credentialId,
           );
+
+          if (credential.status !== "active") {
+            throw badRequestError(
+              "Test this credential successfully before using it",
+            );
+          }
+        } else if (input.model) {
+          throw badRequestError("Choose a credential when selecting a model");
         }
-      } else if (input.model) {
-        throw badRequestError("Choose a credential when selecting a model");
-      }
 
-      const patch = useCasePatch(
-        input.useCase,
-        input.credentialId,
-        input.model,
-      );
+        const patch = useCasePatch(
+          input.useCase,
+          input.credentialId,
+          input.model,
+        );
 
-      const [updated] = await ctx.db
-        .insert(organizationAiSettings)
-        .values({
-          organizationId: ctx.orgId,
-          ...patch,
-        })
-        .onConflictDoUpdate({
-          target: organizationAiSettings.organizationId,
-          set: patch,
-        })
-        .returning();
+        const [updated] = await tx
+          .insert(organizationAiSettings)
+          .values({
+            organizationId: ctx.orgId,
+            ...patch,
+          })
+          .onConflictDoUpdate({
+            target: organizationAiSettings.organizationId,
+            set: patch,
+          })
+          .returning();
 
-      await recordAiProviderAudit(ctx, {
-        action: "set_use_case_model",
-        result: "success",
-        provider: credential?.provider ?? null,
-        credentialId: credential?.id ?? null,
+        await recordAiProviderAudit(auditContext(ctx, tx), {
+          action: "set_use_case_model",
+          result: "success",
+          provider: credential?.provider ?? null,
+          credentialId: credential?.id ?? null,
+        });
+
+        return toPublicSettings(updated);
       });
-
-      return toPublicSettings(updated);
     }),
 
   /**
@@ -615,37 +694,42 @@ export const aiProviderRouter = createTRPCRouter({
   setEnabled: orgProtectedProcedure
     .input(setEnabledInputSchema)
     .mutation(async ({ ctx, input }) => {
-      const existing = await getCredentialForOrg(ctx, input.id);
+      return ctx.db.transaction(async (tx) => {
+        const existing = await getCredentialForOrg(
+          { db: tx, orgId: ctx.orgId },
+          input.id,
+        );
 
-      const status = input.enabled
-        ? existing.lastTestResult === "success"
-          ? "active"
-          : "untested"
-        : "disabled";
+        const status = input.enabled
+          ? existing.lastTestResult === "success"
+            ? "active"
+            : "untested"
+          : "disabled";
 
-      const [row] = await ctx.db
-        .update(aiProviderCredential)
-        .set({ status, updatedAt: new Date() })
-        .where(
-          and(
-            eq(aiProviderCredential.id, existing.id),
-            eq(aiProviderCredential.organizationId, ctx.orgId),
-          ),
-        )
-        .returning();
+        const [row] = await tx
+          .update(aiProviderCredential)
+          .set({ status, updatedAt: new Date() })
+          .where(
+            and(
+              eq(aiProviderCredential.id, existing.id),
+              eq(aiProviderCredential.organizationId, ctx.orgId),
+            ),
+          )
+          .returning();
 
-      if (!row) {
-        throw notFoundError();
-      }
+        if (!row) {
+          throw notFoundError();
+        }
 
-      await recordAiProviderAudit(ctx, {
-        action: input.enabled ? "activate" : "deactivate",
-        result: "success",
-        provider: row.provider,
-        credentialId: row.id,
+        await recordAiProviderAudit(auditContext(ctx, tx), {
+          action: input.enabled ? "activate" : "deactivate",
+          result: "success",
+          provider: row.provider,
+          credentialId: row.id,
+        });
+
+        return toPublicCredential(row);
       });
-
-      return toPublicCredential(row);
     }),
 
   /**
@@ -656,8 +740,16 @@ export const aiProviderRouter = createTRPCRouter({
   test: orgProtectedProcedure
     .input(testInputSchema)
     .mutation(async ({ ctx, input }) => {
+      await enforceRateLimit.AI_CREDENTIAL_TEST(
+        aiCredentialRateLimitIdentifier(ctx),
+      );
+
       if (input.id) {
         const existing = await getCredentialForOrg(ctx, input.id);
+
+        // Remember which key was read. A replace while the test is in flight
+        // must not let this result change the new key's status.
+        const testedWrappedDataKey = existing.wrappedDataKey;
 
         let secret: string;
         try {
@@ -680,27 +772,22 @@ export const aiProviderRouter = createTRPCRouter({
             message: "The saved credential could not be read. Replace the key.",
           } as const;
 
-          await ctx.db
-            .update(aiProviderCredential)
-            .set({
+          await ctx.db.transaction(async (tx) => {
+            await updateCredentialTestState(tx, {
+              orgId: ctx.orgId,
+              id: existing.id,
+              wrappedDataKey: testedWrappedDataKey,
               status: "failing",
-              lastTestedAt: new Date(),
               lastTestResult: "decryption_failed",
-              updatedAt: new Date(),
-            })
-            .where(
-              and(
-                eq(aiProviderCredential.id, existing.id),
-                eq(aiProviderCredential.organizationId, ctx.orgId),
-              ),
-            );
+            });
 
-          await recordAiProviderAudit(ctx, {
-            action: "test",
-            result: "failure",
-            provider: existing.provider,
-            credentialId: existing.id,
-            errorCode: "decryption_failed",
+            await recordAiProviderAudit(auditContext(ctx, tx), {
+              action: "test",
+              result: "failure",
+              provider: existing.provider,
+              credentialId: existing.id,
+              errorCode: "decryption_failed",
+            });
           });
 
           return result;
@@ -716,14 +803,22 @@ export const aiProviderRouter = createTRPCRouter({
           }),
         );
 
-        await updateCredentialTestState(ctx, existing.id, result);
+        await ctx.db.transaction(async (tx) => {
+          await updateCredentialTestState(tx, {
+            orgId: ctx.orgId,
+            id: existing.id,
+            wrappedDataKey: testedWrappedDataKey,
+            status: result.ok ? "active" : "failing",
+            lastTestResult: result.ok ? "success" : result.errorCode,
+          });
 
-        await recordAiProviderAudit(ctx, {
-          action: "test",
-          result: result.ok ? "success" : "failure",
-          provider: existing.provider,
-          credentialId: existing.id,
-          errorCode: result.ok ? null : result.errorCode,
+          await recordAiProviderAudit(auditContext(ctx, tx), {
+            action: "test",
+            result: result.ok ? "success" : "failure",
+            provider: existing.provider,
+            credentialId: existing.id,
+            errorCode: result.ok ? null : result.errorCode,
+          });
         });
 
         return result;

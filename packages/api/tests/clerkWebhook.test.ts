@@ -14,15 +14,55 @@ mock.module("@convoform/analytics", () => ({
   },
 }));
 
-const { handleUserCreated, handleUserDeleted } = await import(
-  "../src/actions/webhook/clerkWebhook"
-);
-const { user } = await import("@convoform/db/src/schema");
+const { handleOrganizationDeleted, handleUserCreated, handleUserDeleted } =
+  await import("../src/actions/webhook/clerkWebhook");
+const {
+  aiProviderCredential,
+  organization,
+  organizationAiSettings,
+  organizationMember,
+  user,
+} = await import("@convoform/db/src/schema");
 
 describe("Clerk webhook handlers", () => {
   beforeEach(() => {
     eqMock.mockClear();
     trackMock.mockClear();
+  });
+
+  it("deletes organization AI data before the organization in one transaction", async () => {
+    const deletedTables: unknown[] = [];
+    const deleteMock = mock((table: unknown) => {
+      deletedTables.push(table);
+      return {
+        where: mock(() => ({
+          returning: mock(async () =>
+            table === organization ? [{ organizationId: "org_clerk_1" }] : [],
+          ),
+        })),
+      };
+    });
+    const transaction = mock(async (callback: (tx: unknown) => unknown) =>
+      callback({ delete: deleteMock }),
+    );
+
+    await handleOrganizationDeleted(
+      { organizationId: "org_clerk_1" },
+      { db: { transaction } as any },
+    );
+
+    expect(transaction).toHaveBeenCalledTimes(1);
+    // Settings reference credentials, so they must be deleted first. Audit
+    // rows are deliberately never deleted here.
+    expect(deletedTables).toEqual([
+      organizationAiSettings,
+      aiProviderCredential,
+      organizationMember,
+      organization,
+    ]);
+    expect(trackMock).toHaveBeenCalledWith("organization:delete", {
+      properties: { organizationId: "org_clerk_1" },
+    });
   });
 
   it("deletes users by Clerk userId, not the internal row id", async () => {

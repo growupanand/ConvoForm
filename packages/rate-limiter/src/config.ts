@@ -39,6 +39,12 @@ export const RATE_LIMIT_CONFIGS = {
     prefix: RateLimitPrefix.AI,
     description: "AI requests from authenticated users",
   },
+  [RateLimitCategory.AI_CREDENTIAL_TEST]: {
+    requests: 20,
+    window: "1h",
+    prefix: RateLimitPrefix.AI,
+    description: "BYOK provider connection tests",
+  },
   [RateLimitCategory.FILE_UPLOAD]: {
     requests: 1,
     window: "10s",
