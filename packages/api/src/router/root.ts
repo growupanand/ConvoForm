@@ -1,5 +1,6 @@
 import { createTRPCRouter } from "../trpc";
 import { aiFormGenerationRouter } from "./aiFormGeneration";
+import { aiProviderRouter } from "./aiProvider";
 import { channelConnectionRouter } from "./channelConnection";
 import { conversationRouter } from "./conversation";
 import { emailRouter } from "./email";
@@ -32,6 +33,7 @@ export const appRouter = createTRPCRouter({
   usage: usageRouter,
   google: googleRouter,
   aiFormGeneration: aiFormGenerationRouter,
+  aiProvider: aiProviderRouter,
   email: emailRouter,
   integration: integrationRouter,
 });

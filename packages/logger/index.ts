@@ -21,6 +21,15 @@ export type {
   LogLevel,
 } from "./src/types";
 
+export {
+  REDACTED_VALUE,
+  clearSensitiveValues,
+  forgetSensitiveValue,
+  redactSensitiveData,
+  redactText,
+  registerSensitiveValue,
+} from "./src/redaction";
+
 // Singleton instance
 let loggerInstance: ILogger | null = null;
 

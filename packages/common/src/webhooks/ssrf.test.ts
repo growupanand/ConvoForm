@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import {
   UnsafeWebhookUrlError,
+  assertSafeAiBaseUrl,
   assertSafeWebhookUrl,
   isBlockedIpAddress,
 } from "./ssrf";
@@ -154,5 +155,54 @@ describe("assertSafeWebhookUrl", () => {
     expect(isBlockedIpAddress("93.184.216.34")).toBe(false);
     expect(isBlockedIpAddress("2001:4860:4860::8888")).toBe(false);
     expect(isBlockedIpAddress("::ffff:8.8.8.8")).toBe(false);
+  });
+});
+
+describe("assertSafeAiBaseUrl", () => {
+  const options = {
+    resolver: publicResolver,
+    allowHttpLocalhost: false,
+  };
+
+  it("allows a public https base URL", async () => {
+    await expect(
+      assertSafeAiBaseUrl("https://api.example.ai/v1", options),
+    ).resolves.toBeInstanceOf(URL);
+  });
+
+  it("rejects http even when it is a public host", async () => {
+    await expect(
+      assertSafeAiBaseUrl("http://api.example.ai/v1", options),
+    ).rejects.toBeInstanceOf(UnsafeWebhookUrlError);
+  });
+
+  it("rejects non-standard ports", async () => {
+    await expect(
+      assertSafeAiBaseUrl("https://api.example.ai:8443/v1", options),
+    ).rejects.toBeInstanceOf(UnsafeWebhookUrlError);
+  });
+
+  it("rejects private and metadata addresses", async () => {
+    await expect(
+      assertSafeAiBaseUrl("https://10.0.0.5/v1", options),
+    ).rejects.toBeInstanceOf(UnsafeWebhookUrlError);
+    await expect(
+      assertSafeAiBaseUrl("https://169.254.169.254/latest/meta-data", options),
+    ).rejects.toBeInstanceOf(UnsafeWebhookUrlError);
+  });
+
+  it("rejects a hostname that resolves to a private address", async () => {
+    await expect(
+      assertSafeAiBaseUrl("https://internal.example.ai/v1", {
+        ...options,
+        resolver: async () => ["192.168.1.10"],
+      }),
+    ).rejects.toBeInstanceOf(UnsafeWebhookUrlError);
+  });
+
+  it("uses AI-specific wording in errors", async () => {
+    await expect(
+      assertSafeAiBaseUrl("http://api.example.ai/v1", options),
+    ).rejects.toThrow("AI provider base URL");
   });
 });

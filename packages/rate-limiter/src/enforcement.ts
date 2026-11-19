@@ -149,6 +149,22 @@ export const enforceRateLimit = {
   },
 
   /**
+   * Rate limiting for BYOK provider connection tests (20 requests per hour)
+   * @param identifier - Optional unique identifier for the user/client (defaults to "anonymous")
+   * @param customErrorMessage - Optional custom error message
+   */
+  AI_CREDENTIAL_TEST: async (
+    identifier?: string,
+    customErrorMessage?: string,
+  ): Promise<void> => {
+    return enforceRateLimitInternal(
+      identifier,
+      RateLimitCategory.AI_CREDENTIAL_TEST,
+      customErrorMessage,
+    );
+  },
+
+  /**
    * Rate limiting for file upload operations (1 request per 10 seconds)
    * @param identifier - Optional unique identifier for the user/client (defaults to "anonymous")
    * @param customErrorMessage - Optional custom error message

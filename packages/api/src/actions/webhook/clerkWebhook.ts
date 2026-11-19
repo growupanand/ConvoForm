@@ -1,10 +1,12 @@
 import { analytics } from "@convoform/analytics";
 import { eq } from "@convoform/db";
 import {
+  aiProviderCredential,
   insertOrganizationMemberSchema,
   insertOrganizationSchema,
   insertUserSchema,
   organization,
+  organizationAiSettings,
   organizationMember,
   user,
 } from "@convoform/db/src/schema";
@@ -158,19 +160,36 @@ export async function handleOrganizationDeleted(
 ) {
   const parsedInput = organizationDeletedInputSchema.parse(input);
   try {
-    // delete memberships between the users and the organization
-    await ctx.db
-      .delete(organizationMember)
-      .where(eq(organizationMember.organizationId, parsedInput.organizationId));
+    const [data] = await ctx.db.transaction(async (tx) => {
+      // Settings reference credentials, so they must go first. Audit rows are
+      // intentionally kept: they have no foreign key to the organization and
+      // preserve the history of the deleted credentials.
+      await tx
+        .delete(organizationAiSettings)
+        .where(
+          eq(organizationAiSettings.organizationId, parsedInput.organizationId),
+        );
 
-    // TODO(#557): also delete AiProviderCredential and OrganizationAiSettings
-    // rows once #556 lands.
+      await tx
+        .delete(aiProviderCredential)
+        .where(
+          eq(aiProviderCredential.organizationId, parsedInput.organizationId),
+        );
 
-    // delete the organization
-    const [data] = await ctx.db
-      .delete(organization)
-      .where(eq(organization.organizationId, parsedInput.organizationId))
-      .returning();
+      // delete memberships between the users and the organization
+      await tx
+        .delete(organizationMember)
+        .where(
+          eq(organizationMember.organizationId, parsedInput.organizationId),
+        );
+
+      // delete the organization
+      return tx
+        .delete(organization)
+        .where(eq(organization.organizationId, parsedInput.organizationId))
+        .returning();
+    });
+
     await analytics.track("organization:delete", {
       properties: data,
     });

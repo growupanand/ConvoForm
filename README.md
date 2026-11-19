@@ -60,6 +60,8 @@ Visit our **[Documentation Site](https://docs.convoform.com)** for detailed guid
    # AI provider, Clerk auth, Resend email, database URL, etc.
    # IMPORTANT: generate a strong ENCRYPTION_KEY for securing integration tokens.
    # You can generate one using `openssl rand -hex 32`
+   # To let organizations use their own AI keys, also set AI_CREDENTIALS_MASTER_KEY
+   # (`openssl rand -base64 32`). Keep it server-side only.
    ```
 
 4. **Run Development Server**

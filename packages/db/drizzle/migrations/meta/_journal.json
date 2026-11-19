@@ -267,6 +267,13 @@
       "when": 1794588575870,
       "tag": "0037_married_omega_red",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1794640922020,
+      "tag": "0038_needy_pestilence",
+      "breakpoints": true
     }
   ]
 }

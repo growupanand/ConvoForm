@@ -18,6 +18,8 @@ export enum RateLimitCategory {
   AI_PUBLIC_SESSION = "ai:public-session",
   /** AI requests from logged in sessions */
   AI_PROTECTED_SESSION = "ai:protected-session",
+  /** Saved or unsaved BYOK provider connection tests */
+  AI_CREDENTIAL_TEST = "ai:credential-test",
   /** File upload operations */
   FILE_UPLOAD = "file:upload",
   /** Continue-on-desktop email for a signed-in user */
